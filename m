@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002229]: No stereo: sright channel is
 	dead
-Date: Sun, 25 Jun 2006 05:26:24 +0200
-Message-ID: <f7679201032e8b8e16add8c0e143466c@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 05:43:29 +0200
+Message-ID: <aaff8555956084174e2922acfccad25e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6D2821D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DD0A21D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 05:26:24 +0200 (MEST)
+	Sun, 25 Jun 2006 05:43:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.16 from Debian unstable
 ======================================================================
 Date Submitted:             06-25-2006 03:55 CEST
-Last Modified:              06-25-2006 05:26 CEST
+Last Modified:              06-25-2006 05:43 CEST
 ======================================================================
 Summary:                    No stereo: sright channel is dead
 Description: 
@@ -67,6 +67,19 @@ channel.
 Also tried with dxs_support=5 and it works. The right channel is dead
 though.
 
+----------------------------------------------------------------------
+ Raymond - 06-25-06 05:43 
+----------------------------------------------------------------------
+Please post the output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/card0/codec97#0/ac97#0-0
+
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+amixer
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +88,7 @@ Date Modified  Username       Field                    Change
 06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
 unstable
 06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
 ======================================================================
 
 
