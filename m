@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sun, 25 Jun 2006 15:32:53 +0200
-Message-ID: <1b952055670b9c69f398d1182d919766@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0002230]: aoss full mmap support
+Date: Sun, 25 Jun 2006 15:51:53 +0200
+Message-ID: <ca7a0549e709c7175258f14b7ff9b2c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F56B16B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A047A16C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 15:32:53 +0200 (MEST)
+	Sun, 25 Jun 2006 15:51:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,99 +23,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2230> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                ilm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - liboss
+Issue ID:                   2230
+Category:                   
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-25-2006 15:32 CEST
+Date Submitted:             06-25-2006 15:51 CEST
+Last Modified:              06-25-2006 15:51 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    aoss full mmap support
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+teamspeak + enemy territory doesn't work with dmix
+after some search i concluded that mmap is not fully supported yet
+(alsa-anounce mailing list)
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+just wanted to know of it's coming soon as i now use arts (artsdsp) to mix
+2 mmap'ed oss apps and i'd like to use only alsa for all my sound. also
+wondering as artsdsp seems to have mmap support is it so hard to do it in
+aoss too ?
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+sorry if this is the wrong way to ask these questions, didn't found any
+alsa forum where i could contact you
 
-thanx for attention
-Marco
+king regards
+ilm
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-25-06 15:26 
-----------------------------------------------------------------------
-I don't have this card
-
-speaker-test -c 4 -Dsurround40 -t wav
-
-or
-
-speaker-test -c 4 -Dplug:surround40 -t wav
-
-If speaker-test don't work, you may need to upgrade to alsa-1.0.12rc1 
-
-You need to define a plugin in .asoundrc if you want to play stereo to 4
-speakers
-
-
-
-----------------------------------------------------------------------
- Cimmo - 06-25-06 15:32 
-----------------------------------------------------------------------
-speaker-test works also for rear speakers!
-This is strange!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 15:51 ilm            New Issue                                    
 ======================================================================
 
 
