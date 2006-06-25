@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 25 Jun 2006 14:05:01 +0200
-Message-ID: <c5eccb8e210ce59548fea34cb7022507@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 14:47:21 +0200
+Message-ID: <2544b5de015fe2c15be5874e809ffe89@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43DD321D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05E0421D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 14:05:02 +0200 (MEST)
+	Sun, 25 Jun 2006 14:47:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-25-2006 14:05 CEST
+Last Modified:              06-25-2006 14:47 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,21 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-25-06 12:20 
-----------------------------------------------------------------------
-compiled and installed alsa 1.0.11 and... hey all it's changed for my
-soundcard!!!
-A lot of new items!!!
-
-Anyway surround still not work :(
-This is the image from alsamixer, is it correct?
-IEC958 if not muted then no sound.
-
-I need help!
-
-
-
-----------------------------------------------------------------------
  Raymond - 06-25-06 14:05 
 ----------------------------------------------------------------------
 Please post output of
@@ -84,6 +69,11 @@ cat /proc/asound/cards
 cat /proc/asound/pcm
 
 cat /etc/asound.state
+
+----------------------------------------------------------------------
+ Cimmo - 06-25-06 14:47 
+----------------------------------------------------------------------
+I have no asound.state file in etc
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +103,9 @@ Date Modified  Username       Field                    Change
 06-25-06 12:18 Cimmo          Note Added: 0010506                          
 06-25-06 12:20 Cimmo          Note Edited: 0010506                         
 06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
 ======================================================================
 
 
