@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002189]: No sound on speakers,
-	low volume on the headphones, Packard bell V7900
-Date: Sun, 25 Jun 2006 14:03:00 +0200
-Message-ID: <2b186e2a2a052450275d7b193644bc69@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Sun, 25 Jun 2006 14:05:01 +0200
+Message-ID: <c5eccb8e210ce59548fea34cb7022507@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 955EF21D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43DD321D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 14:03:00 +0200 (MEST)
+	Sun, 25 Jun 2006 14:05:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,148 +26,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                bettored
-Assigned To:                tiwai
+Reported By:                Cimmo
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2189
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15-23-386
+Status:                     new
 ======================================================================
-Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              06-25-2006 14:02 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-25-2006 14:05 CEST
 ======================================================================
-Summary:                    No sound on speakers, low volume on the headphones,
-Packard bell V7900
+Summary:                    Alsa mixer lack of some functions
 Description: 
-Hi,
-I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
-hda-intel, with problems.
-I have no sound on speakers and very low on the headphones.
-In the alsamixer all is on.
-Recently i actualized to Alsa 1.0.11 but with same problem.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-In the Volumen Control, i have two:
-1. HDA intel (alsa mixer)
-2. Realtek ALC260 (oss mixer)
-And it is correct.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-Here leave same test:
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-
-janek@janek-laptop:~$ lsmod | grep snd
-snd_hda_intel          19348  2
-snd_hda_codec         143152  1 snd_hda_intel
-snd_pcm_oss            43936  0
-snd_mixer_oss          18944  2 snd_pcm_oss
-snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              25348  1 snd_pcm
-snd                    55396  8
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
-soundcore              10208  2 snd
-snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
-
---------------------------------------------------------------------------------
-
-janek@janek-laptop:~$ lspci
-0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
-(rev 03)
-0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
-Port (rev 03)
-0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 02)
-0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 1 (rev 02)
-0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 2 (rev 02)
-0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 3 (rev 02)
-0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 4 (rev 02)
-0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #1 (rev 02)
-0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #2 (rev 02)
-0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #3 (rev 02)
-0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #4 (rev 02)
-0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
-EHCI Controller (rev 02)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
-e2)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
-Bridge (rev 02)
-0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
-Controller (rev 02)
-0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
-Controller (rev 02)
-0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
-device 71c5
-0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
-(rev 02)
-0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
-(rev 02)
-0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
-0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
-(rev 01)
-0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
-(rev 02)
-
-
--------------------------------------------------------------------------------
-
-janek@janek-laptop:~$ modinfo soundcore
-filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
-description:    Core sound module
-author:         Alan Cox
-license:        GPL
-alias:          char-major-14-*
-vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
-depends:
-srcversion:     DD426F1CCA2CC5F060F6F92
-
-
----------------------------------------------------------------------------
-
-
-Thanks for your time 
-
-
-
-
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-21-06 19:16 
+ Cimmo - 06-25-06 12:20 
 ----------------------------------------------------------------------
-Did you really try test model, too?
+compiled and installed alsa 1.0.11 and... hey all it's changed for my
+soundcard!!!
+A lot of new items!!!
+
+Anyway surround still not work :(
+This is the image from alsamixer, is it correct?
+IEC958 if not muted then no sound.
+
+I need help!
+
+
 
 ----------------------------------------------------------------------
- bonobo - 06-25-06 14:02 
+ Raymond - 06-25-06 14:05 
 ----------------------------------------------------------------------
-I have very weak output through S/PDIF. Didn't notice before
+Please post output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
+
+cat /etc/asound.state
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 19:47 bettored       New Issue                                    
-06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
-06-15-06 20:25 bonobo         Note Added: 0010243                          
-06-15-06 20:32 bonobo         Note Edited: 0010243                         
-06-18-06 23:59 ixM            Note Added: 0010304                          
-06-20-06 19:52 tiwai          Note Added: 0010350                          
-06-21-06 19:02 ixM            Note Added: 0010402                          
-06-21-06 19:16 tiwai          Note Added: 0010403                          
-06-22-06 23:18 urdle          Issue Monitored: urdle                       
-06-25-06 14:02 bonobo         Note Added: 0010507                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
 ======================================================================
 
 
