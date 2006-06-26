@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002223]: there no sound in pc speakers
-	and in headphone sound disapear after few minutes
-Date: Mon, 26 Jun 2006 16:41:04 +0200
-Message-ID: <e9276dff20cf7824bb84e60563c2b228@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002202]: model is not autodetected
+	correctly
+Date: Mon, 26 Jun 2006 17:19:43 +0200
+Message-ID: <c2a27e503e9ada4f1856bdce621cf761@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E029C190
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1836B24F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:41:04 +0200 (MEST)
+	Mon, 26 Jun 2006 17:19:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,65 +24,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
 ======================================================================
-Reported By:                gleboo
+Reported By:                el
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2223
+Issue ID:                   2202
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               RedHat
-Kernel Version:             2.6.16-1.2133_FC5smp
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-23
 ======================================================================
-Date Submitted:             06-22-2006 13:35 CEST
-Last Modified:              06-26-2006 16:41 CEST
+Date Submitted:             06-12-2006 09:45 CEST
+Last Modified:              06-26-2006 17:19 CEST
 ======================================================================
-Summary:                    there no sound in pc speakers and in headphone sound
-disapear after few minutes
+Summary:                    model is not autodetected correctly
 Description: 
-sound work only few minutes after clean restart and on headphone only.
-aslamixer all up
-removed and installed againg all drivers from your site
-updated kernel after clean FC5 installation and once (to 2.6.16-2111) it
-work perfectely - after another installation and updating to more newer
-kernel (on 2.6.16-2022 or current) its never worked on .
+I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
+http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
 
-hardware - Lenovo 3000 N100 1.66Ghz Dual Core,1gb memory
+When I load the module via modprobe snd-hda-intel I get the following
+controls in alsamixer: 
+playback: PCM, Headphones, Internal Speaker, CD, Mic
+capture: 3x Capture
+I can not get the Microphone to work, no matter what I select as Input
+Source for the Capture channels.
+
+When I use modprobe snd-hda-intel model=auto I get
+playback: PCM, front(controls headphones), side(controls internal
+speaker), center, lfe, internal mic, mic, ...
+capture: 3x Capture
+The Microphone (Internal, or external if connected) works when I unmute
+the first capture channel and set its input source to Front Mic.
+Sometimes the center channel controls the speaker at the bottom of the
+laptop, sometimes it doesnt, seems kind of random.
+
+Documentation states, that model=auto is the default, but as you can see
+it is not
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:13 
+ tiwai - 06-26-06 16:02 
 ----------------------------------------------------------------------
-The latest version needs even no model option.  Lenovo 3000 N100-07684JU is
-already listed in the driver code.
+/proc/asound/card0/codec#* files and the file created via "alsactl -f
+somefile store".
+
+First of all, try different model options for the mathing codec chip as
+described in ALSA-Configuration.txt.
 
 ----------------------------------------------------------------------
- rlrevell - 06-26-06 16:41 
+ rlrevell - 06-26-06 17:19 
 ----------------------------------------------------------------------
-Fixd in 1.0.12-rc1
+Why are your "Capture" levels all set to 0?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-06 13:35 gleboo         New Issue                                    
-06-22-06 13:35 gleboo         Distribution              => RedHat          
-06-22-06 13:35 gleboo         Kernel Version            => 2.6.16-1.2133_FC5smp
-06-24-06 18:17 gleboo         Note Added: 0010481                          
-06-25-06 00:26 gleboo         Note Added: 0010494                          
-06-25-06 00:33 rlrevell       Note Added: 0010495                          
-06-26-06 16:13 tiwai          Note Added: 0010544                          
-06-26-06 16:41 rlrevell       Status                   assigned => resolved
-06-26-06 16:41 rlrevell       Resolution               open => fixed       
-06-26-06 16:41 rlrevell       Note Added: 0010549                          
+06-12-06 09:45 el             New Issue                                    
+06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
+06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
+06-14-06 17:20 el             Note Added: 0010215                          
+06-26-06 11:37 el             Note Added: 0010526                          
+06-26-06 16:02 tiwai          Note Added: 0010539                          
+06-26-06 17:19 rlrevell       Note Added: 0010550                          
 ======================================================================
 
 
