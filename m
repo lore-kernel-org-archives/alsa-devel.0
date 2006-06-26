@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002198]: No sound out of the built in
-	speakers, but from headphones on a Apple MacBook Pro
-Date: Mon, 26 Jun 2006 16:34:48 +0200
-Message-ID: <09c318cd4bdfea1288a808372175bca6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Mon, 26 Jun 2006 16:38:25 +0200
+Message-ID: <466215c4c18733c63d2408806153a62d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9ABAA190
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3A10190
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:34:48 +0200 (MEST)
+	Mon, 26 Jun 2006 16:38:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,124 +26,121 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                enlighter
+Reported By:                vertex
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2198
+Issue ID:                   2035
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16.16
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             06-09-2006 12:09 CEST
-Last Modified:              06-26-2006 16:34 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              06-26-2006 16:38 CEST
 ======================================================================
-Summary:                    No sound out of the built in speakers, but from
-headphones on a Apple MacBook Pro
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-Hi,
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-this error occours on all macbook pros! (see www.mactel-linux.org). Sound
-comes only out of the headphones or out of line-out, but the internal
-speakers keep mute. I cannot unmute them using the mixer (alsamixer,
-kmix). I also tried a rc version of linux-2.6.17 with the same result.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-I also tried to load the snd-hda-intel module with "model=laptop" and
-"model=laptop-eapd".
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- enlighter - 06-26-06 16:20 
+ jlpedrosa - 06-26-06 13:25 
 ----------------------------------------------------------------------
-I don't use the model option any more. Keeps silent too.
+Hi!
 
-these are my mixer settings (just to be sure that there's not the fault):
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 255 [100%]
-  Front Right: Playback 255 [100%]
-Simple mixer control 'Front',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 127
-  Mono:
-  Front Left: Playback 127 [100%] [on]
-  Front Right: Playback 127 [100%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 127
-  Mono:
-  Front Left: Playback 127 [100%] [on]
-  Front Right: Playback 127 [100%] [on]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 127
-  Mono: Playback 127 [100%] [on]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 127
-  Mono: Playback 127 [100%] [on]
-Simple mixer control 'Line In as Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic as Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [on] Capture [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 14
-  Front Left: Capture 0 [0%] [off]
-  Front Right: Capture 0 [0%] [off]
-Simple mixer control 'Input Source',0
-  Capabilities: enum
-  Items: 'Mic' 'Line'
-  Item0: 'Mic'
-Simple mixer control 'Mux',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 4
-  Front Left: Capture 0 [0%]
-  Front Right: Capture 0 [0%]
+Is this bug fixed in the new development relase? i've read the change log,
+but, 'm not sure... because i don't know if mine is the same of one vaio
+or other laptop.
+
+Thanks
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:34 
+ rlrevell - 06-26-06 16:38 
 ----------------------------------------------------------------------
-Check whether the PCI SSID is 8384:7680.  Otherwise you'll need to add the
-corresponding entry in patch_realtek.c.
+Probably not.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 12:09 enlighter      New Issue                                    
-06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
-06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
-06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
-06-18-06 09:27 enlighter      Note Added: 0010297                          
-06-18-06 09:29 enlighter      Note Added: 0010298                          
-06-25-06 20:17 enlighter      Note Added: 0010518                          
-06-26-06 16:08 tiwai          Note Added: 0010541                          
-06-26-06 16:20 enlighter      Note Added: 0010546                          
-06-26-06 16:34 tiwai          Note Added: 0010547                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
+06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
+06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
+06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
+06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
+06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 22:50 taschenorakel  File Added:
+alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
+06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
+06-26-06 16:38 rlrevell       Note Added: 0010548                          
 ======================================================================
 
 
