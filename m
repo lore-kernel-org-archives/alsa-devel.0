@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Mon, 26 Jun 2006 04:10:10 +0200
-Message-ID: <d80ff7aed35e54f5207fd7f324a7a859@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Mon, 26 Jun 2006 06:52:19 +0200
+Message-ID: <43d98b15c2009b0290960dc14ff24ed7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A785C1A7
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA4A91A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 04:10:10 +0200 (MEST)
+	Mon, 26 Jun 2006 06:52:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,176 +25,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-26-2006 04:10 CEST
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-26-2006 06:52 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    snd-mpu401 don't load
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
 
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
 
+any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-26-06 02:10 
+ El Santo - 06-25-06 22:02 
 ----------------------------------------------------------------------
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#10503
+The BIOS setting are equal to those of the link
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
 
-0:7c = 0000
-0:7e = 4e53
-
-snd_es1371_codec_read() seem unable to read some of the AC97 codec
-registers
-
-If you cannot find out the label print on 48-pin ac97 codec chip, 
-
-1) add printk(KERN_INFO "codec write %.2x = %.4x\n",reg,val); at the
-beginning of snd_es1371_codec_write()
-
-2) add printk(KERN_INFO "codec read %.2x : %x\n",reg, x); before return
-ES_1371_CODEC_READ(x); in snd_es1371_codec_read()
-
-3) reload the driver and post output of dmesg in order to trace the codec
-read/write
-
-4) after we identified the ac97 codec id , hack the
-snd_es1371_codec_read() to return values for some registers 
-
-                      if ( (( x >> 16 ) & 0x7f ) != reg ) {
-                        switch(reg){
-                        case 0: return 0x????;
-                        case 0x28: return 0x????;
-                        case 0x3c: return 0x????
-                        case 0x7c: return 0x????;
-                        case 0x7e: return 0x????;
-                        default: break;
-                        }
-                       }
+I follow the thread but i fond no solution there.
 
 ----------------------------------------------------------------------
- bobcat98 - 06-26-06 04:10 
+ Raymond - 06-26-06 06:52 
 ----------------------------------------------------------------------
-I'm more of a rookie than that.  I need to know which version and from
-where I can
- obtain the source, and then I need instructions on how to compile it into
-the 
-driver.  I assume that the modprobe command is used to unload/reload the
-driver.
+Please note that mpu401 is for midi keyboard and synth through midi cable ,
+if you just want to play midi file, install software synth (e.g.
+timidity).
 
-I want to help, but I don't want to put you through the pain of
-handholding a 
-complete rookie through this.  It would be fun though :)
+aplaymidi -l
+
+ Port Client name Port name
+ 62:0 Midi Through Midi Through Port-0
+
+This means that you are using ALSA-1.0.10 or eailer version which is
+different from your reported version 1.0.11
+
+The source code of snd-via686a (alsa-0.9) seem not available on CVS
+anymore after merge into via82xx.c
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
-06-09-06 06:51 Raymond        Note Added: 0010132                          
-06-14-06 15:01 Raymond        Note Deleted: 0010132                        
-06-14-06 15:13 Raymond        Note Deleted: 0010072                        
-06-24-06 04:14 Raymond        Note Added: 0010465                          
-06-24-06 21:51 bobcat98       Note Added: 0010489                          
-06-25-06 02:04 Raymond        Note Added: 0010497                          
-06-25-06 07:44 bobcat98       Note Added: 0010503                          
-06-25-06 08:18 Raymond        Note Added: 0010504                          
-06-25-06 18:13 bobcat98       Note Added: 0010517                          
-06-26-06 02:10 Raymond        Note Added: 0010521                          
-06-26-06 04:10 bobcat98       Note Added: 0010523                          
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
+06-20-06 19:49 tiwai          Note Added: 0010349                          
+06-20-06 23:30 El Santo       Note Added: 0010357                          
+06-20-06 23:39 rlrevell       Note Added: 0010359                          
+06-20-06 23:54 El Santo       Note Added: 0010362                          
+06-21-06 00:00 rlrevell       Note Added: 0010363                          
+06-21-06 00:04 rlrevell       Note Added: 0010364                          
+06-21-06 00:12 El Santo       Note Added: 0010365                          
+06-21-06 00:18 rlrevell       Note Added: 0010366                          
+06-21-06 00:33 El Santo       File Added: dmesg.log                        
+06-21-06 00:36 El Santo       Note Added: 0010367                          
+06-21-06 00:52 rlrevell       Note Added: 0010369                          
+06-21-06 00:56 rlrevell       Note Added: 0010370                          
+06-21-06 02:02 rlrevell       Note Added: 0010374                          
+06-21-06 04:51 Raymond        Note Added: 0010379                          
+06-21-06 18:00 El Santo       Note Added: 0010400                          
+06-22-06 03:19 Raymond        Note Added: 0010412                          
+06-22-06 03:27 Raymond        Note Edited: 0010412                         
+06-22-06 03:29 rlrevell       Note Added: 0010413                          
+06-22-06 14:30 Raymond        Note Added: 0010422                          
+06-24-06 09:43 Raymond        Note Added: 0010469                          
+06-25-06 22:02 El Santo       Note Added: 0010520                          
+06-26-06 06:52 Raymond        Note Added: 0010524                          
 ======================================================================
 
 
