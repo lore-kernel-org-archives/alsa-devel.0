@@ -1,18 +1,16 @@
-From: Andi Kleen <ak@suse.de>
-Subject: Re: Alsa update in mainline broke ATI-IXP sound driver
-Date: Mon, 26 Jun 2006 12:26:01 +0200
-Message-ID: <200606261226.01422.ak@suse.de>
-References: <200606252139.36002.ak@suse.de> <s5hpsgw9qgz.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002233]: No sound on speakers,
+	low volume on the headphones, Samsung X60 Chane
+Date: Mon, 26 Jun 2006 12:17:51 +0200
+Message-ID: <620f4110f6ba1b249f8870f091a03fe2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF94D1A8
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC4D3195
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 12:26:08 +0200 (MEST)
-In-Reply-To: <s5hpsgw9qgz.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon, 26 Jun 2006 12:17:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,31 +20,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 June 2006 12:11, Takashi Iwai wrote:
-> At Sun, 25 Jun 2006 21:39:35 +0200,
-> Andi Kleen wrote:
-> > 
-> > 
-> > Since I updated an ATI x86-64 box to 2.6.17-git6 sound doesn't work anymore.
-> > 
-> > I just get
-> > 
-> > ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
-> > ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_card_driver returned error: No such device
-> (snip) 
-> > User land is from SUSE 10.0
-> 
-> First check /proc/asound/cards after loading snd-atiixp.  If the ATI
-> IXP entry appears, the device was initialized and set up.  If not,
-> something wrong in the driver initialization.
 
-I'll defer testing because -git9 broke SATA too until after that is fixed.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
+======================================================================
+Reported By:                max
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2233
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               suse 10.1
+Kernel Version:             2.6.16.13-4
+======================================================================
+Date Submitted:             06-26-2006 12:17 CEST
+Last Modified:              06-26-2006 12:17 CEST
+======================================================================
+Summary:                    No sound on speakers, low volume on the headphones,
+Samsung X60 Chane
+Description: 
+installation ok. (82801G)
+but
+no sound on speakers 
+low volume on the headphones and sometimes a verry high frequenz...
 
--Andi (who hasn't had such a low quality kernel for a long time) 
+thanks for help
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 12:17 max            New Issue                                    
+06-26-06 12:17 max            Distribution              => suse 10.1       
+06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
