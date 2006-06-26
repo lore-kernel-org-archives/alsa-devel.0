@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002223]: there no sound in pc speakers
-	and in headphone sound disapear after few minutes
-Date: Mon, 26 Jun 2006 16:13:50 +0200
-Message-ID: <e978372ed7b3d8d16908fbe604ac9a50@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002222]: Mitac 8258D,
+	no sound   Intel ICH7 HDA Realtek ALC883 codec
+Date: Mon, 26 Jun 2006 16:15:58 +0200
+Message-ID: <9692572c7185ebad285011eac34f80ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 527DB1A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0813413E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:13:50 +0200 (MEST)
+	Mon, 26 Jun 2006 16:15:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +26,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2222> 
 ======================================================================
-Reported By:                gleboo
+Reported By:                jolly67
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2223
+Issue ID:                   2222
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               RedHat
-Kernel Version:             2.6.16-1.2133_FC5smp
+Distribution:               OpenSuSE 10.1 i386
+Kernel Version:             Linux 2.6.16.13-4-smp (geeko@buildhost) (gcc 4.1.0)
+#1 SMP Wed May 3 04:53:23 UTC 2006
 ======================================================================
-Date Submitted:             06-22-2006 13:35 CEST
-Last Modified:              06-26-2006 16:13 CEST
+Date Submitted:             06-21-2006 15:02 CEST
+Last Modified:              06-26-2006 16:15 CEST
 ======================================================================
-Summary:                    there no sound in pc speakers and in headphone sound
-disapear after few minutes
+Summary:                    Mitac 8258D, no sound   Intel ICH7 HDA Realtek
+ALC883 codec
 Description: 
-sound work only few minutes after clean restart and on headphone only.
-aslamixer all up
-removed and installed againg all drivers from your site
-updated kernel after clean FC5 installation and once (to 2.6.16-2111) it
-work perfectely - after another installation and updating to more newer
-kernel (on 2.6.16-2022 or current) its never worked on .
-
-hardware - Lenovo 3000 N100 1.66Ghz Dual Core,1gb memory
+No working configuration for this hardware. The system is detect the sound
+card and setup hda_intel module for them. But no sound. No master
+control.
+Only PCM, Front, Line, CD and Mic
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-25-06 00:33 
+ tiwai - 06-26-06 16:15 
 ----------------------------------------------------------------------
-I think this bug might also be fixed in ALSA 1.0.12-rc1.
+There is no "Master" volume control for ALC883.
 
-You should not need single_cmd=1 - model=laptop_eapd should be sufficient
+Anyway, you can try different model options described in
+ALSA-Configuration.txt.
 
-----------------------------------------------------------------------
- tiwai - 06-26-06 16:13 
-----------------------------------------------------------------------
-The latest version needs even no model option.  Lenovo 3000 N100-07684JU is
-already listed in the driver code.
+Also, I have some fix patches for ALC883, and will commit later to HG repo
+after some clean up / fixes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-06 13:35 gleboo         New Issue                                    
-06-22-06 13:35 gleboo         Distribution              => RedHat          
-06-22-06 13:35 gleboo         Kernel Version            => 2.6.16-1.2133_FC5smp
-06-24-06 18:17 gleboo         Note Added: 0010481                          
-06-25-06 00:26 gleboo         Note Added: 0010494                          
-06-25-06 00:33 rlrevell       Note Added: 0010495                          
-06-26-06 16:13 tiwai          Note Added: 0010544                          
+06-21-06 15:02 jolly67        New Issue                                    
+06-21-06 15:02 jolly67        File Added: hwinfo.log                       
+06-21-06 15:02 jolly67        Distribution              => OpenSuSE 10.1 i386
+06-21-06 15:02 jolly67        Kernel Version            => Linux 2.6.16.13-4-smp
+(geeko@buildhost) (gcc 4.1.0) #1 SMP Wed May 3 04:53:23 UTC 2006
+06-21-06 15:09 jolly67        File Added: lspci.log                        
+06-22-06 08:21 jolly67        File Added: card0_codec#0                    
+06-22-06 08:21 jolly67        File Added: card0_codec#1                    
+06-26-06 16:15 tiwai          Note Added: 0010545                          
 ======================================================================
 
 
