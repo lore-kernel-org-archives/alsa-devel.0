@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Mon, 26 Jun 2006 18:01:44 +0200
-Message-ID: <c8bcf151cc3dfb7709fb0dfe3a83ab14@bugtrack.alsa-project.org>
+Date: Mon, 26 Jun 2006 18:09:37 +0200
+Message-ID: <d04ac6e5b442f75febf731e8afd7e273@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C47F9252
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E51E6253
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 18:01:44 +0200 (MEST)
+	Mon, 26 Jun 2006 18:09:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-26-2006 18:01 CEST
+Last Modified:              06-26-2006 18:09 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,23 +71,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-26-06 17:40 
-----------------------------------------------------------------------
-Raymond,
-
-You cannot assume that every Linux user knows how to read driver source or
-compile things.
-
-Why can't you just express comment #0010521 in the form of a patch?  You
-know now to use patch and diff right?
-
-diff -Nru old-driver.c new-driver.c > debug-driver.patch
-
-And attach the patch to this bug report.
-
-Lee
-
-----------------------------------------------------------------------
  Raymond - 06-26-06 18:01 
 ----------------------------------------------------------------------
 rlrevell
@@ -102,6 +85,19 @@ Can you provide a HG diff to revert the change related to ens1371 in this
 patch ?
 
 http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=ca827c69c200;style=gitweb
+
+----------------------------------------------------------------------
+ rlrevell - 06-26-06 18:09 
+----------------------------------------------------------------------
+In browser go to:
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=ca827c69c200954a4e55f5a7a32bc0994e8ad347;style=raw
+
+Then just click "File->Save As", enter "debug1.patch".
+
+Then revert the patch:
+
+cat debug1.patch | patch -p1 -R
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -183,6 +179,7 @@ ens1371
 06-26-06 17:40 rlrevell       Note Added: 0010553                          
 06-26-06 17:51 Raymond        Note Edited: 0010551                         
 06-26-06 18:01 Raymond        Note Added: 0010555                          
+06-26-06 18:09 rlrevell       Note Added: 0010556                          
 ======================================================================
 
 
