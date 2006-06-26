@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002229]: No stereo: sright channel is
-	dead
-Date: Mon, 26 Jun 2006 16:07:10 +0200
-Message-ID: <d808bb8d16e7a12a142958766a7cdc1c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002198]: No sound out of the built in
+	speakers, but from headphones on a Apple MacBook Pro
+Date: Mon, 26 Jun 2006 16:08:47 +0200
+Message-ID: <ed9ddd07580bdd8928c4e55f4f14b336@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E33551A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C5071A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:07:10 +0200 (MEST)
+	Mon, 26 Jun 2006 16:08:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,78 +26,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
 ======================================================================
-Reported By:                rshura
-Assigned To:                
+Reported By:                enlighter
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2229
-Category:                   PCI - via82xx
+Issue ID:                   2198
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.16 from Debian unstable
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.16.16
 ======================================================================
-Date Submitted:             06-25-2006 03:55 CEST
-Last Modified:              06-26-2006 16:07 CEST
+Date Submitted:             06-09-2006 12:09 CEST
+Last Modified:              06-26-2006 16:08 CEST
 ======================================================================
-Summary:                    No stereo: sright channel is dead
+Summary:                    No sound out of the built in speakers, but from
+headphones on a Apple MacBook Pro
 Description: 
-Everything seems to work perfectly, except the right channel is dead. I
-checked speakers on another machine and everything is fine. This is the
-integrated sound on a new mobo and it's unlikely (although not impossible)
-that the right channel is physically broken.
+Hi,
 
-Is there any way to tell whether it is a driver problem or a broken mobo?
-It is on warranty, so I could exchange it if that's the case.
+this error occours on all macbook pros! (see www.mactel-linux.org). Sound
+comes only out of the headphones or out of line-out, but the internal
+speakers keep mute. I cannot unmute them using the mixer (alsamixer,
+kmix). I also tried a rc version of linux-2.6.17 with the same result.
 
-I am not a kernel hacker, but I would be glad to provide more info, just
-tell me what to do. Thanks!
+I also tried to load the snd-hda-intel module with "model=laptop" and
+"model=laptop-eapd".
 ======================================================================
 
 ----------------------------------------------------------------------
- rshura - 06-26-06 07:15 
+ enlighter - 06-25-06 20:17 
 ----------------------------------------------------------------------
-I think I ruled out the broken connector on the mobo: I have a front sound
-connectors on my case and the cable connecting it to the motherboard. With
-using the case-based front connector, I also hear only the left channel;
-the right one is completely dead.
-
-So it must be either the driver problem, or the whole right channel
-circuitry on the mobo is seriously fried. If there is a way for me to tell
-which is the case, please let me know.
+No luck using linux-2.6.17-git6.
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:07 
+ tiwai - 06-26-06 16:08 
 ----------------------------------------------------------------------
-The status looks fine, so likely a hardware problem.
-To be sure, choose "Mix" as the capture source, turn on "Capture Switch",
-and raise "Capture Volume".  Then you can record the signal being played
-back.
-
-For example, run "arecord -fdat -vv foo.wav" while playing back a stereo
-file.  Then open the recorded WAV file via an audio graphic editor to see
-whether both stereo signals are recorded.
+Don't specify any model option for STAC codecs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-25-06 03:55 rshura         New Issue                                    
-06-25-06 03:55 rshura         Distribution              => Debian unstable 
-06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
-unstable
-06-25-06 05:26 rshura         Note Added: 0010499                          
-06-25-06 05:43 Raymond        Note Added: 0010500                          
-06-25-06 05:49 rshura         File Added: asound.cards                     
-06-25-06 05:50 rshura         File Added: ac97#0-0                         
-06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
-06-25-06 05:50 rshura         File Added: amixer                           
-06-25-06 05:51 rshura         Note Added: 0010501                          
-06-26-06 07:15 rshura         Note Added: 0010525                          
-06-26-06 16:07 tiwai          Note Added: 0010540                          
+06-09-06 12:09 enlighter      New Issue                                    
+06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
+06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
+06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
+06-18-06 09:27 enlighter      Note Added: 0010297                          
+06-18-06 09:29 enlighter      Note Added: 0010298                          
+06-25-06 20:17 enlighter      Note Added: 0010518                          
+06-26-06 16:08 tiwai          Note Added: 0010541                          
 ======================================================================
 
 
