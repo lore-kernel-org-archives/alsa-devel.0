@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001728]: Modification of volume
-	control for M-Audio Revolution 5.1
-Date: Mon, 26 Jun 2006 13:35:53 +0200
-Message-ID: <7b46283bc3d308f9932e68ddfb56469f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002228]: error recovery when the no of
+	available src is not enough (FATAL: ResManager: resource type
+	1 exhaust)
+Date: Mon, 26 Jun 2006 14:20:56 +0200
+Message-ID: <5a846654f3be2e97c2fa9c6b74f0ec2a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD68E195
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 830B2195
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 13:35:53 +0200 (MEST)
+	Mon, 26 Jun 2006 14:20:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,81 +27,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228> 
 ======================================================================
-Reported By:                cyan
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1728
-Category:                   PCI - ice1724
+Issue ID:                   2228
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo testing
-Kernel Version:             2.6.14-gentoo-r5
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-09-2006 23:35 CET
-Last Modified:              06-26-2006 13:35 CEST
+Date Submitted:             06-24-2006 05:37 CEST
+Last Modified:              06-26-2006 14:20 CEST
 ======================================================================
-Summary:                    Modification of volume control for M-Audio
-Revolution 5.1
+Summary:                    error recovery when the no of available src is not
+enough (FATAL: ResManager: resource type 1 exhaust)
 Description: 
-In Alsamixer (and KMix) is not possible to change volume of both chanels at
-once. Slides with names "DAC" and "DAC1" corresponds to left and right
-chanel. 
-I would like to make a suggestion to merge them together.
+This is simulated by reducing the no of available SRC to 3.
+
+static int __devinit vortex_core_init(vortex_t * vortex)
+{
++        vortex->fixed_res[VORTEX_RESOURCE_SRC] = 0x0000fff8;
+
+
+aplay out1lq.wav   
+Playing WAVE 'out1lq.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Channels 4
+aplay: set_params:962: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 22050
+PERIOD_TIME: (23219 23220)
+PERIOD_SIZE: 512
+PERIOD_BYTES: 4096
+PERIODS: 16
+BUFFER_TIME: (371519 371520)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 65536
+TICK_TIME: 10000
+
+dmesg
+vortex: FATAL: ResManager: resource type 1 exhausted.
+
+aplay outls.wav
+Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+
+dmesg
+vortex_adb_delroutes: route not found! 0x2060
+vortex_adb_delroutes: route not found! 0x2161
+
+It seem that the driver need to check the no of available SRC is enough
+before the SRC are checked out one by one from ResManager, the driver seem
+unable to perform error recovery           
+
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- alinja - 06-26-06 13:13 
+ Raymond - 06-26-06 14:20 
 ----------------------------------------------------------------------
-I'll fix the simple things and investigate how the other things should be
-done when I have the time again. 
+When the number of available SRC is less than those expected by an OSS
+application, the result is FATAL as the OSS application loop forever
 
-I wasn't sure about the index thing (or the orderin of the controls in
-general) at all so I basically "guessed" what it should be. So making it 0
-should be ok? I read some other reports that suggest some issues about the
-ordering, maybe those could be fixed at the same time?
-
-----------------------------------------------------------------------
- Raymond - 06-26-06 13:35 
-----------------------------------------------------------------------
-I don't have this card but other user complain "Left front channel always
-muted on boot" in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321
-
-It seem that the id of those index controls (DAC Volume and Deemphasis)
-are not consecutive in asound.state
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x851.htm 
-
-The index field holds the index number of this control. If there are
-several different controls with the same name, they can be distinguished
-by the index number. This is the case when several codecs exist on the
-card. If the index is zero, you can omit the definition above.
+mplayer -ao oss *.wav
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
+[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-06 23:35 cyan           New Issue                                    
-01-09-06 23:35 cyan           Distribution              => gentoo testing  
-01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
-01-14-06 22:31 wollschaf      Note Added: 0007656                          
-01-25-06 00:07 wollschaf      Issue Monitored: wollschaf                    
-01-25-06 00:09 wollschaf      File Added: ak4xxx-adda-stereomixer.patch         
-          
-01-25-06 00:29 wollschaf      Note Added: 0007776                          
-01-27-06 15:20 tiwai          Note Added: 0007804                          
-02-02-06 15:15 alinja         Note Added: 0007877                          
-03-28-06 14:22 alinja         Issue Monitored: alinja                      
-06-15-06 19:41 alinja         File Added: ak4xx-volumes.patch                   
-
-06-15-06 19:47 alinja         Note Added: 0010242                          
-06-16-06 18:50 tiwai          Note Added: 0010256                          
-06-24-06 10:43 Raymond        Note Added: 0010472                          
-06-26-06 13:13 alinja         Note Added: 0010531                          
-06-26-06 13:35 Raymond        Note Added: 0010533                          
+06-24-06 05:37 Raymond        New Issue                                    
+06-26-06 14:20 Raymond        Note Added: 0010534                          
 ======================================================================
 
 
