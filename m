@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002233]: No sound on speakers,
 	low volume on the headphones, Samsung X60 Chane
-Date: Mon, 26 Jun 2006 12:21:09 +0200
-Message-ID: <7e39937de8c2390a115efba38c72b937@bugtrack.alsa-project.org>
+Date: Mon, 26 Jun 2006 12:23:33 +0200
+Message-ID: <6d072322d2e3810927a1e1d9a406729a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6A0B1A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C9C01A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 12:21:09 +0200 (MEST)
+	Mon, 26 Jun 2006 12:23:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               suse 10.1
 Kernel Version:             2.6.16.13-4
 ======================================================================
 Date Submitted:             06-26-2006 12:17 CEST
-Last Modified:              06-26-2006 12:21 CEST
+Last Modified:              06-26-2006 12:23 CEST
 ======================================================================
 Summary:                    No sound on speakers, low volume on the headphones,
 Samsung X60 Chane
@@ -55,23 +55,6 @@ low volume on the headphones and sometimes a verry high frequenz...
 thanks for help
 
 ======================================================================
-
-----------------------------------------------------------------------
- max - 06-26-06 12:20 
-----------------------------------------------------------------------
-lsmod |grep snd*
-snd_pcm_oss            47104  0
-snd_mixer_oss          20480  1 snd_pcm_oss
-snd_seq                53360  0
-snd_seq_device         11916  1 snd_seq
-snd_hda_intel          21652  1
-snd_hda_codec         137856  1 snd_hda_intel
-snd_pcm                86788  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              25860  2 snd_seq,snd_pcm
-snd                    57092  10
-snd_pcm_oss,snd_mixer_oss,snd_seq,snd_seq_device,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-soundcore              13024  1 snd
-snd_page_alloc         13576  2 snd_hda_intel,snd_pcm
 
 ----------------------------------------------------------------------
  max - 06-26-06 12:21 
@@ -125,6 +108,39 @@ Adapter (rev 09)
 09:09.5 System peripheral: Ricoh Co Ltd xD-Picture Card Controller (rev
 04)
 
+----------------------------------------------------------------------
+ max - 06-26-06 12:23 
+----------------------------------------------------------------------
+modinfo snd_hda_intel
+filename:      
+/lib/modules/2.6.16.13-4-smp/kernel/sound/pci/hda/snd-hda-intel.ko
+license:        GPL
+description:    Intel HDA driver
+vermagic:       2.6.16.13-4-smp SMP 586 REGPARM gcc-4.1
+supported:      yes
+depends:        snd-pcm,snd-page-alloc,snd-hda-codec,snd
+alias:          pci:v00008086d00002668sv*sd*bc*sc*i*
+alias:          pci:v00008086d000027D8sv*sd*bc*sc*i*
+alias:          pci:v00008086d0000269Asv*sd*bc*sc*i*
+alias:          pci:v00008086d0000284Bsv*sd*bc*sc*i*
+alias:          pci:v00001002d0000437Bsv*sd*bc*sc*i*
+alias:          pci:v00001002d00004383sv*sd*bc*sc*i*
+alias:          pci:v00001106d00003288sv*sd*bc*sc*i*
+alias:          pci:v00001039d00007502sv*sd*bc*sc*i*
+alias:          pci:v000010B9d00005461sv*sd*bc*sc*i*
+alias:          pci:v000010DEd0000026Csv*sd*bc*sc*i*
+alias:          pci:v000010DEd00000371sv*sd*bc*sc*i*
+srcversion:     44A21C189B714ADE086A08A
+parm:           enable:bool
+parm:           single_cmd:Use single command to communicate with codecs
+(for debugging only). (bool)
+parm:           probe_mask:Bitmask to probe codecs (default = -1). (int)
+parm:           position_fix:Fix DMA pointer (0 = auto, 1 = none, 2 =
+POSBUF, 3 = FIFO size). (int)
+parm:           model:Use the given board model. (charp)
+parm:           id:ID string for Intel HD audio interface. (charp)
+parm:           index:Index value for Intel HD audio interface. (int)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -133,6 +149,7 @@ Date Modified  Username       Field                    Change
 06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
 06-26-06 12:20 max            Note Added: 0010527                          
 06-26-06 12:21 max            Note Added: 0010528                          
+06-26-06 12:23 max            Note Added: 0010529                          
 ======================================================================
 
 
