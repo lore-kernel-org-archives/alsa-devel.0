@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Mon, 26 Jun 2006 06:52:19 +0200
-Message-ID: <43d98b15c2009b0290960dc14ff24ed7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Mon, 26 Jun 2006 07:15:50 +0200
+Message-ID: <60ede37351cef2ecd42a2986ec20457c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA4A91A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB858150
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 06:52:19 +0200 (MEST)
+	Mon, 26 Jun 2006 07:15:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,102 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
 ======================================================================
-Reported By:                El Santo
+Reported By:                rshura
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2229
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-26-2006 06:52 CEST
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              06-26-2006 07:15 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    No stereo: sright channel is dead
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
-
-any idea?
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 06-25-06 22:02 
+ rshura - 06-25-06 05:51 
 ----------------------------------------------------------------------
-The BIOS setting are equal to those of the link
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
+$ cat /proc/asound/cards > asound.cards
+$ cat /proc/asound/card0/codec97#0/ac97#0-0 > ac97#0-0
+$ cat /proc/asound/card0/codec97#0/ac97#0-0+regs > ac97#0-0+regs
+$ amixer > amixer
 
-I follow the thread but i fond no solution there.
+The four files are now attached.
+Let me know if I can do anything else.
+Thanks!
 
 ----------------------------------------------------------------------
- Raymond - 06-26-06 06:52 
+ rshura - 06-26-06 07:15 
 ----------------------------------------------------------------------
-Please note that mpu401 is for midi keyboard and synth through midi cable ,
-if you just want to play midi file, install software synth (e.g.
-timidity).
+I think I ruled out the broken connector on the mobo: I have a front sound
+connectors on my case and the cable connecting it to the motherboard. With
+using the case-based front connector, I also hear only the left channel;
+the right one is completely dead.
 
-aplaymidi -l
-
- Port Client name Port name
- 62:0 Midi Through Midi Through Port-0
-
-This means that you are using ALSA-1.0.10 or eailer version which is
-different from your reported version 1.0.11
-
-The source code of snd-via686a (alsa-0.9) seem not available on CVS
-anymore after merge into via82xx.c
+So it must be either the driver problem, or the whole right channel
+circuitry on the mobo is seriously fried. If there is a way for me to tell
+which is the case, please let me know.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
-06-20-06 23:30 El Santo       Note Added: 0010357                          
-06-20-06 23:39 rlrevell       Note Added: 0010359                          
-06-20-06 23:54 El Santo       Note Added: 0010362                          
-06-21-06 00:00 rlrevell       Note Added: 0010363                          
-06-21-06 00:04 rlrevell       Note Added: 0010364                          
-06-21-06 00:12 El Santo       Note Added: 0010365                          
-06-21-06 00:18 rlrevell       Note Added: 0010366                          
-06-21-06 00:33 El Santo       File Added: dmesg.log                        
-06-21-06 00:36 El Santo       Note Added: 0010367                          
-06-21-06 00:52 rlrevell       Note Added: 0010369                          
-06-21-06 00:56 rlrevell       Note Added: 0010370                          
-06-21-06 02:02 rlrevell       Note Added: 0010374                          
-06-21-06 04:51 Raymond        Note Added: 0010379                          
-06-21-06 18:00 El Santo       Note Added: 0010400                          
-06-22-06 03:19 Raymond        Note Added: 0010412                          
-06-22-06 03:27 Raymond        Note Edited: 0010412                         
-06-22-06 03:29 rlrevell       Note Added: 0010413                          
-06-22-06 14:30 Raymond        Note Added: 0010422                          
-06-24-06 09:43 Raymond        Note Added: 0010469                          
-06-25-06 22:02 El Santo       Note Added: 0010520                          
-06-26-06 06:52 Raymond        Note Added: 0010524                          
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
+06-25-06 05:49 rshura         File Added: asound.cards                     
+06-25-06 05:50 rshura         File Added: ac97#0-0                         
+06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
+06-25-06 05:50 rshura         File Added: amixer                           
+06-25-06 05:51 rshura         Note Added: 0010501                          
+06-26-06 07:15 rshura         Note Added: 0010525                          
 ======================================================================
 
 
