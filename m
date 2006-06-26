@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Mon, 26 Jun 2006 18:51:50 +0200
-Message-ID: <952a0898375eb307f6e4f5000e67f75f@bugtrack.alsa-project.org>
+Date: Mon, 26 Jun 2006 19:14:11 +0200
+Message-ID: <2d771a47901a1b961c2e1cf1a1018b88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9846F256
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4719A256
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 18:51:50 +0200 (MEST)
+	Mon, 26 Jun 2006 19:14:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch (2006-06-18)
 Kernel Version:             2.6.15-1-686
 ======================================================================
 Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-26-2006 18:51 CEST
+Last Modified:              06-26-2006 19:14 CEST
 ======================================================================
 Summary:                    snd-mpu401 don't load
 Description: 
@@ -66,19 +66,16 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 06-26-06 18:44 
-----------------------------------------------------------------------
-but what i want is to record/play music with a external midi keyboard.
-I report i was using a 1.0.11 version of alsa because that was the output
-of `amidi -V`.
-
-The alsa drivers are those included with debian kernel 2.6.15-1-686. I'm
-not sure about how to ask the system to tell the drivers version.
-
-----------------------------------------------------------------------
  rlrevell - 06-26-06 18:51 
 ----------------------------------------------------------------------
 cat /proc/asound/version
+
+----------------------------------------------------------------------
+ El Santo - 06-26-06 19:14 
+----------------------------------------------------------------------
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -114,6 +111,7 @@ Date Modified  Username       Field                    Change
 06-26-06 07:50 Raymond        Note Edited: 0010524                         
 06-26-06 18:44 El Santo       Note Added: 0010557                          
 06-26-06 18:51 rlrevell       Note Added: 0010558                          
+06-26-06 19:14 El Santo       Note Added: 0010559                          
 ======================================================================
 
 
