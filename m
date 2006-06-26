@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Mon, 26 Jun 2006 17:19:43 +0200
-Message-ID: <c2a27e503e9ada4f1856bdce621cf761@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Mon, 26 Jun 2006 17:36:09 +0200
+Message-ID: <8c72315544bf93ab0d028bd0c414c50b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1836B24F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51BD424F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 17:19:44 +0200 (MEST)
+	Mon, 26 Jun 2006 17:36:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,73 +26,149 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                el
-Assigned To:                tiwai
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2202
-Category:                   PCI - hda-intel
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-26-2006 17:19 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-26-2006 17:36 CEST
 ======================================================================
-Summary:                    model is not autodetected correctly
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
 
-Documentation states, that model=auto is the default, but as you can see
-it is not
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:02 
+ bobcat98 - 06-26-06 04:10 
 ----------------------------------------------------------------------
-/proc/asound/card0/codec#* files and the file created via "alsactl -f
-somefile store".
+I'm more of a rookie than that.  I need to know which version and from
+where I can
+ obtain the source, and then I need instructions on how to compile it into
+the 
+driver.  I assume that the modprobe command is used to unload/reload the
+driver.
 
-First of all, try different model options for the mathing codec chip as
-described in ALSA-Configuration.txt.
+I want to help, but I don't want to put you through the pain of
+handholding a 
+complete rookie through this.  It would be fun though :)
 
 ----------------------------------------------------------------------
- rlrevell - 06-26-06 17:19 
+ Raymond - 06-26-06 17:36 
 ----------------------------------------------------------------------
-Why are your "Capture" levels all set to 0?
+I don't have this card, but it not too difficult to find out the cause
+since there are only a few patches which related to ac97 codec
+
+http://hg-mirror.alsa-project.org/alsa-kernel?fl=f6db466336fa;file=pci/ens1370.c;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-06-14-06 17:20 el             Note Added: 0010215                          
-06-26-06 11:37 el             Note Added: 0010526                          
-06-26-06 16:02 tiwai          Note Added: 0010539                          
-06-26-06 17:19 rlrevell       Note Added: 0010550                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
+06-09-06 06:51 Raymond        Note Added: 0010132                          
+06-14-06 15:01 Raymond        Note Deleted: 0010132                        
+06-14-06 15:13 Raymond        Note Deleted: 0010072                        
+06-24-06 04:14 Raymond        Note Added: 0010465                          
+06-24-06 21:51 bobcat98       Note Added: 0010489                          
+06-25-06 02:04 Raymond        Note Added: 0010497                          
+06-25-06 07:44 bobcat98       Note Added: 0010503                          
+06-25-06 08:18 Raymond        Note Added: 0010504                          
+06-25-06 18:13 bobcat98       Note Added: 0010517                          
+06-26-06 02:10 Raymond        Note Added: 0010521                          
+06-26-06 04:10 bobcat98       Note Added: 0010523                          
+06-26-06 17:36 Raymond        Note Added: 0010551                          
 ======================================================================
 
 
