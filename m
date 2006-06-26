@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Mon, 26 Jun 2006 16:02:02 +0200
-Message-ID: <f6b72690ea80102562a561bd4950621f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Mon, 26 Jun 2006 16:07:10 +0200
+Message-ID: <d808bb8d16e7a12a142958766a7cdc1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F11018D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E33551A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:02:02 +0200 (MEST)
+	Mon, 26 Jun 2006 16:07:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,72 +26,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
 ======================================================================
-Reported By:                el
-Assigned To:                tiwai
+Reported By:                rshura
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2202
-Category:                   PCI - hda-intel
+Issue ID:                   2229
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
 ======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-26-2006 16:02 CEST
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              06-26-2006 16:07 CEST
 ======================================================================
-Summary:                    model is not autodetected correctly
+Summary:                    No stereo: sright channel is dead
 Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
 
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
-
-Documentation states, that model=auto is the default, but as you can see
-it is not
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- el - 06-26-06 11:37 
+ rshura - 06-26-06 07:15 
 ----------------------------------------------------------------------
-Is there any other data I should provide?
+I think I ruled out the broken connector on the mobo: I have a front sound
+connectors on my case and the cable connecting it to the motherboard. With
+using the case-based front connector, I also hear only the left channel;
+the right one is completely dead.
+
+So it must be either the driver problem, or the whole right channel
+circuitry on the mobo is seriously fried. If there is a way for me to tell
+which is the case, please let me know.
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:02 
+ tiwai - 06-26-06 16:07 
 ----------------------------------------------------------------------
-/proc/asound/card0/codec#* files and the file created via "alsactl -f
-somefile store".
+The status looks fine, so likely a hardware problem.
+To be sure, choose "Mix" as the capture source, turn on "Capture Switch",
+and raise "Capture Volume".  Then you can record the signal being played
+back.
 
-First of all, try different model options for the mathing codec chip as
-described in ALSA-Configuration.txt.
+For example, run "arecord -fdat -vv foo.wav" while playing back a stereo
+file.  Then open the recorded WAV file via an audio graphic editor to see
+whether both stereo signals are recorded.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-06-14-06 17:20 el             Note Added: 0010215                          
-06-26-06 11:37 el             Note Added: 0010526                          
-06-26-06 16:02 tiwai          Note Added: 0010539                          
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
+06-25-06 05:49 rshura         File Added: asound.cards                     
+06-25-06 05:50 rshura         File Added: ac97#0-0                         
+06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
+06-25-06 05:50 rshura         File Added: amixer                           
+06-25-06 05:51 rshura         Note Added: 0010501                          
+06-26-06 07:15 rshura         Note Added: 0010525                          
+06-26-06 16:07 tiwai          Note Added: 0010540                          
 ======================================================================
 
 
