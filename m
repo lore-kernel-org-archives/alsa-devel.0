@@ -1,17 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002226]: Intel 82801G / ASUSTeK 1153 -
-	driver snd_hda_loads but no sound and freeze when doing
-	alsasound restart
-Date: Mon, 26 Jun 2006 16:10:19 +0200
-Message-ID: <2b8a398a0ad3a83b763e68b332461401@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
+Date: Mon, 26 Jun 2006 16:11:34 +0200
+Message-ID: <07037ea790fcc19b2e8ef6fd831caa08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 877841A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23E291A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jun 2006 16:10:19 +0200 (MEST)
+	Mon, 26 Jun 2006 16:11:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,263 +23,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2226> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
 ======================================================================
-Reported By:                bgrieder
+Reported By:                mafm
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2226
-Category:                   PCI - hda-intel
+Issue ID:                   2217
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2133_FC5smp #1 SMP
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-23-2006 07:58 CEST
-Last Modified:              06-26-2006 16:10 CEST
+Date Submitted:             06-18-2006 05:06 CEST
+Last Modified:              06-26-2006 16:11 CEST
 ======================================================================
-Summary:                    Intel 82801G / ASUSTeK 1153 - driver snd_hda_loads
-but no sound and freeze when doing alsasound restart
+Summary:                    Problems with ASUS A6Km
 Description: 
-Hi,
+I have the same problems described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
+opening a new report because I can't find a way to add a comment there.
 
-I upgraded to alsa-driver 1.0.11 but to no avail.
-
-My card is running on an ASUS A8JM laptop
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Aud io Controller (rev 02)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 1153
-        Flags: bus master, fast devsel, latency 0, IRQ 23
-        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable -
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-
-Th driver was compiled with debug flags; a modprobe snd_hda_intel produces
-the following entry in /var/log/messages
-Jun 23 07:55:15 asusbg kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI
-21 (level, low) -> IRQ 23
-Jun 23 07:55:15 asusbg kernel: ALSA
-/tmp/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:654:
-codec_mask = 0x3
-Jun 23 07:55:17 asusbg kernel: ALSA
-/tmp/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:516:
-hda_intel: azx_get_response timeout, switching to single_cmd mode..
-
-Issuing /etc/init.d/alsasound restart will freeze the machine.
-No signififcant entry in /var/log/messages
-
-Let me know if you need additional details
-Many Thanks and Best Regards
-
-
+I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
+appear to have any effect at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- bgrieder - 06-25-06 16:42 
+ eNTi - 06-25-06 11:32 
 ----------------------------------------------------------------------
-1.0.12RC1 also dumps
+i obviously was mistaken. i must have looked in the wrong place???
 
-asusbg kernel: ------------[ cut here ]------------
+after i applied the patch, it worked again, but i could have sworn, that
+i've seen the patch applied before. sorry for the confusion.
 
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: kernel BUG at include/linux/list.h:58!
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: invalid opcode: 0000 [#1]
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: SMP
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: CPU:    1
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: EIP is at snd_seq_delete_all_ports+0x57/0x167 [snd_seq]
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: eax: 00000044   ebx: f76c1a48   ecx: c06d48b0   edx:
-00200092
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: esi: f76c1a48   edi: f70d0b3c   ebp: f70d0ac0   esp:
-e6c67ef8
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: ds: 007b   es: 007b   ss: 0068
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: Process rmmod (pid: 2950, threadinfo=e6c67000
-task=f7e8c430)
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: Stack: f897f790 f76c1a48 f70d0b3c f70d0b54 f70d0b44
-00200286 22222222 22222222
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:        f70d0ac0 00000020 00000000 e6c67000 f8979236
-f70d0ac0 f897930a f887b448
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:        c06d6600 c0616447 e6c67f9c c043e996 f70d0ac0
-f897b7c3 f89bb600 f89b3a2c
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: Call Trace:
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <f8979236> seq_free_client1+0x8/0x90 [snd_seq]  <f897930a>
-seq_free_client+0x4c/0x98 [snd_seq]
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <f887b448> snd_seq_device_unregister_driver+0xcc/0xd5
-[snd_seq_device]  <c0616447> __mutex_unlock_slowpath+0x1e5/0x1ec
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <c043e996> __try_stop_module+0x0/0x44  <f897b7c3>
-snd_seq_delete_kernel_client+0x1a/0x2c [snd_seq]
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <f89b3a2c> snd_seq_oss_delete_client+0xe/0x16
-[snd_seq_oss]  <f89b6eaf> alsa_seq_oss_exit+0xf/0x19 [snd_seq_oss]
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <c043eba7> sys_delete_module+0x192/0x1bb  <c045c044>
-do_munmap+0x196/0x1af
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel:  <c0403dd5> sysenter_past_esp+0x56/0x79
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: Code: 24 14 39 7d 7c 74 67 8b 5d 7c 8b b5 80 00 00 00 8b 43
-04 39 f0 74 1c 89 74 24 04 89 44 24 08 c7 04 24 90 f7 97 f8 e8 34 75 aa c7
-<0f> 0b 3a 00 7b f7 97 f8 8b 06 39 d8 74 1c 89 5c 24 04 89 44 24
-
-Message from syslogd@asusbg at Sun Jun 25 16:40:39 2006 ...
-asusbg kernel: EIP: [<f897e58e>] snd_seq_delete_all_ports+0x57/0x167
-[snd_seq] SS:ESP 0068:e6c67ef8
-Jun 25 16:40:39 asusbg kernel: List corruption. next->prev should be
-f76c1a48, but was f70d0b3c
-Jun 25 16:40:39 asusbg kernel: ------------[ cut here ]------------
-Jun 25 16:40:39 asusbg kernel: kernel BUG at include/linux/list.h:58!
-Jun 25 16:40:39 asusbg kernel: invalid opcode: 0000 [#1]
-Jun 25 16:40:39 asusbg kernel: SMP
-Jun 25 16:40:39 asusbg kernel: last sysfs file:
-/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/cmd
-Jun 25 16:40:39 asusbg kernel: Modules linked in: autofs4 hidp rfcomm
-l2cap sunrpc ip_conntrack_netbios_ns ipt_REJECT xt_state ip_conntrack
-nfnetlink xt_tcpudp iptable_filter ip_tables x_tables nls_utf8 ntfs(U)
-dm_mirror dm_mod video button battery asus_acpi ac ipv6 lp parport_pc
-parport hci_usb bluetooth ohci1394 ieee1394 snd_seq_oss(U) sdhci mmc_core
-ipw3945(U) snd_seq_midi_event(U) snd_seq(U) joydev nvidia(U)
-snd_seq_device(U) r1000(U) ehci_hcd snd_pcm_oss(U) snd_mixer_oss(U)
-i2c_core snd_pcm(U) ieee80211(U) ieee80211_crypt(U) uhci_hcd snd_timer(U)
-snd(U) soundcore snd_page_alloc(U) ext3 jbd
-Jun 25 16:40:39 asusbg kernel: CPU:    1
-Jun 25 16:40:39 asusbg kernel: EIP:    0060:[<f897e58e>]    Tainted: PF   
- VLI
-Jun 25 16:40:39 asusbg kernel: EFLAGS: 00210096   (2.6.17-1.2139_FC5smp
-#1)
-Jun 25 16:40:39 asusbg kernel: EIP is at
-snd_seq_delete_all_ports+0x57/0x167 [snd_seq]
-Jun 25 16:40:39 asusbg kernel: eax: 00000044   ebx: f76c1a48   ecx:
-c06d48b0   edx: 00200092
-Jun 25 16:40:39 asusbg kernel: esi: f76c1a48   edi: f70d0b3c   ebp:
-f70d0ac0   esp: e6c67ef8
-Jun 25 16:40:39 asusbg kernel: ds: 007b   es: 007b   ss: 0068
-Jun 25 16:40:39 asusbg kernel: Process rmmod (pid: 2950,
-threadinfo=e6c67000 task=f7e8c430)
-Jun 25 16:40:39 asusbg kernel: Stack: f897f790 f76c1a48 f70d0b3c f70d0b54
-f70d0b44 00200286 22222222 22222222
-Jun 25 16:40:39 asusbg kernel:        f70d0ac0 00000020 00000000 e6c67000
-f8979236 f70d0ac0 f897930a f887b448
-Jun 25 16:40:39 asusbg kernel:        c06d6600 c0616447 e6c67f9c c043e996
-f70d0ac0 f897b7c3 f89bb600 f89b3a2c
-Jun 25 16:40:39 asusbg kernel: Call Trace:
-Jun 25 16:40:39 asusbg kernel:  <f8979236> seq_free_client1+0x8/0x90
-[snd_seq]  <f897930a> seq_free_client+0x4c/0x98 [snd_seq]
-Jun 25 16:40:39 asusbg kernel:  <f887b448>
-snd_seq_device_unregister_driver+0xcc/0xd5 [snd_seq_device]  <c0616447>
-__mutex_unlock_slowpath+0x1e5/0x1ecJun 25 16:40:39 asusbg kernel: 
-<c043e996> __try_stop_module+0x0/0x44  <f897b7c3>
-snd_seq_delete_kernel_client+0x1a/0x2c [snd_seq]
-Jun 25 16:40:39 asusbg kernel:  <f89b3a2c>
-snd_seq_oss_delete_client+0xe/0x16 [snd_seq_oss]  <f89b6eaf>
-alsa_seq_oss_exit+0xf/0x19 [snd_seq_oss]
-Jun 25 16:40:39 asusbg kernel:  <c043eba7> sys_delete_module+0x192/0x1bb 
-<c045c044> do_munmap+0x196/0x1af
-Jun 25 16:40:39 asusbg kernel:  <c0403dd5> sysenter_past_esp+0x56/0x79
-Jun 25 16:40:39 asusbg kernel: Code: 24 14 39 7d 7c 74 67 8b 5d 7c 8b b5
-80 00 00 00 8b 43 04 39 f0 74 1c 89 74 24 04 89 44 24 08 c7 04 24 90 f7 97
-f8 e8 34 75 aa c7 <0f> 0b 3a 00 7b f7 97 f8 8b 06 39 d8 74 1c 89 5c 24 04
-89 44 24
-Jun 25 16:40:39 asusbg kernel: EIP: [<f897e58e>]
-snd_seq_delete_all_ports+0x57/0x167 [snd_seq] SS:ESP 0068:e6c67ef8
-Jun 25 16:40:39 asusbg kernel:  <3>BUG: sleeping function called from
-invalid context at include/linux/rwsem.h:43
-Jun 25 16:40:39 asusbg kernel: in_atomic():0, irqs_disabled():1
-Jun 25 16:40:39 asusbg kernel:  <c0430972>
-blocking_notifier_call_chain+0x18/0x4b  <c0427d45> do_exit+0x19/0x795
-Jun 25 16:40:39 asusbg kernel:  <c053b868> do_unblank_screen+0x2a/0x127 
-<c04054cb> die+0x2a5/0x2ca
-Jun 25 16:40:39 asusbg kernel:  <c0405b58> do_invalid_op+0x0/0xab 
-<c0405bfa> do_invalid_op+0xa2/0xab
-Jun 25 16:40:39 asusbg kernel:  <f897e58e>
-snd_seq_delete_all_ports+0x57/0x167 [snd_seq]  <c0614f64>
-schedule+0xb00/0xb69
-Jun 25 16:40:39 asusbg kernel:  <c0446671> do_stop+0x0/0x124  <c0439aef>
-debug_mutex_add_waiter+0x97/0xa9
-Jun 25 16:40:39 asusbg kernel:  <f897e552>
-snd_seq_delete_all_ports+0x1b/0x167 [snd_seq]  <c04049d7>
-error_code+0x4f/0x54
-Jun 25 16:40:39 asusbg kernel:  <f897e58e>
-snd_seq_delete_all_ports+0x57/0x167 [snd_seq]  <f8979236>
-seq_free_client1+0x8/0x90 [snd_seq]
-Jun 25 16:40:39 asusbg kernel:  <f897930a> seq_free_client+0x4c/0x98
-[snd_seq]  <f887b448> snd_seq_device_unregister_driver+0xcc/0xd5
-[snd_seq_device]Jun 25 16:40:39 asusbg kernel:  <c0616447>
-__mutex_unlock_slowpath+0x1e5/0x1ec  <c043e996>
-__try_stop_module+0x0/0x44
-Jun 25 16:40:39 asusbg kernel:  <f897b7c3>
-snd_seq_delete_kernel_client+0x1a/0x2c [snd_seq]  <f89b3a2c>
-snd_seq_oss_delete_client+0xe/0x16 [snd_seq_oss]
-Jun 25 16:40:39 asusbg kernel:  <f89b6eaf> alsa_seq_oss_exit+0xf/0x19
-[snd_seq_oss]  <c043eba7> sys_delete_module+0x192/0x1bb
-Jun 25 16:40:39 asusbg kernel:  <c045c044> do_munmap+0x196/0x1af 
-<c0403dd5> sysenter_past_esp+0x56/0x79
-Jun 25 16:40:39 asusbg kernel: BUG: rmmod/2950, lock held at task exit
-time!
-Jun 25 16:40:39 asusbg kernel:  [f8986300] {register_mutex}
-Jun 25 16:40:39 asusbg kernel: .. held by:             rmmod: 2950
-[f7e8c430, 125]
-Jun 25 16:40:39 asusbg kernel: ... acquired at:              
-seq_free_client+0x10/0x98 [snd_seq]
-Jun 25 16:41:01 asusbg ntpd[2175]: kernel time sync enabled 0001
+then only 3 activated levers in alsamixer, are Master, PCM and External
+Amplifier.
 
 ----------------------------------------------------------------------
- tiwai - 06-26-06 16:10 
+ tiwai - 06-26-06 16:11 
 ----------------------------------------------------------------------
-It's a bug of FC5 kernel.
+OK, then let's close this bug finally.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-06 07:58 bgrieder       New Issue                                    
-06-23-06 07:58 bgrieder       Distribution              => Fedora Core 5   
-06-23-06 07:58 bgrieder       Kernel Version            => 2.6.16-1.2133_FC5smp
-#1 SMP
-06-25-06 16:11 bgrieder       Note Added: 0010513                          
-06-25-06 16:42 bgrieder       Note Added: 0010514                          
-06-26-06 16:10 tiwai          Note Added: 0010542                          
+06-18-06 05:06 mafm           New Issue                                    
+06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
+06-19-06 15:49 mafm           Issue Monitored: mafm                        
+06-19-06 15:50 mafm           Note Added: 0010315                          
+06-20-06 19:46 tiwai          Note Added: 0010345                          
+06-20-06 20:16 mafm           Note Added: 0010354                          
+06-21-06 21:37 eNTi           Note Added: 0010405                          
+06-21-06 22:24 rlrevell       Note Added: 0010406                          
+06-21-06 22:33 mafm           Note Added: 0010407                          
+06-21-06 22:48 eNTi           Note Added: 0010408                          
+06-22-06 00:10 mafm           Note Added: 0010410                          
+06-23-06 15:27 mafm           Note Added: 0010451                          
+06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
+06-23-06 16:23 mafm           Note Added: 0010454                          
+06-24-06 09:12 eNTi           Note Added: 0010467                          
+06-24-06 10:26 Raymond        Note Added: 0010470                          
+06-24-06 10:30 Raymond        Note Edited: 0010470                         
+06-24-06 14:32 mafm           Note Added: 0010473                          
+06-24-06 15:17 hongqn         Issue Monitored: hongqn                      
+06-25-06 11:32 eNTi           Note Added: 0010505                          
+06-26-06 16:11 tiwai          Status                   new => resolved     
+06-26-06 16:11 tiwai          Resolution               open => fixed       
+06-26-06 16:11 tiwai          Assigned To               => tiwai           
+06-26-06 16:11 tiwai          Note Added: 0010543                          
 ======================================================================
 
 
