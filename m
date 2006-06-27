@@ -1,14 +1,16 @@
-From: Dave Jones <davej@redhat.com>
-Subject: Re: list corruption on removal of snd_seq_dummy
-Date: Mon, 26 Jun 2006 23:27:38 -0400
-Message-ID: <20060627032738.GA26575@redhat.com>
-References: <20060623031526.GB19461@redhat.com> <s5hzmg49mi5.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Tue, 27 Jun 2006 05:51:06 +0200
+Message-ID: <2a803288e2a61d259f21c12599c10491@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hzmg49mi5.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFFA1265
+	for <alsa-devel@alsa-project.org>;
+	Tue, 27 Jun 2006 05:51:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,39 +20,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Linux Kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 23, 2006 at 12:47:46PM +0200, Takashi Iwai wrote:
- 
- > > The code in question is doing..
- > > 
- > >         __list_add(&deleted_list,
- > >                client->ports_list_head.prev,
- > >                client->ports_list_head.next);
- > > 
- > > which looks fishy, as those two elements aren't going to be consecutive,
- > > as __list_add expects.
- > 
- > I think the code behaves correctly but probably misusing __list_add().
- > It movies the whole entries from an existing list_head A
- > (clients->ports_list_head) to a new list_head B (deleted_list).
- > The above is exapnded:
- > 
- > 	A->next->prev = B;
- > 	B->next = A->next;
- > 	B->prev = A->prev;
- > 	A->prev->next = B;
- > 
- > Any better way to achieve it using standard macros?
 
-Why can't you just list_move() the elements ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
+======================================================================
+Reported By:                rshura
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2229
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
+======================================================================
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              06-27-2006 05:51 CEST
+======================================================================
+Summary:                    No stereo: sright channel is dead
+Description: 
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
-		Dave
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
 
--- 
-http://www.codemonkey.org.uk
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-26-06 16:07 
+----------------------------------------------------------------------
+The status looks fine, so likely a hardware problem.
+To be sure, choose "Mix" as the capture source, turn on "Capture Switch",
+and raise "Capture Volume".  Then you can record the signal being played
+back.
+
+For example, run "arecord -fdat -vv foo.wav" while playing back a stereo
+file.  Then open the recorded WAV file via an audio graphic editor to see
+whether both stereo signals are recorded.
+
+----------------------------------------------------------------------
+ rshura - 06-27-06 05:51 
+----------------------------------------------------------------------
+Did exactly that. The recorded file shows both channels.
+Do does this mean the hardware problem?
+
+I am not sure which scenario this confirms, can you please let me know?
+Thanks in advance!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
+06-25-06 05:49 rshura         File Added: asound.cards                     
+06-25-06 05:50 rshura         File Added: ac97#0-0                         
+06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
+06-25-06 05:50 rshura         File Added: amixer                           
+06-25-06 05:51 rshura         Note Added: 0010501                          
+06-26-06 07:15 rshura         Note Added: 0010525                          
+06-26-06 16:07 tiwai          Note Added: 0010540                          
+06-27-06 05:51 rshura         Note Added: 0010565                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
