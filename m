@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002233]: No sound on speakers,
-	low volume on the headphones, Samsung X60 Chane
-Date: Tue, 27 Jun 2006 12:12:19 +0200
-Message-ID: <7e96e28c821137ef18af5c9e08966337@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002205]: Everything seems ok,
+	but there's no sound
+Date: Tue, 27 Jun 2006 12:16:36 +0200
+Message-ID: <cb3e3d2d751e3ef19efc2e2924082d2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26602267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C36AE156
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:12:20 +0200 (MEST)
+	Tue, 27 Jun 2006 12:16:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,69 +26,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
 ======================================================================
-Reported By:                max
+Reported By:                rematch
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2233
+Issue ID:                   2205
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               suse 10.1
-Kernel Version:             2.6.16.13-4
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-26-2006 12:17 CEST
-Last Modified:              06-27-2006 12:12 CEST
+Date Submitted:             06-13-2006 11:31 CEST
+Last Modified:              06-27-2006 12:16 CEST
 ======================================================================
-Summary:                    No sound on speakers, low volume on the headphones,
-Samsung X60 Chane
+Summary:                    Everything seems ok, but there's no sound
 Description: 
-installation ok. (82801G)
-but
-no sound on speakers 
-low volume on the headphones and sometimes a verry high frequenz...
-
-thanks for help
+After loading snd-hda-intel modul, there's no sound on my acer travelmate
+3012 laptop. 
+OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- max - 06-27-06 09:35 
+ rematch - 06-27-06 09:04 
 ----------------------------------------------------------------------
-in /proc/asound/card0/codec0 I find AD1986A
-and in yast you can use laptop-eapd (1 of 4 possibilities found in
-alsa-doc)
-
-thats it!
-
-thanks a lot
-
-you can close this track
+no answer? i'm sad.
 
 ----------------------------------------------------------------------
- tiwai - 06-27-06 12:12 
+ tiwai - 06-27-06 12:16 
 ----------------------------------------------------------------------
-Not yet to close.  Please provide the output of "lspci -nv" (only for class
-0403) so that your device will be set up correctly without extra module
-option.
+I'll commit a patch for ALC883 tomorrow to HG repo.  Then try it out.
+(See ALSA download page about HG.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 12:17 max            New Issue                                    
-06-26-06 12:17 max            Distribution              => suse 10.1       
-06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
-06-26-06 12:20 max            Note Added: 0010527                          
-06-26-06 12:21 max            Note Added: 0010528                          
-06-26-06 12:23 max            Note Added: 0010529                          
-06-26-06 12:24 max            Note Added: 0010530                          
-06-26-06 16:00 tiwai          Note Added: 0010538                          
-06-27-06 09:35 max            Note Added: 0010571                          
-06-27-06 12:12 tiwai          Note Added: 0010581                          
+06-13-06 11:31 rematch        New Issue                                    
+06-13-06 11:48 rematch        Issue Monitored: rematch                     
+06-27-06 09:04 rematch        Note Added: 0010570                          
+06-27-06 12:16 tiwai          Note Added: 0010583                          
 ======================================================================
 
 
