@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Tue, 27 Jun 2006 12:26:15 +0200
-Message-ID: <2bb6dd7c2f7a73051ae2df60848d2774@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002233]: No sound on speakers,
+	low volume on the headphones, Samsung X60 Chane
+Date: Tue, 27 Jun 2006 12:35:48 +0200
+Message-ID: <8f52202e159582b2466c1488b1f0c1c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 210FE267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF7CB267
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:26:16 +0200 (MEST)
+	Tue, 27 Jun 2006 12:35:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,109 +26,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
 ======================================================================
-Reported By:                el
+Reported By:                max
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2202
+Issue ID:                   2233
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
+Distribution:               suse 10.1
+Kernel Version:             2.6.16.13-4
 ======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-27-2006 12:26 CEST
+Date Submitted:             06-26-2006 12:17 CEST
+Last Modified:              06-27-2006 12:35 CEST
 ======================================================================
-Summary:                    model is not autodetected correctly
+Summary:                    No sound on speakers, low volume on the headphones,
+Samsung X60 Chane
 Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+installation ok. (82801G)
+but
+no sound on speakers 
+low volume on the headphones and sometimes a verry high frequenz...
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
+thanks for help
 
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
-
-Documentation states, that model=auto is the default, but as you can see
-it is not
 ======================================================================
 
 ----------------------------------------------------------------------
- el - 06-27-06 01:13 
+ tiwai - 06-27-06 12:12 
 ----------------------------------------------------------------------
-Thank you for your reply. I have uploaded the requested files.
-
-The capture levels are set to 0 because all mixer levels seem to get set
-to 0 whenever I unload the module in order to reload it with a different
-module-option.
-
-When I set the first capture level to 100% and select front-mic as source
-the microphone works when using these models:
-auto
-6stack
-6stack-digout
-lg
-lg-lw
-
-I have not been able to get any sound except occasional static noise from
-the capture channels when using:
-default (no model option)
-3stack
-3stack-digout
-5stack
-5stack-digout
-w810
-z71v
-asus
-uniwill
-F1734
-(I can get playback to work with all models)
+Not yet to close.  Please provide the output of "lspci -nv" (only for class
+0403) so that your device will be set up correctly without extra module
+option.
 
 ----------------------------------------------------------------------
- tiwai - 06-27-06 12:26 
+ max - 06-27-06 12:35 
 ----------------------------------------------------------------------
-OK, then let's get back to the beginning.
-
-Without any model option, the recording from mic works when you raise
-"Capture Volume" and choose "Front Mic" as the capture source?
+00:1b.0 Class 0403: 8086:27d8 (rev 02)
+	Subsystem: 144d:c023
+	Flags: bus master, fast devsel, latency 0, IRQ 74
+	Memory at d4a40000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+	Capabilities: [70] Express Unknown type IRQ 0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-06-14-06 17:20 el             Note Added: 0010215                          
-06-26-06 11:37 el             Note Added: 0010526                          
-06-26-06 16:02 tiwai          Note Added: 0010539                          
-06-26-06 17:19 rlrevell       Note Added: 0010550                          
-06-27-06 00:48 el             File Added: codec#0 (default)                    
-06-27-06 00:49 el             File Added: codec#0 (model=auto)                  
- 
-06-27-06 00:49 el             File Added: alsactl (default)                    
-06-27-06 00:49 el             File Added: alsactl (model=auto)                  
- 
-06-27-06 00:50 el             File Added: codec#1 (default)                    
-06-27-06 00:50 el             File Added: codec#1 (model=auto)                  
- 
-06-27-06 01:13 el             Note Added: 0010563                          
-06-27-06 12:26 tiwai          Note Added: 0010585                          
+06-26-06 12:17 max            New Issue                                    
+06-26-06 12:17 max            Distribution              => suse 10.1       
+06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
+06-26-06 12:20 max            Note Added: 0010527                          
+06-26-06 12:21 max            Note Added: 0010528                          
+06-26-06 12:23 max            Note Added: 0010529                          
+06-26-06 12:24 max            Note Added: 0010530                          
+06-26-06 16:00 tiwai          Note Added: 0010538                          
+06-27-06 09:35 max            Note Added: 0010571                          
+06-27-06 12:12 tiwai          Note Added: 0010581                          
+06-27-06 12:35 max            Note Added: 0010586                          
 ======================================================================
 
 
