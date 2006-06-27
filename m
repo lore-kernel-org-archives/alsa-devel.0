@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002235]: ALSA dependent applications
-	segfault with 1.0.12rc1!
-Date: Tue, 27 Jun 2006 09:29:32 +0200
-Message-ID: <bc70a70736e478772abb97bedbe57b65@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002233]: No sound on speakers,
+	low volume on the headphones, Samsung X60 Chane
+Date: Tue, 27 Jun 2006 09:35:23 +0200
+Message-ID: <ba620ed23cc2e75efc2965073ba590f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 308F712B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64973268
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 09:29:33 +0200 (MEST)
+	Tue, 27 Jun 2006 09:35:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,47 +24,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2235> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
 ======================================================================
-Reported By:                quetzyg
+Reported By:                max
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2235
+Issue ID:                   2233
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.17.1
+Distribution:               suse 10.1
+Kernel Version:             2.6.16.13-4
 ======================================================================
-Date Submitted:             06-27-2006 09:29 CEST
-Last Modified:              06-27-2006 09:29 CEST
+Date Submitted:             06-26-2006 12:17 CEST
+Last Modified:              06-27-2006 09:35 CEST
 ======================================================================
-Summary:                    ALSA dependent applications segfault with 1.0.12rc1!
+Summary:                    No sound on speakers, low volume on the headphones,
+Samsung X60 Chane
 Description: 
-All applications that use ALSA for sound output, segfault after initiated.
-If I use OSS emulation instead of ALSA (on applications that support both,
-of course), the applications run flawlessly.
+installation ok. (82801G)
+but
+no sound on speakers 
+low volume on the headphones and sometimes a verry high frequenz...
 
-Something broke in this new version...
+thanks for help
 
-Only OSS compat. lib. is 1.0.11, all the rest (driver, lib and utils) are
-1.0.12rc1.
-
-Cheers,
-Quetzy Garcia
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-26-06 16:00 
+----------------------------------------------------------------------
+The helpful information is: /proc/asound/card0/codec#* files and a file
+generated via "alsactl -f somefile store".
+
+Try different model options described in ALSA-Configuration.txt.  For
+example, if the codec is AD1986A, try model=laptop-eapd.
+
+----------------------------------------------------------------------
+ max - 06-27-06 09:35 
+----------------------------------------------------------------------
+in /proc/asound/card0/codec0 I find AD1986A
+and in yast you can use laptop-eapd (1 of 4 possibilities found in
+alsa-doc)
+
+thats it!
+
+thanks a lot
+
+you can close this track
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-06 09:29 quetzyg        New Issue                                    
-06-27-06 09:29 quetzyg        Distribution              => Slackware       
-06-27-06 09:29 quetzyg        Kernel Version            => 2.6.17.1        
+06-26-06 12:17 max            New Issue                                    
+06-26-06 12:17 max            Distribution              => suse 10.1       
+06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
+06-26-06 12:20 max            Note Added: 0010527                          
+06-26-06 12:21 max            Note Added: 0010528                          
+06-26-06 12:23 max            Note Added: 0010529                          
+06-26-06 12:24 max            Note Added: 0010530                          
+06-26-06 16:00 tiwai          Note Added: 0010538                          
+06-27-06 09:35 max            Note Added: 0010571                          
 ======================================================================
 
 
