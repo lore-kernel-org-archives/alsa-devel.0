@@ -1,14 +1,19 @@
-From: Matthias Koenig <list@phasorlab.de>
-Subject: Re: asoundlib.h: No such file or directory
-Date: Tue, 27 Jun 2006 15:44:13 +0200
-Message-ID: <87ejxalnma.fsf@zebra.localdomain>
-References: <6474b3950606270603n3577b1d6l48eb1974c78863e2@mail.gmail.com>
+From: Andreas Mohr <andim2@users.sourceforge.net>
+Subject: Re: [PATCH] azt3328 fatal deadlock fix (very rare,
+	though)
+Date: Tue, 27 Jun 2006 15:45:34 +0200
+Message-ID: <20060627134534.GA26679@rhlx01.fht-esslingen.de>
+References: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
+	<s5hk67aer2z.wl%tiwai@suse.de>
+	<20060627112823.GA30790@rhlx01.fht-esslingen.de>
+	<s5h3bdqwy03.wl%tiwai@suse.de>
+Reply-To: andi@lisas.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <6474b3950606270603n3577b1d6l48eb1974c78863e2@mail.gmail.com>
-	(techie tone's message of "Tue, 27 Jun 2006 18:33:28 +0530")
+Content-Disposition: inline
+In-Reply-To: <s5h3bdqwy03.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,24 +23,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: techie tone <techietone@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, andi@lisas.de
 List-Id: alsa-devel@alsa-project.org
 
-"techie tone" <techietone@gmail.com> writes:
+Hi,
 
-> While compiling alsa applications, I'm getting foll' error:
-> asoundlib.h: No such file or directory
->
-> I could not locate this file on my linux system.
+On Tue, Jun 27, 2006 at 03:04:28PM +0200, Takashi Iwai wrote:
+> Glad to hear that there is no real bug ;)
 
-Header should be in /usr/include/alsa/
-Perhaps you don't have installed the corresponding developer
-package. E.g. on a debian system it is called
-libasound2-dev
-On other distros the name might be different.
+Yeah.
 
-Matthias
+You seem to be a frightening bit too sure about that, though... ;)
+
+> > Hmm, or is my driver broken on IRQ sharing? Will investigate a bit more...
+> 
+> I don't see problematic codes there at a quick glance.
+
+OK.
+
+> BTW, do you still keep CONFIG_EXPERIMENTAL for AZT3328 driver?
+> If it works for you well, we can remove that flag since there is no
+> many bug reports.
+
+Been thinking about that before (since the driver is almost as
+feature-complete as it can get with an entirely undocumented card),
+but I wanted to run the Wine audio test suite on it directly before
+removing the flag (since that could easily reveal some issues due to
+much more varied sound traffic), but I haven't managed to do that yet.
+
+Oh, and needless to say it's a *very good* idea in general to run the
+Wine test suite on all sorts of ALSA drivers...
+
+Andreas Mohr
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
