@@ -1,16 +1,19 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: snd-aoa: headphone detection wonky on PowerBook5, 4
-Date: Mon, 26 Jun 2006 17:33:50 +0200
-Message-ID: <1151336030.7608.149.camel@localhost>
-References: <87lkrom70h.fsf@briny.internal.ondioline.org>
+Subject: Re: [RFC 01/12] snd-powermac: no longer handle
+	anything with a	layout-id property
+Date: Tue, 27 Jun 2006 19:30:13 +0200
+Message-ID: <1151429413.597.10.camel@localhost>
+References: <20060607130909.584205000@sipsolutions.net>
+	<20060607130910.156412000@sipsolutions.net>
+	<jey7vjiqwv.fsf@sykes.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1124580858=="
+Content-Type: multipart/mixed; boundary="===============2003363029=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2706F26F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AFF222E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 19:23:47 +0200 (MEST)
-In-Reply-To: <87lkrom70h.fsf@briny.internal.ondioline.org>
+	Tue, 27 Jun 2006 19:30:23 +0200 (MEST)
+In-Reply-To: <jey7vjiqwv.fsf@sykes.suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,57 +23,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Paul Collins <paul@briny.ondioline.org>
-Cc: alsa-devel@alsa-project.org
+To: Andreas Schwab <schwab@suse.de>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, netstar@gatheringofgray.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1124580858==
+--===============2003363029==
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="=-UPaCblg4R4//oDt2xTFk"
+	boundary="=-ROmvXrXBix9ymppYOuul"
 
 
---=-UPaCblg4R4//oDt2xTFk
+--=-ROmvXrXBix9ymppYOuul
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2006-06-23 at 21:43 +1000, Paul Collins wrote:
-> Where "wonky" means: only unplugging is detected, not plugging.  I'm
-> not sure why I didn't spot this earlier.=20
+On Mon, 2006-06-26 at 22:49 +0200, Andreas Schwab wrote:
 
-Actually, come to think of it, I know why you didn't. You probably
-loaded my drivers after having unloaded snd-powermac and the hw state
-was still set to dual edge.
+> Can we get snd-powermac back as long as snd-aoa is lacking all those
+> features from snd-powermac?
+
+I'll be fixing it next week after an exam on Friday, or if I don't go to
+Nuremburg next week (4h hacking on train :) ) then the week after.
+
+Until then, you can just revert that patch locally.
 
 johannes
 
---=-UPaCblg4R4//oDt2xTFk
+--=-ROmvXrXBix9ymppYOuul
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIVAwUARJ/+XKVg1VMiehFYAQJNiBAAqRxDyasnxJMnPJ0BjlY2gBNKY9hiVLCB
-d+8gjJrCMAhC3NAq3a//jtpsVoStdqQu0JqAyUf/4zrNvybn0Xh+W83a4WB5EvCb
-R625jgtZhUjnMDXgNzgScRTVDTMS+dQMQ8A75SKvELtrNl3DLnJJzFMYuZOT5gXV
-pW52ORMCG+5R2H3X6KTvDKiCkfAVMy7zinnxPW87SWBcbKccwF28PdJuTt6Cm2M/
-NCae5ockFTmPhp54ikdCli368YJ0Z55B/M8XI/N6GtlB3+FwrC0dL/0X8coZlXgS
-H07AsQ8CEGZMrDoKbHzsfqyMyfcGKELatNrLMAcwBMTNEUR6dR466NnUYPh3ltT8
-B+BUxFSIWnR5Z7gK/t3JxWWC0IKOLxzgVJMWoNQclhR3jq3xSx2Xva0tFtE/rGBi
-kJyJ9fPzRmrFFwFgIaxtl5z7olGvY1Z+iS5tR31WODuZUzyAGwq2yKl1/VuzbBQt
-TeGuG/0i5YVy5PhWEnOz+Vb2W0BXKIUsJUxAqeiLumhwUQKfdhpGPfLbhzoZbetn
-KRBfgELj9wQDmXitaI6ffQLYaOPqtHEEYe157JTUtmKEpbVPbmOPLpxD8fDEda9v
-oh05Y5Kha6oSBKiRYIuqG/nEGTsdg52GSYUuMrqox92qifCl0biuh3V361ROESFO
-SNlCwTxwTj4=
-=qCMo
+iQIVAwUARKFrI6Vg1VMiehFYAQJxog/+Pr7qJ6PB6xahnCthT8ds+y+N1Qtdexro
+GXoqgNcNUsXezbjl0sskH8Ch81s7PeAi4qogmhG8qAz0TDJ3Y5SVRhmNyPC4UCJa
+lGvEDr6iDeviT0q1kF830rjKZA08BwKlyhpeJeZVFRoPitl9lCMjDYxIxpD8/GH0
+ayceReiVU4PTmB7qKsBQelnwTRspetYAmnSxMZpwdaz1gcy0lpNs7JkyFvtY1zvi
+it5nGv8/2HYCwyLSIwiPT9JXn62G6lQ1omT2mvfFm+k/RmMLTlIhM9DvumqE8Hm5
+PRAouyzdxKdLyja1QeidS9g2tAAlrSCL6e5qVyFBP5sC6x6aFjUbgpnHwvMEZURQ
+HqrAEP1y0QJY7Q7E5cXiFv945f3Syeyw5MlvfgX9XOrroOUhDS6K2wsiyjzcVSoi
+YmMfcx0s68UsH0D/Nm6NC4iJ4vIBHhLp5SJ+lFcZMmd0vaRtXoAx1kWa2AITutTI
+zWQOF73ffhOpL+k9oSTaOtD3uTnSPZNRXZ/Ac50ZcSsI7aNNo5MhDhJxHmGznOV3
+ZxUDxIr1zWpt7a83gEawhg0T8PpbJDOxrcjl8pvQNDOLVzGa4AZdxn2JNkgvEUKg
+YO1r2z4uQ3OPSaoaXPqv7AIWWqC3ikxmc9U9WjzJXA+fZLmyiVZIav0TpC2sm8rT
+Nwc/tNZGRog=
+=FxNC
 -----END PGP SIGNATURE-----
 
---=-UPaCblg4R4//oDt2xTFk--
+--=-ROmvXrXBix9ymppYOuul--
 
 
 
---===============1124580858==
+--===============2003363029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -80,7 +85,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1124580858==
+--===============2003363029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,4 +96,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1124580858==--
+--===============2003363029==--
