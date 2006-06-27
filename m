@@ -1,12 +1,14 @@
-From: Paulo Cordeiro <paulo@link3.com.br>
-Subject: (no subject)
-Date: Tue, 27 Jun 2006 00:26:22 -0300
-Message-ID: <200606270026.22884.paulo@link3.com.br>
+From: Dave Jones <davej@redhat.com>
+Subject: Re: list corruption on removal of snd_seq_dummy
+Date: Mon, 26 Jun 2006 23:27:38 -0400
+Message-ID: <20060627032738.GA26575@redhat.com>
+References: <20060623031526.GB19461@redhat.com> <s5hzmg49mi5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <s5hzmg49mi5.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,10 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jun 23, 2006 at 12:47:46PM +0200, Takashi Iwai wrote:
+ 
+ > > The code in question is doing..
+ > > 
+ > >         __list_add(&deleted_list,
+ > >                client->ports_list_head.prev,
+ > >                client->ports_list_head.next);
+ > > 
+ > > which looks fishy, as those two elements aren't going to be consecutive,
+ > > as __list_add expects.
+ > 
+ > I think the code behaves correctly but probably misusing __list_add().
+ > It movies the whole entries from an existing list_head A
+ > (clients->ports_list_head) to a new list_head B (deleted_list).
+ > The above is exapnded:
+ > 
+ > 	A->next->prev = B;
+ > 	B->next = A->next;
+ > 	B->prev = A->prev;
+ > 	A->prev->next = B;
+ > 
+ > Any better way to achieve it using standard macros?
 
+Why can't you just list_move() the elements ?
+
+		Dave
+
+-- 
+http://www.codemonkey.org.uk
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
