@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002235]: ALSA dependent applications
 	segfault with 1.0.12rc1!
-Date: Tue, 27 Jun 2006 10:44:52 +0200
-Message-ID: <561e6fc980c9d0a7556985dbc460a516@bugtrack.alsa-project.org>
+Date: Tue, 27 Jun 2006 11:03:01 +0200
+Message-ID: <99c5ce477eaf0654a1ebe5ad3f14e33c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 792E426A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC1B822E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 10:44:52 +0200 (MEST)
+	Tue, 27 Jun 2006 11:03:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware
 Kernel Version:             2.6.17.1
 ======================================================================
 Date Submitted:             06-27-2006 09:29 CEST
-Last Modified:              06-27-2006 10:44 CEST
+Last Modified:              06-27-2006 11:03 CEST
 ======================================================================
 Summary:                    ALSA dependent applications segfault with 1.0.12rc1!
 Description: 
@@ -58,14 +58,6 @@ Only OSS compat. lib. is 1.0.11, all the rest (driver, lib and utils) are
 Cheers,
 Quetzy Garcia
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-27-06 10:03 
-----------------------------------------------------------------------
-Please post the gdb backtrace of the seg fault as described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203
-
-using aplay -v .amsn/skins/Tux/sounds/online.wav
 
 ----------------------------------------------------------------------
  quetzyg - 06-27-06 10:44 
@@ -94,6 +86,14 @@ Program received signal SIGSEGV, Segmentation fault.
 /usr/lib/libasound.so.2
 (gdb)
 
+----------------------------------------------------------------------
+ Raymond - 06-27-06 11:03 
+----------------------------------------------------------------------
+Do you have your own customised dmix in .asoundrc ?
+
+There are some patches related to dmix just before the release of
+1.0.12rc1
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -108,6 +108,7 @@ Date Modified  Username       Field                    Change
 06-27-06 09:57 quetzyg        Note Added: 0010575                          
 06-27-06 10:03 Raymond        Note Added: 0010576                          
 06-27-06 10:44 quetzyg        Note Added: 0010577                          
+06-27-06 11:03 Raymond        Note Added: 0010578                          
 ======================================================================
 
 
