@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
-Date: Tue, 27 Jun 2006 12:52:18 +0200
-Message-ID: <a5e49e9f9fef86905d77bda2fedfde90@bugtrack.alsa-project.org>
+Date: Tue, 27 Jun 2006 12:59:46 +0200
+Message-ID: <0bb6e1457b8e5733e88f74725e97401f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88328267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 633D8267
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:52:18 +0200 (MEST)
+	Tue, 27 Jun 2006 12:59:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
 enough to reproduce this)
 ======================================================================
 Date Submitted:             06-11-2006 17:50 CEST
-Last Modified:              06-27-2006 12:52 CEST
+Last Modified:              06-27-2006 12:59 CEST
 ======================================================================
 Summary:                    PCM channel doesn't exist!
 Description: 
@@ -51,24 +51,16 @@ I seem to have lost the PCM channel from alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- quetzyg - 06-27-06 12:47 
-----------------------------------------------------------------------
-Well, HG changeset patch against 1.0.12rc1 fixed the PCM issue!
-PCM is back, but the volume is not affected at all. Being at 0% or 100%
-its the same.
-
-And, I used to have a Master channel as well.
-
-Any suggestions?
-
-Cheers,
-Quetzy Garcia
-
-----------------------------------------------------------------------
  tiwai - 06-27-06 12:52 
 ----------------------------------------------------------------------
 I guess you're using OSS apps?  OSS kernel emulation doesn't support the
 software volume control in alsa-lib.  Use aoss instead.
+
+----------------------------------------------------------------------
+ quetzyg - 06-27-06 12:59 
+----------------------------------------------------------------------
+No, all my apps are using ALSA (SoX, MPlayer, MOC, etc). I think that only
+the flash plugin for firefox uses OSS.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +72,7 @@ version >= 2.6.16 should be enough to reproduce this)
 06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
 06-27-06 12:47 quetzyg        Note Added: 0010587                          
 06-27-06 12:52 tiwai          Note Added: 0010589                          
+06-27-06 12:59 quetzyg        Note Added: 0010590                          
 ======================================================================
 
 
