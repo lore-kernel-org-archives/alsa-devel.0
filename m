@@ -1,15 +1,15 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] snd-aoa: support iMac G5 iSight
-Date: Tue, 27 Jun 2006 19:37:44 +0200
-Message-ID: <1151429864.597.20.camel@localhost>
+Subject: [PATCH] snd-aoa: enable dual-edge in GPIOs
+Date: Tue, 27 Jun 2006 19:39:22 +0200
+Message-ID: <1151429962.597.23.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8281A26F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9B3E26F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 19:37:49 +0200 (MEST)
+	Tue, 27 Jun 2006 19:39:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,47 +23,43 @@ To: ALSA development <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This properly adds support for the iMac G5 iSight.
+Apparently some firmware versions forget enabling the dual-edge bit,
+snd-powermac did that too and even OSX does sometimes. This should fix
+headphone plug detection on those machines.
 
 Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
 
---- a/fabrics/snd-aoa-fabric-layout.c
-+++ b/fabrics/snd-aoa-fabric-layout.c
-@@ -94,6 +94,7 @@ MODULE_ALIAS("sound-layout-82");
- MODULE_ALIAS("sound-layout-84");
- MODULE_ALIAS("sound-layout-86");
- MODULE_ALIAS("sound-layout-92");
-+MODULE_ALIAS("sound-layout-96");
+--- a/core/snd-aoa-gpio-feature.c
++++ b/core/snd-aoa-gpio-feature.c
+@@ -207,6 +207,17 @@ static void ftr_handle_notify(void *data
+ 	mutex_unlock(&notif->mutex);
+ }
  
- /* onyx with all but microphone connected */
- static struct codec_connection onyx_connections_nomic[] = {
-@@ -381,6 +382,13 @@ static struct layout layouts[] = {
- 		.connections = toonie_connections,
- 	  },
- 	},
-+	{
-+	  .layout_id = 96,
-+	  .codecs[0] = {
-+	  	.name = "onyx",
-+	  	.connections = onyx_connections_noheadphones,
-+	  },
-+	},
- 	/* unknown, untested, but this comes from Apple */
- 	{ .layout_id = 41,
- 	  .codecs[0] = {
-@@ -479,12 +487,6 @@ static struct layout layouts[] = {
- 		.connections = onyx_connections_noheadphones,
- 	  },
- 	},
--	{ .layout_id = 96,
--	  .codecs[0] = {
--		.name = "onyx",
--		.connections = onyx_connections_noheadphones,
--	  },
--	},
- 	{ .layout_id = 98,
- 	  .codecs[0] = {
- 		.name = "toonie",
++static void gpio_enable_dual_edge(int gpio)
++{
++	int v;
++
++	if (gpio == -1)
++		return;
++	v = pmac_call_feature(PMAC_FTR_READ_GPIO, NULL, gpio, 0);
++	v |= 0x80; /* enable dual edge */
++	pmac_call_feature(PMAC_FTR_WRITE_GPIO, NULL, gpio, v);
++}
++
+ static void ftr_gpio_init(struct gpio_runtime *rt)
+ {
+ 	get_gpio("headphone-mute", NULL,
+@@ -234,6 +245,10 @@ static void ftr_gpio_init(struct gpio_ru
+ 				      &linein_detect_gpio,
+ 				      &linein_detect_gpio_activestate);
+ 
++	gpio_enable_dual_edge(headphone_detect_gpio);
++	gpio_enable_dual_edge(lineout_detect_gpio);
++	gpio_enable_dual_edge(linein_detect_gpio);
++
+ 	get_irq(headphone_detect_node, &headphone_detect_irq);
+ 	get_irq(lineout_detect_node, &lineout_detect_irq);
+ 	get_irq(linein_detect_node, &linein_detect_irq);
 
 
 
