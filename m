@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Tue, 27 Jun 2006 16:09:54 +0200
-Message-ID: <74067966be5ac8b0f6d099f65493f24d@bugtrack.alsa-project.org>
+From: Barry Scott <barry.scott@onelan.co.uk>
+Subject: Re: Alsa v1.0.12rc1 Realtek ALC260 PCM missing at boot
+Date: Tue, 27 Jun 2006 15:12:46 +0100
+Message-ID: <44A13CDE.5060001@onelan.co.uk>
+References: <44A11C5D.7010606@onelan.co.uk> <s5h7j32wz3y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DFAB18F
-	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 16:09:54 +0200 (MEST)
+In-Reply-To: <s5h7j32wz3y.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,130 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Tue, 27 Jun 2006 12:54:05 +0100,
+> Barry Scott wrote:
+>   
+>> I'm using 21.6.17.1 with v1.0.12rc1 drivers, libs and utils on FC4.
+>> alsamixer reports that the Chip is Realtek ALC260.
+>>
+>> Both amixer and alsamixer show that the PCM control is missing after 
+>> booting.
+>> After playing a wav file with aplay the PCM control shows up in both
+>> amixer and alsamixer.
+>>
+>> Is there something I need to configure or is this a bug in1.0.12rc1?
+>>     
+>
+> The PCM volume is added dynamically by alsa-lib softvol plugin.
+> Usually your system stores/restores the mixer status so that the PCM
+> volume reappears again at the next boot.
+>
+>
+> Takashi
+>   
+What is it that I need to setup to turn on the PCM? The "system" is me 
+and this
+is a new setup requirement that I have not seen before.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
-======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
-======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              06-27-2006 16:09 CEST
-======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
-Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
-
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
-
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-26-06 16:38 
-----------------------------------------------------------------------
-Probably not.
-
-----------------------------------------------------------------------
- jlpedrosa - 06-27-06 16:09 
-----------------------------------------------------------------------
-humm...
-
-The patch tha't been sent... how it's upposed to be used?
-
-I got to download the 1.0.9b_24a drivers and then aply the diff?
-
-thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
-06-22-06 22:50 taschenorakel  File Added:
-alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
-06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
-06-26-06 16:38 rlrevell       Note Added: 0010548                          
-06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
-======================================================================
-
+Barry
 
 
 Using Tomcat but need to do more? Need to support web services, security?
