@@ -1,120 +1,60 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Tue, 27 Jun 2006 14:05:41 +0200
-Message-ID: <09d218236a89250287906e46da584fb0@bugtrack.alsa-project.org>
+From: Chuck Ebbert <76306.1226@compuserve.com>
+Subject: Re: list corruption on removal of snd_seq_dummy
+Date: Tue, 27 Jun 2006 08:05:01 -0400
+Message-ID: <200606270808_MC3-1-C391-2F33@compuserve.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	 charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 934C3251
-	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 14:05:41 +0200 (MEST)
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932274AbWF0MLQ@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dave Jones <davej@redhat.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+In-Reply-To: <s5hejxb7xrb.wl%tiwai@suse.de>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
-======================================================================
-Reported By:                el
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2202
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
-======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-27-2006 14:05 CEST
-======================================================================
-Summary:                    model is not autodetected correctly
-Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+On Tue, 27 Jun 2006 11:28:56 +0200, Takashi Iwai wrote:
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
+> >  > > The code in question is doing..
+> >  > > 
+> >  > >         __list_add(&deleted_list,
+> >  > >                client->ports_list_head.prev,
+> >  > >                client->ports_list_head.next);
+> >  > > 
+> >  > > which looks fishy, as those two elements aren't going to be consecutive,
+> >  > > as __list_add expects.
+> >  > 
+> >  > I think the code behaves correctly but probably misusing __list_add().
+> >  > It movies the whole entries from an existing list_head A
+> >  > (clients->ports_list_head) to a new list_head B (deleted_list).
+> >  > The above is exapnded:
+> >  > 
+> >  >  A->next->prev = B;
+> >  >  B->next = A->next;
+> >  >  B->prev = A->prev;
+> >  >  A->prev->next = B;
+> >  > 
+> >  > Any better way to achieve it using standard macros?
+> > 
+> > Why can't you just list_move() the elements ?
+> 
+> No, list_move() can't move the whole elements without loop.
+> 
+> A solution is
+> 
+>       list_add(B, A);
+>       list_del_init(A);
+> 
+> (although this introduces a bit more code :)
 
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
+Shouldn't it be like this?
 
-Documentation states, that model=auto is the default, but as you can see
-it is not
-======================================================================
+        ports_list_first = client->ports_list_head.next;
+        list_del_init(client->ports_list_head);
+        list_splice(ports_list_first, &deleted_list);
 
-----------------------------------------------------------------------
- tiwai - 06-27-06 12:26 
-----------------------------------------------------------------------
-OK, then let's get back to the beginning.
-
-Without any model option, the recording from mic works when you raise
-"Capture Volume" and choose "Front Mic" as the capture source?
-
-----------------------------------------------------------------------
- el - 06-27-06 14:05 
-----------------------------------------------------------------------
-No, it doesn't. When I do not pass any model option I cannot record any
-sound from the microphone. I tried all three capture channels and all
-input sources. The first capture channel has static noise on it, the other
-two are just silent.
-
-With models auto, 6stack and lg I can record sound by raising the first
-capture volume and selecting front mic.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-06-14-06 17:20 el             Note Added: 0010215                          
-06-26-06 11:37 el             Note Added: 0010526                          
-06-26-06 16:02 tiwai          Note Added: 0010539                          
-06-26-06 17:19 rlrevell       Note Added: 0010550                          
-06-27-06 00:48 el             File Added: codec#0 (default)                    
-06-27-06 00:49 el             File Added: codec#0 (model=auto)                  
- 
-06-27-06 00:49 el             File Added: alsactl (default)                    
-06-27-06 00:49 el             File Added: alsactl (model=auto)                  
- 
-06-27-06 00:50 el             File Added: codec#1 (default)                    
-06-27-06 00:50 el             File Added: codec#1 (model=auto)                  
- 
-06-27-06 01:13 el             Note Added: 0010563                          
-06-27-06 12:26 tiwai          Note Added: 0010585                          
-06-27-06 14:05 el             Note Added: 0010591                          
-======================================================================
-
-
-
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+-- 
+Chuck
+ "You can't read a newspaper if you can't read."  --George W. Bush
