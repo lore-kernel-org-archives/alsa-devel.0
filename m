@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Tue, 27 Jun 2006 01:13:22 +0200
-Message-ID: <d1ee78bf25407ad91109f850f7feb5ff@bugtrack.alsa-project.org>
+From: "Lateefah Gandee" <lateefygand@lauberimports.com>
+Subject: Re: with bowif
+Date: Mon, 26 Jun 2006 18:02:50 -0700
+Message-ID: <000001c69985$69562070$4377a8c0@zmy55>
+Reply-To: Lateefah Gandee <lateefygand@lauberimports.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0722282233=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8636A190
+Received: from ecusta.com (host142-203.pool8289.interbusiness.it
+	[82.89.203.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4CA9A250
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 01:13:22 +0200 (MEST)
+	Tue, 27 Jun 2006 03:01:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,113 +23,95 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
-======================================================================
-Reported By:                el
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2202
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
-======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-27-2006 01:13 CEST
-======================================================================
-Summary:                    model is not autodetected correctly
-Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+--===============0722282233==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6994A.BCF9B970"
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
+This is a multi-part message in MIME format.
 
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
+------=_NextPart_000_0001_01C6994A.BCF9B970
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Documentation states, that model=auto is the default, but as you can see
-it is not
-======================================================================
+Hi
 
-----------------------------------------------------------------------
- rlrevell - 06-26-06 17:19 
-----------------------------------------------------------------------
-Why are your "Capture" levels all set to 0?
-
-----------------------------------------------------------------------
- el - 06-27-06 01:13 
-----------------------------------------------------------------------
-Thank you for your reply. I have uploaded the requested files.
-
-The capture levels are set to 0 because all mixer levels seem to get set
-to 0 whenever I unload the module in order to reload it with a different
-module-option.
-
-When I set the first capture level to 100% and select front-mic as source
-the microphone works when using these models:
-auto
-6stack
-6stack-digout
-lg
-lg-lw
-
-I have not been able to get any sound except occasional static noise from
-the capture channels when using:
-default (no model option)
-3stack
-3stack-digout
-5stack
-5stack-digout
-w810
-z71v
-asus
-uniwill
-F1734
-(I can get playback to work with all models)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-06-14-06 17:20 el             Note Added: 0010215                          
-06-26-06 11:37 el             Note Added: 0010526                          
-06-26-06 16:02 tiwai          Note Added: 0010539                          
-06-26-06 17:19 rlrevell       Note Added: 0010550                          
-06-27-06 00:48 el             File Added: codec#0 (default)                    
-06-27-06 00:49 el             File Added: codec#0 (model=auto)                  
- 
-06-27-06 00:49 el             File Added: alsactl (default)                    
-06-27-06 00:49 el             File Added: alsactl (model=auto)                  
- 
-06-27-06 00:50 el             File Added: codec#1 (default)                    
-06-27-06 00:50 el             File Added: codec#1 (model=auto)                  
- 
-06-27-06 01:13 el             Note Added: 0010563                          
-======================================================================
+Go to our site and econom ize on your med up to 60 %
+http://olpartmen.com
+,
+,
+,
+,
+,
+,
+thinking of it. You have got to look after all these dwarves for me, he
+laughed. No! no! said Bilbo. I didnt mean that. I meant, is there no
+way round?
+There is, if you care to go two hundred miles or so out of your way
+north, and twice that south. But you wouldnt get a safe path even then.
+There are no safe paths in this part of the world. Remember you are over
 
 
+------=_NextPart_000_0001_01C6994A.BCF9B970
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi<BR>
+<BR>
+Go to our site and econom ize on your med up to 60 %<BR><A =
+href=3D"http://olpartmen.com">http://olpartmen.com</A></DIV>
+<DIV>,</DIV>
+<DIV>,</DIV>
+<DIV>,</DIV>
+<DIV>,</DIV>
+<DIV>,</DIV>
+<DIV>,</DIV>
+<DIV>thinking of it. You have got to look after all these dwarves for =
+me, he<BR>
+laughed. No! no! said Bilbo. I didnt mean that. I meant, is there no<BR>
+way round?<BR>
+   There is, if you care to go two hundred miles or so out of your =
+way<BR>
+north, and twice that south. But you wouldnt get a safe path even =
+then.<BR>
+There are no safe paths in this part of the world. Remember you are =
+over<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6994A.BCF9B970--
+
+
+
+
+
+--===============0722282233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0722282233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0722282233==--
