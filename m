@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Tue, 27 Jun 2006 08:41:18 +0200
-Message-ID: <201e233f8a9acb5fb8da39fae2458347@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Tue, 27 Jun 2006 09:01:37 +0200
+Message-ID: <01a703360edbb79a90690a456300da90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF7121C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FB0D255
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 08:41:18 +0200 (MEST)
+	Tue, 27 Jun 2006 09:01:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,98 +26,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                El Santo
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-27-2006 08:41 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-27-2006 09:01 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    Alsa mixer lack of some functions
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-any idea?
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-26-06 19:25 
+ Cimmo - 06-25-06 18:32 
 ----------------------------------------------------------------------
-Can you try 1.0.12-rc1?
+both speaker-test worked also for rear speakers!
+This is strange!
+
+Guys:
+There is another problem: I think that alsa sometimes at system boot
+initialize webcam before soundcard and sometimes the opposite!
+
+In fact:
+1) two times amarok said to me that cannot initialize soundcard (probably
+trying to initialize webcam)
+2) kmix sometimes have CA0106 before Camera sometimes opposite!
+
+Anyway no surround here! Is it possible to have it?
+
+
 
 ----------------------------------------------------------------------
- Raymond - 06-27-06 08:41 
+ Raymond - 06-27-06 09:01 
 ----------------------------------------------------------------------
->> I also set mpu_port parameter for snd-via82xx module.
+It is possible to define the card number
 
->> The result is the same: no midi port 
+option snd-ca0106 index=0
+option snd-usb-audio index=1
 
-Do you mean no error message in system log (dmesg) when snd-via82xx is
-loaded ?
+
+There is no perfect solution for (duplicate front to rear) if your sound
+card does not support it by hardware
+
+This require route, multi and dmix of the front and rear devices
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
-06-20-06 23:30 El Santo       Note Added: 0010357                          
-06-20-06 23:39 rlrevell       Note Added: 0010359                          
-06-20-06 23:54 El Santo       Note Added: 0010362                          
-06-21-06 00:00 rlrevell       Note Added: 0010363                          
-06-21-06 00:04 rlrevell       Note Added: 0010364                          
-06-21-06 00:12 El Santo       Note Added: 0010365                          
-06-21-06 00:18 rlrevell       Note Added: 0010366                          
-06-21-06 00:33 El Santo       File Added: dmesg.log                        
-06-21-06 00:36 El Santo       Note Added: 0010367                          
-06-21-06 00:52 rlrevell       Note Added: 0010369                          
-06-21-06 00:56 rlrevell       Note Added: 0010370                          
-06-21-06 02:02 rlrevell       Note Added: 0010374                          
-06-21-06 04:51 Raymond        Note Added: 0010379                          
-06-21-06 18:00 El Santo       Note Added: 0010400                          
-06-22-06 03:19 Raymond        Note Added: 0010412                          
-06-22-06 03:27 Raymond        Note Edited: 0010412                         
-06-22-06 03:29 rlrevell       Note Added: 0010413                          
-06-22-06 14:30 Raymond        Note Added: 0010422                          
-06-24-06 09:43 Raymond        Note Added: 0010469                          
-06-25-06 22:02 El Santo       Note Added: 0010520                          
-06-26-06 06:52 Raymond        Note Added: 0010524                          
-06-26-06 06:56 Raymond        Note Edited: 0010524                         
-06-26-06 07:50 Raymond        Note Edited: 0010524                         
-06-26-06 18:44 El Santo       Note Added: 0010557                          
-06-26-06 18:51 rlrevell       Note Added: 0010558                          
-06-26-06 19:14 El Santo       Note Added: 0010559                          
-06-26-06 19:25 rlrevell       Note Added: 0010560                          
-06-27-06 08:41 Raymond        Note Added: 0010568                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
 ======================================================================
 
 
