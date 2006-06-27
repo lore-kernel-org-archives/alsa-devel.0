@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
-Date: Tue, 27 Jun 2006 12:47:06 +0200
-Message-ID: <ccd59d9e2164b47f52fe88249fc87a9e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002233]: No sound on speakers,
+	low volume on the headphones, Samsung X60 Chane
+Date: Tue, 27 Jun 2006 12:50:33 +0200
+Message-ID: <212030756599116663b05af7a749f538@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC287267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CC161A3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:47:06 +0200 (MEST)
+	Tue, 27 Jun 2006 12:50:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,56 +24,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
 ======================================================================
-Reported By:                quetzyg
+Reported By:                max
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2200
+Issue ID:                   2233
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
-enough to reproduce this)
+Status:                     resolved
+Distribution:               suse 10.1
+Kernel Version:             2.6.16.13-4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-11-2006 17:50 CEST
-Last Modified:              06-27-2006 12:47 CEST
+Date Submitted:             06-26-2006 12:17 CEST
+Last Modified:              06-27-2006 12:50 CEST
 ======================================================================
-Summary:                    PCM channel doesn't exist!
+Summary:                    No sound on speakers, low volume on the headphones,
+Samsung X60 Chane
 Description: 
-Since the early release candidates of ALSA 1.0.11, up to the final version,
-I seem to have lost the PCM channel from alsamixer.
+installation ok. (82801G)
+but
+no sound on speakers 
+low volume on the headphones and sometimes a verry high frequenz...
+
+thanks for help
+
 ======================================================================
 
 ----------------------------------------------------------------------
- quetzyg - 06-27-06 12:47 
+ max - 06-27-06 12:35 
 ----------------------------------------------------------------------
-Well, HG changeset patch against 1.0.12rc1 fixed the PCM issue!
-PCM is back, but the volume is not affected at all. Being at 0% or 100%
-its the same.
+00:1b.0 Class 0403: 8086:27d8 (rev 02)
+	Subsystem: 144d:c023
+	Flags: bus master, fast devsel, latency 0, IRQ 74
+	Memory at d4a40000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+	Capabilities: [70] Express Unknown type IRQ 0
 
-And, I used to have a Master channel as well.
-
-Any suggestions?
-
-Cheers,
-Quetzy Garcia
+----------------------------------------------------------------------
+ tiwai - 06-27-06 12:50 
+----------------------------------------------------------------------
+Thanks, now fixed on HG repo.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-06 17:50 quetzyg        New Issue                                    
-06-11-06 17:50 quetzyg        Distribution              => Slackware       
-06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
-version >= 2.6.16 should be enough to reproduce this)
-06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
-06-27-06 12:47 quetzyg        Note Added: 0010587                          
+06-26-06 12:17 max            New Issue                                    
+06-26-06 12:17 max            Distribution              => suse 10.1       
+06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
+06-26-06 12:20 max            Note Added: 0010527                          
+06-26-06 12:21 max            Note Added: 0010528                          
+06-26-06 12:23 max            Note Added: 0010529                          
+06-26-06 12:24 max            Note Added: 0010530                          
+06-26-06 16:00 tiwai          Note Added: 0010538                          
+06-27-06 09:35 max            Note Added: 0010571                          
+06-27-06 12:12 tiwai          Note Added: 0010581                          
+06-27-06 12:35 max            Note Added: 0010586                          
+06-27-06 12:50 tiwai          Status                   assigned => resolved
+06-27-06 12:50 tiwai          Resolution               open => fixed       
+06-27-06 12:50 tiwai          Note Added: 0010588                          
 ======================================================================
 
 
