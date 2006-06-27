@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
 	playback
-Date: Tue, 27 Jun 2006 23:43:06 +0200
-Message-ID: <1e92776d656c2245049b5855c81e3a02@bugtrack.alsa-project.org>
+Date: Wed, 28 Jun 2006 00:03:59 +0200
+Message-ID: <e01efe2bcb78004dd609a4cf433ebda4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 318AB26F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC3E826D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 23:43:06 +0200 (MEST)
+	Wed, 28 Jun 2006 00:03:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian testing
 Kernel Version:             2.6.8-2-k7
 ======================================================================
 Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              06-27-2006 23:43 CEST
+Last Modified:              06-28-2006 00:03 CEST
 ======================================================================
 Summary:                    System freeze at end of MIDI playback
 Description: 
@@ -64,16 +64,6 @@ output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- skunk - 06-08-06 09:28 
-----------------------------------------------------------------------
-A kernel panic message---good idea :-)
-
-    http://www.iskunk.org/tmp/alsa-kernel-panic.jpg (1.1 MB)
-
-(I tried to upload this here, but the PHP threw an "out of memory"
-error...)
-
-----------------------------------------------------------------------
  phorn - 06-27-06 23:43 
 ----------------------------------------------------------------------
 I am also getting this bug pretty often (kernels 2.6.15 through 2.6.17.1).
@@ -84,6 +74,11 @@ I get no useful indication when using SMP.  The only way to tell is that
 
 I decided to disable SMP and then I got a nice kernel message which I
 attached as kernel_spinlock-2.6.17.1-nosmp.txt
+
+----------------------------------------------------------------------
+ rlrevell - 06-28-06 00:03 
+----------------------------------------------------------------------
+Can you verify the bug is still present in the latest Hg sources?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +98,7 @@ Date Modified  Username       Field                    Change
 06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
                
 06-27-06 23:43 phorn          Note Added: 0010602                          
+06-28-06 00:03 rlrevell       Note Added: 0010603                          
 ======================================================================
 
 
