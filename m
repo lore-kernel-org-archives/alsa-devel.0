@@ -1,16 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001728]: Modification of volume
-	control for M-Audio Revolution 5.1
-Date: Tue, 27 Jun 2006 14:46:19 +0200
-Message-ID: <4248e9ad755a7e490134e5552b5f4d45@bugtrack.alsa-project.org>
+From: "techie tone" <techietone@gmail.com>
+Subject: asoundlib.h: No such file or directory
+Date: Tue, 27 Jun 2006 18:33:28 +0530
+Message-ID: <6474b3950606270603n3577b1d6l48eb1974c78863e2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1354339014=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D7CD18F
-	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 14:46:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,87 +14,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--===============1354339014==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_1747_29298351.1151413408569"
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
-======================================================================
-Reported By:                cyan
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1728
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo testing
-Kernel Version:             2.6.14-gentoo-r5
-======================================================================
-Date Submitted:             01-09-2006 23:35 CET
-Last Modified:              06-27-2006 14:46 CEST
-======================================================================
-Summary:                    Modification of volume control for M-Audio
-Revolution 5.1
-Description: 
-In Alsamixer (and KMix) is not possible to change volume of both chanels at
-once. Slides with names "DAC" and "DAC1" corresponds to left and right
-chanel. 
-I would like to make a suggestion to merge them together.
-======================================================================
+------=_Part_1747_29298351.1151413408569
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- alinja - 06-26-06 21:41 
-----------------------------------------------------------------------
-Ok, I hope everything is ok now in the alinja2 patch. I left all but the
-revo cards as they are, I have no way to test anything but my revo 7.1.
+While compiling alsa applications, I'm getting foll' error:
+asoundlib.h: No such file or directory
 
-----------------------------------------------------------------------
- hlabs - 06-27-06 14:46 
-----------------------------------------------------------------------
-Hello !
+I could not locate this file on my linux system.
 
-Applyed alinya2.patch.
-Left front channel is still muted at boot :(
+How can I install the alsa header file?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-06 23:35 cyan           New Issue                                    
-01-09-06 23:35 cyan           Distribution              => gentoo testing  
-01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
-01-14-06 22:31 wollschaf      Note Added: 0007656                          
-01-25-06 00:07 wollschaf      Issue Monitored: wollschaf                    
-01-25-06 00:09 wollschaf      File Added: ak4xxx-adda-stereomixer.patch         
-          
-01-25-06 00:29 wollschaf      Note Added: 0007776                          
-01-27-06 15:20 tiwai          Note Added: 0007804                          
-02-02-06 15:15 alinja         Note Added: 0007877                          
-03-28-06 14:22 alinja         Issue Monitored: alinja                      
-06-15-06 19:41 alinja         File Added: ak4xx-volumes.patch                   
+------=_Part_1747_29298351.1151413408569
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-06-15-06 19:47 alinja         Note Added: 0010242                          
-06-16-06 18:50 tiwai          Note Added: 0010256                          
-06-24-06 10:43 Raymond        Note Added: 0010472                          
-06-26-06 13:13 alinja         Note Added: 0010531                          
-06-26-06 13:35 Raymond        Note Added: 0010533                          
-06-26-06 15:38 Raymond        Note Edited: 0010533                         
-06-26-06 15:57 tiwai          Note Added: 0010537                          
-06-26-06 17:36 alinja         Note Added: 0010552                          
-06-26-06 17:49 tiwai          Note Added: 0010554                          
-06-26-06 21:36 alinja         File Added: ak4xx-volumes-alinja2.patch           
-        
-06-26-06 21:41 alinja         Note Added: 0010561                          
-06-27-06 14:46 hlabs          Note Added: 0010592                          
-======================================================================
+While compiling alsa applications, I'm getting foll' error:<br>asoundlib.h: No such file or directory<br><br>I could not locate this file on my linux system.<br><br>How can I install the alsa header file?<br><br><br>
+
+------=_Part_1747_29298351.1151413408569--
 
 
+--===============1354339014==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1354339014==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1354339014==--
