@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002233]: No sound on speakers,
-	low volume on the headphones, Samsung X60 Chane
-Date: Tue, 27 Jun 2006 12:35:48 +0200
-Message-ID: <8f52202e159582b2466c1488b1f0c1c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
+Date: Tue, 27 Jun 2006 12:47:06 +0200
+Message-ID: <ccd59d9e2164b47f52fe88249fc87a9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF7CB267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC287267
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:35:48 +0200 (MEST)
+	Tue, 27 Jun 2006 12:47:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,69 +25,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2233> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
 ======================================================================
-Reported By:                max
+Reported By:                quetzyg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2233
+Issue ID:                   2200
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               suse 10.1
-Kernel Version:             2.6.16.13-4
+Distribution:               Slackware
+Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
+enough to reproduce this)
 ======================================================================
-Date Submitted:             06-26-2006 12:17 CEST
-Last Modified:              06-27-2006 12:35 CEST
+Date Submitted:             06-11-2006 17:50 CEST
+Last Modified:              06-27-2006 12:47 CEST
 ======================================================================
-Summary:                    No sound on speakers, low volume on the headphones,
-Samsung X60 Chane
+Summary:                    PCM channel doesn't exist!
 Description: 
-installation ok. (82801G)
-but
-no sound on speakers 
-low volume on the headphones and sometimes a verry high frequenz...
-
-thanks for help
-
+Since the early release candidates of ALSA 1.0.11, up to the final version,
+I seem to have lost the PCM channel from alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-06 12:12 
+ quetzyg - 06-27-06 12:47 
 ----------------------------------------------------------------------
-Not yet to close.  Please provide the output of "lspci -nv" (only for class
-0403) so that your device will be set up correctly without extra module
-option.
+Well, HG changeset patch against 1.0.12rc1 fixed the PCM issue!
+PCM is back, but the volume is not affected at all. Being at 0% or 100%
+its the same.
 
-----------------------------------------------------------------------
- max - 06-27-06 12:35 
-----------------------------------------------------------------------
-00:1b.0 Class 0403: 8086:27d8 (rev 02)
-	Subsystem: 144d:c023
-	Flags: bus master, fast devsel, latency 0, IRQ 74
-	Memory at d4a40000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-	Capabilities: [70] Express Unknown type IRQ 0
+And, I used to have a Master channel as well.
+
+Any suggestions?
+
+Cheers,
+Quetzy Garcia
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 12:17 max            New Issue                                    
-06-26-06 12:17 max            Distribution              => suse 10.1       
-06-26-06 12:17 max            Kernel Version            => 2.6.16.13-4     
-06-26-06 12:20 max            Note Added: 0010527                          
-06-26-06 12:21 max            Note Added: 0010528                          
-06-26-06 12:23 max            Note Added: 0010529                          
-06-26-06 12:24 max            Note Added: 0010530                          
-06-26-06 16:00 tiwai          Note Added: 0010538                          
-06-27-06 09:35 max            Note Added: 0010571                          
-06-27-06 12:12 tiwai          Note Added: 0010581                          
-06-27-06 12:35 max            Note Added: 0010586                          
+06-11-06 17:50 quetzyg        New Issue                                    
+06-11-06 17:50 quetzyg        Distribution              => Slackware       
+06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
+version >= 2.6.16 should be enough to reproduce this)
+06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
+06-27-06 12:47 quetzyg        Note Added: 0010587                          
 ======================================================================
 
 
