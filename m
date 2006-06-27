@@ -1,21 +1,16 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] azt3328 fatal deadlock fix (very rare,
-	though)
-Date: Tue, 27 Jun 2006 16:06:30 +0200
-Message-ID: <20060627140630.GA1001@rhlx01.fht-esslingen.de>
-References: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
-	<s5hk67aer2z.wl%tiwai@suse.de>
-	<20060627112823.GA30790@rhlx01.fht-esslingen.de>
-	<s5h3bdqwy03.wl%tiwai@suse.de>
-	<20060627134534.GA26679@rhlx01.fht-esslingen.de>
-	<s5hmzbyvgwq.wl%tiwai@suse.de>
-Reply-To: andi@lisas.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Tue, 27 Jun 2006 16:09:54 +0200
+Message-ID: <74067966be5ac8b0f6d099f65493f24d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hmzbyvgwq.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DFAB18F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 27 Jun 2006 16:09:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,54 +20,131 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, andi@lisas.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Tue, Jun 27, 2006 at 03:59:01PM +0200, Takashi Iwai wrote:
-> At Tue, 27 Jun 2006 15:45:34 +0200,
-> Andreas Mohr wrote:
-> > 
-> > > BTW, do you still keep CONFIG_EXPERIMENTAL for AZT3328 driver?
-> > > If it works for you well, we can remove that flag since there is no
-> > > many bug reports.
-> > 
-> > Been thinking about that before (since the driver is almost as
-> > feature-complete as it can get with an entirely undocumented card),
-> > but I wanted to run the Wine audio test suite on it directly before
-> > removing the flag (since that could easily reveal some issues due to
-> > much more varied sound traffic), but I haven't managed to do that yet.
-> 
-> The reason I asked is because I'm adding a new configure option
-> --with-experimental to toggle on/off CONFIG_EXPERIMENTAL for
-> alsa-driver tree.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              06-27-2006 16:09 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-Ah. Nice option, but this probably means that all CONFIG_EXPERIMENTAL
-drivers won't get built by default, right?
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-In which case I'd have to act in my driver's area, since it certainly
-absolutely should get built by default.
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-> Also, from my understanding, CONFIG_EXPERIMENTAL refers to stability
-> of the driver.
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-I'd think so too, which is why I wanted to do the Wine test since I'm
-not absolutely 130% certain that my driver is stable. It is certainly
-99.9% stable, but there are still some remaining tiny nagging doubts...
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
-> > Oh, and needless to say it's a *very good* idea in general to run the
-> > Wine test suite on all sorts of ALSA drivers...
-> 
-> That's true.  We'd need own sound test suite, too.
+Please let me know if there is something more I can provide.
+======================================================================
 
-Oh, ALSA doesn't have anything here yet?
-That's pretty crucial if you want to guarantee a certain service quality
-over the full range of ALSA sound drivers...
-(but I'm stating the obvious here ;)
+----------------------------------------------------------------------
+ rlrevell - 06-26-06 16:38 
+----------------------------------------------------------------------
+Probably not.
 
-Andreas Mohr
+----------------------------------------------------------------------
+ jlpedrosa - 06-27-06 16:09 
+----------------------------------------------------------------------
+humm...
+
+The patch tha't been sent... how it's upposed to be used?
+
+I got to download the 1.0.9b_24a drivers and then aply the diff?
+
+thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
+06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
+06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
+06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
+06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
+06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 22:50 taschenorakel  File Added:
+alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
+06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
+06-26-06 16:38 rlrevell       Note Added: 0010548                          
+06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
