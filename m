@@ -1,12 +1,16 @@
-From: Daniel Schroeder <sec@dschroeder.info>
-Subject: ASUS M2N32 MCP55 HDAudio problems
-Date: Tue, 27 Jun 2006 22:43:49 +0200
-Message-ID: <44A19885.8020104@dschroeder.info>
-Reply-To: sec@dschroeder.info
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Tue, 27 Jun 2006 23:43:06 +0200
+Message-ID: <1e92776d656c2245049b5855c81e3a02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 318AB26F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 27 Jun 2006 23:43:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,69 +20,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello *,
 
-sorry for posting this to devel and users, but i think this could be
-interesting for both. Plz. send replies in cc to my mail address because
- i am not on list.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+======================================================================
+Reported By:                skunk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
+======================================================================
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              06-27-2006 23:43 CEST
+======================================================================
+Summary:                    System freeze at end of MIDI playback
+Description: 
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
-I am a proud owner of this flagship mainboard with a nvdidia mcp55
-hdaudio sound card. The chip is identified by alsa as a AD1988A rev.2
-(dmesg, lspci -v, lspci -nv output below):
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
 
-The problem is that if i activate only front in kmix all is fine.
-Speaker-Test works as expected. If i activate lfe/center then the sound
-is messed up and he plays front-left/front-rigt through center and lfe.
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
 
-I have played around with differend model settings: 6jack etc. no model
-worked.
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
+======================================================================
 
-PLZ: help or if i can help you with my hardware i will do so...i have a
-little linux experience and could compile alsa drivers in debugging mode
-to play around with this things and hopefully find the right
-configuration for this mainboard.
+----------------------------------------------------------------------
+ skunk - 06-08-06 09:28 
+----------------------------------------------------------------------
+A kernel panic message---good idea :-)
 
-thanks in advance
+    http://www.iskunk.org/tmp/alsa-kernel-panic.jpg (1.1 MB)
 
-cheers,
+(I tried to upload this here, but the PHP threw an "out of memory"
+error...)
 
-daniel
+----------------------------------------------------------------------
+ phorn - 06-27-06 23:43 
+----------------------------------------------------------------------
+I am also getting this bug pretty often (kernels 2.6.15 through 2.6.17.1).
 
+I get no useful indication when using SMP.  The only way to tell is that
+"pmidi" frezes in the "running" state, and half of the I/O devices
+(keyboard, ethernet and sometimes harddrive) stop working.
 
-Hardware: 6 Jacks, spdif and two jacks in front (hp, mic)
+I decided to disable SMP and then I got a nice kernel message which I
+attached as kernel_spinlock-2.6.17.1-nosmp.txt
 
-Kernel: Gentoo-2.6.17
-
-ALSA
-/var/tmp/portage/alsa-driver-1.0.12_rc1/work/alsa-driver-1.0.12rc1/pci/hda/../../alsa-kernel/pci/hda/patch_analog.c:2566:
-patch_analog: AD1988A rev.2 is detected, enable workarounds
-
-lspci -v output:
-
-00:0e.1 Audio device: nVidia Corporation MCP55 High Definition Audio
-(rev a2)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 81f6
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 10
-        Memory at fe020000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-        Capabilities: [50] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [6c] HyperTransport: MSI Mapping
-
-lspci -nv output:
-
-00:0e.1 0403: 10de:0371 (rev a2)
-        Subsystem: 1043:81f6
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 10
-        Memory at fe020000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-        Capabilities: [50] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [6c] HyperTransport: MSI Mapping
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
+06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:50 rlrevell       Note Added: 0010088                          
+06-08-06 09:28 skunk          Note Added: 0010109                          
+06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
+               
+06-27-06 23:43 phorn          Note Added: 0010602                          
+======================================================================
 
 
 
