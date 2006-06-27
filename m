@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002235]: ALSA dependent applications
-	segfault with 1.0.12rc1!
-Date: Tue, 27 Jun 2006 12:01:35 +0200
-Message-ID: <4cdad34556aad671e14f9c432520c013@bugtrack.alsa-project.org>
+From: Paul Collins <paul@briny.ondioline.org>
+Subject: snd-aoa: headphone detection fix
+Date: Tue, 27 Jun 2006 20:00:40 +1000
+Message-ID: <87d5cuhq9j.fsf@briny.internal.ondioline.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35AD9267
+Received: from jenny.ondioline.org (jenny.ondioline.org [66.220.1.122])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C47FD267
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 12:01:36 +0200 (MEST)
+	Tue, 27 Jun 2006 12:06:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,105 +19,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: johannes@sipsolutions.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Johannes,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2235> 
-======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2235
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.17.1
-======================================================================
-Date Submitted:             06-27-2006 09:29 CEST
-Last Modified:              06-27-2006 12:01 CEST
-======================================================================
-Summary:                    ALSA dependent applications segfault with 1.0.12rc1!
-Description: 
-All applications that use ALSA for sound output, segfault after initiated.
-If I use OSS emulation instead of ALSA (on applications that support both,
-of course), the applications run flawlessly.
+I took a look at tumbler.c and after it requests the headphone or
+lineout detection IRQ it sets a bit in the associated GPIO register.
+I added some code to snd-aoa to do something similar and now I get
+interrupts both on plug and unplug.  Three each time, in fact.
+(I don't remember if this used to happen with snd-powermac.)
 
-Something broke in this new version...
+I also set the same bit in the linein-detect register on the
+assumption that it is handled in the same way.  I have only been able
+to test headphone detection here on my PowerBook5,4 though.
 
-Only OSS compat. lib. is 1.0.11, all the rest (driver, lib and utils) are
-1.0.12rc1.
+Signed-off-by: Paul Collins <paul@ondioline.org>
 
-Cheers,
-Quetzy Garcia
-======================================================================
+diff --git a/sound/aoa/core/snd-aoa-gpio-feature.c b/sound/aoa/core/snd-aoa-gpio-feature.c
+index 2c6eb77..fa0606e 100644
+--- a/sound/aoa/core/snd-aoa-gpio-feature.c
++++ b/sound/aoa/core/snd-aoa-gpio-feature.c
+@@ -289,6 +289,7 @@ static int ftr_set_notify(struct gpio_ru
+ 	struct gpio_notification *notif;
+ 	notify_func_t old;
+ 	int irq;
++	int gpio = -1;
+ 	char *name;
+ 	int err = -EBUSY;
+ 
+@@ -297,16 +298,19 @@ static int ftr_set_notify(struct gpio_ru
+ 		notif = &rt->headphone_notify;
+ 		name = "headphone-detect";
+ 		irq = headphone_detect_irq;
++		gpio = headphone_detect_gpio;
+ 		break;
+ 	case AOA_NOTIFY_LINE_IN:
+ 		notif = &rt->line_in_notify;
+ 		name = "linein-detect";
+ 		irq = linein_detect_irq;
++		gpio = linein_detect_gpio;
+ 		break;
+ 	case AOA_NOTIFY_LINE_OUT:
+ 		notif = &rt->line_out_notify;
+ 		name = "lineout-detect";
+ 		irq = lineout_detect_irq;
++		gpio = lineout_detect_gpio;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -337,6 +341,14 @@ static int ftr_set_notify(struct gpio_ru
+ 		err = request_irq(irq, ftr_handle_notify_irq, 0, name, notif);
+ 		if (err)
+ 			goto out_unlock;
++
++		/* Activate status interrupts. */
++		if (gpio > -1) {
++			int v;
++			v = pmac_call_feature(PMAC_FTR_READ_GPIO, NULL, gpio, 0);
++			v |= 0x80;
++			pmac_call_feature(PMAC_FTR_WRITE_GPIO, NULL, gpio, v);
++		}
+ 	}
+ 
+ 	notif->notify = notify;
 
-----------------------------------------------------------------------
- Raymond - 06-27-06 11:03 
-----------------------------------------------------------------------
-Do you have your own customised dmix in .asoundrc ?
+-- 
+Paul Collins
+Melbourne, Australia
 
-There are some patches related to dmix just before the release of
-1.0.12rc1
-
-----------------------------------------------------------------------
- quetzyg - 06-27-06 12:01 
-----------------------------------------------------------------------
-Here is my asound.conf
-
-pcm.!default            { type                  plug;
-                          slave.pcm             "dmix0"; }
-ctl.!default            { type hw; card 0; }
-
-pcm.dsp0                { type                  plug;
-                          slave.pcm             "dmix0"; }
-ctl.dsp0                { type hw; card 0; }
-ctl.mixer0              { type hw; card 0; }
-
-
-
-pcm.dmix0               { type                  dmix;
-                          ipc_key               13759;
-
-                          slave.pcm             "hw:0,0";
-                          slave.channels        2;
-
-                          slave.rate            48000;
-                          slave.period_size     4096;
-                          slave.buffer_size     16384;
-
-                          slave.period_time     84000;
-                          slave.buffer_time     340000;
-
-                          # Map only the first two channels
-                          bindings.0            0;
-                          bindings.1            1; }
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-27-06 09:29 quetzyg        New Issue                                    
-06-27-06 09:29 quetzyg        Distribution              => Slackware       
-06-27-06 09:29 quetzyg        Kernel Version            => 2.6.17.1        
-06-27-06 09:40 Raymond        Note Added: 0010572                          
-06-27-06 09:41 Raymond        Note Edited: 0010572                         
-06-27-06 09:42 Raymond        Note Edited: 0010572                         
-06-27-06 09:44 quetzyg        Note Added: 0010573                          
-06-27-06 09:46 Raymond        Note Added: 0010574                          
-06-27-06 09:57 quetzyg        Note Added: 0010575                          
-06-27-06 10:03 Raymond        Note Added: 0010576                          
-06-27-06 10:44 quetzyg        Note Added: 0010577                          
-06-27-06 11:03 Raymond        Note Added: 0010578                          
-06-27-06 12:01 quetzyg        Note Added: 0010579                          
-======================================================================
-
-
+Dag vijandelijk luchtschip de huismeester is dood
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
