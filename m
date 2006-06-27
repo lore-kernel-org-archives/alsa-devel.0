@@ -1,19 +1,19 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] azt3328 fatal deadlock fix (very rare,
-	though)
-Date: Tue, 27 Jun 2006 15:45:34 +0200
-Message-ID: <20060627134534.GA26679@rhlx01.fht-esslingen.de>
-References: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
-	<s5hk67aer2z.wl%tiwai@suse.de>
-	<20060627112823.GA30790@rhlx01.fht-esslingen.de>
-	<s5h3bdqwy03.wl%tiwai@suse.de>
-Reply-To: andi@lisas.de
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
+Subject: Re: asoundlib.h: No such file or directory
+Date: Tue, 27 Jun 2006 15:45:58 +0200
+Message-ID: <44A13696.5010708@purplelabs.com>
+References: <6474b3950606270603n3577b1d6l48eb1974c78863e2@mail.gmail.com>	
+	<44A12D14.70709@purplelabs.com>	
+	<6474b3950606270620j6b42680fo6e1ce4a20fdc8a3b@mail.gmail.com>	
+	<44A13182.7080009@purplelabs.com>	
+	<6474b3950606270631x66a66dfen9ab4688739f64ada@mail.gmail.com>	
+	<44A1344D.7040409@purplelabs.com>
+	<6474b3950606270640h6127f226u2062ff350fafd031@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h3bdqwy03.wl%tiwai@suse.de>
+In-Reply-To: <6474b3950606270640h6127f226u2062ff350fafd031@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,39 +23,129 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, andi@lisas.de
+To: techie tone <techietone@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+what you need there is alsa lib, not driver (please someone correct me
+if i'm wrong)
+depending on the distro you use, there are many ways of getting it :)
+what's your distro ?
 
-On Tue, Jun 27, 2006 at 03:04:28PM +0200, Takashi Iwai wrote:
-> Glad to hear that there is no real bug ;)
+techie tone wrote:
 
-Yeah.
-
-You seem to be a frightening bit too sure about that, though... ;)
-
-> > Hmm, or is my driver broken on IRQ sharing? Will investigate a bit more...
-> 
-> I don't see problematic codes there at a quick glance.
-
-OK.
-
-> BTW, do you still keep CONFIG_EXPERIMENTAL for AZT3328 driver?
-> If it works for you well, we can remove that flag since there is no
-> many bug reports.
-
-Been thinking about that before (since the driver is almost as
-feature-complete as it can get with an entirely undocumented card),
-but I wanted to run the Wine audio test suite on it directly before
-removing the flag (since that could easily reveal some issues due to
-much more varied sound traffic), but I haven't managed to do that yet.
-
-Oh, and needless to say it's a *very good* idea in general to run the
-Wine test suite on all sorts of ALSA drivers...
-
-Andreas Mohr
+> I did not install it separately. It was there.
+>
+> Can u please tell me how can I install alsa drivers along with all the
+> header files required for writting ALSA applications.
+>
+> On 6/27/06, *Benoit Fouet* <benoit.fouet@purplelabs.com
+> <mailto:benoit.fouet@purplelabs.com>> wrote:
+>
+>     i'm not sure it's its place...
+>     how did you get alsalib installed ?
+>
+>     techie tone wrote:
+>
+>     > libasound.so.2 and libasound.so.2.0.0 are there in /lib directory,
+>     > there are no such files under /usr/lib/
+>     >
+>     >
+>     > On 6/27/06, *Benoit Fouet* < benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>
+>     > <mailto:benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>>> wrote:
+>     >
+>     >     do you have alsalib installed on your PC ?
+>     >     i mean, do you have any libasound* in your /usr/lib/ directory ?
+>     >
+>     >     -- Ben
+>     >
+>     >     techie tone wrote:
+>     >
+>     >     > There is no "alsa" directory in /usr/include
+>     >     >
+>     >     > On 6/27/06, *Benoit Fouet* < benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>
+>     >     <mailto:benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>>
+>     >     > <mailto:benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>
+>     >     <mailto: benoit.fouet@purplelabs.com
+>     <mailto:benoit.fouet@purplelabs.com>>>> wrote:
+>     >     >
+>     >     >     hi,
+>     >     >
+>     >     >     nothing in /usr/include/alsa/ ?
+>     >     >
+>     >     >     -- Ben
+>     >     >
+>     >     >
+>     >     >     techie tone wrote:
+>     >     >
+>     >     >     > While compiling alsa applications, I'm getting foll'
+>     error:
+>     >     >     > asoundlib.h: No such file or directory
+>     >     >     >
+>     >     >     > I could not locate this file on my linux system.
+>     >     >     >
+>     >     >     > How can I install the alsa header file?
+>     >     >     >
+>     >     >     >
+>     >     >
+>     >    
+>     >------------------------------------------------------------------------
+>     >
+>     >     >     >
+>     >     >     >Using Tomcat but need to do more? Need to support web
+>     services,
+>     >     >     security?
+>     >     >     >Get stuff done quickly with pre-integrated technology
+>     to make
+>     >     >     your job easier
+>     >     >     >Download IBM WebSphere Application Server v.1.0.1
+>     based on
+>     >     Apache
+>     >     >     Geronimo
+>     >     >
+>     >    
+>     >http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642>
+>     >    
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642>>
+>     >     >
+>     >    
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642>
+>     >     <
+>     http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+>     <http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642>>>
+>     >     >     >
+>     >     >
+>     >    
+>     >------------------------------------------------------------------------
+>
+>     >     >     >
+>     >     >     >_______________________________________________
+>     >     >     >Alsa-devel mailing list
+>     >     >     > Alsa-devel@lists.sourceforge.net
+>     <mailto:Alsa-devel@lists.sourceforge.net>
+>     >     <mailto:Alsa-devel@lists.sourceforge.net
+>     <mailto:Alsa-devel@lists.sourceforge.net>>
+>     >     >     <mailto: Alsa-devel@lists.sourceforge.net
+>     <mailto:Alsa-devel@lists.sourceforge.net>
+>     >     <mailto:Alsa-devel@lists.sourceforge.net
+>     <mailto:Alsa-devel@lists.sourceforge.net>>>
+>     >     >     > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>     >     >     >
+>     >     >     >
+>     >     >
+>     >     >
+>     >
+>     >
+>
+>
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
