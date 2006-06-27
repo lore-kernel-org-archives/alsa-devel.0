@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001728]: Modification of volume
 	control for M-Audio Revolution 5.1
-Date: Tue, 27 Jun 2006 15:08:38 +0200
-Message-ID: <05be399b4b0343c3be28d7c719b178de@bugtrack.alsa-project.org>
+Date: Tue, 27 Jun 2006 15:10:52 +0200
+Message-ID: <aab8774bee6d40c8b247c7459928859b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBF09267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F394267
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jun 2006 15:08:38 +0200 (MEST)
+	Tue, 27 Jun 2006 15:10:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,12 +24,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
 ======================================================================
 Reported By:                cyan
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1728
@@ -37,12 +37,14 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               gentoo testing
 Kernel Version:             2.6.14-gentoo-r5
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-09-2006 23:35 CET
-Last Modified:              06-27-2006 15:08 CEST
+Last Modified:              06-27-2006 15:10 CEST
 ======================================================================
 Summary:                    Modification of volume control for M-Audio
 Revolution 5.1
@@ -54,17 +56,6 @@ I would like to make a suggestion to merge them together.
 ======================================================================
 
 ----------------------------------------------------------------------
- hlabs - 06-27-06 14:47 
-----------------------------------------------------------------------
-Hello !
-
-Applyed alinya2.patch.
-Left front channel is still muted at boot :(
-Revo5.1 in my case.
-
-
-
-----------------------------------------------------------------------
  alinja - 06-27-06 15:08 
 ----------------------------------------------------------------------
 hlabs,
@@ -72,6 +63,15 @@ hlabs,
 This patch fixes only the controls to have sane names and stereo
 combinations. I got the left channel mute problem yesterday too (with
 alinja2 patch). Are the channel names right on revo 5.1?
+
+----------------------------------------------------------------------
+ tiwai - 06-27-06 15:10 
+----------------------------------------------------------------------
+Yes, the mute problem at boot is a different issue from this topic.
+It's probably the same root as the problem on revo 7.1, I2C/SPI protocol
+problem.
+
+Anyway, I applied the patch to HG repo now, so let's close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -104,6 +104,10 @@ Date Modified  Username       Field                    Change
 06-27-06 14:46 hlabs          Note Added: 0010592                          
 06-27-06 14:47 hlabs          Note Edited: 0010592                         
 06-27-06 15:08 alinja         Note Added: 0010593                          
+06-27-06 15:10 tiwai          Status                   new => resolved     
+06-27-06 15:10 tiwai          Resolution               open => fixed       
+06-27-06 15:10 tiwai          Assigned To               => tiwai           
+06-27-06 15:10 tiwai          Note Added: 0010594                          
 ======================================================================
 
 
