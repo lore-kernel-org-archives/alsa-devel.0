@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
-	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 16:04:54 +0200
-Message-ID: <7c5fcbcdf30c14c1a0fd1f3c09d398b6@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002239]: No sound on SPDIF,
+	Sampling rate not (re)set? if compiled with -D_FILE_OFFSET_BITS=64
+Date: Wed, 28 Jun 2006 11:02:03 +0200
+Message-ID: <59a2d5ad32340ebb2d0c6d8d8b90450f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA4AD29C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FA90225
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 16:04:54 +0200 (MEST)
+	Wed, 28 Jun 2006 11:02:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,197 +24,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
-======================================================================
-Reported By:                calestyo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2244
-Category:                   PCI - ice1724
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2239> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - lib
+Issue ID:                   2239
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.17
-======================================================================
-Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 16:04 CEST
-======================================================================
-Summary:                    Aureon 7.1 Universe speakers in incorrect order when
-doing a speaker-test
-Description: 
-I use my Aureon 7.1 Universe with a TerraTec HomeAreon TXR 884 7.1 speaker
-set.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-28-2006 11:02 CEST
+Last Modified:              06-28-2006 11:02 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No sound on SPDIF, Sampling rate not (re)set? if
+compiled with -D_FILE_OFFSET_BITS=3D64
+Description: =
 
-I've connected the outputs of the soundard to those of the subwoofer
-which
-itself connects the small speakers the following way:
+I use a Teratec Aureon 7.1 Space with a Envy24HT Chip and digital optical
+output.
+I get no sound if alsa-lib will by compiled with -D_FILE_OFFSET_BITS=3D64
+(this is defualt in Geexbox 1.0, TARGET_CFLAGS=3D"-Os -Wall -pipe
+-D_FILE_OFFSET_BITS=3D64 -D_LARGEFILE_SOURCE"). It=B4s  sems as the sampling
+rate don=B4t by set at the second time. The first (background video) from
+GeexBox has a samplin of 32K, if i play a video (48K) or music 44.1K the
+sampling rate on my ampiler keep on 32K?
 
-Soundcard -------------- Subwoofer --- Small Speakers
-Out Front <---------+--> In FL <-----> Front Left Speaker
-                    \--> In FR <-----> Font Right Speaker
-Out Rear <----------+--> In SL <-----> Side Left Speaker
-                    \--> In SR <-----> Side Right Speaker
-Out Center/Subwoofer <-> In C <------> Center Speaker
-                      \> In Subwoofer
-Out Back Surround <----> In BL <-----> Back Left Speaker
-                    \--> In BR <-----> Back Right Speaker
-
-You might have a look at soundcard manual page 8
-(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=574)
-and speaker manual page 12
-(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=724)
-My speakers are placed in my room in a configuration as the 7.1 shown on
-page 12
-in the speaker manual.
-
-As you note the connection from rear to side is a little bit strange (at
-least I
-thought so,...) but this seems to be correct, because when I use the
-windows
-mixer supplied by TerraTec itself, there is a surround test included which
-shows
-the position of the 8 speakers and let me put the indiviually on and off
-and
-this leads always to the correct position.
-
-The problem now: I tried the same as under Windows unter Linux with the
-speaker-test tool.
-I called it via speaker-test -t wav -c 8 and the following came out:
-What wav file was played ----- in which speaker position the wav file was
-played
-"Front Left" ----------------- Front Left Speaker  (correct)
-"Front Center" --------------- Center Speaker      (correct)
-"Front Right" ---------------- Front Right Speaker (correct)
-"Side Right" ----------------- Back Right Speaker  (probably wrong!)
-"Rear Right" ----------------- Side Right Speaker  (probably wrong!)
-"Rear Left" ------------------ Side Left Speaker  (probably wrong!)
-"Side Left" ------------------ Back Left Speaker  (probably wrong!)
-"LFE" ------------------------ Subwoofer (correct)
-
-No one could think that I should just switch the speaker cables but that
-can't
-be a proper solution (not only because this would break settings in the
-original
-Windows driver (which I only use for Upgrading my Plextor drive firmware
-;) ).
-I think the configuration of the surround for the Aureon 7.1 Universe has
-here
-some mistake, hasn't it?
-======================================================================
-
-----------------------------------------------------------------------
- calestyo - 06-29-06 16:01 
-----------------------------------------------------------------------
-$ speaker-test -Dfront -c 2 -t wav
-
-speaker-test 1.0.11
-
-Playback device is front
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.front.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM front
-Playback open error: -2,No such file or directory
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.front.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM front
-Playback open error: -2,No such file or directory
-
-
-
-$ speaker-test -Drear -c 2 -t wav
-
-speaker-test 1.0.11
-
-Playback device is rear
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM rear
-definition (id: rear, value: cards.pcm.rear)
-Playback open error: -22,Invalid argument
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM rear
-definition (id: rear, value: cards.pcm.rear)
-Playback open error: -22,Invalid argument
-
-
-
-$ speaker-test -Dcenter_lfe -c 2 -t wav
-
-speaker-test 1.0.11
-
-Playback device is center_lfe
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM center_lfe
-definition (id: center_lfe, value: cards.pcm.center_lfe)
-Playback open error: -22,Invalid argument
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM center_lfe
-definition (id: center_lfe, value: cards.pcm.center_lfe)
-Playback open error: -22,Invalid argument
-
-
-
-$ speaker-test -Dside -c 2 -t wav
-
-speaker-test 1.0.11
-
-Playback device is side
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM side
-definition (id: side, value: cards.pcm.side)
-Playback open error: -22,Invalid argument
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM side
-definition (id: side, value: cards.pcm.side)
-Playback open error: -22,Invalid argument
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 16:04 
-----------------------------------------------------------------------
-cards.Aureon71Univers.pcm.front.0:CARD=0'
-
-It seem that "Aureon71Universe" is too long
-
-http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/aliases.conf;filenode=957365e8f3e62bda5e1e65b3d7a20bd5a5eb437a;style=raw
+My Mplayer parameter:
+-ao alsa:device=3Dplughw=3D0.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-29-06 01:35 calestyo       New Issue                                    
-06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
-06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
-06-29-06 01:36 calestyo       Note Added: 0010634                          
-06-29-06 01:36 calestyo       Issue Monitored: calestyo                    
-06-29-06 15:29 Raymond        Note Added: 0010647                          
-06-29-06 15:36 calestyo       Note Added: 0010648                          
-06-29-06 15:37 calestyo       Note Added: 0010649                          
-06-29-06 15:40 Raymond        Note Added: 0010650                          
-06-29-06 15:45 calestyo       Note Added: 0010651                          
-06-29-06 15:52 Raymond        Note Added: 0010652                          
-06-29-06 15:54 Raymond        Note Edited: 0010652                         
-06-29-06 15:56 calestyo       Note Added: 0010653                          
-06-29-06 15:58 Raymond        Note Added: 0010654                          
-06-29-06 16:01 calestyo       Note Added: 0010655                          
-06-29-06 16:04 Raymond        Note Added: 0010656                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-28-06 11:02 konczalski     New Issue                                    =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
