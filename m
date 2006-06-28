@@ -1,12 +1,16 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: Make wav the default for speaker test
-Date: Wed, 28 Jun 2006 14:22:11 -0700 (PDT)
-Message-ID: <20060628212211.73593.qmail@web60824.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Wed, 28 Jun 2006 23:25:12 +0200
+Message-ID: <e86c0adb0ff6eb637ba59b4ad790b83c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE98A27D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Jun 2006 23:25:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,55 +20,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> 
-> Lee Revell wrote:
-> > I think it's nicer to have the sampled voice be the default for
-> > speaker-test.  Any objections?
-> >  
-> <<<Deletia (patch)>>>
-> 
->
-> What about people who don't speak English?
-> "Pink" is the international language. ;-)
 
-While having spoken words for channel assignments IS laudable, sometimes the
-correspondence can be off.  Sometimes INTENTIONALLY one plugs the speakers in a
-different way.  It also can be changed by various mapping schemes.  The
-correspondence for channels over 8 is WAY up in the air, and some sound cards
-DO have more than 8.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-28-2006 23:25 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
 
-When this was put in, various people suggested many identification schemes.  I
-remember a debate or some such.  I don't believe much was decided by the group,
-only the author of the updates.
+----------------------------------------------------------------------
+ rankincj - 06-28-06 23:25 
+----------------------------------------------------------------------
+When I ported the OSS SoundScape driver to ALSA, I tested it with the only
+hardware I had - namely a SoundScape PnP card. So I can't say that I'm
+surprised that ALSA doesn't recognise the Elite card. Which isn't to say
+that it *couldn't* support it, but the work was never done.
 
-As for the various languages, I will note that the printout of the speaker test
-is currently in English (has anyone internationalized it?), so having the
-spoken words probably won't hurt anyone.
+And it's probably a good time to mention that I never got the microphone
+working on my card with either OSS or ALSA, so I have no idea if the
+"capture" part of the ALSA driver works or not.
 
-I built up my own "speaker identification" 'wav' file, that repeated
-simultaneously the speaker name for each channel.  It was a bit easier when
-fiddling around with mixer controls because you didn't need to wait for the
-sequence to roll around to the speaker you were testing.  You could also go to
-the speaker and listen to find out the proper thing.  In that case, having the
-identifier 'spoken' was a great helper.
+ENSONIQ was bought out long ago, and the new owner has lost the relevant
+information. The only people who really know anything about SoundScape
+cards these days are the proprietary OSS driver people.
 
-As for me, I can always use the switch.  Have the default any way you want :-)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+======================================================================
 
 
-
-
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
