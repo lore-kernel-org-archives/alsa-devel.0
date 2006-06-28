@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Wed, 28 Jun 2006 10:45:48 +0200
-Message-ID: <150b73ffcb379bab02abed467912e391@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000343]: au8820 hangs the system at
+	some occasions
+Date: Wed, 28 Jun 2006 11:48:20 +0200
+Message-ID: <9e0fa716171bd1935ec99544ff120873@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 504AA230
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07127251
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 10:45:48 +0200 (MEST)
+	Wed, 28 Jun 2006 11:48:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,101 +26,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                
+Reported By:                sandman
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   343
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
+Distribution:               RedHat 9
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-28-2006 10:45 CEST
+Date Submitted:             06-23-2004 07:20 CEST
+Last Modified:              06-28-2006 11:48 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    au8820 hangs the system at some occasions
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
-
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
-
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+At some occasions the system hangs without any means
+to recover other than reset button. No mouse, no pings and
+even the alt-SysRq feature doesn't help.
+As a result I reboot the system a few times a day (sometimes).
+The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
+least. 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-28-06 04:33 
+ sandman - 03-22-06 18:05 
 ----------------------------------------------------------------------
-1. Yes, there might be a digital control with the same name
-
-2. Your question has NOTHING to do with this bug report, PLEASE stop
-posting off topic comments
+I'm sorry, but I no longer have that PC, so I can not check if this is
+fixed. I saw a number of problems with the au88x0 driver on 64 bit
+platform - it used to cause kernel panics back then until I made a small
+change (it was something related to long being 64 bit on amd64 - I think I
+even sent the patch once). Although the hangs were on both 32 and 64 bit
+kernels.
 
 ----------------------------------------------------------------------
- Cimmo - 06-28-06 10:45 
+ Raymond - 06-28-06 11:48 
 ----------------------------------------------------------------------
-There are some other problems, I cannot ear surround also with dvd playback
-5.1
-Is it possible that all uses plug:surround51:0 or 40:0?
+It's possible for au88x0 to hang the computer if you open too many
+applications especially OSS applications on 32/64 bits machines. 
 
-I used kaffeine and putting surround it say that the device is busy, with
-stereo 2.0 it play, but of course with only fron speaker.
+This hang is more likely to happen in au8820 than au8810/au8830 since
+au8820 only has 16 MIXIN and au8810/au8830 has 32 MIXIN 
+
+Please note that if you follow the step in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228 and use a browser to
+open a flash, tons of error messages are generated in the system log
+immediately.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-23-04 07:20 sandman        New Issue                                    
+06-23-04 07:20 sandman        Distribution              => RedHat 9        
+06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
+04-07-05 21:04 jdthood        Note Added: 0004370                          
+04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+
+04-19-05 09:47 sandman        Note Added: 0004519                          
+04-19-05 10:03 jdthood        Status                   assigned => acknowledged
+08-25-05 18:51 Raymond        Note Added: 0005942                          
+03-22-06 03:01 rlrevell       Note Added: 0008789                          
+03-22-06 18:05 sandman        Note Added: 0008864                          
+03-23-06 08:59 Raymond        Note Added: 0008879                          
+03-23-06 09:05 Raymond        Note Edited: 0008879                         
+03-23-06 09:21 Raymond        Note Edited: 0008879                         
+03-23-06 11:00 Raymond        Note Edited: 0008879                         
+03-30-06 10:29 Raymond        Note Added: 0009025                          
+03-30-06 10:30 Raymond        Note Deleted: 0009025                        
+05-24-06 15:35 Raymond        Note Deleted: 0008879                        
+06-28-06 11:48 Raymond        Note Added: 0010614                          
 ======================================================================
 
 
