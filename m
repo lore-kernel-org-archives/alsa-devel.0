@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 01:35:55 +0200
-Message-ID: <4b8e0ca2eb05326cfa79f96440498895@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 01:36:41 +0200
+Message-ID: <54fab3c14ea176b7777933f387b0a206@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A0EC28B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E8EE28B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 01:35:55 +0200 (MEST)
+	Thu, 29 Jun 2006 01:36:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 01:35 CEST
+Last Modified:              06-29-2006 01:36 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -107,12 +107,20 @@ here
 some mistake, hasn't it?
 ======================================================================
 
+----------------------------------------------------------------------
+ calestyo - 06-29-06 01:36 
+----------------------------------------------------------------------
+You might also have a look at my post at alsa-users mailinglist
+"(Additional) Soundproblems with my TerraTec Auron 7.1 Universe souncard"
+from 2006-06-29 (news://news.gmane.org:119/e7v34p$rut$1@sea.gmane.org).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-29-06 01:35 calestyo       New Issue                                    
 06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
 06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:36 calestyo       Note Added: 0010634                          
 ======================================================================
 
 
