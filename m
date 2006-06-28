@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002241]: Yamaha RP-U100 device works
-	with snd-usb-audio driver
-Date: Wed, 28 Jun 2006 21:17:15 +0200
-Message-ID: <0db13d1a73aca5af3ce87f50eca6aac6@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Make wav the default for speaker test
+Date: Wed, 28 Jun 2006 20:26:26 +0100
+Message-ID: <44A2D7E2.6030801@superbug.co.uk>
+References: <1151515314.15513.36.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEE95279
-	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 21:17:15 +0200 (MEST)
+In-Reply-To: <1151515314.15513.36.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,47 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> I think it's nicer to have the sampled voice be the default for
+> speaker-test.  Any objections?
+> 
+> Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+> 
+> --- speaker-test/speaker-test.c~	2006-06-09 16:53:29.000000000 -0400
+> +++ speaker-test/speaker-test.c	2006-06-28 13:19:57.000000000 -0400
+> @@ -76,7 +76,7 @@
+>  static unsigned int       period_time = 0;	            /* period time in us */
+>  static unsigned int       nperiods    = 4;                  /* number of periods */
+>  static double             freq        = 440;                /* sinusoidal wave frequency in Hz */
+> -static int                test_type   = TEST_PINK_NOISE;    /* Test type. 1 = noise, 2 = sine wave */
+> +static int                test_type   = TEST_WAV;    /* Test type. 1 = noise, 2 = sine wave, 3 = voice */
+>  static pink_noise_t pink;
+>  static snd_pcm_uframes_t  buffer_size;
+>  static snd_pcm_uframes_t  period_size;
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2241> 
-======================================================================
-Reported By:                discord
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2241
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Knoppix
-Kernel Version:             2.6.15.2
-======================================================================
-Date Submitted:             06-28-2006 21:17 CEST
-Last Modified:              06-28-2006 21:17 CEST
-======================================================================
-Summary:                    Yamaha RP-U100 device works with snd-usb-audio
-driver
-Description: 
-I was able to get the RP-U100 working with the snd-usb-audio driver.
-alsamixer reports that no mixer elems found, so we do not have any control
-over the volume.
-Please add to the soundcard matrix.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-28-06 21:17 discord        New Issue                                    
-06-28-06 21:17 discord        Distribution              => Knoppix         
-06-28-06 21:17 discord        Kernel Version            => 2.6.15.2        
-======================================================================
-
+What about people who don't speak English?
+"Pink" is the international language. ;-)
 
 
 Using Tomcat but need to do more? Need to support web services, security?
