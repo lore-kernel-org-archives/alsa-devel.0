@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Make wav the default for speaker test
-Date: Wed, 28 Jun 2006 20:26:26 +0100
-Message-ID: <44A2D7E2.6030801@superbug.co.uk>
+Date: Wed, 28 Jun 2006 15:33:25 -0400
+Message-ID: <1151523205.15513.60.camel@mindpipe>
 References: <1151515314.15513.36.camel@mindpipe>
+	<44A2D7E2.6030801@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1151515314.15513.36.camel@mindpipe>
+In-Reply-To: <44A2D7E2.6030801@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,31 +18,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> I think it's nicer to have the sampled voice be the default for
-> speaker-test.  Any objections?
-> 
-> Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
-> 
-> --- speaker-test/speaker-test.c~	2006-06-09 16:53:29.000000000 -0400
-> +++ speaker-test/speaker-test.c	2006-06-28 13:19:57.000000000 -0400
-> @@ -76,7 +76,7 @@
->  static unsigned int       period_time = 0;	            /* period time in us */
->  static unsigned int       nperiods    = 4;                  /* number of periods */
->  static double             freq        = 440;                /* sinusoidal wave frequency in Hz */
-> -static int                test_type   = TEST_PINK_NOISE;    /* Test type. 1 = noise, 2 = sine wave */
-> +static int                test_type   = TEST_WAV;    /* Test type. 1 = noise, 2 = sine wave, 3 = voice */
->  static pink_noise_t pink;
->  static snd_pcm_uframes_t  buffer_size;
->  static snd_pcm_uframes_t  period_size;
+On Wed, 2006-06-28 at 20:26 +0100, James Courtier-Dutton wrote:
+> What about people who don't speak English?
+> "Pink" is the international language. ;-)
 > 
 
-What about people who don't speak English?
-"Pink" is the international language. ;-)
+Hah, good point.  Didn't even think of that.  Can you tell I'm
+American?  ;-)
+
+Lee
 
 
 Using Tomcat but need to do more? Need to support web services, security?
