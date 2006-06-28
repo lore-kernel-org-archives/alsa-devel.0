@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002242]: Aureon 7.1 Universe does not
 	show a soundcard name
-Date: Thu, 29 Jun 2006 00:43:01 +0200
-Message-ID: <cfdf19d716df7335ce3fe1f8bd383139@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 01:26:40 +0200
+Message-ID: <b0837b425406d3d073f92f41e8859f80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 493FF279
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA27F28B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 00:43:02 +0200 (MEST)
+	Thu, 29 Jun 2006 01:26:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2242> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 00:43 CEST
-Last Modified:              06-29-2006 00:43 CEST
+Last Modified:              06-29-2006 01:26 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe does not show a soundcard name
 Description: 
@@ -73,12 +73,19 @@ This perhaps leads to some other problems to (as I've described in my post
 in alsa-users list).
 ======================================================================
 
+----------------------------------------------------------------------
+ calestyo - 06-29-06 01:26 
+----------------------------------------------------------------------
+Sorry this is not a compilation related problem :D...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-29-06 00:43 calestyo       New Issue                                    
 06-29-06 00:43 calestyo       Distribution              => Debian GNU/Linux
 06-29-06 00:43 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:26 calestyo       Issue Monitored: calestyo                    
+06-29-06 01:26 calestyo       Note Added: 0010631                          
 ======================================================================
 
 
