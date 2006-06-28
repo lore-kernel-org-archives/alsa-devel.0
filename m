@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002083]: after upgrade from 1.0.11rc4 to
-	1.0.11rc5 no more sound on Envy24HT (ICE1724)
-Date: Wed, 28 Jun 2006 10:51:35 +0200
-Message-ID: <ff89bce53831b07a955e6dc9671579d3@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Wed, 28 Jun 2006 10:45:48 +0200
+Message-ID: <150b73ffcb379bab02abed467912e391@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7713E230
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 504AA230
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 10:51:35 +0200 (MEST)
+	Wed, 28 Jun 2006 10:45:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,91 +25,107 @@ List-Id: alsa-devel@alsa-project.org
 
 
 A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2083> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                konczalski
-Assigned To:                =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - lib
-Issue ID:                   2083
-Category:                   0_general
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             04-29-2006 00:51 CEST
-Last Modified:              06-28-2006 10:51 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    after upgrade from 1.0.11rc4 to 1.0.11rc5 no mo=
-re
-sound on Envy24HT (ICE1724)
-Description: =
+======================================================================
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-28-2006 10:45 CEST
+======================================================================
+Summary:                    Alsa mixer lack of some functions
+Description: 
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-Hello, i use the Terratec Aureon 5.1 Space with Envy24HT (ICE1724) chip
-under GeexBox (http://www.geexbox.org). Since i upgrade from 1.0.11rc4 to
-1.0.11rc5 i get no more sound and folow erors:
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-mplayer
-MPlayer interrupted by signal 11 in module: demux_open2
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-aplay
-aplay: main:547: audio open error: Unknown error 16
-
-pawel
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+thanx for attention
+Marco
+======================================================================
 
 ----------------------------------------------------------------------
- konczalski - 05-09-06 00:48 =
+ rlrevell - 06-28-06 04:33 
+----------------------------------------------------------------------
+1. Yes, there might be a digital control with the same name
+
+2. Your question has NOTHING to do with this bug report, PLEASE stop
+posting off topic comments
 
 ----------------------------------------------------------------------
-Sorry! I have written a wrong model. It is the Terratec Aureon 7.1 Space!
-
+ Cimmo - 06-28-06 10:45 
 ----------------------------------------------------------------------
- konczalski - 06-28-06 10:51 =
+There are some other problems, I cannot ear surround also with dvd playback
+5.1
+Is it possible that all uses plug:surround51:0 or 40:0?
 
-----------------------------------------------------------------------
-I found that this problem depends on -D_FILE_OFFSET_BITS=3D64 parameter for
-the compiler (TARGET_CFLAGS=3D"-Os -Wall -pipe -D_FILE_OFFSET_BITS=3D64
--D_LARGEFILE_SOURCE"), it=B4s  sems as the sampling rate for digital output
-don=B4t by set well???
+I used kaffeine and putting surround it say that the device is busy, with
+stereo 2.0 it play, but of course with only fron speaker.
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-04-29-06 00:51 konczalski     New Issue                                    =
-
-05-09-06 00:48 konczalski     Note Added: 0009650                          =
-
-06-28-06 10:51 konczalski     Note Added: 0010613                          =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+======================================================================
 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
