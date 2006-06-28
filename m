@@ -1,13 +1,16 @@
-From: mw-u2@gmx.de
-Subject: Re: default model for snd-hda-intel doesnt work
-Date: Wed, 28 Jun 2006 10:39:02 +0200
-Message-ID: <20060628083902.198650@gmx.net>
-References: <20060621191716.295260@gmx.net> <s5h3bdxcpv9.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002083]: after upgrade from 1.0.11rc4 to
+	1.0.11rc5 no more sound on Envy24HT (ICE1724)
+Date: Wed, 28 Jun 2006 10:51:35 +0200
+Message-ID: <ff89bce53831b07a955e6dc9671579d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3bdxcpv9.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7713E230
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Jun 2006 10:51:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,70 +20,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPiBBdCBGcmksIDIzIEp1biAyMDA2
-IDE0OjI1OjU0ICswMjAwLAo+IFBldGVyIEx1c3RpZyB3cm90ZToKPiA+IAo+ID4gVGFrYXNoaSBJ
-d2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPiA+IAo+ID4gPiBBdCBXZWQsIDIxIEp1biAyMDA2
-IDIxOjE3OjE2ICswMjAwLAo+ID4gPiBtdy11MkBnbXguZGUgd3JvdGU6Cj4gPiA+ID4gCj4gPiA+
-ID4gSGksCj4gPiA+ID4gCj4gPiA+ID4gPiBJZiB0aGUgZGVmYXVsdCBjb25maWd1cmF0aW9uIGRv
-ZXNuJ3Qgd29yayBhbmQgb25lIG9mIHRoZSBhYm92ZQo+ID4gPiA+ID4gbWF0Y2hlcyB3aXRoIHlv
-dXIgZGV2aWNlLCByZXBvcnQgaXQgdG9nZXRoZXIgd2l0aCB0aGUgUENJCj4gPiA+ID4gPiBzdWJz
-eXN0ZW0gSUQgKG91dHB1dCBvZiAibHNwY2kgLW52IikgdG8gQUxTQSBCVFMgb3IgYWxzYS1kZXZl
-bAo+ID4gPiA+ID4gTUwgKHNlZSB0aGUgc2VjdGlvbiAiTGlua3MgYW5kIEFkZHJlc3NlcyIpLgo+
-ID4gPiA+IAo+ID4gPiA+IEkgaGFkIHRvIHVzZSBvcHRpb25zIHNuZC1oZGEtaW50ZWwgbW9kZWw9
-NnN0YWNrIHBvc2l0aW9uX2ZpeD0xCj4gaW5kZXg9MAo+ID4gPiA+IAo+ID4gPiA+ICQgbHNwY2kK
-PiA+ID4gPiAwMDAwOjAwOjE0LjIgMDQwMzogQVRJIFRlY2hub2xvZ2llcyBJbmM6IFVua25vd24g
-ZGV2aWNlIDQzN2IgKHJldgo+IDAxKQo+ID4gPiA+IAo+ID4gPiA+ICQgbHNwY2kgLW52Cj4gPiA+
-ID4gCj4gPiA+ID4gMDAwMDowMDoxNC4yIDA0MDM6IDEwMDI6NDM3YiAocmV2IDAxKQo+ID4gPiA+
-ICAgICAgICAgU3Vic3lzdGVtOiAxNDYyOjcxNzMKPiA+ID4gPiAgICAgICAgIEZsYWdzOiBidXMg
-bWFzdGVyLCBzbG93IGRldnNlbCwgbGF0ZW5jeSA2NCwgSVJRIDIwMQo+ID4gPiA+ICAgICAgICAg
-TWVtb3J5IGF0IGZlYmY4MDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2S10K
-PiA+ID4gPiAgICAgICAgIENhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNp
-b24gMgo+ID4gPiA+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbNjBdIE1lc3NhZ2UgU2lnbmFsbGVk
-IEludGVycnVwdHM6IDY0Yml0Kwo+ID4gPiBRdWV1ZT0wLzAgRW5hYmxlLQo+ID4gPiA+IAo+ID4g
-PiA+IEhvcGUgdGhhdCBoZWxwcyEKPiA+ID4gPiAKPiA+ID4gPiBJIHN0aWxsIGdvdCBhIHZlcnkg
-YW5ub3lpbmcgcHJvYmxlbSBsZWZ0IHRob3VnaDogSSBjYW50IGNoYW5nZSB0aGUKPiA+ID4gPiB2
-b2x1bWUgdXNpbmcgdGhlIFBDTSBjaGFubmVsIEkgaGF2ZSB0byBjaGFuZ2UgdGhlIHZvbHVtZSBv
-ZiBGcm9udAo+ID4gPiA+IGNoYW5uZWwuIFRoaXMgaXMgdmVyeSBhbm5veWluZyBzaW5jZSBhbGwg
-cHJvZ3JhbXMgd2l0aCBhIHZvbHVtZQo+ID4gPiA+IGNvbnRyb2wgY2hhbmdlIHRoZSBQQ00gY2hh
-bm5lbCB3aGljaCBpcyBvZiBubyBlZmZlY3QuIAo+ID4gPiAKPiA+ID4gSG0sIHRoaXMgaW1wbGll
-cyB0aGF0IG1vZGVsPTZzdGFjayBkb2Vzbid0IG1hdGNoIHdpdGggeW91ciBkZXZpY2VzCj4gPiA+
-IHdlbGwgZW5vdWdoLiAgQWxzbywgcG9zaXRpb25fZml4PTEgc2hvdWxkbid0IGJlIG5lY2Vzc2Fy
-eSBpbiB0aGUKPiA+ID4gbGF0ZXN0IHZlcnNpb24uICBEb2Vzbid0IHRoZSBkcml2ZXIgd29yayB3
-aXRob3V0IHRoaXMgb3B0aW9uPwo+ID4gCj4gPiB3aXRob3V0IHBvc2l0aW9uX2ZpeD0xIGl0IGRv
-ZXNuJ3Qgd29yay4gRWcuIHBsYXlpbmcgaW4gYSBmaWxlIHdpdGgKPiA+IG9nZzEyMyBkb2Vzbid0
-IHdvcmsuIG9nZzEyMyBoYXMgYSBkaXNwbGF5IG9mIHRoZSBzZWNvbmRzIHBsYXllZCBzbwo+ID4g
-ZmFyIGFuZCB0aGlzIHRpbWVyIGRvZXNuJ3QgaW5jcmVhc2UuIE5laXRoZXIgZG9lcyBzb3VuZCB3
-b3JrIHdpdGgKPiA+IG90aGVyIGFwcGxpY2F0aW9ucy4gCj4gCj4gT0ssIHRoZW4gaXQncyBhIGhh
-cmR3YXJlIChvciBCSU9TKSBidWcuLi4KCkkgY2hlY2tlZCBpdCBhZ2FpbiB3aXRoIHBvc2l0aW9u
-X2ZpeD0wLDEsMiBhbmQgaXQgb25seSB3b3JrcyB3aXRoIDEgKGFsd2F5cyBhbHNvIHVzaW5nIG1v
-ZGVsPTZzdGFjaykuCgo+ID4gPiBQcm92aWRlIC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMqIGZp
-bGVzIGFuZCAvZXRjL2Fzb3VuZC5zdGF0ZSBmb3IKPiA+ID4gZnVydGhlciBhbmFseXNpcy4KPiA+
-IAo+ID4gJCBjYXQgL3Byb2MvYXNvdW5kL3ZlcnNpb24KPiA+IEFkdmFuY2VkIExpbnV4IFNvdW5k
-IEFyY2hpdGVjdHVyZSBEcml2ZXIgVmVyc2lvbiAxLjAuMTFyYzIgKFdlZCBKYW4gMDQKPiAwODo1
-NzoyMCAyMDA2IFVUQykuCj4gPiAKPiA+ICQgYXB0LWNhY2hlIHBvbGljeSBhbHNhLWJhc2UKPiA+
-IGFsc2EtYmFzZToKPiA+ICAgSW5zdGFsbGVkOiAxLjAuMTEtMgo+ID4gICBDYW5kaWRhdGU6IDEu
-MC4xMS0yCj4gPiAgIFZlcnNpb24gdGFibGU6Cj4gPiAgKioqIDEuMC4xMS0yIDAKPiA+ICAgICAg
-ICAgNTAwIGZ0cDovL2Z0cC5kZS5kZWJpYW4ub3JnIHRlc3RpbmcvbWFpbiBQYWNrYWdlcwo+ID4g
-ICAgICAgICAxMDAgL3Zhci9saWIvZHBrZy9zdGF0dXMKPiA+IAo+ID4gJCBjYXQgL3Byb2MvYXNv
-dW5kL2NhcmQwL2NvZGVjIzMKPiA+IENvZGVjOiBSZWFsdGVrIEFMQzg4MAo+IAo+IFRoZSAiUENN
-IiB2b2x1bWUgY29udHJvbCBvbiB0aGlzIGNvZGVjIGNoaXAgaXMgaW1wbGVtZW50ZWQgaW4gdGhl
-Cj4gc29mdHZvbCBwbHVnaW4gb2YgYWxzYS1saWIuICBJZiB5b3UgdXNlIE9TUyBhcHBsaWNhdGlv
-bnMgb3ZlciBrZXJuZWwKPiBPU1MgZW11bGF0aW9uLCBpdCBkb2Vzbid0IHdvcmsuCgpHcmVhdCBj
-YXRjaCEgSSB3YXMgaW5kZWVkIHVzaW5nIE9TUyBlbXVsYXRpb24gKGJ5IGFjY2lkZW50KSBieSBv
-bmUgcHJvZ3JhbSBhbmQgdGhvdWdodCBpdCB3YXMgYSBnZW5lcmFsIHByb2JsZW0uIFNvcnJ5IGZv
-ciB0aGF0LiBJIGNvbmZpZ3VyZWQgdGhlIHByb2dyYW0gdG8gYWxzYSBhbmQgdm9sdW1lIGNvbnRy
-b2wgZG9lcyB3b3JrIG5vdy4gVGhhbmsgeW91IHZlcnkgbXVjaC4KCgotLSAKCgoiRmVlbCBmcmVl
-IiDigJMgMTAgR0IgTWFpbGJveCwgMTAwIEZyZWVTTVMvTW9uYXQgLi4uCkpldHp0IEdNWCBUb3BN
-YWlsIHRlc3RlbjogaHR0cDovL3d3dy5nbXgubmV0L2RlL2dvL3RvcG1haWwKClVzaW5nIFRvbWNh
-dCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1
-cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xv
-Z3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNh
-dGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5h
-cy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIx
-NjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2083> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - lib
+Issue ID:                   2083
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             04-29-2006 00:51 CEST
+Last Modified:              06-28-2006 10:51 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    after upgrade from 1.0.11rc4 to 1.0.11rc5 no mo=
+re
+sound on Envy24HT (ICE1724)
+Description: =
+
+Hello, i use the Terratec Aureon 5.1 Space with Envy24HT (ICE1724) chip
+under GeexBox (http://www.geexbox.org). Since i upgrade from 1.0.11rc4 to
+1.0.11rc5 i get no more sound and folow erors:
+
+mplayer
+MPlayer interrupted by signal 11 in module: demux_open2
+
+aplay
+aplay: main:547: audio open error: Unknown error 16
+
+pawel
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ konczalski - 05-09-06 00:48 =
+
+----------------------------------------------------------------------
+Sorry! I have written a wrong model. It is the Terratec Aureon 7.1 Space!
+
+----------------------------------------------------------------------
+ konczalski - 06-28-06 10:51 =
+
+----------------------------------------------------------------------
+I found that this problem depends on -D_FILE_OFFSET_BITS=3D64 parameter for
+the compiler (TARGET_CFLAGS=3D"-Os -Wall -pipe -D_FILE_OFFSET_BITS=3D64
+-D_LARGEFILE_SOURCE"), it=B4s  sems as the sampling rate for digital output
+don=B4t by set well???
+
+Issue History
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+04-29-06 00:51 konczalski     New Issue                                    =
+
+05-09-06 00:48 konczalski     Note Added: 0009650                          =
+
+06-28-06 10:51 konczalski     Note Added: 0010613                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
