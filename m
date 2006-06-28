@@ -1,24 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Control TLV extension - final proposal
-Date: Wed, 28 Jun 2006 16:25:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0606281620500.9302@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0606281350300.9302@tm8103.perex-int.cz>
-	<s5hlkrhsbw4.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606281430310.9302@tm8103.perex-int.cz>
-	<s5hirmlsagj.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606281501380.9302@tm8103.perex-int.cz>
-	<s5hejx9s8fg.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606281544540.9302@tm8103.perex-int.cz>
-	<s5h8xnhs78q.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel
+	82801FB/.../ = No sound (Benq 52-101)
+Date: Wed, 28 Jun 2006 16:34:33 +0200
+Message-ID: <34752bbb5f59174e830ab03bfe798f78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAD80235
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87671235
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 16:25:17 +0200 (MEST)
-In-Reply-To: <s5h8xnhs78q.wl%tiwai@suse.de>
+	Wed, 28 Jun 2006 16:34:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,66 +20,239 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jun 2006, Takashi Iwai wrote:
 
-> At Wed, 28 Jun 2006 15:54:07 +0200 (CEST),
-> Jaroslav Kysela wrote:
-> > 
-> > On Wed, 28 Jun 2006, Takashi Iwai wrote:
-> > 
-> > > It's fine because snd_ctl_eme_read() and snd_ctl_elem_write() are
-> > > really corresponding 1:1.  The write is just write, and the read is
-> > > just read.
-> > 
-> > It might be for TLV, too. But I agree, we have basically two "write" 
-> > requests:
-> > 
-> > 1) do a TLV command processing
-> > 2) do a TLV value write operation
-> > 
-> > In such case, I think that we need third ioctl TLV_COMMAND? I can rename 
-> > write_flag to op_flag or so and we are fine. Also creating 
-> > ACCESS_TLV_COMMAND might make sense. It's ok for you?
-> 
-> Yeah, the separate ioctls sound reasonable.
-> 
-> Is TLV_WRITE applicable to normal control elements?  If it's only for
-> user-space elements, we should rename it such as TLV_WRITE_USER or
-> so.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+======================================================================
+Reported By:                liangalei
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
+======================================================================
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              06-28-2006 16:34 CEST
+======================================================================
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
+Description: 
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-We are defining an universal API and I think that value might be 
-updated also for in-kernel controls. It will const us nothing from 
-the implementation side (only a call specification for the tlv callback 
-in the kernel).
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-> > The only bad thing is that the TLV write replaces the whole TLV tree for 
-> > the user elements. Perhaps, a flag can be added to 'struct snd_ctl_tlv'
-> > which will mean 'partial write', so we can distinguish the full / partial 
-> > operations and implement only full write at the time.
-> 
-> I'm afraid that it would bring unnecessary complexity.
-> The TLV_READ is anyway the read of the whole TLV tree.  So, TLV_WRITE
-> should be same.
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-Yes, I meant it only as extension for future. We may use 31.bit from 
-snd_ctl_tlv.length as an identifier for partial writes, but we can leave
-only full write for now.
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-> Anyway, still I think we'd better implement and test example codes in
-> alsa-lib before committing to alsa-kernel codes...
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
-I'm adding TLV stuff to alsa-lib right now.
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
 
-						Jaroslav
+thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001931 Unknown AC97 codec, digital sound works
+has duplicate       0002191 No sound on intel8x0 - 82801FB/FBM/FR/F...
+has duplicate       0001756 Detects soundcard, alsamixer is ok, fid...
+has duplicate       0002185 No sound from intel ich6 connexant id31...
+======================================================================
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+----------------------------------------------------------------------
+ trava - 06-28-06 16:03 
+----------------------------------------------------------------------
+I agree! It's more than one year that the problem is known.
+
+----------------------------------------------------------------------
+ jmpmjmpm - 06-28-06 16:34 
+----------------------------------------------------------------------
+May I just add that this is not just a benq issue, I am the user of a
+packard bell easynote a8202 which is manufactured by nec.
+
+This will really come to be a problem when 6 months down the line people
+start using these notebooks for Linux after them being ex-corporate,
+second user, etc as there is a lot of people who tend to use Linux on
+cheaper "older" hardware.
+
+I have emailed conexant today to request a data sheet on the above
+mentioned chip, but don't know if I have asked for the right thing.
+Hopefully one of the devs will be able to shed some light on this.
+
+A bit out of the scope of alsa bugtrack, but has anyone got this working
+using oss?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
+   
+03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
+03-17-06 04:10 Kooper         Note Added: 0008633                          
+03-17-06 12:07 tiwai          Note Added: 0008641                          
+03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
+      
+03-17-06 12:35 Kooper         Note Added: 0008644                          
+03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+03-25-06 10:51 alessiodf      Note Added: 0008944                          
+03-26-06 20:12 alessiodf      Note Edited: 0008944                         
+03-26-06 20:15 alessiodf      Note Edited: 0008944                         
+03-30-06 15:47 trava          Note Added: 0009034                          
+04-07-06 13:05 kesiev         Note Added: 0009137                          
+04-07-06 13:06 kesiev         Note Edited: 0009137                         
+04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
+04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
+04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
+04-12-06 16:21 kesiev         Note Added: 0009246                          
+04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
+04-13-06 14:00 kesiev         Note Added: 0009259                          
+04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+
+04-13-06 14:54 kesiev         Note Edited: 0009259                         
+04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
+04-15-06 12:33 kesiev         Note Edited: 0009259                         
+04-15-06 12:33 kesiev         File Added: alsasound.conf                    
+04-18-06 09:35 fedukoff       Note Added: 0009326                          
+05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
+05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
+05-09-06 14:36 drseergio      Note Added: 0009658                          
+05-09-06 16:40 rlrevell       Note Added: 0009661                          
+05-09-06 17:16 drseergio      Note Added: 0009662                          
+05-09-06 17:19 drseergio      Note Edited: 0009662                         
+05-09-06 17:28 rlrevell       Note Added: 0009664                          
+05-09-06 17:31 drseergio      Note Edited: 0009662                         
+05-09-06 17:32 drseergio      Note Added: 0009665                          
+05-09-06 17:41 drseergio      Note Edited: 0009665                         
+05-09-06 17:49 rlrevell       Note Added: 0009667                          
+05-09-06 17:52 drseergio      Note Added: 0009668                          
+05-09-06 17:57 rlrevell       Note Added: 0009669                          
+05-09-06 18:00 drseergio      Note Added: 0009670                          
+05-09-06 18:33 fedukoff       Note Added: 0009672                          
+05-09-06 18:44 drseergio      Note Added: 0009673                          
+05-09-06 19:11 fedukoff       Note Added: 0009674                          
+05-09-06 19:12 rlrevell       Note Added: 0009675                          
+05-09-06 19:21 drseergio      Note Added: 0009676                          
+05-09-06 19:27 fedukoff       Note Added: 0009677                          
+05-09-06 19:28 rlrevell       Note Added: 0009678                          
+05-09-06 19:30 drseergio      Note Added: 0009679                          
+05-09-06 19:39 fedukoff       Note Added: 0009680                          
+05-09-06 19:42 rlrevell       Note Added: 0009681                          
+05-09-06 19:50 drseergio      Note Added: 0009682                          
+05-09-06 20:16 fedukoff       Note Added: 0009683                          
+05-09-06 20:17 rlrevell       Note Added: 0009684                          
+05-09-06 20:19 rlrevell       Note Added: 0009685                          
+05-09-06 20:28 drseergio      Note Added: 0009686                          
+05-09-06 20:29 fedukoff       Note Added: 0009687                          
+05-09-06 20:34 rlrevell       Note Added: 0009688                          
+05-09-06 22:07 fedukoff       Note Added: 0009691                          
+05-10-06 15:58 fedukoff       Note Added: 0009719                          
+05-10-06 17:10 rlrevell       Note Added: 0009735                          
+05-10-06 17:19 kesiev         Note Added: 0009738                          
+05-10-06 17:21 trava          Note Added: 0009740                          
+05-10-06 17:25 trava          Note Added: 0009741                          
+05-10-06 17:41 fedukoff       Note Added: 0009743                          
+05-10-06 18:03 fedukoff       Note Added: 0009745                          
+05-10-06 18:20 trava          Note Added: 0009746                          
+05-10-06 18:34 fedukoff       Note Added: 0009748                          
+05-11-06 08:15 fedukoff       Note Added: 0009759                          
+05-11-06 08:42 JProgrammer    Note Added: 0009760                          
+05-11-06 08:45 fedukoff       Note Added: 0009761                          
+05-11-06 18:25 fedukoff       Note Added: 0009764                          
+05-12-06 08:13 fedukoff       Note Added: 0009773                          
+05-12-06 08:14 fedukoff       Note Edited: 0009773                         
+05-15-06 14:15 fedukoff       Note Added: 0009822                          
+05-15-06 14:49 rlrevell       Note Added: 0009824                          
+05-15-06 14:57 fedukoff       Note Added: 0009825                          
+05-15-06 15:25 rlrevell       Note Added: 0009826                          
+05-18-06 12:45 fedukoff       Note Added: 0009866                          
+05-18-06 13:37 fedukoff       Note Added: 0009867                          
+05-18-06 13:48 fedukoff       Note Deleted: 0009822                        
+05-19-06 08:07 fedukoff       Note Added: 0009873                          
+05-25-06 23:03 thoroughfare   Note Added: 0009969                          
+06-02-06 17:37 kickstart      Note Added: 0010049                          
+06-02-06 17:53 kickstart      Note Edited: 0010049                         
+06-02-06 17:54 rlrevell       Note Added: 0010050                          
+06-02-06 18:00 kickstart      Note Deleted: 0010049                        
+06-02-06 19:29 thoroughfare   Note Added: 0010051                          
+06-02-06 19:40 rlrevell       Note Added: 0010052                          
+06-02-06 21:34 thoroughfare   Note Added: 0010056                          
+06-03-06 01:51 kickstart      Note Added: 0010057                          
+06-07-06 10:49 jmpmjmpm       Note Added: 0010078                          
+06-07-06 11:03 jmpmjmpm       Note Deleted: 0010078                        
+06-07-06 20:46 rlrevell       Relationship added       has duplicate 0002191
+06-07-06 20:47 rlrevell       Relationship added       has duplicate 0001756
+06-07-06 20:49 rlrevell       Relationship added       has duplicate 0002185
+06-07-06 22:24 jmpmjmpm       Note Added: 0010094                          
+06-07-06 22:32 rlrevell       Note Added: 0010096                          
+06-07-06 23:00 jmpmjmpm       Note Edited: 0010094                         
+06-08-06 00:14 thoroughfare   Note Added: 0010099                          
+06-08-06 09:39 kickstart      Note Added: 0010110                          
+06-14-06 05:19 sugree         Note Added: 0010205                          
+06-28-06 14:14 jmpmjmpm       Note Added: 0010615                          
+06-28-06 16:03 trava          Note Added: 0010616                          
+06-28-06 16:28 jmpmjmpm       Note Deleted: 0010094                        
+06-28-06 16:34 jmpmjmpm       Note Added: 0010620                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
