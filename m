@@ -1,14 +1,12 @@
-From: Daniel Schroeder <sec@dschroeder.info>
-Subject: Re: ASUS M2N32 MCP55 HDAudio problems
-Date: Wed, 28 Jun 2006 23:20:12 +0200
-Message-ID: <44A2F28C.509@dschroeder.info>
-References: <44A19885.8020104@dschroeder.info> <s5hwtb1qp16.wl%tiwai@suse.de>
-Reply-To: sec@dschroeder.info
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: Make wav the default for speaker test
+Date: Wed, 28 Jun 2006 14:22:11 -0700 (PDT)
+Message-ID: <20060628212211.73593.qmail@web60824.mail.yahoo.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hwtb1qp16.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,108 +16,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 27 Jun 2006 22:43:49 +0200,
-> Daniel Schroeder wrote:
->> Hello *,
->>
->> sorry for posting this to devel and users, but i think this could be
->> interesting for both. Plz. send replies in cc to my mail address because
->>  i am not on list.
->>
->> I am a proud owner of this flagship mainboard with a nvdidia mcp55
->> hdaudio sound card. The chip is identified by alsa as a AD1988A rev.2
->> (dmesg, lspci -v, lspci -nv output below):
->>
->> The problem is that if i activate only front in kmix all is fine.
->> Speaker-Test works as expected. If i activate lfe/center then the sound
->> is messed up and he plays front-left/front-rigt through center and lfe.
+James Courtier-Dutton wrote:
 > 
-> What do you mean to "activate lfe/center"?
-> A more detailed step to reproduce is helpful.
+> Lee Revell wrote:
+> > I think it's nicer to have the sampled voice be the default for
+> > speaker-test.  Any objections?
+> >  
+> <<<Deletia (patch)>>>
 > 
-> 
-> Takashi
+>
+> What about people who don't speak English?
+> "Pink" is the international language. ;-)
 
-a more detail problem description:
+While having spoken words for channel assignments IS laudable, sometimes the
+correspondence can be off.  Sometimes INTENTIONALLY one plugs the speakers in a
+different way.  It also can be changed by various mapping schemes.  The
+correspondence for channels over 8 is WAY up in the air, and some sound cards
+DO have more than 8.
 
-with this module configuration: options snd-hda-intel model=6stack-dig
-position_fix=1
---------------------------
-headphone jack in front: if connected the regular sound isnt muted.
---------------------------
-speaker test hangs in surround51 configuration:
+When this was put in, various people suggested many identification schemes.  I
+remember a debate or some such.  I don't believe much was decided by the group,
+only the author of the updates.
 
-speaker-test -Dplug:surround51 -c6
+As for the various languages, I will note that the printout of the speaker test
+is currently in English (has anyone internationalized it?), so having the
+spoken words probably won't hurt anyone.
 
-speaker-test 1.0.12rc1
+I built up my own "speaker identification" 'wav' file, that repeated
+simultaneously the speaker name for each channel.  It was a bit easier when
+fiddling around with mixer controls because you didn't need to wait for the
+sequence to roll around to the speaker you were testing.  You could also go to
+the speaker and listen to find out the proper thing.  In that case, having the
+identifier 'spoken' was a great helper.
 
-Playback device is plug:surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 22 to 5461
-Period size range from 11 to 2730
-Using max buffer size 5460
-Periods = 4
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left
----- hangs forever
-----------------------------
-speaker-test in surround40
-
-front left=sound output rear left;
-front right=sound output rear right;
-rear right=sound output subwoofer
-rear left=sound output center
-
-in kmix front,surround,center,lfe,side is unmuted and 85%
-
-speaker-test -Dplug:surround40 -c4
-
-speaker-test 1.0.12rc1
-
-Playback device is plug:surround40
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 8192
-Period size range from 16 to 4096
-Using max buffer size 8192
-Periods = 4
-was set period_size = 2048
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
------------------------------
-
-i would expect other fields in kmix additional to the fields/sliders
-mentioned above a slider for rear is missing.
-
-And i would expect that the speaker test would work.
-
------------------------------
-
-aplay plays front left through center and front right throug rear right
-
-aplay -dsurround51 chan-id.wav
-
------------------------------
-
-in other applications there is something wrong, but i cannot determine
-the problem as in the examples above.
-
-I hope this helps a bit more..
+As for me, I can always use the switch.  Have the default any way you want :-)
 
 
-daniel
+
+
+-- 
+Tom Watson
+tsw@johana.com
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
