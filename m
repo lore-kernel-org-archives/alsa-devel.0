@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Wed, 28 Jun 2006 03:50:34 +0200
-Message-ID: <1869a1a3c6de30e3c7cf9584486c4e93@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Wed, 28 Jun 2006 04:25:17 +0200
+Message-ID: <a862b24edc1735e3e94b6dc61fd0bb7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8591522E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82543267
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 03:50:34 +0200 (MEST)
+	Wed, 28 Jun 2006 04:25:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +26,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                skunk
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              06-28-2006 03:50 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-28-2006 04:25 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    Alsa mixer lack of some functions
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-28-06 00:03 
+ rlrevell - 06-27-06 19:07 
 ----------------------------------------------------------------------
-Can you verify the bug is still present in the latest Hg sources?
+It does support surround, if you play back a real 5.1 file.  What it cannot
+do in hardware is upmix stereo to 5.1.
 
 ----------------------------------------------------------------------
- phorn - 06-28-06 03:50 
+ Raymond - 06-28-06 04:25 
 ----------------------------------------------------------------------
-I just tried the alsa-driver and alsa-kernel from your hg repository,
-running on the same kernel with the built-in ALSA disabled, and I get the
-same kernel error after letting "pmidi" run for a few minutes.
-
-I also noticed that the OSS emulation (sfxload and playmidi) now work with
-the latest ALSA from Hg, however using those programs produce the same
-crash.
-
-The version file in the alsa-driver directory from HG has "1.0.12rc1". 
-The built-in ALSA, according to /proc/asound/version is "1.0.11rc4".
+Is it really need to put "Analog " at the front of the name of the volume
+control ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
 ======================================================================
 
 
