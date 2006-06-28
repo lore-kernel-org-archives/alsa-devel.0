@@ -1,16 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Wed, 28 Jun 2006 16:15:56 +0200
-Message-ID: <b051a14f233c9b4e24341e6095c85131@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Control TLV extension - final proposal
+Date: Wed, 28 Jun 2006 16:25:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0606281620500.9302@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0606281350300.9302@tm8103.perex-int.cz>
+	<s5hlkrhsbw4.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0606281430310.9302@tm8103.perex-int.cz>
+	<s5hirmlsagj.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0606281501380.9302@tm8103.perex-int.cz>
+	<s5hejx9s8fg.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0606281544540.9302@tm8103.perex-int.cz>
+	<s5h8xnhs78q.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DE1B187
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAD80235
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 16:15:56 +0200 (MEST)
+	Wed, 28 Jun 2006 16:25:17 +0200 (MEST)
+In-Reply-To: <s5h8xnhs78q.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,113 +28,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 28 Jun 2006, Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
-======================================================================
-Reported By:                Cimmo
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-28-2006 16:15 CEST
-======================================================================
-Summary:                    Alsa mixer lack of some functions
-Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+> At Wed, 28 Jun 2006 15:54:07 +0200 (CEST),
+> Jaroslav Kysela wrote:
+> > 
+> > On Wed, 28 Jun 2006, Takashi Iwai wrote:
+> > 
+> > > It's fine because snd_ctl_eme_read() and snd_ctl_elem_write() are
+> > > really corresponding 1:1.  The write is just write, and the read is
+> > > just read.
+> > 
+> > It might be for TLV, too. But I agree, we have basically two "write" 
+> > requests:
+> > 
+> > 1) do a TLV command processing
+> > 2) do a TLV value write operation
+> > 
+> > In such case, I think that we need third ioctl TLV_COMMAND? I can rename 
+> > write_flag to op_flag or so and we are fine. Also creating 
+> > ACCESS_TLV_COMMAND might make sense. It's ok for you?
+> 
+> Yeah, the separate ioctls sound reasonable.
+> 
+> Is TLV_WRITE applicable to normal control elements?  If it's only for
+> user-space elements, we should rename it such as TLV_WRITE_USER or
+> so.
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+We are defining an universal API and I think that value might be 
+updated also for in-kernel controls. It will const us nothing from 
+the implementation side (only a call specification for the tlv callback 
+in the kernel).
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+> > The only bad thing is that the TLV write replaces the whole TLV tree for 
+> > the user elements. Perhaps, a flag can be added to 'struct snd_ctl_tlv'
+> > which will mean 'partial write', so we can distinguish the full / partial 
+> > operations and implement only full write at the time.
+> 
+> I'm afraid that it would bring unnecessary complexity.
+> The TLV_READ is anyway the read of the whole TLV tree.  So, TLV_WRITE
+> should be same.
 
-thanx for attention
-Marco
-======================================================================
+Yes, I meant it only as extension for future. We may use 31.bit from 
+snd_ctl_tlv.length as an identifier for partial writes, but we can leave
+only full write for now.
 
-----------------------------------------------------------------------
- Cimmo - 06-28-06 10:46 
-----------------------------------------------------------------------
-There are some other problems, I cannot ear surround also with dvd playback
-5.1
-Is it possible that all uses plug:surround51:0 or 40:0?
+> Anyway, still I think we'd better implement and test example codes in
+> alsa-lib before committing to alsa-kernel codes...
 
-I used kaffeine and putting surround it say that the device is busy, with
-stereo 2.0 it plays, but of course with only front speakers.
+I'm adding TLV stuff to alsa-lib right now.
 
+						Jaroslav
 
-
-----------------------------------------------------------------------
- rlrevell - 06-28-06 16:15 
-----------------------------------------------------------------------
-Do you hear sound from all speakers with:
-
-speaker-test -c 6 -D plug:surround51
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
