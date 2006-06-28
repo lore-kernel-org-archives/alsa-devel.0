@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Wed, 28 Jun 2006 04:25:17 +0200
-Message-ID: <a862b24edc1735e3e94b6dc61fd0bb7d@bugtrack.alsa-project.org>
+Date: Wed, 28 Jun 2006 04:33:32 +0200
+Message-ID: <089d4930f5f51501d980881498c8669f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82543267
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E16BD273
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 04:25:17 +0200 (MEST)
+	Wed, 28 Jun 2006 04:33:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-28-2006 04:25 CEST
+Last Modified:              06-28-2006 04:33 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,16 +60,18 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-27-06 19:07 
-----------------------------------------------------------------------
-It does support surround, if you play back a real 5.1 file.  What it cannot
-do in hardware is upmix stereo to 5.1.
-
-----------------------------------------------------------------------
  Raymond - 06-28-06 04:25 
 ----------------------------------------------------------------------
 Is it really need to put "Analog " at the front of the name of the volume
 control ?
+
+----------------------------------------------------------------------
+ rlrevell - 06-28-06 04:33 
+----------------------------------------------------------------------
+1. Yes, there might be a digital control with the same name
+
+2. Your question has NOTHING to do with this bug report, PLEASE stop
+posting off topic comments
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +115,7 @@ Date Modified  Username       Field                    Change
 06-27-06 18:56 Cimmo          Note Added: 0010597                          
 06-27-06 19:07 rlrevell       Note Added: 0010598                          
 06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
 ======================================================================
 
 
