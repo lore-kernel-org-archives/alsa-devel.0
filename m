@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Bug #1134
-Date: Wed, 28 Jun 2006 11:38:40 -0400
-Message-ID: <1151509120.15513.5.camel@mindpipe>
+Subject: Intervideo patches
+Date: Wed, 28 Jun 2006 12:10:34 -0400
+Message-ID: <1151511035.15513.19.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,18 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Can someone increase the severity of:
+Has anyone familiar with HDA intel stuff had a chance to look at this
+patch from Intervideo, from bug #2035?
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1307&type=bug
 
-to "block"?  There's no sound at all on any notebook that uses the
-Conexant CX20551 codec.
+It's old (against 1.0.9b) and huge (30K lines of patch) but allegedly it
+gets sound working on many HDA intel codecs that currently don't work.
 
-Of course it won't help these unfortunate users get sound, but it would
-be more accurate.
+(It's really unfortunate that these vendors fork ALSA every time
+something does not work, rather than posting patches...)
 
 Lee
 
