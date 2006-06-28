@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001787]: Terratec Aureon Universe - No
-	sound on first startup, sound after reboot
-Date: Thu, 29 Jun 2006 00:34:53 +0200
-Message-ID: <f25ac47cb4ddf67cc171921f2a1456e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Thu, 29 Jun 2006 00:40:35 +0200
+Message-ID: <c35b6bdc4aa051366d2a7d9c3b3d681d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 814A0273
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B788D23B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 00:34:53 +0200 (MEST)
+	Thu, 29 Jun 2006 00:40:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,57 +26,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1787> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                paskharen
+Reported By:                tjallen
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1787
-Category:                   PCI - ice1724
+Issue ID:                   2234
+Category:                   ISA - sscape
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.12
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             01-27-2006 19:58 CET
-Last Modified:              06-29-2006 00:34 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-29-2006 00:40 CEST
 ======================================================================
-Summary:                    Terratec Aureon Universe - No sound on first
-startup, sound after reboot
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-When I first start the computer, you can hear no sound. If I turn all
-volume to max and press my ear against the speaker I can hear the correct
-sounds/music very faintly. After a reboot sound is fine.
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- paskharen - 04-08-06 16:58 
+ rankincj - 06-28-06 23:25 
 ----------------------------------------------------------------------
-I have now, it doesn't help. I tried with alsa 1.0.11-rc4 and not cvs but I
-didn't think that would matter.
+When I ported the OSS SoundScape driver to ALSA, I tested it with the only
+hardware I had - namely a SoundScape PnP card. So I can't say that I'm
+surprised that ALSA doesn't recognise the Elite card. Which isn't to say
+that it *couldn't* support it, but the work was never done.
+
+And it's probably a good time to mention that I never got the microphone
+working on my card with either OSS or ALSA, so I have no idea if the
+"capture" part of the ALSA driver works or not.
+
+ENSONIQ was bought out long ago, and the new owner has lost the relevant
+information. The only people who really know anything about SoundScape
+cards these days are the proprietary OSS driver people.
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 00:34 
+ tjallen - 06-29-06 00:40 
 ----------------------------------------------------------------------
-I have the same problem. At first boot I cannot change external amplifier
-switch (btw: what is it good for?) and the sound is very very silent. This
-also resolves if i mute/unmute the AC97 mixer element.
+I would be happy to test any ideas or code that you or anyone else would
+like me to test.  I would be happy just to get the sound output working;
+but more would be great.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-06 19:58 paskharen      New Issue                                    
-01-27-06 19:58 paskharen      Distribution              => Ubuntu          
-01-27-06 19:58 paskharen      Kernel Version            => 2.6.12          
-01-28-06 18:02 ungod          Note Added: 0007829                          
-01-30-06 19:38 paskharen      Note Added: 0007841                          
-02-08-06 23:48 paskharen      Note Added: 0007968                          
-04-03-06 15:47 ungod          Note Added: 0009099                          
-04-08-06 16:58 paskharen      Note Added: 0009172                          
-06-29-06 00:34 calestyo       Note Added: 0010629                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
 ======================================================================
 
 
