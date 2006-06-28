@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing
-	songs (dmix used)
-Date: Wed, 28 Jun 2006 16:13:51 +0200
-Message-ID: <dd91cfa3f0ac253a732471d48655bff0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Wed, 28 Jun 2006 16:15:56 +0200
+Message-ID: <b051a14f233c9b4e24341e6095c85131@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EDEC187
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DE1B187
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 16:13:51 +0200 (MEST)
+	Wed, 28 Jun 2006 16:15:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,91 +24,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                srr
-Assigned To:                rlrevell
+Reported By:                Cimmo
+Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   209
-Category:                   
-Reproducibility:            sometimes
-Severity:                   minor
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             04-14-2004 11:41 CEST
-Last Modified:              06-28-2006 16:13 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-28-2006 16:15 CEST
 ======================================================================
-Summary:                    Sometimes XMMS stop playing songs (dmix used)
+Summary:                    Alsa mixer lack of some functions
 Description: 
-Sometimes XMMS stop playing songs and show message that says "Audio device
-not
-properly configured or busy". It happends when new song just start
-playing. If I click on Play button, songs continued playing. 
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-I can't repeat this bug, it happends 3-5 times in day.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-If i start mpg123 and xmms they are play simultaniously (even if i start
-10
-copies of mpg123)
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-This is output from xmms:
-
-ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
-Device
-or resource busy
-ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
- 
-** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
-or
-resource busy
-
-
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- leahcim - 06-28-06 06:35 
+ Cimmo - 06-28-06 10:46 
 ----------------------------------------------------------------------
-FWIW, I haven't noticed this problem occurring for quite a while now.
+There are some other problems, I cannot ear surround also with dvd playback
+5.1
+Is it possible that all uses plug:surround51:0 or 40:0?
 
-(now using kernel 1.0.11rc2 with libs 1.0.11, and empty asound.conf).
+I used kaffeine and putting surround it say that the device is busy, with
+stereo 2.0 it plays, but of course with only front speakers.
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 06-28-06 16:13 
+ rlrevell - 06-28-06 16:15 
 ----------------------------------------------------------------------
-Fixed several versions ago.
+Do you hear sound from all speakers with:
+
+speaker-test -c 6 -D plug:surround51
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-04 11:41 srr            New Issue                                    
-04-16-04 11:54 tiwai          Note Added: 0000832                          
-04-20-04 07:39 srr            Note Added: 0000869                          
-04-20-04 07:41 srr            Issue Monitored: srr                         
-10-14-04 22:40 chtephan       Note Added: 0002160                          
-10-20-04 20:42 martin         Note Added: 0002218                          
-11-28-04 18:33 martin         Note Added: 0002626                          
-01-12-05 10:41 leahcim        Note Added: 0003161                          
-01-12-05 10:41 leahcim        Issue Monitored: leahcim                     
-01-12-05 20:26 Dawid Gajownik Issue Monitored: Dawid Gajownik                   
-
-01-19-05 16:54 tiwai          Note Added: 0003296                          
-01-19-05 16:54 tiwai          File Added: xmms-1.2.10-alsa-multithread.diff     
-              
-07-20-05 17:34 Steve Fink     Issue Monitored: Steve Fink                    
-07-21-05 01:03 Steve Fink     Note Added: 0005536                          
-07-21-05 08:21 Steve Fink     Note Edited: 0005536                         
-03-22-06 03:06 rlrevell       Note Added: 0008796                          
-06-28-06 06:35 leahcim        Note Added: 0010610                          
-06-28-06 16:13 rlrevell       Status                   new => resolved     
-06-28-06 16:13 rlrevell       Resolution               open => fixed       
-06-28-06 16:13 rlrevell       Assigned To               => rlrevell        
-06-28-06 16:13 rlrevell       Note Added: 0010618                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
 ======================================================================
 
 
