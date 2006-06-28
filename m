@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Wed, 28 Jun 2006 04:36:07 +0200
-Message-ID: <7e7f7bb7ac79dc3ff273879330457d01@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set
+	period size to 1024 frames for capture
+Date: Wed, 28 Jun 2006 04:58:59 +0200
+Message-ID: <6538a3a9a7e5513077e4ab6edaa96f6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7268273
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C294274
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jun 2006 04:36:07 +0200 (MEST)
+	Wed, 28 Jun 2006 04:58:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,161 +26,158 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   1766
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-28-2006 04:36 CEST
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              06-28-2006 04:58 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
 
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-27-06 04:48 
+ Raymond - 05-26-06 08:22 
 ----------------------------------------------------------------------
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#4445
+vortex: FATAL: ResManager: resource type 0 exhausted.
+vortex: FATAL: ResManager: resource type 3 exhausted.
 
-cat ac97#0-0
-0-0/0: 0x8a058384 ?&#65533;
-
-There is a bug in printable()
-
-void snd_ac97_get_name(struct snd_ac97 *ac97, unsigned int id, char *name,
-int modem)
-{
-    const struct ac97_codec_id *pid;
-
-     sprintf(name, "0x%x %c%c%c", id,
-                   printable(id >> 24),
-                   printable(id >> 16),
-                   printable(id >> 8));
+Those fatal error messages in the system log seem only occur with "jackd
+-d oss -i4" , there is no fatal error message in the system log when using
+"aoss jackd -d oss -i4"
 
 ----------------------------------------------------------------------
- Raymond - 06-28-06 04:36 
+ Raymond - 06-28-06 04:58 
 ----------------------------------------------------------------------
-Refer to
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1308&type=bug
+When jackd using oss , the sound play at half speed.
 
-Do the driver need to specify no_vra1 = 1 in ac97 ?
+I don't know it is a jackd bug or oss enumeration bug.
+
+If OSS enumeration does not support more than 2 channels, it should not
+tell the OSS application to use 4 channels when ALSA driver report 4
+channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
-06-09-06 06:51 Raymond        Note Added: 0010132                          
-06-14-06 15:01 Raymond        Note Deleted: 0010132                        
-06-14-06 15:13 Raymond        Note Deleted: 0010072                        
-06-24-06 04:14 Raymond        Note Added: 0010465                          
-06-24-06 21:51 bobcat98       Note Added: 0010489                          
-06-25-06 02:04 Raymond        Note Added: 0010497                          
-06-25-06 07:44 bobcat98       Note Added: 0010503                          
-06-25-06 08:18 Raymond        Note Added: 0010504                          
-06-25-06 18:13 bobcat98       Note Added: 0010517                          
-06-26-06 02:10 Raymond        Note Added: 0010521                          
-06-26-06 04:10 bobcat98       Note Added: 0010523                          
-06-26-06 17:36 Raymond        Note Added: 0010551                          
-06-26-06 17:40 rlrevell       Note Added: 0010553                          
-06-26-06 17:51 Raymond        Note Edited: 0010551                         
-06-26-06 18:01 Raymond        Note Added: 0010555                          
-06-26-06 18:09 rlrevell       Note Added: 0010556                          
-06-27-06 04:48 Raymond        Note Added: 0010564                          
-06-28-06 04:36 Raymond        Note Added: 0010608                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
+01-31-06 13:49 perex          Relationship added       related to 0001724  
+02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
+      
+02-04-06 06:14 Raymond        Note Added: 0007911                          
+02-18-06 08:34 Raymond        Note Added: 0008117                          
+02-20-06 15:32 Raymond        Note Edited: 0007773                         
+02-27-06 05:07 Raymond        Note Added: 0008213                          
+02-27-06 05:14 rlrevell       Note Added: 0008214                          
+02-27-06 05:55 Raymond        Note Added: 0008215                          
+02-27-06 09:30 Raymond        Note Added: 0008220                          
+02-27-06 09:32 Raymond        Note Edited: 0008220                         
+02-27-06 19:15 rlrevell       Note Added: 0008228                          
+02-28-06 02:44 Raymond        Note Edited: 0008215                         
+02-28-06 07:08 Raymond        Note Added: 0008241                          
+03-01-06 07:55 Raymond        Note Added: 0008274                          
+03-03-06 08:12 Raymond        Note Added: 0008335                          
+03-03-06 08:41 mjander        Note Added: 0008337                          
+03-03-06 09:02 Raymond        Note Added: 0008338                          
+03-03-06 10:49 Raymond        Note Added: 0008340                          
+03-03-06 22:36 mjander        Note Added: 0008343                          
+03-04-06 04:47 Raymond        Note Edited: 0008241                         
+04-06-06 08:41 Raymond        Note Edited: 0008215                         
+04-06-06 08:42 Raymond        Note Edited: 0008215                         
+05-14-06 13:39 Raymond        Note Deleted: 0007816                        
+05-14-06 13:40 Raymond        Note Deleted: 0007773                        
+05-14-06 13:41 Raymond        Note Deleted: 0008335                        
+05-23-06 03:31 Raymond        Issue Monitored: ponchick                    
+05-23-06 03:31 Raymond        Note Added: 0009924                          
+05-23-06 03:33 Raymond        Note Edited: 0009924                         
+05-23-06 03:39 Raymond        Note Edited: 0009924                         
+05-23-06 03:40 Raymond        Note Edited: 0009924                         
+05-23-06 03:44 Raymond        Note Edited: 0009924                         
+05-24-06 13:38 Raymond        Note Added: 0009955                          
+05-24-06 13:48 fuman          Issue Monitored: fuman                       
+05-26-06 08:22 Raymond        Note Added: 0009973                          
+06-28-06 04:58 Raymond        Note Added: 0010609                          
 ======================================================================
 
 
