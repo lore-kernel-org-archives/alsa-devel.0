@@ -1,14 +1,16 @@
-From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
-Subject: Re: RFC: dma_mmap_coherent() for powerpc/ppc
- architecture and ALSA?
-Date: Thu, 29 Jun 2006 23:15:13 +0200
-Message-ID: <20060629211513.64980@gmx.net>
-References: <20060628202753.198630@gmx.net> <s5hfyhopb0s.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Thu, 29 Jun 2006 23:17:42 +0200
+Message-ID: <576fab7f654a810c8edcf698e5466554@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfyhopb0s.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B01EE2A6
+	for <alsa-devel@alsa-project.org>;
+	Thu, 29 Jun 2006 23:17:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,66 +20,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
--------- Original-Nachricht --------
-Datum: Thu, 29 Jun 2006 11:27:15 +0200
-Von: Takashi Iwai <tiwai@suse.de>
-An: Gerhard Pircher <gerhard_pircher@gmx.net>
-Betreff: Re: [Alsa-devel] RFC: dma_mmap_coherent() for powerpc/ppc architec=
-ture and ALSA?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-29-2006 23:17 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
 
-> At Wed, 28 Jun 2006 22:27:53 +0200,
-> Gerhard Pircher wrote:
-> > =
+----------------------------------------------------------------------
+ rankincj - 06-29-06 23:14 
+----------------------------------------------------------------------
+What does it say in the kernel log when you try and load the snd-sscape
+module? As far as I can see, the driver should write something as soon as
+it hits a problem. You can examine the kernel log by running the "dmesg"
+command.
 
-> > Hi,
-> > =
+----------------------------------------------------------------------
+ rankincj - 06-29-06 23:17 
+----------------------------------------------------------------------
+You need to create the following device node, if it doesn't already exist:
 
-> > It took a little bit longer to integrate the patch, as I didn't figure
-> out  first how to implement the __dma_mmap_coherent() function for PPC
-> systems with CONFIG_NOT_COHERENT_CACHE defined. :)
-> > =
+crw------- 1 root root 116, 4 Jun 19 20:46 /dev/snd/hwC0D0
 
-> > Unfortunately my system still crashes within snd_pcm_mmap_data_nopage() =
+And the sscape_ctl program must be run as root.
 
-> > (sound/core/pcm_native.c), as you can see below. I guess it tries to
-> remap =
-
-> > a DMA buffer allocated by the not cache coherent DMA memory allocation =
-
-> > function in arch/ppc/kernel/dma-mapping.c.
-> =
-
-> Strange, nopage will be never called if you apply my patch and modify
-> to use dma_mmap_coherent().
-> =
-
-> =
-
-> Takashi
-> =
-
-That's indeed strange! I'm sure that the new code is called by the sound dr=
-ivers. Should snd_pcm_mmap_data_nopage() not be used at all anymore, or are=
- there any cases that could still trigger a call of snd_pcm_mmap_data_nopag=
-e()?
-
-Gerhard
-
--- =
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+======================================================================
 
 
-
-Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
-Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
