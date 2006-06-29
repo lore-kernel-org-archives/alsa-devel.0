@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002144]: Devices hw:0, 0 and hw:0,
-	4 do not play the same output (anymore?)
-Date: Thu, 29 Jun 2006 16:29:34 +0200
-Message-ID: <d6f382a40431dba8c38fc661623b1a80@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002245]: Master volume is controlled
+	via the "Headphone" mixer element and not via "Master
+Date: Thu, 29 Jun 2006 16:33:28 +0200
+Message-ID: <e16d4b8744ba43cb75c9ccd576ea0765@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17E2F23D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAEBB29E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 16:29:35 +0200 (MEST)
+	Thu, 29 Jun 2006 16:33:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,74 +24,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2144> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2245> 
 ======================================================================
-Reported By:                prodiger
-Assigned To:                tiwai
+Reported By:                calestyo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2144
+Issue ID:                   2245
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian unstable
-Kernel Version:             2.6.19
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             05-22-2006 20:41 CEST
-Last Modified:              06-29-2006 16:29 CEST
+Date Submitted:             06-29-2006 01:43 CEST
+Last Modified:              06-29-2006 16:33 CEST
 ======================================================================
-Summary:                    Devices hw:0,0 and hw:0,4 do not play the same
-output (anymore?)
+Summary:                    Master volume is controlled via the "Headphone"
+mixer element and not via "Master
 Description: 
-I'm desperately trying to do the following thing on my laptop: While at
-home I use the S/PDIF over an optical wire while anywhere else I have to
-use either the built-in speakers or headphones. It should be just like
-that: Unplugging the optical wire should activate the built-in speakers.
-This works very well under Windows and was working with an earlier version
-of ALSA (i guess 1.10, but not sure about this).
-I am able to play to different things on both devices simultaneously, e.g.
-I open XMMS twice, the first plays on hw:0,0 the other one on
-hw:0,4...works perfectly. But is there ANY way to always play the same
-things over both devices? Any way to do so in /etc/asound.conf? I tried
-really EVERY combination with capturing with alsamixer, there is no
-working configuration.
-And as I said, i think this was working with earlier versions of ALSA,
-maybe this is a bug?
+I have the following ALSA devices:
+$ cat /proc/asound/cards
+ 0 [default        ]: Aureon71Universe -
+                       at 0x3880, irq 74
+ 1 [CK804          ]: NFORCE - NVidia CK804
+                      NVidia CK804 with AD1981B at 0xb0002000, irq 217
+ 2 [U0x46d0x8b2    ]: USB-Audio - USB Device 0x46d:0x8b2
+                      USB Device 0x46d:0x8b2 at usb-0000:00:02.0-3, full
+
+The problem is with #1 which uses snd-intel8x0.
+
+When I play any sounds and change the values for "Master" or "Master Mono"
+nothing happens at all. But what one would expect from "Master" is done by
+the "Headphone" mixer element.
 ======================================================================
 
 ----------------------------------------------------------------------
- prodiger - 06-29-06 10:05 
+ tiwai - 06-29-06 16:33 
 ----------------------------------------------------------------------
-This bug can be closed. The behavior described above can be achieved by
-simply setting IEC958 Playback AC97-SPSA in alsamixer to zero. I probably
-had this setting set to zero when installing alsa for the first time and
-thus everything was working well.
-
-----------------------------------------------------------------------
- tiwai - 06-29-06 16:29 
-----------------------------------------------------------------------
-OK, let's close it.
+Use ac97_quirk=hp_only module option.
+If it works, show the output of lspci -nv (for class 0401 device only).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 20:41 prodiger       New Issue                                    
-05-22-06 20:41 prodiger       Distribution              => Debian unstable 
-05-22-06 20:41 prodiger       Kernel Version            => 2.6.19          
-05-22-06 21:35 rlrevell       Note Added: 0009919                          
-05-23-06 11:46 prodiger       Note Added: 0009931                          
-05-23-06 11:51 prodiger       Note Edited: 0009931                         
-06-29-06 10:05 prodiger       Note Added: 0010646                          
-06-29-06 16:29 tiwai          Status                   new => resolved     
-06-29-06 16:29 tiwai          Resolution               open => fixed       
-06-29-06 16:29 tiwai          Assigned To               => tiwai           
-06-29-06 16:29 tiwai          Note Added: 0010660                          
+06-29-06 01:43 calestyo       New Issue                                    
+06-29-06 01:43 calestyo       Distribution              => Debian GNU/Linux
+06-29-06 01:43 calestyo       Kernel Version            => 2.6.17          
+06-29-06 16:33 tiwai          Note Added: 0010661                          
 ======================================================================
 
 
