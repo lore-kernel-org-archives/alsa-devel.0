@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly
-	random times
-Date: Thu, 29 Jun 2006 17:38:33 +0200
-Message-ID: <af07d15708d5f2d989dd74f4d068e246@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002222]: Mitac 8258D,
+	no sound   Intel ICH7 HDA Realtek ALC883 codec
+Date: Thu, 29 Jun 2006 17:39:18 +0200
+Message-ID: <e2d4ad7806859052015d77104e933e60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98C7C29A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 804C629A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:38:33 +0200 (MEST)
+	Thu, 29 Jun 2006 17:39:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,178 +26,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2222> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                jolly67
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   2222
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Distribution:               OpenSuSE 10.1 i386
+Kernel Version:             Linux 2.6.16.13-4-smp (geeko@buildhost) (gcc 4.1.0)
+#1 SMP Wed May 3 04:53:23 UTC 2006
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              06-29-2006 17:38 CEST
+Date Submitted:             06-21-2006 15:02 CEST
+Last Modified:              06-29-2006 17:39 CEST
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    Mitac 8258D, no sound   Intel ICH7 HDA Realtek
+ALC883 codec
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
-
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+No working configuration for this hardware. The system is detect the sound
+card and setup hda_intel module for them. But no sound. No master
+control.
+Only PCM, Front, Line, CD and Mic
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 13:48 
+ jolly67 - 06-27-06 08:01 
 ----------------------------------------------------------------------
-This seem much better but still not perfect.
+I tried all possible model configurations of ALC882/3. (auto, 3stack-dig,
+6stack-dig). If I select 3stack-dig or 6stack-dig, drivers loaded with the
+following messages:
 
-static int snd_vortex_pcm_open()
-{
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_codec.c:1686: hda_codec: model '3stack-dig' is
+selected
+hda_codec: num_steps = 0 for NID=0x7
+hda_codec: num_steps = 0 for NID=0x7
+hda_codec: num_steps = 0 for NID=0x7
+hda_codec: num_steps = 0 for NID=0x7
 
-...
-#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
- if ( substream->oss.oss ) {
-        if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
-		if ( vortex->avail_res[VORTEX_RESOURCE_SRC] < 
-                    ( substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 4 :
-2 )) {
-	               	return -EBUSY;
-		}
-		if ( substream->stream == SNDRV_PCM_STREAM_PLAYBACK ) {
-			if ( vortex->avail_res[VORTEX_RESOURCE_MIXIN] < 4 ) {
-		               	return -EBUSY;
-			}		
-		}
-		else {
-			if ( vortex->avail_res[VORTEX_RESOURCE_MIXOUT] < 2 ) {
-		               	return -EBUSY;
-			}		
-		}
-	}
-  }
-#endif
+OR
+
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_codec.c:1686: hda_codec: model '6stack-dig' is
+selected
+hda_codec: num_steps = 0 for NID=0x7
+hda_codec: num_steps = 0 for NID=0x7
+hda_codec: num_steps = 0 for NID=0x7
 
 
+Alsamixer isn't working:
+
+alsamixer: function snd_mixer_load failed: Invalid argument
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 17:38 
+ tiwai - 06-29-06 17:39 
 ----------------------------------------------------------------------
-Anyone know how to write a script which can spwan a specifed number of
-"aplay/arecord" concurrently for easy testing this bug or test dmix/dsnoop
-?
+Try HG version.  Some changes have been done for ALC833 support.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
-02-05-06 05:20 Raymond        Note Edited: 0007710                         
-02-05-06 05:28 Raymond        Note Added: 0007930                          
-02-13-06 16:38 Raymond        Note Deleted: 0006564                        
-02-13-06 16:41 Raymond        Note Added: 0008054                          
-03-01-06 07:39 Raymond        Note Added: 0008273                          
-03-18-06 12:28 Raymond        Note Deleted: 0008273                        
-03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
-03-21-06 02:02 Raymond        Note Added: 0008734                          
-03-21-06 18:01 tiwai          Note Added: 0008754                          
-03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
-
-03-22-06 02:28 Raymond        Note Added: 0008779                          
-03-22-06 02:31 Raymond        Note Edited: 0008779                         
-03-22-06 02:38 rlrevell       Note Added: 0008782                          
-03-22-06 04:00 Raymond        Note Added: 0008836                          
-03-22-06 04:09 rlrevell       Note Added: 0008839                          
-03-26-06 09:55 Raymond        Note Added: 0008967                          
-03-29-06 17:48 Raymond        Note Added: 0008995                          
-03-31-06 06:52 Raymond        Note Edited: 0008995                         
-04-02-06 07:01 Raymond        Note Edited: 0008995                         
-04-10-06 16:07 Raymond        Note Added: 0009190                          
-04-10-06 16:39 tiwai          Note Added: 0009192                          
-04-10-06 16:43 Raymond        Note Added: 0009194                          
-04-10-06 16:45 tiwai          Note Added: 0009195                          
-04-10-06 19:01 Raymond        Note Added: 0009215                          
-04-10-06 19:04 Raymond        Note Edited: 0009215                         
-04-10-06 19:05 tiwai          Note Added: 0009216                          
-04-11-06 18:36 Raymond        Note Added: 0009234                          
-04-11-06 18:54 tiwai          Note Added: 0009235                          
-06-25-06 07:04 Raymond        Note Added: 0010502                          
-06-26-06 02:46 Raymond        Note Added: 0010522                          
-06-26-06 03:05 Raymond        Note Edited: 0010522                         
-06-26-06 14:55 Raymond        Note Added: 0010536                          
-06-26-06 15:04 Raymond        Note Edited: 0010536                         
-06-27-06 08:22 Raymond        Note Added: 0010567                          
-06-27-06 10:15 Raymond        Note Edited: 0010567                         
-06-27-06 10:42 Raymond        Note Edited: 0010567                         
-06-28-06 03:46 Raymond        Note Added: 0010604                          
-06-28-06 03:52 Raymond        Note Edited: 0010604                         
-06-29-06 04:41 Raymond        Note Added: 0010639                          
-06-29-06 04:49 Raymond        Note Edited: 0010639                         
-06-29-06 05:12 Raymond        Note Edited: 0010639                         
-06-29-06 06:20 Raymond        Note Edited: 0010639                         
-06-29-06 09:55 Raymond        Note Added: 0010645                          
-06-29-06 13:48 Raymond        Note Edited: 0010645                         
-06-29-06 17:38 Raymond        Note Added: 0010672                          
+06-21-06 15:02 jolly67        New Issue                                    
+06-21-06 15:02 jolly67        File Added: hwinfo.log                       
+06-21-06 15:02 jolly67        Distribution              => OpenSuSE 10.1 i386
+06-21-06 15:02 jolly67        Kernel Version            => Linux 2.6.16.13-4-smp
+(geeko@buildhost) (gcc 4.1.0) #1 SMP Wed May 3 04:53:23 UTC 2006
+06-21-06 15:09 jolly67        File Added: lspci.log                        
+06-22-06 08:21 jolly67        File Added: card0_codec#0                    
+06-22-06 08:21 jolly67        File Added: card0_codec#1                    
+06-26-06 16:15 tiwai          Note Added: 0010545                          
+06-27-06 08:01 jolly67        Note Added: 0010566                          
+06-29-06 17:39 tiwai          Note Added: 0010673                          
 ======================================================================
 
 
