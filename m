@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002243]: TerraTec Aureon 7.1 Universe
-	sound cracks at startup and after each played sound file
-Date: Thu, 29 Jun 2006 17:53:38 +0200
-Message-ID: <f406ae24efc45638f29af5b3def62976@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Thu, 29 Jun 2006 17:57:25 +0200
+Message-ID: <4d607bb96481ca59199fdc7b28b21494@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9F48249
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17FD929A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:53:38 +0200 (MEST)
+	Thu, 29 Jun 2006 17:57:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,64 +26,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2243> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                calestyo
+Reported By:                tjallen
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2243
-Category:                   PCI - ice1724
+Issue ID:                   2234
+Category:                   ISA - sscape
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.17
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             06-29-2006 01:31 CEST
-Last Modified:              06-29-2006 17:53 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-29-2006 17:57 CEST
 ======================================================================
-Summary:                    TerraTec Aureon 7.1 Universe sound cracks at startup
-and after each played sound file
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-At startup (exactly when the kernel loads ALSA and the soundcard drivers
-which I have statically compiled into the kernel) and - more seriously -
-after
-nearly every audio file that I play I hear cracks...
-For all applications (GNOME/esd like gaim or xine which directly uses
-ALSA) this
-is at the end of the sound file. But when using mplayer it is shortly
-before the
-end,.. then it cracks and then the remaining sound is played.
-
-
-This doesn't happen when playing the same files under Windows using the
-original TerraTec drivers!!!
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 01:35 
+ tjallen - 06-29-06 00:40 
 ----------------------------------------------------------------------
-You might also have a look at my post at alsa-users mailinglist
-"(Additional) Soundproblems with my TerraTec Auron 7.1	Universe souncard"
-from 2006-06-29 (news://news.gmane.org:119/e7v34p$rut$1@sea.gmane.org).
+I would be happy to test any ideas or code that you or anyone else would
+like me to test.  I would be happy just to get the sound output working;
+but more would be great.
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 17:53 
+ tiwai - 06-29-06 17:57 
 ----------------------------------------------------------------------
-Change "Multi Track Internal Clock" to 48000 on alsamixer (during no
-playback program is running).
+Is it a PnP card?  Otherwise you'd need to specify port, irq, dma and
+mpu_irq parameters manually.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-06 01:31 calestyo       New Issue                                    
-06-29-06 01:31 calestyo       Distribution              => Debian GNU/Linux
-06-29-06 01:31 calestyo       Kernel Version            => 2.6.17          
-06-29-06 01:31 calestyo       Issue Monitored: calestyo                    
-06-29-06 01:35 calestyo       Note Added: 0010633                          
-06-29-06 17:53 tiwai          Note Added: 0010678                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
 ======================================================================
 
 
