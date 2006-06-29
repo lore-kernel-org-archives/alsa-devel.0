@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m
 	after suspend/resume doesn't play
-Date: Thu, 29 Jun 2006 05:38:39 +0200
-Message-ID: <b577f16009009f8a32c2941f7cdd4ecb@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 06:14:11 +0200
+Message-ID: <001dd2112a9f9629a5577ac61e230abb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C722118F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D74C23F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 05:38:39 +0200 (MEST)
+	Thu, 29 Jun 2006 06:14:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian Sarge
 Kernel Version:             2.6.16-RC6
 ======================================================================
 Date Submitted:             03-20-2006 20:15 CET
-Last Modified:              06-29-2006 05:38 CEST
+Last Modified:              06-29-2006 06:14 CEST
 ======================================================================
 Summary:                    cs46xx in Thinkapad A21m after suspend/resume
 doesn't play
@@ -55,17 +55,6 @@ freeze when I try suspend to RAM.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 03:14 
-----------------------------------------------------------------------
-cat /proc/asound/pcm
-
-How do you configure cs46xx ? with/without  cs46xx-new-dsp
-
-It seem that supsend routine only suspend one device 
-
-	snd_pcm_suspend_all(chip->pcm);
 
 ----------------------------------------------------------------------
  dottedmag - 06-29-06 05:38 
@@ -82,6 +71,27 @@ with cs46xx-new-dsp
 
 FYU: OSS driver works fine with suspend/resume, but it does more work in
 resume handler.
+
+----------------------------------------------------------------------
+ Raymond - 06-29-06 06:14 
+----------------------------------------------------------------------
+It seem that suspend/resume routine is not written for SND_CS46XX_NEW_DSP
+
+	struct snd_pcm *pcm;
+
+
+#ifdef CONFIG_SND_CS46XX_NEW_DSP
+	struct mutex spos_mutex;
+
+	struct dsp_spos_instance * dsp_spos_instance;
+
+	struct snd_pcm *pcm_rear;
+	struct snd_pcm *pcm_center_lfe;
+	struct snd_pcm *pcm_iec958;
+#else /* for compatibility */
+	struct snd_cs46xx_pcm *playback_pcm;
+	unsigned int play_ctl;
+#endif
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +110,7 @@ Date Modified  Username       Field                    Change
 06-20-06 16:25 dottedmag      Issue Monitored: dottedmag                    
 06-29-06 03:14 Raymond        Note Added: 0010637                          
 06-29-06 05:38 dottedmag      Note Added: 0010640                          
+06-29-06 06:14 Raymond        Note Added: 0010641                          
 ======================================================================
 
 
