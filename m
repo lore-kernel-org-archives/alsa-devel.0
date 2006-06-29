@@ -1,15 +1,16 @@
-From: Daniel Schroeder <sec@dschroeder.info>
-Subject: Re: ASUS M2N32 MCP55 HDAudio problems - small solution!
-Date: Thu, 29 Jun 2006 20:41:03 +0200
-Message-ID: <44A41EBF.2040308@dschroeder.info>
-References: <44A19885.8020104@dschroeder.info>	<s5hwtb1qp16.wl%tiwai@suse.de>	<44A2F28C.509@dschroeder.info>
-	<s5h64ikce22.wl%tiwai@suse.de>
-Reply-To: sec@dschroeder.info
+From: Adrian Bunk <bunk@stusta.de>
+Subject: OSS driver removal, 2nd round
+Date: Thu, 29 Jun 2006 21:21:28 +0200
+Message-ID: <20060629192128.GE19712@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h64ikce22.wl%tiwai@suse.de>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2216128C
+	for <alsa-devel@alsa-project.org>;
+	Thu, 29 Jun 2006 21:21:29 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,184 +20,144 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Alan Cox <alan@lxorguk.ukuu.org.uk>, perex@suse.cz, Olaf Hering <olh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 28 Jun 2006 23:20:12 +0200,
-> Daniel Schroeder wrote:
->> Takashi Iwai wrote:
->>> At Tue, 27 Jun 2006 22:43:49 +0200,
->>> Daniel Schroeder wrote:
->>>> Hello *,
->>>>
->>>> sorry for posting this to devel and users, but i think this could be
->>>> interesting for both. Plz. send replies in cc to my mail address becau=
-se
->>>>  i am not on list.
->>>>
->>>> I am a proud owner of this flagship mainboard with a nvdidia mcp55
->>>> hdaudio sound card. The chip is identified by alsa as a AD1988A rev.2
->>>> (dmesg, lspci -v, lspci -nv output below):
->>>>
->>>> The problem is that if i activate only front in kmix all is fine.
->>>> Speaker-Test works as expected. If i activate lfe/center then the sound
->>>> is messed up and he plays front-left/front-rigt through center and lfe.
->>> What do you mean to "activate lfe/center"?
->>> A more detailed step to reproduce is helpful.
->>>
->>>
->>> Takashi
->> a more detail problem description:
->>
->> with this module configuration: options snd-hda-intel model=3D6stack-dig
->> position_fix=3D1
-> =
-
-> Doesn't the driver work without position_fix option?
-
-The driver works without these options...i have just played around with
-these.
-
-> =
-
->> --------------------------
->> headphone jack in front: if connected the regular sound isnt muted.
->> --------------------------
->> speaker test hangs in surround51 configuration:
->>
->> speaker-test -Dplug:surround51 -c6
->>
->> speaker-test 1.0.12rc1
->>
->> Playback device is plug:surround51
->> Stream parameters are 48000Hz, S16_LE, 6 channels
->> Using 16 octaves of pink noise
->> Rate set to 48000Hz (requested 48000Hz)
->> Buffer size range from 22 to 5461
->> Period size range from 11 to 2730
->> Using max buffer size 5460
->> Periods =3D 4
->> was set period_size =3D 1365
->> was set buffer_size =3D 5460
->>  0 - Front Left
->> ---- hangs forever
-> =
-
-> That's bad.  Does aplay with 6 channel samples work fine?
-
-while true;  do aplay chan-id.wav ; done
-Playing WAVE 'chan-id.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Channels 6
+Now that I've sent the first round of actually removing the code for OSS 
+drivers where ALSA drivers without regressions exist for the same 
+hardware, it's time for a second round amongst the remaining drivers.
 
 
-aplay with 6 channel sample works but only front left / front right the
-other "tracks" in the file are "silent".
-Output of front left and front right are: front left all speakers to the
-left. front left/rear left/center with output of channel "front right"
-all speakers to the right "front right/rear right/subwoofer"
+Removing OSS drivers where ALSA drivers for the same hardware exists has 
+two reasons:
 
-> =
-
->> ----------------------------
->> speaker-test in surround40
->>
->> front left=3Dsound output rear left;
->> front right=3Dsound output rear right;
->> rear right=3Dsound output subwoofer
->> rear left=3Dsound output center
-> =
-
-> So the channels are shifted.
-> =
-
-> When you play with 2-channel via "aplay foo.wav", do the samples come
-> from front speakers?
-
-aplay 10.wav
-Playing WAVE 10.wav : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-
-sound comes through all speakers, front left/front right/rear left/rear
-right/center and subwoofer
-
-> =
-
-> As you might have noticed in the kernel message, there is a workaround
-> for AD1988A rev2 codec.  You can disable it by re-defining
-> AD1988A_REV2 in patch_analog.c to a bogus value, for example, a patch
-> like below.  Then try the tests again.
-> =
-
-> =
-
-> Takashi
-> =
-
-> diff -r ac7516b5dcb9 pci/hda/patch_analog.c
-> --- a/pci/hda/patch_analog.c	Thu Jun 29 13:22:29 2006 +0200
-> +++ b/pci/hda/patch_analog.c	Thu Jun 29 14:58:36 2006 +0200
-> @@ -1543,7 +1543,8 @@ enum {
->  };
->  =
-
->  /* reivision id to check workarounds */
-> -#define AD1988A_REV2		0x100200
-> +// #define AD1988A_REV2		0x100200
-> +#define AD1988A_REV2		0xabcd1234 /* bogus */
->  =
-
->  =
-
->  /*
-i have patched the file patch_analog.c recompiled and loaded the module.
-same bad behaviour. Im sure that he has taken the new module because the
-dmesg output is missing.
-
-----
-
-have you any clues of what i could do? This stuff is a bit mysterious
-for me. Why does he play a stereo wav file to all speakers. And why does
-he plays only two channels of the surround file (chan-id.wav) and these
-two channels getting splitted to every left speaker / every right speaker...
-
-,
-daniel
-
-P.S.: after writing my last email...i have tested the movie file with
-mplayer.
-
-=C3ffne Audiodecoder: [liba52] AC3 decoding with liba52
-Using SSE optimized IMDCT transform
-AC3: 5.1 (3f+2r+lfe)  48000 Hz  448.0 kbit/s
-Using MMX optimized resampler
-AUDIO: 48000 Hz, 6 ch, s16le, 448.0 kbit/9.72% (ratio: 56000->576000)
-Ausgew=C3=A4hlter Audiocodec: [a52] afm: liba52 (AC3-liba52)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=C3ffne Videodecoder: [ffmpeg] FFmpeg's libavcodec codec family
-Ausgew=C3=A4hlter Videocodec: [ffodivx] vfm: ffmpeg (FFmpeg MPEG-4)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-alsa-init: using device surround51
-alsa: 48000 Hz/6 channels/12 bpf/61440 bytes buffer/Signed 16 bit Little
-Endian
-AO: [alsa] 48000Hz 6ch s16le (2 bytes per sample)
+1. remove obsolete and mostly unmaintained code
+2. get bugs in the ALSA drivers reported that weren't previously
+   reported due to the possible workaround of using the OSS drivers
 
 
-now the missing audio channel is there and it seems to me that this
-movie is fully working in surround!
-This bogus patch seems to work :)
+The list below divides the OSS drivers into the following three
+categories:
+1. ALSA drivers for the same hardware
+2. ALSA drivers for the same hardware with known problems
+3. no ALSA drivers for the same hardware
+
+
+My proposed timeline is:
+- 2.6.18: let the drivers under 1. in the list below depend on
+          OSS_OBSOLETE_DRIVER
+- 2.6.20: remove the options depending on OSS_OBSOLETE_DRIVER
+- 2.6.22: remove the code for the drivers that were depending on
+          OSS_OBSOLETE_DRIVER from the kernel tree
+
+
+To make a long story short:
+
+If you are using an OSS driver because the ALSA driver doesn't work 
+equally well on your hardware listed under 1. below, send me an email 
+with a bug number in the ALSA bug tracking system now.
+
+
+A small FAQ:
+
+Q: But OSS is kewl and ALSA sucks!
+A: The decision for the OSS->ALSA move was four years ago.
+   If ALSA sucks, please help to improve ALSA.
+
+Q: What about the OSS emulation in ALSA?
+A: The OSS emulation in ALSA is not affected by my patches
+   (and it's not in any way scheduled for removal).
+
+
+Please review the following list:
+
+
+1. ALSA drivers for the same hardware
+
+SOUND_ACI_MIXER and RADIO_MIROPCM20
+SOUND_AD1889
+SOUND_ADLIB
+SOUND_FUSION
+SOUND_NM256
+SOUND_OPL3SA2
+
+2. ALSA drivers for the same hardware with known problems
+
+DMASOUND_PMAC
+- Olaf Hering regarding regressions in SND_POWERMAC:
+  Some tumbler models work only after one plug/unplug cycle of
+  the headphone. early powerbooks report/handle the mute settings
+  incorrectly. there are likely more bugs.
+
+SOUND_AD1816
+- ALSA #1301 (Kernel OSS emulation stops working after a few seconds
+              when used with VoIP softphones)
+
+SOUND_CS4232
+- ALSA #1520 (Soundchip was not detected on HP Omnibook 5700 CTX)
+
+SOUND_EMU10K1
+- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
+- ALSA #1782 (really poor sound with my SB Live 1024 and ALSA)
+
+SOUND_ES1371
+- ALSA #1774 (missing joystick connector support for PCI Ensoniq ES1371)
+
+SOUND_ICH
+- ALSA #1764 (Recording signal quality is inacceptable (using OSS API))
+- Alan Cox:
+  ALSA driver lacks "support for AC97 wired touchscreens and the like"
+
+SOUND_SSCAPE
+- ALSA #2234 (driver does not find Soundscape Elite)
+
+SOUND_TRIDENT
+- ALSA #1293 (device supported by OSS but not by ALSA)
+- maintainer of the OSS driver wants his driver to stay
+
+SOUND_VIA82CXXX
+- ALSA #1906 (1-second overruns reported by arecord,
+              complete system hang with jackd -d alsa)
+
+
+3. no ALSA drivers for the same hardware
+
+DMASOUND_ATARI
+DMASOUND_PAULA
+DMASOUND_Q40
+SOUND_AEDSP16
+SOUND_AU1550_AC97
+SOUND_BCM_CS4297A
+SOUND_HAL2
+SOUND_IT8172
+SOUND_KAHLUA
+SOUND_MSNDCLAS
+SOUND_MSNDPIN
+SOUND_MSS (also due to SOUND_PSS, SOUND_TRIX and perhaps SOUND_AEDSP16)
+SOUND_PAS
+SOUND_PSS
+SOUND_SB (also due to SOUND_KAHLUA, SOUND_PAS and perhaps SOUND_AEDSP16)
+SOUND_SH_DAC_AUDIO
+SOUND_TRIX
+SOUND_VIDC
+SOUND_VRC5477
+SOUND_VWSND
+SOUND_WAVEARTIST
+
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
