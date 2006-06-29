@@ -1,20 +1,17 @@
-From: Andi Kleen <ak@suse.de>
-Subject: Re: Alsa update in mainline broke ATI-IXP sound driver
-	II
-Date: Thu, 29 Jun 2006 12:03:22 +0200
-Message-ID: <200606291203.22773.ak__41485.8306445696$1151575455$gmane$org@suse.de>
-References: <200606252139.36002.ak@suse.de> <200606262028.31807.ak@suse.de>
-	<s5hmzbz92i6.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: =?iso-8859-1?q?=5BALSA_-_WWW_server_0002247=5D=3A_Fa?=
+ =?iso-8859-1?q?tal_error=3A_Call_to_undefined_function=3A_mail=28=29__/_C?=
+ =?iso-8859-1?q?an=B4t_add_note_for_a_soundcard?=
+Date: Thu, 29 Jun 2006 12:07:12 +0200
+Message-ID: <3609245ccfec684c04039ab7d07a290b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA0B7236
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE19E23E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 12:03:31 +0200 (MEST)
-In-Reply-To: <s5hmzbz92i6.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu, 29 Jun 2006 12:07:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,60 +21,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 June 2006 20:48, Takashi Iwai wrote:
-> At Mon, 26 Jun 2006 20:28:31 +0200,
-> Andi Kleen wrote:
-> > 
-> > 
-> > > OK, and still you get the same error like:
-> > > 
-> > > 	ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
-> > > 	...
-> > > ??
-> > 
-> > Yes.
-> > 
-> > > Any change if you set CONFIG_SND_DYNAMIC_MINORS=y ?
-> > 
-> > With that it finally works. Thanks.
-> > 
-> > Still can it be fixed?
-> 
-> Well, the bug shall be fixed :)
-> 
-> Unfortunately I cannot reproduce this on my systems that are all based
-> on SUSE 10.1, and the latest 2.6.17-git works fine even
-> CONFIG_SND_DYNAMIC_MINORS=n as far as I've tested.
-> 
-> Could you check the strace and what open error occurs?
-> I suppose it's /dev/snd/controlC0, but don't figure out exactly.
 
-Sorry for the delay
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2247> =
 
-(as root) I get
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
 
-5184  open("/dev/snd/controlC0", O_RDONLY) = -1 EACCES (Permission denied)
-5184  open("/dev/snd/controlC1", O_RDONLY) = -1 EACCES (Permission denied)
-... (upto 31) ...
-5184  open("/dev/sound/dsp", O_WRONLY|O_NONBLOCK) = -1 ENOENT (No such file or d
-5184  open("/dev/dsp", O_WRONLY|O_NONBLOCK) = -1 EACCES (Permission denied)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - WWW server
+Issue ID:                   2247
+Category:                   wrong html/css syntax
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-29-2006 12:07 CEST
+Last Modified:              06-29-2006 12:07 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Fatal error: Call to undefined function: mail()=
+  /
+Can=B4t add note for a soundcard
+Description: =
 
-ccontrol0 is
-crw-------  1 andi audio 116, 6 2006-06-29 11:49 /dev/snd/controlC0
+I try to add a coment =
 
-It also doesn't work as andi
-
-I stuck printks to the EACCES in sound/* and they don't trigger so it must
-be somewhere else.
+#############################
+Since ALSA version 1.0.10 is no more need to specifiy the S32_LE format.
+To play sound with MPlayer over optical output use this parameter: =
 
 
--Andi
+mplayer -ao alsa:device=3Dplughw=3D0.1 file.avi
+#############################
+to this side:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=3DTerrate=
+c&card=3DAureon+5.1+Space.&chip=3DEnvy24HT+%28ICE1724%29&module=3Dice1724
+but i get this error:
+
+
+###########################################
+Thanks, your addition has been delivered
+
+We will include it as soon as possible.
+
+Return to the page you were reading
+
+Fatal error: Call to undefined function: mail() in
+/shm/var/data/www/htdocs/alsa-doc/doc-php/docs-add-notes-preview.php on
+line 386
+#########################################
+
+At second: please change the name of "Aureon 5.1 Space" to "Aureon 7.1
+Space" (vendor Terratec), "Aureon 5.1 Space" does not exist, see issue
+0001885.
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Issue History
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-29-06 12:07 konczalski     New Issue                                    =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
