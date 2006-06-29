@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002245]: Master volume is controlled
-	via the "Headphone" mixer element and not via "Master
-Date: Thu, 29 Jun 2006 16:33:28 +0200
-Message-ID: <e16d4b8744ba43cb75c9ccd576ea0765@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002242]: Aureon 7.1 Universe does not
+	show a soundcard name
+Date: Thu, 29 Jun 2006 16:42:02 +0200
+Message-ID: <81feff1c0dae45f7de3814fee50e776c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAEBB29E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B51029E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 16:33:28 +0200 (MEST)
+	Thu, 29 Jun 2006 16:42:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,58 +24,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2245> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2242> 
 ======================================================================
 Reported By:                calestyo
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2245
-Category:                   PCI - intel8x0
+Issue ID:                   2242
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-29-2006 01:43 CEST
-Last Modified:              06-29-2006 16:33 CEST
+Date Submitted:             06-29-2006 00:43 CEST
+Last Modified:              06-29-2006 16:42 CEST
 ======================================================================
-Summary:                    Master volume is controlled via the "Headphone"
-mixer element and not via "Master
+Summary:                    Aureon 7.1 Universe does not show a soundcard name
 Description: 
-I have the following ALSA devices:
-$ cat /proc/asound/cards
+See also my post news://news.gmane.org:119/e7tr7q$4g9$1@sea.gmane.org .
+
+/proc/asound/cards shows me the following:
  0 [default        ]: Aureon71Universe -
                        at 0x3880, irq 74
  1 [CK804          ]: NFORCE - NVidia CK804
                       NVidia CK804 with AD1981B at 0xb0002000, irq 217
  2 [U0x46d0x8b2    ]: USB-Audio - USB Device 0x46d:0x8b2
                       USB Device 0x46d:0x8b2 at usb-0000:00:02.0-3, full
+speed
 
-The problem is with #1 which uses snd-intel8x0.
+I do not use any snd-ice1724.model=universal option but even if I set it
+(as far as I could see universal is for the Aureon 7.1 Universal?!) I
+get the same output with the difference that dmesg shows me a line a la
+"ice-1724: Aureon7.1 Universe used as model".
+Does this now mean that the card is not correctly identified? As no
+names are found (see ***) and the string is set to "default":
+ 0 [default        ]: Aureon71Universe - ***
+                      *** at 0x3880, irq 74
 
-When I play any sounds and change the values for "Master" or "Master Mono"
-nothing happens at all. But what one would expect from "Master" is done by
-the "Headphone" mixer element.
+I also don't get a name in mixers like alsamixer or gnome-volume-control
+which seem to depend on this problem (II).
+
+This perhaps leads to some other problems to (as I've described in my post
+in alsa-users list).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 16:33 
+ calestyo - 06-29-06 01:32 
 ----------------------------------------------------------------------
-Use ac97_quirk=hp_only module option.
-If it works, show the output of lspci -nv (for class 0401 device only).
+Please change Category to "PCI - ice1724"
+
+----------------------------------------------------------------------
+ tiwai - 06-29-06 16:42 
+----------------------------------------------------------------------
+Fixed on HG repo.  The relevant patch is uploaded here.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-06 01:43 calestyo       New Issue                                    
-06-29-06 01:43 calestyo       Distribution              => Debian GNU/Linux
-06-29-06 01:43 calestyo       Kernel Version            => 2.6.17          
-06-29-06 16:33 tiwai          Note Added: 0010661                          
+06-29-06 00:43 calestyo       New Issue                                    
+06-29-06 00:43 calestyo       Distribution              => Debian GNU/Linux
+06-29-06 00:43 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:26 calestyo       Issue Monitored: calestyo                    
+06-29-06 01:26 calestyo       Note Added: 0010631                          
+06-29-06 01:32 calestyo       Note Added: 0010632                          
+06-29-06 16:23 calestyo       Note Deleted: 0010631                        
+06-29-06 16:41 tiwai          File Added: aureon71univ-name-fix.diff            
+       
+06-29-06 16:42 tiwai          Status                   assigned => resolved
+06-29-06 16:42 tiwai          Resolution               open => fixed       
+06-29-06 16:42 tiwai          Note Added: 0010662                          
 ======================================================================
 
 
