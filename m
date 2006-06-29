@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002243]: TerraTec Aureon 7.1 Universe
-	sound cracks at startup and after each played sound file
-Date: Thu, 29 Jun 2006 19:18:57 +0200
-Message-ID: <b2865c7585739c6faf0c4986e7424550@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Thu, 29 Jun 2006 19:31:13 +0200
+Message-ID: <bf8818ab0a3ef19bf12f7e0b8f7c46c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6762829D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF6BE29D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 19:18:57 +0200 (MEST)
+	Thu, 29 Jun 2006 19:31:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,65 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2243> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
 ======================================================================
-Reported By:                calestyo
+Reported By:                rshura
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2243
-Category:                   PCI - ice1724
+Issue ID:                   2229
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.17
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
 ======================================================================
-Date Submitted:             06-29-2006 01:31 CEST
-Last Modified:              06-29-2006 19:18 CEST
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              06-29-2006 19:31 CEST
 ======================================================================
-Summary:                    TerraTec Aureon 7.1 Universe sound cracks at startup
-and after each played sound file
+Summary:                    No stereo: sright channel is dead
 Description: 
-At startup (exactly when the kernel loads ALSA and the soundcard drivers
-which I have statically compiled into the kernel) and - more seriously -
-after
-nearly every audio file that I play I hear cracks...
-For all applications (GNOME/esd like gaim or xine which directly uses
-ALSA) this
-is at the end of the sound file. But when using mplayer it is shortly
-before the
-end,.. then it cracks and then the remaining sound is played.
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
 
-This doesn't happen when playing the same files under Windows using the
-original TerraTec drivers!!!
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 19:16 
+ rshura - 06-27-06 16:41 
 ----------------------------------------------------------------------
-Then I have no idea.
+Cable and jack are working fine with another computer. Since the right
+channel fails at both regular and front panel connectors, I don't think it
+is the actual I/O jack that is responsible. Because the front panel jack
+is connected to the mobo through a completely different cable, yet shows
+the same problem.
+
+I'll try exchanging the mobo and see whether that helps. Thanks!
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 19:18 
+ rshura - 06-29-06 19:31 
 ----------------------------------------------------------------------
-Uhmm,.. bad :( ... and is there perhaps any other developer that could
-help?
+Exchanged the motherboard and both channels work now!
+
+As this is a hardware issue and has nothing to do with the driver, this
+can be closed. Thanks for your help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-06 01:31 calestyo       New Issue                                    
-06-29-06 01:31 calestyo       Distribution              => Debian GNU/Linux
-06-29-06 01:31 calestyo       Kernel Version            => 2.6.17          
-06-29-06 01:31 calestyo       Issue Monitored: calestyo                    
-06-29-06 01:35 calestyo       Note Added: 0010633                          
-06-29-06 17:53 tiwai          Note Added: 0010678                          
-06-29-06 19:04 calestyo       Note Added: 0010694                          
-06-29-06 19:16 tiwai          Note Added: 0010696                          
-06-29-06 19:18 calestyo       Note Added: 0010698                          
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
+06-25-06 05:49 rshura         File Added: asound.cards                     
+06-25-06 05:50 rshura         File Added: ac97#0-0                         
+06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
+06-25-06 05:50 rshura         File Added: amixer                           
+06-25-06 05:51 rshura         Note Added: 0010501                          
+06-26-06 07:15 rshura         Note Added: 0010525                          
+06-26-06 16:07 tiwai          Note Added: 0010540                          
+06-27-06 05:51 rshura         Note Added: 0010565                          
+06-27-06 12:15 tiwai          Note Added: 0010582                          
+06-27-06 16:41 rshura         Note Added: 0010596                          
+06-29-06 19:31 rshura         Note Added: 0010699                          
 ======================================================================
 
 
