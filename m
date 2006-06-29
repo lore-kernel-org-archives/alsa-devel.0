@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002246]: hpi56301.c
-Date: Thu, 29 Jun 2006 17:16:54 +0200
-Message-ID: <52a3a008e87bb7254ffad558a72fd98b@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 17:21:40 +0200
+Message-ID: <a4f1428f7d8f00ff3ac55e66d739ccd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4CB129C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F1FF29A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:16:54 +0200 (MEST)
+	Thu, 29 Jun 2006 17:21:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2246> 
 ======================================================================
@@ -36,12 +36,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-29-2006 11:04 CEST
-Last Modified:              06-29-2006 17:16 CEST
+Last Modified:              06-29-2006 17:21 CEST
 ======================================================================
 Summary:                    hpi56301.c
 Description: 
@@ -61,16 +63,16 @@ change <dpi56301.h> and <boot4ka.h> to "boot4ka.h" and "boot4ka.h"
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-29-06 16:59 
-----------------------------------------------------------------------
-Please post a PATCH.
-
-----------------------------------------------------------------------
  Raymond - 06-29-06 17:16 
 ----------------------------------------------------------------------
 This patch is similar to the following since this bug re-appear again 
 
 http://hg-mirror.alsa-project.org/alsa-driver?cmd=changeset;node=94a57f17433b;style=gitweb
+
+----------------------------------------------------------------------
+ tiwai - 06-29-06 17:21 
+----------------------------------------------------------------------
+Fixed on HG repo.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +80,9 @@ Date Modified  Username       Field                    Change
 06-29-06 11:04 Raymond        New Issue                                    
 06-29-06 16:59 rlrevell       Note Added: 0010666                          
 06-29-06 17:16 Raymond        Note Added: 0010668                          
+06-29-06 17:21 tiwai          Status                   assigned => resolved
+06-29-06 17:21 tiwai          Resolution               open => fixed       
+06-29-06 17:21 tiwai          Note Added: 0010669                          
 ======================================================================
 
 
