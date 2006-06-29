@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002222]: Mitac 8258D,
-	no sound   Intel ICH7 HDA Realtek ALC883 codec
-Date: Thu, 29 Jun 2006 17:39:18 +0200
-Message-ID: <e2d4ad7806859052015d77104e933e60@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002232]: Compilation fails of
+	alsa-driver
+Date: Thu, 29 Jun 2006 17:42:03 +0200
+Message-ID: <b2e8f635ebd6cc18c832a85775fffa1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 804C629A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBF4429A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:39:18 +0200 (MEST)
+	Thu, 29 Jun 2006 17:42:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2222> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2232> 
 ======================================================================
-Reported By:                jolly67
-Assigned To:                tiwai
+Reported By:                bNedjar
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2222
-Category:                   PCI - hda-intel
+Issue ID:                   2232
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               OpenSuSE 10.1 i386
-Kernel Version:             Linux 2.6.16.13-4-smp (geeko@buildhost) (gcc 4.1.0)
-#1 SMP Wed May 3 04:53:23 UTC 2006
+Distribution:               Ubuntu
+Kernel Version:             2.6.15-25-686
 ======================================================================
-Date Submitted:             06-21-2006 15:02 CEST
-Last Modified:              06-29-2006 17:39 CEST
+Date Submitted:             06-25-2006 17:36 CEST
+Last Modified:              06-29-2006 17:42 CEST
 ======================================================================
-Summary:                    Mitac 8258D, no sound   Intel ICH7 HDA Realtek
-ALC883 codec
+Summary:                    Compilation fails of alsa-driver
 Description: 
-No working configuration for this hardware. The system is detect the sound
-card and setup hda_intel module for them. But no sound. No master
-control.
-Only PCM, Front, Line, CD and Mic
+I would like to compile alsa-driver 1.0.11 ... I hope this can take into
+account my sound chipset (intel ICH7 / Realtek ALC882).
+
+I followed the description in alsa projet site .. and also here :
+https://help.ubuntu.com/community/HdaIntelSoundHowto
+
+But always the same problem ... after ./configure, the make compilation
+fails ... here is what I get : 
+
+In file included from
+/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.inc:1
+3,
+                 from
+/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.c:1:
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:697: error:
+redefinition
+ of 'jiffies_to_msecs'
+include/linux/jiffies.h:256: error: previous definition of
+'jiffies_to_msecs' wa
+s here
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:716: error:
+redefinition
+ of 'msecs_to_jiffies'
+include/linux/jiffies.h:278: error: previous definition of
+'msecs_to_jiffies' wa
+s here
+In file included from
+/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.inc:1
+3,
+                 from
+/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.c:1:
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h: In function
+'snd_pci_or
+ig_save_state':
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:1048: error: too
+many ar
+guments to function 'pci_save_state'
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h: In function
+'snd_pci_or
+ig_restore_state':
+/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:1052: error: too
+many ar
+guments to function 'pci_restore_state'
+make[3]: *** [/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.o]
+Error 1
+make[2]: *** [/home/nedjar/tempo/alsa-driver-1.0.11/acore] Error 2
+make[1]: *** [_module_/home/nedjar/tempo/alsa-driver-1.0.11] Error 2
+make: *** [compile] Error 2
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jolly67 - 06-27-06 08:01 
+ tiwai - 06-29-06 17:42 
 ----------------------------------------------------------------------
-I tried all possible model configurations of ALC882/3. (auto, 3stack-dig,
-6stack-dig). If I select 3stack-dig or 6stack-dig, drivers loaded with the
-following messages:
+The detection of most kernel functions failed.  Upload config.log.
 
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_codec.c:1686: hda_codec: model '3stack-dig' is
-selected
-hda_codec: num_steps = 0 for NID=0x7
-hda_codec: num_steps = 0 for NID=0x7
-hda_codec: num_steps = 0 for NID=0x7
-hda_codec: num_steps = 0 for NID=0x7
-
-OR
-
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_codec.c:1686: hda_codec: model '6stack-dig' is
-selected
-hda_codec: num_steps = 0 for NID=0x7
-hda_codec: num_steps = 0 for NID=0x7
-hda_codec: num_steps = 0 for NID=0x7
-
-
-Alsamixer isn't working:
-
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-----------------------------------------------------------------------
- tiwai - 06-29-06 17:39 
-----------------------------------------------------------------------
-Try HG version.  Some changes have been done for ALC833 support.
+It's most likely because of a modified kernel by Ubuntu.  Better to ask
+Ubunto guys about the incompatibility...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-21-06 15:02 jolly67        New Issue                                    
-06-21-06 15:02 jolly67        File Added: hwinfo.log                       
-06-21-06 15:02 jolly67        Distribution              => OpenSuSE 10.1 i386
-06-21-06 15:02 jolly67        Kernel Version            => Linux 2.6.16.13-4-smp
-(geeko@buildhost) (gcc 4.1.0) #1 SMP Wed May 3 04:53:23 UTC 2006
-06-21-06 15:09 jolly67        File Added: lspci.log                        
-06-22-06 08:21 jolly67        File Added: card0_codec#0                    
-06-22-06 08:21 jolly67        File Added: card0_codec#1                    
-06-26-06 16:15 tiwai          Note Added: 0010545                          
-06-27-06 08:01 jolly67        Note Added: 0010566                          
-06-29-06 17:39 tiwai          Note Added: 0010673                          
+06-25-06 17:36 bNedjar        New Issue                                    
+06-25-06 17:36 bNedjar        File Added: config-and-make-results               
+    
+06-25-06 17:36 bNedjar        Distribution              => Ubuntu          
+06-25-06 17:36 bNedjar        Kernel Version            => 2.6.15-25-686   
+06-29-06 17:42 tiwai          Note Added: 0010674                          
 ======================================================================
 
 
