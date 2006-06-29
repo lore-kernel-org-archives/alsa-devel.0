@@ -1,22 +1,16 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: [RFC 01/12] snd-powermac: no longer
-	handle	anything with a layout-id property
-Date: Thu, 29 Jun 2006 23:03:12 +0200
-Message-ID: <jeu0631xpr.fsf@sykes.suse.de>
-References: <20060607130909.584205000@sipsolutions.net>
-	<20060607130910.156412000@sipsolutions.net>
-	<jey7vjiqwv.fsf@sykes.suse.de> <s5hac7yvfhe.wl%tiwai@suse.de>
-	<jehd26aa25.fsf@sykes.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Thu, 29 Jun 2006 23:14:32 +0200
+Message-ID: <224d77be48e09225a572ef3bfe06ad17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 236052A6
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6AEE2A6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 23:03:40 +0200 (MEST)
-In-Reply-To: <jehd26aa25.fsf@sykes.suse.de> (Andreas Schwab's message of "Tue,
-	27 Jun 2006 17:32:34 +0200")
+	Thu, 29 Jun 2006 23:14:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,49 +20,107 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, alsa-devel@alsa-project.org, netstar@gatheringofgray.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andreas Schwab <schwab@suse.de> writes:
 
-> Takashi Iwai <tiwai@suse.de> writes:
->
->> At Mon, 26 Jun 2006 22:49:04 +0200,
->> Andreas Schwab wrote:
->>> =
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-29-2006 23:14 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
 
->>> Johannes Berg <johannes@sipsolutions.net> writes:
->>> =
+----------------------------------------------------------------------
+ tjallen - 06-29-06 20:30 
+----------------------------------------------------------------------
+It is not a PnP card.  I have the following /etc/modules.conf:
+------------------------------------------------------------
+# ALSA portion
+        alias char-major-116 snd
+        alias snd-card-0 snd-sscape
+	# module options should go here
+        options snd-sscape port=0x539 irq=5 mpu_irq=9 dma=0 isapnp=0 
 
->>> > This patch removes from snd-powermac the code that check for the layo=
-ut-id
->>> > and instead adds code that makes it refuse loading when a layout-id p=
-roperty
->>> > is present, nothing that snd-aoa should be used.
->>> =
+# OSS/Free portion
+        alias char-major-14 soundcore
+        alias sound-slot-0 snd-card-0
+	
+# card #1
+	alias sound-service-0-0 snd-mixer-oss
+	alias sound-service-0-1 snd-seq-oss
+	alias sound-service-0-3 snd-pcm-oss
+	alias sound-service-0-8 snd-seq-oss
+	alias sound-service-0-12 snd-pcm-os
+--------------------------------------------------
+and I've tried, in desperation, the following modprobe.conf:
+--------------------------------------------------
+alias snd-card-0 snd-sscape
+alias sound-slot-0 snd-sscape
+options snd-sscape port=0x539 irq=5 mpu_irq=9 dma=0 
+---------------------------------------------------
 
->>> Can we get snd-powermac back as long as snd-aoa is lacking all those
->>> features from snd-powermac?
->>
->> What functions are missing?
->
-> Sound on PowerMac7,2, DRC on TAS, probably more.
+The output of sscape_ctl --directory /boot 
+gives me:
 
-Another problem is that the sound device can only be opened once.
+Error opening hw:0,0: No such device
 
-Andreas.
+It's not clear to me from the documentation
+exactly how to configure the soundscape cards
+in general.  Perhaps I need to try to load 
+the firmware at a different point or to 
+turn on the option 
+"Userspace firmware loading support (FW_LOADER)"
+when I compile the kernel to get sscape_ctl
+to work.  
 
--- =
+None of the things I've tried seems to work.
+Do I have the correct syntax in /etc/modules.conf?
 
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+----------------------------------------------------------------------
+ rankincj - 06-29-06 23:14 
+----------------------------------------------------------------------
+What does it say in the kernel log when you try and load the snd-sscape
+module? As far as I can see, the driver should write something as soon as
+it hits a problem. You can examine the kernel log by running the "dmesg"
+command.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
