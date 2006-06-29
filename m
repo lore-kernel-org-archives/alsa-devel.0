@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002240]: no microphone capture from
-	motherboard onboard sound using intel8x0 driver
-Date: Thu, 29 Jun 2006 17:36:29 +0200
-Message-ID: <e891c826937376b3370b3a2db998e1e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate
+	3012WTMI
+Date: Thu, 29 Jun 2006 17:37:13 +0200
+Message-ID: <aa09175d12bcef8cfc23454063a57c21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DFBD236
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B78129A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:36:29 +0200 (MEST)
+	Thu, 29 Jun 2006 17:37:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,310 +26,201 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2240> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2104> 
 ======================================================================
-Reported By:                Alexis_Cousein
-Assigned To:                
+Reported By:                mcosta
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2240
-Category:                   PCI - intel8x0
+Issue ID:                   2104
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 10.1
-Kernel Version:             2.6.16.13-4-smp
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-28-2006 18:21 CEST
-Last Modified:              06-29-2006 17:36 CEST
+Date Submitted:             05-08-2006 16:08 CEST
+Last Modified:              06-29-2006 17:37 CEST
 ======================================================================
-Summary:                    no microphone capture from motherboard onboard sound
-using intel8x0 driver
+Summary:                    No sound on Acer Travelmate 3012WTMI
 Description: 
-I'm using Skype on (ugh!) Windows for the moment, and microphone is fully
-functional. Plugged in the back of the PC (which should be Mic1); there's
-a second Mic input at the front.
+Hello, I have a TM3012WTMI laptop and I can not hear any sound. I am
+running 2.6.1.6-11-smp kernel. I have compiled serveral versions of alsa
+drivers and I am in the same situation: no sound at all.
 
-In SuSE 10.1, microphone doesn't work. krecord, arecord and Skype all
-record silence (or a constant pitch signal at very high gains), even
-though mixer settings appear correct.
+I attach some information:
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
+03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile Integrated
+Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile Integrated Graphics
+Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 02)
+00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 2 (rev 02)
+00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 3 (rev 02)
+00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 4 (rev 02)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
+(rev 02)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
+(rev 02)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
+(rev 02)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
+(rev 02)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
+00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
+ATA Storage Controllers cc=IDE (rev 02)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 02)
+02:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
+02)
+03:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789 Gigabit
+Ethernet PCI Express (rev 11)
+0a:09.0 CardBus bridge: Texas Instruments: Unknown device 8039
+0a:09.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
+0a:09.2 Unknown mass storage controller: Texas Instruments: Unknown device
+803b
 
-Evidently, some parts of ALSA do think they're recording from the
-microphone, because there is a 20dB boost to whatever constant pitch
-thinggummie is recorded when toggling the Mic boost in the mixer.
+hwinfo --sound:
+13: PCI 1b.0: 0403 Multimedia controller
+  [Created at pci.277]
+  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
+  Unique ID: u1Nb.NLLhYZ867B4
+  SysFS ID: /devices/pci0000:00/0000:00:1b.0
+  SysFS BusID: 0000:00:1b.0
+  Hardware Class: sound
+  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
+Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
+Controller"
+  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
+  SubDevice: pci 0x0098
+  Revision: 0x02
+  Driver: "HDA Intel"
+  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
+  IRQ: 66 (138 events)
+  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=no, avail=yes, need=no, active=unknown
 
-Plugging Microphone in other port doesn't change anything; neither does
-selecting Mic2 in the mixer panel.
+When the driver is loaded I get on /var/log/messages:
 
-lspci details:
-00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 66
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2115: autoconfig:
+line_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2119:    speaker_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2121:    hp=0x14,
+dig_out=0x1e, din_in=0x0
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2129:    inputs:
+mic=0x1a, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
 
-yggdrasil:/proc/asound/card0/codec97#0 # cat ac97#0-0
-0-0/0: C-Media Electronics CMI9780
-
-PCI Subsys Vendor: 0x1462
-PCI Subsys Device: 0x0480
-
-Revision         : 0x01
-Compat. Class    : 0x04
-Subsys. Vendor ID: 0x8086
-Subsys. ID       : 0x1234
-
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF DRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-yggdrasil:/proc/asound/card0/codec97#0 # cat ac97#0-0+regs
-0:00 = 0000
-0:02 = 0808
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 8000
-0:0c = 0000
-0:0e = 0040
-0:10 = 9f1f
-0:12 = 1f1f
-0:14 = 8000
-0:16 = 8000
-0:18 = 0808
-0:1a = 0000
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0001
-0:26 = 800f
-0:28 = 0bc6
-0:2a = 05f0
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 8080
-0:38 = 8080
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0004
-0:5e = 0000
-0:60 = 0401
-0:62 = 8086
-0:64 = 1234
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000 
-
-amixer output:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 230 [90%] [on]
-  Front Right: Playback 230 [90%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [off]
-  Front Right: Playback [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'Side',0
-  Capabilities: pvolume pswitch enum
-  Items: 'Front' 'Side' 'Center/LFE' 'Rear'
-  Item0: 'Front'
-  Item1: 'Front'
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [on] Capture [off]
-  Front Right: Playback 0 [0%] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [on]
-  Front Right: Playback 31 [100%] [on] Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic1'
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [off] Capture [off]
-  Front Right: Playback 31 [100%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [off] Capture [off]
-Simple mixer control 'IEC958 Capture Monitor',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Capture Valid',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'IEC958 Playback Source',0
-  Capabilities: enum
-  Items: 'AC-Link' 'ADC' 'SPDIF-In'
-  Item0: 'SPDIF-In'
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 15 [100%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [off] Capture [off]
-  Front Right: Playback 31 [100%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities: enum
-  Items: 'Mix' 'Mic'
-  Item0: 'Mix'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] [on]
-  Front Right: Capture 15 [100%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'DAC Clock Source',0
-  Capabilities: enum
-  Items: 'AC-Link' 'SPDIF-In' 'Both'
-  Item0: 'Both'
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
-
-
-
-
-
+Best regards.
 
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 17:36 
+ flaviocu - 06-28-06 16:06 
 ----------------------------------------------------------------------
-Hm it's weird.  Could you show the generated file via "alsactl -f file
-store" rather than amixer output?
+I have now tried alsa-driver-0.1.12rc1 without success:
 
-Also, for checking whether the recording works, try to change "Mix" as the
-capture source and run arecord during playing back something at the same
-time (e.g. aplay foo.wav on another terminal).
-It will record a loopback sound, i.e. you should be able to see the
-signaled being played in the recorded file.
+Output from dmesg:
+
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+
+root@jannat:~# cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.12rc1.
+Compiled on Jun 28 2006 for kernel 2.6.17.1-i686-smp (SMP).
+
+root@jannat:~# cat /proc/asound/cards 
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xb0000000 irq 66
+
+12: PCI 1b.0: 0403 Multimedia controller                        
+  [Created at pci.277]
+  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
+  Unique ID: u1Nb.NLLhYZ867B4
+  SysFS ID: /devices/pci0000:00/0000:00:1b.0
+  SysFS BusID: 0000:00:1b.0
+  Hardware Class: sound
+  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
+Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
+Controller"
+  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
+  SubDevice: pci 0x0098 
+  Revision: 0x02
+  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
+  IRQ: 66 (7506 events)
+  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
+
+----------------------------------------------------------------------
+ tiwai - 06-29-06 17:37 
+----------------------------------------------------------------------
+Just to be sure, try the latest HG repo.  I applied some patches for
+ALC883.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-06 18:21 Alexis_Cousein New Issue                                    
-06-28-06 18:21 Alexis_Cousein Distribution              => SuSE 10.1       
-06-28-06 18:21 Alexis_Cousein Kernel Version            => 2.6.16.13-4-smp 
-06-29-06 17:36 tiwai          Note Added: 0010670                          
+05-08-06 16:08 mcosta         New Issue                                    
+05-09-06 17:35 lrupn          Note Added: 0009666                          
+05-09-06 23:28 useidel        Note Added: 0009695                          
+05-09-06 23:29 useidel        Note Edited: 0009695                         
+05-09-06 23:47 rlrevell       Note Added: 0009696                          
+05-09-06 23:56 useidel        Note Added: 0009697                          
+05-10-06 14:48 tiwai          Note Added: 0009715                          
+05-10-06 16:43 useidel        Note Added: 0009727                          
+05-10-06 16:50 tiwai          Note Added: 0009729                          
+05-10-06 16:52 mcosta         Note Added: 0009730                          
+05-10-06 17:00 mcosta         File Added: tm3012sound.txt                    
+05-10-06 17:03 mcosta         Note Added: 0009733                          
+05-10-06 17:19 tiwai          Note Added: 0009739                          
+05-10-06 17:19 tiwai          File Added: alc882-capture-adc-fix.diff           
+        
+05-10-06 17:48 mcosta         Note Added: 0009744                          
+05-10-06 18:52 useidel        File Added: proc.asound.card0.codec0              
+     
+05-10-06 18:53 useidel        File Added: proc.asound.card0.codec1              
+     
+05-10-06 18:53 useidel        File Added: alsactl.store                    
+05-10-06 19:07 useidel        Note Added: 0009749                          
+05-19-06 16:50 joppe          Issue Monitored: joppe                       
+05-23-06 21:35 useidel        Note Added: 0009952                          
+05-31-06 19:50 useidel        Note Added: 0010027                          
+06-01-06 01:12 flaviocu       Note Added: 0010038                          
+06-01-06 13:12 nevvios        Note Added: 0010043                          
+06-16-06 09:51 riesebie       Issue Monitored: riesebie                    
+06-18-06 23:03 norbusan       Note Added: 0010303                          
+06-18-06 23:04 norbusan       Issue Monitored: norbusan                    
+06-28-06 16:06 flaviocu       Note Added: 0010617                          
+06-29-06 17:37 tiwai          Note Added: 0010671                          
 ======================================================================
 
 
