@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 15:52:40 +0200
-Message-ID: <fe33b21e56f276c43ab2defd1caa1c6d@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 15:56:10 +0200
+Message-ID: <c48164cee4d374db5de90af2f96f3bf1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1CC229C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0EFE233
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 15:52:40 +0200 (MEST)
+	Thu, 29 Jun 2006 15:56:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 15:52 CEST
+Last Modified:              06-29-2006 15:56 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,30 +108,11 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 15:45 
+ Raymond - 06-29-06 15:54 
 ----------------------------------------------------------------------
-$ cat /proc/asound/cards
- 0 [default        ]: Aureon71Universe -
-                       at 0x3880, irq 74
- 1 [CK804          ]: NFORCE - NVidia CK804
-                      NVidia CK804 with AD1981B at 0xb0002000, irq 217
- 2 [U0x46d0x8b2    ]: USB-Audio - USB Device 0x46d:0x8b2
-                      USB Device 0x46d:0x8b2 at usb-0000:00:02.0-3, full
-speed
+lspci -vn
 
 
-$ cat /proc/asound/pcm
-01-02: Intel ICH - IEC958 : NVidia CK804 - IEC958 : playback 1
-01-01: Intel ICH - MIC ADC : NVidia CK804 - MIC ADC : capture 1
-01-00: Intel ICH : NVidia CK804 : playback 1 : capture 1
-00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
-00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1 : capture 1
-00-00: ICE1724 : ICE1724 : playback 1 : capture 1
-02-00: USB Audio : USB Audio : capture 1
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 15:52 
-----------------------------------------------------------------------
 Aureon71Universe cannot use Aureon71.conf
 
 00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
@@ -139,6 +120,17 @@ Aureon71Universe cannot use Aureon71.conf
 00-00: ICE1724 : ICE1724 : playback 1 : capture 1
 
 http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/Aureon71.conf;filenode=70f3770860da3ab84a41d9bba03335cebe33c8c4;style=raw
+
+
+
+----------------------------------------------------------------------
+ calestyo - 06-29-06 15:56 
+----------------------------------------------------------------------
+Uhm,.. I did nowhere tell the system to use that file so it must have
+automatically choosen it...
+
+What should I do now? Or is there a configuration file going to be created
+for the Universe?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -154,6 +146,8 @@ Date Modified  Username       Field                    Change
 06-29-06 15:40 Raymond        Note Added: 0010650                          
 06-29-06 15:45 calestyo       Note Added: 0010651                          
 06-29-06 15:52 Raymond        Note Added: 0010652                          
+06-29-06 15:54 Raymond        Note Edited: 0010652                         
+06-29-06 15:56 calestyo       Note Added: 0010653                          
 ======================================================================
 
 
