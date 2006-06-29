@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 15:37:30 +0200
-Message-ID: <9ef0294eb0ebaac5801fd2d025ae2280@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 15:40:11 +0200
+Message-ID: <3dd3f90dbebdcde47cd9cb7c935908ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0F8129C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 230FE29C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 15:37:30 +0200 (MEST)
+	Thu, 29 Jun 2006 15:40:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 15:37 CEST
+Last Modified:              06-29-2006 15:40 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,80 +108,18 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 15:36 
-----------------------------------------------------------------------
-$ speaker-test -Dsurround40 -c 4 -t wav
-
-speaker-test 1.0.11
-
-Playback device is surround40
-Stream parameters are 48000Hz, S16_LE, 4 channels
-WAV file(s)
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.surround40.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM surround40
-Playback open error: -2,No such file or directory
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.surround40.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM surround40
-Playback open error: -2,No such file or directory
-...
-
-
-$ speaker-test -Dsurround51 -c 6 -t wav
-
-speaker-test 1.0.11
-
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.surround51.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM surround51
-Playback open error: -2,No such file or directory
-ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
-'cards.Aureon71Univers.pcm.surround51.0:CARD=0'
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such file or directory
-ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
-directory
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM surround51
-Playback open error: -2,No such file or directory
-...
-
-
-speaker-test -Dsurround71 -c 8 -t wav
-
-speaker-test 1.0.11
-
-Playback device is surround71
-Stream parameters are 48000Hz, S16_LE, 8 channels
-WAV file(s)
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM surround71
-definition (id: surround71, value: cards.pcm.surround71)
-Playback open error: -22,Invalid argument
-ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM surround71
-definition (id: surround71, value: cards.pcm.surround71)
-Playback open error: -22,Invalid argument
-
-----------------------------------------------------------------------
  calestyo - 06-29-06 15:37 
 ----------------------------------------------------------------------
 I get similar errors when trying to use those profiles with other
 applications, but I must admit that I don't fully understand how they
 work... (see me post to alsa-users where I've asked about this stuff)
+
+----------------------------------------------------------------------
+ Raymond - 06-29-06 15:40 
+----------------------------------------------------------------------
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -194,6 +132,7 @@ Date Modified  Username       Field                    Change
 06-29-06 15:29 Raymond        Note Added: 0010647                          
 06-29-06 15:36 calestyo       Note Added: 0010648                          
 06-29-06 15:37 calestyo       Note Added: 0010649                          
+06-29-06 15:40 Raymond        Note Added: 0010650                          
 ======================================================================
 
 
