@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002240]: no microphone capture from
-	motherboard onboard sound using intel8x0 driver
-Date: Thu, 29 Jun 2006 19:47:24 +0200
-Message-ID: <213b55516b2b7d40d8c4b47d92db3124@bugtrack.alsa-project.org>
+From: Daniel Schroeder <sec@dschroeder.info>
+Subject: Re: ASUS M2N32 MCP55 HDAudio problems
+Date: Thu, 29 Jun 2006 20:29:37 +0200
+Message-ID: <44A41C11.2030900@dschroeder.info>
+References: <44A19885.8020104@dschroeder.info>	<s5hwtb1qp16.wl%tiwai@suse.de>	<44A2F28C.509@dschroeder.info>
+	<s5h64ikce22.wl%tiwai@suse.de>
+Reply-To: sec@dschroeder.info
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0411329D
-	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 19:47:24 +0200 (MEST)
+In-Reply-To: <s5h64ikce22.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,334 +19,135 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Wed, 28 Jun 2006 23:20:12 +0200,
+> Daniel Schroeder wrote:
+>> Takashi Iwai wrote:
+>>> At Tue, 27 Jun 2006 22:43:49 +0200,
+>>> Daniel Schroeder wrote:
+>>>> Hello *,
+>>>>
+>>>> sorry for posting this to devel and users, but i think this could be
+>>>> interesting for both. Plz. send replies in cc to my mail address because
+>>>>  i am not on list.
+>>>>
+>>>> I am a proud owner of this flagship mainboard with a nvdidia mcp55
+>>>> hdaudio sound card. The chip is identified by alsa as a AD1988A rev.2
+>>>> (dmesg, lspci -v, lspci -nv output below):
+>>>>
+>>>> The problem is that if i activate only front in kmix all is fine.
+>>>> Speaker-Test works as expected. If i activate lfe/center then the sound
+>>>> is messed up and he plays front-left/front-rigt through center and lfe.
+>>> What do you mean to "activate lfe/center"?
+>>> A more detailed step to reproduce is helpful.
+>>>
+>>>
+>>> Takashi
+>> a more detail problem description:
+>>
+>> with this module configuration: options snd-hda-intel model=6stack-dig
+>> position_fix=1
+> 
+> Doesn't the driver work without position_fix option?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2240> 
-======================================================================
-Reported By:                Alexis_Cousein
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2240
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE 10.1
-Kernel Version:             2.6.16.13-4-smp
-======================================================================
-Date Submitted:             06-28-2006 18:21 CEST
-Last Modified:              06-29-2006 19:47 CEST
-======================================================================
-Summary:                    no microphone capture from motherboard onboard sound
-using intel8x0 driver
-Description: 
-I'm using Skype on (ugh!) Windows for the moment, and microphone is fully
-functional. Plugged in the back of the PC (which should be Mic1); there's
-a second Mic input at the front.
+The driver works without these options...i have just played around with
+these.
 
-In SuSE 10.1, microphone doesn't work. krecord, arecord and Skype all
-record silence (or a constant pitch signal at very high gains), even
-though mixer settings appear correct.
+> 
+>> --------------------------
+>> headphone jack in front: if connected the regular sound isnt muted.
+>> --------------------------
+>> speaker test hangs in surround51 configuration:
+>>
+>> speaker-test -Dplug:surround51 -c6
+>>
+>> speaker-test 1.0.12rc1
+>>
+>> Playback device is plug:surround51
+>> Stream parameters are 48000Hz, S16_LE, 6 channels
+>> Using 16 octaves of pink noise
+>> Rate set to 48000Hz (requested 48000Hz)
+>> Buffer size range from 22 to 5461
+>> Period size range from 11 to 2730
+>> Using max buffer size 5460
+>> Periods = 4
+>> was set period_size = 1365
+>> was set buffer_size = 5460
+>>  0 - Front Left
+>> ---- hangs forever
+> 
+> That's bad.  Does aplay with 6 channel samples work fine?
 
-Evidently, some parts of ALSA do think they're recording from the
-microphone, because there is a 20dB boost to whatever constant pitch
-thinggummie is recorded when toggling the Mic boost in the mixer.
-
-Plugging Microphone in other port doesn't change anything; neither does
-selecting Mic2 in the mixer panel.
-
-lspci details:
-00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
-
-yggdrasil:/proc/asound/card0/codec97#0 # cat ac97#0-0
-0-0/0: C-Media Electronics CMI9780
-
-PCI Subsys Vendor: 0x1462
-PCI Subsys Device: 0x0480
-
-Revision         : 0x01
-Compat. Class    : 0x04
-Subsys. Vendor ID: 0x8086
-Subsys. ID       : 0x1234
-
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF DRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-yggdrasil:/proc/asound/card0/codec97#0 # cat ac97#0-0+regs
-0:00 = 0000
-0:02 = 0808
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 8000
-0:0c = 0000
-0:0e = 0040
-0:10 = 9f1f
-0:12 = 1f1f
-0:14 = 8000
-0:16 = 8000
-0:18 = 0808
-0:1a = 0000
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0001
-0:26 = 800f
-0:28 = 0bc6
-0:2a = 05f0
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 8080
-0:38 = 8080
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0004
-0:5e = 0000
-0:60 = 0401
-0:62 = 8086
-0:64 = 1234
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000 
-
-amixer output:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 230 [90%] [on]
-  Front Right: Playback 230 [90%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [off]
-  Front Right: Playback [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'Side',0
-  Capabilities: pvolume pswitch enum
-  Items: 'Front' 'Side' 'Center/LFE' 'Rear'
-  Item0: 'Front'
-  Item1: 'Front'
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [on] Capture [off]
-  Front Right: Playback 0 [0%] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [on]
-  Front Right: Playback 31 [100%] [on] Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic1'
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [off] Capture [off]
-  Front Right: Playback 31 [100%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [off] Capture [off]
-Simple mixer control 'IEC958 Capture Monitor',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Capture Valid',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'IEC958 Playback Source',0
-  Capabilities: enum
-  Items: 'AC-Link' 'ADC' 'SPDIF-In'
-  Item0: 'SPDIF-In'
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 15 [100%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [off] Capture [off]
-  Front Right: Playback 31 [100%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities: enum
-  Items: 'Mix' 'Mic'
-  Item0: 'Mix'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] [on]
-  Front Right: Capture 15 [100%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'DAC Clock Source',0
-  Capabilities: enum
-  Items: 'AC-Link' 'SPDIF-In' 'Both'
-  Item0: 'Both'
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
+while true;  do aplay chan-id.wav ; done
+Playing WAVE 'chan-id.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Channels 6
 
 
+aplay with 6 channel sample works but only front left / front right the
+other "tracks" in the file are "silent".
+Output of front left and front right are: front left all speakers to the
+left. front left/rear left/center with output of channel "front right"
+all speakers to the right "front right/rear right/subwoofer"
 
+> 
+>> ----------------------------
+>> speaker-test in surround40
+>>
+>> front left=sound output rear left;
+>> front right=sound output rear right;
+>> rear right=sound output subwoofer
+>> rear left=sound output center
+> 
+> So the channels are shifted.
+> 
+> When you play with 2-channel via "aplay foo.wav", do the samples come
+> from front speakers?
 
+aplay 10.wav
+Playing WAVE 10.wav : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
 
+sound comes through all speakers, front left/front right/rear left/rear
+right/center and subwoofer
 
+> 
+> As you might have noticed in the kernel message, there is a workaround
+> for AD1988A rev2 codec.  You can disable it by re-defining
+> AD1988A_REV2 in patch_analog.c to a bogus value, for example, a patch
+> like below.  Then try the tests again.
+> 
+> 
+> Takashi
+> 
+> diff -r ac7516b5dcb9 pci/hda/patch_analog.c
+> --- a/pci/hda/patch_analog.c	Thu Jun 29 13:22:29 2006 +0200
+> +++ b/pci/hda/patch_analog.c	Thu Jun 29 14:58:36 2006 +0200
+> @@ -1543,7 +1543,8 @@ enum {
+>  };
+>  
+>  /* reivision id to check workarounds */
+> -#define AD1988A_REV2		0x100200
+> +// #define AD1988A_REV2		0x100200
+> +#define AD1988A_REV2		0xabcd1234 /* bogus */
+>  
+>  
+>  /*
+i have patched the file patch_analog.c recompiled and loaded the module.
+same bad behaviour. Im sure that he has taken the new module because the
+dmesg output is missing.
 
+----
 
+have you any clues of what i could do? This stuff is a bit mysterious
+for me. Why does he play a stereo wav file to all speakers. And why does
+he plays only two channels of the surround file (chan-id.wav) and these
+two channels getting splitted to every left speaker / every right speaker...
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-29-06 19:18 
-----------------------------------------------------------------------
-Also, attach the whole content of
-/proc/asound/card0/codec97#0/ac97#0-0+regs file without trimming.
-
-alsamixergui is an obsoleted app, and kmix is known to buggy for many
-devices.
-Use alsamixer on terminal to be sure.
-
-----------------------------------------------------------------------
- Alexis_Cousein - 06-29-06 19:47 
-----------------------------------------------------------------------
-alsamixer is what I used (with results as described above - not silence,
-but slightly louder white noise when "Mix" was the source).
-
-I attached the /proc/asound/card0/codec97#0/ac97#0-0+regs file cat'ed into
-a file.
-
-Just to be sure, I also disabled all the "media" kernel drivers for my
-PC's TV capture card, just in case - still no dice.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-28-06 18:21 Alexis_Cousein New Issue                                    
-06-28-06 18:21 Alexis_Cousein Distribution              => SuSE 10.1       
-06-28-06 18:21 Alexis_Cousein Kernel Version            => 2.6.16.13-4-smp 
-06-29-06 17:36 tiwai          Note Added: 0010670                          
-06-29-06 18:36 Alexis_Cousein Note Added: 0010688                          
-06-29-06 18:44 tiwai          Note Added: 0010690                          
-06-29-06 19:01 Alexis_Cousein Note Added: 0010693                          
-06-29-06 19:18 tiwai          Note Added: 0010697                          
-06-29-06 19:44 Alexis_Cousein File Added: ac97regs                         
-06-29-06 19:47 Alexis_Cousein Note Added: 0010700                          
-======================================================================
-
+,
+daniel
 
 
 Using Tomcat but need to do more? Need to support web services, security?
