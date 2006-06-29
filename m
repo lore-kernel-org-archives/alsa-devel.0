@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 15:40:11 +0200
-Message-ID: <3dd3f90dbebdcde47cd9cb7c935908ae@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 15:45:56 +0200
+Message-ID: <3bc3bf0a48d5a1738d6a08dd846d9fcd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 230FE29C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8C2729C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 15:40:12 +0200 (MEST)
+	Thu, 29 Jun 2006 15:45:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 15:40 CEST
+Last Modified:              06-29-2006 15:45 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,18 +108,33 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 15:37 
-----------------------------------------------------------------------
-I get similar errors when trying to use those profiles with other
-applications, but I must admit that I don't fully understand how they
-work... (see me post to alsa-users where I've asked about this stuff)
-
-----------------------------------------------------------------------
  Raymond - 06-29-06 15:40 
 ----------------------------------------------------------------------
 cat /proc/asound/cards
 
 cat /proc/asound/pcm
+
+----------------------------------------------------------------------
+ calestyo - 06-29-06 15:45 
+----------------------------------------------------------------------
+$ cat /proc/asound/cards
+ 0 [default        ]: Aureon71Universe -
+                       at 0x3880, irq 74
+ 1 [CK804          ]: NFORCE - NVidia CK804
+                      NVidia CK804 with AD1981B at 0xb0002000, irq 217
+ 2 [U0x46d0x8b2    ]: USB-Audio - USB Device 0x46d:0x8b2
+                      USB Device 0x46d:0x8b2 at usb-0000:00:02.0-3, full
+speed
+
+
+$ cat /proc/asound/pcm
+01-02: Intel ICH - IEC958 : NVidia CK804 - IEC958 : playback 1
+01-01: Intel ICH - MIC ADC : NVidia CK804 - MIC ADC : capture 1
+01-00: Intel ICH : NVidia CK804 : playback 1 : capture 1
+00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
+00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1 : capture 1
+00-00: ICE1724 : ICE1724 : playback 1 : capture 1
+02-00: USB Audio : USB Audio : capture 1
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -133,6 +148,7 @@ Date Modified  Username       Field                    Change
 06-29-06 15:36 calestyo       Note Added: 0010648                          
 06-29-06 15:37 calestyo       Note Added: 0010649                          
 06-29-06 15:40 Raymond        Note Added: 0010650                          
+06-29-06 15:45 calestyo       Note Added: 0010651                          
 ======================================================================
 
 
