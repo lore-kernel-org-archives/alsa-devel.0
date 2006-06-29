@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate
 	3012WTMI
-Date: Fri, 30 Jun 2006 00:44:16 +0200
-Message-ID: <7457cd2ddf38a5ae93a2e4ae342f60d7@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 00:51:03 +0200
+Message-ID: <5183f5d72feb9454abf6581acae97cb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E3A32A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A97F226F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 00:44:16 +0200 (MEST)
+	Fri, 30 Jun 2006 00:51:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-08-2006 16:08 CEST
-Last Modified:              06-30-2006 00:44 CEST
+Last Modified:              06-30-2006 00:51 CEST
 ======================================================================
 Summary:                    No sound on Acer Travelmate 3012WTMI
 Description: 
@@ -141,17 +141,17 @@ Best regards.
 ======================================================================
 
 ----------------------------------------------------------------------
- useidel - 06-29-06 22:02 
-----------------------------------------------------------------------
-Thanks for the hint, but no success with the latest hg repo.
-
-----------------------------------------------------------------------
  jan_k - 06-30-06 00:44 
 ----------------------------------------------------------------------
 I can confirn this for an Acer TravelMate 3020. The chip is 82801G (ICH-7)
 The codec is identified as ALC882 by the kernel drivers but as ALC883 by
 alsamixer.
 Setup is correct, no errors at all. But no sound at all.
+
+----------------------------------------------------------------------
+ rlrevell - 06-30-06 00:51 
+----------------------------------------------------------------------
+jan_k:  you also tried all the model options?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -190,6 +190,8 @@ Date Modified  Username       Field                    Change
 06-29-06 17:37 tiwai          Note Added: 0010671                          
 06-29-06 22:02 useidel        Note Added: 0010702                          
 06-30-06 00:44 jan_k          Note Added: 0010706                          
+06-30-06 00:46 jan_k          Issue Monitored: jan_k                       
+06-30-06 00:51 rlrevell       Note Added: 0010707                          
 ======================================================================
 
 
