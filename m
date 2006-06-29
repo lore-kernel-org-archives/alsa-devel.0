@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
-Date: Thu, 29 Jun 2006 17:46:26 +0200
-Message-ID: <12304750153ab8db374aaef710064030@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002198]: No sound out of the built in
+	speakers, but from headphones on a Apple MacBook Pro
+Date: Thu, 29 Jun 2006 17:48:33 +0200
+Message-ID: <b49b4ed84505a72d04f4df9bae116ae5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4AB529A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FB8429A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:46:26 +0200 (MEST)
+	Thu, 29 Jun 2006 17:48:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,59 +26,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
 ======================================================================
-Reported By:                quetzyg
+Reported By:                enlighter
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2200
+Issue ID:                   2198
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
-enough to reproduce this)
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.16.16
 ======================================================================
-Date Submitted:             06-11-2006 17:50 CEST
-Last Modified:              06-29-2006 17:46 CEST
+Date Submitted:             06-09-2006 12:09 CEST
+Last Modified:              06-29-2006 17:48 CEST
 ======================================================================
-Summary:                    PCM channel doesn't exist!
+Summary:                    No sound out of the built in speakers, but from
+headphones on a Apple MacBook Pro
 Description: 
-Since the early release candidates of ALSA 1.0.11, up to the final version,
-I seem to have lost the PCM channel from alsamixer.
+Hi,
+
+this error occours on all macbook pros! (see www.mactel-linux.org). Sound
+comes only out of the headphones or out of line-out, but the internal
+speakers keep mute. I cannot unmute them using the mixer (alsamixer,
+kmix). I also tried a rc version of linux-2.6.17 with the same result.
+
+I also tried to load the snd-hda-intel module with "model=laptop" and
+"model=laptop-eapd".
 ======================================================================
 
 ----------------------------------------------------------------------
- quetzyg - 06-27-06 12:59 
+ tiwai - 06-26-06 16:34 
 ----------------------------------------------------------------------
-No, all my apps are using ALSA (SoX, MPlayer, MOC, etc). I think that only
-the flash plugin for firefox uses OSS.
+Check whether the PCI SSID is 8384:7680.  Otherwise you'll need to add the
+corresponding entry in patch_realtek.c.
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 17:46 
+ tiwai - 06-29-06 17:48 
 ----------------------------------------------------------------------
-Strange.  Show the generated file via "alsactl -f file store".  It's more
-obvious than amixer output.
-
-Also, provide more hardware information (the machine, the codec chip)
-especially for HD-audio stuff.  The behavior of that driver is sooooooooo
-dependent upon the h/w and system you use.
+Well it's actually identical.  Then I have no idea why.  There are positive
+reports that the same driver works on other Intel Macs, at least.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-06 17:50 quetzyg        New Issue                                    
-06-11-06 17:50 quetzyg        Distribution              => Slackware       
-06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
-version >= 2.6.16 should be enough to reproduce this)
-06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
-06-27-06 12:47 quetzyg        Note Added: 0010587                          
-06-27-06 12:52 tiwai          Note Added: 0010589                          
-06-27-06 12:59 quetzyg        Note Added: 0010590                          
-06-29-06 17:46 tiwai          Note Added: 0010675                          
+06-09-06 12:09 enlighter      New Issue                                    
+06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
+06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
+06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
+06-18-06 09:27 enlighter      Note Added: 0010297                          
+06-18-06 09:29 enlighter      Note Added: 0010298                          
+06-25-06 20:17 enlighter      Note Added: 0010518                          
+06-26-06 16:08 tiwai          Note Added: 0010541                          
+06-26-06 16:20 enlighter      Note Added: 0010546                          
+06-26-06 16:34 tiwai          Note Added: 0010547                          
+06-29-06 17:48 tiwai          Note Added: 0010676                          
 ======================================================================
 
 
