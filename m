@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m
-	after suspend/resume doesn't play
-Date: Thu, 29 Jun 2006 03:14:13 +0200
-Message-ID: <aa50e525f7fb03590e418b6119d264c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002076]: arecord gives silence
+Date: Thu, 29 Jun 2006 03:29:41 +0200
+Message-ID: <a42388f7b922d7a6b728d9160b3ff924@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF05028B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FF1928B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 03:14:13 +0200 (MEST)
+	Thu, 29 Jun 2006 03:29:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,70 +25,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1946> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076> 
 ======================================================================
-Reported By:                marvin
+Reported By:                jaime
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1946
+Issue ID:                   2076
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.16-RC6
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-20-2006 20:15 CET
-Last Modified:              06-29-2006 03:14 CEST
+Date Submitted:             04-26-2006 16:28 CEST
+Last Modified:              06-29-2006 03:29 CEST
 ======================================================================
-Summary:                    cs46xx in Thinkapad A21m after suspend/resume
-doesn't play
+Summary:                    arecord gives silence
 Description: 
-When I suspend to Ram and resume cs46xx stop working. If I rmmod modprobe
-snd_cs46xx sound start working, but If I do this often comp sometime
-freeze when I try suspend to RAM.
+IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
+Audio Accelerator] (rev 01).
 
+alsamixer correctly mixes the inputs over to the line out (I can hear
+microphone in and line in successfully mixed) but arecord gives silence.
 
+I've tried using a usb soundcard on the same machine, and everything works
+fine there, so I think this is only the snd-cs46xx driver.
 
+I'm not sure what other info is useful - please let me know. Thank you.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- dottedmag - 06-20-06 16:25 
+ atler - 05-08-06 12:14 
 ----------------------------------------------------------------------
-Still fails with 1.0.11rc4 as in vanilla 2.6.17-rc2
+It also seems to be the case in this bugreport:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822
 
-However, it is duplicate of 536, 226 and 305
+Recording with 'arecord -v -v -Dhw:0,0 -f cd test.wav' works fine.
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 03:14 
+ Raymond - 06-29-06 03:29 
 ----------------------------------------------------------------------
-cat /proc/asound/pcm
+Try the following test and post the output including the setup line output
+by arecord
 
-How do you configure cs46xx ? with/without  cs46xx-new-dsp
+arecord -v -Dhw:0,0 -f cd test1.wav
 
-It seem that supsend routine only suspend one device 
+arecord -v -Dplughw:0,0 -f cd test2.wav
 
-	snd_pcm_suspend_all(chip->pcm);
+arecord -v -f cd test3.wav
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-20-06 20:15 marvin         New Issue                                    
-03-20-06 20:15 marvin         Distribution              => Debian Sarge    
-03-20-06 20:15 marvin         Kernel Version            => 2.6.16-RC6      
-03-22-06 00:42 marvin         Note Added: 0008765                          
-03-25-06 21:03 marvin         Issue Monitored: marvin                      
-03-30-06 20:43 philstopford   Note Added: 0009037                          
-03-30-06 21:24 marvin         Note Added: 0009039                          
-03-31-06 21:25 philstopford   Issue Monitored: philstopford                    
-04-21-06 18:20 fizban         Issue Monitored: fizban                      
-04-23-06 02:08 cull           Note Added: 0009439                          
-06-20-06 16:25 dottedmag      Note Added: 0010337                          
-06-20-06 16:25 dottedmag      Issue Monitored: dottedmag                    
-06-29-06 03:14 Raymond        Note Added: 0010637                          
+04-26-06 16:28 jaime          New Issue                                    
+05-02-06 18:11 tiwai          Note Added: 0009568                          
+05-04-06 12:11 jaime          Note Added: 0009613                          
+05-08-06 12:14 atler          Note Added: 0009645                          
+05-24-06 14:03 fuman          Issue Monitored: fuman                       
+06-29-06 03:29 Raymond        Note Added: 0010638                          
 ======================================================================
 
 
