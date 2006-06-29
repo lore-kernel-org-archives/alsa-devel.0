@@ -1,24 +1,15 @@
-From: "Content-filter at perseus.trampi.mpi.it" <postmaster@perseus.trampi.mpi.it>
-Subject: BANNED: IN UNA E-MAIL DA LEI INVIATA
-Date: Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
-Message-ID: <VS22992-05@perseus.trampi.mpi.it>
-References: <20060629064202.3FE9B129168@mx2.istruzione.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002076]: arecord gives silence
+Date: Thu, 29 Jun 2006 09:08:59 +0200
+Message-ID: <dfd6345bcd3e7ac8f6bc7573eaed9bb2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0395912113=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B203F177
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7D3F280
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 08:42:23 +0200 (MEST)
-Received: from mx2.istruzione.it (unknown [193.206.15.105])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	58D939932B for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 08:42:23 +0200 (MEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mx2.istruzione.it (Mail Service) with ESMTP id 68FDC128F48
-	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
-In-Reply-To: <20060629064202.3FE9B129168@mx2.istruzione.it>
+	Thu, 29 Jun 2006 09:08:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -31,111 +22,225 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
 
---===============0395912113==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="----------=_1151563342-22992-1"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076> 
+======================================================================
+Reported By:                jaime
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2076
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-26-2006 16:28 CEST
+Last Modified:              06-29-2006 09:08 CEST
+======================================================================
+Summary:                    arecord gives silence
+Description: 
+IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
+Audio Accelerator] (rev 01).
 
-This is a multi-part message in MIME format...
+alsamixer correctly mixes the inputs over to the line out (I can hear
+microphone in and line in successfully mixed) but arecord gives silence.
 
-------------=_1151563342-22992-1
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+I've tried using a usb soundcard on the same machine, and everything works
+fine there, so I think this is only the snd-cs46xx driver.
 
-BANNED CONTENTS ALERT
+I'm not sure what other info is useful - please let me know. Thank you.
 
-Il sistema di scansione ha rilevato un problema
-in una email presumibilmente inviate da Lei
--> (<alsa-devel@alsa-project.org>),
-per il seguente destinatario:
--> csmm233008@istruzione.it
+======================================================================
 
-La consegna del messaggio non e' potuta avvenire
+----------------------------------------------------------------------
+ Raymond - 06-29-06 03:30 
+----------------------------------------------------------------------
+cat /proc/asound/pcm
 
-Il messaggio e' stato bloccato in quanto contenente delle componenti
-che violano le policy di accesso al sistema di posta elettronica del MIUR
+Try the following test and post the output including the setup line output
+by arecord
 
-Di seguito i riferimenti della e-Mail inviata:
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <alsa-devel@alsa-project.org>
-Received: from istruzione.it (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
-	by mx2.istruzione.it (Mail Service) with ESMTP id 3FE9B129168
-	for <csmm233008@istruzione.it>; Thu, 29 Jun 2006 08:42:02 +0200 (CEST)
-From: alsa-devel@alsa-project.org
-To: csmm233008@istruzione.it
-Subject: Information
-Date: Thu, 29 Jun 2006 08:41:35 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0014_000016D6.00001038"
-X-Priority: 1
-X-MSMail-Priority: High
-Message-Id: <20060629064202.3FE9B129168@mx2.istruzione.it>
--------------------------- END HEADERS ------------------------------
+arecord -v -Dhw:0,0 -f cd test1.wav
 
-------------=_1151563342-22992-1
-Content-Type: message/delivery-status
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
+arecord -v -Dplughw:0,0 -f cd test2.wav
 
-Reporting-MTA: dns; perseus.trampi.mpi.it
-Received-From-MTA: smtp; mx2.istruzione.it ([127.0.0.1])
-Arrival-Date: Thu, 29 Jun 2006 08:42:20 +0200 (CEST)
-
-Final-Recipient: rfc822; csmm233008@istruzione.it
-Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp;
-	550 5.7.1 Message content rejected, id=22992-05 - BANNED:
-	multipart/mixed | application/octet-stream,.zip,Data.zip |
-	.exe,.exe-ms,Data.txt ...
-Last-Attempt-Date: Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
-
-------------=_1151563342-22992-1
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
-
-Received: from istruzione.it (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
-	by mx2.istruzione.it (Mail Service) with ESMTP id 3FE9B129168
-	for <csmm233008@istruzione.it>; Thu, 29 Jun 2006 08:42:02 +0200 (CEST)
-From: alsa-devel@alsa-project.org
-To: csmm233008@istruzione.it
-Subject: Information
-Date: Thu, 29 Jun 2006 08:41:35 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0014_000016D6.00001038"
-X-Priority: 1
-X-MSMail-Priority: High
-Message-Id: <20060629064202.3FE9B129168@mx2.istruzione.it>
-
-------------=_1151563342-22992-1--
+arecord -v -f cd test3.wav
 
 
---===============0395912113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+----------------------------------------------------------------------
+ atler - 06-29-06 09:08 
+----------------------------------------------------------------------
+First two methods work fine, third one fails. Here comes complete output:
+
+% cat /proc/asound/pcm 
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+
+% arecord -v -Dhw:0,0 -f cd test1.wav
+Recording WAVE 'test1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 512
+period_time  : 11609
+tick_time    : 4000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 512
+xfer_align   : 512
+start_threshold  : 1
+start_threshold  : 1
+stop_threshold   : 16384
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+
+
+% arecord -v -Dplughw:0,0 -f cd test2.wav
+Recording WAVE 'test2.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Plug PCM: Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 512 
+period_time  : 11609
+tick_time    : 4000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 512
+xfer_align   : 512
+start_threshold  : 1
+stop_threshold   : 16384
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+
+
+% arecord -v -f cd test3.wav
+Recording WAVE 'test3.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is:
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 7526
+period_size  : 470
+period_time  : 10666
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 470
+xfer_align   : 470
+start_threshold  : 1
+stop_threshold   : 7526
+silence_threshold: 0
+silence_size : 0
+boundary     : 986447872
+Slave: Direct Snoop PCM
+
+Its setup is:
+stream       : CAPTURE
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 8192
+period_size  : 512
+period_time  : 10666
+tick_time    : 0
+tstamp_mode  : NONE
+period_step  : 1 
+sleep_min    : 0 
+avail_min    : 512 
+xfer_align   : 512
+start_threshold  : 1
+stop_threshold   : 8192
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : MMAP_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 8192
+period_size  : 512
+period_time  : 10666
+tick_time    : 4000
+tstamp_mode  : NONE
+period_step  : 1 
+sleep_min    : 0 
+avail_min    : 512 
+xfer_align   : 512
+start_threshold  : 1
+stop_threshold   : 1073741824
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-26-06 16:28 jaime          New Issue                                    
+05-02-06 18:11 tiwai          Note Added: 0009568                          
+05-04-06 12:11 jaime          Note Added: 0009613                          
+05-08-06 12:14 atler          Note Added: 0009645                          
+05-24-06 14:03 fuman          Issue Monitored: fuman                       
+06-29-06 03:29 Raymond        Note Added: 0010638                          
+06-29-06 03:30 Raymond        Note Edited: 0010638                         
+06-29-06 09:08 atler          Note Added: 0010642                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0395912113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0395912113==--
