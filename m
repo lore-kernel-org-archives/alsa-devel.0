@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
-	drivers
-Date: Thu, 29 Jun 2006 18:12:42 +0200
-Message-ID: <239d865b4d03d5adb32b46802457db9a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002218]: Everything ok but no sound.
+Date: Thu, 29 Jun 2006 18:15:40 +0200
+Message-ID: <1e7e04ebc10fb975d27d6812ac72d51c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F4B229A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C613729E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 18:12:43 +0200 (MEST)
+	Thu, 29 Jun 2006 18:15:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,67 +25,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2218> 
 ======================================================================
-Reported By:                jmclennan
+Reported By:                Layn
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2211
+Issue ID:                   2218
 Category:                   PCI - hda-intel
-Reproducibility:            always
+Reproducibility:            unable to duplicate
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2133_FC5smp
+Distribution:               Debian
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             06-15-2006 20:33 CEST
-Last Modified:              06-29-2006 18:12 CEST
+Date Submitted:             06-18-2006 16:55 CEST
+Last Modified:              06-29-2006 18:15 CEST
 ======================================================================
-Summary:                    No sound using snd-hda-intel drivers
+Summary:                    Everything ok but no sound.
 Description: 
-On a new HP DC7600 dual core Pentium D, sound card is detected, but no
-sound from either the front jack, rear jack or even the system speaker.
-
-kernel: 2.6.16-1.2133_FC5smp
-alsa-driver version: 1.0.11
-
-Everything is unmuted, alsamixer can turn the volume controls up and down
-(all levels set to 100%.)
+I have installed the lasted driver for my soundcard from hg, also i have
+try with ubuntu dapper beta live-cd and finally i have the stable 1.0.11
+driver, lib and utils from alsa repository.
+Everything look fine, with alsamixer the pcm volume is in 100%, but there
+isnt sound, i have probe with mpg123, mplayer and aplay, and never play
+anything. No error, nothing...
 ======================================================================
 
 ----------------------------------------------------------------------
- gvidal - 06-21-06 14:59 
+ Layn - 06-21-06 09:15 
 ----------------------------------------------------------------------
-For it is exactly the other way around. The line
+Hello Jose,
+I have read the threat 2035, i think that could be the same too, my laptop
+is ahtec too, like yours.
 
-  options snd-hda-intel model=auto
+Tiwai, thanks for your reply.
+When i used the hg modules, i could see in dmesg, the models, so the
+models is really passed.
+What other test can i do?
 
-makes only the PC-speaker sounds...
+Thanks
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 18:12 
+ tiwai - 06-29-06 18:15 
 ----------------------------------------------------------------------
-See ALSA download page about HG.  The fix is included in 1.0.12rc1 release,
-too.
+Well, ALC861 is what I'm not really maintaining (I never had this codec and
+tested by myself).  Hopefully some of realtek patches fixed (or will fix)
+the problem...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-06 20:33 jmclennan      New Issue                                    
-06-15-06 20:33 jmclennan      File Added: scsound.log                      
-06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
-06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
-06-15-06 20:34 jmclennan      Note Added: 0010244                          
-06-15-06 20:37 jmclennan      Note Added: 0010245                          
-06-20-06 00:38 jmclennan      Note Added: 0010324                          
-06-20-06 18:22 gvidal         Note Added: 0010339                          
-06-20-06 19:35 tiwai          Note Added: 0010340                          
-06-20-06 19:38 gvidal         Note Added: 0010342                          
-06-21-06 14:35 jmclennan      Note Added: 0010397                          
-06-21-06 14:59 gvidal         Note Added: 0010398                          
-06-29-06 18:12 tiwai          Note Added: 0010683                          
+06-18-06 16:55 Layn           New Issue                                    
+06-18-06 16:55 Layn           Distribution              => Debian          
+06-18-06 16:55 Layn           Kernel Version            => 2.6.16          
+06-20-06 19:54 tiwai          Note Added: 0010351                          
+06-20-06 22:50 jlpedrosa      Note Added: 0010355                          
+06-21-06 09:15 Layn           Note Added: 0010385                          
+06-21-06 09:26 Layn           Note Added: 0010387                          
+06-21-06 09:26 Layn           Note Deleted: 0010387                        
+06-29-06 18:15 tiwai          Note Added: 0010684                          
 ======================================================================
 
 
