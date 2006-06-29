@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Thu, 29 Jun 2006 17:57:25 +0200
-Message-ID: <4d607bb96481ca59199fdc7b28b21494@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002239]: No sound on SPDIF,
+	Sampling rate not (re)set? if compiled with -D_FILE_OFFSET_BITS=64
+Date: Thu, 29 Jun 2006 18:00:32 +0200
+Message-ID: <f339dc496ccd9a39b5876e2088f4eda6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17FD929A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 204A929A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 17:57:26 +0200 (MEST)
+	Thu, 29 Jun 2006 18:00:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,59 +25,83 @@ List-Id: alsa-devel@alsa-project.org
 
 
 A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
-======================================================================
-Reported By:                tjallen
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2239> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - lib
+Issue ID:                   2239
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
-======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              06-29-2006 17:57 CEST
-======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
-Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
-======================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-28-2006 11:02 CEST
+Last Modified:              06-29-2006 18:00 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No sound on SPDIF, Sampling rate not (re)set? if
+compiled with -D_FILE_OFFSET_BITS=3D64
+Description: =
+
+I use a Teratec Aureon 7.1 Space with a Envy24HT Chip and digital optical
+output.
+I get no sound if alsa-lib will by compiled with -D_FILE_OFFSET_BITS=3D64
+(this is defualt in Geexbox 1.0, TARGET_CFLAGS=3D"-Os -Wall -pipe
+-D_FILE_OFFSET_BITS=3D64 -D_LARGEFILE_SOURCE"). It=B4s  sems as the sampling
+rate don=B4t by set at the second time. The first (background video) from
+GeexBox has a samplin of 32K, if i play a video (48K) or music 44.1K the
+sampling rate on my ampiler keep on 32K?
+
+My Mplayer parameter:
+-ao alsa:device=3Dplughw=3D0.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tjallen - 06-29-06 00:40 
-----------------------------------------------------------------------
-I would be happy to test any ideas or code that you or anyone else would
-like me to test.  I would be happy just to get the sound output working;
-but more would be great.
+ tiwai - 06-29-06 18:00 =
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 17:57 
-----------------------------------------------------------------------
-Is it a PnP card?  Otherwise you'd need to specify port, irq, dma and
-mpu_irq parameters manually.
+I don't believe FILE_OFFSET_BITS influence on the driver or alsa-lib
+behavior.
+
+It's not guaranteed to work if you use plughw.  It's nearly a raw access.
+For accessing SPDIF, use "spdif" instead (for ice1724, "plug:spdif").
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-28-06 11:02 konczalski     New Issue                                    =
+
+06-29-06 18:00 tiwai          Note Added: 0010680                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
