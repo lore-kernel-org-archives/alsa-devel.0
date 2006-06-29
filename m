@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 15:45:56 +0200
-Message-ID: <3bc3bf0a48d5a1738d6a08dd846d9fcd@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 15:52:40 +0200
+Message-ID: <fe33b21e56f276c43ab2defd1caa1c6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8C2729C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1CC229C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 15:45:56 +0200 (MEST)
+	Thu, 29 Jun 2006 15:52:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 15:45 CEST
+Last Modified:              06-29-2006 15:52 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,13 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 15:40 
-----------------------------------------------------------------------
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
-
-----------------------------------------------------------------------
  calestyo - 06-29-06 15:45 
 ----------------------------------------------------------------------
 $ cat /proc/asound/cards
@@ -136,6 +129,17 @@ $ cat /proc/asound/pcm
 00-00: ICE1724 : ICE1724 : playback 1 : capture 1
 02-00: USB Audio : USB Audio : capture 1
 
+----------------------------------------------------------------------
+ Raymond - 06-29-06 15:52 
+----------------------------------------------------------------------
+Aureon71Universe cannot use Aureon71.conf
+
+00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
+00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1 : capture 1
+00-00: ICE1724 : ICE1724 : playback 1 : capture 1
+
+http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/Aureon71.conf;filenode=70f3770860da3ab84a41d9bba03335cebe33c8c4;style=raw
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -149,6 +153,7 @@ Date Modified  Username       Field                    Change
 06-29-06 15:37 calestyo       Note Added: 0010649                          
 06-29-06 15:40 Raymond        Note Added: 0010650                          
 06-29-06 15:45 calestyo       Note Added: 0010651                          
+06-29-06 15:52 Raymond        Note Added: 0010652                          
 ======================================================================
 
 
