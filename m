@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly
-	random times
-Date: Thu, 29 Jun 2006 04:41:22 +0200
-Message-ID: <c341094ed86beb922202380522f454a5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m
+	after suspend/resume doesn't play
+Date: Thu, 29 Jun 2006 05:38:39 +0200
+Message-ID: <b577f16009009f8a32c2941f7cdd4ecb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B589289
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C722118F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 04:41:23 +0200 (MEST)
+	Thu, 29 Jun 2006 05:38:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,192 +26,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1946> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                marvin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
+Issue ID:                   1946
+Category:                   PCI - cs46xx
+Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.16-RC6
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              06-29-2006 04:41 CEST
+Date Submitted:             03-20-2006 20:15 CET
+Last Modified:              06-29-2006 05:38 CEST
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    cs46xx in Thinkapad A21m after suspend/resume
+doesn't play
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
-
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
+When I suspend to Ram and resume cs46xx stop working. If I rmmod modprobe
+snd_cs46xx sound start working, but If I do this often comp sometime
+freeze when I try suspend to RAM.
 
 
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
 
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
 
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-28-06 03:52 
+ Raymond - 06-29-06 03:14 
 ----------------------------------------------------------------------
-This seem better than reduce the number of subdevices to 4 but it is not
-the optimal solution.
+cat /proc/asound/pcm
 
-Can we use substream->oss.oss to distinguish OSS/ALSA application ?
+How do you configure cs46xx ? with/without  cs46xx-new-dsp
 
+It seem that supsend routine only suspend one device 
 
-static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
-{
-	vortex_t *vortex = snd_pcm_substream_chip(substream);
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	int err;
-#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-        if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
-
- 	        if ( vortex->avail_res[VORTEX_RESOURCE_SRC] < 
-                   ( substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 4 :
-2 )) {
-               	        return -EBUSY;
-                }
-	}
-#endif
-
-
+	snd_pcm_suspend_all(chip->pcm);
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 04:41 
+ dottedmag - 06-29-06 05:38 
 ----------------------------------------------------------------------
-It seem that only some of 32 DMA can be used for capturing.
+>cat /proc/asound/pcm
 
-By masking the lower 16 DMAs of au8830 as used.
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-00: CS46xx : CS46xx : playback 31 : capture 1
 
-	vortex->fixed_res[VORTEX_RESOURCE_DMA] = 0x0000ffff;
+>How do you configure cs46xx ? with/without cs46xx-new-dsp
 
-arecord -f cd test.wav
+with cs46xx-new-dsp
 
-dmesg
-
-vortex: pcm_open Capture ALSA hw:0,0,0
-vortex: pcm_hw_params Capture  hw:0,0,0 channels = 2 format = 2 rate =
-44100
-vortex : pcm_prepare Capture  hw:0,0,0
-vortex: IRQ reg error
-Vortex: vortex_fifo_setadbctrl fail
-vortex: IRQ reg error
-vortex : pcm_hw_free Capture  hw:0,0,0
-
-The error "Vortex: vortex_fifo_setadbctrl fail" is similar to the log
-posted by  alien in openvortex
-
-What is the exact meaning of the comment ?
-
-static void vortex_src_setupchannel(vortex_t * card, unsigned char src,
-			unsigned int cr, unsigned int b, int sweep, int d,
-			int dirplay, int sl, unsigned int tr, int thsource)
-{
-	// noplayback: d=2,4,7,0xa,0xb when using first 2 src's.
+FYU: OSS driver works fine with suspend/resume, but it does more work in
+resume handler.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
-02-05-06 05:20 Raymond        Note Edited: 0007710                         
-02-05-06 05:28 Raymond        Note Added: 0007930                          
-02-13-06 16:38 Raymond        Note Deleted: 0006564                        
-02-13-06 16:41 Raymond        Note Added: 0008054                          
-03-01-06 07:39 Raymond        Note Added: 0008273                          
-03-18-06 12:28 Raymond        Note Deleted: 0008273                        
-03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
-03-21-06 02:02 Raymond        Note Added: 0008734                          
-03-21-06 18:01 tiwai          Note Added: 0008754                          
-03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
-
-03-22-06 02:28 Raymond        Note Added: 0008779                          
-03-22-06 02:31 Raymond        Note Edited: 0008779                         
-03-22-06 02:38 rlrevell       Note Added: 0008782                          
-03-22-06 04:00 Raymond        Note Added: 0008836                          
-03-22-06 04:09 rlrevell       Note Added: 0008839                          
-03-26-06 09:55 Raymond        Note Added: 0008967                          
-03-29-06 17:48 Raymond        Note Added: 0008995                          
-03-31-06 06:52 Raymond        Note Edited: 0008995                         
-04-02-06 07:01 Raymond        Note Edited: 0008995                         
-04-10-06 16:07 Raymond        Note Added: 0009190                          
-04-10-06 16:39 tiwai          Note Added: 0009192                          
-04-10-06 16:43 Raymond        Note Added: 0009194                          
-04-10-06 16:45 tiwai          Note Added: 0009195                          
-04-10-06 19:01 Raymond        Note Added: 0009215                          
-04-10-06 19:04 Raymond        Note Edited: 0009215                         
-04-10-06 19:05 tiwai          Note Added: 0009216                          
-04-11-06 18:36 Raymond        Note Added: 0009234                          
-04-11-06 18:54 tiwai          Note Added: 0009235                          
-06-25-06 07:04 Raymond        Note Added: 0010502                          
-06-26-06 02:46 Raymond        Note Added: 0010522                          
-06-26-06 03:05 Raymond        Note Edited: 0010522                         
-06-26-06 14:55 Raymond        Note Added: 0010536                          
-06-26-06 15:04 Raymond        Note Edited: 0010536                         
-06-27-06 08:22 Raymond        Note Added: 0010567                          
-06-27-06 10:15 Raymond        Note Edited: 0010567                         
-06-27-06 10:42 Raymond        Note Edited: 0010567                         
-06-28-06 03:46 Raymond        Note Added: 0010604                          
-06-28-06 03:52 Raymond        Note Edited: 0010604                         
-06-29-06 04:41 Raymond        Note Added: 0010639                          
+03-20-06 20:15 marvin         New Issue                                    
+03-20-06 20:15 marvin         Distribution              => Debian Sarge    
+03-20-06 20:15 marvin         Kernel Version            => 2.6.16-RC6      
+03-22-06 00:42 marvin         Note Added: 0008765                          
+03-25-06 21:03 marvin         Issue Monitored: marvin                      
+03-30-06 20:43 philstopford   Note Added: 0009037                          
+03-30-06 21:24 marvin         Note Added: 0009039                          
+03-31-06 21:25 philstopford   Issue Monitored: philstopford                    
+04-21-06 18:20 fizban         Issue Monitored: fizban                      
+04-23-06 02:08 cull           Note Added: 0009439                          
+06-20-06 16:25 dottedmag      Note Added: 0010337                          
+06-20-06 16:25 dottedmag      Issue Monitored: dottedmag                    
+06-29-06 03:14 Raymond        Note Added: 0010637                          
+06-29-06 05:38 dottedmag      Note Added: 0010640                          
 ======================================================================
 
 
