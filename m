@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002076]: arecord gives silence
-Date: Thu, 29 Jun 2006 09:08:59 +0200
-Message-ID: <dfd6345bcd3e7ac8f6bc7573eaed9bb2@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 09:27:34 +0200
+Message-ID: <a12673f218f27a16eeb185464424afe1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7D3F280
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DE42280
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 09:08:59 +0200 (MEST)
+	Thu, 29 Jun 2006 09:27:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-26-2006 16:28 CEST
-Last Modified:              06-29-2006 09:08 CEST
+Last Modified:              06-29-2006 09:27 CEST
 ======================================================================
 Summary:                    arecord gives silence
 Description: 
@@ -57,22 +57,6 @@ fine there, so I think this is only the snd-cs46xx driver.
 I'm not sure what other info is useful - please let me know. Thank you.
 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 03:30 
-----------------------------------------------------------------------
-cat /proc/asound/pcm
-
-Try the following test and post the output including the setup line output
-by arecord
-
-arecord -v -Dhw:0,0 -f cd test1.wav
-
-arecord -v -Dplughw:0,0 -f cd test2.wav
-
-arecord -v -f cd test3.wav
-
-
 
 ----------------------------------------------------------------------
  atler - 06-29-06 09:08 
@@ -225,6 +209,16 @@ silence_threshold: 0
 silence_size : 0
 boundary     : 1073741824
 
+----------------------------------------------------------------------
+ Raymond - 06-29-06 09:27 
+----------------------------------------------------------------------
+Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371#9010
+
+Does it mean mean dsnoop is also not work with the hardware like CS46xx
+due to its design ?
+
+http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/CS46xx.conf;filenode=8b52e1eece1b1e1e2f78d4c64b956197be5014ea;style=raw
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -236,6 +230,7 @@ Date Modified  Username       Field                    Change
 06-29-06 03:29 Raymond        Note Added: 0010638                          
 06-29-06 03:30 Raymond        Note Edited: 0010638                         
 06-29-06 09:08 atler          Note Added: 0010642                          
+06-29-06 09:27 Raymond        Note Added: 0010643                          
 ======================================================================
 
 
