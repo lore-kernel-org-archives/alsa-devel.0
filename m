@@ -1,15 +1,19 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] fix the SND_FM801_TEA575X dependencies
-Date: Thu, 29 Jun 2006 11:49:44 +0200
-Message-ID: <20060629094944.GA29056@stusta.de>
+From: Andi Kleen <ak@suse.de>
+Subject: Re: Alsa update in mainline broke ATI-IXP sound driver
+	II
+Date: Thu, 29 Jun 2006 12:03:22 +0200
+Message-ID: <200606291203.22773.ak__41485.8306445696$1151575455$gmane$org@suse.de>
+References: <200606252139.36002.ak@suse.de> <200606262028.31807.ak@suse.de>
+	<s5hmzbz92i6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EEF6B28B
+Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA0B7236
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 11:49:45 +0200 (MEST)
+	Thu, 29 Jun 2006 12:03:31 +0200 (MEST)
+In-Reply-To: <s5hmzbz92i6.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,75 +24,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-CONFIG_SND_FM801=y, CONFIG_SND_FM801_TEA575X=m resulted in the following 
-compile error:
+On Monday 26 June 2006 20:48, Takashi Iwai wrote:
+> At Mon, 26 Jun 2006 20:28:31 +0200,
+> Andi Kleen wrote:
+> > 
+> > 
+> > > OK, and still you get the same error like:
+> > > 
+> > > 	ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
+> > > 	...
+> > > ??
+> > 
+> > Yes.
+> > 
+> > > Any change if you set CONFIG_SND_DYNAMIC_MINORS=y ?
+> > 
+> > With that it finally works. Thanks.
+> > 
+> > Still can it be fixed?
+> 
+> Well, the bug shall be fixed :)
+> 
+> Unfortunately I cannot reproduce this on my systems that are all based
+> on SUSE 10.1, and the latest 2.6.17-git works fine even
+> CONFIG_SND_DYNAMIC_MINORS=n as far as I've tested.
+> 
+> Could you check the strace and what open error occurs?
+> I suppose it's /dev/snd/controlC0, but don't figure out exactly.
 
-<--  snip  -->
+Sorry for the delay
 
-...
-  LD      vmlinux
-sound/built-in.o: In function `snd_fm801_free':
-fm801.c:(.text+0x3c15b): undefined reference to `snd_tea575x_exit'
-sound/built-in.o: In function `snd_card_fm801_probe':
-fm801.c:(.text+0x3cfde): undefined reference to `snd_tea575x_init'
-make: *** [vmlinux] Error 1
+(as root) I get
 
-<--  snip  -->
+5184  open("/dev/snd/controlC0", O_RDONLY) = -1 EACCES (Permission denied)
+5184  open("/dev/snd/controlC1", O_RDONLY) = -1 EACCES (Permission denied)
+... (upto 31) ...
+5184  open("/dev/sound/dsp", O_WRONLY|O_NONBLOCK) = -1 ENOENT (No such file or d
+5184  open("/dev/dsp", O_WRONLY|O_NONBLOCK) = -1 EACCES (Permission denied)
 
-This patch fixes kernel Bugzilla #6458.
+ccontrol0 is
+crw-------  1 andi audio 116, 6 2006-06-29 11:49 /dev/snd/controlC0
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+It also doesn't work as andi
 
----
+I stuck printks to the EACCES in sound/* and they don't trigger so it must
+be somewhere else.
 
- sound/pci/Kconfig |   14 ++++++++------
- sound/pci/fm801.c |    2 +-
- 2 files changed, 9 insertions(+), 7 deletions(-)
 
---- linux-2.6.17-mm3-full/sound/pci/Kconfig.old	2006-06-28 18:47:02.000000000 +0200
-+++ linux-2.6.17-mm3-full/sound/pci/Kconfig	2006-06-28 19:03:58.000000000 +0200
-@@ -323,17 +323,19 @@
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-fm801.
- 
--config SND_FM801_TEA575X
--	tristate "ForteMedia FM801 + TEA5757 tuner"
-+config SND_FM801_TEA575X_BOOL
-+	bool "ForteMedia FM801 + TEA5757 tuner"
- 	depends on SND_FM801
--        select VIDEO_DEV
- 	help
- 	  Say Y here to include support for soundcards based on the ForteMedia
- 	  FM801 chip with a TEA5757 tuner connected to GPIO1-3 pins (Media
--	  Forte SF256-PCS-02).
-+	  Forte SF256-PCS-02) into the snd-fm801 driver.
- 
--	  To compile this driver as a module, choose M here: the module
--	  will be called snd-fm801-tea575x.
-+config SND_FM801_TEA575X
-+       tristate
-+       depends on SND_FM801_TEA575X_BOOL
-+       default SND_FM801
-+       select VIDEO_DEV
- 
- config SND_HDA_INTEL
- 	tristate "Intel HD Audio"
---- linux-2.6.17-mm3-full/sound/pci/fm801.c.old	2006-06-28 18:50:29.000000000 +0200
-+++ linux-2.6.17-mm3-full/sound/pci/fm801.c	2006-06-28 19:05:35.000000000 +0200
-@@ -35,7 +35,7 @@
- 
- #include <asm/io.h>
- 
--#if (defined(CONFIG_SND_FM801_TEA575X) || defined(CONFIG_SND_FM801_TEA575X_MODULE)) && (defined(CONFIG_VIDEO_DEV) || defined(CONFIG_VIDEO_DEV_MODULE))
-+#ifdef CONFIG_SND_FM801_TEA575X_BOOL
- #include <sound/tea575x-tuner.h>
- #define TEA575X_RADIO 1
- #endif
-
+-Andi
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
