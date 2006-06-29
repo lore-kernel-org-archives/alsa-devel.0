@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002195]: alsa-driver-1.0.11 doesn't
-	compile with Linux Kernel 2.6.17-rc6
-Date: Thu, 29 Jun 2006 18:51:23 +0200
-Message-ID: <31c2255e2002cd27a1f4c89113b8f5e0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
+Date: Thu, 29 Jun 2006 18:51:34 +0200
+Message-ID: <b6a3c1c51e766d4e6b69d1011f2c2e35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1014D29C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E123029C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 18:51:23 +0200 (MEST)
+	Thu, 29 Jun 2006 18:51:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,82 +23,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2195> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
 ======================================================================
-Reported By:                JLP
-Assigned To:                perex
+Reported By:                quetzyg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2195
-Category:                   0_compilation problem_!!!
+Issue ID:                   2200
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.17-rc6
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
+enough to reproduce this)
 ======================================================================
-Date Submitted:             06-08-2006 21:06 CEST
+Date Submitted:             06-11-2006 17:50 CEST
 Last Modified:              06-29-2006 18:51 CEST
 ======================================================================
-Summary:                    alsa-driver-1.0.11 doesn't compile with Linux Kernel
-2.6.17-rc6
+Summary:                    PCM channel doesn't exist!
 Description: 
-When I try to compile ALSA drivers 1.0.11 with Linux Kernel 2.6.17-rc6 I
-get this error:
-
-In file included from
-/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/info_oss.c:2:
-/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/../alsa-kernel/core/info_oss.c:
-In function 'snd_sndstat_proc_read':
-/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/../alsa-kernel/core/info_oss.c:97:
-error: 'system_utsname' undeclared (first use in this function)
-/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/../alsa-kernel/core/info_oss.c:97:
-error: (Each undeclared identifier is reported only once
-/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/../alsa-kernel/core/info_oss.c:97:
-error: for each function it appears in.)
-make[4]: ***
-[/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore/info_oss.o]
-Error 1
-make[4]: *** Waiting for unfinished jobs....
-make[3]: ***
-[/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/acore] Error
-2
-make[3]: *** Waiting for unfinished jobs....
-make[2]: ***
-[_module_/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11]
-Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.17-rc6'
-make: *** [compile] Error 2
+Since the early release candidates of ALSA 1.0.11, up to the final version,
+I seem to have lost the PCM channel from alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-08-06 21:14 
+ tiwai - 06-29-06 17:46 
 ----------------------------------------------------------------------
-I believe this cannot work because 2.6.17-rc6 already comes with a newer
-ALSA than 1.0.11.
+Strange.  Show the generated file via "alsactl -f file store".  It's more
+obvious than amixer output.
+
+Also, provide more hardware information (the machine, the codec chip)
+especially for HD-audio stuff.  The behavior of that driver is sooooooooo
+dependent upon the h/w and system you use.
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 18:51 
+ quetzyg - 06-29-06 18:51 
 ----------------------------------------------------------------------
-This doesn't happen with 2.6.17-final.
+OK, I uploaded the file generated by alsactl, and also the output of lspci
+-vv regarding the soundcard.
+
+The chipset in it, is a Realtek ALC880, with Uniwill Subsystem.
+
+Here is my laptop manufacturer page:
+http://uniwill.com/products/hybrid/259en3/259en3.php?HL=1&P=1
+
+If you need more info, just let me know.
+
+Thanks,
+Quetzy Garcia
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-06 21:06 JLP            New Issue                                    
-06-08-06 21:06 JLP            Distribution              => Gentoo Linux    
-06-08-06 21:06 JLP            Kernel Version            => 2.6.17-rc6      
-06-08-06 21:14 rlrevell       Note Added: 0010116                          
-06-08-06 21:39 Flameeyes      Issue Monitored: Flameeyes                    
-06-29-06 18:51 tiwai          Status                   assigned => resolved
-06-29-06 18:51 tiwai          Resolution               open => won't fix   
-06-29-06 18:51 tiwai          Note Added: 0010691                          
+06-11-06 17:50 quetzyg        New Issue                                    
+06-11-06 17:50 quetzyg        Distribution              => Slackware       
+06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
+version >= 2.6.16 should be enough to reproduce this)
+06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
+06-27-06 12:47 quetzyg        Note Added: 0010587                          
+06-27-06 12:52 tiwai          Note Added: 0010589                          
+06-27-06 12:59 quetzyg        Note Added: 0010590                          
+06-29-06 17:46 tiwai          Note Added: 0010675                          
+06-29-06 18:45 quetzyg        File Added: alsactl.out                      
+06-29-06 18:46 quetzyg        File Added: lspci.out                        
+06-29-06 18:51 quetzyg        Note Added: 0010692                          
 ======================================================================
 
 
