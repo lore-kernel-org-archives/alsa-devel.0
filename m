@@ -1,13 +1,15 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: Re: [ALSA - driver 0002246]: hpi56301.c
-Date: Fri, 30 Jun 2006 09:35:53 +1200
-Message-ID: <200606300935.55045.linux@blennerhassett.gen.nz>
-References: <a4f1428f7d8f00ff3ac55e66d739ccd0@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Alsa-OSS so-called 'Duplex-bug'
+Date: Thu, 29 Jun 2006 23:11:05 +0100
+Message-ID: <200606292311.05958.gineera@aspect135.co.uk>
+References: <200606191515.28395.alan@horstmann.fsworld.co.uk>
+	<200606192210.12889.gineera@aspect135.co.uk>
+	<s5hhd2gi1zz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <a4f1428f7d8f00ff3ac55e66d739ccd0@bugtrack.alsa-project.org>
+In-Reply-To: <s5hhd2gi1zz.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,21 +20,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Jun 2006 03:21, bugtrack@alsa-project.org wrote:
-> The following issue has been RESOLVED.
-> Description:
-> change <dpi56301.h> and <boot4ka.h> to "boot4ka.h" and "boot4ka.h"
-> ----------------------------------------------------------------------
->  tiwai - 06-29-06 17:21
-> ----------------------------------------------------------------------
-> Fixed on HG repo.  Thanks.
+On Tuesday 20 June 2006 10:56, you wrote:
+> At Mon, 19 Jun 2006 22:12:57 +0100,
+>
+> Alan Horstmann wrote:
+> > Another alternative would be for ALSA to create at least two devices, one
+> > for all playback channels, the other for all capture, eg /dsp0 and /adsp0
+> > or something else.  It would then be more like the raws OSS in its
+> > behaviour. That would also solve the problems here.  Obviously a full
+> > implementation as per attached description would also be fine!
+>
+> It's easy over aoss.  Having the following
+>
+> 	pcm.dsp0 {
+> 		type asym
+> 		playback.pcm "plughw"
+> 	}
+>
+> 	pcm.dsp1 {
+> 		type asym
+> 		capture.pcm "plughw"
+> 	}
+>
+> would give you /dev/dsp0 for playback and /dev/dsp1 for capture.
+> You can replace "plughw" whatever you like, of course.
 
-Thanks. Fixed in our filter script now too.
+I'm not very familiar with these conf files, and have tried for hours to get 
+this to work.  However, at best
+	aoss audacity
+results in
+	ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) playback slave is not defined
+	ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) capture slave is not defined
 
--- Eliot
+Have I missed other bits?
+
+Also, won't using aoss introduce a performance hit?
+
+Regards   Alan
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
