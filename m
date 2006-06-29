@@ -1,16 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m
-	after suspend/resume doesn't play
-Date: Thu, 29 Jun 2006 06:14:11 +0200
-Message-ID: <001dd2112a9f9629a5577ac61e230abb@bugtrack.alsa-project.org>
+From: "Content-filter at perseus.trampi.mpi.it" <postmaster@perseus.trampi.mpi.it>
+Subject: BANNED: IN UNA E-MAIL DA LEI INVIATA
+Date: Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
+Message-ID: <VS22992-05@perseus.trampi.mpi.it>
+References: <20060629064202.3FE9B129168@mx2.istruzione.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0395912113=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D74C23F
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B203F177
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 06:14:11 +0200 (MEST)
+	Thu, 29 Jun 2006 08:42:23 +0200 (MEST)
+Received: from mx2.istruzione.it (unknown [193.206.15.105])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	58D939932B for <alsa-devel@alsa-project.org>;
+	Thu, 29 Jun 2006 08:42:23 +0200 (MEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mx2.istruzione.it (Mail Service) with ESMTP id 68FDC128F48
+	for <alsa-devel@alsa-project.org>;
+	Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
+In-Reply-To: <20060629064202.3FE9B129168@mx2.istruzione.it>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,99 +31,111 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1946> 
-======================================================================
-Reported By:                marvin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1946
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.16-RC6
-======================================================================
-Date Submitted:             03-20-2006 20:15 CET
-Last Modified:              06-29-2006 06:14 CEST
-======================================================================
-Summary:                    cs46xx in Thinkapad A21m after suspend/resume
-doesn't play
-Description: 
-When I suspend to Ram and resume cs46xx stop working. If I rmmod modprobe
-snd_cs46xx sound start working, but If I do this often comp sometime
-freeze when I try suspend to RAM.
+--===============0395912113==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="----------=_1151563342-22992-1"
 
+This is a multi-part message in MIME format...
 
+------------=_1151563342-22992-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
+BANNED CONTENTS ALERT
 
-======================================================================
+Il sistema di scansione ha rilevato un problema
+in una email presumibilmente inviate da Lei
+-> (<alsa-devel@alsa-project.org>),
+per il seguente destinatario:
+-> csmm233008@istruzione.it
 
-----------------------------------------------------------------------
- dottedmag - 06-29-06 05:38 
-----------------------------------------------------------------------
->cat /proc/asound/pcm
+La consegna del messaggio non e' potuta avvenire
 
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-00: CS46xx : CS46xx : playback 31 : capture 1
+Il messaggio e' stato bloccato in quanto contenente delle componenti
+che violano le policy di accesso al sistema di posta elettronica del MIUR
 
->How do you configure cs46xx ? with/without cs46xx-new-dsp
+Di seguito i riferimenti della e-Mail inviata:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <alsa-devel@alsa-project.org>
+Received: from istruzione.it (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
+	by mx2.istruzione.it (Mail Service) with ESMTP id 3FE9B129168
+	for <csmm233008@istruzione.it>; Thu, 29 Jun 2006 08:42:02 +0200 (CEST)
+From: alsa-devel@alsa-project.org
+To: csmm233008@istruzione.it
+Subject: Information
+Date: Thu, 29 Jun 2006 08:41:35 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0014_000016D6.00001038"
+X-Priority: 1
+X-MSMail-Priority: High
+Message-Id: <20060629064202.3FE9B129168@mx2.istruzione.it>
+-------------------------- END HEADERS ------------------------------
 
-with cs46xx-new-dsp
+------------=_1151563342-22992-1
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
 
-FYU: OSS driver works fine with suspend/resume, but it does more work in
-resume handler.
+Reporting-MTA: dns; perseus.trampi.mpi.it
+Received-From-MTA: smtp; mx2.istruzione.it ([127.0.0.1])
+Arrival-Date: Thu, 29 Jun 2006 08:42:20 +0200 (CEST)
 
-----------------------------------------------------------------------
- Raymond - 06-29-06 06:14 
-----------------------------------------------------------------------
-It seem that suspend/resume routine is not written for SND_CS46XX_NEW_DSP
+Final-Recipient: rfc822; csmm233008@istruzione.it
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp;
+	550 5.7.1 Message content rejected, id=22992-05 - BANNED:
+	multipart/mixed | application/octet-stream,.zip,Data.zip |
+	.exe,.exe-ms,Data.txt ...
+Last-Attempt-Date: Thu, 29 Jun 2006 08:42:22 +0200 (CEST)
 
-	struct snd_pcm *pcm;
+------------=_1151563342-22992-1
+Content-Type: text/rfc822-headers
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Undelivered-message headers
 
+Received: from istruzione.it (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
+	by mx2.istruzione.it (Mail Service) with ESMTP id 3FE9B129168
+	for <csmm233008@istruzione.it>; Thu, 29 Jun 2006 08:42:02 +0200 (CEST)
+From: alsa-devel@alsa-project.org
+To: csmm233008@istruzione.it
+Subject: Information
+Date: Thu, 29 Jun 2006 08:41:35 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0014_000016D6.00001038"
+X-Priority: 1
+X-MSMail-Priority: High
+Message-Id: <20060629064202.3FE9B129168@mx2.istruzione.it>
 
-#ifdef CONFIG_SND_CS46XX_NEW_DSP
-	struct mutex spos_mutex;
-
-	struct dsp_spos_instance * dsp_spos_instance;
-
-	struct snd_pcm *pcm_rear;
-	struct snd_pcm *pcm_center_lfe;
-	struct snd_pcm *pcm_iec958;
-#else /* for compatibility */
-	struct snd_cs46xx_pcm *playback_pcm;
-	unsigned int play_ctl;
-#endif
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-20-06 20:15 marvin         New Issue                                    
-03-20-06 20:15 marvin         Distribution              => Debian Sarge    
-03-20-06 20:15 marvin         Kernel Version            => 2.6.16-RC6      
-03-22-06 00:42 marvin         Note Added: 0008765                          
-03-25-06 21:03 marvin         Issue Monitored: marvin                      
-03-30-06 20:43 philstopford   Note Added: 0009037                          
-03-30-06 21:24 marvin         Note Added: 0009039                          
-03-31-06 21:25 philstopford   Issue Monitored: philstopford                    
-04-21-06 18:20 fizban         Issue Monitored: fizban                      
-04-23-06 02:08 cull           Note Added: 0009439                          
-06-20-06 16:25 dottedmag      Note Added: 0010337                          
-06-20-06 16:25 dottedmag      Issue Monitored: dottedmag                    
-06-29-06 03:14 Raymond        Note Added: 0010637                          
-06-29-06 05:38 dottedmag      Note Added: 0010640                          
-06-29-06 06:14 Raymond        Note Added: 0010641                          
-======================================================================
+------------=_1151563342-22992-1--
 
 
+--===============0395912113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0395912113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0395912113==--
