@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002245]: Master volume is controlled
 	via the "Headphone" mixer element and not via "Master
-Date: Thu, 29 Jun 2006 16:53:01 +0200
-Message-ID: <c9e703919a4bcb7c048fd0aa94980c84@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 16:57:52 +0200
+Message-ID: <4b94867a36019a542a7f53a79275a2d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2073029C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1B4F29C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 16:53:02 +0200 (MEST)
+	Thu, 29 Jun 2006 16:57:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:43 CEST
-Last Modified:              06-29-2006 16:53 CEST
+Last Modified:              06-29-2006 16:57 CEST
 ======================================================================
 Summary:                    Master volume is controlled via the "Headphone"
 mixer element and not via "Master
@@ -64,98 +64,6 @@ the "Headphone" mixer element.
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 16:46 
-----------------------------------------------------------------------
-Yes that works. I now no longer have a "Headphone" mixer element but still
-a "Head phone Jack Sense" which I can mute/unmute without anything
-happening (what is it good for at all (both the Headphone/Headphone Jack
-Sense)?
-
-# lspci
-00:00.0 Memory controller: nVidia Corporation CK804 Memory Controller (rev
-a3)
-00:01.0 ISA bridge: nVidia Corporation CK804 ISA Bridge (rev a3)
-00:01.1 SMBus: nVidia Corporation CK804 SMBus (rev a2)
-00:02.0 USB Controller: nVidia Corporation CK804 USB Controller (rev a2)
-00:02.1 USB Controller: nVidia Corporation CK804 USB Controller (rev a3)
-00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2)
-00:06.0 IDE interface: nVidia Corporation CK804 IDE (rev f2)
-00:07.0 IDE interface: nVidia Corporation CK804 Serial ATA Controller (rev
-f3)
-00:08.0 IDE interface: nVidia Corporation CK804 Serial ATA Controller (rev
-f3)
-00:09.0 PCI bridge: nVidia Corporation CK804 PCI Bridge (rev a2)
-00:0a.0 Bridge: nVidia Corporation CK804 Ethernet Controller (rev a3)
-00:0e.0 PCI bridge: nVidia Corporation CK804 PCIE Bridge (rev a3)
-00:18.0 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-HyperTransport Technology Configuration
-00:18.1 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-Address Map
-00:18.2 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-DRAM Controller
-00:18.3 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-Miscellaneous Control
-00:19.0 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-HyperTransport Technology Configuration
-00:19.1 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-Address Map
-00:19.2 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-DRAM Controller
-00:19.3 Host bridge: Advanced Micro Devices [AMD] K8 [Athlon64/Opteron]
-Miscellaneous Control
-01:05.0 FireWire (IEEE 1394): Texas Instruments TSB43AB22/A
-IEEE-1394a-2000 Controller (PHY/Link)
-02:00.0 VGA compatible controller: nVidia Corporation GeForce 7800 GTX
-(rev a1)
-08:0a.0 PCI bridge: Advanced Micro Devices [AMD] AMD-8131 PCI-X Bridge
-(rev 12)
-08:0a.1 PIC: Advanced Micro Devices [AMD] AMD-8131 PCI-X IOAPIC (rev 01)
-08:0b.0 PCI bridge: Advanced Micro Devices [AMD] AMD-8131 PCI-X Bridge
-(rev 12)
-08:0b.1 PIC: Advanced Micro Devices [AMD] AMD-8131 PCI-X IOAPIC (rev 01)
-0a:06.0 SCSI storage controller: LSI Logic / Symbios Logic 53c1030 PCI-X
-Fusion-MPT Dual Ultra320 SCSI (rev 07)
-0a:06.1 SCSI storage controller: LSI Logic / Symbios Logic 53c1030 PCI-X
-Fusion-MPT Dual Ultra320 SCSI (rev 07)
-0a:09.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-80:00.0 Memory controller: nVidia Corporation CK804 Memory Controller (rev
-a3)
-80:01.0 Memory controller: nVidia Corporation CK804 Memory Controller (rev
-a3)
-80:0a.0 Bridge: nVidia Corporation CK804 Ethernet Controller (rev a3)
-80:0e.0 PCI bridge: nVidia Corporation CK804 PCIE Bridge (rev a3)
-
-
-lspci -nv
-
-....
-
-00:04.0 0401: 10de:0059 (rev a2)
-        Subsystem: 10f1:2895
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 217
-        I/O ports at 1800 [size=256]
-        I/O ports at 1400 [size=256]
-        Memory at b0002000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [44] Power Management version 2
-
-....
-
-0a:09.0 0401: 1412:1724 (rev 01)
-        Subsystem: 153b:1153
-        Flags: bus master, medium devsel, latency 64, IRQ 74
-        I/O ports at 3880 [size=32]
-        I/O ports at 3800 [size=128]
-        Capabilities: [80] Power Management version 1
-
-....
-
-Note that the 2nd entry is probably from my 2nd soundcard which had no_
-problems... !!!
-So only 00:04.0 should be interesing for you,.. right?
-
-----------------------------------------------------------------------
  tiwai - 06-29-06 16:53 
 ----------------------------------------------------------------------
 The headphone/line jack sense switches turn on the auto-mute function of
@@ -166,6 +74,25 @@ What is the product of your board or box?  This name will be displayed as
 a kernel message when the workaround is detected and enabled by the
 driver.
 
+----------------------------------------------------------------------
+ calestyo - 06-29-06 16:57 
+----------------------------------------------------------------------
+>The headphone/line jack sense switches turn on the auto-mute function of
+ac97
+>codec chip. It works (and is mandatory) on some laptops/boards but on
+some it's
+>harmful, too.
+Does that mean that I would be able to controll wheter the rear-output
+still plays sound even when I plugged in a headphone in the front output
+of my board/chassis?
+
+
+>What is the product of your board or box? This name will be displayed as
+a kernel
+>message when the workaround is detected and enabled by the driver.
+The board is a Tyan Thunder K8WE (S2895). Is this enough information or do
+you require additional information? =)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -175,6 +102,7 @@ Date Modified  Username       Field                    Change
 06-29-06 16:33 tiwai          Note Added: 0010661                          
 06-29-06 16:46 calestyo       Note Added: 0010663                          
 06-29-06 16:53 tiwai          Note Added: 0010664                          
+06-29-06 16:57 calestyo       Note Added: 0010665                          
 ======================================================================
 
 
