@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002237]: Microphone is not working on
-	my Dell Inspiron 630m
-Date: Fri, 30 Jun 2006 00:10:31 +0200
-Message-ID: <cc22b8c836e0ac20dccca7987504cb0b@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Update: emu1212m
+Date: Thu, 29 Jun 2006 23:24:12 +0100
+Message-ID: <44A4530C.6040007@superbug.co.uk>
+References: <44951964.9020509@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D49C42A6
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 00:10:31 +0200 (MEST)
+In-Reply-To: <44951964.9020509@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,59 +17,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+James Courtier-Dutton wrote:
+> Hi,
+> 
+> This is just a quick note to say that I have made some progress with the
+> alsa support for emu1212m.
+> Summary:
+> If one cold boots to windows, and then warm boots to linux, I have
+> managed to get SPDIF out working on the emu1212m.
+> This is good news, because I have managed to determine the final bit of
+> work required to get the emu1212m working in Linux.
+> The emu1212m has a FPGA on it.
+> 1) The FPGA array is filled with the netlists.
+> 2) The FPGA now has registers that can be read and written to switch
+> features on and off. E.g. spdif out or adat out.
+> 
+> Now, I have done a lot of the work for step 2. I just need to work out
+> how to do step 1 now.
+> Step 1 happens on cold boot, and survives a warm boot.
+> Step 2 is already understood in the Linux driver.
+> 
+> Summary:
+> TODO: Step 1.
+> 
+> James
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2237> 
-======================================================================
-Reported By:                manmathan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2237
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.17-1.2139_FC5
-======================================================================
-Date Submitted:             06-28-2006 00:50 CEST
-Last Modified:              06-30-2006 00:10 CEST
-======================================================================
-Summary:                    Microphone is not working on my Dell Inspiron 630m
-Description: 
-Microphone is not working. I tried upgrading as stated in:
-http://people.redhat.com/stransky/alsa/ with no luck eihter.
-======================================================================
+Here is a small update. I have now completed (1) and (2), but a new
+problem remains.
+(3) The samples are not actually getting from the DSP to the SPDIF unharmed.
 
-----------------------------------------------------------------------
- maiquel - 06-30-06 00:10 
-----------------------------------------------------------------------
-I had read in some pages that the Dell Latitude 120L is the same machine
-(harware, project, etc) that the Inspirion 630M.
+I am making further investigations into this, but no luck so far.
 
-Unhappily, I don't have any URL on this moment. But if somebody could
-attach one, I will thank.
-
-Then, I think that this bug is DUPLICATE from 2038.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-28-06 00:50 manmathan      New Issue                                    
-06-28-06 00:50 manmathan      Distribution              => Fedora Core 5   
-06-28-06 00:50 manmathan      Kernel Version            => 2.6.17-1.2139_FC5
-06-28-06 00:52 manmathan      Issue Monitored: manmathan                    
-06-30-06 00:00 maiquel        Issue Monitored: maiquel                     
-06-30-06 00:10 maiquel        Note Added: 0010705                          
-======================================================================
-
-
+James
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
