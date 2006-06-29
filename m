@@ -1,23 +1,16 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: [RFC 01/12] snd-powermac: no longer
-	handle	anything with a layout-id property
-Date: Fri, 30 Jun 2006 01:16:18 +0200
-Message-ID: <jehd231rjx.fsf@sykes.suse.de>
-References: <20060607130909.584205000@sipsolutions.net>
-	<20060607130910.156412000@sipsolutions.net>
-	<jey7vjiqwv.fsf@sykes.suse.de> <s5hac7yvfhe.wl%tiwai@suse.de>
-	<jehd26aa25.fsf@sykes.suse.de> <jeu0631xpr.fsf@sykes.suse.de>
-	<1151619973.22380.50.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Fri, 30 Jun 2006 01:45:30 +0200
+Message-ID: <790c3b8a61058db51173fb8b4faf93c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AD412A8
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 742BB2AA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 01:16:21 +0200 (MEST)
-In-Reply-To: <1151619973.22380.50.camel@mindpipe> (Lee Revell's message of
-	"Thu, 29 Jun 2006 18:26:12 -0400")
+	Fri, 30 Jun 2006 01:45:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,31 +20,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, alsa-devel@alsa-project.org, netstar@gatheringofgray.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell <rlrevell@joe-job.com> writes:
 
-> What is the content of /proc/asound/cards?  The patches must have
-> changed the card name and failed to create a matching config file
-> in /usr/share/alsa/cards.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-30-2006 01:45 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
 
-Thanks for the hint.  I have added 'AppleOnbdAudio cards.PMac' to
-/usr/share/alsa/cards/aliases.conf, and it works again.
+----------------------------------------------------------------------
+ rankincj - 06-29-06 23:17 
+----------------------------------------------------------------------
+You need to create the following device node, if it doesn't already exist:
 
-Andreas.
+crw------- 1 root root 116, 4 Jun 19 20:46 /dev/snd/hwC0D0
 
--- =
+And the sscape_ctl program must be run as root.
 
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+----------------------------------------------------------------------
+ tjallen - 06-30-06 01:45 
+----------------------------------------------------------------------
+I thought that I had found the problem when I just noticed that
+/etc/modules.conf should have port=0x534 instead of port=0x539, but fixing
+that goof didn't help
+the snd-sscape module to find the hardware;
+the kernel log still said "sscape: hardware not detected at 0x534".
+I do have /dev/snd/hwC0D0, but with different owner and permissions:
+crw-rw-r--  1 root audio 116, 4 2003-08-29 03:47 /dev/snd/hwC0D0
+I did run the sscape_ctl program as root.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
