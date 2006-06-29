@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 16:01:19 +0200
-Message-ID: <edc2f0af82ed30b8d71e835707bedaa1@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 16:04:54 +0200
+Message-ID: <7c5fcbcdf30c14c1a0fd1f3c09d398b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB7D929C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA4AD29C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 16:01:19 +0200 (MEST)
+	Thu, 29 Jun 2006 16:04:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 16:01 CEST
+Last Modified:              06-29-2006 16:04 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -106,17 +106,6 @@ I think the configuration of the surround for the Aureon 7.1 Universe has
 here
 some mistake, hasn't it?
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 15:58 
-----------------------------------------------------------------------
-speaker-test -Dfront -c 2 -t wav
-
-speaker-test -Drear -c 2 -t wav
-
-speaker-test -Dcenter_lfe -c 2 -t wav
-
-speaker-test -Dside -c 2 -t wav
 
 ----------------------------------------------------------------------
  calestyo - 06-29-06 16:01 
@@ -193,6 +182,15 @@ ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM side
 definition (id: side, value: cards.pcm.side)
 Playback open error: -22,Invalid argument
 
+----------------------------------------------------------------------
+ Raymond - 06-29-06 16:04 
+----------------------------------------------------------------------
+cards.Aureon71Univers.pcm.front.0:CARD=0'
+
+It seem that "Aureon71Universe" is too long
+
+http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/aliases.conf;filenode=957365e8f3e62bda5e1e65b3d7a20bd5a5eb437a;style=raw
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -211,6 +209,7 @@ Date Modified  Username       Field                    Change
 06-29-06 15:56 calestyo       Note Added: 0010653                          
 06-29-06 15:58 Raymond        Note Added: 0010654                          
 06-29-06 16:01 calestyo       Note Added: 0010655                          
+06-29-06 16:04 Raymond        Note Added: 0010656                          
 ======================================================================
 
 
