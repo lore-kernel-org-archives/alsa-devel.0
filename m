@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 29 Jun 2006 15:58:31 +0200
-Message-ID: <7aa2a14d40c54fe10b810ecbbac375de@bugtrack.alsa-project.org>
+Date: Thu, 29 Jun 2006 16:01:19 +0200
+Message-ID: <edc2f0af82ed30b8d71e835707bedaa1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC9BA248
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB7D929C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jun 2006 15:58:31 +0200 (MEST)
+	Thu, 29 Jun 2006 16:01:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              06-29-2006 15:58 CEST
+Last Modified:              06-29-2006 16:01 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,15 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 06-29-06 15:56 
-----------------------------------------------------------------------
-Uhm,.. I did nowhere tell the system to use that file so it must have
-automatically choosen it...
-
-What should I do now? Or is there a configuration file going to be created
-for the Universe?
-
-----------------------------------------------------------------------
  Raymond - 06-29-06 15:58 
 ----------------------------------------------------------------------
 speaker-test -Dfront -c 2 -t wav
@@ -126,6 +117,81 @@ speaker-test -Drear -c 2 -t wav
 speaker-test -Dcenter_lfe -c 2 -t wav
 
 speaker-test -Dside -c 2 -t wav
+
+----------------------------------------------------------------------
+ calestyo - 06-29-06 16:01 
+----------------------------------------------------------------------
+$ speaker-test -Dfront -c 2 -t wav
+
+speaker-test 1.0.11
+
+Playback device is front
+Stream parameters are 48000Hz, S16_LE, 2 channels
+WAV file(s)
+ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
+'cards.Aureon71Univers.pcm.front.0:CARD=0'
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
+returned error: No such file or directory
+ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
+directory
+ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM front
+Playback open error: -2,No such file or directory
+ALSA lib confmisc.c:1105:(snd_func_refer) Unable to find definition
+'cards.Aureon71Univers.pcm.front.0:CARD=0'
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
+returned error: No such file or directory
+ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such file or
+directory
+ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM front
+Playback open error: -2,No such file or directory
+
+
+
+$ speaker-test -Drear -c 2 -t wav
+
+speaker-test 1.0.11
+
+Playback device is rear
+Stream parameters are 48000Hz, S16_LE, 2 channels
+WAV file(s)
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM rear
+definition (id: rear, value: cards.pcm.rear)
+Playback open error: -22,Invalid argument
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM rear
+definition (id: rear, value: cards.pcm.rear)
+Playback open error: -22,Invalid argument
+
+
+
+$ speaker-test -Dcenter_lfe -c 2 -t wav
+
+speaker-test 1.0.11
+
+Playback device is center_lfe
+Stream parameters are 48000Hz, S16_LE, 2 channels
+WAV file(s)
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM center_lfe
+definition (id: center_lfe, value: cards.pcm.center_lfe)
+Playback open error: -22,Invalid argument
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM center_lfe
+definition (id: center_lfe, value: cards.pcm.center_lfe)
+Playback open error: -22,Invalid argument
+
+
+
+$ speaker-test -Dside -c 2 -t wav
+
+speaker-test 1.0.11
+
+Playback device is side
+Stream parameters are 48000Hz, S16_LE, 2 channels
+WAV file(s)
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM side
+definition (id: side, value: cards.pcm.side)
+Playback open error: -22,Invalid argument
+ALSA lib pcm.c:2017:(snd_pcm_open_conf) Invalid type for PCM side
+definition (id: side, value: cards.pcm.side)
+Playback open error: -22,Invalid argument
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +210,7 @@ Date Modified  Username       Field                    Change
 06-29-06 15:54 Raymond        Note Edited: 0010652                         
 06-29-06 15:56 calestyo       Note Added: 0010653                          
 06-29-06 15:58 Raymond        Note Added: 0010654                          
+06-29-06 16:01 calestyo       Note Added: 0010655                          
 ======================================================================
 
 
