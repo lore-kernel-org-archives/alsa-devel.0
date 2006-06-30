@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Fri, 30 Jun 2006 16:50:40 +0200
-Message-ID: <7c975f2b9302a8dc21fc6926f1cbaa54@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 17:04:26 +0200
+Message-ID: <83663e0d68567105292b35807b3f9e5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A26629D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CC26297
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 16:50:41 +0200 (MEST)
+	Fri, 30 Jun 2006 17:04:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 16:50 CEST
+Last Modified:              06-30-2006 17:04 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,26 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-30-06 16:42 
-----------------------------------------------------------------------
-rlrevell:
-I have only understood that there are chips that make in hardware real
-surround and duplication front-to-rear speakers and others only real
-surround.
-My chip seems to have only real surround in hardware and not duplication
-right?
-
-So my original bug report come back :)
-Is there a way to implement in the alsamixer the possibility to discover
-chips that cannot do this duplication in hardware and make it available
-via software like in Windows?
-
-If not which soundcard can be bought to have all fantastic hardware stuffs
-and well recognized by alsa?
-
-Thanx a lot
-
-----------------------------------------------------------------------
  rlrevell - 06-30-06 16:50 
 ----------------------------------------------------------------------
 Yes, it's possible but it's a work in progress.  The default configuration
@@ -89,6 +69,17 @@ upmixing for chipsets that can't do it in hardware in a future release.
 If you want it to Just Work get a good old SBLive! 5.1 OEM.  NOT the 24
 bit version - as you know the chipset is cripples compared to previous
 SBLives.
+
+----------------------------------------------------------------------
+ Cimmo - 06-30-06 17:04 
+----------------------------------------------------------------------
+ok thanx very much!
+if you want keep open or close this bug.
+
+OT:
+I have reopened for mistake bug #1331, but line-in works in 1.0.11 thanx,
+the only things is kmix is broken for capture volumes since 1.0.11 so I
+was thought that line-in doesn't work, but it works.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +142,7 @@ Date Modified  Username       Field                    Change
 06-30-06 16:14 rlrevell       Note Added: 0010737                          
 06-30-06 16:42 Cimmo          Note Added: 0010741                          
 06-30-06 16:50 rlrevell       Note Added: 0010742                          
+06-30-06 17:04 Cimmo          Note Added: 0010743                          
 ======================================================================
 
 
