@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration
-	problem - buffer_size constraint
-Date: Fri, 30 Jun 2006 13:53:16 +0200
-Message-ID: <297c095274a38d2fc7ec824f4a5a4618@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Fri, 30 Jun 2006 14:46:28 +0200
+Message-ID: <2ef5f7cf7b07f35593246b6541dfed17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DF33228
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BB44297
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 13:53:17 +0200 (MEST)
+	Fri, 30 Jun 2006 14:46:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,359 +26,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                tjallen
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Issue ID:                   2234
+Category:                   ISA - sscape
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              06-30-2006 13:53 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-30-2006 14:46 CEST
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-/cvs/alsa-lib/test/pcm_min
-
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
-
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-30-06 18:31 
+ rankincj - 06-30-06 02:10 
 ----------------------------------------------------------------------
-What does this IRQ issue have to do with the buffer size constraint?
+"sscape: hardware not detected at 0x534"
 
-Raymond, PLEASE stop using this bug tracker as your private IRC channel. 
-One bug report per bug.
+OK, this is expected because the driver is only testing port 0x534 for a
+SoundScape PnP card, and not for a SoundScape Elite. ALSA's
+detect_sscape() function is going to need extending with extra Voodoo code
+from the OSS linux/sound/oss/sscape.c file. (At the very least...!) I'm
+afraid you're going to have to tease the correct initialisation sequence
+out of the OSS driver so we know what code to put in the ALSA version. I
+suggest putting printk() statements in the OSS code so that you can follow
+the code-path when the OSS driver loads.
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 13:53 
+ tjallen - 06-30-06 14:46 
 ----------------------------------------------------------------------
-The following is output of "test.c" which I upload, any idea how to refine
-the constraints (period_size and buffer_size) according to the latency 
-
- ./test
-pcm state after pcm open : 0
-period size (min=1   max=4096)
-           1
-           2
-           4
-           8
-           16
-           32
-           64
-           128
-           256
-           512
-           1024
-           2048
-           4096
-buffer size (min=2   max=65536)
-           2
-           3
-           4
-           5
-           6
-           7
-           8
-           9
-           10
-           11
-           12
-           13
-           14
-           15
-           16
-           17
-           18
-           19
-           20
-           21
-           22
-           23
-           24
-           25
-           26
-           27
-           28
-           29
-           30
-           31
-           32
-           34
-           36
-           38
-           40
-           42
-           44
-           46
-           48
-           50
-           52
-           54
-           56
-           58
-           60
-           62
-           64
-           68
-           72
-           76
-           80
-           84
-           88
-           92
-           96
-           100
-           104
-           108
-           112
-           116
-           120
-           124
-           128
-           136
-           144
-           152
-           160
-           168
-           176
-           184
-           192
-           200
-           208
-           216
-           224
-           232
-           240
-           248
-           256
-           272
-           288
-           304
-           320
-           336
-           352
-           368
-           384
-           400
-           416
-           432
-           448
-           464
-           480
-           496
-           512
-           544
-           576
-           608
-           640
-           672
-           704
-           736
-           768
-           800
-           832
-           864
-           896
-           928
-           960
-           992
-           1024
-           1088
-           1152
-           1216
-           1280
-           1344
-           1408
-           1472
-           1536
-           1600
-           1664
-           1728
-           1792
-           1856
-           1920
-           1984
-           2048
-           2176
-           2304
-           2432
-           2560
-           2688
-           2816
-           2944
-           3072
-           3200
-           3328
-           3456
-           3584
-           3712
-           3840
-           3968
-           4096
-           4352
-           4608
-           4864
-           5120
-           5376
-           5632
-           5888
-           6144
-           6400
-           6656
-           6912
-           7168
-           7424
-           7680
-           7936
-           8192
-           8704
-           9216
-           9728
-           10240
-           10752
-           11264
-           11776
-           12288
-           12800
-           13312
-           13824
-           14336
-           14848
-           15360
-           15872
-           16384
-           17408
-           18432
-           19456
-           20480
-           21504
-           22528
-           23552
-           24576
-           25600
-           26624
-           27648
-           28672
-           29696
-           30720
-           31744
-           32768
-           34816
-           36864
-           38912
-           40960
-           43008
-           45056
-           47104
-           49152
-           51200
-           53248
-           55296
-           57344
-           59392
-           61440
-           63488
-           65536
-pcm state before hw_params : 0
-pcm state after hw_params : 2
-period size = 1
-buffer size = 32
+I'll look at the file and see if I can understand what's going on and 
+where I might put printk() statements.  I wish I understood how drivers
+work; I'm completely ignorant of driver and kernel programming and I'm
+a mediocre -- at best -- C programmer, but I'll have a look.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-16-06 04:01 Raymond        Note Added: 0008083                          
-02-19-06 06:31 Raymond        Note Added: 0008130                          
-02-19-06 06:39 Raymond        Note Edited: 0008130                         
-03-07-06 11:08 Raymond        Note Added: 0008362                          
-03-07-06 14:18 Raymond        Note Edited: 0007844                         
-03-24-06 10:51 Raymond        File Added: snd_pcm_set_params.patch              
-     
-03-30-06 18:35 Raymond        Note Added: 0009036                          
-05-22-06 15:11 Raymond        Note Deleted: 0008055                        
-05-22-06 15:12 Raymond        Note Deleted: 0008362                        
-05-22-06 15:13 Raymond        Note Deleted: 0008130                        
-05-22-06 15:14 Raymond        Note Deleted: 0008083                        
-05-22-06 15:15 Raymond        Note Deleted: 0009036                        
-05-22-06 15:16 Raymond        Note Deleted: 0007860                        
-05-22-06 15:17 Raymond        Note Deleted: 0007848                        
-05-22-06 15:20 Raymond        Note Deleted: 0007940                        
-05-22-06 15:24 Raymond        Note Deleted: 0007954                        
-05-22-06 15:48 Raymond        Note Added: 0009912                          
-05-30-06 09:36 Raymond        Note Added: 0010017                          
-05-30-06 09:38 Raymond        Note Edited: 0010017                         
-05-30-06 18:31 rlrevell       Note Added: 0010020                          
-06-30-06 13:49 Raymond        File Added: test.c                           
-06-30-06 13:53 Raymond        Note Added: 0010734                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
 ======================================================================
 
 
