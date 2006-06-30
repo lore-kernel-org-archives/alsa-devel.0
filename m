@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Fri, 30 Jun 2006 13:40:45 +0200
-Message-ID: <0c61f7af417a914809d412ba78b1fc5d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002215]: Agere softmodem attached to
+	Intel HDA does not work
+Date: Fri, 30 Jun 2006 13:46:40 +0200
+Message-ID: <df114ba7562100dfcede9c2cbad99f38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 187FD2A2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D11A42A2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 13:40:46 +0200 (MEST)
+	Fri, 30 Jun 2006 13:46:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,120 +26,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2215> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                
+Reported By:                bluebottle
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2215
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 13:40 CEST
+Date Submitted:             06-17-2006 07:45 CEST
+Last Modified:              06-30-2006 13:46 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    Agere softmodem attached to Intel HDA does not work
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+I have an MSI 1057 notebook with an Agere winmodem attached to the Intel
+HDA device. It does not function with the latest release of ALSA
+(currently 1.0.11). I attempted to modify patch_si3054.c and changed the
+last device ID from 3026 to 3055 so that it loads and IDs the modem
+(incorrectly) as a Si3054. That was just to prove that it *could* be
+identified. When dialling via slmodemd though, nothing happens. KPPP or
+any other app just gets no response from slmodemd after an ATDT.
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+# cat /proc/asound/card0/codec#1
+Codec: Generic 11c1 Si3054        (before my hack, "Si3054" was "ID
+3055")
+Address: 1
+Vendor Id: 0x11c13055
+Subsystem Id: 0x11c11601
+Revision Id: 0x100700
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+I have a .INF from the windows drivers CD with lots of device command
+codes in it, if that would help. I'm not sure about license issues so I
+won't post it initially. Windows is not installed on this machine so I
+can't test it with Windows without swapping out the disk, sorry.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 13:24 
+ bluebottle - 06-30-06 13:19 
 ----------------------------------------------------------------------
-"plug:" is too powerful but sometime it can make the ALSA application
-confused about the capability of the device.
+I tried that again, but still no-go. My version of sl-modem is Ubuntu's
+2.9.10+2.9.9d+e-pre2-5build1 package.
 
-For those "hw" which only support 2 channels playback/capture, "plughw"
-allow mono audio to be played/captured but it also change the values of
-snd_pcm_hw_params_get_channels_min() and
-snd_pcm_hw_params_get_channels_max()  to 1 and 10000
-
-The value return by snd_pcm_hw_params_get_channels_max() of a "plug:"
-device should not exceed the total channels of it slave pcm instead of
-10000
+The error is no-dialtone. That doesn't surprise me since the modem isn't a
+Si3054 - the ALSA driver doesn't support this "11c1:3055" modem (yet?).
 
 ----------------------------------------------------------------------
- Cimmo - 06-30-06 13:40 
+ tiwai - 06-30-06 13:46 
 ----------------------------------------------------------------------
-Raymond:
-I've absolutely no idea reading your posts how to have speakers
-duplications... are you talking to me or to others devels?
-
-Can you be less cryptic?
+To be sure, turn on "Off-hook" switch via alsamixer manually, then try
+slmodem again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-06-28-06 16:36 Cimmo          Note Added: 0010621                          
-06-28-06 17:30 rlrevell       Note Added: 0010623                          
-06-30-06 11:05 Cimmo          Note Added: 0010725                          
-06-30-06 12:06 Cimmo          Note Added: 0010726                          
-06-30-06 12:18 Raymond        Note Added: 0010727                          
-06-30-06 12:24 Cimmo          Note Added: 0010728                          
-06-30-06 13:04 Raymond        Note Added: 0010729                          
-06-30-06 13:07 Raymond        Note Edited: 0010729                         
-06-30-06 13:08 Raymond        Note Edited: 0010729                         
-06-30-06 13:24 Raymond        Note Added: 0010731                          
-06-30-06 13:40 Cimmo          Note Added: 0010732                          
+06-17-06 07:45 bluebottle     New Issue                                    
+06-17-06 07:45 bluebottle     Distribution              => Ubuntu          
+06-17-06 07:46 bluebottle     File Added: ModemData.txt                    
+06-17-06 07:50 bluebottle     Issue Monitored: bluebottle                    
+06-29-06 18:35 tiwai          Note Added: 0010687                          
+06-30-06 13:19 bluebottle     Note Added: 0010730                          
+06-30-06 13:46 tiwai          Note Added: 0010733                          
 ======================================================================
 
 
