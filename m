@@ -1,11 +1,16 @@
-From: John Sullivan <johns@fsf.org>
-Subject: Making firmware licensing info more prominent (Matrix)
-Date: Fri, 30 Jun 2006 13:45:00 -0400
-Message-ID: <87odwa5yhv.fsf@spider.localnet>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Fri, 30 Jun 2006 22:38:39 +0200
+Message-ID: <bde2960f37420340eb2b97beb796330a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E073629D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 30 Jun 2006 22:38:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,38 +20,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-(I checked the archives and didn't see any obvious discussion of this
-question; apologies if I missed it, I don't usually follow the list.)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              06-30-2006 22:38 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
 
-Many of the people using the ALSA matrix are committed to using free
-software, and they consult the matrix in order to find sound devices
-that will be compatible with their systems. It's a great resource for
-that.
+----------------------------------------------------------------------
+ tjallen - 06-30-06 14:46 
+----------------------------------------------------------------------
+I'll look at the file and see if I can understand what's going on and 
+where I might put printk() statements.  I wish I understood how drivers
+work; I'm completely ignorant of driver and kernel programming and I'm
+a mediocre -- at best -- C programmer, but I'll have a look.
 
-But some of the USB devices, while supported by ALSA, require firmware
-that is nonfree in licensing.
+----------------------------------------------------------------------
+ rankincj - 06-30-06 22:38 
+----------------------------------------------------------------------
+You don't need to do more than just sprinkle lines like:
 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Midiman%2FMAudio&card=USB+Midisport+4x4.&chip=Cypress+AN2131XX&module=usb-audio
-is one example.
+printk(KERN_INFO "sscape.c, line %d\n", __LINE__);
 
-While the licensing information for the module is displayed on this
-page, the licensing information for the firmware and the firmware
-loader is not. It looks like the loader in this case is free software,
-but the firmware is proprietary.
+along the major code paths, so that you can see which decisions were made
+when the OSS driver was probing the hardware.
 
-Can this information be made more prominent? I think it would be
-helpful to many of the people using the matrix.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-30-06 22:38 rankincj       Note Added: 0010752                          
+======================================================================
 
--- 
-John Sullivan
-Free Software Foundation
-Program Administrator        | Phone: (617)542-5942 x23    
-51 Franklin Street, 5th Fl.  | Fax:   (617)542-2652	
-Boston, MA 02110-1301 USA    | GPG:   AE8600B6
 
 
 Using Tomcat but need to do more? Need to support web services, security?
