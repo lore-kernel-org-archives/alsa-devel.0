@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Fri, 30 Jun 2006 16:14:02 +0200
-Message-ID: <036573ed73eaee8311f5370d9b58f7f7@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002238]: snd_pcm_hw_params() did not
+	return error
+Date: Fri, 30 Jun 2006 16:15:17 +0200
+Message-ID: <aa50d9f55d98ea908460a9ce90885054@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADB8023D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0DD823E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 16:14:02 +0200 (MEST)
+	Fri, 30 Jun 2006 16:15:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,115 +24,203 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2238> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - lib
+Issue ID:                   2238
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 16:14 CEST
+Date Submitted:             06-28-2006 09:53 CEST
+Last Modified:              06-30-2006 16:15 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    snd_pcm_hw_params() did not return error
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+If alsa-lib require the application to refine hw_params from those values
+supported by alsa-driver to a set of unique values
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+Why do snd_pcm_hw_params() did not return error in the following code ?
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+Does it mean that snd_pcm_hw_params_set_period_size() or
+snd_pcm_hw_params_set_buffer_size() is not necessary for some ALSA driver
+?
 
-thanx for attention
-Marco
+
+#include <alsa/asoundlib.h>
+   int main()
+   {
+     snd_pcm_t* pcm;
+     snd_pcm_hw_params_t* hwparams;
+     int err;
+     unsigned int rate = 44100;
+     unsigned int channels = 2;
+     int dir = 0;
+     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
+       printf("Cannot open pcm.\n");
+     else {
+         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
+         snd_pcm_hw_params_alloca(&hwparams);
+         snd_pcm_hw_params_any(pcm, hwparams);
+         snd_pcm_hw_params_set_access(pcm, hwparams,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+         snd_pcm_hw_params_set_format(pcm, hwparams,
+SND_PCM_FORMAT_S16_LE);
+         snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
+         snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate, &dir);
+         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
+         err = snd_pcm_hw_params(pcm, hwparams) ;
+         if ( err < 0 )
+           printf("Error setting hw params: %s.\n", snd_strerror(err));
+         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
+         snd_pcm_close(pcm);
+      }
+   }
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 15:04 
+ Raymond - 06-30-06 09:43 
 ----------------------------------------------------------------------
-read Jaroslav's reply on Multi-device and dmix plugin 
+It seem that the default value is minimum and always sane.
 
-http://sourceforge.net/mailarchive/message.php?msg_id=21983226
+
+The application are required to select period size and buffer size from
+possibe set of values.
+
+It seem that snd_pcm_hw_params_test_period_size() may fail at min/max
+values and there is no simple method to find out all possible values.
+
+In general, is there any difference if the application set period_size
+first or set buffer_size first ?
+
+
+#include <alsa/asoundlib.h>
+   int main()
+   {
+     snd_pcm_t* pcm;
+     snd_pcm_hw_params_t* hwparams;
+     snd_pcm_uframes_t
+size,size_min,size_max,buf_size,buf_size_min,buf_size_max;
+     int err;
+     unsigned int rate = 44100;
+     unsigned int channels = 2;
+     int dir = 0;
+     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
+       printf("Cannot open pcm.\n");
+     else {
+
+         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
+
+         snd_pcm_hw_params_alloca(&hwparams);
+         snd_pcm_hw_params_any(pcm, hwparams);
+         err = snd_pcm_hw_params_set_access(pcm, hwparams,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+         if ( err < 0 )
+           printf("Error set access : %s\n",snd_strerror(err));
+         err = snd_pcm_hw_params_set_format(pcm, hwparams,
+SND_PCM_FORMAT_S16_LE);
+         if ( err < 0 )
+           printf("Error set format : %s\n",snd_strerror(err));
+         err = snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
+         if ( err < 0 )
+           printf("Error set channels : %s\n",snd_strerror(err));
+         err = snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate,
+&dir);
+         if ( err < 0 )
+           printf("Error set rate near : %s\n",snd_strerror(err));
+
+/* print possible period size */
+
+	 err = snd_pcm_hw_params_get_period_size_min(hwparams, &size_min, &dir);
+	 if (err < 0) 
+		printf("Unable to get period size min for playback: %s\n",
+snd_strerror(err));
+	 err = snd_pcm_hw_params_get_period_size_max(hwparams, &size_max, &dir);
+	 if (err < 0) 
+		printf("Unable to get period size max for playback: %s\n",
+snd_strerror(err));
+         
+         printf("period size (min =%d max = %d)\n",size_min,size_max);
+	 for (size=size_min; size<=size_max; size++)
+	    if ( snd_pcm_hw_params_test_period_size(pcm,hwparams,size,dir) == 0
+)
+                printf("    %d\n",size);
+
+/* print possible buffer size */
+           
+	 err = snd_pcm_hw_params_get_buffer_size_min(hwparams, &buf_size_min);
+	 if (err < 0) 
+		printf("Unable to get buffer size min for playback: %s\n",
+snd_strerror(err));
+	 err = snd_pcm_hw_params_get_buffer_size_max(hwparams, &buf_size_max);
+	 if (err < 0) 
+		printf("Unable to get buffer size max for playback: %s\n",
+snd_strerror(err));
+         
+         printf("buffer size (min =%d max =
+%d)\n",buf_size_min,buf_size_max);
+	 for (buf_size=buf_size_min; buf_size<=buf_size_max; buf_size++)
+	    if ( snd_pcm_hw_params_test_buffer_size(pcm,hwparams,buf_size) == 0
+)
+                printf("    %d\n",buf_size);
+
+
+         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
+         err = snd_pcm_hw_params(pcm, hwparams) ;
+         if ( err < 0 )
+           printf("Error setting hw params: %s\n", snd_strerror(err));    
+    
+         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
+
+	 err = snd_pcm_hw_params_get_period_size(hwparams, &size, &dir);
+	 if (err < 0) 
+		printf("Unable to get period size for playback: %s\n",
+snd_strerror(err));
+         else
+                printf("period size = %d\n",size);
+	 err = snd_pcm_hw_params_get_buffer_size(hwparams, &buf_size);
+	 if (err < 0) 
+		printf("Unable to get buffer size for playback: %s\n",
+snd_strerror(err));
+         else
+                printf("buffer size = %d\n",buf_size);
+         snd_pcm_close(pcm);
+      }
+   }
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 06-30-06 16:14 
+ rlrevell - 06-30-06 16:15 
 ----------------------------------------------------------------------
-Cimmo:  Currently it's possible but there's no easy way to do it.
+This is not a bug.  These questions belong on the alsa-devel mailing list.
 
-Raymond:  PLEASE STOP CONFUSING USERS WITH OFF TOPIC CRYPTIC COMMENTS.  I
-HAVE ASKED YOU OVER AND OVER.
+Raymond, you DO know how to use email right?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-06-28-06 16:36 Cimmo          Note Added: 0010621                          
-06-28-06 17:30 rlrevell       Note Added: 0010623                          
-06-30-06 11:05 Cimmo          Note Added: 0010725                          
-06-30-06 12:06 Cimmo          Note Added: 0010726                          
-06-30-06 12:18 Raymond        Note Added: 0010727                          
-06-30-06 12:24 Cimmo          Note Added: 0010728                          
-06-30-06 13:04 Raymond        Note Added: 0010729                          
-06-30-06 13:07 Raymond        Note Edited: 0010729                         
-06-30-06 13:08 Raymond        Note Edited: 0010729                         
-06-30-06 13:24 Raymond        Note Added: 0010731                          
-06-30-06 13:40 Cimmo          Note Added: 0010732                          
-06-30-06 15:04 Raymond        Note Added: 0010736                          
-06-30-06 16:14 rlrevell       Note Added: 0010737                          
+06-28-06 09:53 Raymond        New Issue                                    
+06-30-06 04:53 Raymond        Note Added: 0010717                          
+06-30-06 05:22 rlrevell       Note Added: 0010718                          
+06-30-06 07:10 Raymond        Note Added: 0010719                          
+06-30-06 07:16 Raymond        Note Edited: 0010719                         
+06-30-06 09:43 Raymond        Note Edited: 0010719                         
+06-30-06 16:15 rlrevell       Status                   new => closed       
+06-30-06 16:15 rlrevell       Note Added: 0010738                          
 ======================================================================
 
 
