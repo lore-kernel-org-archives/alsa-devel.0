@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Fri, 30 Jun 2006 12:24:30 +0200
-Message-ID: <5f2e9d5c067dba326989910edd03280b@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 13:04:28 +0200
+Message-ID: <a9ce3c5cf066aa89dbc42375eebe1c6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D8462A2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CCE2298
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 12:24:30 +0200 (MEST)
+	Fri, 30 Jun 2006 13:04:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 12:24 CEST
+Last Modified:              06-30-2006 13:04 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,17 +60,18 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 12:18 
-----------------------------------------------------------------------
-dmix of surround51 does not work if plug -> multi -> dmix -> hw does not
-work
-
-plug -> dmix -> hw work if a single device hw support 2, 4, 5.1, ...
-
-----------------------------------------------------------------------
  Cimmo - 06-30-06 12:24 
 ----------------------------------------------------------------------
 Sorry, but the answer is no?
+
+----------------------------------------------------------------------
+ Raymond - 06-30-06 13:04 
+----------------------------------------------------------------------
+Check alsa-lib/src/conf/cards/CA0106.conf
+
+dmix is enabled only on the device 0 (front)
+
+the device 1 (rear) still can be opened by one application only
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -124,6 +125,7 @@ Date Modified  Username       Field                    Change
 06-30-06 12:06 Cimmo          Note Added: 0010726                          
 06-30-06 12:18 Raymond        Note Added: 0010727                          
 06-30-06 12:24 Cimmo          Note Added: 0010728                          
+06-30-06 13:04 Raymond        Note Added: 0010729                          
 ======================================================================
 
 
