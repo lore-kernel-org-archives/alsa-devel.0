@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002231]: my system blocks 2 out of 4
-	time when starting sound device at startup
-Date: Fri, 30 Jun 2006 18:48:01 +0200
-Message-ID: <2a49b077c1ac35f7e26285a135a86483@bugtrack.alsa-project.org>
+From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
+Subject: Re: RFC: dma_mmap_coherent() for powerpc/ppc
+ architecture and ALSA?
+Date: Fri, 30 Jun 2006 20:21:44 +0200
+Message-ID: <20060630182144.27980@gmx.net>
+References: <20060628202753.198630@gmx.net>	<s5hfyhopb0s.wl%tiwai@suse.de>
+	<20060629211513.64980@gmx.net> <s5hwtaz9fdr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0F2529C
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 18:48:01 +0200 (MEST)
+In-Reply-To: <s5hwtaz9fdr.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,114 +19,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linuxppc-dev@ozlabs.org, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+-------- Original-Nachricht --------
+Datum: Fri, 30 Jun 2006 11:12:00 +0200
+Von: Takashi Iwai <tiwai@suse.de>
+An: Gerhard Pircher <gerhard_pircher@gmx.net>
+Betreff: Re: [Alsa-devel] RFC: dma_mmap_coherent() for powerpc/ppc architec=
+ture and ALSA?
+> =
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2231> 
-======================================================================
-Reported By:                adeel
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2231
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               redhat
-Kernel Version:             2.6.11-1.1369_FC4
-======================================================================
-Date Submitted:             06-25-2006 16:27 CEST
-Last Modified:              06-30-2006 18:47 CEST
-======================================================================
-Summary:                    my system blocks 2 out of 4 time when starting sound
-device at startup
-Description: 
-Hi guys,
-	I sure need a bit of help. My system when starting the sound device got
-crazy. I had fedora core 4. It starts the network, sound devices upfront
-after its starts the kernel I think. There when it tries to start the
-audio 2 out of 4 times it crashes. I had to then reset the system.
+> What is the type of buffer are you using?  If it's a buffer
+> pre-allocated via snd_pcm_lib_preallocate*() with SNDRV_DMA_TYPE_DEV,
+> there should be no snd_pcm_mmap_data_nopage call.  For other types,
+> there can be.  For example, the patch still doesn't solve the problems
+> with drivers using sg-buffer.
+> =
 
-======================================================================
+I added a debug output and it shows a buffer of SNDRV_DMA_TYPE_DEV_SG type.=
+ Well, then I'll hack the kernel to use the normal DMA allocation functions=
+ for ALSA instead of the non cache coherent ones and will wait until the AL=
+SA core has been adapted for dma_mmap_coherent().
 
-----------------------------------------------------------------------
- adeel - 06-30-06 17:49 
-----------------------------------------------------------------------
+Or what would have to be done to get it working for SG buffers?
+
+Thanks!
+
+Gerhard
+
+-- =
 
 
-----------------------------------------------------------------------
- Raymond - 06-30-06 18:47 
-----------------------------------------------------------------------
-Your problem seem caused by snd_rawmidi
 
-snd_rawmidi: disagrees about version of symbol snd_info_register
-snd_rawmidi: Unknown symbol snd_info_register
-snd_rawmidi: disagrees about version of symbol snd_seq_device_new
-snd_rawmidi: Unknown symbol snd_seq_device_new
-snd_rawmidi: disagrees about version of symbol snd_info_free_entry
-snd_rawmidi: Unknown symbol snd_info_free_entry
-snd_rawmidi: disagrees about version of symbol snd_unregister_oss_device
-snd_rawmidi: Unknown symbol snd_unregister_oss_device
-snd_rawmidi: Unknown symbol snd_verbose_printk
-snd_rawmidi: disagrees about version of symbol snd_register_oss_device
-snd_rawmidi: Unknown symbol snd_register_oss_device
-snd_rawmidi: disagrees about version of symbol snd_ctl_register_ioctl
-snd_rawmidi: Unknown symbol snd_ctl_register_ioctl
-snd_rawmidi: disagrees about version of symbol snd_card_file_add
-snd_rawmidi: Unknown symbol snd_card_file_add
-snd_rawmidi: Unknown symbol snd_compat_kzalloc
-snd_rawmidi: disagrees about version of symbol snd_iprintf
-snd_rawmidi: Unknown symbol snd_iprintf
-snd_rawmidi: disagrees about version of symbol snd_unregister_device
-snd_rawmidi: Unknown symbol snd_unregister_device
-snd_rawmidi: disagrees about version of symbol snd_device_new
-snd_rawmidi: Unknown symbol snd_device_new
-snd_rawmidi: disagrees about version of symbol snd_ctl_unregister_ioctl
-snd_rawmidi: Unknown symbol snd_ctl_unregister_ioctl
-snd_rawmidi: Unknown symbol snd_lookup_oss_minor_data
-snd_rawmidi: Unknown symbol snd_lookup_minor_data
-snd_rawmidi: disagrees about version of symbol snd_info_create_card_entry
-snd_rawmidi: Unknown symbol snd_info_create_card_entry
-snd_rawmidi: disagrees about version of symbol snd_device_free
-snd_rawmidi: Unknown symbol snd_device_free
-snd_rawmidi: disagrees about version of symbol snd_card_file_remove
-snd_rawmidi: Unknown symbol snd_card_file_remove
-snd_rawmidi: disagrees about version of symbol snd_info_unregister
-snd_rawmidi: Unknown symbol snd_info_unregister
-snd_rawmidi: disagrees about version of symbol snd_device_register
-snd_rawmidi: Unknown symbol snd_device_register
-snd_rawmidi: disagrees about version of symbol snd_register_device
-snd_rawmidi: Unknown symbol snd_register_device
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-25-06 16:27 adeel          New Issue                                    
-06-25-06 16:27 adeel          File Added: output.txt                       
-06-25-06 16:27 adeel          Distribution              => redhat          
-06-25-06 16:27 adeel          Kernel Version            => 2.6.11-1.1369_FC4
-06-29-06 09:31 adeel          Note Added: 0010644                          
-06-30-06 17:49 adeel          Issue Monitored: jangutter                    
-06-30-06 17:49 adeel          Issue Monitored: jan_k                       
-06-30-06 17:49 adeel          Issue Monitored: jaredgreenwald                   
-
-06-30-06 17:49 adeel          Issue Monitored: jaskjok                     
-06-30-06 17:49 adeel          Issue Monitored: jb                          
-06-30-06 17:49 adeel          Issue Monitored: jbarco                      
-06-30-06 17:49 adeel          Issue Monitored: jbesiee                     
-06-30-06 17:49 adeel          Issue Monitored: jbgordon                    
-06-30-06 17:49 adeel          Note Added: 0010746                          
-06-30-06 18:47 Raymond        Note Added: 0010751                          
-======================================================================
-
-
+Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
+Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
