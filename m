@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
-	drivers
-Date: Fri, 30 Jun 2006 11:03:40 +0200
-Message-ID: <e22304beeb1f78cede73256006c512ff@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Fri, 30 Jun 2006 11:05:28 +0200
+Message-ID: <1d843b7f946e569a0d38a996d7b29806@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1370C2A2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0744013D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 11:03:40 +0200 (MEST)
+	Fri, 30 Jun 2006 11:05:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,78 +26,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                jmclennan
-Assigned To:                tiwai
+Reported By:                Cimmo
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2211
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2133_FC5smp
+Status:                     new
 ======================================================================
-Date Submitted:             06-15-2006 20:33 CEST
-Last Modified:              06-30-2006 11:03 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-30-2006 11:05 CEST
 ======================================================================
-Summary:                    No sound using snd-hda-intel drivers
+Summary:                    Alsa mixer lack of some functions
 Description: 
-On a new HP DC7600 dual core Pentium D, sound card is detected, but no
-sound from either the front jack, rear jack or even the system speaker.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-kernel: 2.6.16-1.2133_FC5smp
-alsa-driver version: 1.0.11
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-Everything is unmuted, alsamixer can turn the volume controls up and down
-(all levels set to 100%.)
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 18:12 
+ rlrevell - 06-28-06 17:30 
 ----------------------------------------------------------------------
-See ALSA download page about HG.  The fix is included in 1.0.12rc1 release,
-too.
+No idea.  It must be a kaffeine bug.  Try another player, like VLC or
+mplayer.
 
 ----------------------------------------------------------------------
- gvidal - 06-30-06 11:03 
+ Cimmo - 06-30-06 11:05 
 ----------------------------------------------------------------------
-No change for me. I have installed the lastest release (1.0.12rc1)
-and I didn't notice any change..
-
-With 
-  options snd-hda-intel model=auto
-in /etc/modprobe.conf only the PC speaker works (despite the
-settings in alsamixer).
-
-With 
-  options snd-hda-intel model=basic
-everything seems fine, but
-- volume control in the gnome desktop doesn't work
-- no system beeps
-It is a pity not having system beeps (I'm quite used to) but
-at least everything else more or less works.
+tried vlc, still no surround, there is a problem somewhere... :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-06 20:33 jmclennan      New Issue                                    
-06-15-06 20:33 jmclennan      File Added: scsound.log                      
-06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
-06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
-06-15-06 20:34 jmclennan      Note Added: 0010244                          
-06-15-06 20:37 jmclennan      Note Added: 0010245                          
-06-20-06 00:38 jmclennan      Note Added: 0010324                          
-06-20-06 18:22 gvidal         Note Added: 0010339                          
-06-20-06 19:35 tiwai          Note Added: 0010340                          
-06-20-06 19:38 gvidal         Note Added: 0010342                          
-06-21-06 14:35 jmclennan      Note Added: 0010397                          
-06-21-06 14:59 gvidal         Note Added: 0010398                          
-06-29-06 18:12 tiwai          Note Added: 0010683                          
-06-30-06 11:03 gvidal         Note Added: 0010724                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
+06-28-06 16:36 Cimmo          Note Added: 0010621                          
+06-28-06 17:30 rlrevell       Note Added: 0010623                          
+06-30-06 11:05 Cimmo          Note Added: 0010725                          
 ======================================================================
 
 
