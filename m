@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Fri, 30 Jun 2006 14:46:28 +0200
-Message-ID: <2ef5f7cf7b07f35593246b6541dfed17@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Fri, 30 Jun 2006 15:04:28 +0200
+Message-ID: <415b0e03a0cb778e53f636f6de9e90a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BB44297
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F41429D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 14:46:28 +0200 (MEST)
+	Fri, 30 Jun 2006 15:04:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +26,113 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                tjallen
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              06-30-2006 14:46 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-30-2006 15:04 CEST
 ======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
+Summary:                    Alsa mixer lack of some functions
 Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
+
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
+
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rankincj - 06-30-06 02:10 
+ Cimmo - 06-30-06 13:40 
 ----------------------------------------------------------------------
-"sscape: hardware not detected at 0x534"
+Raymond:
+I've absolutely no idea reading your posts how to have speakers
+duplications... are you talking to me or to others devels?
 
-OK, this is expected because the driver is only testing port 0x534 for a
-SoundScape PnP card, and not for a SoundScape Elite. ALSA's
-detect_sscape() function is going to need extending with extra Voodoo code
-from the OSS linux/sound/oss/sscape.c file. (At the very least...!) I'm
-afraid you're going to have to tease the correct initialisation sequence
-out of the OSS driver so we know what code to put in the ALSA version. I
-suggest putting printk() statements in the OSS code so that you can follow
-the code-path when the OSS driver loads.
+Can you be less cryptic?
 
 ----------------------------------------------------------------------
- tjallen - 06-30-06 14:46 
+ Raymond - 06-30-06 15:04 
 ----------------------------------------------------------------------
-I'll look at the file and see if I can understand what's going on and 
-where I might put printk() statements.  I wish I understood how drivers
-work; I'm completely ignorant of driver and kernel programming and I'm
-a mediocre -- at best -- C programmer, but I'll have a look.
+read Jaroslav's reply on Multi-device and dmix plugin 
+
+http://sourceforge.net/mailarchive/message.php?msg_id=21983226
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
+06-28-06 16:36 Cimmo          Note Added: 0010621                          
+06-28-06 17:30 rlrevell       Note Added: 0010623                          
+06-30-06 11:05 Cimmo          Note Added: 0010725                          
+06-30-06 12:06 Cimmo          Note Added: 0010726                          
+06-30-06 12:18 Raymond        Note Added: 0010727                          
+06-30-06 12:24 Cimmo          Note Added: 0010728                          
+06-30-06 13:04 Raymond        Note Added: 0010729                          
+06-30-06 13:07 Raymond        Note Edited: 0010729                         
+06-30-06 13:08 Raymond        Note Edited: 0010729                         
+06-30-06 13:24 Raymond        Note Added: 0010731                          
+06-30-06 13:40 Cimmo          Note Added: 0010732                          
+06-30-06 15:04 Raymond        Note Added: 0010736                          
 ======================================================================
 
 
