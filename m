@@ -1,16 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001782]: really poor sound with my SB
-	Live 1024 and ALSA
-Date: Fri, 30 Jun 2006 18:09:46 +0200
-Message-ID: <1d10949338f3db0e15c328f642d6c995@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: OSS driver removal, 2nd round
+Date: Fri, 30 Jun 2006 17:13:02 +0100
+Message-ID: <44A54D8E.3000002__8725.49567507139$1151684108$gmane$org@superbug.co.uk>
+References: <20060629192128.GE19712@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 271E029A
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
+	[194.217.242.89])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB47129A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 18:09:47 +0200 (MEST)
+	Fri, 30 Jun 2006 18:13:04 +0200 (MEST)
+In-Reply-To: <20060629192128.GE19712@stusta.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,80 +22,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: alsa-devel@alsa-project.org, perex@suse.cz, linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>, Olaf Hering <olh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Adrian Bunk wrote:
+> Now that I've sent the first round of actually removing the code for OSS 
+> drivers where ALSA drivers without regressions exist for the same 
+> hardware, it's time for a second round amongst the remaining drivers.
+>
+>
+> SOUND_EMU10K1
+> - ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
+> - ALSA #1782 (really poor sound with my SB Live 1024 and ALSA)
+>   
 
-The following issue requires your FEEDBACK.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1782> 
-======================================================================
-Reported By:                novazur
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1782
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo
-Kernel Version:             all what I tried, actually 2.6.15-1
-======================================================================
-Date Submitted:             01-25-2006 06:30 CET
-Last Modified:              06-30-2006 18:09 CEST
-======================================================================
-Summary:                    really poor sound with my SB Live 1024 and ALSA
-Description: 
-Each time I tried to use ALSA with my SB Live, I always had a really very
-bad sound.
-I spent hours and hours to make it working better, but always had to come
-back to OSS. And, with OSS, I have a real perfect sound, on my 5.1 Altec
-Lansing kit.
+As the MAINTAINER of EMU10K1, I am happy for EMU10K1 driver to be 
+removed from the kernel.
 
-I'm afraid now to see OSS will definitively be removed from kernel.
-
-My english is too poor too, to explain exactly what I mean by "poor
-sound", but I can tell you the sound isn't good at all with ALSA and my
-card.
-
-
-00:06.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-0a)
-        Subsystem: Creative Labs SBLive! 5.1 Digital Model SB0220
-        Flags: bus master, medium devsel, latency 32, IRQ 11
-        I/O ports at b800 [size=32]
-        Capabilities: [dc] Power Management version 1
-
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 06-30-06 18:09 
-----------------------------------------------------------------------
-Please provide more information.
-1) Which application are you using that produce bad sound with ALSA, but
-good sound with OSS.
-
-And the output from the following commands:
-2) cat /proc/asound/cards
-3) cat /proc/asound/version
-4) amixer
-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-06 06:30 novazur        New Issue                                    
-01-25-06 06:30 novazur        Distribution              => Gentoo          
-01-25-06 06:30 novazur        Kernel Version            => all what I tried,
-actually 2.6.15-1
-01-25-06 18:58 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-30-06 18:09 jcdutton       Note Added: 0010748                          
-06-30-06 18:09 jcdutton       Assigned To               => jcdutton        
-06-30-06 18:09 jcdutton       Status                   new => feedback     
-======================================================================
-
+ALSA #1735 is now closed. All the apps the user was trying also support 
+ALSA natively now, so OSS is not needed.
+ALSA #1782 requires more information from the user. I am expecting this 
+to be a configuration problem, and not a driver problem.
 
 
 Using Tomcat but need to do more? Need to support web services, security?
