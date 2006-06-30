@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002238]: snd_pcm_hw_params() did not
-	return error
-Date: Fri, 30 Jun 2006 05:22:08 +0200
-Message-ID: <9d151898df0510685bdc659d40c3e427@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002248]: Sounds stops and continue
+Date: Fri, 30 Jun 2006 06:05:13 +0200
+Message-ID: <518a44cfa537b9a65b4aba64f3390bd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 034B62AF
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 296F0194
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 05:22:08 +0200 (MEST)
+	Fri, 30 Jun 2006 06:05:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,153 +23,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2238> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                gwagner
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2238
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   2248
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-28-2006 09:53 CEST
-Last Modified:              06-30-2006 05:22 CEST
+Date Submitted:             06-30-2006 06:05 CEST
+Last Modified:              06-30-2006 06:05 CEST
 ======================================================================
-Summary:                    snd_pcm_hw_params() did not return error
+Summary:                    Sounds stops and continue
 Description: 
-If alsa-lib require the application to refine hw_params from those values
-supported by alsa-driver to a set of unique values
-
-Why do snd_pcm_hw_params() did not return error in the following code ?
-
-Does it mean that snd_pcm_hw_params_set_period_size() or
-snd_pcm_hw_params_set_buffer_size() is not necessary for some ALSA driver
-?
-
-
-#include <alsa/asoundlib.h>
-   int main()
-   {
-     snd_pcm_t* pcm;
-     snd_pcm_hw_params_t* hwparams;
-     int err;
-     unsigned int rate = 44100;
-     unsigned int channels = 2;
-     int dir = 0;
-     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
-       printf("Cannot open pcm.\n");
-     else {
-         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
-         snd_pcm_hw_params_alloca(&hwparams);
-         snd_pcm_hw_params_any(pcm, hwparams);
-         snd_pcm_hw_params_set_access(pcm, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-         snd_pcm_hw_params_set_format(pcm, hwparams,
-SND_PCM_FORMAT_S16_LE);
-         snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
-         snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate, &dir);
-         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
-         err = snd_pcm_hw_params(pcm, hwparams) ;
-         if ( err < 0 )
-           printf("Error setting hw params: %s.\n", snd_strerror(err));
-         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
-         snd_pcm_close(pcm);
-      }
-   }
-
-
-
-
+Every sounds "music movies" are having little pauses, it's pausing for few
+miliseconds and continue. It's happen on every kind of aplication.
+My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
+that should work with snd_via82xx. I have an soud blaster card too, but
+that work fine.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-30-06 04:53 
-----------------------------------------------------------------------
-device is "default" and driver use dmix
-
-pcm state after pcm open : 0
-pcm state before hw_params : 0
-pcm state after hw_params : 2
-period size = 940
-
-device is "hw" or "plughw"
-
-pcm state after pcm open : 0
-pcm state before hw_params : 0
-pcm state after hw_params : 2
-period size = 8
-
-
- #include <alsa/asoundlib.h>
-   int main()
-   {
-     snd_pcm_t* pcm;
-     snd_pcm_hw_params_t* hwparams;
-     snd_pcm_uframes_t size;
-     int err;
-     unsigned int rate = 44100;
-     unsigned int channels = 2;
-     int dir = 0;
-     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
-       printf("Cannot open pcm.\n");
-     else {
-
-         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
-
-         snd_pcm_hw_params_alloca(&hwparams);
-         snd_pcm_hw_params_any(pcm, hwparams);
-         err = snd_pcm_hw_params_set_access(pcm, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-         if ( err < 0 )
-           printf("Error set access : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_format(pcm, hwparams,
-SND_PCM_FORMAT_S16_LE);
-         if ( err < 0 )
-           printf("Error set format : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
-         if ( err < 0 )
-           printf("Error set channels : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate,
-&dir);
-         if ( err < 0 )
-           printf("Error set rate near : %s\n",snd_strerror(err));
-
-         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
-         err = snd_pcm_hw_params(pcm, hwparams) ;
-         if ( err < 0 )
-           printf("Error setting hw params: %s\n", snd_strerror(err));    
-    
-         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
-
-	 err = snd_pcm_hw_params_get_period_size(hwparams, &size, &dir);
-	 if (err < 0) 
-		printf("Unable to get period size for playback: %s\n",
-snd_strerror(err));
-         else
-                printf("period size = %d\n",size);
-         snd_pcm_close(pcm);
-      }
-   }
-
-----------------------------------------------------------------------
- rlrevell - 06-30-06 05:22 
-----------------------------------------------------------------------
-If you don't set the period size, the default is driver and configuration
-dependent.  Applications cannot rely on the default period size being
-sane.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-06 09:53 Raymond        New Issue                                    
-06-30-06 04:53 Raymond        Note Added: 0010717                          
-06-30-06 05:22 rlrevell       Note Added: 0010718                          
+06-30-06 06:05 gwagner        New Issue                                    
 ======================================================================
 
 
