@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002228]: error recovery when the no of
 	available src is not enough (FATAL: ResManager: resource type
 	1 exhaust)
-Date: Fri, 30 Jun 2006 02:51:41 +0200
-Message-ID: <a8f0d35adcd788e2af6a74b49260beeb@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 03:14:26 +0200
+Message-ID: <ffba0a07f5db0e11b184a09a3af04f83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D54F2AA
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D75242AA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 02:51:41 +0200 (MEST)
+	Fri, 30 Jun 2006 03:14:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-24-2006 05:37 CEST
-Last Modified:              06-30-2006 02:51 CEST
+Last Modified:              06-30-2006 03:14 CEST
 ======================================================================
 Summary:                    error recovery when the no of available src is not
 enough (FATAL: ResManager: resource type 1 exhaust)
@@ -94,21 +94,6 @@ unable to perform error recovery
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 02:32 
-----------------------------------------------------------------------
-Using AOSS is non fatal
-
-aoss mplayer -ao oss *.wav
-
-[AO OSS] audio_setup: Failed to set audio device to 2 channels.
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-Video: no video
- 
- 
-Exiting... (End of file)
-
-----------------------------------------------------------------------
  Raymond - 06-30-06 02:51 
 ----------------------------------------------------------------------
 static int __devinit vortex_core_init(vortex_t * vortex)
@@ -149,6 +134,53 @@ restype)
 			}
         }
 
+----------------------------------------------------------------------
+ Raymond - 06-30-06 03:14 
+----------------------------------------------------------------------
+We still need to reject OSS application (e.g. flash plugin of web browser)
+at snd_vortex_pcm_open() to prevent fatal condition (e.g.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047 and
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343 ) when resources is
+not enough
+
+
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	
+...
+
+	/* PLAYBACK ROUTES. */
+	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
+
+...
+
+		/* Get SRC and MIXER hardware resources. */
+		if (stream->type != VORTEX_PCM_SPDIF) {
+			if ( en ) {
+	                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+				    ( vortex->avail_res[VORTEX_RESOURCE_MIXIN] < nr_ch )) {
+					printk(KERN_INFO "vortex : not enough resources\n");	
+					return -EBUSY;
+				}
+			}
+
+...
+
+	/* CAPTURE ROUTES. */
+	} else {
+		int src[2], mix[2];
+		if ( en ) {
+                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+			    ( vortex->avail_res[VORTEX_RESOURCE_MIXOUT] < nr_ch )) {
+				printk(KERN_INFO "vortex : not enough resources\n");	
+				return -EBUSY;
+			}
+		}
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -156,6 +188,7 @@ Date Modified  Username       Field                    Change
 06-26-06 14:20 Raymond        Note Added: 0010534                          
 06-30-06 02:32 Raymond        Note Added: 0010712                          
 06-30-06 02:51 Raymond        Note Added: 0010713                          
+06-30-06 03:14 Raymond        Note Added: 0010714                          
 ======================================================================
 
 
