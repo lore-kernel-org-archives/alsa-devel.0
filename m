@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002248]: Sounds stops and continue
-Date: Fri, 30 Jun 2006 16:36:05 +0200
-Message-ID: <b8d7cdd5a967c21b60dc2105c486c14d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Fri, 30 Jun 2006 16:42:59 +0200
+Message-ID: <1e134fadf575ff62ec45ede7a27eed35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 699B929D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C85C29D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 16:36:05 +0200 (MEST)
+	Fri, 30 Jun 2006 16:42:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,43 +26,127 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                gwagner
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2248
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             06-30-2006 06:05 CEST
-Last Modified:              06-30-2006 16:36 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-30-2006 16:42 CEST
 ======================================================================
-Summary:                    Sounds stops and continue
+Summary:                    Alsa mixer lack of some functions
 Description: 
-Every sounds "music movies" are having little pauses, it's pausing for few
-miliseconds and continue. It's happen on every kind of aplication.
-My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
-that should work with snd_via82xx. I have an soud blaster card too, but
-that work fine.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
+
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
+
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-30-06 16:36 
+ rlrevell - 06-30-06 16:14 
 ----------------------------------------------------------------------
-This should be fixed in 1.0.12-rc1, can you please test?
+Cimmo:  Currently it's possible but there's no easy way to do it.
+
+Raymond:  PLEASE STOP CONFUSING USERS WITH OFF TOPIC CRYPTIC COMMENTS.  I
+HAVE ASKED YOU OVER AND OVER.
+
+----------------------------------------------------------------------
+ Cimmo - 06-30-06 16:42 
+----------------------------------------------------------------------
+rlrevell:
+I have only understood that there are chips that make in hardware real
+surround and duplication front-to-rear speakers and others only real
+surround.
+My chip seems to have only real surround in hardware and not duplication
+right?
+
+So my original bug report come back :)
+Is there a way to implement in the alsamixer the possibility to discover
+chips that cannot do this duplication in hardware and make it available
+via software like in Windows?
+
+If not which soundcard can be bought to have all fantastic hardware stuffs
+and well recognized by alsa?
+
+Thanx a lot
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-06 06:05 gwagner        New Issue                                    
-06-30-06 16:36 rlrevell       Note Added: 0010740                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
+06-28-06 16:36 Cimmo          Note Added: 0010621                          
+06-28-06 17:30 rlrevell       Note Added: 0010623                          
+06-30-06 11:05 Cimmo          Note Added: 0010725                          
+06-30-06 12:06 Cimmo          Note Added: 0010726                          
+06-30-06 12:18 Raymond        Note Added: 0010727                          
+06-30-06 12:24 Cimmo          Note Added: 0010728                          
+06-30-06 13:04 Raymond        Note Added: 0010729                          
+06-30-06 13:07 Raymond        Note Edited: 0010729                         
+06-30-06 13:08 Raymond        Note Edited: 0010729                         
+06-30-06 13:24 Raymond        Note Added: 0010731                          
+06-30-06 13:40 Cimmo          Note Added: 0010732                          
+06-30-06 15:04 Raymond        Note Added: 0010736                          
+06-30-06 16:14 rlrevell       Note Added: 0010737                          
+06-30-06 16:42 Cimmo          Note Added: 0010741                          
 ======================================================================
 
 
