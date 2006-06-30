@@ -1,21 +1,20 @@
-From: Arjan van de Ven <arjan@infradead.org>
+From: =?utf-8?q?=C4=B0smail_D=C3=B6nmez?= <ismail@pardus.org.tr>
 Subject: Re: OSS driver removal, 2nd round
-Date: Fri, 30 Jun 2006 23:34:45 +0200
-Message-ID: <1151703286.11434.61.camel__26280.1041863442$1151703347$gmane$org@laptopd505.fenrus.org>
+Date: Sat, 1 Jul 2006 00:42:14 +0300
+Message-ID: <200607010042.15765.ismail@pardus.org.tr>
 References: <20060629192128.GE19712@stusta.de>
-	<44A54D8E.3000002@superbug.co.uk>
 	<20060630163114.GA12874@dspnet.fr.eu.org>
 	<1151702966.32444.57.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pentafluge.infradead.org (pentafluge.infradead.org
-	[213.146.154.40])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA45629D
+Received: from uludag.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 063FE18B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 23:34:53 +0200 (MEST)
+	Fri, 30 Jun 2006 23:42:11 +0200 (MEST)
 In-Reply-To: <1151702966.32444.57.camel@mindpipe>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -29,40 +28,18 @@ To: Lee Revell <rlrevell@joe-job.com>
 Cc: Olivier Galibert <galibert@pobox.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>, perex@suse.cz, Olaf Hering <olh@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-06-30 at 17:29 -0400, Lee Revell wrote:
-> On Fri, 2006-06-30 at 18:31 +0200, Olivier Galibert wrote:
-> > On Fri, Jun 30, 2006 at 05:13:02PM +0100, James Courtier-Dutton wrote:
-> > > Adrian Bunk wrote:
-> > > >- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
-> > > 
-> > > As the MAINTAINER of EMU10K1, I am happy for EMU10K1 driver to be 
-> > > removed from the kernel.
-> > > 
-> > > ALSA #1735 is now closed. All the apps the user was trying also support 
-> > > ALSA natively now, so OSS is not needed.
-> > 
-> > Are you joking ?
-> > 
-> 
-> Even if you reject this argument, the bug is in ALSA's in-kernel OSS
-> emulation, not the emu10k1 driver.
-> 
-> As sound hardware gets dumber and cheaper, kernel OSS emulation will
-> become increasingly useless.  The cheap onboard devices (and even mid
-> range stuff like the SBLive! 24 bit) require sample rate conversion,
-> mixing, and even volume control to be handled in software.  ALSA's
-> in-kernel OSS emulation does not have these features and never will.
-> 
-> (I wish the authors of Skype, Flash, TeamSpeak, Enemy Territory, and
-> other proprietary OSS-only apps would understand this ;-)
-
-
-maybe it's time to start printing a warning to users of OSS api (rate
-limited etc etc)
-
-
-
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Q3VtYXJ0ZXNpIDEgVGVtbXV6IDIwMDYgMDA6MjkgdGFyaWhpbmRlIMWfdW5sYXLEsSB5YXptxLHF
+n3TEsW7EsXo6Cj4gKEkgd2lzaCB0aGUgYXV0aG9ycyBvZiBTa3lwZSwgRmxhc2gsIFRlYW1TcGVh
+aywgRW5lbXkgVGVycml0b3J5LCBhbmQKPiBvdGhlciBwcm9wcmlldGFyeSBPU1Mtb25seSBhcHBz
+IHdvdWxkIHVuZGVyc3RhbmQgdGhpcyA7LSkKCk5ldyBza3lwZSBiZXRhIHN1cHBvcnRzIEFsc2Es
+IGRvZXNuJ3Qgd29yayBBVE0gYnV0IGl0cyBhIGdyZWF0IHN0ZXAgaW4gdGhhdCAKZGlyZWN0aW9u
+IGFuZCBGbGFzaDkgZm9yIExpbnV4IHdpbGwgdXNlIEFsc2EuCgpSZWdhcmRzLAppc21haWwKLS0g
+CuaXpeacrOOBrmFuaW1l44Gv5o+644KM44KLIAoKVXNpbmcgVG9tY2F0IGJ1dCBuZWVkIHRvIGRv
+IG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNlY3VyaXR5PwpHZXQgc3R1ZmYg
+ZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVncmF0ZWQgdGVjaG5vbG9neSB0byBtYWtlIHlvdXIg
+am9iIGVhc2llcgpEb3dubG9hZCBJQk0gV2ViU3BoZXJlIEFwcGxpY2F0aW9uIFNlcnZlciB2LjEu
+MC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwpodHRwOi8vc2VsLmFzLXVzLmZhbGthZy5uZXQv
+c2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3JmRhdD0xMjE2NDIKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
