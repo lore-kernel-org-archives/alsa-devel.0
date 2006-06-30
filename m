@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002238]: snd_pcm_hw_params() did not
 	return error
-Date: Fri, 30 Jun 2006 04:53:35 +0200
-Message-ID: <43feb8044cde8a96f342353c41af85cd@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 05:22:08 +0200
+Message-ID: <9d151898df0510685bdc659d40c3e427@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBB622AF
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 034B62AF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 04:53:35 +0200 (MEST)
+	Fri, 30 Jun 2006 05:22:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-28-2006 09:53 CEST
-Last Modified:              06-30-2006 04:53 CEST
+Last Modified:              06-30-2006 05:22 CEST
 ======================================================================
 Summary:                    snd_pcm_hw_params() did not return error
 Description: 
@@ -158,11 +158,19 @@ snd_strerror(err));
       }
    }
 
+----------------------------------------------------------------------
+ rlrevell - 06-30-06 05:22 
+----------------------------------------------------------------------
+If you don't set the period size, the default is driver and configuration
+dependent.  Applications cannot rely on the default period size being
+sane.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-28-06 09:53 Raymond        New Issue                                    
 06-30-06 04:53 Raymond        Note Added: 0010717                          
+06-30-06 05:22 rlrevell       Note Added: 0010718                          
 ======================================================================
 
 
