@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Fri, 30 Jun 2006 17:11:42 +0200
-Message-ID: <70698b18f8bb0af33bf4ac4515b1cba7@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 17:15:05 +0200
+Message-ID: <cbb0a3553e8322dccc50f92c51216732@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3096EB6
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B077297
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 17:11:42 +0200 (MEST)
+	Fri, 30 Jun 2006 17:15:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 17:11 CEST
+Last Modified:              06-30-2006 17:15 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,23 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-30-06 17:11 
-----------------------------------------------------------------------
-ok thanx very much!
-if you want keep open or close this bug.
-
-OT:
-I have reopened for mistake bug #1331, but line-in works in 1.0.11 thanx,
-the only thing is kmix is broken for capture volumes since 1.0.11 so I was
-thought that line-in doesn't work, but it works.
-
-
-Probably kmix's devels needs some help to fix it:
-http://bugs.kde.org/show_bug.cgi?id=125772
-
-
-
-----------------------------------------------------------------------
  rlrevell - 06-30-06 17:11 
 ----------------------------------------------------------------------
 OK, I'll leave open until upmixing works OOTB.
@@ -85,6 +68,14 @@ kmix sucks - it's alsa support is terrible.  The most common complaint is
 that it can't properly distinguish a capture from a playback control. 
 Before reporting bugs you should try with a "known good" mixer like
 alsamixer.
+
+----------------------------------------------------------------------
+ rlrevell - 06-30-06 17:15 
+----------------------------------------------------------------------
+Re: http://bugs.kde.org/show_bug.cgi?id=125772
+
+I don't really know how to help them, other than telling them to look at
+the alsamixer source.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +142,7 @@ Date Modified  Username       Field                    Change
 06-30-06 17:09 Cimmo          Note Edited: 0010743                         
 06-30-06 17:11 Cimmo          Note Edited: 0010743                         
 06-30-06 17:11 rlrevell       Note Added: 0010744                          
+06-30-06 17:15 rlrevell       Note Added: 0010745                          
 ======================================================================
 
 
