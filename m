@@ -1,22 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: OSS driver removal, 2nd round
-Date: Sat, 01 Jul 2006 09:52:40 -0400
-Message-ID: <1151761961.11897.3.camel__1160.42242520979$1151762835$gmane$org@mindpipe>
-References: <20060629192128.GE19712@stusta.de>
-	<44A54D8E.3000002@superbug.co.uk>
-	<20060630163114.GA12874@dspnet.fr.eu.org>
-	<1151702966.32444.57.camel@mindpipe>
-	<20060701073133.GA99126@dspnet.fr.eu.org>
-	<44A6279C.3000100@superbug.co.uk>
+From: John Sullivan <johns@fsf.org>
+Subject: Making firmware licensing info more prominent (Matrix)
+Date: Fri, 30 Jun 2006 13:51:11 -0400
+Message-ID: <87lkre7cs0.fsf@ashbery.wjsullivan.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 30896243
-	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 16:06:46 +0200 (MEST)
-In-Reply-To: <44A6279C.3000100@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,44 +15,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Olivier Galibert <galibert@pobox.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Olaf Hering <olh@suse.de>, Adrian Bunk <bunk@stusta.de>, perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-07-01 at 08:43 +0100, James Courtier-Dutton wrote:
-> Olivier Galibert wrote:
-> > On Fri, Jun 30, 2006 at 05:29:26PM -0400, Lee Revell wrote:
-> >> Even if you reject this argument, the bug is in ALSA's in-kernel OSS
-> >> emulation, not the emu10k1 driver.
-> > 
-> > That's irrelevant.  You can't remove the oss emu10k1 driver in favor
-> > of alsa's until alsa provides an equivalent interface.  That's a basic
-> > compatibility requirement.
-> > 
-> > 
-> >> ALSA's in-kernel OSS emulation does not have these features and
-> >> never will.
-> > 
-> > "Never" is terribly long.
-> > 
-> >   OG.
-> 
-> "Never" probably only means terribly long. :-)
-> 
-> If one takes the ALSA todo list, that is massive (it is so long in fact,
-> that we have not had time to write it all down!), sort it by priority,
-> then divide by the amount of ALSA developers time available, for this
-> particular feature, the time to implementation is getting very close to
-> "Never".
 
-The reason I say "never" is because it would either require moving
-alsa-lib into the kernel (long ago rejected), or devising some system to
-redirect operations on /dev/dsp back into userspace to alsa-lib.  It
-seems insane for the audio path to be
-userspace->kernel->userspace->kernel and I'm pretty sure this idea was
-also rejected a while back.
+(I checked the archives and didn't see any obvious discussion of this
+question; apologies if I missed it, I don't usually follow the list.)
 
-Lee
+Many of the people using the ALSA matrix are committed to using free
+software, and they consult the matrix in order to find sound devices
+that will be compatible with their systems. It's a great resource for
+that.
+
+But some of the USB devices, while supported by ALSA, require firmware
+that is nonfree in licensing.
+
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Midiman%2FMAudio&card=USB+Midisport+4x4.&chip=Cypress+AN2131XX&module=usb-audio
+is one example.
+
+While the licensing information for the module is displayed on this
+page, the licensing information for the firmware and the firmware
+loader is not. It looks like the loader in this case is free software,
+but the firmware is proprietary.
+
+Can this information be made more prominent? I think it would be
+helpful to many of the people using the matrix.
+
+--
+John Sullivan
+Free Software Foundation
+Program Administrator        | Phone: (617)542-5942 x23
+51 Franklin Street, 5th Fl.  | Fax:   (617)542-2652
+Boston, MA 02110-1301 USA    | GPG:   AE8600B6
 
 
 Using Tomcat but need to do more? Need to support web services, security?
