@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Fri, 30 Jun 2006 15:04:28 +0200
-Message-ID: <415b0e03a0cb778e53f636f6de9e90a9@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 16:14:02 +0200
+Message-ID: <036573ed73eaee8311f5370d9b58f7f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F41429D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADB8023D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 15:04:29 +0200 (MEST)
+	Fri, 30 Jun 2006 16:14:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 15:04 CEST
+Last Modified:              06-30-2006 16:14 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,20 +60,19 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-30-06 13:40 
-----------------------------------------------------------------------
-Raymond:
-I've absolutely no idea reading your posts how to have speakers
-duplications... are you talking to me or to others devels?
-
-Can you be less cryptic?
-
-----------------------------------------------------------------------
  Raymond - 06-30-06 15:04 
 ----------------------------------------------------------------------
 read Jaroslav's reply on Multi-device and dmix plugin 
 
 http://sourceforge.net/mailarchive/message.php?msg_id=21983226
+
+----------------------------------------------------------------------
+ rlrevell - 06-30-06 16:14 
+----------------------------------------------------------------------
+Cimmo:  Currently it's possible but there's no easy way to do it.
+
+Raymond:  PLEASE STOP CONFUSING USERS WITH OFF TOPIC CRYPTIC COMMENTS.  I
+HAVE ASKED YOU OVER AND OVER.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -133,6 +132,7 @@ Date Modified  Username       Field                    Change
 06-30-06 13:24 Raymond        Note Added: 0010731                          
 06-30-06 13:40 Cimmo          Note Added: 0010732                          
 06-30-06 15:04 Raymond        Note Added: 0010736                          
+06-30-06 16:14 rlrevell       Note Added: 0010737                          
 ======================================================================
 
 
