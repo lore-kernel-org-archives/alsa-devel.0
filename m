@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Fri, 30 Jun 2006 16:42:59 +0200
-Message-ID: <1e134fadf575ff62ec45ede7a27eed35@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 16:50:40 +0200
+Message-ID: <7c975f2b9302a8dc21fc6926f1cbaa54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C85C29D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A26629D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 16:42:59 +0200 (MEST)
+	Fri, 30 Jun 2006 16:50:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-30-2006 16:42 CEST
+Last Modified:              06-30-2006 16:50 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -58,14 +58,6 @@ with configuration files.
 thanx for attention
 Marco
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-30-06 16:14 
-----------------------------------------------------------------------
-Cimmo:  Currently it's possible but there's no easy way to do it.
-
-Raymond:  PLEASE STOP CONFUSING USERS WITH OFF TOPIC CRYPTIC COMMENTS.  I
-HAVE ASKED YOU OVER AND OVER.
 
 ----------------------------------------------------------------------
  Cimmo - 06-30-06 16:42 
@@ -86,6 +78,17 @@ If not which soundcard can be bought to have all fantastic hardware stuffs
 and well recognized by alsa?
 
 Thanx a lot
+
+----------------------------------------------------------------------
+ rlrevell - 06-30-06 16:50 
+----------------------------------------------------------------------
+Yes, it's possible but it's a work in progress.  The default configuration
+has been improving in every release.  ALSA will automatically do software
+upmixing for chipsets that can't do it in hardware in a future release.
+
+If you want it to Just Work get a good old SBLive! 5.1 OEM.  NOT the 24
+bit version - as you know the chipset is cripples compared to previous
+SBLives.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -147,6 +150,7 @@ Date Modified  Username       Field                    Change
 06-30-06 15:04 Raymond        Note Added: 0010736                          
 06-30-06 16:14 rlrevell       Note Added: 0010737                          
 06-30-06 16:42 Cimmo          Note Added: 0010741                          
+06-30-06 16:50 rlrevell       Note Added: 0010742                          
 ======================================================================
 
 
