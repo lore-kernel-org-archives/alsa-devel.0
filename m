@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002228]: error recovery when the no of
 	available src is not enough (FATAL: ResManager: resource type
 	1 exhaust)
-Date: Fri, 30 Jun 2006 02:32:03 +0200
-Message-ID: <f5b5057673edc3f318c0f05bb27de10d@bugtrack.alsa-project.org>
+Date: Fri, 30 Jun 2006 02:51:41 +0200
+Message-ID: <a8f0d35adcd788e2af6a74b49260beeb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5262A2AA
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D54F2AA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 02:32:03 +0200 (MEST)
+	Fri, 30 Jun 2006 02:51:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-24-2006 05:37 CEST
-Last Modified:              06-30-2006 02:32 CEST
+Last Modified:              06-30-2006 02:51 CEST
 ======================================================================
 Summary:                    error recovery when the no of available src is not
 enough (FATAL: ResManager: resource type 1 exhaust)
@@ -94,22 +94,6 @@ unable to perform error recovery
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-26-06 14:20 
-----------------------------------------------------------------------
-When the number of available SRC is less than those expected by an OSS
-application, the result is FATAL as the OSS application loop forever
-
-mplayer -ao oss *.wav
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-[AO OSS] Can't set audio device /dev/dsp to s16le output, trying s16le...
-
-----------------------------------------------------------------------
  Raymond - 06-30-06 02:32 
 ----------------------------------------------------------------------
 Using AOSS is non fatal
@@ -124,12 +108,54 @@ Video: no video
  
 Exiting... (End of file)
 
+----------------------------------------------------------------------
+ Raymond - 06-30-06 02:51 
+----------------------------------------------------------------------
+static int __devinit vortex_core_init(vortex_t * vortex)
+{
+        int i;
+	for (i=0; i<VORTEX_RESOURCE_LAST; i++) {
+		vortex->avail_res[i]=resnum[i];
+
+
+static char
+vortex_adb_checkinout(vortex_t * vortex, int resmap[], int out, int
+restype)
+{
+
+...
+       if ( out ) {
+
+...
+			if ((resinuse & (1 << i)) == 0) {
+				if (resmap != NULL)
+					resmap[restype] |= (1 << i);
+				else
+					vortex->dma_adb[i].resources[restype] |= (1 << i);
+				//printk("vortex: ResManager: type %d out %d\n", restype, i);
+				vortex->avail_res[restype]--;
+				return i;
+			}
+		}
+	} else {
+
+...
+
+			if (resmap[restype] & (1 << i)) {
+				resmap[restype] &= ~(1 << i);
+				//printk("vortex: ResManager: type %d in %d\n",restype, i);
+				vortex->avail_res[restype]++;
+				return i;
+			}
+        }
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-24-06 05:37 Raymond        New Issue                                    
 06-26-06 14:20 Raymond        Note Added: 0010534                          
 06-30-06 02:32 Raymond        Note Added: 0010712                          
+06-30-06 02:51 Raymond        Note Added: 0010713                          
 ======================================================================
 
 
