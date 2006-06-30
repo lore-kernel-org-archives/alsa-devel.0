@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001735]: OSS emulation 4-channel mode
-	rear channels not working
-Date: Fri, 30 Jun 2006 18:05:41 +0200
-Message-ID: <8f07e0b012ea070c11676d9b9b7b9e5b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit,
+	no sound from line-in
+Date: Fri, 30 Jun 2006 17:13:02 +0200
+Message-ID: <a35d3ecba24d24c11c6da52b2b3caac9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C06B29A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AA10284
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 18:05:41 +0200 (MEST)
+	Fri, 30 Jun 2006 17:13:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,66 +24,97 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1735> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
-Reported By:                giorby
-Assigned To:                
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1735
-Category:                   PCI - emu10k1
+Issue ID:                   1331
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian sarge 3.1
-Kernel Version:             2.6.15
-Resolution:                 open
-Fixed in Version:           
+Status:                     resolved
+Distribution:               Kubuntu 6.06
+Kernel Version:             2.6.15-25
+Resolution:                 fixed
+Fixed in Version:           1.0.11
 ======================================================================
-Date Submitted:             01-11-2006 10:51 CET
-Last Modified:              06-30-2006 18:05 CEST
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              06-30-2006 17:13 CEST
 ======================================================================
-Summary:                    OSS emulation 4-channel mode rear channels not
-working
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
-If I use the OSS emulation and try to play some 4-channel material, with
-say mplayer or bplay, the rear channels are just a copy of the front
-channels, whereas the same configuration and software worked perfectly
-well with the native OSS driver. As the native OSS drivers are faded out
-in favour of ALSA, I assumed that the emulation layer should be a sort of
-drop-in replacement. Am I wrong?
-Tested with Linux kernels 2.6.12/2.6.15.
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
 
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
+
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- giorby - 01-11-06 11:08 
+ jcdutton - 04-09-06 21:42 
 ----------------------------------------------------------------------
-Sorry, I forgot to identify my soundcard... 
-/proc/asound/devices lists:
-0 [Live           ]: EMU10K1 - SBLive! Value [CT4832]
-                     SBLive! Value [CT4832] (rev.6, serial:0x80271102) at
-0xd400, irq 5
+Fixed in alsa cvs on 9-4-2006
+Fixed in alsa cvs 1.0.11rc5 or above.
 
 ----------------------------------------------------------------------
- jcdutton - 06-30-06 18:05 
+ Cimmo - 06-25-06 18:14 
 ----------------------------------------------------------------------
-Both the mentioned applications now support ALSA, so OSS emulation is not
-required any more.
+EDIT:
+Sorry my mistake!
+
+mic and line-in works with 1.0.11
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 10:51 giorby         New Issue                                    
-01-11-06 10:51 giorby         Distribution              => Debian sarge 3.1
-01-11-06 10:51 giorby         Kernel Version            => 2.6.15          
-01-11-06 11:08 giorby         Note Added: 0007561                          
-01-12-06 03:40 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-30-06 18:05 jcdutton       Status                   new => closed       
-06-30-06 18:05 jcdutton       Note Added: 0010747                          
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+08-31-05 15:14 Cimmo          Note Added: 0005989                          
+08-31-05 18:59 rlrevell       Note Added: 0005991                          
+09-10-05 10:31 jcdutton       Note Added: 0006107                          
+10-19-05 19:13 Cimmo          Note Added: 0006496                          
+11-07-05 00:02 jcdutton       Note Added: 0006610                          
+11-07-05 11:07 Cimmo          Note Added: 0006612                          
+11-11-05 19:33 Cimmo          Note Added: 0006678                          
+12-13-05 13:16 jcdutton       Note Added: 0007007                          
+12-13-05 13:34 Cimmo          Note Added: 0007015                          
+04-09-06 21:40 jcdutton       Status                   feedback => assigned
+04-09-06 21:42 jcdutton       Status                   assigned => closed  
+04-09-06 21:42 jcdutton       Note Added: 0009185                          
+06-25-06 17:34 Cimmo          Distribution             Fedora Core 4 => Kubuntu
+6.06
+06-25-06 17:34 Cimmo          Kernel Version           2.6.12-1.1398-x86_64 =>
+2.6.15-25
+06-25-06 17:34 Cimmo          Status                   closed => feedback  
+06-25-06 17:34 Cimmo          Resolution               open => reopened    
+06-25-06 17:34 Cimmo          Note Added: 0010515                          
+06-25-06 17:37 Cimmo          Note Added: 0010516                          
+06-25-06 17:38 Cimmo          Note Deleted: 0010516                        
+06-25-06 17:38 Cimmo          Note Edited: 0010515                         
+06-25-06 17:46 Cimmo          Note Edited: 0010515                         
+06-25-06 18:14 Cimmo          Note Edited: 0010515                         
+06-30-06 17:13 rlrevell       Status                   feedback => resolved
+06-30-06 17:13 rlrevell       Fixed in Version          => 1.0.11          
+06-30-06 17:13 rlrevell       Resolution               reopened => fixed   
 ======================================================================
 
 
