@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002238]: snd_pcm_hw_params() did not
-	return error
-Date: Fri, 30 Jun 2006 16:15:17 +0200
-Message-ID: <aa50d9f55d98ea908460a9ce90885054@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
+	volume (both in and out)
+Date: Fri, 30 Jun 2006 16:33:01 +0200
+Message-ID: <33a478f1b1ea6e9d785e9e455d109c42@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0DD823E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B148B297
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 16:15:17 +0200 (MEST)
+	Fri, 30 Jun 2006 16:33:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,203 +24,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2238> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                garden
+Assigned To:                pzad
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2238
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             06-28-2006 09:53 CEST
-Last Modified:              06-30-2006 16:15 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              06-30-2006 16:32 CEST
 ======================================================================
-Summary:                    snd_pcm_hw_params() did not return error
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-If alsa-lib require the application to refine hw_params from those values
-supported by alsa-driver to a set of unique values
-
-Why do snd_pcm_hw_params() did not return error in the following code ?
-
-Does it mean that snd_pcm_hw_params_set_period_size() or
-snd_pcm_hw_params_set_buffer_size() is not necessary for some ALSA driver
-?
-
-
-#include <alsa/asoundlib.h>
-   int main()
-   {
-     snd_pcm_t* pcm;
-     snd_pcm_hw_params_t* hwparams;
-     int err;
-     unsigned int rate = 44100;
-     unsigned int channels = 2;
-     int dir = 0;
-     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
-       printf("Cannot open pcm.\n");
-     else {
-         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
-         snd_pcm_hw_params_alloca(&hwparams);
-         snd_pcm_hw_params_any(pcm, hwparams);
-         snd_pcm_hw_params_set_access(pcm, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-         snd_pcm_hw_params_set_format(pcm, hwparams,
-SND_PCM_FORMAT_S16_LE);
-         snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
-         snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate, &dir);
-         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
-         err = snd_pcm_hw_params(pcm, hwparams) ;
-         if ( err < 0 )
-           printf("Error setting hw params: %s.\n", snd_strerror(err));
-         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
-         snd_pcm_close(pcm);
-      }
-   }
-
-
-
-
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 09:43 
+ snover - 06-21-06 23:19 
 ----------------------------------------------------------------------
-It seem that the default value is minimum and always sane.
+I am experiencing a similar issue running 2.6.15 (2.6.15-25-amd64-k8) and
+ALSA 1.0.10rc3 (Kubuntu Dapper 6.06) where the input levels are very very
+low. Also, the "Line In 1/Mic 1" on the breakout box is mapped to Line2 in
+ALSA, so "Mic Boost" does not work.
 
-
-The application are required to select period size and buffer size from
-possibe set of values.
-
-It seem that snd_pcm_hw_params_test_period_size() may fail at min/max
-values and there is no simple method to find out all possible values.
-
-In general, is there any difference if the application set period_size
-first or set buffer_size first ?
-
-
-#include <alsa/asoundlib.h>
-   int main()
-   {
-     snd_pcm_t* pcm;
-     snd_pcm_hw_params_t* hwparams;
-     snd_pcm_uframes_t
-size,size_min,size_max,buf_size,buf_size_min,buf_size_max;
-     int err;
-     unsigned int rate = 44100;
-     unsigned int channels = 2;
-     int dir = 0;
-     if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
-       printf("Cannot open pcm.\n");
-     else {
-
-         printf("pcm state after pcm open : %d\n",snd_pcm_state(pcm));
-
-         snd_pcm_hw_params_alloca(&hwparams);
-         snd_pcm_hw_params_any(pcm, hwparams);
-         err = snd_pcm_hw_params_set_access(pcm, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-         if ( err < 0 )
-           printf("Error set access : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_format(pcm, hwparams,
-SND_PCM_FORMAT_S16_LE);
-         if ( err < 0 )
-           printf("Error set format : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_channels (pcm, hwparams, channels);
-         if ( err < 0 )
-           printf("Error set channels : %s\n",snd_strerror(err));
-         err = snd_pcm_hw_params_set_rate_near(pcm, hwparams, &rate,
-&dir);
-         if ( err < 0 )
-           printf("Error set rate near : %s\n",snd_strerror(err));
-
-/* print possible period size */
-
-	 err = snd_pcm_hw_params_get_period_size_min(hwparams, &size_min, &dir);
-	 if (err < 0) 
-		printf("Unable to get period size min for playback: %s\n",
-snd_strerror(err));
-	 err = snd_pcm_hw_params_get_period_size_max(hwparams, &size_max, &dir);
-	 if (err < 0) 
-		printf("Unable to get period size max for playback: %s\n",
-snd_strerror(err));
-         
-         printf("period size (min =%d max = %d)\n",size_min,size_max);
-	 for (size=size_min; size<=size_max; size++)
-	    if ( snd_pcm_hw_params_test_period_size(pcm,hwparams,size,dir) == 0
-)
-                printf("    %d\n",size);
-
-/* print possible buffer size */
-           
-	 err = snd_pcm_hw_params_get_buffer_size_min(hwparams, &buf_size_min);
-	 if (err < 0) 
-		printf("Unable to get buffer size min for playback: %s\n",
-snd_strerror(err));
-	 err = snd_pcm_hw_params_get_buffer_size_max(hwparams, &buf_size_max);
-	 if (err < 0) 
-		printf("Unable to get buffer size max for playback: %s\n",
-snd_strerror(err));
-         
-         printf("buffer size (min =%d max =
-%d)\n",buf_size_min,buf_size_max);
-	 for (buf_size=buf_size_min; buf_size<=buf_size_max; buf_size++)
-	    if ( snd_pcm_hw_params_test_buffer_size(pcm,hwparams,buf_size) == 0
-)
-                printf("    %d\n",buf_size);
-
-
-         printf("pcm state before hw_params : %d\n",snd_pcm_state(pcm));
-         err = snd_pcm_hw_params(pcm, hwparams) ;
-         if ( err < 0 )
-           printf("Error setting hw params: %s\n", snd_strerror(err));    
-    
-         printf("pcm state after hw_params : %d\n",snd_pcm_state(pcm));
-
-	 err = snd_pcm_hw_params_get_period_size(hwparams, &size, &dir);
-	 if (err < 0) 
-		printf("Unable to get period size for playback: %s\n",
-snd_strerror(err));
-         else
-                printf("period size = %d\n",size);
-	 err = snd_pcm_hw_params_get_buffer_size(hwparams, &buf_size);
-	 if (err < 0) 
-		printf("Unable to get buffer size for playback: %s\n",
-snd_strerror(err));
-         else
-                printf("buffer size = %d\n",buf_size);
-         snd_pcm_close(pcm);
-      }
-   }
+$ cat /proc/asound/cards
+0 [Audigy2        ]: Audigy2 - Audigy 2 ZS [2001]
+                     Audigy 2 ZS [2001] (rev.4, serial:0x20011102) at
+0xc800, irq 74
 
 
 
 ----------------------------------------------------------------------
- rlrevell - 06-30-06 16:15 
+ killrbuckeye - 06-30-06 16:32 
 ----------------------------------------------------------------------
-This is not a bug.  These questions belong on the alsa-devel mailing list.
-
-Raymond, you DO know how to use email right?
+pzad: is this issue ever going to be addressed (we're approaching the
+two-year mark), or should I just give up on using Linux for audio
+recording with my Audigy?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-06 09:53 Raymond        New Issue                                    
-06-30-06 04:53 Raymond        Note Added: 0010717                          
-06-30-06 05:22 rlrevell       Note Added: 0010718                          
-06-30-06 07:10 Raymond        Note Added: 0010719                          
-06-30-06 07:16 Raymond        Note Edited: 0010719                         
-06-30-06 09:43 Raymond        Note Edited: 0010719                         
-06-30-06 16:15 rlrevell       Status                   new => closed       
-06-30-06 16:15 rlrevell       Note Added: 0010738                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
+01-26-06 21:52 pzad           Note Added: 0007789                          
+01-26-06 21:55 rlrevell       Note Added: 0007790                          
+01-26-06 22:03 pzad           Note Added: 0007791                          
+01-28-06 23:11 andred         Issue Monitored: andred                      
+06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
+06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
+06-21-06 23:18 snover         Note Added: 0010409                          
+06-21-06 23:19 snover         Issue Monitored: snover                      
+06-21-06 23:19 snover         Note Edited: 0010409                         
+06-30-06 16:32 killrbuckeye   Note Added: 0010739                          
 ======================================================================
 
 
