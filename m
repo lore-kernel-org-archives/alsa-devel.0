@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have
-	capture flags
-Date: Fri, 30 Jun 2006 18:20:40 +0200
-Message-ID: <6a1a1319dd9cbe05a9d82653fb4e636d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
+	volume (both in and out)
+Date: Fri, 30 Jun 2006 18:22:26 +0200
+Message-ID: <9ceca30faf1297ffd7f78d5c143e81a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D716265
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB848265
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jun 2006 18:20:40 +0200 (MEST)
+	Fri, 30 Jun 2006 18:22:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,136 +26,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                pzad
+Reported By:                garden
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
+Project:                    ALSA - driver
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              06-30-2006 18:20 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              06-30-2006 18:22 CEST
 ======================================================================
-Summary:                    Some elements incorrectly have capture flags
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
-
-On VIA8233A + ALC650:
-
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
-
-
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-14-06 09:55 
+ killrbuckeye - 06-30-06 16:32 
 ----------------------------------------------------------------------
-In View All of alsamixer, 
-
-10-bands EQ peaks "Playback" appear as 2 stereo sliders and 2 mono
-sliders.
-10-bands EQ peaks "Capture" appear as 1 stereo slider.
-
-The alsamixer still allow to increase/decrese even the kcontrol has been
-declared access is read only (SNDRV_CTL_ELEM_ACCESS_READ)
-
-static struct snd_kcontrol_new vortex_levels_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "EQ Peaks",
-	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-	.info = snd_vortex_peaks_info,
-	.get = snd_vortex_peaks_get,
-};
-
-ice1712 also has similar kcontrol
-
-static int snd_ice1712_pro_peak_info(struct snd_kcontrol *kcontrol,
-				     struct snd_ctl_elem_info *uinfo)
-{
-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-	uinfo->count = 22;
-	uinfo->value.integer.min = 0;
-	uinfo->value.integer.max = 255;
-	return 0;
-}
-
-static struct snd_kcontrol_new snd_ice1712_mixer_pro_peak __devinitdata =
-{
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "Multi Track Peak",
-	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-	.info = snd_ice1712_pro_peak_info,
-	.get = snd_ice1712_pro_peak_get
-};
-
-
+pzad: is this issue ever going to be addressed (we're approaching the
+two-year mark), or should I just give up on using Linux for audio
+recording with my Audigy?
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 18:20 
+ jcdutton - 06-30-06 18:22 
 ----------------------------------------------------------------------
-Are there any method to remove those "3D Control" from capture view of
-alsamixer 1.0.12rc1 ?
+Known problem. The problem is due to the way sound is routed. This has been
+fixed for one creative sound card so far. I will upload a patch to try
+when I get a moment.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-03-30-06 13:29 Raymond        Note Edited: 0009033                         
-03-30-06 13:41 Raymond        Note Edited: 0009033                         
-03-31-06 04:36 Raymond        Note Added: 0009041                          
-03-31-06 04:50 Raymond        Note Edited: 0009041                         
-04-01-06 01:13 Raymond        Note Edited: 0009033                         
-04-03-06 19:08 Raymond        Note Added: 0009103                          
-04-05-06 18:42 Raymond        Note Added: 0009121                          
-04-05-06 18:46 Raymond        Note Edited: 0009121                         
-04-05-06 18:50 Raymond        Note Edited: 0009121                         
-04-06-06 09:11 Raymond        Note Deleted: 0009103                        
-04-06-06 09:44 Raymond        Note Added: 0009124                          
-04-06-06 09:45 Raymond        Note Edited: 0009124                         
-04-07-06 12:05 Raymond        Note Added: 0009136                          
-04-13-06 11:32 Raymond        Note Added: 0009256                          
-04-13-06 20:26 pzad           Note Added: 0009268                          
-04-14-06 06:21 Raymond        Note Added: 0009282                          
-04-14-06 09:55 Raymond        Note Edited: 0009282                         
-06-30-06 18:20 Raymond        Note Added: 0010749                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
+01-26-06 21:52 pzad           Note Added: 0007789                          
+01-26-06 21:55 rlrevell       Note Added: 0007790                          
+01-26-06 22:03 pzad           Note Added: 0007791                          
+01-28-06 23:11 andred         Issue Monitored: andred                      
+06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
+06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
+06-21-06 23:18 snover         Note Added: 0010409                          
+06-21-06 23:19 snover         Issue Monitored: snover                      
+06-21-06 23:19 snover         Note Edited: 0010409                         
+06-30-06 16:32 killrbuckeye   Note Added: 0010739                          
+06-30-06 16:34 pzad           Assigned To              pzad =>             
+06-30-06 18:22 jcdutton       Note Added: 0010750                          
 ======================================================================
 
 
