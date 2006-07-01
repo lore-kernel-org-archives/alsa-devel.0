@@ -1,16 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer
-	code
-Date: Sat, 1 Jul 2006 17:31:12 +0200
-Message-ID: <2ff671717daad5ca5f5cc18ddc38b419@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: OSS driver removal, 2nd round
+Date: Sat, 1 Jul 2006 18:01:23 +0200
+Message-ID: <20060701160123.GB17588@stusta.de>
+References: <20060629192128.GE19712@stusta.de>
+	<44A54D8E.3000002@superbug.co.uk>
+	<20060630163114.GA12874@dspnet.fr.eu.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 940ED243
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B94F723E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 17:31:12 +0200 (MEST)
+	Sat,  1 Jul 2006 18:01:24 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060630163114.GA12874@dspnet.fr.eu.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,74 +24,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Olivier Galibert <galibert@pobox.com>, James Courtier-Dutton <James@superbug.co.uk>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Alan Cox <alan@lxorguk.ukuu.org.uk>, perex@suse.cz, Olaf Hering <olh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jun 30, 2006 at 06:31:14PM +0200, Olivier Galibert wrote:
+> On Fri, Jun 30, 2006 at 05:13:02PM +0100, James Courtier-Dutton wrote:
+> > Adrian Bunk wrote:
+> > >- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
+> > 
+> > As the MAINTAINER of EMU10K1, I am happy for EMU10K1 driver to be 
+> > removed from the kernel.
+> > 
+> > ALSA #1735 is now closed. All the apps the user was trying also support 
+> > ALSA natively now, so OSS is not needed.
+> 
+> Are you joking ?
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
-======================================================================
-Reported By:                zx80user
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1979
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-29-2006 23:03 CEST
-Last Modified:              07-01-2006 17:31 CEST
-======================================================================
-Summary:                    Missing symbols in oss mixer code
-Description: 
-Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
-fails due to missing symbols.
+Besides what was already mentioned in this thread, let me add some 
+points:
+- most Linux applications already support ALSA
+- kernel 2.6.0 with ALSA as default sound system was released in 2003
+- the ALSA developers provide an in-kernel OSS emulation
+- the ALSA developers provide an alternative user space OSS emulation
+- there are many new soundcards without any OSS driver at all [1]
 
+Compatibility is important, and it's nearly always working
+(e.g. "aoss audacity" works for me perfectly).
 
-======================================================================
+There are only few exotic cornercases like ALSA #1735 where a subset of 
+the OSS functionality is not working in the OSS emulation - and I doubt 
+it would be worth putting much effort into fixing such cornercases.
 
-----------------------------------------------------------------------
- Adrian Bunk - 07-01-06 17:20 
-----------------------------------------------------------------------
-Did you complie and install the kernel, and added the module to your kernel
-configuration later?
+>   OG.
 
-In this case, your problem is expected since adding this module requires
-loading the rebuilt snd module or (if ALSA is compiled statically into the
-kernel) booting into the rebuilt kernel.
+cu
+Adrian
 
-----------------------------------------------------------------------
- rlrevell - 07-01-06 17:31 
-----------------------------------------------------------------------
-This is certainly a local issue and not a bug.
+[1] we are talking about the in-kernel OSS drivers, not the
+    commercial OSS
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-29-06 23:03 zx80user       New Issue                                    
-03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
-03-29-06 23:05 zx80user       Note Added: 0009019                          
-03-30-06 10:00 Raymond        Note Added: 0009024                          
-04-01-06 17:20 Raymond        Note Added: 0009056                          
-04-02-06 05:16 Raymond        Note Added: 0009057                          
-04-02-06 05:26 Raymond        Note Edited: 0009057                         
-04-03-06 08:46 Raymond        Note Added: 0009088                          
-06-10-06 14:08 Raymond        Note Deleted: 0009088                        
-06-10-06 14:08 Raymond        Note Deleted: 0009057                        
-06-10-06 14:09 Raymond        Note Deleted: 0009024                        
-06-10-06 14:10 Raymond        Note Deleted: 0009056                        
-07-01-06 17:20 Adrian Bunk    Note Added: 0010762                          
-07-01-06 17:21 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-07-01-06 17:31 rlrevell       Status                   new => closed       
-07-01-06 17:31 rlrevell       Note Added: 0010764                          
-======================================================================
+-- 
 
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 Using Tomcat but need to do more? Need to support web services, security?
