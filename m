@@ -1,18 +1,16 @@
-From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Subject: build failures in asihpi (was: ALSA 1.0.12rc1 release)
-Date: Sun, 2 Jul 2006 01:17:59 +0200
-Message-ID: <20060701231759.GQ24584@neu.nirvana>
-References: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
-Reply-To: ALSA development <alsa-devel@alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play
+	48000Hz via digital out. 44100 is garbled.
+Date: Sun, 2 Jul 2006 01:35:28 +0200
+Message-ID: <a8ed8007e492223f23ad6dbb8aeab872@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1921640774=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from junior.physik.fu-berlin.de (at1-old.physik.fu-berlin.de
-	[160.45.32.86])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89148239
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC2FD17B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 01:18:04 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
+	Sun,  2 Jul 2006 01:35:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,133 +20,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1921640774==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JQ29orswtRjjfiJM"
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
+======================================================================
+Reported By:                WhereIsTheCloud
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2108
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-1-686-smp
+======================================================================
+Date Submitted:             05-09-2006 00:28 CEST
+Last Modified:              07-02-2006 01:35 CEST
+======================================================================
+Summary:                    snd-hda-intel: Can only play 48000Hz via digital
+out.  44100 is garbled.
+Description: 
+Hi all.  I am having trouble getting my computer to play 44100Hz with my 
+digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
+(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
+miniport(?) jacks, and one fiber optical connector.  I use the fiber
+optical 
+connector to connect the motherboard to my reciever.
+
+I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
+Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
+upsampling degrades sound quality.
+
+If I dual boot to MS windows, I can select between 44100, 48000, and 96000
+Hz output, using the realtek drivers.  All work fine and my reciever
+reports getting the correct format, so it is NOT a hardware problem.
+
+I'm not sure if this is a driver issue or a libasound issue.
 
 
---JQ29orswtRjjfiJM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you in advance for your help!
 
-Hi,
+Peter
+======================================================================
 
-On Fri, Jun 23, 2006 at 12:32:34PM +0200, Jaroslav Kysela wrote:
-> Hi,
->=20
-> 	all packages except alsa-oss (no changes) were released. Enjoy!
->=20
-> 						Jaroslav
+----------------------------------------------------------------------
+ tiwai - 06-29-06 18:28 
+----------------------------------------------------------------------
+What happens if you run "aplay -Dspdif 44khz.wav" ?
 
-I'm having troubles compiling this on x86_64 distributions (from
-2.6.10 to 2.6.17 based kernels). The build fails on
-pci/asihpi/hpimod.c (see below). I also had to modify some #include <>
-to #include "" in pci/asihpi/hpi56301.c (dpi56301.h & boot4ka.h)
+We may need to change SPDIF status bits appropriately.  Try iecset program
+to change the rate to 44100, too.
 
-Thanks!
+----------------------------------------------------------------------
+ WhereIsTheCloud - 07-02-06 01:35 
+----------------------------------------------------------------------
+aplay -Dspdif 44khz.wav is the same as the other -D 's.  Output is:
+Playing WAVE '44khz.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+but a 48000 PCM signal is sent to the reciever and sound is messed up.
 
-  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/ali5451/ali5451.o
-  LD [M]  /builddir/alsa-driver-1.0.12rc1/pci/ali5451/snd-ali5451.o
-  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.o
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
-asihpi_playback_hw_params':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:352: warning: cast from=
- pointer to integer of different size
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
-asihpi_playback_copy':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:563: warning: cast from=
- pointer to integer of different size
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
-asihpi_capture_hw_params':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:683: warning: cast from=
- pointer to integer of different size
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
-asihpi_capture_copy':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:876: warning: cast from=
- pointer to integer of different size
-  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.o
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c: In function 'hpi_ioctl=
-':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:255: warning: cast to p=
-ointer from integer of different size
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:260: warning: cast from=
- pointer to integer of different size
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c: In function 'adapter_p=
-robe':
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:461: warning: cast from=
- pointer to integer of different size
-In file included from /builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:5=
-72:
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h: At top level:
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:30: error: initialize=
-r element is not constant
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:30: error: (near init=
-ialization for 'asihpi_pci_tbl[0].driver_data')
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:36: error: initialize=
-r element is not constant
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:36: error: (near init=
-ialization for 'asihpi_pci_tbl[1].driver_data')
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:42: error: initialize=
-r element is not constant
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:42: error: (near init=
-ialization for 'asihpi_pci_tbl[2].driver_data')
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:47: error: initialize=
-r element is not constant
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:47: error: (near init=
-ialization for 'asihpi_pci_tbl[3].driver_data')
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:52: error: initialize=
-r element is not constant
-/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:52: error: (near init=
-ialization for 'asihpi_pci_tbl[4].driver_data')
-make[4]: *** [/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.o] Error 1
-make[3]: *** [/builddir/alsa-driver-1.0.12rc1/pci/asihpi] Error 2
-make[2]: *** [/builddir/alsa-driver-1.0.12rc1/pci] Error 2
-make[1]: *** [_module_/builddir/alsa-driver-1.0.12rc1] Error 2
+iecset with nothing playing:
+Mode: consumer
+Data: audio
+Rate: 44100 Hz
+Copyright: permitted
+Emphasis: none
+Category: general
+Original: 1st generation
+Clock: 1000 ppm
+
+While playing 44khz _OR_ 48khz it shows:
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: permitted
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
+
+Trying "iecset rate 44100", while either wav is playing:
+snd_ctl_elem_write: Operation not permitted
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-09-06 00:28 WhereIsTheCloudNew Issue                                    
+05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
+05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
+05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
+06-08-06 05:33 legoguy        Note Added: 0010108                          
+06-16-06 19:03 tiwai          Note Added: 0010258                          
+06-29-06 18:28 tiwai          Note Added: 0010686                          
+07-02-06 01:35 WhereIsTheCloudNote Added: 0010766                          
+======================================================================
 
 
---=20
-Axel.Thimm at ATrpms.net
-
---JQ29orswtRjjfiJM
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFEpwKnQBVS1GOamfERAu4GAJ9b8LJQUhJBX+mX+VjkDTyPaNHxBQCfY8h6
-eiVhR+XpQsJaPegCdBjWGYY=
-=dLCq
------END PGP SIGNATURE-----
-
---JQ29orswtRjjfiJM--
-
-
---===============1921640774==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1921640774==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1921640774==--
