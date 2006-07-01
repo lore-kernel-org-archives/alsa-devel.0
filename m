@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001918]: No sound when I boot into
 	Linux
-Date: Sat, 1 Jul 2006 03:56:54 +0200
-Message-ID: <37b437802b602b3104df7875777421ac@bugtrack.alsa-project.org>
+Date: Sat, 1 Jul 2006 04:06:05 +0200
+Message-ID: <e271d162a6acdda36e11a7c3938369d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C18081A2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB2B51A2
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 03:56:54 +0200 (MEST)
+	Sat,  1 Jul 2006 04:06:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1918> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           1.0.11
 ======================================================================
 Date Submitted:             03-13-2006 03:04 CET
-Last Modified:              07-01-2006 03:56 CEST
+Last Modified:              07-01-2006 04:06 CEST
 ======================================================================
 Summary:                    No sound when I boot into Linux
 Description: 
@@ -76,6 +78,9 @@ Date Modified  Username       Field                    Change
 06-09-06 18:29 rlrevell       Note Added: 0010141                          
 06-09-06 18:34 rlrevell       Note Added: 0010142                          
 07-01-06 03:56 gordon39       Note Added: 0010755                          
+07-01-06 04:06 rlrevell       Status                   assigned => resolved
+07-01-06 04:06 rlrevell       Fixed in Version          => 1.0.11          
+07-01-06 04:06 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
