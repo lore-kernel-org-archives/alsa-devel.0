@@ -1,16 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002250]: No/Broken Master/PCM volume
-	control
-Date: Sun, 2 Jul 2006 00:51:02 +0200
-Message-ID: <3ff1b570f6c202d1415043c32bdaafe7@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: OSS driver removal, 2nd round
+Date: Sun, 2 Jul 2006 01:12:16 +0200
+Message-ID: <20060701231216.GG17588__42325.9764131673$1151795592$gmane$org@stusta.de>
+References: <20060629192128.GE19712@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D127239
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A9D12239
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 00:51:02 +0200 (MEST)
+	Sun,  2 Jul 2006 01:12:16 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060629192128.GE19712@stusta.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,59 +22,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Johannes Berg <johannes@sipsolutions.net>, perex@suse.cz, Olaf Hering <olh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jun 29, 2006 at 09:21:28PM +0200, Adrian Bunk wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2250> 
-======================================================================
-Reported By:                jengelh
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2250
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SUSE LINUX 10.1 (i586)
-Kernel Version:             
-======================================================================
-Date Submitted:             07-02-2006 00:51 CEST
-Last Modified:              07-02-2006 00:51 CEST
-======================================================================
-Summary:                    No/Broken Master/PCM volume control
-Description: 
-My onboard soundcard does not show any volume control for "Master" in
-`alsamixer` (see attached file). Changing the "PCM" volume also has no
-effect (it is always loud, even when set to 2%), only Mute works.
+> Now that I've sent the first round of actually removing the code for OSS 
+> drivers where ALSA drivers without regressions exist for the same 
+> hardware, it's time for a second round amongst the remaining drivers.
+> 
+> 
+> Removing OSS drivers where ALSA drivers for the same hardware exists has 
+> two reasons:
+> 
+> 1. remove obsolete and mostly unmaintained code
+> 2. get bugs in the ALSA drivers reported that weren't previously
+>    reported due to the possible workaround of using the OSS drivers
+> 
+> 
+> The list below divides the OSS drivers into the following three
+> categories:
+> 1. ALSA drivers for the same hardware
+> 2. ALSA drivers for the same hardware with known problems
+> 3. no ALSA drivers for the same hardware
+> 
+> 
+> My proposed timeline is:
+> - 2.6.18: let the drivers under 1. in the list below depend on
+>           OSS_OBSOLETE_DRIVER
+> - 2.6.20: remove the options depending on OSS_OBSOLETE_DRIVER
+> - 2.6.22: remove the code for the drivers that were depending on
+>           OSS_OBSOLETE_DRIVER from the kernel tree
+>...
+> 2. ALSA drivers for the same hardware with known problems
+> 
+> DMASOUND_PMAC
+> - Olaf Hering regarding regressions in SND_POWERMAC:
+>   Some tumbler models work only after one plug/unplug cycle of
+>   the headphone. early powerbooks report/handle the mute settings
+>   incorrectly. there are likely more bugs.
+>...
 
-$ lspci
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
-AC'97 Sound Controller (rev a0)
-$ lspci -n
-00:02.7 Class 0401: 1039:7012 (rev a0)
-$ cat /etc/SuSE-release 
-SUSE LINUX 10.1 (i586)
-VERSION = 10.1
-$ rpm -q alsa
-alsa-1.0.11-32
+Could anyone tell me whether there are still regressions in ALSA 
+compared to DMASOUND_PMAC, and if yes give me bug numbers in the 
+ALSA BTS so that I can track them?
 
-I believe this is a hardware limitation, though.
-======================================================================
+TIA
+Adrian
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-02-06 00:51 jengelh        New Issue                                    
-07-02-06 00:51 jengelh        File Added: alsamixer-c1.png                    
-07-02-06 00:51 jengelh        Distribution              => SUSE LINUX 10.1
-(i586)
-======================================================================
+-- 
 
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 Using Tomcat but need to do more? Need to support web services, security?
