@@ -1,11 +1,16 @@
-From: John Sullivan <johns@fsf.org>
-Subject: Making firmware licensing info more prominent (Matrix)
-Date: Fri, 30 Jun 2006 13:51:11 -0400
-Message-ID: <87lkre7cs0.fsf@ashbery.wjsullivan.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer
+	code
+Date: Sat, 1 Jul 2006 17:20:08 +0200
+Message-ID: <81573f24e2c718272d0d157c5fc08244@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED96243
+	for <alsa-devel@alsa-project.org>;
+	Sat,  1 Jul 2006 17:20:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,38 +20,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-(I checked the archives and didn't see any obvious discussion of this
-question; apologies if I missed it, I don't usually follow the list.)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
+======================================================================
+Reported By:                zx80user
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              07-01-2006 17:20 CEST
+======================================================================
+Summary:                    Missing symbols in oss mixer code
+Description: 
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
 
-Many of the people using the ALSA matrix are committed to using free
-software, and they consult the matrix in order to find sound devices
-that will be compatible with their systems. It's a great resource for
-that.
 
-But some of the USB devices, while supported by ALSA, require firmware
-that is nonfree in licensing.
+======================================================================
 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Midiman%2FMAudio&card=USB+Midisport+4x4.&chip=Cypress+AN2131XX&module=usb-audio
-is one example.
+----------------------------------------------------------------------
+ zx80user - 03-29-06 23:05 
+----------------------------------------------------------------------
+/ # modprobe snd-pcm-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+WARNING: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see )snd_pcm_oss: Unknown symbol
+snd_mixer_oss_ioctl_card
+FATAL: Error inserting snd_pcm_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-pcm-oss.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+/ # modprobe snd-mixer-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+FATAL: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see dm)
 
-While the licensing information for the module is displayed on this
-page, the licensing information for the firmware and the firmware
-loader is not. It looks like the loader in this case is free software,
-but the firmware is proprietary.
+----------------------------------------------------------------------
+ Adrian Bunk - 07-01-06 17:20 
+----------------------------------------------------------------------
+Did you complie and install the kernel, and added the module to your kernel
+configuration later?
 
-Can this information be made more prominent? I think it would be
-helpful to many of the people using the matrix.
+In this case, your problem is expected since adding this module requires
+loading the rebuilt snd module or (if ALSA is compiled statically into the
+kernel) booting into the rebuilt kernel.
 
---
-John Sullivan
-Free Software Foundation
-Program Administrator        | Phone: (617)542-5942 x23
-51 Franklin Street, 5th Fl.  | Fax:   (617)542-2652
-Boston, MA 02110-1301 USA    | GPG:   AE8600B6
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
+03-30-06 10:00 Raymond        Note Added: 0009024                          
+04-01-06 17:20 Raymond        Note Added: 0009056                          
+04-02-06 05:16 Raymond        Note Added: 0009057                          
+04-02-06 05:26 Raymond        Note Edited: 0009057                         
+04-03-06 08:46 Raymond        Note Added: 0009088                          
+06-10-06 14:08 Raymond        Note Deleted: 0009088                        
+06-10-06 14:08 Raymond        Note Deleted: 0009057                        
+06-10-06 14:09 Raymond        Note Deleted: 0009024                        
+06-10-06 14:10 Raymond        Note Deleted: 0009056                        
+07-01-06 17:20 Adrian Bunk    Note Added: 0010762                          
+======================================================================
+
 
 
 Using Tomcat but need to do more? Need to support web services, security?
