@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops
-	working after a few seconds when used with VoIP softphones
-Date: Sat, 1 Jul 2006 21:55:45 +0200
-Message-ID: <c07ab15cded7c3d2cc4cdc8b85620bf4@bugtrack.alsa-project.org>
+From: Dmitry Torokhov <dtor@insightbb.com>
+Subject: Re: sound connector detection
+Date: Sat, 1 Jul 2006 16:09:58 -0400
+Message-ID: <200607011609.59426.dtor@insightbb.com>
+References: <1151671786.13412.6.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7A6823E
-	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 21:55:45 +0200 (MEST)
+In-Reply-To: <1151671786.13412.6.camel@localhost>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,89 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-input <linux-input@atrey.karlin.mff.cuni.cz>, Richard Purdie <rpurdie@rpsys.net>, alsa-devel@lists.sourceforge.net, Linux Kernel list <linux-kernel@vger.kernel.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 30 June 2006 08:49, Johannes Berg wrote:
+> Hi,
+> 
+> One Apple machines I have with snd-aoa the situation that the alsa
+> driver can detect changes in in/output connector state ("is headphone
+> plugged in" etc.) and currently surfaces it through a read-only alsa
+> mixer element. That isn't really ideal since nothing is prepared to
+> handle such events, hence I provide an additional control that allows an
+> in-kernel toggle from speakers to headphone on headphone plug (and vice
+> versa).
+> 
+> I'd really like to see this handled in userspace (additionally or
+> possibly event instead), since there are complications especially with
+> input (line-in) detection and user preferences of what should happen
+> then. The number of cases can become large, especially when throwing in
+> digital and combo connectors that aren't handled yet.
+> 
+> Now, is it appropriate to create an input device for the state of these
+> things and add new constants like SW_LINEIN_INSERTED,
+> SW_LINEOUT_INSERTED, SW_OPTICALOUT_INSERTED, SW_OPTICALIN_INSERTED and
+> if so, how do I reflect the fact that on some machines optical and
+> analog input/output is mutually exclusive, while on others it isn't?
+> That would probably require another SW_COMBO_IN/OUT set...
+> 
+> Or should I simply stick with (a) read-only mixer control(s), and for
+> the mutually exclusive case create a tristate (none, optical, analog)
+> one? But SW_HEADPHONE_INSERT already exists, so we may want to do this
+> identically on different machines.
+> 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
-======================================================================
-Reported By:                tek01
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1301
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Sarge
-Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
-2.6.8-2
-Resolution:                 fixed
-Fixed in Version:           1.0.11
-======================================================================
-Date Submitted:             08-02-2005 17:16 CEST
-Last Modified:              07-01-2006 21:55 CEST
-======================================================================
-Summary:                    Kernel OSS emulation stops working after a few
-seconds when used with VoIP softphones
-Description: 
-Kernel OSS emulation fails a few seconds after a call is established when
-used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
-process using strace reveals, that the file descriptor of the sound device
-is no longer listed in the readset or writeset when the select() syscall
-returns. Audio Playback using XMMS is working fine using the OSS API
- 
-Also the native OSS driver is working fine with both VoIP phones on the
-same system and kernel.
+Hi Johannes,
 
+I am not too happy with putting this kind of switches into input layer,
+it should be reserved for "real" buttons, ones that user can explicitely
+push or toggle (lid switch is on the edge here but it and sleep button
+are used for similar purposes so it makes sense to have it in input layer
+too). But "cable X connected" kind of events is too much [for input layer,
+there could well be a separate layer for it]. If we go this way we'd have
+to move cable detection code from network to input layer as well ;)
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001300 modprobe goes into D-state when inserti...
-======================================================================
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-01-06 17:22 
-----------------------------------------------------------------------
-Is this issue still present in kernel 2.6.17?
-
-If yes, can you check whether it also occurs when using aoss?
-
-----------------------------------------------------------------------
- tek01 - 07-01-06 21:38 
-----------------------------------------------------------------------
-Just did a short test with Linux 2.6.17.3. Problem seems to be fixed. 
-Thank you!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-05 17:16 tek01          New Issue                                    
-08-02-05 17:16 tek01          Distribution              => Debian Sarge    
-08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
-vanilla 2.6.10 and Debians 2.6.8-2
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-03-05 10:10 perex          Relationship added       related to 0001300  
-08-03-05 10:47 perex          Note Added: 0005614                          
-08-05-05 11:20 tek01          Note Added: 0005664                          
-08-18-05 13:18 perex          Note Added: 0005847                          
-10-31-05 17:44 rlrevell       Note Added: 0006587                          
-11-07-05 13:00 tek01          Note Added: 0006613                          
-11-07-05 13:20 tek01          Note Edited: 0006613                         
-07-01-06 17:22 Adrian Bunk    Note Added: 0010763                          
-07-01-06 21:38 tek01          Note Added: 0010765                          
-07-01-06 21:55 rlrevell       Status                   new => resolved     
-07-01-06 21:55 rlrevell       Fixed in Version          => 1.0.11          
-07-01-06 21:55 rlrevell       Resolution               open => fixed       
-07-01-06 21:55 rlrevell       Assigned To               => rlrevell        
-======================================================================
-
-
+-- 
+Dmitry
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
