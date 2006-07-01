@@ -1,13 +1,15 @@
-From: Dmitry Torokhov <dtor@insightbb.com>
-Subject: Re: sound connector detection
-Date: Sat, 1 Jul 2006 16:09:58 -0400
-Message-ID: <200607011609.59426.dtor@insightbb.com>
-References: <1151671786.13412.6.camel@localhost>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Alsa-OSS so-called 'Duplex-bug'
+Date: Sat, 1 Jul 2006 23:03:18 +0100
+Message-ID: <200607012303.19082.gineera@aspect135.co.uk>
+References: <200606191515.28395.alan@horstmann.fsworld.co.uk>
+	<200606292311.05958.gineera@aspect135.co.uk>
+	<s5hodwb9cdf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1151671786.13412.6.camel@localhost>
+In-Reply-To: <s5hodwb9cdf.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,52 +20,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-input <linux-input@atrey.karlin.mff.cuni.cz>, Richard Purdie <rpurdie@rpsys.net>, alsa-devel@lists.sourceforge.net, Linux Kernel list <linux-kernel@vger.kernel.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 30 June 2006 08:49, Johannes Berg wrote:
-> Hi,
-> 
-> One Apple machines I have with snd-aoa the situation that the alsa
-> driver can detect changes in in/output connector state ("is headphone
-> plugged in" etc.) and currently surfaces it through a read-only alsa
-> mixer element. That isn't really ideal since nothing is prepared to
-> handle such events, hence I provide an additional control that allows an
-> in-kernel toggle from speakers to headphone on headphone plug (and vice
-> versa).
-> 
-> I'd really like to see this handled in userspace (additionally or
-> possibly event instead), since there are complications especially with
-> input (line-in) detection and user preferences of what should happen
-> then. The number of cases can become large, especially when throwing in
-> digital and combo connectors that aren't handled yet.
-> 
-> Now, is it appropriate to create an input device for the state of these
-> things and add new constants like SW_LINEIN_INSERTED,
-> SW_LINEOUT_INSERTED, SW_OPTICALOUT_INSERTED, SW_OPTICALIN_INSERTED and
-> if so, how do I reflect the fact that on some machines optical and
-> analog input/output is mutually exclusive, while on others it isn't?
-> That would probably require another SW_COMBO_IN/OUT set...
-> 
-> Or should I simply stick with (a) read-only mixer control(s), and for
-> the mutually exclusive case create a tristate (none, optical, analog)
-> one? But SW_HEADPHONE_INSERT already exists, so we may want to do this
-> identically on different machines.
-> 
+On Friday 30 June 2006 11:17, you wrote:
+> At Thu, 29 Jun 2006 23:11:05 +0100,
+>
+> Alan Horstmann wrote:
+> > On Tuesday 20 June 2006 10:56, you wrote:
+> > > At Mon, 19 Jun 2006 22:12:57 +0100,
+> > >
+> > > Alan Horstmann wrote:
+> > > > Another alternative would be for ALSA to create at least two devices,
+> > > > one for all playback channels, the other for all capture, eg /dsp0
+> > > > and /adsp0 or something else.  It would then be more like the raws
+> > > > OSS in its behaviour. That would also solve the problems here. 
+> > > > Obviously a full implementation as per attached description would
+> > > > also be fine!
+> > >
+> > > It's easy over aoss.  Having the following
+> > >
+> > > 	pcm.dsp0 {
+> > > 		type asym
+> > > 		playback.pcm "plughw"
+> > > 	}
+> > >
+> > > 	pcm.dsp1 {
+> > > 		type asym
+> > > 		capture.pcm "plughw"
+> > > 	}
+> > >
+> > > would give you /dev/dsp0 for playback and /dev/dsp1 for capture.
+> > > You can replace "plughw" whatever you like, of course.
+> >
+> > I'm not very familiar with these conf files, and have tried for hours to
+> > get this to work.  However, at best
+> > 	aoss audacity
+> > results in
+> > 	ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) playback slave is not
+> > defined ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) capture slave is not
+> > defined
+> >
+> > Have I missed other bits?
+> >
+> > Also, won't using aoss introduce a performance hit?
+>
+> Err, I should have tested before posting.  How about below?
+>
+>  	pcm.dsp0 {
+>  		type asym
+>  		playback.pcm "plughw"
+> 		capture.pcm "null"
+>  	}
+>  	pcm.dsp1 {
+>  		type asym
+> 		playback.pcm "null"
+>  		capture.pcm "plughw"
+>  	}
 
-Hi Johannes,
+Now a different set of errors, interspersed with portaudio errors/warnings....
 
-I am not too happy with putting this kind of switches into input layer,
-it should be reserved for "real" buttons, ones that user can explicitely
-push or toggle (lid switch is on the edge here but it and sleep button
-are used for similar purposes so it makes sense to have it in input layer
-too). But "cable X connected" kind of events is too much [for input layer,
-there could well be a separate layer for it]. If we go this way we'd have
-to move cable detection code from network to input layer as well ;)
+ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM dsp2
+ALSA lib pcm_null.c:347:(snd_pcm_null_open) Cannot open /dev/full: Permission 
+denied
 
--- 
-Dmitry
+ALSA lib pcm_null.c:347:(snd_pcm_null_open) Cannot open /dev/full: Permission 
+denied
+
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer1
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer2
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer3
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer1
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer2
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer3
+
+
+Alan
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
