@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001835]: Patch to add volume control
 	per voice for au88x0
-Date: Sat, 1 Jul 2006 05:31:50 +0200
-Message-ID: <2d8ce38af5965d59a4b994f6e613044b@bugtrack.alsa-project.org>
+Date: Sat, 1 Jul 2006 06:27:38 +0200
+Message-ID: <5d7ba05793f1d39d2e3dd9dbfe354def@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CE9024A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D3B024A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 05:31:50 +0200 (MEST)
+	Sat,  1 Jul 2006 06:27:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-10-2006 03:28 CET
-Last Modified:              07-01-2006 05:31 CEST
+Last Modified:              07-01-2006 06:27 CEST
 ======================================================================
 Summary:                    Patch to add volume control per voice for au88x0
 Description: 
@@ -53,17 +53,46 @@ SNDRV_CTL_ELEM_IFACE_PCM
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-01-06 05:05 
-----------------------------------------------------------------------
-The new version iface_pcm_v2.c support both subdevice and index controls.
-It may/may not work on ymfpci and emu10k1, feed back are welcome
-
-----------------------------------------------------------------------
  rlrevell - 07-01-06 05:31 
 ----------------------------------------------------------------------
 If you want feedback on this, you have to post it to the alsa-devel mailing
 list.  This bug tracker is not the right forum for general development
 discussions.
+
+----------------------------------------------------------------------
+ Raymond - 07-01-06 06:27 
+----------------------------------------------------------------------
+Add "optional true" to ctl_elems will prevent au8830 with stereo codec to
+report wrong error  
+
+
+<confdir:pcm/rear.conf>
+
+AU8830.pcm.rear.0 {
+    @args [ CARD ]
+    @args.CARD {
+        type string
+    }
+    type hooks
+    slave.pcm {
+        type hw
+        card $CARD
+        device 0
+    }
+    hooks.0 {
+        type ctl_elems
+        hook_args [
+            {
+                interface PCM
+                device 0
+                name "Subdevice Playback Volume"
+                optional true
+                index { @func private_pcm_subdevice }
+                value [ -64 -64 8 8 ]
+            }
+        ]
+    }
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +114,7 @@ au88x0_pcm_vol_using_index_control.patch
 07-01-06 05:02 Raymond        File Added: iface_pcm_v2.c                    
 07-01-06 05:05 Raymond        Note Added: 0010757                          
 07-01-06 05:31 rlrevell       Note Added: 0010759                          
+07-01-06 06:27 Raymond        Note Added: 0010760                          
 ======================================================================
 
 
