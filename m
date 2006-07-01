@@ -1,18 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: OSS driver removal, 2nd round
-Date: Sun, 2 Jul 2006 01:12:16 +0200
-Message-ID: <20060701231216.GG17588__42325.9764131673$1151795592$gmane$org@stusta.de>
-References: <20060629192128.GE19712@stusta.de>
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Subject: build failures in asihpi (was: ALSA 1.0.12rc1 release)
+Date: Sun, 2 Jul 2006 01:17:59 +0200
+Message-ID: <20060701231759.GQ24584@neu.nirvana>
+References: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
+Reply-To: ALSA development <alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1921640774=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A9D12239
+Received: from junior.physik.fu-berlin.de (at1-old.physik.fu-berlin.de
+	[160.45.32.86])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89148239
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 01:12:16 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <20060629192128.GE19712@stusta.de>
+	Sun,  2 Jul 2006 01:18:04 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,64 +22,133 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Johannes Berg <johannes@sipsolutions.net>, perex@suse.cz, Olaf Hering <olh@suse.de>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 29, 2006 at 09:21:28PM +0200, Adrian Bunk wrote:
 
-> Now that I've sent the first round of actually removing the code for OSS 
-> drivers where ALSA drivers without regressions exist for the same 
-> hardware, it's time for a second round amongst the remaining drivers.
-> 
-> 
-> Removing OSS drivers where ALSA drivers for the same hardware exists has 
-> two reasons:
-> 
-> 1. remove obsolete and mostly unmaintained code
-> 2. get bugs in the ALSA drivers reported that weren't previously
->    reported due to the possible workaround of using the OSS drivers
-> 
-> 
-> The list below divides the OSS drivers into the following three
-> categories:
-> 1. ALSA drivers for the same hardware
-> 2. ALSA drivers for the same hardware with known problems
-> 3. no ALSA drivers for the same hardware
-> 
-> 
-> My proposed timeline is:
-> - 2.6.18: let the drivers under 1. in the list below depend on
->           OSS_OBSOLETE_DRIVER
-> - 2.6.20: remove the options depending on OSS_OBSOLETE_DRIVER
-> - 2.6.22: remove the code for the drivers that were depending on
->           OSS_OBSOLETE_DRIVER from the kernel tree
->...
-> 2. ALSA drivers for the same hardware with known problems
-> 
-> DMASOUND_PMAC
-> - Olaf Hering regarding regressions in SND_POWERMAC:
->   Some tumbler models work only after one plug/unplug cycle of
->   the headphone. early powerbooks report/handle the mute settings
->   incorrectly. there are likely more bugs.
->...
+--===============1921640774==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JQ29orswtRjjfiJM"
+Content-Disposition: inline
 
-Could anyone tell me whether there are still regressions in ALSA 
-compared to DMASOUND_PMAC, and if yes give me bug numbers in the 
-ALSA BTS so that I can track them?
 
-TIA
-Adrian
+--JQ29orswtRjjfiJM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
+Hi,
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+On Fri, Jun 23, 2006 at 12:32:34PM +0200, Jaroslav Kysela wrote:
+> Hi,
+>=20
+> 	all packages except alsa-oss (no changes) were released. Enjoy!
+>=20
+> 						Jaroslav
 
+I'm having troubles compiling this on x86_64 distributions (from
+2.6.10 to 2.6.17 based kernels). The build fails on
+pci/asihpi/hpimod.c (see below). I also had to modify some #include <>
+to #include "" in pci/asihpi/hpi56301.c (dpi56301.h & boot4ka.h)
+
+Thanks!
+
+  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/ali5451/ali5451.o
+  LD [M]  /builddir/alsa-driver-1.0.12rc1/pci/ali5451/snd-ali5451.o
+  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.o
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
+asihpi_playback_hw_params':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:352: warning: cast from=
+ pointer to integer of different size
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
+asihpi_playback_copy':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:563: warning: cast from=
+ pointer to integer of different size
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
+asihpi_capture_hw_params':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:683: warning: cast from=
+ pointer to integer of different size
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c: In function 'snd_card_=
+asihpi_capture_copy':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/asihpi.c:876: warning: cast from=
+ pointer to integer of different size
+  CC [M]  /builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.o
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c: In function 'hpi_ioctl=
+':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:255: warning: cast to p=
+ointer from integer of different size
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:260: warning: cast from=
+ pointer to integer of different size
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c: In function 'adapter_p=
+robe':
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:461: warning: cast from=
+ pointer to integer of different size
+In file included from /builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.c:5=
+72:
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h: At top level:
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:30: error: initialize=
+r element is not constant
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:30: error: (near init=
+ialization for 'asihpi_pci_tbl[0].driver_data')
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:36: error: initialize=
+r element is not constant
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:36: error: (near init=
+ialization for 'asihpi_pci_tbl[1].driver_data')
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:42: error: initialize=
+r element is not constant
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:42: error: (near init=
+ialization for 'asihpi_pci_tbl[2].driver_data')
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:47: error: initialize=
+r element is not constant
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:47: error: (near init=
+ialization for 'asihpi_pci_tbl[3].driver_data')
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:52: error: initialize=
+r element is not constant
+/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpipcida.h:52: error: (near init=
+ialization for 'asihpi_pci_tbl[4].driver_data')
+make[4]: *** [/builddir/alsa-driver-1.0.12rc1/pci/asihpi/hpimod.o] Error 1
+make[3]: *** [/builddir/alsa-driver-1.0.12rc1/pci/asihpi] Error 2
+make[2]: *** [/builddir/alsa-driver-1.0.12rc1/pci] Error 2
+make[1]: *** [_module_/builddir/alsa-driver-1.0.12rc1] Error 2
+
+
+--=20
+Axel.Thimm at ATrpms.net
+
+--JQ29orswtRjjfiJM
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFEpwKnQBVS1GOamfERAu4GAJ9b8LJQUhJBX+mX+VjkDTyPaNHxBQCfY8h6
+eiVhR+XpQsJaPegCdBjWGYY=
+=dLCq
+-----END PGP SIGNATURE-----
+
+--JQ29orswtRjjfiJM--
+
+
+--===============1921640774==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1921640774==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1921640774==--
