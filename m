@@ -1,15 +1,16 @@
-From: Daniel Schroeder <sec@dschroeder.info>
-Subject: Re: ASUS M2N32 MCP55 HDAudio problems - small solution!
-Date: Sat, 01 Jul 2006 11:36:31 +0200
-Message-ID: <44A6421F.9020307@dschroeder.info>
-References: <44A19885.8020104@dschroeder.info>	<s5hwtb1qp16.wl%tiwai@suse.de>	<44A2F28C.509@dschroeder.info>	<s5h64ikce22.wl%tiwai@suse.de>	<44A41EBF.2040308@dschroeder.info>
-	<s5hpsgr9cra.wl%tiwai@suse.de>
-Reply-To: sec@dschroeder.info
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002189]: No sound on speakers,
+	low volume on the headphones, Packard bell V7900
+Date: Sat, 1 Jul 2006 13:46:05 +0200
+Message-ID: <3eeb26bf36f0cf4349e00db394e5407a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hpsgr9cra.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4FFD248
+	for <alsa-devel@alsa-project.org>;
+	Sat,  1 Jul 2006 13:46:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,441 +20,340 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 29 Jun 2006 20:41:03 +0200,
-> Daniel Schroeder wrote:
->>>> --------------------------
->>>> headphone jack in front: if connected the regular sound isnt muted.
->>>> --------------------------
->>>> speaker test hangs in surround51 configuration:
->>>>
->>>> speaker-test -Dplug:surround51 -c6
->>>>
->>>> speaker-test 1.0.12rc1
->>>>
->>>> Playback device is plug:surround51
->>>> Stream parameters are 48000Hz, S16_LE, 6 channels
->>>> Using 16 octaves of pink noise
->>>> Rate set to 48000Hz (requested 48000Hz)
->>>> Buffer size range from 22 to 5461
->>>> Period size range from 11 to 2730
->>>> Using max buffer size 5460
->>>> Periods = 4
->>>> was set period_size = 1365
->>>> was set buffer_size = 5460
->>>>  0 - Front Left
->>>> ---- hangs forever
->>> That's bad.  Does aplay with 6 channel samples work fine?
->> while true;  do aplay chan-id.wav ; done
->> Playing WAVE 'chan-id.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
->> Channels 6
->>
->>
->> aplay with 6 channel sample works but only front left / front right the
->> other "tracks" in the file are "silent".
->> Output of front left and front right are: front left all speakers to the
->> left. front left/rear left/center with output of channel "front right"
->> all speakers to the right "front right/rear right/subwoofer"
-> 
-> So, it doesn't hang up, right?  Then maybe the buffer/period setting
-> influences on behavior of speaker-test...
-> 
-> 
->>>> ----------------------------
->>>> speaker-test in surround40
->>>>
->>>> front left=sound output rear left;
->>>> front right=sound output rear right;
->>>> rear right=sound output subwoofer
->>>> rear left=sound output center
->>> So the channels are shifted.
->>>
->>> When you play with 2-channel via "aplay foo.wav", do the samples come
->>> from front speakers?
->> aplay 10.wav
->> Playing WAVE 10.wav : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->>
->> sound comes through all speakers, front left/front right/rear left/rear
->> right/center and subwoofer
-> 
-> OK, that's default behavior of the driver.  All left/right are spread
-> to rear and CLFE.
-> 
-> 
->>> As you might have noticed in the kernel message, there is a workaround
->>> for AD1988A rev2 codec.  You can disable it by re-defining
->>> AD1988A_REV2 in patch_analog.c to a bogus value, for example, a patch
->>> like below.  Then try the tests again.
->>>
->>>
->>> Takashi
->>>
->>> diff -r ac7516b5dcb9 pci/hda/patch_analog.c
->>> --- a/pci/hda/patch_analog.c	Thu Jun 29 13:22:29 2006 +0200
->>> +++ b/pci/hda/patch_analog.c	Thu Jun 29 14:58:36 2006 +0200
->>> @@ -1543,7 +1543,8 @@ enum {
->>>  };
->>>  
->>>  /* reivision id to check workarounds */
->>> -#define AD1988A_REV2		0x100200
->>> +// #define AD1988A_REV2		0x100200
->>> +#define AD1988A_REV2		0xabcd1234 /* bogus */
->>>  
->>>  
->>>  /*
->> i have patched the file patch_analog.c recompiled and loaded the module.
->> same bad behaviour. Im sure that he has taken the new module because the
->> dmesg output is missing.
->>
->> ----
->>
->> have you any clues of what i could do? This stuff is a bit mysterious
->> for me. Why does he play a stereo wav file to all speakers. And why does
->> he plays only two channels of the surround file (chan-id.wav) and these
->> two channels getting splitted to every left speaker / every right speaker...
-> (snip)
->> now the missing audio channel is there and it seems to me that this
->> movie is fully working in surround!
->> This bogus patch seems to work :)
-> 
-> It disables the workaround for AD1988A rev2.  According to AD, this
-> codec revision has a h/w bug, so I implemented the workaround as they
-> suggested.
-> 
-> Could you attach the content of /proc/asound/card0/codec#* files?
-> Is it really AD1988A, not AD1988B?
-> 
-> 
-> Takashi
 
-It is a AD1988B
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
+======================================================================
+Reported By:                bettored
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2189
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15-23-386
+======================================================================
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              07-01-2006 13:46 CEST
+======================================================================
+Summary:                    No sound on speakers, low volume on the headphones,
+Packard bell V7900
+Description: 
+Hi,
+I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
+hda-intel, with problems.
+I have no sound on speakers and very low on the headphones.
+In the alsamixer all is on.
+Recently i actualized to Alsa 1.0.11 but with same problem.
 
-small summary:
+In the Volumen Control, i have two:
+1. HDA intel (alsa mixer)
+2. Realtek ALC260 (oss mixer)
+And it is correct.
 
- - out of the box 1.0.12_rc1 recognize my chip as a AD1988A rev.2 ->
-seems to be wrong.
+Here leave same test:
 
- - with the "bogus patch" mplayer is working.
 
- -  Speaker-Test and aplay are "buggy" or not working as i would expect...
+janek@janek-laptop:~$ lsmod | grep snd
+snd_hda_intel          19348  2
+snd_hda_codec         143152  1 snd_hda_intel
+snd_pcm_oss            43936  0
+snd_mixer_oss          18944  2 snd_pcm_oss
+snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25348  1 snd_pcm
+snd                    55396  8
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
+soundcore              10208  2 snd
+snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
 
- - hp jack does not mute the other speakers
+--------------------------------------------------------------------------------
 
- - normal amarok output is a kind of too center/lfe centric (the winamp
-output under windows has a much better sound)
+janek@janek-laptop:~$ lspci
+0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
+(rev 03)
+0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
+Port (rev 03)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 1 (rev 02)
+0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 2 (rev 02)
+0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 3 (rev 02)
+0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 4 (rev 02)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 02)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 02)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 02)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 02)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 02)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
+e2)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 02)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 02)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
+device 71c5
+0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
+(rev 02)
+0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
+(rev 02)
+0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
+0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
+(rev 01)
+0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
+(rev 02)
 
- - i miss a "rear" volume slider in kmix
 
-cat /proc/asound/card0/codec#0
-Codec: Analog Devices AD1988B
-Address: 0
-Vendor Id: 0x11d4198b
-Subsystem Id: 0x104381f6
-Revision Id: 0x100200
-Default PCM: rates 0x7ff, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x7e0, bits 0x0e, types 0x5
-  Connection: 1
-     0x1d
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x27 0x27]
-  Power: 0x0
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x24 0x24]
-  Power: 0x0
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x10 0x0c]
-  Power: 0x0
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x10 0x10]
-  Power: 0x0
-Node 0x07 [Audio Input] wcaps 0x130391: Stereo Digital
-  PCM: rates 0x7e0, bits 0x0e, types 0x5
-  Connection: 1
-     0x1c
-Node 0x08 [Audio Input] wcaps 0x100501: Stereo
-  Power: 0x0
-  Connection: 1
-     0x0c
-Node 0x09 [Audio Input] wcaps 0x100501: Stereo
-  Power: 0x0
-  Connection: 1
-     0x0d
-Node 0x0a [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x14 0x14]
-  Power: 0x0
-Node 0x0b [Audio Selector] wcaps 0x300301: Stereo Digital
-  Connection: 3
-     0x08* 0x09 0x0f
-Node 0x0c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
-  Amp-Out vals:  [0xa7 0xa7]
-  Connection: 10
-     0x38 0x39* 0x3a 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20
-Node 0x0d [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
-  Amp-Out vals:  [0xa7 0xa7]
-  Connection: 10
-     0x38 0x39* 0x3a 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20
-Node 0x0e [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
-  Amp-Out vals:  [0xa7 0xa7]
-  Connection: 10
-     0x38 0x39* 0x3a 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20
-Node 0x0f [Audio Input] wcaps 0x100501: Stereo
-  Power: 0x0
-  Connection: 1
-     0x0e
-Node 0x10 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x00]
-Node 0x11 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x08373f: IN OUT HP Detect
-  Pin Default 0x02214130: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x22
-Node 0x12 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x081373f: IN OUT HP EAPD Detect
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x29
-Node 0x13 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x511711f0: [N/A] Speaker at Int Rear
-    Conn = Analog, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x2d
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08373f: IN OUT HP Detect
-  Pin Default 0x02a19122: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x2b
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0813737: IN OUT EAPD Detect
-  Pin Default 0x01813021: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x2c
-Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x083737: IN OUT Detect
-  Pin Default 0x01011012: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x2a
-Node 0x17 [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x083737: IN OUT Detect
-  Pin Default 0x01a19020: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x26
-Node 0x18 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x9933112e: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Black
-  Pin-ctls: 0x20: IN
-Node 0x19 [Power Widget] wcaps 0x500500: Mono
-  Power: 0x0
-  Connection: 2
-     0x20* 0x21
-Node 0x1a [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x99f301f0: [Fixed] Other at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x1b [Pin Complex] wcaps 0x40030d: Stereo Digital Amp-Out
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x27 0x27]
-  Pincap 0x0810: OUT
-  Pin Default 0x0145f1f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x1c [Pin Complex] wcaps 0x40020b: Stereo Digital Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:
-  Pincap 0x0820: IN
-  Pin Default 0x41c5f1f0: [N/A] SPDIF In at Ext Rear
-    Conn = Optical, Color = Other
-  Pin-ctls: 0x20: IN
-Node 0x1d [Audio Mixer] wcaps 0x200303: Stereo Digital Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x01 0x0b
-Node 0x1e [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x36 0x21
-Node 0x1f [Volume Knob Widget] wcaps 0x600080: Mono
-Node 0x20 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 8
-     0x39 0x33 0x38 0x3d 0x34 0x3b 0x18 0x1a
-Node 0x21 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Connection: 1
-     0x20
-Node 0x22 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x37 0x21
-Node 0x23 [Vendor Defined Widget] wcaps 0xf00100: Mono
-  Connection: 18
-     0x11* 0x12 0x13 0x14 0x15 0x16 0x17 0x18 0x24 0x25 0x38 0x39 0x3a
-0x3b 0x3c 0x3d 0x20 0x21
-Node 0x24 [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x01016011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x27
-Node 0x25 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x01012013: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x28
-Node 0x26 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x32 0x21
-Node 0x27 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x05 0x21
-Node 0x28 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x0a 0x21
-Node 0x29 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x04 0x21
-Node 0x2a [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x06 0x21
-Node 0x2b [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x30 0x21
-Node 0x2c [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x31 0x21
-Node 0x2d [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x1e
-Node 0x2e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x2f [Vendor Defined Widget] wcaps 0xf00100: Mono
-  Connection: 6
-     0x11* 0x12 0x14 0x15 0x16 0x17
-Node 0x30 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x03* 0x04 0x06
-Node 0x31 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x0a
-Node 0x32 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x04
-Node 0x33 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x3a* 0x25 0x24
-Node 0x34 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x3c* 0x25 0x24
-Node 0x35 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x36 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x03 0x04* 0x06
-Node 0x37 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x03 0x04* 0x06
-Node 0x38 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x11
-Node 0x39 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x14
-Node 0x3a [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x15
-Node 0x3b [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x16
-Node 0x3c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x17
-Node 0x3d [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x12
+-------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ modinfo soundcore
+filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
+depends:
+srcversion:     DD426F1CCA2CC5F060F6F92
+
+
+---------------------------------------------------------------------------
+
+
+Thanks for your time 
+
+
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ bonobo - 06-25-06 21:37 
+----------------------------------------------------------------------
+lspci -nv :
+
+0000:00:00.0 0600: 8086:27a0 (rev 03)
+	Subsystem: 1631:c017
+	Flags: bus master, fast devsel, latency 0
+	Capabilities: [e0] #09 [5109]
+
+0000:00:01.0 0604: 8086:27a1 (rev 03)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	I/O behind bridge: 00006000-00006fff
+	Memory behind bridge: 5c200000-5c2fffff
+	Prefetchable memory behind bridge: 0000000048000000-000000004ff00000
+	Capabilities: [88] #0d [0000]
+	Capabilities: [80] Power Management version 2
+	Capabilities: [90] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable+
+	Capabilities: [a0] #10 [0141]
+
+0000:00:1b.0 0403: 8086:27d8 (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, fast devsel, latency 0, IRQ 58
+	Memory at 5c300000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+	Capabilities: [70] #10 [0091]
+
+0000:00:1c.0 0604: 8086:27d0 (rev 02)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+	I/O behind bridge: 00005000-00005fff
+	Memory behind bridge: 5b200000-5c1fffff
+	Prefetchable memory behind bridge: 0000000054100000-0000000055000000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1c.1 0604: 8086:27d2 (rev 02)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
+	I/O behind bridge: 00004000-00004fff
+	Memory behind bridge: 5a100000-5b1fffff
+	Prefetchable memory behind bridge: 0000000055100000-0000000056000000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1c.2 0604: 8086:27d4 (rev 02)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
+	I/O behind bridge: 00003000-00003fff
+	Memory behind bridge: 59100000-5a0fffff
+	Prefetchable memory behind bridge: 0000000056100000-0000000057000000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1c.3 0604: 8086:27d6 (rev 02)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
+	I/O behind bridge: 00002000-00002fff
+	Memory behind bridge: 58100000-590fffff
+	Prefetchable memory behind bridge: 0000000057100000-0000000058000000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1d.0 0c03: 8086:27c8 (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 169
+	I/O ports at 7080 [size=32]
+
+0000:00:1d.1 0c03: 8086:27c9 (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 177
+	I/O ports at 7060 [size=32]
+
+0000:00:1d.2 0c03: 8086:27ca (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 185
+	I/O ports at 7040 [size=32]
+
+0000:00:1d.3 0c03: 8086:27cb (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 193
+	I/O ports at 7020 [size=32]
+
+0000:00:1d.7 0c03: 8086:27cc (rev 02) (prog-if 20)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 169
+	Memory at 5c304000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [58] #0a [20a0]
+
+0000:00:1e.0 0604: 8086:2448 (rev e2) (prog-if 01)
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=06, subordinate=07, sec-latency=32
+	I/O behind bridge: 00001000-00001fff
+	Memory behind bridge: 52000000-540fffff
+	Prefetchable memory behind bridge: 0000000050000000-0000000051f00000
+	Capabilities: [50] #0d [0000]
+
+0000:00:1f.0 0601: 8086:27b9 (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0
+	Capabilities: [e0] #09 [100c]
+
+0000:00:1f.1 0101: 8086:27df (rev 02) (prog-if 8a [Master SecP PriP])
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 0, IRQ 169
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at 70a0 [size=16]
+
+0000:00:1f.3 0c05: 8086:27da (rev 02)
+	Subsystem: 1631:c017
+	Flags: medium devsel, IRQ 11
+	I/O ports at 7000 [size=32]
+
+0000:01:00.0 0300: 1002:71c5
+	Subsystem: 1631:c017
+	Flags: bus master, fast devsel, latency 0, IRQ 169
+	Memory at 48000000 (32-bit, prefetchable) [size=128M]
+	I/O ports at 6000 [size=256]
+	Memory at 5c200000 (32-bit, non-prefetchable) [size=64K]
+	Expansion ROM at 5c220000 [disabled] [size=128K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [58] #10 [0011]
+	Capabilities: [80] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+
+0000:03:00.0 0280: 8086:4222 (rev 02)
+	Subsystem: 8086:1001
+	Flags: bus master, fast devsel, latency 0, IRQ 177
+	Memory at 5a100000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [c8] Power Management version 2
+	Capabilities: [d0] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+	Capabilities: [e0] #10 [0011]
+
+0000:06:02.0 0c00: 1217:00f7 (rev 02) (prog-if 10)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 64, IRQ 169
+	Memory at 54003000 (32-bit, non-prefetchable) [size=4K]
+	Memory at 54004000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [60] Power Management version 2
+
+0000:06:02.2 0805: 1217:7120 (rev 01)
+	Subsystem: 1631:c017
+	Flags: slow devsel, IRQ 169
+	Memory at 54004800 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [a0] Power Management version 2
+
+0000:06:02.3 0180: 1217:7130 (rev 01)
+	Subsystem: 1631:c017
+	Flags: slow devsel, IRQ 11
+	Memory at 54001000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [a0] Power Management version 2
+
+0000:06:08.0 0200: 8086:1092 (rev 02)
+	Subsystem: 1631:c017
+	Flags: bus master, medium devsel, latency 64, IRQ 66
+	Memory at 54000000 (32-bit, non-prefetchable) [size=4K]
+	I/O ports at 1200 [size=64]
+	Capabilities: [dc] Power Management version 2
+
+----------------------------------------------------------------------
+ bonobo - 07-01-06 13:46 
+----------------------------------------------------------------------
+I tried the test model with alsa 1.12rc1.
+I can get things to happen by connecting different pins to different
+outputs or inputs in the options tab in gnome mixer but I can get sound in
+the line out only, never in the laptop speakers. Mics seem to work
+allright.
+
+Can someone tell me what is the way to go to find the right combination ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-07-06 19:47 bettored       New Issue                                    
+06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
+06-15-06 20:25 bonobo         Note Added: 0010243                          
+06-15-06 20:32 bonobo         Note Edited: 0010243                         
+06-18-06 23:59 ixM            Note Added: 0010304                          
+06-20-06 19:52 tiwai          Note Added: 0010350                          
+06-21-06 19:02 ixM            Note Added: 0010402                          
+06-21-06 19:16 tiwai          Note Added: 0010403                          
+06-22-06 23:18 urdle          Issue Monitored: urdle                       
+06-25-06 14:02 bonobo         Note Added: 0010507                          
+06-25-06 21:37 bonobo         Note Added: 0010519                          
+07-01-06 13:46 bonobo         Note Added: 0010761                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
