@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops
 	working after a few seconds when used with VoIP softphones
-Date: Sat, 1 Jul 2006 21:38:04 +0200
-Message-ID: <41ebd8d1b71e86443c6d4e46141b3403@bugtrack.alsa-project.org>
+Date: Sat, 1 Jul 2006 21:55:45 +0200
+Message-ID: <c07ab15cded7c3d2cc4cdc8b85620bf4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC34023A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7A6823E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 21:38:04 +0200 (MEST)
+	Sat,  1 Jul 2006 21:55:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,12 +24,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
 ======================================================================
 Reported By:                tek01
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1301
@@ -37,13 +37,15 @@ Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian Sarge
 Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
 2.6.8-2
+Resolution:                 fixed
+Fixed in Version:           1.0.11
 ======================================================================
 Date Submitted:             08-02-2005 17:16 CEST
-Last Modified:              07-01-2006 21:38 CEST
+Last Modified:              07-01-2006 21:55 CEST
 ======================================================================
 Summary:                    Kernel OSS emulation stops working after a few
 seconds when used with VoIP softphones
@@ -94,6 +96,10 @@ vanilla 2.6.10 and Debians 2.6.8-2
 11-07-05 13:20 tek01          Note Edited: 0006613                         
 07-01-06 17:22 Adrian Bunk    Note Added: 0010763                          
 07-01-06 21:38 tek01          Note Added: 0010765                          
+07-01-06 21:55 rlrevell       Status                   new => resolved     
+07-01-06 21:55 rlrevell       Fixed in Version          => 1.0.11          
+07-01-06 21:55 rlrevell       Resolution               open => fixed       
+07-01-06 21:55 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
