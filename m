@@ -1,16 +1,16 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Alsa-OSS so-called 'Duplex-bug'
-Date: Sat, 1 Jul 2006 23:03:18 +0100
-Message-ID: <200607012303.19082.gineera@aspect135.co.uk>
-References: <200606191515.28395.alan@horstmann.fsworld.co.uk>
-	<200606292311.05958.gineera@aspect135.co.uk>
-	<s5hodwb9cdf.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002250]: No/Broken Master/PCM volume
+	control
+Date: Sun, 2 Jul 2006 00:51:02 +0200
+Message-ID: <3ff1b570f6c202d1415043c32bdaafe7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hodwb9cdf.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D127239
+	for <alsa-devel@alsa-project.org>;
+	Sun,  2 Jul 2006 00:51:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,87 +20,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 30 June 2006 11:17, you wrote:
-> At Thu, 29 Jun 2006 23:11:05 +0100,
->
-> Alan Horstmann wrote:
-> > On Tuesday 20 June 2006 10:56, you wrote:
-> > > At Mon, 19 Jun 2006 22:12:57 +0100,
-> > >
-> > > Alan Horstmann wrote:
-> > > > Another alternative would be for ALSA to create at least two devices,
-> > > > one for all playback channels, the other for all capture, eg /dsp0
-> > > > and /adsp0 or something else.  It would then be more like the raws
-> > > > OSS in its behaviour. That would also solve the problems here. 
-> > > > Obviously a full implementation as per attached description would
-> > > > also be fine!
-> > >
-> > > It's easy over aoss.  Having the following
-> > >
-> > > 	pcm.dsp0 {
-> > > 		type asym
-> > > 		playback.pcm "plughw"
-> > > 	}
-> > >
-> > > 	pcm.dsp1 {
-> > > 		type asym
-> > > 		capture.pcm "plughw"
-> > > 	}
-> > >
-> > > would give you /dev/dsp0 for playback and /dev/dsp1 for capture.
-> > > You can replace "plughw" whatever you like, of course.
-> >
-> > I'm not very familiar with these conf files, and have tried for hours to
-> > get this to work.  However, at best
-> > 	aoss audacity
-> > results in
-> > 	ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) playback slave is not
-> > defined ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) capture slave is not
-> > defined
-> >
-> > Have I missed other bits?
-> >
-> > Also, won't using aoss introduce a performance hit?
->
-> Err, I should have tested before posting.  How about below?
->
->  	pcm.dsp0 {
->  		type asym
->  		playback.pcm "plughw"
-> 		capture.pcm "null"
->  	}
->  	pcm.dsp1 {
->  		type asym
-> 		playback.pcm "null"
->  		capture.pcm "plughw"
->  	}
 
-Now a different set of errors, interspersed with portaudio errors/warnings....
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2250> 
+======================================================================
+Reported By:                jengelh
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2250
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               SUSE LINUX 10.1 (i586)
+Kernel Version:             
+======================================================================
+Date Submitted:             07-02-2006 00:51 CEST
+Last Modified:              07-02-2006 00:51 CEST
+======================================================================
+Summary:                    No/Broken Master/PCM volume control
+Description: 
+My onboard soundcard does not show any volume control for "Master" in
+`alsamixer` (see attached file). Changing the "PCM" volume also has no
+effect (it is always loud, even when set to 2%), only Mute works.
 
-ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM dsp2
-ALSA lib pcm_null.c:347:(snd_pcm_null_open) Cannot open /dev/full: Permission 
-denied
+$ lspci
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+AC'97 Sound Controller (rev a0)
+$ lspci -n
+00:02.7 Class 0401: 1039:7012 (rev a0)
+$ cat /etc/SuSE-release 
+SUSE LINUX 10.1 (i586)
+VERSION = 10.1
+$ rpm -q alsa
+alsa-1.0.11-32
 
-ALSA lib pcm_null.c:347:(snd_pcm_null_open) Cannot open /dev/full: Permission 
-denied
+I believe this is a hardware limitation, though.
+======================================================================
 
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer1
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer2
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer3
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer0
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer1
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer2
-ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL mixer3
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-02-06 00:51 jengelh        New Issue                                    
+07-02-06 00:51 jengelh        File Added: alsamixer-c1.png                    
+07-02-06 00:51 jengelh        Distribution              => SUSE LINUX 10.1
+(i586)
+======================================================================
 
-
-Alan
 
 
 Using Tomcat but need to do more? Need to support web services, security?
