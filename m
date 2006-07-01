@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops
-	working after a few seconds when used with VoIP softphones
-Date: Sat, 1 Jul 2006 17:22:59 +0200
-Message-ID: <9ae938400a56f40ecf89e0371b82b93b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer
+	code
+Date: Sat, 1 Jul 2006 17:31:12 +0200
+Message-ID: <2ff671717daad5ca5f5cc18ddc38b419@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DB1B243
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 940ED243
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 17:22:59 +0200 (MEST)
+	Sat,  1 Jul 2006 17:31:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,85 +24,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
 ======================================================================
-Reported By:                tek01
+Reported By:                zx80user
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1301
-Category:                   ISA - ad1816a
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
-2.6.8-2
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-02-2005 17:16 CEST
-Last Modified:              07-01-2006 17:22 CEST
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              07-01-2006 17:31 CEST
 ======================================================================
-Summary:                    Kernel OSS emulation stops working after a few
-seconds when used with VoIP softphones
+Summary:                    Missing symbols in oss mixer code
 Description: 
-Kernel OSS emulation fails a few seconds after a call is established when
-used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
-process using strace reveals, that the file descriptor of the sound device
-is no longer listed in the readset or writeset when the select() syscall
-returns. Audio Playback using XMMS is working fine using the OSS API
- 
-Also the native OSS driver is working fine with both VoIP phones on the
-same system and kernel.
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001300 modprobe goes into D-state when inserti...
-======================================================================
 
 ----------------------------------------------------------------------
- tek01 - 11-07-05 13:20 
+ Adrian Bunk - 07-01-06 17:20 
 ----------------------------------------------------------------------
-Sorry for the long delay. I've been very busy during the last few month.
+Did you complie and install the kernel, and added the module to your kernel
+configuration later?
 
-I did some tests further with Linux 2.6.14 vanilla with preemtion either
-enabled or disabled using the in kernel ALSA, ALSA 1.0.10rc2 and ALSA CVS
-from last Friday.
-The problem is still the same as described in my first report independent
-from preemtion and ALSA version used.
-I also removed the card from my AMD K7@800 and plugged it into an old
-Pentium 133 running a Debian Linux 2.6.8 kernel without any noticable
-difference.
-
-
+In this case, your problem is expected since adding this module requires
+loading the rebuilt snd module or (if ALSA is compiled statically into the
+kernel) booting into the rebuilt kernel.
 
 ----------------------------------------------------------------------
- Adrian Bunk - 07-01-06 17:22 
+ rlrevell - 07-01-06 17:31 
 ----------------------------------------------------------------------
-Is this issue still present in kernel 2.6.17?
-
-If yes, can you check whether it also occurs when using aoss?
+This is certainly a local issue and not a bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 17:16 tek01          New Issue                                    
-08-02-05 17:16 tek01          Distribution              => Debian Sarge    
-08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
-vanilla 2.6.10 and Debians 2.6.8-2
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-03-05 10:10 perex          Relationship added       related to 0001300  
-08-03-05 10:47 perex          Note Added: 0005614                          
-08-05-05 11:20 tek01          Note Added: 0005664                          
-08-18-05 13:18 perex          Note Added: 0005847                          
-10-31-05 17:44 rlrevell       Note Added: 0006587                          
-11-07-05 13:00 tek01          Note Added: 0006613                          
-11-07-05 13:20 tek01          Note Edited: 0006613                         
-07-01-06 17:22 Adrian Bunk    Note Added: 0010763                          
+03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
+03-30-06 10:00 Raymond        Note Added: 0009024                          
+04-01-06 17:20 Raymond        Note Added: 0009056                          
+04-02-06 05:16 Raymond        Note Added: 0009057                          
+04-02-06 05:26 Raymond        Note Edited: 0009057                         
+04-03-06 08:46 Raymond        Note Added: 0009088                          
+06-10-06 14:08 Raymond        Note Deleted: 0009088                        
+06-10-06 14:08 Raymond        Note Deleted: 0009057                        
+06-10-06 14:09 Raymond        Note Deleted: 0009024                        
+06-10-06 14:10 Raymond        Note Deleted: 0009056                        
+07-01-06 17:20 Adrian Bunk    Note Added: 0010762                          
+07-01-06 17:21 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+07-01-06 17:31 rlrevell       Status                   new => closed       
+07-01-06 17:31 rlrevell       Note Added: 0010764                          
 ======================================================================
 
 
