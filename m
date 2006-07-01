@@ -1,20 +1,17 @@
-From: =?utf-8?q?=C4=B0smail_D=C3=B6nmez?= <ismail@pardus.org.tr>
-Subject: Re: OSS driver removal, 2nd round
-Date: Sat, 1 Jul 2006 02:49:03 +0300
-Message-ID: <200607010249.05140.ismail@pardus.org.tr>
-References: <20060629192128.GE19712@stusta.de>
-	<200607010042.15765.ismail@pardus.org.tr>
-	<1151704572.32444.74.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002228]: error recovery when the no of
+	available src is not enough (FATAL: ResManager: resource type
+	1 exhaust)
+Date: Sat, 1 Jul 2006 03:22:14 +0200
+Message-ID: <4fb31ece19e38441838746efe69a2615@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from uludag.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1856F267
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4186517B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 01:49:00 +0200 (MEST)
-In-Reply-To: <1151704572.32444.74.camel@mindpipe>
-Content-Disposition: inline
+	Sat,  1 Jul 2006 03:22:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,30 +21,189 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Olivier Galibert <galibert@pobox.com>, Adrian Bunk <bunk@stusta.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Olaf Hering <olh@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Q3VtYXJ0ZXNpIDEgVGVtbXV6IDIwMDYgMDA6NTYgdGFyaWhpbmRlLCBMZWUgUmV2ZWxsIMWfdW5s
-YXLEsSB5YXptxLHFn3TEsTogCj4gT24gU2F0LCAyMDA2LTA3LTAxIGF0IDAwOjQyICswMzAwLCDE
-sHNtYWlsIETDtm5tZXogd3JvdGU6Cj4gPiBDdW1hcnRlc2kgMSBUZW1tdXogMjAwNiAwMDoyOSB0
-YXJpaGluZGUgxZ91bmxhcsSxIHlhem3EscWfdMSxbsSxejoKPiA+ID4gKEkgd2lzaCB0aGUgYXV0
-aG9ycyBvZiBTa3lwZSwgRmxhc2gsIFRlYW1TcGVhaywgRW5lbXkgVGVycml0b3J5LCBhbmQKPiA+
-ID4gb3RoZXIgcHJvcHJpZXRhcnkgT1NTLW9ubHkgYXBwcyB3b3VsZCB1bmRlcnN0YW5kIHRoaXMg
-Oy0pCj4gPgo+ID4gTmV3IHNreXBlIGJldGEgc3VwcG9ydHMgQWxzYSwgZG9lc24ndCB3b3JrIEFU
-TSBidXQgaXRzIGEgZ3JlYXQgc3RlcCBpbgo+ID4gdGhhdCBkaXJlY3Rpb24gYW5kIEZsYXNoOSBm
-b3IgTGludXggd2lsbCB1c2UgQWxzYS4KPgo+IFJlYWxseT8gIEdvdCBhIGxpbms/ICBMYXN0IEkg
-aGVhcmQgYWJvdXQgRmxhc2ggd2FzIHRoYXQgdGhlaXIgbGF3eWVycwo+IHdvbid0IGxldCB0aGVt
-IGxpbmsgdG8gTEdQTCBsaWJyYXJpZXMgd2hpY2ggd291bGQgcnVsZSBvdXQgQUxTQSBzdXBwb3J0
-LgoKSGVhciBmcm9tIHRoZSBsZWFkIGRldmVsb3BlciBmb3IgRmxhc2ggTGludXggOiAKaHR0cDov
-L2Jsb2dzLmFkb2JlLmNvbS9wZW5ndWluLnN3Zi8yMDA2LzA2L3dlZWtfaW5fcmV2aWV3XzEuaHRt
-bAoKUmVnYXJkcywKaXNtYWlsCgotLSAK5pel5pys44GuYW5pbWXjga/mj7rjgozjgosgCgpVc2lu
-ZyBUb21jYXQgYnV0IG5lZWQgdG8gZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNl
-cywgc2VjdXJpdHk/CkdldCBzdHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0
-ZWNobm9sb2d5IHRvIG1ha2UgeW91ciBqb2IgZWFzaWVyCkRvd25sb2FkIElCTSBXZWJTcGhlcmUg
-QXBwbGljYXRpb24gU2VydmVyIHYuMS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6
-Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcm
-ZGF0PTEyMTY0MgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2228
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-24-2006 05:37 CEST
+Last Modified:              07-01-2006 03:22 CEST
+======================================================================
+Summary:                    error recovery when the no of available src is not
+enough (FATAL: ResManager: resource type 1 exhaust)
+Description: 
+This is simulated by reducing the no of available SRC to 3.
+
+static int __devinit vortex_core_init(vortex_t * vortex)
+{
++        vortex->fixed_res[VORTEX_RESOURCE_SRC] = 0x0000fff8;
+
+
+aplay out1lq.wav   
+Playing WAVE 'out1lq.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Channels 4
+aplay: set_params:962: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 22050
+PERIOD_TIME: (23219 23220)
+PERIOD_SIZE: 512
+PERIOD_BYTES: 4096
+PERIODS: 16
+BUFFER_TIME: (371519 371520)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 65536
+TICK_TIME: 10000
+
+dmesg
+vortex: FATAL: ResManager: resource type 1 exhausted.
+
+aplay outls.wav
+Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+
+dmesg
+vortex_adb_delroutes: route not found! 0x2060
+vortex_adb_delroutes: route not found! 0x2161
+
+It seem that the driver need to check the no of available SRC is enough
+before the SRC are checked out one by one from ResManager, the driver seem
+unable to perform error recovery           
+
+ 
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 06-30-06 03:14 
+----------------------------------------------------------------------
+We still need to reject OSS application (e.g. flash plugin of web browser)
+at snd_vortex_pcm_open() to prevent fatal condition (e.g.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047 and
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343 ) when resources is
+not enough
+
+
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	
+...
+
+	/* PLAYBACK ROUTES. */
+	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
+
+...
+
+		/* Get SRC and MIXER hardware resources. */
+		if (stream->type != VORTEX_PCM_SPDIF) {
+			if ( en ) {
+	                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+				    ( vortex->avail_res[VORTEX_RESOURCE_MIXIN] < nr_ch )) {
+					printk(KERN_INFO "vortex : not enough resources\n");	
+					return -EBUSY;
+				}
+			}
+
+...
+
+	/* CAPTURE ROUTES. */
+	} else {
+		int src[2], mix[2];
+		if ( en ) {
+                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+			    ( vortex->avail_res[VORTEX_RESOURCE_MIXOUT] < nr_ch )) {
+				printk(KERN_INFO "vortex : not enough resources\n");	
+				return -EBUSY;
+			}
+		}
+
+----------------------------------------------------------------------
+ Raymond - 07-01-06 03:22 
+----------------------------------------------------------------------
+Since resource DMA is still leaked, this seem better but need to perform
+stress test to see if there is any side efffect on
+snd_pcm_vortex_hw_free() 
+
+
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
+
+	if (dma >= 0) {
+		en = 0;
+		vortex_adb_checkinout(vortex,
+				      vortex->dma_adb[dma].resources, en,
+				      VORTEX_RESOURCE_DMA);
+	} else {
+		en = 1;
+		if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
+			if (type != VORTEX_PCM_SPDIF) {
+	                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+				    ( vortex->avail_res[VORTEX_RESOURCE_MIXIN] < nr_ch )) {
+					printk(KERN_INFO "vortex : not enough resources\n");	
+					return -EBUSY;
+				}
+			}
+		}
+		else {
+                        if (( vortex->avail_res[VORTEX_RESOURCE_SRC] <
+nr_ch ) ||
+			    ( vortex->avail_res[VORTEX_RESOURCE_MIXOUT] < nr_ch )) {
+				printk(KERN_INFO "vortex : not enough resources\n");	
+				return -EBUSY;
+			}
+		}
+		if ((dma =
+		     vortex_adb_checkinout(vortex, NULL, en,
+					   VORTEX_RESOURCE_DMA)) < 0)
+			return -EBUSY;
+	}
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-24-06 05:37 Raymond        New Issue                                    
+06-26-06 14:20 Raymond        Note Added: 0010534                          
+06-30-06 02:32 Raymond        Note Added: 0010712                          
+06-30-06 02:51 Raymond        Note Added: 0010713                          
+06-30-06 03:14 Raymond        Note Added: 0010714                          
+07-01-06 03:22 Raymond        Note Added: 0010754                          
+======================================================================
+
+
+
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
