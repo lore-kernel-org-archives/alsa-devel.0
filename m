@@ -1,16 +1,25 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001835]: Patch to add volume control
-	per voice for au88x0
-Date: Sat, 1 Jul 2006 06:27:38 +0200
-Message-ID: <5d7ba05793f1d39d2e3dd9dbfe354def@bugtrack.alsa-project.org>
+From: "Content-filter at perseus.trampi.mpi.it" <postmaster@perseus.trampi.mpi.it>
+Subject: VIRUS (Win32/MyDoom.O!Worm): IN UNA E-MAIL DA LEI
+	INVIATA
+Date: Sat,  1 Jul 2006 08:25:45 +0200 (CEST)
+Message-ID: <VS21798-06@perseus.trampi.mpi.it>
+References: <20060701062512.DA40E1292D8@mx2.istruzione.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1511643499=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D3B024A
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F5CC24D
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Jul 2006 06:27:38 +0200 (MEST)
+	Sat,  1 Jul 2006 08:25:46 +0200 (MEST)
+Received: from mx2.istruzione.it (unknown [193.206.15.105])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	BB6D69948F for <alsa-devel@alsa-project.org>;
+	Sat,  1 Jul 2006 08:25:45 +0200 (MEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mx2.istruzione.it (Mail Service) with ESMTP id 11246129544
+	for <alsa-devel@alsa-project.org>;
+	Sat,  1 Jul 2006 08:25:45 +0200 (CEST)
+In-Reply-To: <20060701062512.DA40E1292D8@mx2.istruzione.it>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,103 +32,110 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1835
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-10-2006 03:28 CET
-Last Modified:              07-01-2006 06:27 CEST
-======================================================================
-Summary:                    Patch to add volume control per voice for au88x0
-Description: 
-As the proposed API "PCM volume control per snd_pcm_open()" have not been
-finalised, I upload the program ( a workaround tool instead of demo ) to
-test the new feature "Volume control per voice" for au88x0 using
-SNDRV_CTL_ELEM_IFACE_PCM
-======================================================================
+--===============1511643499==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="----------=_1151735145-21798-5"
 
-----------------------------------------------------------------------
- rlrevell - 07-01-06 05:31 
-----------------------------------------------------------------------
-If you want feedback on this, you have to post it to the alsa-devel mailing
-list.  This bug tracker is not the right forum for general development
-discussions.
+This is a multi-part message in MIME format...
 
-----------------------------------------------------------------------
- Raymond - 07-01-06 06:27 
-----------------------------------------------------------------------
-Add "optional true" to ctl_elems will prevent au8830 with stereo codec to
-report wrong error  
+------------=_1151735145-21798-5
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
+VIRUS ALERT
 
-<confdir:pcm/rear.conf>
+Il sistema di scansione ha rilevato un problema
+in una email presumibilmente inviate da Lei
+-> (<alsa-devel@alsa-project.org>),
+per il seguente destinatario:
+-> rcmm02100v@istruzione.it
 
-AU8830.pcm.rear.0 {
-    @args [ CARD ]
-    @args.CARD {
-        type string
-    }
-    type hooks
-    slave.pcm {
-        type hw
-        card $CARD
-        device 0
-    }
-    hooks.0 {
-        type ctl_elems
-        hook_args [
-            {
-                interface PCM
-                device 0
-                name "Subdevice Playback Volume"
-                optional true
-                index { @func private_pcm_subdevice }
-                value [ -64 -64 8 8 ]
-            }
-        ]
-    }
-}
+La consegna del messaggio non e' potuta avvenire
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-10-06 03:28 Raymond        New Issue                                    
-02-10-06 03:30 Raymond        File Added: iface_pcm.c                      
-02-11-06 11:19 Raymond        Note Added: 0008014                          
-02-13-06 16:07 Raymond        Note Added: 0008053                          
-02-22-06 08:59 Raymond        File Added:
-vol_ctrl_per_voice_testing_using_aplay.patch                    
-02-22-06 09:57 Raymond        Note Added: 0008156                          
-03-29-06 16:15 Raymond        File Added:
-au88x0_pcm_vol_using_index_control.patch                    
-03-29-06 17:44 Raymond        Note Added: 0008994                          
-04-07-06 03:21 ponchick       Note Added: 0009132                          
-04-07-06 03:57 Raymond        Note Added: 0009133                          
-04-11-06 07:32 Raymond        Note Added: 0009228                          
-04-20-06 06:04 Raymond        Note Added: 0009365                          
-07-01-06 05:02 Raymond        File Added: iface_pcm_v2.c                    
-07-01-06 05:05 Raymond        Note Added: 0010757                          
-07-01-06 05:31 rlrevell       Note Added: 0010759                          
-07-01-06 06:27 Raymond        Note Added: 0010760                          
-======================================================================
+Di seguito i riferimenti della e-Mail inviata:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <alsa-devel@alsa-project.org>
+Received: from alsa-project.org (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
+	by mx2.istruzione.it (Mail Service) with ESMTP id DA40E1292D8
+	for <rcmm02100v@istruzione.it>; Sat,  1 Jul 2006 08:25:12 +0200 (CEST)
+From: alsa-devel@alsa-project.org
+To: rcmm02100v@istruzione.it
+Subject: Delivery reports about your e-mail
+Date: Sat, 1 Jul 2006 08:24:40 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0012_0D021E89.3566A7BC"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20060701062512.DA40E1292D8@mx2.istruzione.it>
+-------------------------- END HEADERS ------------------------------
+
+------------=_1151735145-21798-5
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
+
+Reporting-MTA: dns; perseus.trampi.mpi.it
+Received-From-MTA: smtp; mx2.istruzione.it ([127.0.0.1])
+Arrival-Date: Sat,  1 Jul 2006 08:25:43 +0200 (CEST)
+
+Final-Recipient: rfc822; rcmm02100v@istruzione.it
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=21798-06 - VIRUS:
+	Win32/MyDoom.O!Worm
+Last-Attempt-Date: Sat,  1 Jul 2006 08:25:45 +0200 (CEST)
+
+------------=_1151735145-21798-5
+Content-Type: text/rfc822-headers
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Description: Undelivered-message headers
+
+Received: from alsa-project.org (host102-119-static.119-81-b.business.telecomitalia.it [81.119.119.102])
+	by mx2.istruzione.it (Mail Service) with ESMTP id DA40E1292D8
+	for <rcmm02100v@istruzione.it>; Sat,  1 Jul 2006 08:25:12 +0200 (CEST)
+From: alsa-devel@alsa-project.org
+To: rcmm02100v@istruzione.it
+Subject: Delivery reports about your e-mail
+Date: Sat, 1 Jul 2006 08:24:40 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0012_0D021E89.3566A7BC"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20060701062512.DA40E1292D8@mx2.istruzione.it>
+
+------------=_1151735145-21798-5--
 
 
+--===============1511643499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1511643499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1511643499==--
