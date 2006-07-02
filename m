@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sun, 2 Jul 2006 11:19:20 +0200
-Message-ID: <b8adbdda8e62c66c9aec0f05160f8f18@bugtrack.alsa-project.org>
+From: Richard Purdie <rpurdie@rpsys.net>
+Subject: Re: sound connector detection
+Date: Sun, 02 Jul 2006 10:28:30 +0100
+Message-ID: <1151832510.5536.32.camel@localhost.localdomain>
+References: <1151671786.13412.6.camel@localhost>
+	<200607011609.59426.dtor@insightbb.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6FA2197
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 11:19:20 +0200 (MEST)
+In-Reply-To: <200607011609.59426.dtor@insightbb.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,137 +18,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Dmitry Torokhov <dtor@insightbb.com>
+Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, Linux Kernel list <linux-kernel@vger.kernel.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, linux-input <linux-input@atrey.karlin.mff.cuni.cz>, Johannes Berg <johannes@sipsolutions.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
-======================================================================
-Reported By:                Cimmo
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 11:19 CEST
-======================================================================
-Summary:                    Alsa mixer lack of some functions
-Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+On Sat, 2006-07-01 at 16:09 -0400, Dmitry Torokhov wrote:
+> I am not too happy with putting this kind of switches into input layer,
+> it should be reserved for "real" buttons, ones that user can explicitely
+> push or toggle 
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+Playing devil's advocate, by inserting a headphone cable, you push the
+switch - the user can explicitly control that switch but inserting or
+removing the cable...
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+> (lid switch is on the edge here but it and sleep button
+> are used for similar purposes so it makes sense to have it in input layer
+> too). But "cable X connected" kind of events is too much [for input layer,
+> there could well be a separate layer for it]. If we go this way we'd have
+> to move cable detection code from network to input layer as well ;)
 
-thanx for attention
-Marco
-======================================================================
+I have mixed feelings about this and can see it from both sides. In a
+lot of cases, we need to report these "switch" events to userspace as
+only userspace can determine the correct action. Taking some examples,
+just from the Zaurus:
 
-----------------------------------------------------------------------
- Raymond - 07-02-06 05:13 
-----------------------------------------------------------------------
-Cimmo,
+Upon lid closure should:
+  - the screen/backlight be turned off?
+  - the device suspended?
 
->> I have no asound.state file in etc
+Upon insertion of a headphone jack should:
+  - the external speaker be turned on/off?
+  - does the jack connect to headphones, a headset, mic or line in
+source? (no autodetection so the user has to select and only then can
+the mixer be appropriately configured)
 
-alsactl -f test.state store
+Only userspace can make these decisions so we need to pass them there so
+it can decide how to handle things. In the case of the Zaurus, we have a
+program called zaurusd which listens for the events and knows how to
+handle them (http://svn.o-hand.com/view/misc/trunk/zaurusd/). It turns
+these events into something the user can influence with scripts.
 
-post the content of test.state
+There is also a question of which USB client to load when  USB client is
+detected - again, this insertion event really needs to be passed to
+userspace for a decision. I've not touched this issue yet and adding
+switch events for client cable detection would probably get frowned
+upon?
 
-and output of amixer
+One thing the input system does well is pass simple switch events to
+userspace though its event devices. Not using the input system for
+switch like events like these is going to result in code duplication.
 
-----------------------------------------------------------------------
- Cimmo - 07-02-06 11:19 
-----------------------------------------------------------------------
-ok this is my test.state :)
+I can understand the concern with not wanting to fill the input
+subsystem with events that have a tenuous relationship to input devices.
+Perhaps the solution is to separate the events layer from the input
+layer and start to allow it to handle more generic events?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-06-28-06 16:36 Cimmo          Note Added: 0010621                          
-06-28-06 17:30 rlrevell       Note Added: 0010623                          
-06-30-06 11:05 Cimmo          Note Added: 0010725                          
-06-30-06 12:06 Cimmo          Note Added: 0010726                          
-06-30-06 12:18 Raymond        Note Added: 0010727                          
-06-30-06 12:24 Cimmo          Note Added: 0010728                          
-06-30-06 13:04 Raymond        Note Added: 0010729                          
-06-30-06 13:07 Raymond        Note Edited: 0010729                         
-06-30-06 13:08 Raymond        Note Edited: 0010729                         
-06-30-06 13:24 Raymond        Note Added: 0010731                          
-06-30-06 13:40 Cimmo          Note Added: 0010732                          
-06-30-06 15:04 Raymond        Note Added: 0010736                          
-06-30-06 16:14 rlrevell       Note Added: 0010737                          
-06-30-06 16:42 Cimmo          Note Added: 0010741                          
-06-30-06 16:50 rlrevell       Note Added: 0010742                          
-06-30-06 17:04 Cimmo          Note Added: 0010743                          
-06-30-06 17:09 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 rlrevell       Note Added: 0010744                          
-06-30-06 17:15 rlrevell       Note Added: 0010745                          
-07-02-06 04:14 Raymond        Note Added: 0010769                          
-07-02-06 04:24 Raymond        Note Edited: 0010769                         
-07-02-06 04:38 Raymond        Note Added: 0010770                          
-07-02-06 05:13 Raymond        Note Added: 0010771                          
-07-02-06 11:19 Cimmo          File Added: test.state                       
-07-02-06 11:19 Cimmo          Note Added: 0010774                          
-======================================================================
+One of the issues is the ownership of the events data. Currently, you
+can't tag a given source of events to a given soundcard. Perhaps each
+soundcard would create a separate events device but we need to think
+about things like this. Some switch events have no real parent (like the
+lid switch on the Zaurus which if anything does belong to the keyboard
+driver). Others like the headphone switch on the zaurus arguably belong
+to the ASoC sound device (not in mainline yet but coming soon).
 
+In the audio case, there is perhaps an argument for some kind of
+scenarios handling where the mixer has some predefined states which get
+activated given certain circumstances. The Zaurus ASoC implementations
+already sort of implement this having controls which set the headphone
+jack mode (headphones, headset, mic, line, off). There is still a need
+to ask userspace what was inserted though which requires some kind of
+event system.
+
+Even if the audio situation improves, it doesn't solve the general event
+case either. Can anyone see a way forward? Would some kind of generic
+event code that any device could add to its sysfs directory work? Could
+such a thing be abstracted from the input system code?
+
+Richard
 
 
 Using Tomcat but need to do more? Need to support web services, security?
