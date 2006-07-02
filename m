@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 12:45:31 +0200
-Message-ID: <475a5ca32c297feff5f347827fbe2611@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 12:58:09 +0200
+Message-ID: <f0385f589f68c688671d81c7b31b201d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 955B1195
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB190195
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 12:45:31 +0200 (MEST)
+	Sun,  2 Jul 2006 12:58:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 12:45 CEST
+Last Modified:              07-02-2006 12:58 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,19 +60,7 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 07-02-06 12:30 
-----------------------------------------------------------------------
-It's very simple:
-changing volume in kmix capture levels (for example line-in or mic) does
-nothing!
-
-This is only from alsa 1.0.11 for me.
-1.0.11 breaks also keytouch amixer plugin :(
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-02-06 12:45 
+ Raymond - 07-02-06 12:50 
 ----------------------------------------------------------------------
 control.20 {
 		comment.access 'read write'
@@ -88,7 +76,8 @@ control.20 {
 	}
 
 AC97 capture source is stereo but ca0106 capture source is mono
-It seem kmix expect 2 values in capture source
+It seem kmix expect 2 values in capture source or hardcode the source name
+(icon) in AC97 order
 
 	control.40 {
 		comment.access 'read write'
@@ -107,6 +96,13 @@ It seem kmix expect 2 values in capture source
 		value.0 Mic
 		value.1 Mic
 	}
+
+
+
+----------------------------------------------------------------------
+ Cimmo - 07-02-06 12:58 
+----------------------------------------------------------------------
+fill it in kmix's bug report :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -190,6 +186,8 @@ Date Modified  Username       Field                    Change
 07-02-06 12:30 Cimmo          Note Edited: 0010779                         
 07-02-06 12:30 Cimmo          Note Edited: 0010779                         
 07-02-06 12:45 Raymond        Note Added: 0010780                          
+07-02-06 12:50 Raymond        Note Edited: 0010780                         
+07-02-06 12:58 Cimmo          Note Added: 0010781                          
 ======================================================================
 
 
