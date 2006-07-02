@@ -1,16 +1,16 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: Re: build failures in asihpi (was: ALSA 1.0.12rc1
-	release)
-Date: Sun, 2 Jul 2006 21:00:58 +1200
-Message-ID: <200607022100.58844.linux@blennerhassett.gen.nz>
-References: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
-	<20060701231759.GQ24584@neu.nirvana>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Sun, 2 Jul 2006 11:19:20 +0200
+Message-ID: <b8adbdda8e62c66c9aec0f05160f8f18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060701231759.GQ24584@neu.nirvana>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6FA2197
+	for <alsa-devel@alsa-project.org>;
+	Sun,  2 Jul 2006 11:19:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,26 +20,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 02 Jul 2006 11:17, Axel Thimm wrote:
-> Hi,
->
-> I'm having troubles compiling this on x86_64 distributions (from
-> 2.6.10 to 2.6.17 based kernels). The build fails on asihpi...
 
-Currently asihpi does not support x86_64.     Sorry.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              07-02-2006 11:19 CEST
+======================================================================
+Summary:                    Alsa mixer lack of some functions
+Description: 
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-The Kconfig for asihpi does say:
-depends on SND && X86 && !X86_64
-(hmm, perhaps the ordinary make system doesn't know about this)
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-Our next HPI release will be the first to support 64 bit, and we expect ALSA 
-support will follow shortly after that.
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
--- Eliot Blennerhassett
-AudioScience Inc.
+thanx for attention
+Marco
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 05:13 
+----------------------------------------------------------------------
+Cimmo,
+
+>> I have no asound.state file in etc
+
+alsactl -f test.state store
+
+post the content of test.state
+
+and output of amixer
+
+----------------------------------------------------------------------
+ Cimmo - 07-02-06 11:19 
+----------------------------------------------------------------------
+ok this is my test.state :)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
+06-28-06 16:36 Cimmo          Note Added: 0010621                          
+06-28-06 17:30 rlrevell       Note Added: 0010623                          
+06-30-06 11:05 Cimmo          Note Added: 0010725                          
+06-30-06 12:06 Cimmo          Note Added: 0010726                          
+06-30-06 12:18 Raymond        Note Added: 0010727                          
+06-30-06 12:24 Cimmo          Note Added: 0010728                          
+06-30-06 13:04 Raymond        Note Added: 0010729                          
+06-30-06 13:07 Raymond        Note Edited: 0010729                         
+06-30-06 13:08 Raymond        Note Edited: 0010729                         
+06-30-06 13:24 Raymond        Note Added: 0010731                          
+06-30-06 13:40 Cimmo          Note Added: 0010732                          
+06-30-06 15:04 Raymond        Note Added: 0010736                          
+06-30-06 16:14 rlrevell       Note Added: 0010737                          
+06-30-06 16:42 Cimmo          Note Added: 0010741                          
+06-30-06 16:50 rlrevell       Note Added: 0010742                          
+06-30-06 17:04 Cimmo          Note Added: 0010743                          
+06-30-06 17:09 Cimmo          Note Edited: 0010743                         
+06-30-06 17:11 Cimmo          Note Edited: 0010743                         
+06-30-06 17:11 rlrevell       Note Added: 0010744                          
+06-30-06 17:15 rlrevell       Note Added: 0010745                          
+07-02-06 04:14 Raymond        Note Added: 0010769                          
+07-02-06 04:24 Raymond        Note Edited: 0010769                         
+07-02-06 04:38 Raymond        Note Added: 0010770                          
+07-02-06 05:13 Raymond        Note Added: 0010771                          
+07-02-06 11:19 Cimmo          File Added: test.state                       
+07-02-06 11:19 Cimmo          Note Added: 0010774                          
+======================================================================
+
 
 
 Using Tomcat but need to do more? Need to support web services, security?
