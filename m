@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 14:05:38 +0200
-Message-ID: <4c2851e2ab587938676280ef13088828@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 14:15:51 +0200
+Message-ID: <94595125911bf001603039b45542be1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EC9313B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1C2119D
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 14:05:38 +0200 (MEST)
+	Sun,  2 Jul 2006 14:15:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 14:05 CEST
+Last Modified:              07-02-2006 14:15 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,15 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 13:04 
-----------------------------------------------------------------------
-cat /proc/asound/card0/oss_mixer
-
-kmix in FC1 still follow oss mixer naming convention.
-
-
-
-----------------------------------------------------------------------
  Raymond - 07-02-06 14:05 
 ----------------------------------------------------------------------
 The simple mixer api is still buggy and can not idenitfy capture source.
@@ -85,6 +76,12 @@ Simple mixer control 'Shared Line in/Side out',0
   Capabilities: enum
   Items: 'Side out' 'Line in'
   Item0: 'Line in'
+
+----------------------------------------------------------------------
+ Cimmo - 07-02-06 14:15 
+----------------------------------------------------------------------
+alsamixer non-capture screenshot was just provided, this is the capture
+part.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,6 +171,9 @@ Date Modified  Username       Field                    Change
 07-02-06 13:04 Raymond        Note Edited: 0010782                         
 07-02-06 13:17 Cimmo          File Added: oss_mixer                        
 07-02-06 14:05 Raymond        Note Added: 0010783                          
+07-02-06 14:15 Cimmo          File Added: alsamixer-capture.png                 
+  
+07-02-06 14:15 Cimmo          Note Added: 0010784                          
 ======================================================================
 
 
