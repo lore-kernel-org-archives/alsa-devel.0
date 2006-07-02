@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002234]: ISA sscape driver does not
 	find Soundscape Elite
-Date: Sun, 2 Jul 2006 01:41:30 +0200
-Message-ID: <47d3e9380a4557818bee3ba414c81190@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 03:19:50 +0200
+Message-ID: <a8a8dffb31db507e2c9f2c3b61aa91ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56DDC23A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE3A323A
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 01:41:30 +0200 (MEST)
+	Sun,  2 Jul 2006 03:19:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.17.1
 ======================================================================
 Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              07-02-2006 01:41 CEST
+Last Modified:              07-02-2006 03:19 CEST
 ======================================================================
 Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
@@ -51,27 +51,19 @@ the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- Adrian Bunk - 06-30-06 22:47 
-----------------------------------------------------------------------
-Chris, since you know best which information you want, could you simply
-attach a modified version of the OSS driver with all the printk's added to
-this bug?
-
-This way, Ted could easily provide all the information you need.
-
-Adding printk's is easy if you are a programmer and know what you want
-printed, but for normal users it's not that trivial.
-
-TIA
-Adrian
-
-----------------------------------------------------------------------
  rankincj - 07-02-06 01:41 
 ----------------------------------------------------------------------
 I've uploaded a hacked version of the OSS sscape.c file, so can anyone with
 a SoundScape Elite card please compile it, load the kernel module and tell
 me what it writes into the "dmesg" log, please? Provided the OSS module
 recognises the hardware and works, of course ;-).
+
+----------------------------------------------------------------------
+ tjallen - 07-02-06 03:19 
+----------------------------------------------------------------------
+I compiled the module and uploaded (all?) the relevant lines from dmesg.
+If you'd like me to, I can do the same for other Soundscape cards besides
+the Elite.  I think I have at least one of the VIVOs somewhere.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +85,8 @@ Date Modified  Username       Field                    Change
 06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
 07-02-06 01:39 rankincj       File Added: sscape.c                         
 07-02-06 01:41 rankincj       Note Added: 0010767                          
+07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
+07-02-06 03:19 tjallen        Note Added: 0010768                          
 ======================================================================
 
 
