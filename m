@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 14:37:49 +0200
-Message-ID: <3d275e6654881f8cc1da71bcfbc01a41@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 14:50:14 +0200
+Message-ID: <a921ec6854f99f741cfe165e8f2e86ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB8F919D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C96F19D
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 14:37:49 +0200 (MEST)
+	Sun,  2 Jul 2006 14:50:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 14:37 CEST
+Last Modified:              07-02-2006 14:50 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,20 +60,56 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 14:25 
-----------------------------------------------------------------------
-Why do the 'Digital Capture Source' appear in Playback view instead of
-Capture view of alsamixer ? May be you need to file another bug report for
-this issue 
-
-Refer to oss_mixer, It is unlikely for you to run any oss application
-which control volume through oss mixer api since "MASTER" control is
-missing.
-
-----------------------------------------------------------------------
  Cimmo - 07-02-06 14:37 
 ----------------------------------------------------------------------
 It's called 'Capture feedback' should stay in capture?
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 14:50 
+----------------------------------------------------------------------
+It is correct to place Capture feedback in playback view
+
+	control.9 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 255'
+		iface MIXER
+		name 'CAPTURE feedback Playback Volume'
+		value.0 219
+		value.1 219
+	}
+
+Please correct me if I am wrong, 'Shared Line in/Side out' and 'Digital
+Capture Source' should be placed in Capture view.
+
+
+
+	control.19 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 'IEC958 out'
+		comment.item.1 'i2s mixer out'
+		comment.item.2 'IEC958 in'
+		comment.item.3 'i2s in'
+		comment.item.4 'AC97 in'
+		comment.item.5 'SRC out'
+		iface MIXER
+		name 'Digital Capture Source'
+		value 'i2s mixer out'
+	}
+
+	control.25 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 'Side out'
+		comment.item.1 'Line in'
+		iface MIXER
+		name 'Shared Line in/Side out Capture Switch'
+		value 'Line in'
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -168,6 +204,7 @@ Date Modified  Username       Field                    Change
 07-02-06 14:15 Cimmo          Note Added: 0010784                          
 07-02-06 14:25 Raymond        Note Added: 0010785                          
 07-02-06 14:37 Cimmo          Note Added: 0010786                          
+07-02-06 14:50 Raymond        Note Added: 0010787                          
 ======================================================================
 
 
