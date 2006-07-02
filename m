@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002252]: alsa-base: MIDI playback on
 	SB Live! 5.1 0220 combine with heavy disk activity = lockup
-Date: Sun, 2 Jul 2006 18:58:08 +0200
-Message-ID: <b3ba0d4b7da36dca4c710c1047bb7d5c@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 19:32:19 +0200
+Message-ID: <2ccfdc1d27406b71eddea572b858b78c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23A1D1A3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA6EE1A7
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 18:58:09 +0200 (MEST)
+	Sun,  2 Jul 2006 19:32:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2252> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-02-2006 18:58 CEST
-Last Modified:              07-02-2006 18:58 CEST
+Last Modified:              07-02-2006 19:32 CEST
 ======================================================================
 Summary:                    alsa-base: MIDI playback on SB Live! 5.1 0220
 combine with heavy disk activity = lockup
@@ -130,10 +130,17 @@ ii  libasound2     1.0.11-7       ALSA library
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 07-02-06 19:32 
+----------------------------------------------------------------------
+Why did you submit a new bug?  You already posted the same information to
+bug #952
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-02-06 18:58 riesebie       New Issue                                    
+07-02-06 19:32 rlrevell       Note Added: 0010793                          
 ======================================================================
 
 
