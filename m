@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 04:14:36 +0200
-Message-ID: <70ae39345753ca9c23659ca4cf4f7ad7@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 04:38:53 +0200
+Message-ID: <1443788e1a7b57245cb51bf9a680d7af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A55423A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8A58100
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 04:14:37 +0200 (MEST)
+	Sun,  2 Jul 2006 04:38:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 04:14 CEST
+Last Modified:              07-02-2006 04:38 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,22 +60,14 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-30-06 17:15 
-----------------------------------------------------------------------
-Re: http://bugs.kde.org/show_bug.cgi?id=125772
-
-I don't really know how to help them, other than telling them to look at
-the alsamixer source.
-
-----------------------------------------------------------------------
- Raymond - 07-02-06 04:14 
+ Raymond - 07-02-06 04:24 
 ----------------------------------------------------------------------
 Refer to KDE bug 
 
 Sound Card: VIA 8235
 Chip: AD1980 
 
-This duplicate of stereo is supported by ad1980 only if the alsa developer
+This duplicate of stereo is supported by ad1980 when the alsa developer
 add patch to add a control to enable this feature.
 
 Miscellaneous Control Registers ( index 76h )
@@ -87,6 +79,52 @@ using the output selector controls line for the center/LFE, surround, and
 Line_out output channels.
 
 It is possible only if ca0106 has this kind of feature
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 04:38 
+----------------------------------------------------------------------
+>> kmix sucks - it's alsa support is terrible. The most common complaint is
+that >> it can't properly distinguish a capture from a playback control.
+Before 
+>> reporting bugs you should try with a "known good" mixer like
+alsamixer.
+
+You can't blame kmix when there is a bug in alsa simple mixer api, even
+amixer report AC97 3D Control are capture controls
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971
+
+amixer
+
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control '3D Control Sigmatel - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 3
+  Mono: 0 [0%]
+Simple mixer control '3D Control Sigmatel - Rear Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 3
+  Mono: 0 [0%]
+
+
+
+It'e easy to write customized applications to handle specific control of
+sound cards using the same chip (e.g envy24control, ...) , but it is
+difficut ot write an USER FRIENDLY mixer application to handle all alsa
+drivers.
+
+alsamixer is actually a debug tool for alsa developer and user to debug
+the ALSA mixer api, it is not USER FRIENDLY. (e.g IEC958 Playback
+AC97-SPSA, I think only a few user know the exact meaning of this control
+)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -155,6 +193,8 @@ Date Modified  Username       Field                    Change
 06-30-06 17:11 rlrevell       Note Added: 0010744                          
 06-30-06 17:15 rlrevell       Note Added: 0010745                          
 07-02-06 04:14 Raymond        Note Added: 0010769                          
+07-02-06 04:24 Raymond        Note Edited: 0010769                         
+07-02-06 04:38 Raymond        Note Added: 0010770                          
 ======================================================================
 
 
