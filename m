@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 12:29:00 +0200
-Message-ID: <b8449a1c87a49e19bff8a396ad70c9de@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 12:45:31 +0200
+Message-ID: <475a5ca32c297feff5f347827fbe2611@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ED9F18E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 955B1195
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 12:29:00 +0200 (MEST)
+	Sun,  2 Jul 2006 12:45:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 12:28 CEST
+Last Modified:              07-02-2006 12:45 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,22 +60,53 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 12:25 
-----------------------------------------------------------------------
-Can you explain more clearly the problem of kmix/alsamixer with ca0106 ?
-
-(e.g. missing digital capture source, .... )
-
-
-
-----------------------------------------------------------------------
- Cimmo - 07-02-06 12:28 
+ Cimmo - 07-02-06 12:30 
 ----------------------------------------------------------------------
 It's very simple:
-changing volume in kmix capture levels (for example line-in or mic)
-doesn't do nothing!
+changing volume in kmix capture levels (for example line-in or mic) does
+nothing!
 
-This is only from alsa 1.0.11 for me
+This is only from alsa 1.0.11 for me.
+1.0.11 breaks also keytouch amixer plugin :(
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 12:45 
+----------------------------------------------------------------------
+control.20 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Phone
+		comment.item.1 Mic
+		comment.item.2 'Line in'
+		comment.item.3 Aux
+		iface MIXER
+		name 'Capture Source'
+		value Mic
+	}
+
+AC97 capture source is stereo but ca0106 capture source is mono
+It seem kmix expect 2 values in capture source
+
+	control.40 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 2
+		comment.item.0 Mic
+		comment.item.1 CD
+		comment.item.2 Video
+		comment.item.3 Aux
+		comment.item.4 Line
+		comment.item.5 Mix
+		comment.item.6 'Mix Mono'
+		comment.item.7 Phone
+		iface MIXER
+		name 'Capture Source'
+		value.0 Mic
+		value.1 Mic
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -155,6 +186,10 @@ Date Modified  Username       Field                    Change
 07-02-06 12:23 Raymond        Note Added: 0010778                          
 07-02-06 12:25 Raymond        Note Edited: 0010778                         
 07-02-06 12:28 Cimmo          Note Added: 0010779                          
+07-02-06 12:29 Cimmo          Note Edited: 0010779                         
+07-02-06 12:30 Cimmo          Note Edited: 0010779                         
+07-02-06 12:30 Cimmo          Note Edited: 0010779                         
+07-02-06 12:45 Raymond        Note Added: 0010780                          
 ======================================================================
 
 
