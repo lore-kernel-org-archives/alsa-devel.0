@@ -1,25 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: OSS driver removal, 2nd round
-Date: Sun, 02 Jul 2006 17:16:18 -0400
-Message-ID: <1151874979.25802.31.camel@mindpipe>
-References: <20060629192128.GE19712@stusta.de>
-	<44A54D8E.3000002@superbug.co.uk>
-	<20060630163114.GA12874@dspnet.fr.eu.org>
-	<1151702966.32444.57.camel@mindpipe>
-	<20060701073133.GA99126@dspnet.fr.eu.org>
-	<44A6279C.3000100@superbug.co.uk> <44A76DDF.4020307@superbug.co.uk>
-	<Pine.LNX.4.61.0607021153220.5276@yvahk01.tjqt.qr>
-	<1151854092.12026.39.camel@mindpipe>
-	<Pine.LNX.4.61.0607022304230.5218@yvahk01.tjqt.qr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
+	9200
+Date: Sun, 2 Jul 2006 23:54:46 +0200
+Message-ID: <3064e29414a7f263ecb43e21ab52b9fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8DDFA1A7
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26CDA21B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 23:16:03 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0607022304230.5218@yvahk01.tjqt.qr>
+	Sun,  2 Jul 2006 23:54:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -29,33 +20,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: alsa-devel@alsa-project.org, Olivier Galibert <galibert@pobox.com>, linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>, Olaf Hering <olh@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, Adrian Bunk <bunk@stusta.de>, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-07-02 at 23:08 +0200, Jan Engelhardt wrote:
-> >> Well you could patch the affected plugin's .dynstr table so that it should at
-> >> best try to call a function that has not yet been defined somewhere else (like
-> >> open); IOW, you change the .dynstr entry from 'open' to say 'my_open', and
-> >> regularly include libmy.so through e.g. LD_PRELOAD.
-> >> 
-> >> Of course the MD5 won't match afterwards, but I think the plugin should execute
-> >> as usual afterwards, since .dynstr is something no app should rely on.
-> >
-> >Is this likely to work with an app like Skype that takes extensive steps
-> >to thwart reverse engineers?
-> 
-> We do not reverse engineer the .text section, but change the .dynstr 
-> section that is specific to the ELF format. I doubt any app out there md5s 
-> itself.
-> 
 
-It's possible.  They certainly try very hard to thwart reverse
-engineers.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+======================================================================
+Reported By:                mini
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2170
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             05-29-2006 12:34 CEST
+Last Modified:              07-02-2006 23:54 CEST
+======================================================================
+Summary:                    No S/PDIF controls on STAC 9200
+Description: 
+I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
+control for it in alsamixer.
+======================================================================
 
-http://www.secdev.org/conf/skype_BHEU06.handout.pdf
+----------------------------------------------------------------------
+ mini - 07-02-06 23:54 
+----------------------------------------------------------------------
+Same effect with 1.0.11...
 
-Lee
+Note that this guy:
+
+http://lkml.org/lkml/2006/3/12/16
+
+*does* have S/PDIF at Node 0x08-0x09... and it seems my pin configs are
+identical... what am I doing wrong?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-29-06 12:34 mini           New Issue                                    
+05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
+05-29-06 12:34 mini           Kernel Version            => 2.6.15          
+07-02-06 23:54 mini           Note Added: 0010795                          
+======================================================================
 
 
 
