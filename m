@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002253]: Intel D945PSNLK : No sound on
-	frontpanel output
-Date: Sun, 2 Jul 2006 19:41:12 +0200
-Message-ID: <cf97449ad34e3a6d59d2ecbc1f95b91c@bugtrack.alsa-project.org>
+From: "Ben (yahoo)" <drycellbattery@yahoo.ca>
+Subject: Maudio Audiophile 192
+Date: Sun, 02 Jul 2006 14:13:29 -0400
+Message-ID: <1151864009.3289.5.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36BA91A8
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 19:41:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,44 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello Alsa devs,
+I've been hoping for an alsa driver for this card which is barely
+supported with the ice1724 driver now but has distorted sound. Since I
+don't use this card much (as I don't use my Windows XP partition very
+much - blue screens...) I'm going to sell it. I'll be putting it on
+toronto.craigslist.com but first I'll see if anyone wants it here. I'm
+selling it for $60 Canadian which is pretty good considering I bought it
+for $200. The only thing "wrong" with it is that I don't have the Reason
+Adapted cd with it anymore - gave it to a friend. Um... if you're
+interested and you're from USA or overseas I may have to add extra for
+shipping costs. This may be helpful for any of you that want to develop
+a driver for this card.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2253> 
-======================================================================
-Reported By:                vogelchr
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2253
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.17.3
-======================================================================
-Date Submitted:             07-02-2006 19:41 CEST
-Last Modified:              07-02-2006 19:41 CEST
-======================================================================
-Summary:                    Intel D945PSNLK : No sound on frontpanel output
-Description: 
-Since upgrading the linux kernel from 2.6.15 to 2.6.17.3 the frontpanel
-output no longer produces sound, back output works.
-======================================================================
+Please email me back if you're interested, sorry to interrupt the normal
+flow of this list.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-02-06 19:41 vogelchr       New Issue                                    
-07-02-06 19:41 vogelchr       Distribution              => Ubuntu          
-07-02-06 19:41 vogelchr       Kernel Version            => 2.6.17.3        
-======================================================================
+Ben
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
