@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 12:59:13 +0200
-Message-ID: <b569fe604a1ddff4b45604b9da858d93@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 14:05:38 +0200
+Message-ID: <4c2851e2ab587938676280ef13088828@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43C7311E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EC9313B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 12:59:13 +0200 (MEST)
+	Sun,  2 Jul 2006 14:05:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 12:59 CEST
+Last Modified:              07-02-2006 14:05 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,14 +60,31 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 07-02-06 12:58 
-----------------------------------------------------------------------
-fill it in kmix's bug report :)
-
-----------------------------------------------------------------------
- Raymond - 07-02-06 12:59 
+ Raymond - 07-02-06 13:04 
 ----------------------------------------------------------------------
 cat /proc/asound/card0/oss_mixer
+
+kmix in FC1 still follow oss mixer naming convention.
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 14:05 
+----------------------------------------------------------------------
+The simple mixer api is still buggy and can not idenitfy capture source.
+
+Does this control appear in capture view of alsamixer ?
+
+
+Simple mixer control 'Digital Capture Source',0
+  Capabilities: enum
+  Items: 'IEC958 out' 'i2s mixer out' 'IEC958 in' 'i2s in' 'AC97 in' 'SRC
+out'
+  Item0: 'i2s mixer out'
+Simple mixer control 'Shared Line in/Side out',0
+  Capabilities: enum
+  Items: 'Side out' 'Line in'
+  Item0: 'Line in'
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -154,6 +171,9 @@ Date Modified  Username       Field                    Change
 07-02-06 12:50 Raymond        Note Edited: 0010780                         
 07-02-06 12:58 Cimmo          Note Added: 0010781                          
 07-02-06 12:59 Raymond        Note Added: 0010782                          
+07-02-06 13:04 Raymond        Note Edited: 0010782                         
+07-02-06 13:17 Cimmo          File Added: oss_mixer                        
+07-02-06 14:05 Raymond        Note Added: 0010783                          
 ======================================================================
 
 
