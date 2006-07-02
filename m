@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 04:38:53 +0200
-Message-ID: <1443788e1a7b57245cb51bf9a680d7af@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 05:13:34 +0200
+Message-ID: <6f43378def104e855d7e4232b01c4c6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8A58100
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 021B3169
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 04:38:53 +0200 (MEST)
+	Sun,  2 Jul 2006 05:13:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 04:38 CEST
+Last Modified:              07-02-2006 05:13 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -58,29 +58,6 @@ with configuration files.
 thanx for attention
 Marco
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-02-06 04:24 
-----------------------------------------------------------------------
-Refer to KDE bug 
-
-Sound Card: VIA 8235
-Chip: AD1980 
-
-This duplicate of stereo is supported by ad1980 when the alsa developer
-add patch to add a control to enable this feature.
-
-Miscellaneous Control Registers ( index 76h )
-
-SPRD
-SPREAD Enable. This bit enables spreading of 2-channel media to all six
-output channels. This function is implemented in the analog section by
-using the output selector controls line for the center/LFE, surround, and
-Line_out output channels.
-
-It is possible only if ca0106 has this kind of feature
-
-
 
 ----------------------------------------------------------------------
  Raymond - 07-02-06 04:38 
@@ -125,6 +102,19 @@ alsamixer is actually a debug tool for alsa developer and user to debug
 the ALSA mixer api, it is not USER FRIENDLY. (e.g IEC958 Playback
 AC97-SPSA, I think only a few user know the exact meaning of this control
 )
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 05:13 
+----------------------------------------------------------------------
+Cimmo,
+
+>> I have no asound.state file in etc
+
+alsactl -f test.state store
+
+post the content of test.state
+
+and output of amixer
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -195,6 +185,7 @@ Date Modified  Username       Field                    Change
 07-02-06 04:14 Raymond        Note Added: 0010769                          
 07-02-06 04:24 Raymond        Note Edited: 0010769                         
 07-02-06 04:38 Raymond        Note Added: 0010770                          
+07-02-06 05:13 Raymond        Note Added: 0010771                          
 ======================================================================
 
 
