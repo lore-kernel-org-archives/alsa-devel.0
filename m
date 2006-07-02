@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002252]: alsa-base: MIDI playback on
 	SB Live! 5.1 0220 combine with heavy disk activity = lockup
-Date: Sun, 2 Jul 2006 20:10:29 +0200
-Message-ID: <10b5dae366111ccf9410c79bb8c4812b@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 20:16:51 +0200
+Message-ID: <15a7791c0d49ea2870cfa071f33023a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1CC01A8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA69D1A8
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 20:10:29 +0200 (MEST)
+	Sun,  2 Jul 2006 20:16:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2252> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   CORE - rawmidi
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-02-2006 18:58 CEST
-Last Modified:              07-02-2006 20:10 CEST
+Last Modified:              07-02-2006 20:16 CEST
 ======================================================================
 Summary:                    alsa-base: MIDI playback on SB Live! 5.1 0220
 combine with heavy disk activity = lockup
@@ -137,12 +139,14 @@ Why did you submit a new bug?  You already posted the same information to
 bug #952
 
 ----------------------------------------------------------------------
- riesebie - 07-02-06 20:10 
+ riesebie - 07-02-06 20:11 
 ----------------------------------------------------------------------
 Sorry, I didn't noticed that the Debian bug submitter added a note to #952.
-So please feeel free to close or merge 2252.
+So please feel free to close or merge 2252.
 
 My appologies ;)
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +154,8 @@ Date Modified  Username       Field                    Change
 07-02-06 18:58 riesebie       New Issue                                    
 07-02-06 19:32 rlrevell       Note Added: 0010793                          
 07-02-06 20:10 riesebie       Note Added: 0010794                          
+07-02-06 20:11 riesebie       Note Edited: 0010794                         
+07-02-06 20:16 rlrevell       Status                   new => closed       
 ======================================================================
 
 
