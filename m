@@ -1,16 +1,24 @@
-From: "Horace Byars" <byarshorac@cpi-products.com>
-Subject: Re: new eysar
-Date: Sun, 2 Jul 2006 13:24:20 -0700
-Message-ID: <000001c69e15$7fd4eb80$c191a8c0@fye64>
-Reply-To: Horace Byars <byarshorac@cpi-products.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: OSS driver removal, 2nd round
+Date: Sun, 2 Jul 2006 23:08:57 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0607022304230.5218@yvahk01.tjqt.qr>
+References: <20060629192128.GE19712@stusta.de>
+	<44A54D8E.3000002@superbug.co.uk>
+	<20060630163114.GA12874@dspnet.fr.eu.org>
+	<1151702966.32444.57.camel@mindpipe>
+	<20060701073133.GA99126@dspnet.fr.eu.org>
+	<44A6279C.3000100@superbug.co.uk> <44A76DDF.4020307@superbug.co.uk>
+	<Pine.LNX.4.61.0607021153220.5276@yvahk01.tjqt.qr>
+	<1151854092.12026.39.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0507593805=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from cpi-products.com (64-128-157-129.vis.clearwire-dns.net
-	[64.128.157.129])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E5F8A199
+Received: from linux01.gwdg.de (linux01.gwdg.de [134.76.13.21])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2237F220
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 22:20:48 +0200 (MEST)
+	Sun,  2 Jul 2006 23:08:58 +0200 (MEST)
+In-Reply-To: <1151854092.12026.39.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,89 +28,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org, Olivier Galibert <galibert@pobox.com>, linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>, Olaf Hering <olh@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, Adrian Bunk <bunk@stusta.de>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+>> Well you could patch the affected plugin's .dynstr table so that it should at
+>> best try to call a function that has not yet been defined somewhere else (like
+>> open); IOW, you change the .dynstr entry from 'open' to say 'my_open', and
+>> regularly include libmy.so through e.g. LD_PRELOAD.
+>> 
+>> Of course the MD5 won't match afterwards, but I think the plugin should execute
+>> as usual afterwards, since .dynstr is something no app should rely on.
+>
+>Is this likely to work with an app like Skype that takes extensive steps
+>to thwart reverse engineers?
 
---===============0507593805==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C69DDA.D3761380"
+We do not reverse engineer the .text section, but change the .dynstr 
+section that is specific to the ELF format. I doubt any app out there md5s 
+itself.
 
-This is a multi-part message in MIME format.
+>(Of course a Skype beta with ALSA support was just released, so it's
+>much less important now)
 
-------=_NextPart_000_0001_01C69DDA.D3761380
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-=20
-AxMBIEN
-CxIALIS $ 3,75
-VxALIUM $ 1,21
-VxIAGRA $ 3,33
-=20
-http://torinabout.com
-
-=20
-But your way through Mirkwood is dark, dangerous and difficult, he
-said. Water is not easy to find there, nor food. The time is not yet
-come for nuts (though it may be past and gone indeed before you get to
+A nice challenge anyhow!
 
 
-------=_NextPart_000_0001_01C69DDA.D3761380
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>AxMBIEN<BR>CxIALIS $ 3,75<BR>VxALIUM $ =
-1,21<BR>VxIAGRA $ 3,33</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://torinabout.com">http://torinabout.com</A><BR></FONT></DIV>=
-
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>But your way through Mirkwood is dark, =
-dangerous and difficult, he<BR>
-said. Water is not easy to find there, nor food. The time is not yet<BR>
-come for nuts (though it may be past and gone indeed before you get =
-to<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C69DDA.D3761380--
-
-
-
-
-
---===============0507593805==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Jan Engelhardt
+-- 
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0507593805==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0507593805==--
