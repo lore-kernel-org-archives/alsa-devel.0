@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sun, 2 Jul 2006 15:33:29 +0200
-Message-ID: <55f5a892ad94d4ea41ccfb90093f6b3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002251]: Speaker sound is fine,
+	but headphones not recognized, so no sound
+Date: Sun, 2 Jul 2006 16:17:21 +0200
+Message-ID: <20a8d15f05687f497c67efca7c61cd6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4884D19D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE24F19D
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 15:33:30 +0200 (MEST)
+	Sun,  2 Jul 2006 16:17:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,156 +26,150 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2251> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                
+Reported By:                moret
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2251
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.17.2
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 15:33 CEST
+Date Submitted:             07-02-2006 06:27 CEST
+Last Modified:              07-02-2006 16:17 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    Speaker sound is fine, but headphones not
+recognized, so no sound
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+Sound comes through fine on built-in speakers.  Plugging in headphones
+silences the built-in speakers, but nothing comes through on the
+headphones
+jack.
+The machine is a Panasonic CF-Y5 (Japanese market) with L2300 Core Duo
+processor, 82801G (ICH7) chipset, and the following audio device (from
+lspci -vv), with device ID 27d8, identified by ALSA as a SigmaTel STAC
+9200:
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
-
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Matsushita Electric Industrial Co., Ltd. Unknown device
+8338
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 185
+        Region 0: Memory at d0340000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+As hinted at by the lspci listing, the alsamixer list only one output
+device
+(the built-in speakers).
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 07-02-06 15:01 
+ moret - 07-02-06 16:17 
 ----------------------------------------------------------------------
-I think 'Shared Line in/Side out' isn't for capture, but it's because in my
-soundcard line-in and side-out (for side speakers 7.1) is shared, so with
-this you can switch between them.
+I should probably add more info from /proc/asound:
+/proc/asound/cards:
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xd0340000 irq 185
+/proc/asound/devices:
+  0: [ 0]   : control
+  1:        : sequencer
+ 16: [ 0- 0]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 33:        : timer
+/proc/asound/timers:
+G0: system timer : 10000.000us (10000000 ticks)
+G1: RTC timer : 976.562us (100000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+/proc/asound/pcm:
+00-00: STAC92xx Analog : STAC92xx Analog : playback 1 : capture 2
+/proc/asound/card0/oss_mixer:
+VOLUME "Master" 0
+BASS "" 0
+TREBLE "" 0
+SYNTH "" 0
+PCM "" 0
+SPEAKER "" 0
+LINE "" 0
+MIC "" 0
+CD "" 0
+IMIX "" 0
+ALTPCM "" 0
+RECLEV "" 0
+IGAIN "Capture" 0
+OGAIN "" 0
+LINE1 "" 0
+LINE2 "" 0
+LINE3 "" 0
+DIGITAL1 "" 0
+DIGITAL2 "" 0
+DIGITAL3 "" 0
+PHONEIN "" 0
+PHONEOUT "" 0
+VIDEO "" 0
+RADIO "" 0
+MONITOR "" 0
+/proc/asound/card0/pcm0p/info:
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: STAC92xx Analog
+name: STAC92xx Analog
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
 
-The other I don't know what it is -> Digital Capture Source
+and from /sys/devices/pci0000:00/0000:00:1b.0
 
-
-Raymond: are you an alsa's devel?
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-02-06 15:33 
-----------------------------------------------------------------------
-No, I just an ALSA user who has an Aureal Vortex 2
+class: 0x040300
+device: 0x27d8
+vendor: 0x8086
+subsystem_device: 0x8338
+subsystem_vendor: 0x10f7
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-06-28-06 16:36 Cimmo          Note Added: 0010621                          
-06-28-06 17:30 rlrevell       Note Added: 0010623                          
-06-30-06 11:05 Cimmo          Note Added: 0010725                          
-06-30-06 12:06 Cimmo          Note Added: 0010726                          
-06-30-06 12:18 Raymond        Note Added: 0010727                          
-06-30-06 12:24 Cimmo          Note Added: 0010728                          
-06-30-06 13:04 Raymond        Note Added: 0010729                          
-06-30-06 13:07 Raymond        Note Edited: 0010729                         
-06-30-06 13:08 Raymond        Note Edited: 0010729                         
-06-30-06 13:24 Raymond        Note Added: 0010731                          
-06-30-06 13:40 Cimmo          Note Added: 0010732                          
-06-30-06 15:04 Raymond        Note Added: 0010736                          
-06-30-06 16:14 rlrevell       Note Added: 0010737                          
-06-30-06 16:42 Cimmo          Note Added: 0010741                          
-06-30-06 16:50 rlrevell       Note Added: 0010742                          
-06-30-06 17:04 Cimmo          Note Added: 0010743                          
-06-30-06 17:09 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 rlrevell       Note Added: 0010744                          
-06-30-06 17:15 rlrevell       Note Added: 0010745                          
-07-02-06 04:14 Raymond        Note Added: 0010769                          
-07-02-06 04:24 Raymond        Note Edited: 0010769                         
-07-02-06 04:38 Raymond        Note Added: 0010770                          
-07-02-06 05:13 Raymond        Note Added: 0010771                          
-07-02-06 11:19 Cimmo          File Added: test.state                       
-07-02-06 11:19 Cimmo          Note Added: 0010774                          
-07-02-06 11:47 Raymond        Note Added: 0010776                          
-07-02-06 12:07 Cimmo          File Added: amixer                           
-07-02-06 12:08 Cimmo          Note Added: 0010777                          
-07-02-06 12:23 Raymond        Note Added: 0010778                          
-07-02-06 12:25 Raymond        Note Edited: 0010778                         
-07-02-06 12:28 Cimmo          Note Added: 0010779                          
-07-02-06 12:29 Cimmo          Note Edited: 0010779                         
-07-02-06 12:30 Cimmo          Note Edited: 0010779                         
-07-02-06 12:30 Cimmo          Note Edited: 0010779                         
-07-02-06 12:45 Raymond        Note Added: 0010780                          
-07-02-06 12:50 Raymond        Note Edited: 0010780                         
-07-02-06 12:58 Cimmo          Note Added: 0010781                          
-07-02-06 12:59 Raymond        Note Added: 0010782                          
-07-02-06 13:04 Raymond        Note Edited: 0010782                         
-07-02-06 13:17 Cimmo          File Added: oss_mixer                        
-07-02-06 14:05 Raymond        Note Added: 0010783                          
-07-02-06 14:15 Cimmo          File Added: alsamixer-capture.png                 
-  
-07-02-06 14:15 Cimmo          Note Added: 0010784                          
-07-02-06 14:25 Raymond        Note Added: 0010785                          
-07-02-06 14:37 Cimmo          Note Added: 0010786                          
-07-02-06 14:50 Raymond        Note Added: 0010787                          
-07-02-06 14:57 Raymond        Note Added: 0010788                          
-07-02-06 15:00 Cimmo          Note Added: 0010789                          
-07-02-06 15:01 Cimmo          Note Edited: 0010789                         
-07-02-06 15:33 Raymond        Note Added: 0010790                          
+07-02-06 06:27 moret          New Issue                                    
+07-02-06 06:27 moret          Distribution              => Debian          
+07-02-06 06:27 moret          Kernel Version            => 2.6.17.2        
+07-02-06 16:17 moret          Note Added: 0010792                          
 ======================================================================
 
 
