@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Sun, 2 Jul 2006 23:54:46 +0200
-Message-ID: <3064e29414a7f263ecb43e21ab52b9fb@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Bug #952 - MIDI lockup
+Date: Sun, 02 Jul 2006 18:45:59 -0400
+Message-ID: <1151880360.25802.44.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26CDA21B
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 23:54:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,57 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Can someone take a quick look at:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
-======================================================================
-Reported By:                mini
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2170
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-02-2006 23:54 CEST
-======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
-Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
-======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952
 
-----------------------------------------------------------------------
- mini - 07-02-06 23:54 
-----------------------------------------------------------------------
-Same effect with 1.0.11...
+There is a nice screenshot of the kernel panic.  The bug has been
+verified with ALSA 1.0.12-rc1.
 
-Note that this guy:
+It seems to crash while taking a spinlock in snd_timer_interrupt when
+called from rtc_interrupt - maybe the changes to the ALSA RTC timer a
+few months ago are involved?
 
-http://lkml.org/lkml/2006/3/12/16
-
-*does* have S/PDIF at Node 0x08-0x09... and it seems my pin configs are
-identical... what am I doing wrong?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-======================================================================
-
+Lee
 
 
 Using Tomcat but need to do more? Need to support web services, security?
