@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 14:50:14 +0200
-Message-ID: <a921ec6854f99f741cfe165e8f2e86ea@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 14:57:41 +0200
+Message-ID: <bed206c3c1495bfb3953ccec00452625@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C96F19D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4424199
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 14:50:14 +0200 (MEST)
+	Sun,  2 Jul 2006 14:57:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 14:50 CEST
+Last Modified:              07-02-2006 14:57 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -58,11 +58,6 @@ with configuration files.
 thanx for attention
 Marco
 ======================================================================
-
-----------------------------------------------------------------------
- Cimmo - 07-02-06 14:37 
-----------------------------------------------------------------------
-It's called 'Capture feedback' should stay in capture?
 
 ----------------------------------------------------------------------
  Raymond - 07-02-06 14:50 
@@ -110,6 +105,12 @@ Capture Source' should be placed in Capture view.
 		name 'Shared Line in/Side out Capture Switch'
 		value 'Line in'
 	}
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 14:57 
+----------------------------------------------------------------------
+It seem 'Shared Line in/Side out Capture Switch' should be 'Shared Line
+in/Side out Switch'.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -205,6 +206,7 @@ Date Modified  Username       Field                    Change
 07-02-06 14:25 Raymond        Note Added: 0010785                          
 07-02-06 14:37 Cimmo          Note Added: 0010786                          
 07-02-06 14:50 Raymond        Note Added: 0010787                          
+07-02-06 14:57 Raymond        Note Added: 0010788                          
 ======================================================================
 
 
