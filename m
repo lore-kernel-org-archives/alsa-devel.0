@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 12:08:02 +0200
-Message-ID: <6f8ea58d82a6132c94e4d6816f55a52a@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 12:23:33 +0200
+Message-ID: <e33bd10c427939ba30b83d3cf7c76d26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7A0021C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A09A7220
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 12:08:02 +0200 (MEST)
+	Sun,  2 Jul 2006 12:23:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 12:08 CEST
+Last Modified:              07-02-2006 12:23 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,14 +60,16 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 11:47 
-----------------------------------------------------------------------
-How about the output of amixer ?
-
-----------------------------------------------------------------------
  Cimmo - 07-02-06 12:08 
 ----------------------------------------------------------------------
 forgot it :)
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 12:23 
+----------------------------------------------------------------------
+Can you explain more clearly the problem of kmix with ca0106 ?
+
+(e.g. missing digital capture source, .... )
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +146,7 @@ Date Modified  Username       Field                    Change
 07-02-06 11:47 Raymond        Note Added: 0010776                          
 07-02-06 12:07 Cimmo          File Added: amixer                           
 07-02-06 12:08 Cimmo          Note Added: 0010777                          
+07-02-06 12:23 Raymond        Note Added: 0010778                          
 ======================================================================
 
 
