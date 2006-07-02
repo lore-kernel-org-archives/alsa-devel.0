@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 14:15:51 +0200
-Message-ID: <94595125911bf001603039b45542be1c@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 14:25:48 +0200
+Message-ID: <36ff6338dc5e61f9a81311fc3a61f74a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1C2119D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BB2B19D
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 14:15:51 +0200 (MEST)
+	Sun,  2 Jul 2006 14:25:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 14:15 CEST
+Last Modified:              07-02-2006 14:25 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,28 +60,21 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 14:05 
-----------------------------------------------------------------------
-The simple mixer api is still buggy and can not idenitfy capture source.
-
-Does this control appear in capture view of alsamixer ?
-
-
-Simple mixer control 'Digital Capture Source',0
-  Capabilities: enum
-  Items: 'IEC958 out' 'i2s mixer out' 'IEC958 in' 'i2s in' 'AC97 in' 'SRC
-out'
-  Item0: 'i2s mixer out'
-Simple mixer control 'Shared Line in/Side out',0
-  Capabilities: enum
-  Items: 'Side out' 'Line in'
-  Item0: 'Line in'
-
-----------------------------------------------------------------------
  Cimmo - 07-02-06 14:15 
 ----------------------------------------------------------------------
 alsamixer non-capture screenshot was just provided, this is the capture
 part.
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 14:25 
+----------------------------------------------------------------------
+Why do the 'Digital Capture Source' appear in Playback view instead of
+Capture view of alsamixer ? May be you need to file another bug report for
+this issue 
+
+Refer to oss_mixer, It is unlikely for you to run any oss application
+which control volume through oss mixer api since "MASTER" control is
+missing.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,6 +167,7 @@ Date Modified  Username       Field                    Change
 07-02-06 14:15 Cimmo          File Added: alsamixer-capture.png                 
   
 07-02-06 14:15 Cimmo          Note Added: 0010784                          
+07-02-06 14:25 Raymond        Note Added: 0010785                          
 ======================================================================
 
 
