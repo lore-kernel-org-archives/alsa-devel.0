@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 2 Jul 2006 12:58:09 +0200
-Message-ID: <f0385f589f68c688671d81c7b31b201d@bugtrack.alsa-project.org>
+Date: Sun, 2 Jul 2006 12:59:13 +0200
+Message-ID: <b569fe604a1ddff4b45604b9da858d93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB190195
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43C7311E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Jul 2006 12:58:09 +0200 (MEST)
+	Sun,  2 Jul 2006 12:59:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-02-2006 12:58 CEST
+Last Modified:              07-02-2006 12:59 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,49 +60,14 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-02-06 12:50 
-----------------------------------------------------------------------
-control.20 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Phone
-		comment.item.1 Mic
-		comment.item.2 'Line in'
-		comment.item.3 Aux
-		iface MIXER
-		name 'Capture Source'
-		value Mic
-	}
-
-AC97 capture source is stereo but ca0106 capture source is mono
-It seem kmix expect 2 values in capture source or hardcode the source name
-(icon) in AC97 order
-
-	control.40 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 2
-		comment.item.0 Mic
-		comment.item.1 CD
-		comment.item.2 Video
-		comment.item.3 Aux
-		comment.item.4 Line
-		comment.item.5 Mix
-		comment.item.6 'Mix Mono'
-		comment.item.7 Phone
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-
-
-
-----------------------------------------------------------------------
  Cimmo - 07-02-06 12:58 
 ----------------------------------------------------------------------
 fill it in kmix's bug report :)
+
+----------------------------------------------------------------------
+ Raymond - 07-02-06 12:59 
+----------------------------------------------------------------------
+cat /proc/asound/card0/oss_mixer
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -188,6 +153,7 @@ Date Modified  Username       Field                    Change
 07-02-06 12:45 Raymond        Note Added: 0010780                          
 07-02-06 12:50 Raymond        Note Edited: 0010780                         
 07-02-06 12:58 Cimmo          Note Added: 0010781                          
+07-02-06 12:59 Raymond        Note Added: 0010782                          
 ======================================================================
 
 
