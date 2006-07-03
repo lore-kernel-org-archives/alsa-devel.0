@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002239]: No sound on SPDIF,
-	Sampling rate not (re)set? if compiled with -D_FILE_OFFSET_BITS=64
-Date: Mon, 3 Jul 2006 21:33:50 +0200
-Message-ID: <3e8f2800b579546442c5c98e70a1f893@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: OSS driver removal, 2nd round
+Date: Mon, 3 Jul 2006 21:42:44 +0200
+Message-ID: <20060703194244.GA26941__14089.2727570192$1151955825$gmane$org@stusta.de>
+References: <20060629192128.GE19712@stusta.de>
+	<1151927579.13828.6.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D8341A7
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F27A11A7
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 21:33:50 +0200 (MEST)
+	Mon,  3 Jul 2006 21:42:44 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1151927579.13828.6.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,97 +23,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz, Olaf Hering <olh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 03, 2006 at 09:52:59PM +1000, Benjamin Herrenschmidt wrote:
+> 
+> > DMASOUND_PMAC
+> > - Olaf Hering regarding regressions in SND_POWERMAC:
+> >   Some tumbler models work only after one plug/unplug cycle of
+> >   the headphone. early powerbooks report/handle the mute settings
+> >   incorrectly. there are likely more bugs.
+> 
+> dmasound_pmac is crippled with bugs too... We should look at reported
+> bug reports on snd-powermac (and snd-aoa which replaces the later for
+> recent machines) and kill dmasound-pmac. I'm ok with that. snd-aoa is
+> the only one to be properly maintained anyway, we'll add support for
+> older machines to it over time and hopefully, it's a much saner codebase
+> in the first place so handling weird machines regressions will be
+> easier.
 
-A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2239> =
+Thanks for this information.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                konczalski
-Assigned To:                =
+I'll include DMASOUND_PMAC in the list of OSS drivers that might be 
+removed in this round (if people report regressions in the ALSA drivers, 
+this can still be undone (if someone observes such a regression, he 
+should send me the bug number in the ALSA BTS (this is also what 
+will be written in the help text of the OSS_OBSOLETE_DRIVER option))).
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - lib
-Issue ID:                   2239
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-28-2006 11:02 CEST
-Last Modified:              07-03-2006 21:33 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No sound on SPDIF, Sampling rate not (re)set? if
-compiled with -D_FILE_OFFSET_BITS=3D64
-Description: =
+> Ben.
 
-I use a Teratec Aureon 7.1 Space with a Envy24HT Chip and digital optical
-output.
-I get no sound if alsa-lib will by compiled with -D_FILE_OFFSET_BITS=3D64
-(this is defualt in Geexbox 1.0, TARGET_CFLAGS=3D"-Os -Wall -pipe
--D_FILE_OFFSET_BITS=3D64 -D_LARGEFILE_SOURCE"). It=B4s  sems as the sampling
-rate don=B4t by set at the second time. The first (background video) from
-GeexBox has a samplin of 32K, if i play a video (48K) or music 44.1K the
-sampling rate on my ampiler keep on 32K?
+cu
+Adrian
 
-My Mplayer parameter:
--ao alsa:device=3Dplughw=3D0.1
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+-- 
 
-----------------------------------------------------------------------
- tiwai - 06-29-06 18:00 =
-
-----------------------------------------------------------------------
-I don't believe FILE_OFFSET_BITS influence on the driver or alsa-lib
-behavior.
-
-It's not guaranteed to work if you use plughw.  It's nearly a raw access.
-For accessing SPDIF, use "spdif" instead (for ice1724, "plug:spdif").
-
-----------------------------------------------------------------------
- konczalski - 07-03-06 21:33 =
-
-----------------------------------------------------------------------
-alsa:device=3Dplug=3Dspdif works fine too, but only if i complie with
--D_FILE_OFFSET_BITS=3D32
-
-Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-28-06 11:02 konczalski     New Issue                                    =
-
-06-29-06 18:00 tiwai          Note Added: 0010680                          =
-
-07-03-06 21:33 konczalski     Note Added: 0010807                          =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
