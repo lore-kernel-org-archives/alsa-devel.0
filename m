@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Mon, 3 Jul 2006 19:28:18 +0200
-Message-ID: <96d1904dce7dd100b614691c4d13f825@bugtrack.alsa-project.org>
+Date: Mon, 3 Jul 2006 19:37:16 +0200
+Message-ID: <51321ea41807336282090297c36d05fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54EC918F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B445317C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 19:28:19 +0200 (MEST)
+	Mon,  3 Jul 2006 19:37:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-03-2006 19:28 CEST
+Last Modified:              07-03-2006 19:37 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,19 +108,17 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-30-06 02:14 
-----------------------------------------------------------------------
-Can't you test by building from source?  If you want these issues to be
-resolved quickly, waiting for Debian to integrate the new version is not
-optimal.
-
-----------------------------------------------------------------------
  calestyo - 07-03-06 19:28 
 ----------------------------------------------------------------------
 Ok,.. I'll do that,.. perhaps tonight but of not I'll be away for some
 days, so stand by.
 
 btw: Is it likely that this could have influnce to my bug 0002243?
+
+----------------------------------------------------------------------
+ rlrevell - 07-03-06 19:37 
+----------------------------------------------------------------------
+No, I doubt this is related to #2243
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +149,7 @@ Date Modified  Username       Field                    Change
 06-30-06 02:14 rlrevell       Note Added: 0010711                          
 06-30-06 05:13 Raymond        Note Edited: 0010709                         
 07-03-06 19:28 calestyo       Note Added: 0010803                          
+07-03-06 19:37 rlrevell       Note Added: 0010804                          
 ======================================================================
 
 
