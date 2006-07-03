@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Mon, 3 Jul 2006 22:01:59 +0200
-Message-ID: <4e31eb3843ffff82cda1525166652e19@bugtrack.alsa-project.org>
+Date: Mon, 3 Jul 2006 22:06:27 +0200
+Message-ID: <1b8f6be058bd7ccbba2b3a57a304cb7f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FF34233
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89A8D237
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 22:02:00 +0200 (MEST)
+	Mon,  3 Jul 2006 22:06:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              07-03-2006 22:01 CEST
+Last Modified:              07-03-2006 22:06 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -70,28 +70,14 @@ duplicate of        0001957 HP dv8000t hda-intel codec not recognized
 ======================================================================
 
 ----------------------------------------------------------------------
- Ytorres - 06-26-06 14:29 
-----------------------------------------------------------------------
-Hello,
-I have this laptop and i have try to install Linuxant driver whitout any
-succes...
-
-Is there any people who have try this ?
-If it works, can you explain how to deal with ?
-
-Anyway, what about Alsa support ? 
-
-Please... allow us to listen to music on our Harman Kardon ! ;)
-
-----------------------------------------------------------------------
- haight - 07-03-06 22:01 
+ haight - 07-03-06 22:03 
 ----------------------------------------------------------------------
 Here is another codec dump from a system with a similar problem.  The HP
 Pavilion dv8000 which I got at Fry's this past week.
 
-I can hear audio, but it is very quiet.  Havn't tested the headphone jack.
- I have tried various "model" options, including of course "hp", with the
-same results.  My mixer shows only a PCM, no master volume.
+I can hear audio, but it is very quiet.  Haven't tested the headphone
+jack.  I have tried various "model" options, including of course "hp",
+with the same results.  My mixer shows only a PCM, no master volume.
 
 I'm using Suse 10.1, with the standard kernel (2.6.16.13-4-smp).  
 
@@ -115,6 +101,14 @@ test platform, don't hesitate to ask.  Contact me at www.julianhaight.com.
 free software!
 
 -=Julian=-
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 07-03-06 22:06 
+----------------------------------------------------------------------
+If you just picked up the machine last week I'd consider exchanging it for
+one that works with Linux.  Take a live CD to the store with you.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -167,6 +161,8 @@ Date Modified  Username       Field                    Change
 07-03-06 21:50 haight         Issue Monitored: haight                      
 07-03-06 21:55 haight         File Added: codec.txt                        
 07-03-06 22:01 haight         Note Added: 0010808                          
+07-03-06 22:03 haight         Note Edited: 0010808                         
+07-03-06 22:06 rlrevell       Note Added: 0010809                          
 ======================================================================
 
 
