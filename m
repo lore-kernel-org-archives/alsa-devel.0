@@ -1,19 +1,16 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: OSS driver removal, 2nd round
-Date: Mon, 3 Jul 2006 21:42:44 +0200
-Message-ID: <20060703194244.GA26941__14089.2727570192$1151955825$gmane$org@stusta.de>
-References: <20060629192128.GE19712@stusta.de>
-	<1151927579.13828.6.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Mon, 3 Jul 2006 22:01:59 +0200
+Message-ID: <4e31eb3843ffff82cda1525166652e19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F27A11A7
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FF34233
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 21:42:44 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <1151927579.13828.6.camel@localhost.localdomain>
+	Mon,  3 Jul 2006 22:02:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,45 +20,155 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz, Olaf Hering <olh@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 03, 2006 at 09:52:59PM +1000, Benjamin Herrenschmidt wrote:
-> 
-> > DMASOUND_PMAC
-> > - Olaf Hering regarding regressions in SND_POWERMAC:
-> >   Some tumbler models work only after one plug/unplug cycle of
-> >   the headphone. early powerbooks report/handle the mute settings
-> >   incorrectly. there are likely more bugs.
-> 
-> dmasound_pmac is crippled with bugs too... We should look at reported
-> bug reports on snd-powermac (and snd-aoa which replaces the later for
-> recent machines) and kill dmasound-pmac. I'm ok with that. snd-aoa is
-> the only one to be properly maintained anyway, we'll add support for
-> older machines to it over time and hopefully, it's a much saner codebase
-> in the first place so handling weird machines regressions will be
-> easier.
 
-Thanks for this information.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+======================================================================
+Reported By:                carllivitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
+======================================================================
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              07-03-2006 22:01 CEST
+======================================================================
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Description: 
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-I'll include DMASOUND_PMAC in the list of OSS drivers that might be 
-removed in this round (if people report regressions in the ALSA drivers, 
-this can still be undone (if someone observes such a regression, he 
-should send me the bug number in the ALSA BTS (this is also what 
-will be written in the help text of the OSS_OBSOLETE_DRIVER option))).
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-> Ben.
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-cu
-Adrian
+I've also tried using the 'single_cmd=1' module loading option. 
 
--- 
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001957 HP dv8000t hda-intel codec not recognized
+======================================================================
+
+----------------------------------------------------------------------
+ Ytorres - 06-26-06 14:29 
+----------------------------------------------------------------------
+Hello,
+I have this laptop and i have try to install Linuxant driver whitout any
+succes...
+
+Is there any people who have try this ?
+If it works, can you explain how to deal with ?
+
+Anyway, what about Alsa support ? 
+
+Please... allow us to listen to music on our Harman Kardon ! ;)
+
+----------------------------------------------------------------------
+ haight - 07-03-06 22:01 
+----------------------------------------------------------------------
+Here is another codec dump from a system with a similar problem.  The HP
+Pavilion dv8000 which I got at Fry's this past week.
+
+I can hear audio, but it is very quiet.  Havn't tested the headphone jack.
+ I have tried various "model" options, including of course "hp", with the
+same results.  My mixer shows only a PCM, no master volume.
+
+I'm using Suse 10.1, with the standard kernel (2.6.16.13-4-smp).  
+
+lspci -v shows:
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Aud
+io Controller (rev 01)
+        Subsystem: Hewlett-Packard Company Unknown device 30a5
+        Flags: bus master, fast devsel, latency 0, IRQ 74
+        Memory at d2400000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable
+-
+        Capabilities: [70] Express Unknown type IRQ 0
+
+If anyone needs more information from me, or wants to use my system as a
+test platform, don't hesitate to ask.  Contact me at www.julianhaight.com.
+ I'm also monitoring this bug and anxiously awaiting a fix, thanks for the
+free software!
+
+-=Julian=-
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
+06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
+06-21-06 17:47 carllivitt     Note Added: 0010399                          
+06-21-06 18:44 rlrevell       Note Added: 0010401                          
+06-22-06 10:39 carllivitt     Note Added: 0010420                          
+06-22-06 17:50 GrueMaster     Note Added: 0010426                          
+06-26-06 14:29 Ytorres        Note Added: 0010535                          
+06-26-06 14:47 Ytorres        Issue Monitored: Ytorres                     
+07-03-06 21:50 haight         Issue Monitored: haight                      
+07-03-06 21:55 haight         File Added: codec.txt                        
+07-03-06 22:01 haight         Note Added: 0010808                          
+======================================================================
+
 
 
 Using Tomcat but need to do more? Need to support web services, security?
