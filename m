@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Mon, 3 Jul 2006 22:06:27 +0200
-Message-ID: <1b8f6be058bd7ccbba2b3a57a304cb7f@bugtrack.alsa-project.org>
+Date: Mon, 3 Jul 2006 22:19:59 +0200
+Message-ID: <c39150eee4aa656c58fb725149830897@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89A8D237
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85AA6FA
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 22:06:27 +0200 (MEST)
+	Mon,  3 Jul 2006 22:19:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              07-03-2006 22:06 CEST
+Last Modified:              07-03-2006 22:19 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -70,45 +70,20 @@ duplicate of        0001957 HP dv8000t hda-intel codec not recognized
 ======================================================================
 
 ----------------------------------------------------------------------
- haight - 07-03-06 22:03 
-----------------------------------------------------------------------
-Here is another codec dump from a system with a similar problem.  The HP
-Pavilion dv8000 which I got at Fry's this past week.
-
-I can hear audio, but it is very quiet.  Haven't tested the headphone
-jack.  I have tried various "model" options, including of course "hp",
-with the same results.  My mixer shows only a PCM, no master volume.
-
-I'm using Suse 10.1, with the standard kernel (2.6.16.13-4-smp).  
-
-lspci -v shows:
-
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Aud
-io Controller (rev 01)
-        Subsystem: Hewlett-Packard Company Unknown device 30a5
-        Flags: bus master, fast devsel, latency 0, IRQ 74
-        Memory at d2400000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable
--
-        Capabilities: [70] Express Unknown type IRQ 0
-
-If anyone needs more information from me, or wants to use my system as a
-test platform, don't hesitate to ask.  Contact me at www.julianhaight.com.
- I'm also monitoring this bug and anxiously awaiting a fix, thanks for the
-free software!
-
--=Julian=-
-
-
-
-----------------------------------------------------------------------
  rlrevell - 07-03-06 22:06 
 ----------------------------------------------------------------------
 If you just picked up the machine last week I'd consider exchanging it for
 one that works with Linux.  Take a live CD to the store with you.
+
+----------------------------------------------------------------------
+ haight - 07-03-06 22:19 
+----------------------------------------------------------------------
+Thanks, but I can live with it this way for now (or indefinitely if need
+be).  I'm just happy it works with linux as well as it does (wireless,
+video, etc).  Sound volume would be nice, but not that critical.
+
+Still happy to help if anyone wants to work on the driver though.  I'll
+keep playing around to see if I can develop a fix or workaround.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -163,6 +138,7 @@ Date Modified  Username       Field                    Change
 07-03-06 22:01 haight         Note Added: 0010808                          
 07-03-06 22:03 haight         Note Edited: 0010808                         
 07-03-06 22:06 rlrevell       Note Added: 0010809                          
+07-03-06 22:19 haight         Note Added: 0010810                          
 ======================================================================
 
 
