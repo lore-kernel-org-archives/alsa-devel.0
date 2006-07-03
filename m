@@ -1,16 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Mon, 3 Jul 2006 22:19:59 +0200
-Message-ID: <c39150eee4aa656c58fb725149830897@bugtrack.alsa-project.org>
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Re: OSS driver removal, 2nd round
+Date: Mon, 03 Jul 2006 18:38:42 -0400
+Message-ID: <44A99C72.7070602@tmr.com>
+References: <20060629192128.GE19712@stusta.de>	<200607010042.15765.ismail@pardus.org.tr>	<1151704572.32444.74.camel@mindpipe>
+	<200607010249.05140.ismail@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85AA6FA
+Received: from pixels.tmr.com (mail.tmr.com [64.65.253.246])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7AF0225
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Jul 2006 22:19:59 +0200 (MEST)
+	Tue,  4 Jul 2006 00:35:57 +0200 (MEST)
+In-Reply-To: <200607010249.05140.ismail@pardus.org.tr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,130 +22,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?B?xLBzbWFpbCBEw7ZubWV6?= <ismail@pardus.org.tr>
+Cc: Olivier Galibert <galibert@pobox.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>, perex@suse.cz, Olaf Hering <olh@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              07-03-2006 22:19 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
-
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
-
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
-
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001957 HP dv8000t hda-intel codec not recognized
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-03-06 22:06 
-----------------------------------------------------------------------
-If you just picked up the machine last week I'd consider exchanging it for
-one that works with Linux.  Take a live CD to the store with you.
-
-----------------------------------------------------------------------
- haight - 07-03-06 22:19 
-----------------------------------------------------------------------
-Thanks, but I can live with it this way for now (or indefinitely if need
-be).  I'm just happy it works with linux as well as it does (wireless,
-video, etc).  Sound volume would be nice, but not that critical.
-
-Still happy to help if anyone wants to work on the driver though.  I'll
-keep playing around to see if I can develop a fix or workaround.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
-06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
-06-20-06 11:04 carllivitt     Note Added: 0010332                          
-06-20-06 11:21 fatman         Note Added: 0010333                          
-06-20-06 17:38 legoguy        Note Added: 0010338                          
-06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
-06-20-06 19:38 tiwai          Note Added: 0010341                          
-06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
-06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
-06-21-06 17:47 carllivitt     Note Added: 0010399                          
-06-21-06 18:44 rlrevell       Note Added: 0010401                          
-06-22-06 10:39 carllivitt     Note Added: 0010420                          
-06-22-06 17:50 GrueMaster     Note Added: 0010426                          
-06-26-06 14:29 Ytorres        Note Added: 0010535                          
-06-26-06 14:47 Ytorres        Issue Monitored: Ytorres                     
-07-03-06 21:50 haight         Issue Monitored: haight                      
-07-03-06 21:55 haight         File Added: codec.txt                        
-07-03-06 22:01 haight         Note Added: 0010808                          
-07-03-06 22:03 haight         Note Edited: 0010808                         
-07-03-06 22:06 rlrevell       Note Added: 0010809                          
-07-03-06 22:19 haight         Note Added: 0010810                          
-======================================================================
-
-
-
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+xLBzbWFpbCBEw7ZubWV6IHdyb3RlOgo+IEN1bWFydGVzaSAxIFRlbW11eiAyMDA2IDAwOjU2IHRh
+cmloaW5kZSwgTGVlIFJldmVsbCDFn3VubGFyxLEgeWF6bcSxxZ90xLE6IAo+PiBPbiBTYXQsIDIw
+MDYtMDctMDEgYXQgMDA6NDIgKzAzMDAsIMSwc21haWwgRMO2bm1leiB3cm90ZToKPj4+IEN1bWFy
+dGVzaSAxIFRlbW11eiAyMDA2IDAwOjI5IHRhcmloaW5kZSDFn3VubGFyxLEgeWF6bcSxxZ90xLFu
+xLF6Ogo+Pj4+IChJIHdpc2ggdGhlIGF1dGhvcnMgb2YgU2t5cGUsIEZsYXNoLCBUZWFtU3BlYWss
+IEVuZW15IFRlcnJpdG9yeSwgYW5kCj4+Pj4gb3RoZXIgcHJvcHJpZXRhcnkgT1NTLW9ubHkgYXBw
+cyB3b3VsZCB1bmRlcnN0YW5kIHRoaXMgOy0pCj4+PiBOZXcgc2t5cGUgYmV0YSBzdXBwb3J0cyBB
+bHNhLCBkb2Vzbid0IHdvcmsgQVRNIGJ1dCBpdHMgYSBncmVhdCBzdGVwIGluCj4+PiB0aGF0IGRp
+cmVjdGlvbiBhbmQgRmxhc2g5IGZvciBMaW51eCB3aWxsIHVzZSBBbHNhLgo+PiBSZWFsbHk/ICBH
+b3QgYSBsaW5rPyAgTGFzdCBJIGhlYXJkIGFib3V0IEZsYXNoIHdhcyB0aGF0IHRoZWlyIGxhd3ll
+cnMKPj4gd29uJ3QgbGV0IHRoZW0gbGluayB0byBMR1BMIGxpYnJhcmllcyB3aGljaCB3b3VsZCBy
+dWxlIG91dCBBTFNBIHN1cHBvcnQuCj4gCj4gSGVhciBmcm9tIHRoZSBsZWFkIGRldmVsb3BlciBm
+b3IgRmxhc2ggTGludXggOiAKPiBodHRwOi8vYmxvZ3MuYWRvYmUuY29tL3Blbmd1aW4uc3dmLzIw
+MDYvMDYvd2Vla19pbl9yZXZpZXdfMS5odG1sCj4gCklzIHRoYXQgcmlnaHQ/IEFmdGVyIHllYXJz
+IG9mIG5lZ2F0aXZlIGNvbW1lbnRzIGFib3V0IEZsYXNoIGFuZCBPU1MsIGFzIApzb29uIGFzIGl0
+J3MgY29udmVydGVkIHRvIEFMU0EgdjEgYXBpIHRoYXQgZ29pbmcgb3V0IGluIDIuNi4xOD8KCi0t
+IApCaWxsIERhdmlkc2VuIDxkYXZpZHNlbkB0bXIuY29tPgogICBPYnNjdXJlIGJ1ZyBvZiAyMDA0
+OiBCQVNIIEJVRkZFUiBPVkVSRkxPVyAtIGlmIGJhc2ggaXMgYmVpbmcgcnVuIGJ5IGEKbm9ybWFs
+IHVzZXIgYW5kIGlzIHNldHVpZCByb290LCB3aXRoIHRoZSAidmkiIGxpbmUgZWRpdCBtb2RlIHNl
+bGVjdGVkLAphbmQgdGhlIGNoYXJhY3RlciBzZXQgaXMgImJpZzUsIiBhbiBvZmYtYnktb25lIGVy
+cm9ycyBvY2N1cnMgZHVyaW5nCndpbGRjYXJkIChnbG9iKSBleHBhbnNpb24uCgoKVXNpbmcgVG9t
+Y2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNl
+Y3VyaXR5PwpHZXQgc3R1ZmYgZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVncmF0ZWQgdGVjaG5v
+bG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llcgpEb3dubG9hZCBJQk0gV2ViU3BoZXJlIEFwcGxp
+Y2F0aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwpodHRwOi8vc2Vs
+LmFzLXVzLmZhbGthZy5uZXQvc2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3JmRhdD0x
+MjE2NDIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
