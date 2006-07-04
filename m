@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002231]: my system blocks 2 out of 4
 	time when starting sound device at startup
-Date: Tue, 4 Jul 2006 09:33:45 +0200
-Message-ID: <f61a257d4631c955f3b1bb5bed8d236f@bugtrack.alsa-project.org>
+Date: Tue, 4 Jul 2006 10:45:47 +0200
+Message-ID: <d11d47f310e5637736cd3faea40d941e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63FCF18E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4441B194
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 09:33:45 +0200 (MEST)
+	Tue,  4 Jul 2006 10:45:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               redhat
 Kernel Version:             2.6.11-1.1369_FC4
 ======================================================================
 Date Submitted:             06-25-2006 16:27 CEST
-Last Modified:              07-04-2006 09:33 CEST
+Last Modified:              07-04-2006 10:45 CEST
 ======================================================================
 Summary:                    my system blocks 2 out of 4 time when starting sound
 device at startup
@@ -56,58 +56,6 @@ audio 2 out of 4 times it crashes. I had to then reset the system.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-30-06 19:09 
-----------------------------------------------------------------------
-Your problem seem caused by snd_rawmidi
-
-snd_rawmidi: disagrees about version of symbol snd_info_register
-snd_rawmidi: Unknown symbol snd_info_register
-snd_rawmidi: disagrees about version of symbol snd_seq_device_new
-snd_rawmidi: Unknown symbol snd_seq_device_new
-snd_rawmidi: disagrees about version of symbol snd_info_free_entry
-snd_rawmidi: Unknown symbol snd_info_free_entry
-snd_rawmidi: disagrees about version of symbol snd_unregister_oss_device
-snd_rawmidi: Unknown symbol snd_unregister_oss_device
-snd_rawmidi: Unknown symbol snd_verbose_printk
-snd_rawmidi: disagrees about version of symbol snd_register_oss_device
-snd_rawmidi: Unknown symbol snd_register_oss_device
-snd_rawmidi: disagrees about version of symbol snd_ctl_register_ioctl
-snd_rawmidi: Unknown symbol snd_ctl_register_ioctl
-snd_rawmidi: disagrees about version of symbol snd_card_file_add
-snd_rawmidi: Unknown symbol snd_card_file_add
-snd_rawmidi: Unknown symbol snd_compat_kzalloc
-snd_rawmidi: disagrees about version of symbol snd_iprintf
-snd_rawmidi: Unknown symbol snd_iprintf
-snd_rawmidi: disagrees about version of symbol snd_unregister_device
-snd_rawmidi: Unknown symbol snd_unregister_device
-snd_rawmidi: disagrees about version of symbol snd_device_new
-snd_rawmidi: Unknown symbol snd_device_new
-snd_rawmidi: disagrees about version of symbol snd_ctl_unregister_ioctl
-snd_rawmidi: Unknown symbol snd_ctl_unregister_ioctl
-snd_rawmidi: Unknown symbol snd_lookup_oss_minor_data
-snd_rawmidi: Unknown symbol snd_lookup_minor_data
-snd_rawmidi: disagrees about version of symbol snd_info_create_card_entry
-snd_rawmidi: Unknown symbol snd_info_create_card_entry
-snd_rawmidi: disagrees about version of symbol snd_device_free
-snd_rawmidi: Unknown symbol snd_device_free
-snd_rawmidi: disagrees about version of symbol snd_card_file_remove
-snd_rawmidi: Unknown symbol snd_card_file_remove
-snd_rawmidi: disagrees about version of symbol snd_info_unregister
-snd_rawmidi: Unknown symbol snd_info_unregister
-snd_rawmidi: disagrees about version of symbol snd_device_register
-snd_rawmidi: Unknown symbol snd_device_register
-snd_rawmidi: disagrees about version of symbol snd_register_device
-snd_rawmidi: Unknown symbol snd_register_device
-
-Your installation procedure is properly wrong. 
-
-Why do you just replace snd*.*o ?
-
-http://people.redhat.com/stransky/alsa/
-
-
-
-----------------------------------------------------------------------
  adeel - 07-04-06 09:33 
 ----------------------------------------------------------------------
 Thanks for the reply Raymond. you wrote
@@ -117,6 +65,14 @@ Thanks for the reply Raymond. you wrote
 
 Sorry to say that but I did not understand "snd_rawmidi" messages.
 I am not that good. Please can you tell me how can i fix the problem.
+
+----------------------------------------------------------------------
+ Raymond - 07-04-06 10:45 
+----------------------------------------------------------------------
+Refer to output.txt, your installation procedure are properly wrong.
+
+I am still using FC1, so you have to ask in Fedora Forum/Mailing List
+about how to install latest ALSA driver,lib,util in FC4
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -140,6 +96,7 @@ Date Modified  Username       Field                    Change
 06-30-06 18:57 Raymond        Note Edited: 0010751                         
 06-30-06 19:09 Raymond        Note Edited: 0010751                         
 07-04-06 09:33 adeel          Note Added: 0010817                          
+07-04-06 10:45 Raymond        Note Added: 0010818                          
 ======================================================================
 
 
