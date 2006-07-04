@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Tue, 4 Jul 2006 07:20:40 +0200
-Message-ID: <c6f41a3f65b9091f390c43ccb33d94b2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002231]: my system blocks 2 out of 4
+	time when starting sound device at startup
+Date: Tue, 4 Jul 2006 09:33:45 +0200
+Message-ID: <f61a257d4631c955f3b1bb5bed8d236f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 936B9197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63FCF18E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 07:20:40 +0200 (MEST)
+	Tue,  4 Jul 2006 09:33:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,108 +26,120 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2231> 
 ======================================================================
-Reported By:                skunk
-Assigned To:                
+Reported By:                adeel
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   2231
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
+Status:                     assigned
+Distribution:               redhat
+Kernel Version:             2.6.11-1.1369_FC4
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-04-2006 07:20 CEST
+Date Submitted:             06-25-2006 16:27 CEST
+Last Modified:              07-04-2006 09:33 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    my system blocks 2 out of 4 time when starting sound
+device at startup
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+Hi guys,
+	I sure need a bit of help. My system when starting the sound device got
+crazy. I had fedora core 4. It starts the network, sound devices upfront
+after its starts the kernel I think. There when it tries to start the
+audio 2 out of 4 times it crashes. I had to then reset the system.
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
-
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
-
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- phorn - 07-04-06 04:58 
+ Raymond - 06-30-06 19:09 
 ----------------------------------------------------------------------
-The patch seems to at least have made the crash less frequent for me (i.e.
-I haven't run into it yet).
+Your problem seem caused by snd_rawmidi
 
-The .deb packages didn't seem to compile for 2.6.17.3, but the Hg sources
-do work.
+snd_rawmidi: disagrees about version of symbol snd_info_register
+snd_rawmidi: Unknown symbol snd_info_register
+snd_rawmidi: disagrees about version of symbol snd_seq_device_new
+snd_rawmidi: Unknown symbol snd_seq_device_new
+snd_rawmidi: disagrees about version of symbol snd_info_free_entry
+snd_rawmidi: Unknown symbol snd_info_free_entry
+snd_rawmidi: disagrees about version of symbol snd_unregister_oss_device
+snd_rawmidi: Unknown symbol snd_unregister_oss_device
+snd_rawmidi: Unknown symbol snd_verbose_printk
+snd_rawmidi: disagrees about version of symbol snd_register_oss_device
+snd_rawmidi: Unknown symbol snd_register_oss_device
+snd_rawmidi: disagrees about version of symbol snd_ctl_register_ioctl
+snd_rawmidi: Unknown symbol snd_ctl_register_ioctl
+snd_rawmidi: disagrees about version of symbol snd_card_file_add
+snd_rawmidi: Unknown symbol snd_card_file_add
+snd_rawmidi: Unknown symbol snd_compat_kzalloc
+snd_rawmidi: disagrees about version of symbol snd_iprintf
+snd_rawmidi: Unknown symbol snd_iprintf
+snd_rawmidi: disagrees about version of symbol snd_unregister_device
+snd_rawmidi: Unknown symbol snd_unregister_device
+snd_rawmidi: disagrees about version of symbol snd_device_new
+snd_rawmidi: Unknown symbol snd_device_new
+snd_rawmidi: disagrees about version of symbol snd_ctl_unregister_ioctl
+snd_rawmidi: Unknown symbol snd_ctl_unregister_ioctl
+snd_rawmidi: Unknown symbol snd_lookup_oss_minor_data
+snd_rawmidi: Unknown symbol snd_lookup_minor_data
+snd_rawmidi: disagrees about version of symbol snd_info_create_card_entry
+snd_rawmidi: Unknown symbol snd_info_create_card_entry
+snd_rawmidi: disagrees about version of symbol snd_device_free
+snd_rawmidi: Unknown symbol snd_device_free
+snd_rawmidi: disagrees about version of symbol snd_card_file_remove
+snd_rawmidi: Unknown symbol snd_card_file_remove
+snd_rawmidi: disagrees about version of symbol snd_info_unregister
+snd_rawmidi: Unknown symbol snd_info_unregister
+snd_rawmidi: disagrees about version of symbol snd_device_register
+snd_rawmidi: Unknown symbol snd_device_register
+snd_rawmidi: disagrees about version of symbol snd_register_device
+snd_rawmidi: Unknown symbol snd_register_device
 
-amarsh04, you will likely get more information if you play from a
-text-mode console.
-To do this, hit Ctrl+Alt+F1 to bring you to the console, login, and use
-aplaymidi like in X...
-If you want disk activity, switch to ctrl+alt+F2 and cat a bunch of files,
-then return to ctrl+alt+F1.
-Hopefully, when the crash occurs, you will get a lot of output on your
-screen (which was hidden when running in X), and you can take a picture or
-copy the panic screen.
-To return to X, hit Ctrl+alt+F7.
+Your installation procedure is properly wrong. 
+
+Why do you just replace snd*.*o ?
+
+http://people.redhat.com/stransky/alsa/
+
+
 
 ----------------------------------------------------------------------
- amarsh04 - 07-04-06 07:20 
+ adeel - 07-04-06 09:33 
 ----------------------------------------------------------------------
-I had already tried using aplaymidi in single user mode backgrounded then
-running a disk intensive task and still had lockups.
+Thanks for the reply Raymond. you wrote
+>Your problem seem caused by snd_rawmidi
+>snd_rawmidi: disagrees about version of symbol snd_info_register
+>snd_rawmidi: Unknown symbol snd_info_register .....
 
-By booting into kernel 2.6.16-2-686 (Debian Unstable) instead of the
-2.6.17-686 I had been using when previously reporting problems, MIDI
-playback was perfect, even under heavy disk load.
-
-So it appears to be a problem with 2.6.17-686 kernel on Debian (which is
-compiled for SMP, unlike the other kernels I've run).
+Sorry to say that but I did not understand "snd_rawmidi" messages.
+I am not that good. Please can you tell me how can i fix the problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
-07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
-07-02-06 15:37 amarsh04       Note Added: 0010791                          
-07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
-07-03-06 02:57 amarsh04       Note Added: 0010796                          
-07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
-     
-07-03-06 18:05 rlrevell       Note Added: 0010801                          
-07-03-06 20:24 riesebie       Note Added: 0010806                          
-07-03-06 20:25 riesebie       Note Edited: 0010806                         
-07-04-06 03:23 amarsh04       Note Added: 0010813                          
-07-04-06 04:58 phorn          Note Added: 0010814                          
-07-04-06 07:20 amarsh04       Note Added: 0010816                          
+06-25-06 16:27 adeel          New Issue                                    
+06-25-06 16:27 adeel          File Added: output.txt                       
+06-25-06 16:27 adeel          Distribution              => redhat          
+06-25-06 16:27 adeel          Kernel Version            => 2.6.11-1.1369_FC4
+06-29-06 09:31 adeel          Note Added: 0010644                          
+06-30-06 17:49 adeel          Issue Monitored: jangutter                    
+06-30-06 17:49 adeel          Issue Monitored: jan_k                       
+06-30-06 17:49 adeel          Issue Monitored: jaredgreenwald                   
+
+06-30-06 17:49 adeel          Issue Monitored: jaskjok                     
+06-30-06 17:49 adeel          Issue Monitored: jb                          
+06-30-06 17:49 adeel          Issue Monitored: jbarco                      
+06-30-06 17:49 adeel          Issue Monitored: jbesiee                     
+06-30-06 17:49 adeel          Issue Monitored: jbgordon                    
+06-30-06 17:49 adeel          Note Added: 0010746                          
+06-30-06 18:47 Raymond        Note Added: 0010751                          
+06-30-06 18:57 Raymond        Note Edited: 0010751                         
+06-30-06 19:09 Raymond        Note Edited: 0010751                         
+07-04-06 09:33 adeel          Note Added: 0010817                          
 ======================================================================
 
 
