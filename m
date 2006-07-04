@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
 	playback
-Date: Tue, 4 Jul 2006 03:23:20 +0200
-Message-ID: <8b6756ebd0443c5420ea2098e8028ac9@bugtrack.alsa-project.org>
+Date: Tue, 4 Jul 2006 04:58:33 +0200
+Message-ID: <1366a62883e632c83c1bcee6df6cfa4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C007323A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD01A23A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 03:23:20 +0200 (MEST)
+	Tue,  4 Jul 2006 04:58:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian testing
 Kernel Version:             2.6.8-2-k7
 ======================================================================
 Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-04-2006 03:23 CEST
+Last Modified:              07-04-2006 04:58 CEST
 ======================================================================
 Summary:                    System freeze at end of MIDI playback
 Description: 
@@ -64,14 +64,6 @@ output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- riesebie - 07-03-06 20:25 
-----------------------------------------------------------------------
-Debian binaries patched with alsa-timer-irqsave.patch can be found at:
-http://www.lxtec.de/debarchiv/binary-i386/alsa-driver/
-
-
-
-----------------------------------------------------------------------
  amarsh04 - 07-04-06 03:23 
 ----------------------------------------------------------------------
 I installed linux-sound-base 1.0.11-3lxtec1 and alsa-base 1.0.11-3lxtec1 
@@ -81,6 +73,26 @@ little while until I did something that caused heavy hard disk activity
 (mandb), and then I had another solid lockup.
 
 I'm open to any other suggestions of what to try.
+
+----------------------------------------------------------------------
+ phorn - 07-04-06 04:58 
+----------------------------------------------------------------------
+The patch seems to at least have made the crash less frequent for me (i.e.
+I haven't run into it yet).
+
+The .deb packages didn't seem to compile for 2.6.17.3, but the Hg sources
+do work.
+
+amarsh04, you will likely get more information if you play from a
+text-mode console.
+To do this, hit Ctrl+Alt+F1 to bring you to the console, login, and use
+aplaymidi like in X...
+If you want disk activity, switch to ctrl+alt+F2 and cat a bunch of files,
+then return to ctrl+alt+F1.
+Hopefully, when the crash occurs, you will get a lot of output on your
+screen (which was hidden when running in X), and you can take a picture or
+copy the panic screen.
+To return to X, hit Ctrl+alt+F7.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +124,7 @@ Date Modified  Username       Field                    Change
 07-03-06 20:24 riesebie       Note Added: 0010806                          
 07-03-06 20:25 riesebie       Note Edited: 0010806                         
 07-04-06 03:23 amarsh04       Note Added: 0010813                          
+07-04-06 04:58 phorn          Note Added: 0010814                          
 ======================================================================
 
 
