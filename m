@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Tue, 4 Jul 2006 02:54:42 +0200
-Message-ID: <351ee76374f450728ed11367ea28ed0b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Tue, 4 Jul 2006 03:23:20 +0200
+Message-ID: <8b6756ebd0443c5420ea2098e8028ac9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 667A1235
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C007323A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 02:54:42 +0200 (MEST)
+	Tue,  4 Jul 2006 03:23:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,174 +26,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                skunk
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              07-04-2006 02:54 CEST
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              07-04-2006 03:23 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    System freeze at end of MIDI playback
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
 
-thanx for attention
-Marco
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-03-06 06:27 
+ riesebie - 07-03-06 20:25 
 ----------------------------------------------------------------------
-What is the model of your card ? lspci -vn
+Debian binaries patched with alsa-timer-irqsave.patch can be found at:
+http://www.lxtec.de/debarchiv/binary-i386/alsa-driver/
 
-It seem that not all features are implemented/available in some of the
-model.
 
-Refer to the comment in the source code 
-
-For capture from Mic in or Line in.
-Digital/Analog ( switch must be in Analog mode for CAPTURE. )
- 
-Do you find this switch in kmix ?
 
 ----------------------------------------------------------------------
- Raymond - 07-04-06 02:54 
+ amarsh04 - 07-04-06 03:23 
 ----------------------------------------------------------------------
-I don't have this card and the driver seem still in development.
+I installed linux-sound-base 1.0.11-3lxtec1 and alsa-base 1.0.11-3lxtec1 
+Attempting playmidi -a somefile.mid caused an immediate lockup, so I
+rebooted and tried again in single user mode. The MIDI file played for a
+little while until I did something that caused heavy hard disk activity
+(mandb), and then I had another solid lockup.
 
-The driver seem to forget to initialise the hardware to the default value
-of the enumerated control for some of the card. After the driver is
-initialised, alsactl restore will not write the corresponding hardware
-register when the restored value is same as the default value of the
-enumerated control.
-
-This means that you may need to switch the 'Capture Source' or 'Shared
-Line in/Mic out' to another value and back to the value you wanted once to
-ensure the  value is write to the hardware register
+I'm open to any other suggestions of what to try.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
-06-25-06 04:33 Raymond        Note Edited: 0010498                         
-06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
-06-25-06 12:18 Cimmo          Note Added: 0010506                          
-06-25-06 12:20 Cimmo          Note Edited: 0010506                         
-06-25-06 14:05 Raymond        Note Added: 0010508                          
-06-25-06 14:46 Cimmo          File Added: pcm                              
-06-25-06 14:46 Cimmo          File Added: cards                            
-06-25-06 14:47 Cimmo          Note Added: 0010509                          
-06-25-06 15:24 Raymond        Note Added: 0010511                          
-06-25-06 15:26 Raymond        Note Edited: 0010511                         
-06-25-06 15:32 Cimmo          Note Added: 0010512                          
-06-25-06 18:29 Cimmo          Note Edited: 0010512                         
-06-25-06 18:30 Cimmo          Note Edited: 0010512                         
-06-25-06 18:32 Cimmo          Note Edited: 0010512                         
-06-27-06 09:01 Raymond        Note Added: 0010569                          
-06-27-06 09:29 Raymond        Note Edited: 0010569                         
-06-27-06 18:56 Cimmo          Note Added: 0010597                          
-06-27-06 19:07 rlrevell       Note Added: 0010598                          
-06-28-06 04:25 Raymond        Note Added: 0010606                          
-06-28-06 04:33 rlrevell       Note Added: 0010607                          
-06-28-06 10:45 Cimmo          Note Added: 0010612                          
-06-28-06 10:46 Cimmo          Note Edited: 0010612                         
-06-28-06 16:15 rlrevell       Note Added: 0010619                          
-06-28-06 16:36 Cimmo          Note Added: 0010621                          
-06-28-06 17:30 rlrevell       Note Added: 0010623                          
-06-30-06 11:05 Cimmo          Note Added: 0010725                          
-06-30-06 12:06 Cimmo          Note Added: 0010726                          
-06-30-06 12:18 Raymond        Note Added: 0010727                          
-06-30-06 12:24 Cimmo          Note Added: 0010728                          
-06-30-06 13:04 Raymond        Note Added: 0010729                          
-06-30-06 13:07 Raymond        Note Edited: 0010729                         
-06-30-06 13:08 Raymond        Note Edited: 0010729                         
-06-30-06 13:24 Raymond        Note Added: 0010731                          
-06-30-06 13:40 Cimmo          Note Added: 0010732                          
-06-30-06 15:04 Raymond        Note Added: 0010736                          
-06-30-06 16:14 rlrevell       Note Added: 0010737                          
-06-30-06 16:42 Cimmo          Note Added: 0010741                          
-06-30-06 16:50 rlrevell       Note Added: 0010742                          
-06-30-06 17:04 Cimmo          Note Added: 0010743                          
-06-30-06 17:09 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 Cimmo          Note Edited: 0010743                         
-06-30-06 17:11 rlrevell       Note Added: 0010744                          
-06-30-06 17:15 rlrevell       Note Added: 0010745                          
-07-02-06 04:14 Raymond        Note Added: 0010769                          
-07-02-06 04:24 Raymond        Note Edited: 0010769                         
-07-02-06 04:38 Raymond        Note Added: 0010770                          
-07-02-06 05:13 Raymond        Note Added: 0010771                          
-07-02-06 11:19 Cimmo          File Added: test.state                       
-07-02-06 11:19 Cimmo          Note Added: 0010774                          
-07-02-06 11:47 Raymond        Note Added: 0010776                          
-07-02-06 12:07 Cimmo          File Added: amixer                           
-07-02-06 12:08 Cimmo          Note Added: 0010777                          
-07-02-06 12:23 Raymond        Note Added: 0010778                          
-07-02-06 12:25 Raymond        Note Edited: 0010778                         
-07-02-06 12:28 Cimmo          Note Added: 0010779                          
-07-02-06 12:29 Cimmo          Note Edited: 0010779                         
-07-02-06 12:30 Cimmo          Note Edited: 0010779                         
-07-02-06 12:30 Cimmo          Note Edited: 0010779                         
-07-02-06 12:45 Raymond        Note Added: 0010780                          
-07-02-06 12:50 Raymond        Note Edited: 0010780                         
-07-02-06 12:58 Cimmo          Note Added: 0010781                          
-07-02-06 12:59 Raymond        Note Added: 0010782                          
-07-02-06 13:04 Raymond        Note Edited: 0010782                         
-07-02-06 13:17 Cimmo          File Added: oss_mixer                        
-07-02-06 14:05 Raymond        Note Added: 0010783                          
-07-02-06 14:15 Cimmo          File Added: alsamixer-capture.png                 
-  
-07-02-06 14:15 Cimmo          Note Added: 0010784                          
-07-02-06 14:25 Raymond        Note Added: 0010785                          
-07-02-06 14:37 Cimmo          Note Added: 0010786                          
-07-02-06 14:50 Raymond        Note Added: 0010787                          
-07-02-06 14:57 Raymond        Note Added: 0010788                          
-07-02-06 15:00 Cimmo          Note Added: 0010789                          
-07-02-06 15:01 Cimmo          Note Edited: 0010789                         
-07-02-06 15:33 Raymond        Note Added: 0010790                          
-07-02-06 16:57 Raymond        Note Deleted: 0010790                        
-07-03-06 06:27 Raymond        Note Added: 0010797                          
-07-03-06 11:07 Cimmo          File Added: kmix1.png                        
-07-03-06 11:07 Cimmo          File Added: kmix2.png                        
-07-03-06 11:07 Cimmo          File Added: kmix3.png                        
-07-03-06 11:08 Cimmo          File Added: lspci                            
-07-04-06 02:54 Raymond        Note Added: 0010812                          
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
+06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:50 rlrevell       Note Added: 0010088                          
+06-08-06 09:28 skunk          Note Added: 0010109                          
+06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
+               
+06-27-06 23:43 phorn          Note Added: 0010602                          
+06-28-06 00:03 rlrevell       Note Added: 0010603                          
+06-28-06 03:50 phorn          Note Added: 0010605                          
+07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
+07-02-06 15:37 amarsh04       Note Added: 0010791                          
+07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
+07-03-06 02:57 amarsh04       Note Added: 0010796                          
+07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
+     
+07-03-06 18:05 rlrevell       Note Added: 0010801                          
+07-03-06 20:24 riesebie       Note Added: 0010806                          
+07-03-06 20:25 riesebie       Note Edited: 0010806                         
+07-04-06 03:23 amarsh04       Note Added: 0010813                          
 ======================================================================
 
 
