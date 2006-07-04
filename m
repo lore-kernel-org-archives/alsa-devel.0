@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002205]: Everything seems ok,
-	but there's no sound
-Date: Tue, 4 Jul 2006 21:19:04 +0200
-Message-ID: <4e13afec95074f5c12e94e564b5946fa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001244]: error with firmware with echo
+	layla20
+Date: Tue, 4 Jul 2006 22:02:58 +0200
+Message-ID: <49dae7b387b306026db491cd3209ea07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18260234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B04A3239
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 21:19:04 +0200 (MEST)
+	Tue,  4 Jul 2006 22:02:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244> 
 ======================================================================
-Reported By:                rematch
-Assigned To:                tiwai
+Reported By:                hennewou
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2205
-Category:                   PCI - hda-intel
+Issue ID:                   1244
+Category:                   PCI - echoaudio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-13-2006 11:31 CEST
-Last Modified:              07-04-2006 21:19 CEST
+Date Submitted:             07-09-2005 02:22 CEST
+Last Modified:              07-04-2006 22:02 CEST
 ======================================================================
-Summary:                    Everything seems ok, but there's no sound
+Summary:                    error with firmware with echo layla20
 Description: 
-After loading snd-hda-intel modul, there's no sound on my acer travelmate
-3012 laptop. 
-OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
+I get this error when loading snd-layla20 card:
 
+ACPI: PCI interrupt 0000:02:0d.0[A] -> GSI 21 (level, low) -> IRQ 177
+ALSA /usr/src/modules/alsa-driver/pci/echoaudio/echoaudio.c:41:
+get_firmware(): Firmware not available (-2)
+Echoaudio Layla20: probe of 0000:02:0d.0 failed with error -2
+
+I compiled an alsa driver for layla20 (I had to patch the alsa-driver tree
+a year ago for linux-2.4.25, and that worked (and still does).
+
+
+(By the way, For some reason I can only compile snd-layla20 according to
+debian package manager (apt-get install alsa-source ....) . With the
+original alsa-driver-1.0.9a.tar.bz2, the echoaudio modules refuse to
+compile.)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001310 Driver cant find firmware for Layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-04-06 19:56 
+ rlrevell - 08-10-05 01:08 
 ----------------------------------------------------------------------
-Does it work if you use an app that supports ALSA natively?
-
-For example does "aplay file.wav" work?
+Submitter: do the fix(es) described in #1310 help you?
 
 ----------------------------------------------------------------------
- rematch - 07-04-06 21:19 
+ Adrian Bunk - 07-04-06 22:02 
 ----------------------------------------------------------------------
-no.
-when i try to use aplay:
-
-ALSA lib pcm_direct.c:819:(snd_pcm_direct_initialize_slave)
-snd_pcm_hw_params_any failed
-ALSA lib pcm_dmix.c:874:(snd_pcm_dmix_open) unable to initialize slave
-aplay: main:533: audio open error: Invalid argument
+Please reopen this bug if there's still some problem present not already
+handled in #1310.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-06 11:31 rematch        New Issue                                    
-06-13-06 11:48 rematch        Issue Monitored: rematch                     
-06-27-06 09:04 rematch        Note Added: 0010570                          
-06-27-06 12:16 tiwai          Note Added: 0010583                          
-06-27-06 12:24 rematch        Note Added: 0010584                          
-06-28-06 09:25 rematch        Note Added: 0010611                          
-07-04-06 19:49 rematch        Note Added: 0010826                          
-07-04-06 19:56 rlrevell       Note Added: 0010827                          
-07-04-06 21:19 rematch        Note Added: 0010828                          
+07-09-05 02:22 hennewou       New Issue                                    
+07-09-05 02:22 hennewou       Distribution              => Debian          
+07-09-05 02:22 hennewou       Kernel Version            => 2.6.11          
+08-05-05 05:36 oxi            Issue Monitored: oxi                         
+08-05-05 08:48 perex          Relationship added       related to 0001310  
+08-05-05 08:49 perex          Assigned To              perex =>            
+08-05-05 08:49 perex          Description Updated                          
+08-05-05 08:50 perex          Status                   assigned => new     
+08-10-05 01:08 rlrevell       Note Added: 0005744                          
+08-16-05 05:17 oxi            Issue End Monitor: oxi                       
+07-04-06 22:02 Adrian Bunk    Note Added: 0010829                          
+07-04-06 22:02 Adrian Bunk    Resolution               open => duplicate   
+07-04-06 22:02 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - echoaudio
 ======================================================================
 
 
