@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Tue, 4 Jul 2006 19:32:15 +0200
-Message-ID: <3a2dbc21ba5112f18c094b2e6dad99a5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002205]: Everything seems ok,
+	but there's no sound
+Date: Tue, 4 Jul 2006 19:49:13 +0200
+Message-ID: <fdfc29bfe029a6662552e3a6907873fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EAE9229
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A55B7229
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 19:32:15 +0200 (MEST)
+	Tue,  4 Jul 2006 19:49:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,103 +26,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
 ======================================================================
-Reported By:                skunk
-Assigned To:                
+Reported By:                rematch
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   2205
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-04-2006 19:32 CEST
+Date Submitted:             06-13-2006 11:31 CEST
+Last Modified:              07-04-2006 19:49 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    Everything seems ok, but there's no sound
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+After loading snd-hda-intel modul, there's no sound on my acer travelmate
+3012 laptop. 
+OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
-
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
-
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-04-06 17:56 
+ rematch - 06-28-06 09:25 
 ----------------------------------------------------------------------
-amarsh04:
+tiwai, did you commit a patch? i rsynced today morning the hg, i tried
+install it with hginstall (i had a few problem with the patch), and after
+the compile no effect. 
 
-"fakeroot make-kpkg modules_image
-The modules_* targets should be called from a fully configured source
-tree,
- and one where at least make-kpkg debian has been run"
+atm:
+** WARNING **: alsa_setup_mixer(): Failed to find mixer element: PCM
+ALSA lib pcm_direct.c:819:(snd_pcm_direct_initialize_slave)
+snd_pcm_hw_params_any failed
+ALSA lib pcm_dmix.c:874:(snd_pcm_dmix_open) unable to initialize slave
 
-/usr/src/linux-headers-2.6.17-1 is not a fully configured kernel source
-directory, it only contains the headers.
+** WARNING **: alsa_setup(): Failed to open pcm device (default): Invalid
+argument
 
-Doing this "the Debian way" is MUCH more trouble than it's worth IMHO.  I
-just ./configure, make, make install.
+the strace output:
+open("/dev/snd/controlC0", O_RDONLY)    = 8
+close(8)                                = 0
+open("/dev/snd/controlC0", O_RDWR)      = 8
+ioctl(8, USBDEVFS_CONTROL, 0xafe8b488)  = 0
+fcntl64(8, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(8, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+ioctl(8, USBDEVFS_RELEASEINTERFACE, 0xafe8b574) = 0
+ioctl(8, USBDEVFS_RELEASEINTERFACE, 0xafe8b574) = 0
+[...]
+ioctl(8, USBDEVFS_IOCTL, 0xafe8adf0)    = 0
+ioctl(8, USBDEVFS_CONNECTINFO, 0xafe8b270) = 0
+ioctl(8, USBDEVFS_IOCTL, 0xafe8adf0)    = 0
+ioctl(8, USBDEVFS_DISCONNECT, 0xafe8b534) = 0
+write(2, "\n** ", 4)                    = 4
+write(2, "WARNING **: ", 12)            = 12
+write(2, "alsa_setup_mixer(): Failed to find mixer element: PCM", 53) =
+53
+write(2, "\n", 1)                       = 1
+
+tia.
 
 ----------------------------------------------------------------------
- crimsunkg - 07-04-06 19:32 
+ rematch - 07-04-06 19:49 
 ----------------------------------------------------------------------
-Install the alsa-source deb that riesebie provides. Make sure you have
-linux-headers-$(uname -r), module-assistant, and build-essential
-installed, then invoke ``module-assistant a-i alsa-source''.
+i've tried many version of hg, but there's no effect. i compiled the latest
+version today but:
+
+chaka:~% xmms mp3/BabaYetu.mp3
+** WARNING **: SNDCTL_DSP_SETFMT ioctl failed: Invalid argument
+** WARNING **: SNDCTL_DSP_SPEED ioctl failed: Invalid argument
+
+and no effect. any idea or should i buy another laptop?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
-07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
-07-02-06 15:37 amarsh04       Note Added: 0010791                          
-07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
-07-03-06 02:57 amarsh04       Note Added: 0010796                          
-07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
-     
-07-03-06 18:05 rlrevell       Note Added: 0010801                          
-07-03-06 20:24 riesebie       Note Added: 0010806                          
-07-03-06 20:25 riesebie       Note Edited: 0010806                         
-07-04-06 03:23 amarsh04       Note Added: 0010813                          
-07-04-06 04:58 phorn          Note Added: 0010814                          
-07-04-06 07:20 amarsh04       Note Added: 0010816                          
-07-04-06 17:07 rlrevell       Note Added: 0010821                          
-07-04-06 17:46 amarsh04       Note Added: 0010822                          
-07-04-06 17:53 rlrevell       Note Added: 0010823                          
-07-04-06 17:56 rlrevell       Note Added: 0010824                          
-07-04-06 19:32 crimsunkg      Note Added: 0010825                          
+06-13-06 11:31 rematch        New Issue                                    
+06-13-06 11:48 rematch        Issue Monitored: rematch                     
+06-27-06 09:04 rematch        Note Added: 0010570                          
+06-27-06 12:16 tiwai          Note Added: 0010583                          
+06-27-06 12:24 rematch        Note Added: 0010584                          
+06-28-06 09:25 rematch        Note Added: 0010611                          
+07-04-06 19:49 rematch        Note Added: 0010826                          
 ======================================================================
 
 
