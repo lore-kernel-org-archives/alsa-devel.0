@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002256]: timer.h doesn't compile with
 	-ansi
-Date: Tue, 4 Jul 2006 05:51:32 +0200
-Message-ID: <dd04bcab291952aa1cc0b2d8a8f9f36c@bugtrack.alsa-project.org>
+Date: Tue, 4 Jul 2006 07:01:59 +0200
+Message-ID: <974473c134be0f3320a6698782486c11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 524BC234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AD4C18E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 05:51:32 +0200 (MEST)
+	Tue,  4 Jul 2006 07:02:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2256> 
 ======================================================================
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-04-2006 05:51 CEST
-Last Modified:              07-04-2006 05:51 CEST
+Last Modified:              07-04-2006 07:01 CEST
 ======================================================================
 Summary:                    timer.h doesn't compile with -ansi
 Description: 
@@ -56,10 +56,20 @@ incomplete type
 $
 ======================================================================
 
+----------------------------------------------------------------------
+ joeljkp - 07-04-06 07:01 
+----------------------------------------------------------------------
+Adding the following line at the top of asoundlib.h, timer.h, or above the
+#include <time.h> in global.h fixes the problem.
+
+#define _POSIX_C_SOURCE 199506L
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-04-06 05:51 joeljkp        New Issue                                    
+07-04-06 05:52 joeljkp        Issue Monitored: joeljkp                     
+07-04-06 07:01 joeljkp        Note Added: 0010815                          
 ======================================================================
 
 
