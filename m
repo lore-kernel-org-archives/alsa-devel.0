@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001888]: MIDI external output
-	occasionally freezes the machine
-Date: Tue, 4 Jul 2006 02:22:51 +0200
-Message-ID: <ee657fde6622a12e4eccb6879f2f280a@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Tue, 4 Jul 2006 02:54:42 +0200
+Message-ID: <351ee76374f450728ed11367ea28ed0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F2B5196
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 667A1235
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 02:22:51 +0200 (MEST)
+	Tue,  4 Jul 2006 02:54:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,73 +26,174 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1888> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                pigeon
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1888
-Category:                   PCI - ymfpci
-Reproducibility:            random
-Severity:                   block
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.14.4 SMP, self-built
 ======================================================================
-Date Submitted:             03-02-2006 09:59 CET
-Last Modified:              07-04-2006 02:22 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              07-04-2006 02:54 CEST
 ======================================================================
-Summary:                    MIDI external output occasionally freezes the
-machine
+Summary:                    Alsa mixer lack of some functions
 Description: 
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-Since I've upgraded my kernel from 2.4 to 2.6.14.4, I'm having random
-machine freezes when using the external MIDI port on my ymf soundcard. It
-can happen just by playing midi using "pmidi -p 64:0 <midi file>". It
-freezes sometimes when I simply ctrl-c it. Rosegarden also suffers from
-the same behavior while starting and/or stopping a playback.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
-My external MIDI is connected to a Yamaha digital piano.
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
 
-I do not have this problem when I was using a 2.4 kernel, and a self built
-alsa driver (possibly version 1.0.9).
-
-The snd-ymfpci driver is loaded with the follow options:
-mpu_port=1 fm_port=1 joystick_port=1
-
-Thanks.
-
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-19-06 15:38 
+ Raymond - 07-03-06 06:27 
 ----------------------------------------------------------------------
-http://www.alsa-project.org/changes/v1-0-9--v1-0-10.txt
+What is the model of your card ? lspci -vn
 
+It seem that not all features are implemented/available in some of the
+model.
 
-If you sure that midi still work on ALSA 1.0.9, you may need to find out
-which patch cause the problem
+Refer to the comment in the source code 
 
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=25ac64e78c4c;file=pci/ymfpci/ymfpci_main.c;style=gitweb
+For capture from Mic in or Line in.
+Digital/Analog ( switch must be in Analog mode for CAPTURE. )
+ 
+Do you find this switch in kmix ?
 
 ----------------------------------------------------------------------
- Sir Boss - 07-04-06 02:22 
+ Raymond - 07-04-06 02:54 
 ----------------------------------------------------------------------
-I'm also having the same problem...also with a Yamaha keyboard.  The lockup
-doesn't occur if the keyboard is off, even if its sound card is set to be
-output.  Has anyone found a fix for this yet?
+I don't have this card and the driver seem still in development.
+
+The driver seem to forget to initialise the hardware to the default value
+of the enumerated control for some of the card. After the driver is
+initialised, alsactl restore will not write the corresponding hardware
+register when the restored value is same as the default value of the
+enumerated control.
+
+This means that you may need to switch the 'Capture Source' or 'Shared
+Line in/Mic out' to another value and back to the value you wanted once to
+ensure the  value is write to the hardware register
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-06 09:59 pigeon         New Issue                                    
-03-02-06 09:59 pigeon         Distribution              => Debian testing  
-03-02-06 09:59 pigeon         Kernel Version            => 2.6.14.4 SMP,
-self-built
-06-19-06 15:38 Raymond        Note Added: 0010314                          
-07-04-06 02:22 Sir Boss       Note Added: 0010811                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
+06-25-06 12:20 Cimmo          Note Edited: 0010506                         
+06-25-06 14:05 Raymond        Note Added: 0010508                          
+06-25-06 14:46 Cimmo          File Added: pcm                              
+06-25-06 14:46 Cimmo          File Added: cards                            
+06-25-06 14:47 Cimmo          Note Added: 0010509                          
+06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
+06-25-06 18:29 Cimmo          Note Edited: 0010512                         
+06-25-06 18:30 Cimmo          Note Edited: 0010512                         
+06-25-06 18:32 Cimmo          Note Edited: 0010512                         
+06-27-06 09:01 Raymond        Note Added: 0010569                          
+06-27-06 09:29 Raymond        Note Edited: 0010569                         
+06-27-06 18:56 Cimmo          Note Added: 0010597                          
+06-27-06 19:07 rlrevell       Note Added: 0010598                          
+06-28-06 04:25 Raymond        Note Added: 0010606                          
+06-28-06 04:33 rlrevell       Note Added: 0010607                          
+06-28-06 10:45 Cimmo          Note Added: 0010612                          
+06-28-06 10:46 Cimmo          Note Edited: 0010612                         
+06-28-06 16:15 rlrevell       Note Added: 0010619                          
+06-28-06 16:36 Cimmo          Note Added: 0010621                          
+06-28-06 17:30 rlrevell       Note Added: 0010623                          
+06-30-06 11:05 Cimmo          Note Added: 0010725                          
+06-30-06 12:06 Cimmo          Note Added: 0010726                          
+06-30-06 12:18 Raymond        Note Added: 0010727                          
+06-30-06 12:24 Cimmo          Note Added: 0010728                          
+06-30-06 13:04 Raymond        Note Added: 0010729                          
+06-30-06 13:07 Raymond        Note Edited: 0010729                         
+06-30-06 13:08 Raymond        Note Edited: 0010729                         
+06-30-06 13:24 Raymond        Note Added: 0010731                          
+06-30-06 13:40 Cimmo          Note Added: 0010732                          
+06-30-06 15:04 Raymond        Note Added: 0010736                          
+06-30-06 16:14 rlrevell       Note Added: 0010737                          
+06-30-06 16:42 Cimmo          Note Added: 0010741                          
+06-30-06 16:50 rlrevell       Note Added: 0010742                          
+06-30-06 17:04 Cimmo          Note Added: 0010743                          
+06-30-06 17:09 Cimmo          Note Edited: 0010743                         
+06-30-06 17:11 Cimmo          Note Edited: 0010743                         
+06-30-06 17:11 rlrevell       Note Added: 0010744                          
+06-30-06 17:15 rlrevell       Note Added: 0010745                          
+07-02-06 04:14 Raymond        Note Added: 0010769                          
+07-02-06 04:24 Raymond        Note Edited: 0010769                         
+07-02-06 04:38 Raymond        Note Added: 0010770                          
+07-02-06 05:13 Raymond        Note Added: 0010771                          
+07-02-06 11:19 Cimmo          File Added: test.state                       
+07-02-06 11:19 Cimmo          Note Added: 0010774                          
+07-02-06 11:47 Raymond        Note Added: 0010776                          
+07-02-06 12:07 Cimmo          File Added: amixer                           
+07-02-06 12:08 Cimmo          Note Added: 0010777                          
+07-02-06 12:23 Raymond        Note Added: 0010778                          
+07-02-06 12:25 Raymond        Note Edited: 0010778                         
+07-02-06 12:28 Cimmo          Note Added: 0010779                          
+07-02-06 12:29 Cimmo          Note Edited: 0010779                         
+07-02-06 12:30 Cimmo          Note Edited: 0010779                         
+07-02-06 12:30 Cimmo          Note Edited: 0010779                         
+07-02-06 12:45 Raymond        Note Added: 0010780                          
+07-02-06 12:50 Raymond        Note Edited: 0010780                         
+07-02-06 12:58 Cimmo          Note Added: 0010781                          
+07-02-06 12:59 Raymond        Note Added: 0010782                          
+07-02-06 13:04 Raymond        Note Edited: 0010782                         
+07-02-06 13:17 Cimmo          File Added: oss_mixer                        
+07-02-06 14:05 Raymond        Note Added: 0010783                          
+07-02-06 14:15 Cimmo          File Added: alsamixer-capture.png                 
+  
+07-02-06 14:15 Cimmo          Note Added: 0010784                          
+07-02-06 14:25 Raymond        Note Added: 0010785                          
+07-02-06 14:37 Cimmo          Note Added: 0010786                          
+07-02-06 14:50 Raymond        Note Added: 0010787                          
+07-02-06 14:57 Raymond        Note Added: 0010788                          
+07-02-06 15:00 Cimmo          Note Added: 0010789                          
+07-02-06 15:01 Cimmo          Note Edited: 0010789                         
+07-02-06 15:33 Raymond        Note Added: 0010790                          
+07-02-06 16:57 Raymond        Note Deleted: 0010790                        
+07-03-06 06:27 Raymond        Note Added: 0010797                          
+07-03-06 11:07 Cimmo          File Added: kmix1.png                        
+07-03-06 11:07 Cimmo          File Added: kmix2.png                        
+07-03-06 11:07 Cimmo          File Added: kmix3.png                        
+07-03-06 11:08 Cimmo          File Added: lspci                            
+07-04-06 02:54 Raymond        Note Added: 0010812                          
 ======================================================================
 
 
