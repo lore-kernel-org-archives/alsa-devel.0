@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002205]: Everything seems ok,
-	but there's no sound
-Date: Tue, 4 Jul 2006 19:56:45 +0200
-Message-ID: <07f2b6c2c616ee3483d88f88a881949e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001568]: terratec phase 28 -no
+	recording
+Date: Tue, 4 Jul 2006 20:33:20 +0200
+Message-ID: <8df0e641fbd6e03f0f0a14374f599c64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74A1B229
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE65612B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 19:56:45 +0200 (MEST)
+	Tue,  4 Jul 2006 20:33:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1568> 
 ======================================================================
-Reported By:                rematch
-Assigned To:                tiwai
+Reported By:                toncat
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2205
-Category:                   PCI - hda-intel
+Issue ID:                   1568
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               slackware
+Kernel Version:             2.6.14 with rt patch
 ======================================================================
-Date Submitted:             06-13-2006 11:31 CEST
-Last Modified:              07-04-2006 19:56 CEST
+Date Submitted:             11-16-2005 19:13 CET
+Last Modified:              07-04-2006 20:33 CEST
 ======================================================================
-Summary:                    Everything seems ok, but there's no sound
+Summary:                    terratec phase 28 -no recording
 Description: 
-After loading snd-hda-intel modul, there's no sound on my acer travelmate
-3012 laptop. 
-OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
-
+the terratec phase28 seems to work only in playback. 
+no recording is possible. alsamixer doesn't save all values. 
+there a crude device names. 
 ======================================================================
-
-----------------------------------------------------------------------
- rematch - 07-04-06 19:49 
-----------------------------------------------------------------------
-i've tried many version of hg, but there's no effect. i compiled the latest
-version today but:
-
-chaka:~% xmms mp3/BabaYetu.mp3
-** WARNING **: SNDCTL_DSP_SETFMT ioctl failed: Invalid argument
-** WARNING **: SNDCTL_DSP_SPEED ioctl failed: Invalid argument
-
-and no effect. any idea or should i buy another laptop?
-
-----------------------------------------------------------------------
- rlrevell - 07-04-06 19:56 
-----------------------------------------------------------------------
-Does it work if you use an app that supports ALSA natively?
-
-For example does "aplay file.wav" work?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-06 11:31 rematch        New Issue                                    
-06-13-06 11:48 rematch        Issue Monitored: rematch                     
-06-27-06 09:04 rematch        Note Added: 0010570                          
-06-27-06 12:16 tiwai          Note Added: 0010583                          
-06-27-06 12:24 rematch        Note Added: 0010584                          
-06-28-06 09:25 rematch        Note Added: 0010611                          
-07-04-06 19:49 rematch        Note Added: 0010826                          
-07-04-06 19:56 rlrevell       Note Added: 0010827                          
+11-16-05 19:13 toncat         New Issue                                    
+11-16-05 19:13 toncat         Distribution              => slackware       
+11-16-05 19:13 toncat         Kernel Version            => 2.6.14 with rt patch
+07-04-06 20:33 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - ice1724
 ======================================================================
 
 
