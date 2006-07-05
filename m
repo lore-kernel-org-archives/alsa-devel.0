@@ -1,15 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002005]: problems with make
-Date: Wed, 5 Jul 2006 23:48:29 +0200
-Message-ID: <83f35d7590955a1d65dd3e0b4c0b2a5f@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: macro `AM_PATH_ALSA' not found in library
+Date: Wed, 05 Jul 2006 18:20:26 -0400
+Message-ID: <1152138027.15837.174.camel@mindpipe>
+References: <1152127459.15837.127.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5ACC259
-	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 23:48:29 +0200 (MEST)
+In-Reply-To: <1152127459.15837.127.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,78 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-07-05 at 15:24 -0400, Lee Revell wrote:
+> I have a script that builds alsa-lib and alsa-utils for an embedded
+> platform.
+> 
+> It works perfectly on all my Ubuntu machines.  But when I try it on an
+> FC4 box, alsa-lib builds correctly, but alsa-utils fails like so:
+> 
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2005> 
-======================================================================
-Reported By:                mramirez
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2005
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.15-1.2054_FC5smp
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-05-2006 19:59 CEST
-Last Modified:              07-05-2006 23:48 CEST
-======================================================================
-Summary:                    problems with make
-Description: 
-I've dowload the cvs version of alsa, and try install on my laptop, but the
-make process exit whit a bad status.
-======================================================================
+OK, I've tried to resolve this by having my script run "cvscompile".
+But it stops at:
 
-----------------------------------------------------------------------
- Raymond - 04-06-06 09:01 
-----------------------------------------------------------------------
-Please install the package with full kernel sources for your distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /lib/modules/2.6.15-1.2054_FC5smp/source).
+"Copying file m4/xsize.m4
 
-After you installed the kernel source
+Please run 'aclocal -I m4' to regenerate the aclocal.m4 file.
+You need aclocal from GNU automake 1.5 (or newer) to do this.
+Then run 'autoconf' to regenerate the configure file.
 
-Compilation from CVS sources
-============================
+You might also want to copy the convenience header file gettext.h
+from the /usr/share/gettext directory into your package.
+It is a wrapper around <libintl.h> that implements the configure
+--disable-nls
+option.
 
-You need GNU packages autoconf and automake installed in your system
-to compile CVS sources of alsa-driver package.
+Press Return to acknowledge the previous two paragraphs."
 
-For compilation you can use these commands:
+I cannot press return here because I must be able to build
+non-interactively using a script.
 
-	make ALSAKERNELDIR=../alsa-kernel all-deps
-		(if the alsa-kernel-dir is really there)
-	aclocal
-	autoconf
-	./configure
-	make dep
-	make
+How can I silence these warnings?  Even if I run "aclocal -I m4" then
+"autoconf" I still get this prompt on the next build.
 
-The included cvscompile script does this job for you.
+Lee
 
-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-05-06 19:59 mramirez       New Issue                                    
-04-05-06 19:59 mramirez       Distribution              => Fedora Core 5   
-04-05-06 19:59 mramirez       Kernel Version            => 2.6.15-1.2054_FC5smp
-04-06-06 08:59 Raymond        Note Added: 0009123                          
-04-06-06 09:01 Raymond        Note Edited: 0009123                         
-07-05-06 23:48 Adrian Bunk    Status                   assigned => closed  
-07-05-06 23:48 Adrian Bunk    Resolution               open => not an issue
-======================================================================
 
 
 
