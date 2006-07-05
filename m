@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Wed, 5 Jul 2006 13:20:13 +0200
-Message-ID: <5b60e12067ddf5a5bc8186a1b42af756@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001888]: MIDI external output
+	occasionally freezes the machine
+Date: Wed, 5 Jul 2006 15:03:22 +0200
+Message-ID: <c9e3c56319a099ca13306c96b72a764e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DD52257
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A46324F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 13:20:13 +0200 (MEST)
+	Wed,  5 Jul 2006 15:03:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,99 +26,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1888> 
 ======================================================================
-Reported By:                skunk
+Reported By:                pigeon
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
+Issue ID:                   1888
+Category:                   PCI - ymfpci
 Reproducibility:            random
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
 Status:                     new
 Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
+Kernel Version:             2.6.14.4 SMP, self-built
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-05-2006 13:20 CEST
+Date Submitted:             03-02-2006 09:59 CET
+Last Modified:              07-05-2006 15:03 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    MIDI external output occasionally freezes the
+machine
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
+Since I've upgraded my kernel from 2.4 to 2.6.14.4, I'm having random
+machine freezes when using the external MIDI port on my ymf soundcard. It
+can happen just by playing midi using "pmidi -p 64:0 <midi file>". It
+freezes sometimes when I simply ctrl-c it. Rosegarden also suffers from
+the same behavior while starting and/or stopping a playback.
 
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+My external MIDI is connected to a Yamaha digital piano.
 
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
+I do not have this problem when I was using a 2.4 kernel, and a self built
+alsa driver (possibly version 1.0.9).
+
+The snd-ymfpci driver is loaded with the follow options:
+mpu_port=1 fm_port=1 joystick_port=1
+
+Thanks.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- riesebie - 07-05-06 09:32 
+ Sir Boss - 07-04-06 02:22 
 ----------------------------------------------------------------------
-The next official Debian upload will include the alsa-timer-irqsave.patch
-;)
-Thanks for cooperation ;)
+I'm also having the same problem...also with a Yamaha keyboard.  The lockup
+doesn't occur if the keyboard is off, even if its sound card is set to be
+output.  Has anyone found a fix for this yet?
 
 ----------------------------------------------------------------------
- amarsh04 - 07-05-06 13:20 
+ Raymond - 07-05-06 15:03 
 ----------------------------------------------------------------------
-Now that I've downloaded alsa-source 1.0.11-3 from incoming.debian.org, I
-found the compilation instructions in
-/usr/share/doc/alsa-source/README.Debian to be adequate to describe the
-task of building a .deb of the modules. Then a simple dpkg -i installed
-the new ALSA modules.
+Post output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
+
+cat /proc/asound/timers
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
-07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
-07-02-06 15:37 amarsh04       Note Added: 0010791                          
-07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
-07-03-06 02:57 amarsh04       Note Added: 0010796                          
-07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
-     
-07-03-06 18:05 rlrevell       Note Added: 0010801                          
-07-03-06 20:24 riesebie       Note Added: 0010806                          
-07-03-06 20:25 riesebie       Note Edited: 0010806                         
-07-04-06 03:23 amarsh04       Note Added: 0010813                          
-07-04-06 04:58 phorn          Note Added: 0010814                          
-07-04-06 07:20 amarsh04       Note Added: 0010816                          
-07-04-06 17:07 rlrevell       Note Added: 0010821                          
-07-04-06 17:46 amarsh04       Note Added: 0010822                          
-07-04-06 17:53 rlrevell       Note Added: 0010823                          
-07-04-06 17:56 rlrevell       Note Added: 0010824                          
-07-04-06 19:32 crimsunkg      Note Added: 0010825                          
-07-05-06 05:34 amarsh04       Note Added: 0010831                          
-07-05-06 09:32 riesebie       Note Added: 0010833                          
-07-05-06 13:20 amarsh04       Note Added: 0010835                          
+03-02-06 09:59 pigeon         New Issue                                    
+03-02-06 09:59 pigeon         Distribution              => Debian testing  
+03-02-06 09:59 pigeon         Kernel Version            => 2.6.14.4 SMP,
+self-built
+06-19-06 15:38 Raymond        Note Added: 0010314                          
+07-04-06 02:22 Sir Boss       Note Added: 0010811                          
+07-05-06 15:03 Raymond        Note Added: 0010836                          
 ======================================================================
 
 
