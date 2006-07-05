@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001919]: Make can't finished
-Date: Wed, 5 Jul 2006 23:13:29 +0200
-Message-ID: <374bae1f11599c1142d6bdc95c498ba7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002206]: Steinberg VSL 2020
+Date: Wed, 5 Jul 2006 23:17:21 +0200
+Message-ID: <680ad79ab0da21c4315cfb90afcb609d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB86818D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5874E259
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 23:13:29 +0200 (MEST)
+	Wed,  5 Jul 2006 23:17:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,71 +23,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1919> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2206> 
 ======================================================================
-Reported By:                jakub_saran
+Reported By:                mr_DK
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1919
-Category:                   0_compilation problem_!!!
+Issue ID:                   2206
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.
-Resolution:                 not an issue
-Fixed in Version:           
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-13-2006 15:27 CET
-Last Modified:              07-05-2006 23:13 CEST
+Date Submitted:             06-13-2006 18:29 CEST
+Last Modified:              07-05-2006 23:17 CEST
 ======================================================================
-Summary:                    Make can't finished
+Summary:                    Steinberg VSL 2020
 Description: 
-First after congigure command shows "Hacking autoconf.h...". Then I type
-make and it shows: 
-Makefile:25: /home/linux: There is no such file or folder
-Makefile:25: drivers/AC: There is no such file or folder
-Makefile:25: 97: There is no such file or folder
-Makefile:25: Audio: There is no such file or folder
-Makefile:25: Drivers/alsa-driver-1.0.10/Rules.make: There is no such file
-or folder
-make[2]: *** No rules to make object
-`Drivers/alsa-driver-1.0.10/Rules.make'.
-Stop.
-make[2]: Leaving directory `/home/linux drivers/AC 97 Audio
-Drivers/alsa-driver-1.0.10/acore'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/home/linux drivers/AC 97 Audio
-Drivers/alsa-driver-1.0.10'
-make: *** [include/sndversions.h] Error 2
+Hello, I have a PCI soundcard of steinberg, the vsl 2020, but which is
+incompatible in linux... The card has a midi in and out, 2x ADAT in and 2x
+ADAT ot, SPDIF, RCA audio and out and a wordclock. It is quite the same as
+thos RME Hammerfall cards but not exactly.
+I have only windows drivers.. 
+Is it possible for you to create linux drivers so that I can make
+multitrack recordings using ardour...
+Thanks!!
+best regards
 
-It is translated from Polish to English so it can be different from
-orginal. What shoul I do? I've got ARSROC K7NF2-RAID motherboard with
-CMI9761/A audio codec.
-
-regard
-
-Jakub
-
+Hans cornelis
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-13-06 20:48 
-----------------------------------------------------------------------
-Don't put space in the directory name.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 15:27 jakub_saran    New Issue                                    
-03-13-06 15:27 jakub_saran    Kernel Version            => 2.6.            
-03-13-06 20:48 tiwai          Note Added: 0008462                          
-07-05-06 23:13 Adrian Bunk    Status                   assigned => closed  
-07-05-06 23:13 Adrian Bunk    Resolution               open => not an issue
+06-13-06 18:29 mr_DK          New Issue                                    
+06-13-06 18:29 mr_DK          Issue Monitored: mr_DK                       
+07-05-06 23:17 Adrian Bunk    Severity                 minor => feature    
+07-05-06 23:17 Adrian Bunk    Category                 0_compilation problem_!!!
+=> 1_OTHERS
 ======================================================================
 
 
