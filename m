@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002205]: Everything seems ok,
-	but there's no sound
-Date: Wed, 5 Jul 2006 15:23:59 +0200
-Message-ID: <4725d996f8a394cfb6aa69aae289aef2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002256]: timer.h doesn't compile with
+	-ansi
+Date: Wed, 5 Jul 2006 15:31:12 +0200
+Message-ID: <1528c6bd0f6ed5641e4b3f23824d1e08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A433256
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E708256
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 15:23:59 +0200 (MEST)
+	Wed,  5 Jul 2006 15:31:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,64 +26,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2256> 
 ======================================================================
-Reported By:                rematch
-Assigned To:                tiwai
+Reported By:                joeljkp
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2205
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2256
+Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             06-13-2006 11:31 CEST
-Last Modified:              07-05-2006 15:23 CEST
+Date Submitted:             07-04-2006 05:51 CEST
+Last Modified:              07-05-2006 15:31 CEST
 ======================================================================
-Summary:                    Everything seems ok, but there's no sound
+Summary:                    timer.h doesn't compile with -ansi
 Description: 
-After loading snd-hda-intel modul, there's no sound on my acer travelmate
-3012 laptop. 
-OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
+timer.h causes programs not to compile with gcc 4.0.3 and -ansi:
 
+$ cat test.c
+#include <alsa/asoundlib.h>
+$ cc -c -ansi test.c
+In file included from /usr/include/alsa/asoundlib.h:51,
+                 from test.c:1:
+/usr/include/alsa/timer.h:108: error: field &#8216;tstamp&#8217; has
+incomplete type
+$
 ======================================================================
 
 ----------------------------------------------------------------------
- rematch - 07-04-06 21:19 
+ joeljkp - 07-04-06 07:01 
 ----------------------------------------------------------------------
-no.
-when i try to use aplay:
+Adding the following line at the top of asoundlib.h, timer.h, or above the
+#include <time.h> in global.h fixes the problem.
 
-ALSA lib pcm_direct.c:819:(snd_pcm_direct_initialize_slave)
-snd_pcm_hw_params_any failed
-ALSA lib pcm_dmix.c:874:(snd_pcm_dmix_open) unable to initialize slave
-aplay: main:533: audio open error: Invalid argument
+#define _POSIX_C_SOURCE 199506L
 
 ----------------------------------------------------------------------
- tiwai - 07-05-06 15:23 
+ tiwai - 07-05-06 15:31 
 ----------------------------------------------------------------------
-Something is wrong in your configuration.  If you have any /etc/asound.conf
-or ~/.asoundrc, remove it first.
-Also, make sure that you have no duplicated libasound.so, e.g. /lib and
-/usr/lib.
+The patch results in compile warnings of alsa-lib itself.
+I'm also a bit concerned to define it in that place, too...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-06 11:31 rematch        New Issue                                    
-06-13-06 11:48 rematch        Issue Monitored: rematch                     
-06-27-06 09:04 rematch        Note Added: 0010570                          
-06-27-06 12:16 tiwai          Note Added: 0010583                          
-06-27-06 12:24 rematch        Note Added: 0010584                          
-06-28-06 09:25 rematch        Note Added: 0010611                          
-07-04-06 19:49 rematch        Note Added: 0010826                          
-07-04-06 19:56 rlrevell       Note Added: 0010827                          
-07-04-06 21:19 rematch        Note Added: 0010828                          
-07-05-06 15:23 tiwai          Note Added: 0010839                          
+07-04-06 05:51 joeljkp        New Issue                                    
+07-04-06 05:52 joeljkp        Issue Monitored: joeljkp                     
+07-04-06 07:01 joeljkp        Note Added: 0010815                          
+07-04-06 18:43 joeljkp        File Added: bug2256.patch                    
+07-05-06 15:31 tiwai          Note Added: 0010840                          
 ======================================================================
 
 
