@@ -1,16 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001244]: error with firmware with echo
-	layla20
-Date: Tue, 4 Jul 2006 22:02:58 +0200
-Message-ID: <49dae7b387b306026db491cd3209ea07@bugtrack.alsa-project.org>
+From: "Romeo Castro" <dhirkv@van-de-beek8.myweb.nl>
+Subject: Online. Pharma just one click away.
+Date: Wed, 05 Jul 2006 00:41:01 -0500
+Message-ID: <6284742728.20060705884275@van-de-beek8.myweb.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2143866527=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B04A3239
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2232169
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Jul 2006 22:02:58 +0200 (MEST)
+	Wed,  5 Jul 2006 01:33:21 +0200 (MEST)
+Received: from 207.Red-88-8-160.dynamicIP.rima-tde.net
+	(207.Red-88-8-160.dynamicIP.rima-tde.net [88.8.160.207])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	74D5B9939A for <alsa-devel@alsa-project.org>;
+	Wed,  5 Jul 2006 01:33:17 +0200 (MEST)
+Received: from myweb-mx0.wanadoo.nl (myweb-mx0.wanadoo.nl [194.134.35.189])
+	by 207.Red-88-8-160.dynamicIP.rima-tde.net (Qmailv1) with ESMTP id
+	TSPCXSKX
+	for <alsa-devel@alsa-project.org>; Wed, 05 Jul 2006 01:32:09 +0100
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,83 +30,57 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============2143866527==
+Content-Type: multipart/alternative; boundary="----------31GL3R5F17I5CVA"
 
-The following issue has been UPDATED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244> 
-======================================================================
-Reported By:                hennewou
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1244
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             07-09-2005 02:22 CEST
-Last Modified:              07-04-2006 22:02 CEST
-======================================================================
-Summary:                    error with firmware with echo layla20
-Description: 
-I get this error when loading snd-layla20 card:
+------------31GL3R5F17I5CVA
+Content-Type: text/plain;
+Content-Transfer-Encoding: 7bit
 
-ACPI: PCI interrupt 0000:02:0d.0[A] -> GSI 21 (level, low) -> IRQ 177
-ALSA /usr/src/modules/alsa-driver/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla20: probe of 0000:02:0d.0 failed with error -2
-
-I compiled an alsa driver for layla20 (I had to patch the alsa-driver tree
-a year ago for linux-2.4.25, and that worked (and still does).
+Viieagra $3.4
+Leevlthra $3.4
+Cealris $3.7
+Imitrkekx $16.4
+Fxlomax $2.2
+Uiatrham $0.78
+Vioonxx $4.75
+Amnblem $2.2
+Valikum - $0.97
+Xanwax $1.09
+Zomma $3
+Merlrdlia $2.2  
 
 
-(By the way, For some reason I can only compile snd-layla20 according to
-debian package manager (apt-get install alsa-source ....) . With the
-original alsa-driver-1.0.9a.tar.bz2, the echoaudio modules refuse to
-compile.)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001310 Driver cant find firmware for Layla24
-======================================================================
+visit our website http://www.timsbloggers.com/
 
-----------------------------------------------------------------------
- rlrevell - 08-10-05 01:08 
-----------------------------------------------------------------------
-Submitter: do the fix(es) described in #1310 help you?
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-04-06 22:02 
-----------------------------------------------------------------------
-Please reopen this bug if there's still some problem present not already
-handled in #1310.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-09-05 02:22 hennewou       New Issue                                    
-07-09-05 02:22 hennewou       Distribution              => Debian          
-07-09-05 02:22 hennewou       Kernel Version            => 2.6.11          
-08-05-05 05:36 oxi            Issue Monitored: oxi                         
-08-05-05 08:48 perex          Relationship added       related to 0001310  
-08-05-05 08:49 perex          Assigned To              perex =>            
-08-05-05 08:49 perex          Description Updated                          
-08-05-05 08:50 perex          Status                   assigned => new     
-08-10-05 01:08 rlrevell       Note Added: 0005744                          
-08-16-05 05:17 oxi            Issue End Monitor: oxi                       
-07-04-06 22:02 Adrian Bunk    Note Added: 0010829                          
-07-04-06 22:02 Adrian Bunk    Resolution               open => duplicate   
-07-04-06 22:02 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - echoaudio
-======================================================================
+___
+Best regards,
+Online Pharmaceutics
 
 
+------------31GL3R5F17I5CVA--
+
+
+
+--===============2143866527==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============2143866527==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2143866527==--
