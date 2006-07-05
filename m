@@ -1,13 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: macro `AM_PATH_ALSA' not found in library
-Date: Wed, 05 Jul 2006 18:20:26 -0400
-Message-ID: <1152138027.15837.174.camel@mindpipe>
-References: <1152127459.15837.127.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001962]:
+	/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error
+Date: Thu, 6 Jul 2006 00:32:50 +0200
+Message-ID: <7e9a0e763f9830007a0d632405029c11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1152127459.15837.127.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0286254
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 Jul 2006 00:32:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,42 +20,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-07-05 at 15:24 -0400, Lee Revell wrote:
-> I have a script that builds alsa-lib and alsa-utils for an embedded
-> platform.
-> 
-> It works perfectly on all my Ubuntu machines.  But when I try it on an
-> FC4 box, alsa-lib builds correctly, but alsa-utils fails like so:
-> 
 
-OK, I've tried to resolve this by having my script run "cvscompile".
-But it stops at:
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1962> 
+======================================================================
+Reported By:                lnthai2002
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1962
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     closed
+Distribution:               centos
+Kernel Version:             2.6.9-34
+Resolution:                 not an issue
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-24-2006 22:52 CET
+Last Modified:              07-06-2006 00:32 CEST
+======================================================================
+Summary:                   
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error
+Description: 
+compiling alsa-driver on centos 4.2(RH EL) for Sound Blaster Live! 24bit
+with the command:
+./configure --with-cards=ca0106 --with-sequencer=yes;make
+give error:
 
-"Copying file m4/xsize.m4
+make[1]: Entering directory
+`/usr/src/kernels/2.6.9-34.106.unsupported-i686'
+  CC [M]  /usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.o
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error: syntax
+error before "snd_pcm_link_rwlock"
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: warning: type
+defaults to `int' in declaration of `snd_pcm_link_rwlock'
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
+conflicting types for 'snd_pcm_link_rwlock'
+/usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/pcm.h:484: error:
+previous declaration of 'snd_pcm_link_rwlock' was here
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
+conflicting types for 'snd_pcm_link_rwlock'
+/usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/pcm.h:484: error:
+previous declaration of 'snd_pcm_link_rwlock' was here
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
+incompatible types in initialization
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
+initializer element is not constant
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: warning: data
+definition has no type or storage class
+make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.o]
+Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver-1.0.9rc4a] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory
+`/usr/src/kernels/2.6.9-34.106.unsupported-i686'
+make: *** [compile] Error 2
 
-Please run 'aclocal -I m4' to regenerate the aclocal.m4 file.
-You need aclocal from GNU automake 1.5 (or newer) to do this.
-Then run 'autoconf' to regenerate the configure file.
+How can i fix this problem?
 
-You might also want to copy the convenience header file gettext.h
-from the /usr/share/gettext directory into your package.
-It is a wrapper around <libintl.h> that implements the configure
---disable-nls
-option.
+======================================================================
 
-Press Return to acknowledge the previous two paragraphs."
+----------------------------------------------------------------------
+ rlrevell - 03-27-06 04:19 
+----------------------------------------------------------------------
+Try a newer ALSA, 1.0.9rc4a is way too old to debug
 
-I cannot press return here because I must be able to build
-non-interactively using a script.
-
-How can I silence these warnings?  Even if I run "aclocal -I m4" then
-"autoconf" I still get this prompt on the next build.
-
-Lee
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-06 22:52 lnthai2002     New Issue                                    
+03-24-06 22:52 lnthai2002     Distribution              => centos          
+03-24-06 22:52 lnthai2002     Kernel Version            => 2.6.9-34        
+03-27-06 04:19 rlrevell       Note Added: 0008984                          
+07-06-06 00:32 Adrian Bunk    Status                   assigned => closed  
+07-06-06 00:32 Adrian Bunk    Resolution               open => not an issue
+======================================================================
 
 
 
