@@ -1,15 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002248]: Sounds stops and continue
-Date: Wed, 5 Jul 2006 16:48:29 +0200
-Message-ID: <0ad7c2723be4231c82ccb4d2663ae6d0@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Bug #952 - MIDI lockup
+Date: Wed, 05 Jul 2006 11:08:15 -0400
+Message-ID: <1152112095.15837.72.camel@mindpipe>
+References: <1151880360.25802.44.camel@mindpipe>
+	<s5hfyhiu1fa.wl%tiwai@suse.de> <1152025240.15837.5.camel@mindpipe>
+	<s5hac7p4c91.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39D87256
-	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 16:48:30 +0200 (MEST)
+In-Reply-To: <s5hac7p4c91.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,62 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-07-04 at 17:32 +0200, Takashi Iwai wrote:
+> At Tue, 04 Jul 2006 11:00:40 -0400,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2006-07-03 at 17:56 +0200, Takashi Iwai wrote:
+> > > At Sun, 02 Jul 2006 18:45:59 -0400,
+> > > Lee Revell wrote:
+> > > > 
+> > > > Can someone take a quick look at:
+> > > > 
+> > > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952
+> > > > 
+> > > > There is a nice screenshot of the kernel panic.  The bug has been
+> > > > verified with ALSA 1.0.12-rc1.
+> > > > 
+> > > > It seems to crash while taking a spinlock in snd_timer_interrupt when
+> > > > called from rtc_interrupt - maybe the changes to the ALSA RTC timer a
+> > > > few months ago are involved?
+> > > 
+> > > Does the patch below fix?
+> > 
+> > No.
+> 
+> Pointer?  The test in bug #952 seems inaccurate.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
-======================================================================
-Reported By:                gwagner
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2248
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             06-30-2006 06:05 CEST
-Last Modified:              07-05-2006 16:48 CEST
-======================================================================
-Summary:                    Sounds stops and continue
-Description: 
-Every sounds "music movies" are having little pauses, it's pausing for few
-miliseconds and continue. It's happen on every kind of aplication.
-My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
-that should work with snd_via82xx. I have an soud blaster card too, but
-that work fine.
-======================================================================
+OK, the patch does fix the problem.  Please apply.
 
-----------------------------------------------------------------------
- gwagner - 07-05-06 15:40 
-----------------------------------------------------------------------
-I compiled 1.0.12-rc1 drives, libs... and it's work fine with my Via VT8237
-chipset but  only if I get out with my "sound blaster live 24bit advanced
-HD" but with both of them the via VT8237 has presented the same  problem
-that presended with 1.0.11 the sound's stopping.
-
-----------------------------------------------------------------------
- rlrevell - 07-05-06 16:48 
-----------------------------------------------------------------------
-I can't make any sense out of this comment.  Is there any improvement with
-1.0.12-rc1?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-30-06 06:05 gwagner        New Issue                                    
-06-30-06 16:36 rlrevell       Note Added: 0010740                          
-07-05-06 15:40 gwagner        Note Added: 0010841                          
-07-05-06 16:48 rlrevell       Note Added: 0010842                          
-======================================================================
-
+Lee
 
 
 Using Tomcat but need to do more? Need to support web services, security?
