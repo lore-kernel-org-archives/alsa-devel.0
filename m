@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002256]: timer.h doesn't compile with
-	-ansi
-Date: Wed, 5 Jul 2006 15:31:12 +0200
-Message-ID: <1528c6bd0f6ed5641e4b3f23824d1e08@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002248]: Sounds stops and continue
+Date: Wed, 5 Jul 2006 15:41:00 +0200
+Message-ID: <8339d6ff203ea683e02e8a79c849e54e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E708256
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F02B2256
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 15:31:12 +0200 (MEST)
+	Wed,  5 Jul 2006 15:41:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,58 +25,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2256> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
 ======================================================================
-Reported By:                joeljkp
+Reported By:                gwagner
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2256
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2248
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-04-2006 05:51 CEST
-Last Modified:              07-05-2006 15:31 CEST
+Date Submitted:             06-30-2006 06:05 CEST
+Last Modified:              07-05-2006 15:40 CEST
 ======================================================================
-Summary:                    timer.h doesn't compile with -ansi
+Summary:                    Sounds stops and continue
 Description: 
-timer.h causes programs not to compile with gcc 4.0.3 and -ansi:
-
-$ cat test.c
-#include <alsa/asoundlib.h>
-$ cc -c -ansi test.c
-In file included from /usr/include/alsa/asoundlib.h:51,
-                 from test.c:1:
-/usr/include/alsa/timer.h:108: error: field &#8216;tstamp&#8217; has
-incomplete type
-$
+Every sounds "music movies" are having little pauses, it's pausing for few
+miliseconds and continue. It's happen on every kind of aplication.
+My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
+that should work with snd_via82xx. I have an soud blaster card too, but
+that work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- joeljkp - 07-04-06 07:01 
+ rlrevell - 06-30-06 16:36 
 ----------------------------------------------------------------------
-Adding the following line at the top of asoundlib.h, timer.h, or above the
-#include <time.h> in global.h fixes the problem.
-
-#define _POSIX_C_SOURCE 199506L
+This should be fixed in 1.0.12-rc1, can you please test?
 
 ----------------------------------------------------------------------
- tiwai - 07-05-06 15:31 
+ gwagner - 07-05-06 15:40 
 ----------------------------------------------------------------------
-The patch results in compile warnings of alsa-lib itself.
-I'm also a bit concerned to define it in that place, too...
+I compiled 1.0.12-rc1 drives, libs... and it's work fine with my Via VT8237
+chipset but  only if I get out with my "sound blaster live 24bit advanced
+HD" but with both of them the via VT8237 has presented the same  problem
+that presended with 1.0.11 the sound's stopping.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-06 05:51 joeljkp        New Issue                                    
-07-04-06 05:52 joeljkp        Issue Monitored: joeljkp                     
-07-04-06 07:01 joeljkp        Note Added: 0010815                          
-07-04-06 18:43 joeljkp        File Added: bug2256.patch                    
-07-05-06 15:31 tiwai          Note Added: 0010840                          
+06-30-06 06:05 gwagner        New Issue                                    
+06-30-06 16:36 rlrevell       Note Added: 0010740                          
+07-05-06 15:40 gwagner        Note Added: 0010841                          
 ======================================================================
 
 
