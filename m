@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001888]: MIDI external output
 	occasionally freezes the machine
-Date: Wed, 5 Jul 2006 15:03:22 +0200
-Message-ID: <c9e3c56319a099ca13306c96b72a764e@bugtrack.alsa-project.org>
+Date: Wed, 5 Jul 2006 15:15:38 +0200
+Message-ID: <635cabc96bb9d62e7cc61a15d4592845@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A46324F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F120D256
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 15:03:22 +0200 (MEST)
+	Wed,  5 Jul 2006 15:15:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian testing
 Kernel Version:             2.6.14.4 SMP, self-built
 ======================================================================
 Date Submitted:             03-02-2006 09:59 CET
-Last Modified:              07-05-2006 15:03 CEST
+Last Modified:              07-05-2006 15:15 CEST
 ======================================================================
 Summary:                    MIDI external output occasionally freezes the
 machine
@@ -67,13 +67,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- Sir Boss - 07-04-06 02:22 
-----------------------------------------------------------------------
-I'm also having the same problem...also with a Yamaha keyboard.  The lockup
-doesn't occur if the keyboard is off, even if its sound card is set to be
-output.  Has anyone found a fix for this yet?
-
-----------------------------------------------------------------------
  Raymond - 07-05-06 15:03 
 ----------------------------------------------------------------------
 Post output of
@@ -83,6 +76,12 @@ cat /proc/asound/cards
 cat /proc/asound/pcm
 
 cat /proc/asound/timers
+
+----------------------------------------------------------------------
+ tiwai - 07-05-06 15:15 
+----------------------------------------------------------------------
+How about the patch in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +93,7 @@ self-built
 06-19-06 15:38 Raymond        Note Added: 0010314                          
 07-04-06 02:22 Sir Boss       Note Added: 0010811                          
 07-05-06 15:03 Raymond        Note Added: 0010836                          
+07-05-06 15:15 tiwai          Note Added: 0010837                          
 ======================================================================
 
 
