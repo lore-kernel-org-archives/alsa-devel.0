@@ -1,17 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001970]: Applied dff from 1596 fixed
-	high pitched whine out of left chael but on shutdown crashes
-	computer
-Date: Thu, 6 Jul 2006 01:02:10 +0200
-Message-ID: <8f126188bf33125f413b897ba7f81afd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001999]: Latest cvs won't compile
+Date: Thu, 6 Jul 2006 01:05:27 +0200
+Message-ID: <dbf09b97e7fcde49d11d1477fe1fa240@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B5BE24D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC21024D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 01:02:10 +0200 (MEST)
+	Thu,  6 Jul 2006 01:05:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,60 +23,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1970> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
 ======================================================================
-Reported By:                dlm1065
+Reported By:                kotau
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1970
-Category:                   PCI - hda-intel
+Issue ID:                   1999
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16
+Status:                     resolved
+Distribution:               
+Kernel Version:             -2.6.13.2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-28-2006 04:16 CEST
-Last Modified:              07-06-2006 01:02 CEST
+Date Submitted:             04-03-2006 21:05 CEST
+Last Modified:              07-06-2006 01:05 CEST
 ======================================================================
-Summary:                    Applied dff from 1596 fixed high pitched whine out
-of left chael but on shutdown crashes computer
+Summary:                    Latest cvs won't compile
 Description: 
-I made an ebuild adding the diff from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596 to get d of the
-whine.
+Here's the error message.
 
-Ebuild fixes whine but shutdown does NOT release a lock on some resource
-and comp locks up
+
+==============
+make[1]: Entering directory `/usr/src/linux-2.6.13.2'
+  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read_main':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+`snd_ac97_stereo_enhancements' undeclared (first use in this function)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+(Each undeclared identifier is reported only once
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+for each function it appears in.)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
+implicit declaration of function `snd_magic_cast'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_regs_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
+structure has no member named `semaphore'
+make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
+Error 1
+make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
+make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
+make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:16 
+ tiwai - 04-18-06 13:42 
 ----------------------------------------------------------------------
-Why it shows version 1.0.11rc3 even if you installed rc4?
+It's a problem of CVS server on sourceforge.  Cannot fix from here.
 
 ----------------------------------------------------------------------
- dlm1065 - 03-30-06 01:38 
+ Adrian Bunk - 07-06-06 01:05 
 ----------------------------------------------------------------------
-Not sure and it's saying worse than that its saying 10r3 not 11r3 weird
-checking to see if it pulled that bz in to create the driver maybe the
-ebuild is fubar'd in some way checking
+I don't see any part of this still present in recent versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 04:16 dlm1065        New Issue                                    
-03-28-06 04:16 dlm1065        File Added: alsa-driver.tar.gz                    
-03-28-06 04:16 dlm1065        Distribution              => Gentoo          
-03-28-06 04:16 dlm1065        Kernel Version            => 2.6.16          
-03-29-06 19:16 tiwai          Note Added: 0009012                          
-03-30-06 01:38 dlm1065        Note Added: 0009020                          
-07-06-06 01:02 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - hda-intel
+04-03-06 21:05 kotau          New Issue                                    
+04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+04-04-06 09:58 Raymond        Note Added: 0009112                          
+04-07-06 14:12 Raymond        Note Added: 0009139                          
+04-07-06 14:16 Raymond        Note Edited: 0009139                         
+04-11-06 19:17 Raymond        Note Added: 0009236                          
+04-11-06 19:29 rlrevell       Note Added: 0009237                          
+04-11-06 19:53 Raymond        Note Added: 0009238                          
+04-13-06 13:47 Raymond        Note Added: 0009258                          
+04-18-06 13:42 tiwai          Note Added: 0009332                          
+07-06-06 01:05 Adrian Bunk    Note Added: 0010844                          
+07-06-06 01:05 Adrian Bunk    Status                   assigned => resolved
+07-06-06 01:05 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
