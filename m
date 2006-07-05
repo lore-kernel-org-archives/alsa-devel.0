@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002138]: Getting Compilation Error
-	compiling for hda-intel driver
-Date: Thu, 6 Jul 2006 00:37:19 +0200
-Message-ID: <563bc642a03b3877222ee79dc9248c45@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001970]: Applied dff from 1596 fixed
+	high pitched whine out of left chael but on shutdown crashes
+	computer
+Date: Thu, 6 Jul 2006 01:02:10 +0200
+Message-ID: <8f126188bf33125f413b897ba7f81afd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BCD0236
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B5BE24D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 00:37:19 +0200 (MEST)
+	Thu,  6 Jul 2006 01:02:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,77 +25,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2138> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1970> 
 ======================================================================
-Reported By:                millerdp
+Reported By:                dlm1065
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2138
-Category:                   0_compilation problem_!!!
+Issue ID:                   1970
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111-FC5
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-22-2006 00:38 CEST
-Last Modified:              07-06-2006 00:37 CEST
+Date Submitted:             03-28-2006 04:16 CEST
+Last Modified:              07-06-2006 01:02 CEST
 ======================================================================
-Summary:                    Getting Compilation Error compiling for hda-intel
-driver
+Summary:                    Applied dff from 1596 fixed high pitched whine out
+of left chael but on shutdown crashes computer
 Description: 
-While trying to compile the ALSA drivers for the hda-intel module following
-the directions on the web site I get the following error
+I made an ebuild adding the diff from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596 to get d of the
+whine.
 
-make[1]: Entering directory `/usr/src/kernels/2.6.16-1.2111_FC5-i686'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.o
-In file included from
-/usr/src/alsa/alsa-driver-1.0.9rc4a/include/adriver.h:674,                
-from /usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/driver.h:42,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.c:22:
-include/linux/pci.h:460: error: expected identifier or &#8216;(&#8217;
-before numeric constant
-make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.o] Error
-1
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore] Error 2
-make[2]: *** [_module_/usr/src/alsa/alsa-driver-1.0.9rc4a] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/kernels/2.6.16-1.2111_FC5-i686'
-
+Ebuild fixes whine but shutdown does NOT release a lock on some resource
+and comp locks up
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-22-06 04:40 
+ tiwai - 03-29-06 19:16 
 ----------------------------------------------------------------------
-You cannot compile an old ALSA against a kernel that contains a newer
-ALSA.
-
-What problem are you trying to solve?
+Why it shows version 1.0.11rc3 even if you installed rc4?
 
 ----------------------------------------------------------------------
- Raymond - 05-22-06 04:48 
+ dlm1065 - 03-30-06 01:38 
 ----------------------------------------------------------------------
-It seem that you are upgrade from FC3/FC4 to FC5, FC5 bundled with ALSA
-1.0.11rc2.
+Not sure and it's saying worse than that its saying 10r3 not 11r3 weird
+checking to see if it pulled that bz in to create the driver maybe the
+ebuild is fubar'd in some way checking
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 00:38 millerdp       New Issue                                    
-05-22-06 00:38 millerdp       File Added: config.status                    
-05-22-06 00:38 millerdp       Distribution              => Fedora Core 5   
-05-22-06 00:38 millerdp       Kernel Version            => 2.6.16-1.2111-FC5
-05-22-06 04:40 rlrevell       Note Added: 0009903                          
-05-22-06 04:48 Raymond        Note Added: 0009904                          
-07-06-06 00:37 Adrian Bunk    Status                   assigned => closed  
-07-06-06 00:37 Adrian Bunk    Resolution               open => not an issue
+03-28-06 04:16 dlm1065        New Issue                                    
+03-28-06 04:16 dlm1065        File Added: alsa-driver.tar.gz                    
+03-28-06 04:16 dlm1065        Distribution              => Gentoo          
+03-28-06 04:16 dlm1065        Kernel Version            => 2.6.16          
+03-29-06 19:16 tiwai          Note Added: 0009012                          
+03-30-06 01:38 dlm1065        Note Added: 0009020                          
+07-06-06 01:02 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - hda-intel
 ======================================================================
 
 
