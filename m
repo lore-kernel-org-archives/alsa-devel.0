@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002198]: No sound out of the built in
-	speakers, but from headphones on a Apple MacBook Pro
-Date: Wed, 5 Jul 2006 15:21:37 +0200
-Message-ID: <182c0f4a17d998e8e1260ff50979d794@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002205]: Everything seems ok,
+	but there's no sound
+Date: Wed, 5 Jul 2006 15:23:59 +0200
+Message-ID: <4725d996f8a394cfb6aa69aae289aef2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3A43256
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A433256
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 15:21:37 +0200 (MEST)
+	Wed,  5 Jul 2006 15:23:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,78 +26,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
 ======================================================================
-Reported By:                enlighter
+Reported By:                rematch
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2198
+Issue ID:                   2205
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16.16
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2006 12:09 CEST
-Last Modified:              07-05-2006 15:21 CEST
+Date Submitted:             06-13-2006 11:31 CEST
+Last Modified:              07-05-2006 15:23 CEST
 ======================================================================
-Summary:                    No sound out of the built in speakers, but from
-headphones on a Apple MacBook Pro
+Summary:                    Everything seems ok, but there's no sound
 Description: 
-Hi,
+After loading snd-hda-intel modul, there's no sound on my acer travelmate
+3012 laptop. 
+OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
 
-this error occours on all macbook pros! (see www.mactel-linux.org). Sound
-comes only out of the headphones or out of line-out, but the internal
-speakers keep mute. I cannot unmute them using the mixer (alsamixer,
-kmix). I also tried a rc version of linux-2.6.17 with the same result.
-
-I also tried to load the snd-hda-intel module with "model=laptop" and
-"model=laptop-eapd".
 ======================================================================
 
 ----------------------------------------------------------------------
- Gendo - 07-05-06 04:18 
+ rematch - 07-04-06 21:19 
 ----------------------------------------------------------------------
-Tiwai. From some testing and some research I have found that the patch
-works for 17 inch macbook pro, regular macbook, and mac mini. The patch
-does not however work for the 15 inch macbook pro, and the iMac. There
-seems to be some sort of difference with the GPIO stuff between the
-models. This can be seen by some behavior in Windows with disabling the
-internal speaker. I tried making some changes to patch_sigmatel.c but did
-not really have any success, I noticed changing the pin definitions
-altered some of the behavior but I could never get the speaker to make any
-noise. Is there any function call that could tell the device to set all
-inputs and outputs on the device as output? If you need any other
-information please let me know.
+no.
+when i try to use aplay:
+
+ALSA lib pcm_direct.c:819:(snd_pcm_direct_initialize_slave)
+snd_pcm_hw_params_any failed
+ALSA lib pcm_dmix.c:874:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:533: audio open error: Invalid argument
 
 ----------------------------------------------------------------------
- tiwai - 07-05-06 15:21 
+ tiwai - 07-05-06 15:23 
 ----------------------------------------------------------------------
-The input and output pins widgets are taken from the BIOS.  So, one
-possibility is that BIOS doesn't initialize properly (although I doubt it
-since the headphone works).
-
-Anyway, upload /proc/asound/card0/codec#* files.
+Something is wrong in your configuration.  If you have any /etc/asound.conf
+or ~/.asoundrc, remove it first.
+Also, make sure that you have no duplicated libasound.so, e.g. /lib and
+/usr/lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 12:09 enlighter      New Issue                                    
-06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
-06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
-06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
-06-18-06 09:27 enlighter      Note Added: 0010297                          
-06-18-06 09:29 enlighter      Note Added: 0010298                          
-06-25-06 20:17 enlighter      Note Added: 0010518                          
-06-26-06 16:08 tiwai          Note Added: 0010541                          
-06-26-06 16:20 enlighter      Note Added: 0010546                          
-06-26-06 16:34 tiwai          Note Added: 0010547                          
-06-29-06 17:48 tiwai          Note Added: 0010676                          
-07-05-06 04:18 Gendo          Note Added: 0010830                          
-07-05-06 15:21 tiwai          Note Added: 0010838                          
+06-13-06 11:31 rematch        New Issue                                    
+06-13-06 11:48 rematch        Issue Monitored: rematch                     
+06-27-06 09:04 rematch        Note Added: 0010570                          
+06-27-06 12:16 tiwai          Note Added: 0010583                          
+06-27-06 12:24 rematch        Note Added: 0010584                          
+06-28-06 09:25 rematch        Note Added: 0010611                          
+07-04-06 19:49 rematch        Note Added: 0010826                          
+07-04-06 19:56 rlrevell       Note Added: 0010827                          
+07-04-06 21:19 rematch        Note Added: 0010828                          
+07-05-06 15:23 tiwai          Note Added: 0010839                          
 ======================================================================
 
 
