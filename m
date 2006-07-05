@@ -1,23 +1,16 @@
-From: "Romeo Castro" <dhirkv@van-de-beek8.myweb.nl>
-Subject: Online. Pharma just one click away.
-Date: Wed, 05 Jul 2006 00:41:01 -0500
-Message-ID: <6284742728.20060705884275@van-de-beek8.myweb.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002198]: No sound out of the built in
+	speakers, but from headphones on a Apple MacBook Pro
+Date: Wed, 5 Jul 2006 04:18:28 +0200
+Message-ID: <9ca0f372c34f15375a3af2f65a3f17ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2143866527=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2232169
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0BDC24F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 01:33:21 +0200 (MEST)
-Received: from 207.Red-88-8-160.dynamicIP.rima-tde.net
-	(207.Red-88-8-160.dynamicIP.rima-tde.net [88.8.160.207])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	74D5B9939A for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 01:33:17 +0200 (MEST)
-Received: from myweb-mx0.wanadoo.nl (myweb-mx0.wanadoo.nl [194.134.35.189])
-	by 207.Red-88-8-160.dynamicIP.rima-tde.net (Qmailv1) with ESMTP id
-	TSPCXSKX
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jul 2006 01:32:09 +0100
+	Wed,  5 Jul 2006 04:18:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,57 +23,82 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2143866527==
-Content-Type: multipart/alternative; boundary="----------31GL3R5F17I5CVA"
 
-------------31GL3R5F17I5CVA
-Content-Type: text/plain;
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
+======================================================================
+Reported By:                enlighter
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2198
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.16.16
+======================================================================
+Date Submitted:             06-09-2006 12:09 CEST
+Last Modified:              07-05-2006 04:18 CEST
+======================================================================
+Summary:                    No sound out of the built in speakers, but from
+headphones on a Apple MacBook Pro
+Description: 
+Hi,
 
-Viieagra $3.4
-Leevlthra $3.4
-Cealris $3.7
-Imitrkekx $16.4
-Fxlomax $2.2
-Uiatrham $0.78
-Vioonxx $4.75
-Amnblem $2.2
-Valikum - $0.97
-Xanwax $1.09
-Zomma $3
-Merlrdlia $2.2  
+this error occours on all macbook pros! (see www.mactel-linux.org). Sound
+comes only out of the headphones or out of line-out, but the internal
+speakers keep mute. I cannot unmute them using the mixer (alsamixer,
+kmix). I also tried a rc version of linux-2.6.17 with the same result.
+
+I also tried to load the snd-hda-intel module with "model=laptop" and
+"model=laptop-eapd".
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-29-06 17:48 
+----------------------------------------------------------------------
+Well it's actually identical.  Then I have no idea why.  There are positive
+reports that the same driver works on other Intel Macs, at least.
+
+----------------------------------------------------------------------
+ Gendo - 07-05-06 04:18 
+----------------------------------------------------------------------
+Tiwai. From some testing and some research I have found that the patch
+works for 17 inch macbook pro, regular macbook, and mac mini. The patch
+does not however work for the 15 inch macbook pro, and the iMac. There
+seems to be some sort of difference with the GPIO stuff between the
+models. This can be seen by some behavior in Windows with disabling the
+internal speaker. I tried making some changes to patch_sigmatel.c but did
+not really have any success, I noticed changing the pin definitions
+altered some of the behavior but I could never get the speaker to make any
+noise. Is there any function call that could tell the device to set all
+inputs and outputs on the device as output? If you need any other
+information please let me know.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-06 12:09 enlighter      New Issue                                    
+06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
+06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
+06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
+06-18-06 09:27 enlighter      Note Added: 0010297                          
+06-18-06 09:29 enlighter      Note Added: 0010298                          
+06-25-06 20:17 enlighter      Note Added: 0010518                          
+06-26-06 16:08 tiwai          Note Added: 0010541                          
+06-26-06 16:20 enlighter      Note Added: 0010546                          
+06-26-06 16:34 tiwai          Note Added: 0010547                          
+06-29-06 17:48 tiwai          Note Added: 0010676                          
+07-05-06 04:18 Gendo          Note Added: 0010830                          
+======================================================================
 
 
-visit our website http://www.timsbloggers.com/
-
-___
-Best regards,
-Online Pharmaceutics
-
-
-------------31GL3R5F17I5CVA--
-
-
-
---===============2143866527==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============2143866527==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============2143866527==--
