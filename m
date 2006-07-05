@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Wed, 5 Jul 2006 09:32:32 +0200
-Message-ID: <fcb11dcdd5261fec8425257fa68b91fd@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000880]: ALSA lib
+	pcm_hw.c:370:(snd_pcm_hw_hw_free) SNDRV_PCM_IOCTL_HW_FREE
+	failed: File descriptor in bad state
+Date: Wed, 5 Jul 2006 10:01:18 +0200
+Message-ID: <9f24f29f1b6e247f942bd556dfc6c102@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 724A5256
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22F34256
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Jul 2006 09:32:32 +0200 (MEST)
+	Wed,  5 Jul 2006 10:01:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,101 +27,332 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=880> 
 ======================================================================
-Reported By:                skunk
+Reported By:                runtema
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Project:                    ALSA - lib
+Issue ID:                   880
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-05-2006 09:32 CEST
+Date Submitted:             02-03-2005 09:20 CET
+Last Modified:              07-05-2006 10:01 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free)
+SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+When accesing ALSA lib/module pcm trough application ogle (see
+http://www.dtek.chalmers.se/groups/dvd/) it breaks down to the error given
+in the summary.
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
+Details for system/version/error:
 
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
-
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
+see http://forums.gentoo.org/viewtopic.php?p=2050504
 ======================================================================
 
 ----------------------------------------------------------------------
- amarsh04 - 07-05-06 05:34 
+ runtema - 02-05-05 17:17 
 ----------------------------------------------------------------------
-I had to install linux-source-2.6.17 version 2.6.17-2 as well as the ALSA
-modules source from http://www.lxtec.de/debarchiv, then coax
-module-assistant into creating modules with 2.6.17-1-686 version number,
-but I finally installed the modules with the alsa-timer-irqsave.patch and
-now MIDI playback on the wavetable of my SoundBlaster Live! 5.1 model 0220
-sound card under kernel 2.6.17 works fine (-:.
+Does either alsa or my application have problems with choosing the wrong
+device?
 
-Thanks for the help!
+OK, after some new information from the kde bug team I tried to put down
+the suspend time in artsd, and retry playing, but nothing...
+
+[code]runtema@jazz:~> artsshell
+> status
+server status: suspended
+real-time status: not real-time
+server buffer time: 46.4399 ms
+buffer size multiplier: 1
+minimum stream buffer time: 46.4399 ms
+auto suspend time: 2 s
+audio method: alsa
+sampling rate: 44100
+channels: 2
+sample size: 16 bits
+duplex: half
+device: default
+fragments: 2
+fragment size: 4096[/code]
+
+Ok, artsd suspends correctly, I found no application which should use my
+sounddevice (besides perhaps mozilla itself), so I did a strace on my
+application to see which sounddevice its using:
+
+[code]
+[pid 18130] 12:43:10.606278 stat64("/usr/share/alsa/alsa.conf",
+{st_dev=makedev(
+3, 7), st_ino=2927, st_mode=S_IFREG|0644, st_nlink=1, st_uid=0, st_gid=0,
+st_blk
+size=4096, st_blocks=24, st_size=8365, st_atime=2005/02/05-12:37:10,
+st_mtime=20
+05/01/03-19:51:17, st_ctime=2005/01/03-19:51:17}) = 0
+[pid 18130] 12:43:10.606565 open("/usr/share/alsa/alsa.conf", O_RDONLY) =
+3
+[pid 18130] 12:43:10.606744 fstat64(3, {st_dev=makedev(3, 7), st_ino=2927,
+st_mo
+de=S_IFREG|0644, st_nlink=1, st_uid=0, st_gid=0, st_blksize=4096,
+st_blocks=24,
+st_size=8365, st_atime=2005/02/05-12:37:10, st_mtime=2005/01/03-19:51:17,
+st_cti
+me=2005/01/03-19:51:17}) = 0
+[pid 18130] 12:43:10.606902 old_mmap(NULL, 4096, PROT_READ|PROT_WRITE,
+MAP_PRIVA
+TE|MAP_ANONYMOUS, -1, 0) = 0x400c8000
+[pid 18130] 12:43:10.607024 read(3, "#\n#  ALSA library configuration
+"..., 4096
+) = 4096
+[pid 18130] 12:43:10.611756 read(3, " FORMAT ]\n\t@args.FILE {\n\t\ttype
+s"...,
+4096) = 4096
+[pid 18130] 12:43:10.615136 read(3, "\n\tcard {\n\t\t@func refer\n\t\tname
+de"..
+., 4096) = 173
+[pid 18130] 12:43:10.615395 read(3, "", 4096) = 0
+[pid 18130] 12:43:10.615490 read(3, "", 4096) = 0
+[pid 18130] 12:43:10.615629 close(3)    = 0
+[pid 18130] 12:43:10.615722 munmap(0x400c8000, 4096) = 0
+[pid 18130] 12:43:10.617738 access("/etc/asound.conf", R_OK) = -1 ENOENT
+(No suc
+h file or directory)
+[pid 18130] 12:43:10.617968 access("/home/runtema/.asoundrc", R_OK) = -1
+ENOENT
+(No such file or directory)
+[pid 18130] 12:43:10.618694 open("/dev/snd/controlC0", O_RDONLY) = 3
+[pid 18130] 12:43:10.618864 close(3)    = 0
+[pid 18130] 12:43:10.619000 open("/dev/snd/controlC0", O_RDWR) = 3
+[pid 18130] 12:43:10.619136 ioctl(3, USBDEVFS_CONTROL, 0xbfffc99c) = 0
+[pid 18130] 12:43:10.619261 ioctl(3, 0x40045532, 0xbfffc9c4) = 0
+[pid 18130] 12:43:10.619350 open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =
+4
+[pid 18130] 12:43:10.619696 close(3)    = 0
+[pid 18130] 12:43:10.619800 ioctl(4, AGPIOC_ACQUIRE or APM_IOC_STANDBY,
+0xbfffc8
+a0) = 0
+[pid 18130] 12:43:10.619910 fcntl64(4, F_GETFL) = 0x802 (flags
+O_RDWR|O_NONBLOCK
+)
+[pid 18130] 12:43:10.620001 ioctl(4, AGPIOC_INFO, 0xbfffc89c) = 0
+[pid 18130] 12:43:10.620084 ioctl(4, AGPIOC_RELEASE or APM_IOC_SUSPEND,
+0xbfffc8
+98) = 0
+[pid 18130] 12:43:10.620221 old_mmap(NULL, 4096, PROT_READ, MAP_SHARED, 4,
+0x800
+00000) = 0x400c8000
+[pid 18130] 12:43:10.620355 old_mmap(NULL, 4096, PROT_READ|PROT_WRITE,
+MAP_SHARE
+D, 4, 0x81000000) = 0x400c9000
+[pid 18130] 12:43:10.620606 ioctl(4, 0xc25c4110, 0xbfffc7f0) = 0
+[pid 18130] 12:43:10.620772 ioctl(4, 0xc25c4110, 0xbfffc3f0) = 0
+[/code]
+
+And there it starves... (many, many ioctls and much more of
+
+[quote]<... msgrcv resumed> 524288, {5, "\0\0\0\0\7\0\0\0\5
+\0\210\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...}, 4116, 7, IPC_NOWAIT) = -1
+ENOMSG (No
+message of desired type)[/quote] )
+
+[code]
+[pid 18130] 12:43:11.997904 write(2, "ERROR[ogle_audio]: drain
+failed:"..., 66ER
+ROR[ogle_audio]: drain failed: Resource temporarily unavailable
+) = 66
+[pid 18130] 12:43:11.998041 ioctl(4, 0x4140, 0x58) = -1 EBUSY (Device or
+resourc
+e busy)
+[pid 18130] 12:43:11.998178 write(2, "ALSA lib
+pcm_hw.c:535:(snd_pcm_h"..., 43AL
+SA lib pcm_hw.c:535:(snd_pcm_hw_prepare) ) = 43
+[pid 18130] 12:43:11.998330 write(2, "SNDRV_PCM_IOCTL_PREPARE failed",
+30SNDRV_P
+CM_IOCTL_PREPARE failed) = 30
+[pid 18130] 12:43:11.998479 write(2, ": Device or resource busy", 25:
+Device or
+resource busy) = 25
+[pid 18130] 12:43:11.998620 write(2, "\n", 1
+) = 1
+[pid 18130] 12:43:11.998753 write(2, "ERROR[ogle_audio]: prepare
+faile"..., 59ER
+ROR[ogle_audio]: prepare failed: Device or resource busy
+) = 59
+[/code]
+
+[code]
+[pid 18130] 12:43:12.009287 ioctl(4, 0x4112, 0) = -1 EBADFD (File
+descriptor in
+bad state)
+[pid 18130] 12:43:12.009423 write(2, "ALSA lib
+pcm_hw.c:382:(snd_pcm_h"..., 43AL
+SA lib pcm_hw.c:382:(snd_pcm_hw_hw_free) ) = 43
+[pid 18130] 12:43:12.009574 write(2, "SNDRV_PCM_IOCTL_HW_FREE failed",
+30SNDRV_P
+CM_IOCTL_HW_FREE failed) = 30
+[pid 18130] 12:43:12.009722 write(2, ": File descriptor in bad state", 30:
+File
+descriptor in bad state) = 30
+[pid 18130] 12:43:12.009851 write(2, "\n", 1
+) = 1
+[pid 18130] 12:43:12.009988 write(2, "ERROR[ogle_audio]: Unable to
+set"..., 86ER
+ROR[ogle_audio]: Unable to set hw params for playback: File descriptor in
+bad st
+ate
+) = 86
+[pid 18130] 12:43:12.010135 write(2, "ERROR[ogle_audio]: Setting of
+hw"..., 76ER
+ROR[ogle_audio]: Setting of hwparams failed: File descriptor in bad state
+) = 76
+[pid 18130] 12:43:12.010276 write(2, "FATAL[ogle_audio]:
+ogle_ao_init:"..., 33FA
+TAL[ogle_audio]: ogle_ao_init: ) = 33
+[pid 18130] 12:43:12.010453 write(2, "\n", 1
+) = 1
+[pid 18130] 12:43:12.011349 gettimeofday({1107603792, 11392}, NULL) = 0
+[pid 18130] 12:43:12.011521 write(2, "ogle_audio: pcm.c:911:
+snd_pcm_d"..., 69og
+le_audio: pcm.c:911: snd_pcm_delay: Assertion `pcm->setup' failed.
+) = 69
+[pid 18130] 12:43:12.011657 rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) =
+0
+[pid 18130] 12:43:12.011801 kill(18130, SIGABRT) = 0
+[pid 18130] 12:43:12.011888 --- SIGABRT (Aborted) @ 0 (0) ---
+Process 18130 detached
+[/code]
+
+Any new ideas? I'll post my /etc/modules.d/alsa her and my /dev/ because I
+find it amazing I have two dev trees for sound (/dev/sound and /dev/snd
+(last ogle wants to use, see above code from strace).
+
+[code]cat /etc/modules.d/alsa
+# Alsa 0.9.X kernel modules' configuration file.
+# $Header:
+/var/cvsroot/gentoo-x86/media-sound/alsa-utils/files/alsa-modules.conf-rc,v
+1.2 2004/07/18 03:40:55 dragonheart Exp $
+
+# ALSA portion
+# OSS/Free portion
+
+##
+## IMPORTANT:
+## You need to customise this section for your specific sound card(s)
+## and then run `update-modules' command.
+## Read alsa-driver's INSTALL file in /usr/share/doc for more info.
+##
+##  ALSA portion
+## alias snd-card-1 snd-ens1371
+##  OSS/Free portion
+## alias sound-slot-0 snd-card-0
+## alias sound-slot-1 snd-card-1
+##
+
+# OSS/Free portion - card #1
+##  OSS/Free portion - card #2
+## alias sound-service-1-0 snd-mixer-oss
+## alias sound-service-1-3 snd-pcm-oss
+## alias sound-service-1-12 snd-pcm-oss
+
+alias /dev/mixer snd-mixer-oss
+alias /dev/dsp snd-pcm-oss
+alias /dev/midi snd-seq-oss
+
+# Set this to the correct number of cards.
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF verion 1.0.6 ---
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+options snd  device_mode=0666
+alias snd-card-0 snd-es1938
+alias sound-slot-0 snd-es1938
+# --- END: Generated by ALSACONF, do not edit. ---[/code]
+
+[code]ls -lrt /dev | tail -n 10 | head -n 9
+lr-xr-xr-x  1 root    root      8 Feb  5 09:49 rtc -> misc/rtc
+lr-xr-xr-x  1 root    root     16 Feb  5 12:30 sequencer2 ->
+sound/sequencer2
+lr-xr-xr-x  1 root    root     15 Feb  5 12:30 sequencer ->
+sound/sequencer
+lr-xr-xr-x  1 root    root     11 Feb  5 12:30 mixer -> sound/mixer
+lr-xr-xr-x  1 root    root     12 Feb  5 12:30 midi00 -> sound/midi00
+lr-xr-xr-x  1 root    root      9 Feb  5 12:30 dsp -> sound/dsp
+lr-xr-xr-x  1 root    root     12 Feb  5 12:30 dmmidi -> sound/dmmidi
+lr-xr-xr-x  1 root    root     10 Feb  5 12:30 dmfm -> sound/dmfm
+lr-xr-xr-x  1 root    root     11 Feb  5 12:30 audio ->
+sound/audio[/code]
+
+[code]ls -ld /dev/s[eno]*
+lr-xr-xr-x  1 root root 15 Feb  5 12:30 /dev/sequencer -> sound/sequencer
+lr-xr-xr-x  1 root root 16 Feb  5 12:30 /dev/sequencer2 ->
+sound/sequencer2
+drwxr-xr-x  1 root root  0 Jan  1  1970 /dev/snd
+drwxr-xr-x  1 root root  0 Jan  1  1970 /dev/sound
+/dev/sound:
+total 0
+crw-------  1 runtema root 14,  8 Jan  1  1970 sequencer2
+crw-------  1 runtema root 14,  1 Jan  1  1970 sequencer
+crw-------  1 runtema root 14,  0 Jan  1  1970 mixer
+crw-------  1 runtema root 14,  2 Jan  1  1970 midi00
+crw-------  1 runtema root 14,  3 Jan  1  1970 dsp
+crw-------  1 runtema root 14,  9 Jan  1  1970 dmmidi
+crw-------  1 runtema root 14, 10 Jan  1  1970 dmfm
+crw-------  1 runtema root 14,  4 Jan  1  1970 audio
+
+/dev/snd:
+total 0
+crw-------  1 runtema root 116, 33 Jan  1  1970 timer
+crw-------  1 runtema root 116,  1 Jan  1  1970 seq
+crw-------  1 runtema root 116, 16 Jan  1  1970 pcmC0D0p
+crw-------  1 runtema root 116, 24 Jan  1  1970 pcmC0D0c
+crw-------  1 runtema root 116,  8 Jan  1  1970 midiC0D0
+crw-------  1 runtema root 116,  4 Jan  1  1970 hwC0D0
+crw-------  1 runtema root 116,  0 Jan  1  1970 controlC0
+[/code]
+
+And here my stuff out of devfsd.conf:
+
+[code]# ALSA/OSS stuff
+# Comment/change these if you want to change the permissions on
+# the audio devices
+LOOKUP          snd          MODLOAD ACTION snd
+LOOKUP          dsp          MODLOAD
+LOOKUP          mixer        MODLOAD
+LOOKUP          midi         MODLOAD
+REGISTER        sound/.*     PERMISSIONS root.audio 660
+REGISTER        snd/.*       PERMISSIONS root.audio 660[/code]
 
 ----------------------------------------------------------------------
- riesebie - 07-05-06 09:32 
+ Raymond - 07-05-06 10:01 
 ----------------------------------------------------------------------
-The next official Debian upload will include the alsa-timer-irqsave.patch
-;)
-Thanks for cooperation ;)
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
+
+It seem that snd-es1938 allow two playback streams only when there is no
+capture stream.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
-07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
-07-02-06 15:37 amarsh04       Note Added: 0010791                          
-07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
-07-03-06 02:57 amarsh04       Note Added: 0010796                          
-07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
-     
-07-03-06 18:05 rlrevell       Note Added: 0010801                          
-07-03-06 20:24 riesebie       Note Added: 0010806                          
-07-03-06 20:25 riesebie       Note Edited: 0010806                         
-07-04-06 03:23 amarsh04       Note Added: 0010813                          
-07-04-06 04:58 phorn          Note Added: 0010814                          
-07-04-06 07:20 amarsh04       Note Added: 0010816                          
-07-04-06 17:07 rlrevell       Note Added: 0010821                          
-07-04-06 17:46 amarsh04       Note Added: 0010822                          
-07-04-06 17:53 rlrevell       Note Added: 0010823                          
-07-04-06 17:56 rlrevell       Note Added: 0010824                          
-07-04-06 19:32 crimsunkg      Note Added: 0010825                          
-07-05-06 05:34 amarsh04       Note Added: 0010831                          
-07-05-06 09:32 riesebie       Note Added: 0010833                          
+02-03-05 09:20 runtema        New Issue                                    
+02-05-05 10:58 runtema        Note Added: 0003519                          
+02-05-05 11:20 runtema        Note Added: 0003520                          
+02-05-05 12:06 runtema        Note Added: 0003521                          
+02-05-05 12:10 runtema        Note Edited: 0003521                         
+02-05-05 17:17 runtema        Note Added: 0003522                          
+02-05-05 17:18 runtema        Note Edited: 0003519                         
+07-05-06 10:01 Raymond        Note Added: 0010834                          
 ======================================================================
 
 
