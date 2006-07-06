@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002248]: Sounds stops and continue
-Date: Thu, 6 Jul 2006 19:31:31 +0200
-Message-ID: <92bee49f87ef00309bc68350217038f5@bugtrack.alsa-project.org>
+Date: Thu, 6 Jul 2006 19:37:31 +0200
+Message-ID: <409f6db64d8232678430de5c8112bc0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25B8323D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A2A125F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 19:31:32 +0200 (MEST)
+	Thu,  6 Jul 2006 19:37:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-30-2006 06:05 CEST
-Last Modified:              07-06-2006 19:31 CEST
+Last Modified:              07-06-2006 19:37 CEST
 ======================================================================
 Summary:                    Sounds stops and continue
 Description: 
@@ -53,17 +53,18 @@ that work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-05-06 16:48 
-----------------------------------------------------------------------
-I can't make any sense out of this comment.  Is there any improvement with
-1.0.12-rc1?
-
-----------------------------------------------------------------------
  gwagner - 07-06-06 19:31 
 ----------------------------------------------------------------------
 There is no improvement with 1.0.12-rc1. 
 The problem only happen when the sound blaster-card is pluged if I remove
 it, the snd_via82xx work fine.
+
+----------------------------------------------------------------------
+ rlrevell - 07-06-06 19:37 
+----------------------------------------------------------------------
+Hmm, that's strange.  I remember that with some boards VIA's BIOS disables
+the on board sound if a PCI soundcard is plugged in.  This was overridden
+in recent kernels.  Maybe the BIOS behavior was there for a reason.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +74,7 @@ Date Modified  Username       Field                    Change
 07-05-06 15:40 gwagner        Note Added: 0010841                          
 07-05-06 16:48 rlrevell       Note Added: 0010842                          
 07-06-06 19:31 gwagner        Note Added: 0010871                          
+07-06-06 19:37 rlrevell       Note Added: 0010872                          
 ======================================================================
 
 
