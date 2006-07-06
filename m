@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Thu, 6 Jul 2006 15:37:05 +0200
-Message-ID: <31d36b9d10deb00a2aaef9a5d6a8fc8d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002198]: No sound out of the built in
+	speakers, but from headphones on a Apple MacBook Pro
+Date: Thu, 6 Jul 2006 15:46:33 +0200
+Message-ID: <af7bb234474afde6e17d959ce9823c50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64AB3186
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AD0F25B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 15:37:05 +0200 (MEST)
+	Thu,  6 Jul 2006 15:46:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,107 +24,202 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
 ======================================================================
-Reported By:                skunk
-Assigned To:                rlrevell
+Reported By:                enlighter
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   2198
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.16.16
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              07-06-2006 15:37 CEST
+Date Submitted:             06-09-2006 12:09 CEST
+Last Modified:              07-06-2006 15:46 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    No sound out of the built in speakers, but from
+headphones on a Apple MacBook Pro
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+Hi,
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
+this error occours on all macbook pros! (see www.mactel-linux.org). Sound
+comes only out of the headphones or out of line-out, but the internal
+speakers keep mute. I cannot unmute them using the mixer (alsamixer,
+kmix). I also tried a rc version of linux-2.6.17 with the same result.
 
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
-
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
+I also tried to load the snd-hda-intel module with "model=laptop" and
+"model=laptop-eapd".
 ======================================================================
 
 ----------------------------------------------------------------------
- amarsh04 - 07-06-06 10:14 
+ Gendo - 07-06-06 03:13 
 ----------------------------------------------------------------------
-After installing new ALSA modules, don't forget to reload the soundfonts!
+tiwai, here is the output from the macbook. I will get the iMac output and
+post it soon
 
-E.G.
 
-asfxload /usr/share/sounds/sf2/8mbgmsfx.sf2
+Codec: SigmaTel STAC9221 A1
+Address: 0
+Vendor Id: 0x83847680
+Subsystem Id: 0x100
+Revision Id: 0x103401
+Default PCM: rates 0x7e0, bits 0x0e, types 0x1
+Default Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
+Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x5f 0x5f]
+  Power: 0x0
+Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x6f 0x6a]
+  Power: 0x0
+Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x72 0x72]
+  Power: 0x0
+Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x17
+Node 0x07 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x18
+Node 0x08 [Audio Output] wcaps 0x40211: Stereo Digital
+  PCM: rates 0x7e0, bits 0x0e, types 0x5
+Node 0x09 [Audio Input] wcaps 0x140311: Stereo Digital
+  PCM: rates 0x160, bits 0x0e, types 0x5
+  Connection: 1
+     0x11
+Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173f: IN OUT HP Detect
+  Pin Default 0x0101e022: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = White
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
+Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081737: IN OUT Detect
+  Pin Default 0x90afe112: [Fixed] Mic at Int N/A
+    Conn = Other, Color = White
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x04
+Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081737: IN OUT Detect
+  Pin Default 0x9017e121: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = White
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x03
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173f: IN OUT HP Detect
+  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
+    Conn = Unknown, Color = White
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
+Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0824: IN Detect
+  Pin Default 0x41f0e032: [N/A] Other at Ext Rear
+    Conn = Unknown, Color = White
+  Pin-ctls: 0x20: IN
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0837: IN OUT Detect
+  Pin Default 0x0181e031: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = White
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x05
+Node 0x10 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x1145f023: [Jack] SPDIF Out at Int Rear
+    Conn = Optical, Color = Other
+  Pin-ctls: 0x40: OUT
+  Connection: 3
+     0x08* 0x17 0x19
+Node 0x11 [Pin Complex] wcaps 0x430681: Stereo Digital
+  Pincap 0x0810024: IN EAPD Detect
+  Pin Default 0x11c5c032: [Jack] SPDIF In at Int Rear
+    Conn = Optical, Color = UNKNOWN
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x02 0x02]
+  Connection: 7
+     0x0e 0x15 0x0f* 0x0b 0x0c 0x0d 0x0a
+Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 7
+     0x0e 0x15* 0x0f 0x0b 0x0c 0x0d 0x0a
+Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0
+  Amp-Out vals:  [0x00]
+Node 0x15 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
+    Conn = Unknown, Color = White
+  Pin-ctls: 0x00:
+Node 0x16 [Volume Knob Widget] wcaps 0x600000: Mono
+Node 0x17 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x0a 0x0a]
+  Connection: 1
+     0x12
+Node 0x18 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x80 0x80]
+  Connection: 1
+     0x13
+Node 0x19 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
+Node 0x1a [Audio Output] wcaps 0x30201: Stereo Digital
+Node 0x1b [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
+    Conn = Unknown, Color = White
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x1a
 
 ----------------------------------------------------------------------
- rlrevell - 07-06-06 15:37 
+ tiwai - 07-06-06 15:46 
 ----------------------------------------------------------------------
-Fixed in Hg repo
+Is the state got when HP jack is plugged or unplugged?
+The node 0x0c looks like the built-in speaker pin, and it's configured as
+input.  Usually, it's turned to be output when HP is unplugged.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
-06-07-06 19:50 rlrevell       Note Added: 0010088                          
-06-08-06 09:28 skunk          Note Added: 0010109                          
-06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
-               
-06-27-06 23:43 phorn          Note Added: 0010602                          
-06-28-06 00:03 rlrevell       Note Added: 0010603                          
-06-28-06 03:50 phorn          Note Added: 0010605                          
-07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
-07-02-06 15:37 amarsh04       Note Added: 0010791                          
-07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
-07-03-06 02:57 amarsh04       Note Added: 0010796                          
-07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
-     
-07-03-06 18:05 rlrevell       Note Added: 0010801                          
-07-03-06 20:24 riesebie       Note Added: 0010806                          
-07-03-06 20:25 riesebie       Note Edited: 0010806                         
-07-04-06 03:23 amarsh04       Note Added: 0010813                          
-07-04-06 04:58 phorn          Note Added: 0010814                          
-07-04-06 07:20 amarsh04       Note Added: 0010816                          
-07-04-06 17:07 rlrevell       Note Added: 0010821                          
-07-04-06 17:46 amarsh04       Note Added: 0010822                          
-07-04-06 17:53 rlrevell       Note Added: 0010823                          
-07-04-06 17:56 rlrevell       Note Added: 0010824                          
-07-04-06 19:32 crimsunkg      Note Added: 0010825                          
-07-05-06 05:34 amarsh04       Note Added: 0010831                          
-07-05-06 09:32 riesebie       Note Added: 0010833                          
-07-05-06 13:20 amarsh04       Note Added: 0010835                          
-07-06-06 09:30 amarsh04       Note Added: 0010856                          
-07-06-06 10:14 amarsh04       Note Added: 0010858                          
-07-06-06 15:37 rlrevell       Status                   new => resolved     
-07-06-06 15:37 rlrevell       Resolution               open => fixed       
-07-06-06 15:37 rlrevell       Assigned To               => rlrevell        
-07-06-06 15:37 rlrevell       Note Added: 0010860                          
+06-09-06 12:09 enlighter      New Issue                                    
+06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
+06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
+06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
+06-18-06 09:27 enlighter      Note Added: 0010297                          
+06-18-06 09:29 enlighter      Note Added: 0010298                          
+06-25-06 20:17 enlighter      Note Added: 0010518                          
+06-26-06 16:08 tiwai          Note Added: 0010541                          
+06-26-06 16:20 enlighter      Note Added: 0010546                          
+06-26-06 16:34 tiwai          Note Added: 0010547                          
+06-29-06 17:48 tiwai          Note Added: 0010676                          
+07-05-06 04:18 Gendo          Note Added: 0010830                          
+07-05-06 15:21 tiwai          Note Added: 0010838                          
+07-06-06 03:13 Gendo          Note Added: 0010848                          
+07-06-06 15:46 tiwai          Note Added: 0010861                          
 ======================================================================
 
 
