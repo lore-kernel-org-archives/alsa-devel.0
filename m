@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002260]: No sound with hda-intel ALC883
-Date: Thu, 6 Jul 2006 22:23:04 +0200
-Message-ID: <449ceb62eb957573fabff16f8333ea55@bugtrack.alsa-project.org>
+Date: Thu, 6 Jul 2006 22:42:12 +0200
+Message-ID: <8cfa19ee642d787c65943c60e842f4f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E00DB23E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2AA123E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 22:23:04 +0200 (MEST)
+	Thu,  6 Jul 2006 22:42:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2260> 
 ======================================================================
@@ -36,12 +36,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-06-2006 22:23 CEST
+Last Modified:              07-06-2006 22:42 CEST
 ======================================================================
 Summary:                    No sound with hda-intel ALC883
 Description: 
@@ -73,6 +75,7 @@ Date Modified  Username       Field                    Change
 ======================================================================
 07-06-06 22:14 lodp2          New Issue                                    
 07-06-06 22:23 lodp2          Note Added: 0010883                          
+07-06-06 22:42 rlrevell       Status                   assigned => closed  
 ======================================================================
 
 
