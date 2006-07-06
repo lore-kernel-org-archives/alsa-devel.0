@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002259]: `IRQF_DISABLED' `IRQF_SHARED'
 	- undeclared (first use in this function)
-Date: Thu, 6 Jul 2006 13:58:34 +0200
-Message-ID: <5e720ea3c8b30e22debf953f09a46316@bugtrack.alsa-project.org>
+Date: Thu, 6 Jul 2006 14:08:50 +0200
+Message-ID: <2f7e534e24176d657c34461098b42058@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93E2224F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CE4724F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 13:58:34 +0200 (MEST)
+	Thu,  6 Jul 2006 14:08:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2259> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-06-2006 06:51 CEST
-Last Modified:              07-06-2006 13:58 CEST
+Last Modified:              07-06-2006 14:08 CEST
 ======================================================================
 Summary:                    `IRQF_DISABLED' `IRQF_SHARED'  - undeclared (first
 use in this function)
@@ -90,6 +92,8 @@ Date Modified  Username       Field                    Change
 ======================================================================
 07-06-06 06:51 Raymond        New Issue                                    
 07-06-06 13:58 Raymond        Note Added: 0010859                          
+07-06-06 14:08 perex          Status                   assigned => resolved
+07-06-06 14:08 perex          Resolution               open => fixed       
 ======================================================================
 
 
