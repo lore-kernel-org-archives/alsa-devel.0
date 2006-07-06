@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002239]: No sound on SPDIF,
 	Sampling rate not (re)set? if compiled with -D_FILE_OFFSET_BITS=64
-Date: Thu, 6 Jul 2006 16:08:08 +0200
-Message-ID: <067e2e1b150ee768a18614a5ea83958d@bugtrack.alsa-project.org>
+Date: Thu, 6 Jul 2006 16:16:43 +0200
+Message-ID: <0330a377c31b2345d9560f2ae40e2b6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A40025B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB9F25F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 16:08:08 +0200 (MEST)
+	Thu,  6 Jul 2006 16:16:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -50,7 +50,7 @@ Status:                     new
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             06-28-2006 11:02 CEST
-Last Modified:              07-06-2006 16:08 CEST
+Last Modified:              07-06-2006 16:16 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -74,12 +74,6 @@ My Mplayer parameter:
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 15:56 =
-
-----------------------------------------------------------------------
-I cannot reproduce here...
-
-----------------------------------------------------------------------
  konczalski - 07-06-06 16:08 =
 
 ----------------------------------------------------------------------
@@ -94,6 +88,13 @@ http://www.geexbox.org/releases/snapshot/geexbox-devel-20060703-1762-en.i38=
 http://www.geexbox.org/releases/snapshot/geexbox-devel-20060704-1763-en.i38=
 6.iso
 (compiled with -D_FILE_OFFSET_BITS=3D32 =3D OK)
+
+----------------------------------------------------------------------
+ tiwai - 07-06-06 16:16 =
+
+----------------------------------------------------------------------
+You should try to reproduce the problem with standard tools like aplay,
+e.g. using several WAV files with different sample rates.
 
 Issue History
 Date Modified  Username       Field                    Change              =
@@ -110,6 +111,8 @@ Date Modified  Username       Field                    Change              =
 07-06-06 15:56 tiwai          Note Added: 0010864                          =
 
 07-06-06 16:08 konczalski     Note Added: 0010865                          =
+
+07-06-06 16:16 tiwai          Note Added: 0010866                          =
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
