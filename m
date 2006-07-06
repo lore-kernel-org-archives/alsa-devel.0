@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002262]: Why does the hadware mixer of
 	"sound blaster live 24bit model sb04100 chip ca0106" never
 	was implemented??? There is no one??
-Date: Fri, 7 Jul 2006 01:39:54 +0200
-Message-ID: <54f458159b5ed188a52e59f9e33f2c16@bugtrack.alsa-project.org>
+Date: Fri, 7 Jul 2006 01:44:03 +0200
+Message-ID: <85c5a87cb579bbc8d37c38abad83888d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A48EA178
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C04F178
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 01:39:54 +0200 (MEST)
+	Fri,  7 Jul 2006 01:44:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,7 +25,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2262> 
 ======================================================================
@@ -43,7 +43,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-07-2006 01:39 CEST
-Last Modified:              07-07-2006 01:39 CEST
+Last Modified:              07-07-2006 01:44 CEST
 ======================================================================
 Summary:                    Why does the hadware mixer of "sound blaster live
 24bit model sb04100 chip ca0106" never was implemented??? There is no one??
@@ -52,10 +52,20 @@ I already read that the "sound blaster live 24bit" has no hadware mixer,
 but I don't believe that. Someone really know something about it???
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 07-07-06 01:44 
+----------------------------------------------------------------------
+Believe it or not, it's true.  The CA0106 has no hardware mixing.  All
+mixing is done in software by the Windows driver (or ALSA + dmix).
+
+Creative really screwed their users and damaged their brand by calling
+this an "SBLive"
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-07-06 01:39 gwagner        New Issue                                    
+07-07-06 01:44 rlrevell       Note Added: 0010890                          
 ======================================================================
 
 
