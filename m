@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002198]: No sound out of the built in
-	speakers, but from headphones on a Apple MacBook Pro
-Date: Thu, 6 Jul 2006 18:14:55 +0200
-Message-ID: <68688944b794ae0ddda697d98ebbe869@bugtrack.alsa-project.org>
+From: Daniel Schroeder <sec@dschroeder.info>
+Subject: Re: ASUS M2N32 MCP55 HDAudio problems - solved
+Date: Thu, 06 Jul 2006 18:20:50 +0200
+Message-ID: <44AD3862.50209@dschroeder.info>
+References: <44A19885.8020104@dschroeder.info>	<s5hwtb1qp16.wl%tiwai@suse.de>	<44A2F28C.509@dschroeder.info>	<s5h64ikce22.wl%tiwai@suse.de>	<44A41EBF.2040308@dschroeder.info>	<s5hpsgr9cra.wl%tiwai@suse.de>	<44A6421F.9020307@dschroeder.info>	<s5hveqeu4c6.wl%tiwai@suse.de>	<44AD2FBC.2080604@dschroeder.info>
+	<s5hpsgiybwm.wl%tiwai@suse.de>
+Reply-To: sec@dschroeder.info
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7C7725F
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 18:14:55 +0200 (MEST)
+In-Reply-To: <s5hpsgiybwm.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,77 +19,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Thu, 06 Jul 2006 17:43:56 +0200,
+> Daniel Schroeder wrote:
+>>>>  - hp jack does not mute the other speakers
+>>> Should it be?  The behavior depends on the hardware type, and
+>>> currently only laptop-style (2-channel, jack-auto-muted) and 3/6-stack
+>>> for mobos (no jack-auto-muting).
+>> could this be fixed in alsa or is this a hardware only issue?
+> 
+> It's my question, too.  I have no idea what you realy wanted, and
+> how your hardware is designed to behave.
+> 
+> On many systems, auto-muting via HP jack is simply annoying.
+> 
+> 
+> Takashi
+my old nforce2 mb mutes the other channels if i plug in the hp...but i
+think the old mb does this in hardware...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
-======================================================================
-Reported By:                enlighter
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2198
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16.16
-======================================================================
-Date Submitted:             06-09-2006 12:09 CEST
-Last Modified:              07-06-2006 18:14 CEST
-======================================================================
-Summary:                    No sound out of the built in speakers, but from
-headphones on a Apple MacBook Pro
-Description: 
-Hi,
+this was a real nice feature...so, i have to deactivate the other
+channels in kmix now....this is O.K. :)
 
-this error occours on all macbook pros! (see www.mactel-linux.org). Sound
-comes only out of the headphones or out of line-out, but the internal
-speakers keep mute. I cannot unmute them using the mixer (alsamixer,
-kmix). I also tried a rc version of linux-2.6.17 with the same result.
+the real funny thing about this thread...in Windows the center speaker
+is not working in moviez, just like my initial and now fixed problem
+with alsa :) And with alsa i have the possibility to mute the other
+channels to have only sound output on my headphone...i haven't managed
+this yet with windows and i would say, i have not this option to do this
+in windows...
 
-I also tried to load the snd-hda-intel module with "model=laptop" and
-"model=laptop-eapd".
-======================================================================
+conclusion: i love linux on the desktop :)
 
-----------------------------------------------------------------------
- tiwai - 07-06-06 15:46 
-----------------------------------------------------------------------
-Is the state got when HP jack is plugged or unplugged?
-The node 0x0c looks like the built-in speaker pin, and it's configured as
-input.  Usually, it's turned to be output when HP is unplugged.
-
-----------------------------------------------------------------------
- Gendo - 07-06-06 18:14 
-----------------------------------------------------------------------
-I had the headphone jack unplugged when I cat'd that. Do you want me to
-post it with the jack plugged in as well?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-06 12:09 enlighter      New Issue                                    
-06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
-06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
-06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
-06-18-06 09:27 enlighter      Note Added: 0010297                          
-06-18-06 09:29 enlighter      Note Added: 0010298                          
-06-25-06 20:17 enlighter      Note Added: 0010518                          
-06-26-06 16:08 tiwai          Note Added: 0010541                          
-06-26-06 16:20 enlighter      Note Added: 0010546                          
-06-26-06 16:34 tiwai          Note Added: 0010547                          
-06-29-06 17:48 tiwai          Note Added: 0010676                          
-07-05-06 04:18 Gendo          Note Added: 0010830                          
-07-05-06 15:21 tiwai          Note Added: 0010838                          
-07-06-06 03:13 Gendo          Note Added: 0010848                          
-07-06-06 15:46 tiwai          Note Added: 0010861                          
-07-06-06 18:14 Gendo          Note Added: 0010869                          
-======================================================================
+cheers,
+daniel
 
 
 
