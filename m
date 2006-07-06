@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Thu, 6 Jul 2006 23:22:02 +0200
-Message-ID: <6cf4f43f32291fbbe2d6088d64b0c0a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002251]: Speaker sound is fine,
+	but headphones not recognized, so no sound
+Date: Thu, 6 Jul 2006 23:40:06 +0200
+Message-ID: <4d380e065c8686a3b3c4f7532d327076@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FFEDE3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B82F2143
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 23:22:02 +0200 (MEST)
+	Thu,  6 Jul 2006 23:40:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,77 +26,125 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2251> 
 ======================================================================
-Reported By:                mini
+Reported By:                moret
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2170
+Issue ID:                   2251
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
+Distribution:               Debian
+Kernel Version:             2.6.17.2
 ======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-06-2006 23:22 CEST
+Date Submitted:             07-02-2006 06:27 CEST
+Last Modified:              07-06-2006 23:40 CEST
 ======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
+Summary:                    Speaker sound is fine, but headphones not
+recognized, so no sound
 Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
+Sound comes through fine on built-in speakers.  Plugging in headphones
+silences the built-in speakers, but nothing comes through on the
+headphones
+jack.
+The machine is a Panasonic CF-Y5 (Japanese market) with L2300 Core Duo
+processor, 82801G (ICH7) chipset, and the following audio device (from
+lspci -vv), with device ID 27d8, identified by ALSA as a SigmaTel STAC
+9200:
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Matsushita Electric Industrial Co., Ltd. Unknown device
+8338
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 185
+        Region 0: Memory at d0340000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+As hinted at by the lspci listing, the alsamixer list only one output
+device
+(the built-in speakers).
 ======================================================================
 
 ----------------------------------------------------------------------
- mini - 07-06-06 23:12 
+ tiwai - 07-06-06 20:03 
 ----------------------------------------------------------------------
-Hmm, but the S/PDIF works in Windows, so there has to be a software
-possibility...
+Hm, interesting.  Usually it's in reverse, HP works but speaker not.
 
-Do you know someway I can check how windows does it?
+Anyway, first, try to update to ALSA HG version.
 
-Now that I come to think about it - is the pin confing only detected at
-boot? Because I've had trobles in Windows with the S/PDIF output only
-working when on battery. I'll try booting on battery to see if the pin
-configs are different...
+Then, try to make a diff of codec#0 file between plugged and unplugged
+states.  The PIN state of nodes 0x0d and 0x0e should be changed by HP
+plugging.
+
+Also, please show the kernel messages at module loading after compiling
+with --with-debug=detect configure option (CONFIG_SND_DEBUG_DETECT=y
+Kconfig).  It will show the detection of BIOS pin configurations.
 
 ----------------------------------------------------------------------
- mini - 07-06-06 23:22 
+ moret - 07-06-06 23:40 
 ----------------------------------------------------------------------
-YEEESSS! That was it!
+OK, I downloaded ALSA HG, compiled the driver, and compared
+/proc/asound/cardo/codec#0 with and without headphones plugged in.
+The results are identical (I saved each and gave them to diff).
 
-I rmmod'ed the snd-hda-intel module, unplugged the AC, and modprobed it
-again. Now:
-
-Node 0x09 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01451012: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 2
-     0x05* 0x0a
-
-I still don't get a control in gnome-volume-control, but alsamixer gives
-me one.
-
-Off to test tomorrow.
-
-I think this bug can be closed - I think I'm having a hardware (grounding)
-issue.
+When the module is inserted, a few lines are saved to /var/log/syslog:
+here they are
+ul  6 23:17:18 localhost kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
+GSI 22 (level, low) -> IRQ 185
+Jul  6 23:17:18 localhost kernel: PCI: Setting latency timer of device
+0000:00:1b.0 to 64
+Jul  6 23:17:18 localhost kernel: codec_mask = 0x1
+Jul  6 23:17:18 localhost kernel: hda_codec: Unknown model for STAC9200,
+using BIOS defaults
+Jul  6 23:17:18 localhost kernel: autoconfig: line_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+Jul  6 23:17:18 localhost kernel:    speaker_outs=1 (0xe/0x0/0x0/0x0/0x0)
+Jul  6 23:17:18 localhost kernel:    hp=0xd, dig_out=0x0, din_in=0x0
+Jul  6 23:17:18 localhost kernel:    inputs: mic=0x10, fmic=0x0, line=0x0,
+fline=0x0, cd=0x0, aux=0x0
+Jul  6 23:17:18 localhost kernel: hda_intel: azx_get_response timeout,
+switching to single_cmd mode...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-07-06-06 19:46 tiwai          Note Added: 0010873                          
-07-06-06 23:12 mini           Note Added: 0010884                          
-07-06-06 23:22 mini           Note Added: 0010885                          
+07-02-06 06:27 moret          New Issue                                    
+07-02-06 06:27 moret          Distribution              => Debian          
+07-02-06 06:27 moret          Kernel Version            => 2.6.17.2        
+07-02-06 16:17 moret          Note Added: 0010792                          
+07-03-06 14:48 moret          Note Added: 0010799                          
+07-06-06 20:03 tiwai          Note Added: 0010876                          
+07-06-06 23:40 moret          Note Added: 0010886                          
 ======================================================================
 
 
