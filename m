@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002254]: Compilation warnings that
-	result in the module to not be loaded
-Date: Thu, 6 Jul 2006 06:17:20 +0200
-Message-ID: <920cc6ef3a1f0a80cddf403e2dd42d6f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002259]: `IRQF_DISABLED' `IRQF_SHARED'
+	- undeclared (first use in this function)
+Date: Thu, 6 Jul 2006 06:51:09 +0200
+Message-ID: <d341a8ef4ab832038d27e13a0181f66b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2979824F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9440924D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 06:17:21 +0200 (MEST)
+	Thu,  6 Jul 2006 06:51:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,84 +24,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2254> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2259> 
 ======================================================================
-Reported By:                LordRaiden
+Reported By:                Raymond
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2254
-Category:                   PCI - via82xx
+Issue ID:                   2259
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             kernel 2.6.17-3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-03-2006 05:47 CEST
-Last Modified:              07-06-2006 06:17 CEST
+Date Submitted:             07-06-2006 06:51 CEST
+Last Modified:              07-06-2006 06:51 CEST
 ======================================================================
-Summary:                    Compilation warnings that result in the module to
-not be loaded
+Summary:                    `IRQF_DISABLED' `IRQF_SHARED'  - undeclared (first
+use in this function)
 Description: 
-I tried both 1.0.11 and 1.0.12rc1, both with the same result. i'm trying to
-compile via82xx drivers, but I think the problems are in an acore/sound.c
-file (everything else compiles without errors or warnings.
+Is there any backward compatiable patch for kernel 2.4 ?
 
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c: In function
-&#8216;snd_register_device&#8217;:
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 2 of &#8216;class_device_create&#8217; makes pointer from
-integer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 3 of &#8216;class_device_create&#8217; makes integer from
-pointer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 4 of &#8216;class_device_create&#8217; from incompatible
-pointer type
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 5 of &#8216;class_device_create&#8217; discards
-qualifiers from pointer target type
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=467cbbd896c410fe24d908f940bf588f6baa7441;style=gitweb
+
+gcc32 -D__KERNEL__ -DMODULE=1 -I/root/alsa/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
+intel8x0.c: In function `intel8x0_resume':
+intel8x0.c:2499: `IRQF_DISABLED' undeclared (first use in this function)
+intel8x0.c:2499: (Each undeclared identifier is reported only once
+intel8x0.c:2499: for each function it appears in.)
+intel8x0.c:2499: `IRQF_SHARED' undeclared (first use in this function)
+intel8x0.c: In function `intel8x0_measure_ac97_clock':
+intel8x0.c:2633: warning: implicit declaration of function
+`snd_ac97_update_power'
+intel8x0.c: In function `snd_intel8x0_create':
+intel8x0.c:2873: `IRQF_DISABLED' undeclared (first use in this function)
+intel8x0.c:2873: `IRQF_SHARED' undeclared (first use in this function)
+intel8x0.c: At top level:
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+make[1]: *** [intel8x0.o] Error 1
+make[1]: Leaving directory `/root/alsa/alsa-driver/pci'
+make: *** [compile] Error 1
 
 ======================================================================
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-06-06 02:28 
-----------------------------------------------------------------------
-I doubt these warnings are related to your problem.
-
-What are the error messages when loading the module?
-And what is the result when using the driver shipped with 2.6.17?
-
-----------------------------------------------------------------------
- LordRaiden - 07-06-06 06:17 
-----------------------------------------------------------------------
-Basically, if I do alsamixer or aplay -l I get what basically amounts to
-soundcard not being found error. After a recent kernel update in Ubuntu
-(2.6.17-4) I tried compiling/configuring but not installing the drivers. I
-got the same error.
-
-Then I just tried using amarok. I just had to xine to alsa and it was
-working. The drivers in the kernel are working fine at the moment.
-
-I don't want to try installing the drivers just to lose my sound again. I
-saw a big set of errors in dmesg with a whole lot values just dumped.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-06 05:47 LordRaiden     New Issue                                    
-07-03-06 05:47 LordRaiden     Distribution              => Ubuntu          
-07-03-06 05:47 LordRaiden     Kernel Version            => kernel 2.6.17-3 
-07-03-06 05:49 LordRaiden     Issue Monitored: LordRaiden                    
-07-06-06 02:28 Adrian Bunk    Note Added: 0010846                          
-07-06-06 02:28 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - via82xx
-07-06-06 02:28 Adrian Bunk    Steps to Reproduce Updated                    
-07-06-06 06:17 LordRaiden     Note Added: 0010853                          
+07-06-06 06:51 Raymond        New Issue                                    
 ======================================================================
 
 
