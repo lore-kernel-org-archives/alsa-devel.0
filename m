@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001888]: MIDI external output
-	occasionally freezes the machine
-Date: Thu, 6 Jul 2006 01:59:40 +0200
-Message-ID: <252fde104636dab2c5b53d0ed6dde399@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002254]: Compilation warnings that
+	result in the module to not be loaded
+Date: Thu, 6 Jul 2006 02:29:00 +0200
+Message-ID: <8eb5acf22f69df8711943850ca9f61e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB45F17A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C07E124E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 01:59:40 +0200 (MEST)
+	Thu,  6 Jul 2006 02:29:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,96 +24,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1888> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2254> 
 ======================================================================
-Reported By:                pigeon
-Assigned To:                
+Reported By:                LordRaiden
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1888
-Category:                   PCI - ymfpci
-Reproducibility:            random
-Severity:                   block
+Issue ID:                   2254
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.14.4 SMP, self-built
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             kernel 2.6.17-3
 ======================================================================
-Date Submitted:             03-02-2006 09:59 CET
-Last Modified:              07-06-2006 01:59 CEST
+Date Submitted:             07-03-2006 05:47 CEST
+Last Modified:              07-06-2006 02:28 CEST
 ======================================================================
-Summary:                    MIDI external output occasionally freezes the
-machine
+Summary:                    Compilation warnings that result in the module to
+not be loaded
 Description: 
+I tried both 1.0.11 and 1.0.12rc1, both with the same result. i'm trying to
+compile via82xx drivers, but I think the problems are in an acore/sound.c
+file (everything else compiles without errors or warnings.
 
-Since I've upgraded my kernel from 2.4 to 2.6.14.4, I'm having random
-machine freezes when using the external MIDI port on my ymf soundcard. It
-can happen just by playing midi using "pmidi -p 64:0 <midi file>". It
-freezes sometimes when I simply ctrl-c it. Rosegarden also suffers from
-the same behavior while starting and/or stopping a playback.
-
-My external MIDI is connected to a Yamaha digital piano.
-
-I do not have this problem when I was using a 2.4 kernel, and a self built
-alsa driver (possibly version 1.0.9).
-
-The snd-ymfpci driver is loaded with the follow options:
-mpu_port=1 fm_port=1 joystick_port=1
-
-Thanks.
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c: In function
+&#8216;snd_register_device&#8217;:
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 2 of &#8216;class_device_create&#8217; makes pointer from
+integer without a cast
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 3 of &#8216;class_device_create&#8217; makes integer from
+pointer without a cast
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 4 of &#8216;class_device_create&#8217; from incompatible
+pointer type
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 5 of &#8216;class_device_create&#8217; discards
+qualifiers from pointer target type
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-05-06 15:15 
+ Adrian Bunk - 07-06-06 02:28 
 ----------------------------------------------------------------------
-How about the patch in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952?
+I doubt these warnings are related to your problem.
 
-----------------------------------------------------------------------
- Sir Boss - 07-06-06 01:59 
-----------------------------------------------------------------------
-$ cat /proc/asound/cards
- 0 [ICH5           ]: ICH4 - Intel ICH5
-                      Intel ICH5 with AD1980 at 0xfebffa00, irq 16
- 1 [ALS4000        ]: ALS4000 - Avance Logic ALS4000
-                      Avance Logic ALS4000 at 0xdf00, irq 23
-$ cat /proc/asound/pcm
-00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
-00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
-00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
-00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
-01-00: ALS4000 DSP :  : playback 1 : capture 1
-$ cat /proc/asound/timers
-G0: system timer : 1000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-  Client application 10156 : running
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-1-1: PCM capture 0-1-1 : SLAVE
-P0-2-1: PCM capture 0-2-1 : SLAVE
-P0-3-1: PCM capture 0-3-1 : SLAVE
-P0-4-0: PCM playback 0-4-0 : SLAVE
-P1-0-0: PCM playback 1-0-0 : SLAVE
-P1-0-1: PCM capture 1-0-1 : SLAVE
-
-Forgive a noob...but where exactly does that patch from 952 go?  If it's a
-kernel patch, how do I go about applying it?
+What are the error messages when loading the module?
+And what is the result when using the driver shipped with 2.6.17?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-06 09:59 pigeon         New Issue                                    
-03-02-06 09:59 pigeon         Distribution              => Debian testing  
-03-02-06 09:59 pigeon         Kernel Version            => 2.6.14.4 SMP,
-self-built
-06-19-06 15:38 Raymond        Note Added: 0010314                          
-07-04-06 02:22 Sir Boss       Note Added: 0010811                          
-07-05-06 15:03 Raymond        Note Added: 0010836                          
-07-05-06 15:15 tiwai          Note Added: 0010837                          
-07-06-06 01:59 Sir Boss       Note Added: 0010845                          
+07-03-06 05:47 LordRaiden     New Issue                                    
+07-03-06 05:47 LordRaiden     Distribution              => Ubuntu          
+07-03-06 05:47 LordRaiden     Kernel Version            => kernel 2.6.17-3 
+07-03-06 05:49 LordRaiden     Issue Monitored: LordRaiden                    
+07-06-06 02:28 Adrian Bunk    Note Added: 0010846                          
+07-06-06 02:28 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - via82xx
+07-06-06 02:28 Adrian Bunk    Steps to Reproduce Updated                    
 ======================================================================
 
 
