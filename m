@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002254]: Compilation warnings that
-	result in the module to not be loaded
-Date: Thu, 6 Jul 2006 23:51:58 +0200
-Message-ID: <b13eced5e85834bef28a0f6dddd9b5d8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002248]: Sounds stops and continue
+Date: Fri, 7 Jul 2006 01:21:29 +0200
+Message-ID: <b30a9173410616de475916eeed729a8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBA8723D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 889BD236
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 23:51:58 +0200 (MEST)
+	Fri,  7 Jul 2006 01:21:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,87 +25,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2254> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
 ======================================================================
-Reported By:                LordRaiden
-Assigned To:                perex
+Reported By:                gwagner
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2254
+Issue ID:                   2248
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             kernel 2.6.17-3
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-03-2006 05:47 CEST
-Last Modified:              07-06-2006 23:51 CEST
+Date Submitted:             06-30-2006 06:05 CEST
+Last Modified:              07-07-2006 01:21 CEST
 ======================================================================
-Summary:                    Compilation warnings that result in the module to
-not be loaded
+Summary:                    Sounds stops and continue
 Description: 
-I tried both 1.0.11 and 1.0.12rc1, both with the same result. i'm trying to
-compile via82xx drivers, but I think the problems are in an acore/sound.c
-file (everything else compiles without errors or warnings.
-
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c: In function
-&#8216;snd_register_device&#8217;:
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 2 of &#8216;class_device_create&#8217; makes pointer from
-integer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 3 of &#8216;class_device_create&#8217; makes integer from
-pointer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 4 of &#8216;class_device_create&#8217; from incompatible
-pointer type
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 5 of &#8216;class_device_create&#8217; discards
-qualifiers from pointer target type
-
+Every sounds "music movies" are having little pauses, it's pausing for few
+miliseconds and continue. It's happen on every kind of aplication.
+My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
+that should work with snd_via82xx. I have an soud blaster card too, but
+that work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- LordRaiden - 07-06-06 06:18 
+ vsu - 07-06-06 19:58 
 ----------------------------------------------------------------------
-Basically, if I do alsamixer or aplay -l I get what basically amounts to
-soundcard not being found error. After a recent kernel update in Ubuntu
-(2.6.17-4) I tried compiling/configuring but not installing the drivers. I
-got the same set of warnings about the casts and the pointers.
+The BIOS of ASUS A8V Deluxe is definitely known to disable the onboard
+sound if it detects a PCI sound card. Maybe the problem is that BIOS does
+not set up some configuration registers if it decides to disable the
+onboard sound, and Linux does not fix these settings when it reenables the
+audio device.
 
-Then I just tried using amarok. I just had to xine to alsa and it was
-working. The drivers in the kernel are working fine at the moment.
-
-I don't want to try installing the drivers just to lose my sound again. I
-saw a big set of errors in dmesg with a whole lot values just dumped.
+Could you capture the full output of "dmesg" and "lspci -vvxxx" commands
+once when booting without the PCI sound card, and once with that card
+inserted, and attach these files to the bug report?
 
 
 
 ----------------------------------------------------------------------
- Adrian Bunk - 07-06-06 23:51 
+ gwagner - 07-07-06 01:21 
 ----------------------------------------------------------------------
-The ALSA drivers shipped with the Ubuntu kernel shouldn't be that much
-different from the standalone ALSA drivers.
-
-Please post the errors you are seeing in dmesg, or noone will be able to
-help you.
+Yes, I already heard this history about BIOS of ASUS A8V Deluxe too.
+The output of "lspci -vvxxx" and bootdmesg both with and without sound
+blaster pci board is attached.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-06 05:47 LordRaiden     New Issue                                    
-07-03-06 05:47 LordRaiden     Distribution              => Ubuntu          
-07-03-06 05:47 LordRaiden     Kernel Version            => kernel 2.6.17-3 
-07-03-06 05:49 LordRaiden     Issue Monitored: LordRaiden                    
-07-06-06 02:28 Adrian Bunk    Note Added: 0010846                          
-07-06-06 02:28 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - via82xx
-07-06-06 02:28 Adrian Bunk    Steps to Reproduce Updated                    
-07-06-06 06:17 LordRaiden     Note Added: 0010853                          
-07-06-06 06:18 LordRaiden     Note Edited: 0010853                         
-07-06-06 23:51 Adrian Bunk    Note Added: 0010887                          
+06-30-06 06:05 gwagner        New Issue                                    
+06-30-06 16:36 rlrevell       Note Added: 0010740                          
+07-05-06 15:40 gwagner        Note Added: 0010841                          
+07-05-06 16:48 rlrevell       Note Added: 0010842                          
+07-06-06 19:31 gwagner        Note Added: 0010871                          
+07-06-06 19:37 rlrevell       Note Added: 0010872                          
+07-06-06 19:57 vsu            Note Added: 0010875                          
+07-06-06 19:57 vsu            Issue Monitored: vsu                         
+07-06-06 19:58 vsu            Note Edited: 0010875                         
+07-07-06 00:49 gwagner        File Added: bootdmesg_without_sbpci               
+    
+07-07-06 00:50 gwagner        File Added: bootdmesg_with_sbpci                  
+ 
+07-07-06 00:51 gwagner        File Added: lspci_without_sbpci                   
+
+07-07-06 00:51 gwagner        File Added: lspci_with_sbpci                    
+07-07-06 01:21 gwagner        Note Added: 0010888                          
 ======================================================================
 
 
