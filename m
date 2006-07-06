@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
 	9200
-Date: Thu, 6 Jul 2006 23:12:55 +0200
-Message-ID: <f6c637cbaec1c6db114051d66ef3db3a@bugtrack.alsa-project.org>
+Date: Thu, 6 Jul 2006 23:22:02 +0200
+Message-ID: <6cf4f43f32291fbbe2d6088d64b0c0a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C4E621F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FFEDE3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 23:12:55 +0200 (MEST)
+	Thu,  6 Jul 2006 23:22:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,20 +42,13 @@ Distribution:               Ubuntu Dapper
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-06-2006 23:12 CEST
+Last Modified:              07-06-2006 23:22 CEST
 ======================================================================
 Summary:                    No S/PDIF controls on STAC 9200
 Description: 
 I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
 control for it in alsamixer.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-06-06 19:46 
-----------------------------------------------------------------------
-The BIOS on your device disables the SPDIF output pin.  So, it's correct
-that the driver doesn't activate SPDIF controls.  Possibly BIOS update
-might help.
 
 ----------------------------------------------------------------------
  mini - 07-06-06 23:12 
@@ -70,6 +63,30 @@ boot? Because I've had trobles in Windows with the S/PDIF output only
 working when on battery. I'll try booting on battery to see if the pin
 configs are different...
 
+----------------------------------------------------------------------
+ mini - 07-06-06 23:22 
+----------------------------------------------------------------------
+YEEESSS! That was it!
+
+I rmmod'ed the snd-hda-intel module, unplugged the AC, and modprobed it
+again. Now:
+
+Node 0x09 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01451012: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 2
+     0x05* 0x0a
+
+I still don't get a control in gnome-volume-control, but alsamixer gives
+me one.
+
+Off to test tomorrow.
+
+I think this bug can be closed - I think I'm having a hardware (grounding)
+issue.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +96,7 @@ Date Modified  Username       Field                    Change
 07-02-06 23:54 mini           Note Added: 0010795                          
 07-06-06 19:46 tiwai          Note Added: 0010873                          
 07-06-06 23:12 mini           Note Added: 0010884                          
+07-06-06 23:22 mini           Note Added: 0010885                          
 ======================================================================
 
 
