@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002251]: Speaker sound is fine,
-	but headphones not recognized, so no sound
-Date: Thu, 6 Jul 2006 23:40:06 +0200
-Message-ID: <4d380e065c8686a3b3c4f7532d327076@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002254]: Compilation warnings that
+	result in the module to not be loaded
+Date: Thu, 6 Jul 2006 23:51:58 +0200
+Message-ID: <b13eced5e85834bef28a0f6dddd9b5d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B82F2143
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBA8723D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 23:40:06 +0200 (MEST)
+	Thu,  6 Jul 2006 23:51:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,125 +26,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2251> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2254> 
 ======================================================================
-Reported By:                moret
-Assigned To:                tiwai
+Reported By:                LordRaiden
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2251
-Category:                   PCI - hda-intel
+Issue ID:                   2254
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.17.2
+Distribution:               Ubuntu
+Kernel Version:             kernel 2.6.17-3
 ======================================================================
-Date Submitted:             07-02-2006 06:27 CEST
-Last Modified:              07-06-2006 23:40 CEST
+Date Submitted:             07-03-2006 05:47 CEST
+Last Modified:              07-06-2006 23:51 CEST
 ======================================================================
-Summary:                    Speaker sound is fine, but headphones not
-recognized, so no sound
+Summary:                    Compilation warnings that result in the module to
+not be loaded
 Description: 
-Sound comes through fine on built-in speakers.  Plugging in headphones
-silences the built-in speakers, but nothing comes through on the
-headphones
-jack.
-The machine is a Panasonic CF-Y5 (Japanese market) with L2300 Core Duo
-processor, 82801G (ICH7) chipset, and the following audio device (from
-lspci -vv), with device ID 27d8, identified by ALSA as a SigmaTel STAC
-9200:
+I tried both 1.0.11 and 1.0.12rc1, both with the same result. i'm trying to
+compile via82xx drivers, but I think the problems are in an acore/sound.c
+file (everything else compiles without errors or warnings.
 
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-        Subsystem: Matsushita Electric Industrial Co., Ltd. Unknown device
-8338
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 185
-        Region 0: Memory at d0340000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-As hinted at by the lspci listing, the alsamixer list only one output
-device
-(the built-in speakers).
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c: In function
+&#8216;snd_register_device&#8217;:
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 2 of &#8216;class_device_create&#8217; makes pointer from
+integer without a cast
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 3 of &#8216;class_device_create&#8217; makes integer from
+pointer without a cast
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 4 of &#8216;class_device_create&#8217; from incompatible
+pointer type
+/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
+passing argument 5 of &#8216;class_device_create&#8217; discards
+qualifiers from pointer target type
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 20:03 
+ LordRaiden - 07-06-06 06:18 
 ----------------------------------------------------------------------
-Hm, interesting.  Usually it's in reverse, HP works but speaker not.
+Basically, if I do alsamixer or aplay -l I get what basically amounts to
+soundcard not being found error. After a recent kernel update in Ubuntu
+(2.6.17-4) I tried compiling/configuring but not installing the drivers. I
+got the same set of warnings about the casts and the pointers.
 
-Anyway, first, try to update to ALSA HG version.
+Then I just tried using amarok. I just had to xine to alsa and it was
+working. The drivers in the kernel are working fine at the moment.
 
-Then, try to make a diff of codec#0 file between plugged and unplugged
-states.  The PIN state of nodes 0x0d and 0x0e should be changed by HP
-plugging.
+I don't want to try installing the drivers just to lose my sound again. I
+saw a big set of errors in dmesg with a whole lot values just dumped.
 
-Also, please show the kernel messages at module loading after compiling
-with --with-debug=detect configure option (CONFIG_SND_DEBUG_DETECT=y
-Kconfig).  It will show the detection of BIOS pin configurations.
+
 
 ----------------------------------------------------------------------
- moret - 07-06-06 23:40 
+ Adrian Bunk - 07-06-06 23:51 
 ----------------------------------------------------------------------
-OK, I downloaded ALSA HG, compiled the driver, and compared
-/proc/asound/cardo/codec#0 with and without headphones plugged in.
-The results are identical (I saved each and gave them to diff).
+The ALSA drivers shipped with the Ubuntu kernel shouldn't be that much
+different from the standalone ALSA drivers.
 
-When the module is inserted, a few lines are saved to /var/log/syslog:
-here they are
-ul  6 23:17:18 localhost kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
-GSI 22 (level, low) -> IRQ 185
-Jul  6 23:17:18 localhost kernel: PCI: Setting latency timer of device
-0000:00:1b.0 to 64
-Jul  6 23:17:18 localhost kernel: codec_mask = 0x1
-Jul  6 23:17:18 localhost kernel: hda_codec: Unknown model for STAC9200,
-using BIOS defaults
-Jul  6 23:17:18 localhost kernel: autoconfig: line_outs=0
-(0x0/0x0/0x0/0x0/0x0)
-Jul  6 23:17:18 localhost kernel:    speaker_outs=1 (0xe/0x0/0x0/0x0/0x0)
-Jul  6 23:17:18 localhost kernel:    hp=0xd, dig_out=0x0, din_in=0x0
-Jul  6 23:17:18 localhost kernel:    inputs: mic=0x10, fmic=0x0, line=0x0,
-fline=0x0, cd=0x0, aux=0x0
-Jul  6 23:17:18 localhost kernel: hda_intel: azx_get_response timeout,
-switching to single_cmd mode...
+Please post the errors you are seeing in dmesg, or noone will be able to
+help you.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-06 06:27 moret          New Issue                                    
-07-02-06 06:27 moret          Distribution              => Debian          
-07-02-06 06:27 moret          Kernel Version            => 2.6.17.2        
-07-02-06 16:17 moret          Note Added: 0010792                          
-07-03-06 14:48 moret          Note Added: 0010799                          
-07-06-06 20:03 tiwai          Note Added: 0010876                          
-07-06-06 23:40 moret          Note Added: 0010886                          
+07-03-06 05:47 LordRaiden     New Issue                                    
+07-03-06 05:47 LordRaiden     Distribution              => Ubuntu          
+07-03-06 05:47 LordRaiden     Kernel Version            => kernel 2.6.17-3 
+07-03-06 05:49 LordRaiden     Issue Monitored: LordRaiden                    
+07-06-06 02:28 Adrian Bunk    Note Added: 0010846                          
+07-06-06 02:28 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - via82xx
+07-06-06 02:28 Adrian Bunk    Steps to Reproduce Updated                    
+07-06-06 06:17 LordRaiden     Note Added: 0010853                          
+07-06-06 06:18 LordRaiden     Note Edited: 0010853                         
+07-06-06 23:51 Adrian Bunk    Note Added: 0010887                          
 ======================================================================
 
 
