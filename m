@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set
-	period size to 1024 frames for capture
-Date: Thu, 6 Jul 2006 03:24:36 +0200
-Message-ID: <b633f202696941cb220dd9d1f2bb76e1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002257]: alsa-lib/test/timer -list
+Date: Thu, 6 Jul 2006 03:51:37 +0200
+Message-ID: <93f3a0d2b8a8e198092eca67f509e67e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9494E24F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DED024F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 03:24:36 +0200 (MEST)
+	Thu,  6 Jul 2006 03:51:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,174 +25,351 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2257> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                mjander
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1766
-Category:                   PCI - au88x0
+Project:                    ALSA - lib
+Issue ID:                   2257
+Category:                   timer
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              07-06-2006 03:24 CEST
+Date Submitted:             07-05-2006 16:14 CEST
+Last Modified:              07-06-2006 03:51 CEST
 ======================================================================
-Summary:                    jackd : ALSA: cannot set period size to 1024 frames
-for capture
+Summary:                    alsa-lib/test/timer -list
 Description: 
-snd_pcm_hw_params_get_channels_max() return 4 for capture stream
+Do pcm timer really support subdevice ?
 
-static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-	.info =
-	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-	     SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =
-	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min = 5000,
-	.rate_max = 48000,
-	.channels_min = 1,
-#ifdef CHIP_AU8830
-	.channels_max = 4,
-#else
-	.channels_max = 2,
-#endif
-	.buffer_bytes_max = 0x10000,
-	.period_bytes_min = 0x1,
-	.period_bytes_max = 0x1000,
-	.periods_min = 2,
-	.periods_max = 32,
-};
+The pcm device 0 of the sound cards has 32 subdevice.
 
-static int
-vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
-type)
-{
-	stream_t *stream;
-	int i, en;
-	
-	if ((nr_ch == 3)
-	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
-		return -EBUSY;
+timer -list 
 
-therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
-capture"
+The subdevice number seem not matched with the subdevice number of pcm.
 
-jackd -d alsa hw:0 -S
-jackd 0.100.9
+It seem that playback and capture are mixed 
 
-...
- 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-ALSA: cannot set period size to 1024 frames for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-no message buffer overruns
+
+ cat /proc/asound/timers
+G0: system timer : 10000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-2: PCM playback 0-0-2 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-0-4: PCM playback 0-0-4 : SLAVE
+P0-0-5: PCM capture 0-0-5 : SLAVE
+P0-0-6: PCM playback 0-0-6 : SLAVE
+P0-0-7: PCM capture 0-0-7 : SLAVE
+P0-0-8: PCM playback 0-0-8 : SLAVE
+P0-0-9: PCM capture 0-0-9 : SLAVE
+P0-0-10: PCM playback 0-0-10 : SLAVE
+P0-0-11: PCM capture 0-0-11 : SLAVE
+P0-0-12: PCM playback 0-0-12 : SLAVE
+P0-0-13: PCM capture 0-0-13 : SLAVE
+P0-0-14: PCM playback 0-0-14 : SLAVE
+P0-0-15: PCM capture 0-0-15 : SLAVE
+P0-0-16: PCM playback 0-0-16 : SLAVE
+P0-0-17: PCM capture 0-0-17 : SLAVE
+P0-0-18: PCM playback 0-0-18 : SLAVE
+P0-0-19: PCM capture 0-0-19 : SLAVE
+P0-0-20: PCM playback 0-0-20 : SLAVE
+P0-0-21: PCM capture 0-0-21 : SLAVE
+P0-0-22: PCM playback 0-0-22 : SLAVE
+P0-0-23: PCM capture 0-0-23 : SLAVE
+P0-0-24: PCM playback 0-0-24 : SLAVE
+P0-0-25: PCM capture 0-0-25 : SLAVE
+P0-0-26: PCM playback 0-0-26 : SLAVE
+P0-0-27: PCM capture 0-0-27 : SLAVE
+P0-0-28: PCM playback 0-0-28 : SLAVE
+P0-0-29: PCM capture 0-0-29 : SLAVE
+P0-0-30: PCM playback 0-0-30 : SLAVE
+P0-0-31: PCM capture 0-0-31 : SLAVE
+P0-0-32: PCM playback 0-0-32 : SLAVE
+P0-0-33: PCM capture 0-0-33 : SLAVE
+P0-0-34: PCM playback 0-0-34 : SLAVE
+P0-0-35: PCM capture 0-0-35 : SLAVE
+P0-0-36: PCM playback 0-0-36 : SLAVE
+P0-0-37: PCM capture 0-0-37 : SLAVE
+P0-0-38: PCM playback 0-0-38 : SLAVE
+P0-0-39: PCM capture 0-0-39 : SLAVE
+P0-0-40: PCM playback 0-0-40 : SLAVE
+P0-0-41: PCM capture 0-0-41 : SLAVE
+P0-0-42: PCM playback 0-0-42 : SLAVE
+P0-0-43: PCM capture 0-0-43 : SLAVE
+P0-0-44: PCM playback 0-0-44 : SLAVE
+P0-0-45: PCM capture 0-0-45 : SLAVE
+P0-0-46: PCM playback 0-0-46 : SLAVE
+P0-0-47: PCM capture 0-0-47 : SLAVE
+P0-0-48: PCM playback 0-0-48 : SLAVE
+P0-0-49: PCM capture 0-0-49 : SLAVE
+P0-0-50: PCM playback 0-0-50 : SLAVE
+P0-0-51: PCM capture 0-0-51 : SLAVE
+P0-0-52: PCM playback 0-0-52 : SLAVE
+P0-0-53: PCM capture 0-0-53 : SLAVE
+P0-0-54: PCM playback 0-0-54 : SLAVE
+P0-0-55: PCM capture 0-0-55 : SLAVE
+P0-0-56: PCM playback 0-0-56 : SLAVE
+P0-0-57: PCM capture 0-0-57 : SLAVE
+P0-0-58: PCM playback 0-0-58 : SLAVE
+P0-0-59: PCM capture 0-0-59 : SLAVE
+P0-0-60: PCM playback 0-0-60 : SLAVE
+P0-0-61: PCM capture 0-0-61 : SLAVE
+P0-0-62: PCM playback 0-0-62 : SLAVE
+P0-0-63: PCM capture 0-0-63 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+P0-2-0: PCM playback 0-2-0 : SLAVE
+P0-2-2: PCM playback 0-2-2 : SLAVE
+P0-2-4: PCM playback 0-2-4 : SLAVE
+P0-2-6: PCM playback 0-2-6 : SLAVE
+P0-2-8: PCM playback 0-2-8 : SLAVE
+P0-2-10: PCM playback 0-2-10 : SLAVE
+P0-2-12: PCM playback 0-2-12 : SLAVE
+P0-2-14: PCM playback 0-2-14 : SLAVE
+P0-2-16: PCM playback 0-2-16 : SLAVE
+P0-2-18: PCM playback 0-2-18 : SLAVE
+P0-2-20: PCM playback 0-2-20 : SLAVE
+P0-2-22: PCM playback 0-2-22 : SLAVE
+P0-2-24: PCM playback 0-2-24 : SLAVE
+P0-2-26: PCM playback 0-2-26 : SLAVE
+P0-2-28: PCM playback 0-2-28 : SLAVE
+P0-2-30: PCM playback 0-2-30 : SLAVE
+P0-3-0: PCM playback 0-3-0 : SLAVE
+P0-3-2: PCM playback 0-3-2 : SLAVE
+P0-3-4: PCM playback 0-3-4 : SLAVE
+P0-3-6: PCM playback 0-3-6 : SLAVE
+P0-3-8: PCM playback 0-3-8 : SLAVE
+P0-3-10: PCM playback 0-3-10 : SLAVE
+P0-3-12: PCM playback 0-3-12 : SLAVE
+P0-3-14: PCM playback 0-3-14 : SLAVE
+P0-3-16: PCM playback 0-3-16 : SLAVE
+P0-3-18: PCM playback 0-3-18 : SLAVE
+P0-3-20: PCM playback 0-3-20 : SLAVE
+P0-3-22: PCM playback 0-3-22 : SLAVE
+P0-3-24: PCM playback 0-3-24 : SLAVE
+P0-3-26: PCM playback 0-3-26 : SLAVE
+P0-3-28: PCM playback 0-3-28 : SLAVE
+P0-3-30: PCM playback 0-3-30 : SLAVE
+P0-3-32: PCM playback 0-3-32 : SLAVE
+P0-3-34: PCM playback 0-3-34 : SLAVE
+P0-3-36: PCM playback 0-3-36 : SLAVE
+P0-3-38: PCM playback 0-3-38 : SLAVE
+P0-3-40: PCM playback 0-3-40 : SLAVE
+P0-3-42: PCM playback 0-3-42 : SLAVE
+P0-3-44: PCM playback 0-3-44 : SLAVE
+P0-3-46: PCM playback 0-3-46 : SLAVE
+P0-3-48: PCM playback 0-3-48 : SLAVE
+P0-3-50: PCM playback 0-3-50 : SLAVE
+P0-3-52: PCM playback 0-3-52 : SLAVE
+P0-3-54: PCM playback 0-3-54 : SLAVE
+P0-3-56: PCM playback 0-3-56 : SLAVE
+P0-3-58: PCM playback 0-3-58 : SLAVE
+P0-3-60: PCM playback 0-3-60 : SLAVE
+P0-3-62: PCM playback 0-3-62 : SLAVE
+P0-3-64: PCM playback 0-3-64 : SLAVE
+P0-3-66: PCM playback 0-3-66 : SLAVE
+P0-3-68: PCM playback 0-3-68 : SLAVE
+P0-3-70: PCM playback 0-3-70 : SLAVE
+P0-3-72: PCM playback 0-3-72 : SLAVE
+P0-3-74: PCM playback 0-3-74 : SLAVE
+P0-3-76: PCM playback 0-3-76 : SLAVE
+P0-3-78: PCM playback 0-3-78 : SLAVE
+P0-3-80: PCM playback 0-3-80 : SLAVE
+P0-3-82: PCM playback 0-3-82 : SLAVE
+P0-3-84: PCM playback 0-3-84 : SLAVE
+P0-3-86: PCM playback 0-3-86 : SLAVE
+P0-3-88: PCM playback 0-3-88 : SLAVE
+P0-3-90: PCM playback 0-3-90 : SLAVE
+P0-3-92: PCM playback 0-3-92 : SLAVE
+P0-3-94: PCM playback 0-3-94 : SLAVE
+P0-3-96: PCM playback 0-3-96 : SLAVE
+P0-3-98: PCM playback 0-3-98 : SLAVE
+P0-3-100: PCM playback 0-3-100 : SLAVE
+P0-3-102: PCM playback 0-3-102 : SLAVE
+P0-3-104: PCM playback 0-3-104 : SLAVE
+P0-3-106: PCM playback 0-3-106 : SLAVE
+P0-3-108: PCM playback 0-3-108 : SLAVE
+P0-3-110: PCM playback 0-3-110 : SLAVE
+P0-3-112: PCM playback 0-3-112 : SLAVE
+P0-3-114: PCM playback 0-3-114 : SLAVE
+P0-3-116: PCM playback 0-3-116 : SLAVE
+P0-3-118: PCM playback 0-3-118 : SLAVE
+P0-3-120: PCM playback 0-3-120 : SLAVE
+P0-3-122: PCM playback 0-3-122 : SLAVE
+P0-3-124: PCM playback 0-3-124 : SLAVE
+P0-3-126: PCM playback 0-3-126 : SLAVE
+
+./timer list
+Timer device: class 1, sclass 0, card -1, device 0, subdevice 0
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 0
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 1
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 2
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 3
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 4
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 5
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 6
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 7
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 8
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 9
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 10
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 11
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 12
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 13
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 14
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 15
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 16
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 17
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 18
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 19
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 20
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 21
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 22
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 23
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 24
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 25
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 26
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 27
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 28
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 29
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 30
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 31
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 32
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 33
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 34
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 35
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 36
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 37
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 38
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 39
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 40
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 41
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 42
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 43
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 44
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 45
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 46
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 47
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 48
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 49
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 50
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 51
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 52
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 53
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 54
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 55
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 56
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 57
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 58
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 59
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 60
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 61
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 62
+Timer device: class 3, sclass 0, card 0, device 0, subdevice 63
+Timer device: class 3, sclass 0, card 0, device 1, subdevice 0
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 0
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 2
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 4
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 6
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 8
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 10
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 12
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 14
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 16
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 18
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 20
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 22
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 24
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 26
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 28
+Timer device: class 3, sclass 0, card 0, device 2, subdevice 30
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 0
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 2
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 4
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 6
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 8
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 10
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 12
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 14
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 16
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 18
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 20
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 22
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 24
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 26
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 28
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 30
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 32
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 34
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 36
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 38
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 40
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 42
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 44
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 46
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 48
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 50
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 52
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 54
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 56
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 58
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 60
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 62
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 64
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 66
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 68
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 70
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 72
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 74
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 76
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 78
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 80
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 82
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 84
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 86
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 88
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 90
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 92
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 94
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 96
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 98
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 100
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 102
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 104
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 106
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 108
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 110
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 112
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 114
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 116
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 118
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 120
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 122
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 124
+Timer device: class 3, sclass 0, card 0, device 3, subdevice 126
+
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001724 au88x0 PCM configuration problem - buff...
-======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-28-06 05:01 
+ Raymond - 07-06-06 03:51 
 ----------------------------------------------------------------------
-When jackd using oss , the sound play at half speed.
+It seem that dmix need the timer and those soundcard does not support
+hardware mixing only has one playback subdevice and one capture subdevice
 
-I don't know it is a jackd bug or oss enumeration bug.
+How about those sound cards which have many playback subdevices and
+capture subdevices (support hardware mixing) ?
 
-If OSS enumeration does not support more than 2 channels, it should not
-tell the OSS application to use 4 channels even when ALSA driver support
-more than 2 channels.
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-06-06 03:24 
-----------------------------------------------------------------------
-It seem jackd expect period_size of playback streams equal to period_size
-of capture streams.
-
-Since period_bytes_min and period_bytes_max in snd_vortex_playback_hw_adb
-is different, this make many alsa applications need workaround for au88x0
-since either snd_pcm_hw_params_set_period_time_near() or
-snd_pcm_hw_params_set_buffer_time_near() fail most of the time.
-
-http://bugzilla.gnome.org/show_bug.cgi?id=342085
-
-The situtation seem to be solved if the driver set both period_bytes_min
-and period_bytes_max to 4096 as described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724#10832 , however
-jackd
-can only run with 2 playback and 2 capture channels.
-
-Can jackd run on sound card with different number of playback and capture
-channels. (different period size for playback and capture stream) ?
+Does it mean dmix can also use on the soundcards which have more the one
+subdevices ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-06 05:02 Raymond        New Issue                                    
-01-21-06 05:25 rlrevell       Note Added: 0007735                          
-01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
-01-21-06 07:36 Raymond        Note Added: 0007736                          
-01-21-06 07:41 Raymond        Note Edited: 0007736                         
-01-21-06 07:59 rlrevell       Note Added: 0007737                          
-01-23-06 10:36 Raymond        Note Added: 0007761                          
-01-23-06 10:42 Raymond        Note Edited: 0007761                         
-01-24-06 11:25 Raymond        Note Added: 0007773                          
-01-28-06 02:23 Raymond        Note Added: 0007816                          
-01-31-06 13:49 perex          Relationship added       related to 0001724  
-02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
-      
-02-04-06 06:14 Raymond        Note Added: 0007911                          
-02-18-06 08:34 Raymond        Note Added: 0008117                          
-02-20-06 15:32 Raymond        Note Edited: 0007773                         
-02-27-06 05:07 Raymond        Note Added: 0008213                          
-02-27-06 05:14 rlrevell       Note Added: 0008214                          
-02-27-06 05:55 Raymond        Note Added: 0008215                          
-02-27-06 09:30 Raymond        Note Added: 0008220                          
-02-27-06 09:32 Raymond        Note Edited: 0008220                         
-02-27-06 19:15 rlrevell       Note Added: 0008228                          
-02-28-06 02:44 Raymond        Note Edited: 0008215                         
-02-28-06 07:08 Raymond        Note Added: 0008241                          
-03-01-06 07:55 Raymond        Note Added: 0008274                          
-03-03-06 08:12 Raymond        Note Added: 0008335                          
-03-03-06 08:41 mjander        Note Added: 0008337                          
-03-03-06 09:02 Raymond        Note Added: 0008338                          
-03-03-06 10:49 Raymond        Note Added: 0008340                          
-03-03-06 22:36 mjander        Note Added: 0008343                          
-03-04-06 04:47 Raymond        Note Edited: 0008241                         
-04-06-06 08:41 Raymond        Note Edited: 0008215                         
-04-06-06 08:42 Raymond        Note Edited: 0008215                         
-05-14-06 13:39 Raymond        Note Deleted: 0007816                        
-05-14-06 13:40 Raymond        Note Deleted: 0007773                        
-05-14-06 13:41 Raymond        Note Deleted: 0008335                        
-05-23-06 03:31 Raymond        Issue Monitored: ponchick                    
-05-23-06 03:31 Raymond        Note Added: 0009924                          
-05-23-06 03:33 Raymond        Note Edited: 0009924                         
-05-23-06 03:39 Raymond        Note Edited: 0009924                         
-05-23-06 03:40 Raymond        Note Edited: 0009924                         
-05-23-06 03:44 Raymond        Note Edited: 0009924                         
-05-24-06 13:38 Raymond        Note Added: 0009955                          
-05-24-06 13:48 fuman          Issue Monitored: fuman                       
-05-26-06 08:22 Raymond        Note Added: 0009973                          
-06-28-06 04:58 Raymond        Note Added: 0010609                          
-06-28-06 05:01 Raymond        Note Edited: 0010609                         
-07-06-06 03:24 Raymond        Note Added: 0010849                          
+07-05-06 16:14 Raymond        New Issue                                    
+07-06-06 03:51 Raymond        Note Added: 0010850                          
 ======================================================================
 
 
