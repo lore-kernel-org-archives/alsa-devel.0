@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Thu, 6 Jul 2006 19:46:53 +0200
-Message-ID: <581c1962336f39405e3bedec07d919e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002248]: Sounds stops and continue
+Date: Thu, 6 Jul 2006 19:57:21 +0200
+Message-ID: <6b44c0bbc36fb69e0f7c6638dd7ae088@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8339B132
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88C20261
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 19:46:53 +0200 (MEST)
+	Thu,  6 Jul 2006 19:57:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,57 +25,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
 ======================================================================
-Reported By:                mini
-Assigned To:                tiwai
+Reported By:                gwagner
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2170
-Category:                   PCI - hda-intel
+Issue ID:                   2248
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-06-2006 19:46 CEST
+Date Submitted:             06-30-2006 06:05 CEST
+Last Modified:              07-06-2006 19:57 CEST
 ======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
+Summary:                    Sounds stops and continue
 Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
+Every sounds "music movies" are having little pauses, it's pausing for few
+miliseconds and continue. It's happen on every kind of aplication.
+My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
+that should work with snd_via82xx. I have an soud blaster card too, but
+that work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- mini - 07-02-06 23:54 
+ rlrevell - 07-06-06 19:37 
 ----------------------------------------------------------------------
-Same effect with 1.0.11...
-
-Note that this guy:
-
-http://lkml.org/lkml/2006/3/12/16
-
-*does* have S/PDIF at Node 0x08-0x09... and it seems my pin configs are
-identical... what am I doing wrong?
+Hmm, that's strange.  I remember that with some boards VIA's BIOS disables
+the on board sound if a PCI soundcard is plugged in.  This was overridden
+in recent kernels.  Maybe the BIOS behavior was there for a reason.
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 19:46 
+ vsu - 07-06-06 19:57 
 ----------------------------------------------------------------------
-The BIOS on your device disables the SPDIF output pin.  So, it's correct
-that the driver doesn't activate SPDIF controls.  Possibly BIOS update
-might help.
+The BIOS of ASUS A8V Deluxe is definitely known to disable the onboard
+sound if it detects a PCI sound card. Maybe the problem is that BIOS does
+not set up some configuration registers if it decides to disable the
+onboard sound, and Linux does not fix these settings when it reenables the
+audio device.
+
+Could you capture the full output of "dmesg" and "lcpci -vvxxx" commands
+once when booting without the PCI sound card, and once with that card
+inserted, and attach these files to the bug report?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-07-06-06 19:46 tiwai          Note Added: 0010873                          
+06-30-06 06:05 gwagner        New Issue                                    
+06-30-06 16:36 rlrevell       Note Added: 0010740                          
+07-05-06 15:40 gwagner        Note Added: 0010841                          
+07-05-06 16:48 rlrevell       Note Added: 0010842                          
+07-06-06 19:31 gwagner        Note Added: 0010871                          
+07-06-06 19:37 rlrevell       Note Added: 0010872                          
+07-06-06 19:57 vsu            Note Added: 0010875                          
 ======================================================================
 
 
