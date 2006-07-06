@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002259]: `IRQF_DISABLED' `IRQF_SHARED'
-	- undeclared (first use in this function)
-Date: Thu, 6 Jul 2006 06:51:09 +0200
-Message-ID: <d341a8ef4ab832038d27e13a0181f66b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
+	sound
+Date: Thu, 6 Jul 2006 07:33:58 +0200
+Message-ID: <7b7deae3494ed010cb0b274ec4713b79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9440924D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74F4824D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 06:51:09 +0200 (MEST)
+	Thu,  6 Jul 2006 07:33:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                peter_scott
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2259
-Category:                   0_compilation problem_!!!
+Issue ID:                   2107
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111
 ======================================================================
-Date Submitted:             07-06-2006 06:51 CEST
-Last Modified:              07-06-2006 06:51 CEST
+Date Submitted:             05-08-2006 23:36 CEST
+Last Modified:              07-06-2006 07:33 CEST
 ======================================================================
-Summary:                    `IRQF_DISABLED' `IRQF_SHARED'  - undeclared (first
-use in this function)
+Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
-Is there any backward compatiable patch for kernel 2.4 ?
+I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
+installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
 
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=467cbbd896c410fe24d908f940bf588f6baa7441;style=gitweb
+The already-existing-in-the-kernel emu10k1 sound module provides no sound
+for me (should it?), so I tried downloading and building emu10k1 in the
+alsa-driver and installing it according to the instructions in the
+"INSTALL" file in the source directory.
 
-gcc32 -D__KERNEL__ -DMODULE=1 -I/root/alsa/alsa-driver/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
--DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
-intel8x0.c: In function `intel8x0_resume':
-intel8x0.c:2499: `IRQF_DISABLED' undeclared (first use in this function)
-intel8x0.c:2499: (Each undeclared identifier is reported only once
-intel8x0.c:2499: for each function it appears in.)
-intel8x0.c:2499: `IRQF_SHARED' undeclared (first use in this function)
-intel8x0.c: In function `intel8x0_measure_ac97_clock':
-intel8x0.c:2633: warning: implicit declaration of function
-`snd_ac97_update_power'
-intel8x0.c: In function `snd_intel8x0_create':
-intel8x0.c:2873: `IRQF_DISABLED' undeclared (first use in this function)
-intel8x0.c:2873: `IRQF_SHARED' undeclared (first use in this function)
-intel8x0.c: At top level:
-intel8x0.c:93: warning: `enable' defined but not used
-intel8x0.c:95: warning: `joystick' defined but not used
-make[1]: *** [intel8x0.o] Error 1
-make[1]: Leaving directory `/root/alsa/alsa-driver/pci'
-make: *** [compile] Error 1
+But (of course?) it did not work.  Well, after all, the emu10k1 is already
+in the FC5 kernel.  Is there any way to get this sound card to work?
 
+I try "system-config-soundcard" (alsaconf is not included in alsa-utils
+for FC5) to test the card.
+
+I was led to believe that Audigy 2 ZS cards generally will work on linux
+systems, but I've also since read others write that not all Audigy 2 ZS
+cards run the same hardware.  It's a PCI card.  I am a little suspicious
+of the "CA0102-ICT" text on the chip.
+
+Any thoughts or predictions would be most welcome.  Maybe it should have a
+"ca0102" driver?
 ======================================================================
+
+----------------------------------------------------------------------
+ L0cKd0wN - 07-06-06 07:33 
+----------------------------------------------------------------------
+Im not sure if this is relevant or not, but im using FC5 kernel
+2.6.17-1.2145_FC5 i686 and have lost sound from my Creative Labs Audigy 2
+ZS Platinum card.  In earlier kernel builds (the version that was shipped
+on the FC5 dvd) I had sound, but with my recent update, I have lost it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-06 06:51 Raymond        New Issue                                    
+05-08-06 23:36 peter_scott    New Issue                                    
+05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
+05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
+07-06-06 07:33 L0cKd0wN       Note Added: 0010854                          
 ======================================================================
 
 
