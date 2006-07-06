@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Thu, 6 Jul 2006 22:14:36 +0200
-Message-ID: <bdf9c898727787d7a0823684a2153042@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002260]: No sound with hda-intel ALC883
+Date: Thu, 6 Jul 2006 22:23:04 +0200
+Message-ID: <449ceb62eb957573fabff16f8333ea55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE44E263
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E00DB23E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 22:14:36 +0200 (MEST)
+	Thu,  6 Jul 2006 22:23:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,25 +23,25 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2260> 
 ======================================================================
 Reported By:                lodp2
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2261
+Issue ID:                   2260
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-25
+Distribution:               
+Kernel Version:             
 ======================================================================
 Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-06-2006 22:14 CEST
+Last Modified:              07-06-2006 22:23 CEST
 ======================================================================
 Summary:                    No sound with hda-intel ALC883
 Description: 
@@ -61,12 +61,18 @@ still tells me I've got version 1.0.12rc1, compiled two days ago. I would
 appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
+----------------------------------------------------------------------
+ lodp2 - 07-06-06 22:23 
+----------------------------------------------------------------------
+Ah Crud. Please delete this doublet of my bug-report - misuse of the
+abort-button when sending off the form. Report #2261 contains my kernel
+version and distribution, additionally.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-06-06 22:14 lodp2          New Issue                                    
-07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
-07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:23 lodp2          Note Added: 0010883                          
 ======================================================================
 
 
