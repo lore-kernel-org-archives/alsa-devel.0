@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002198]: No sound out of the built in
-	speakers, but from headphones on a Apple MacBook Pro
-Date: Thu, 6 Jul 2006 03:13:12 +0200
-Message-ID: <20757895c89b4777987b2e84ea6960a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set
+	period size to 1024 frames for capture
+Date: Thu, 6 Jul 2006 03:24:36 +0200
+Message-ID: <b633f202696941cb220dd9d1f2bb76e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9D3524F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9494E24F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 03:13:12 +0200 (MEST)
+	Thu,  6 Jul 2006 03:24:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,201 +26,174 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
-Reported By:                enlighter
-Assigned To:                tiwai
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2198
-Category:                   PCI - hda-intel
+Issue ID:                   1766
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16.16
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2006 12:09 CEST
-Last Modified:              07-06-2006 03:13 CEST
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              07-06-2006 03:24 CEST
 ======================================================================
-Summary:                    No sound out of the built in speakers, but from
-headphones on a Apple MacBook Pro
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-Hi,
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-this error occours on all macbook pros! (see www.mactel-linux.org). Sound
-comes only out of the headphones or out of line-out, but the internal
-speakers keep mute. I cannot unmute them using the mixer (alsamixer,
-kmix). I also tried a rc version of linux-2.6.17 with the same result.
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
-I also tried to load the snd-hda-intel module with "model=laptop" and
-"model=laptop-eapd".
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
+
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-05-06 15:21 
+ Raymond - 06-28-06 05:01 
 ----------------------------------------------------------------------
-The input and output pins widgets are taken from the BIOS.  So, one
-possibility is that BIOS doesn't initialize properly (although I doubt it
-since the headphone works).
+When jackd using oss , the sound play at half speed.
 
-Anyway, upload /proc/asound/card0/codec#* files.
+I don't know it is a jackd bug or oss enumeration bug.
+
+If OSS enumeration does not support more than 2 channels, it should not
+tell the OSS application to use 4 channels even when ALSA driver support
+more than 2 channels.
+
+
 
 ----------------------------------------------------------------------
- Gendo - 07-06-06 03:13 
+ Raymond - 07-06-06 03:24 
 ----------------------------------------------------------------------
-tiwai, here is the output from the macbook. I will get the iMac output and
-post it soon
+It seem jackd expect period_size of playback streams equal to period_size
+of capture streams.
 
+Since period_bytes_min and period_bytes_max in snd_vortex_playback_hw_adb
+is different, this make many alsa applications need workaround for au88x0
+since either snd_pcm_hw_params_set_period_time_near() or
+snd_pcm_hw_params_set_buffer_time_near() fail most of the time.
 
-Codec: SigmaTel STAC9221 A1
-Address: 0
-Vendor Id: 0x83847680
-Subsystem Id: 0x100
-Revision Id: 0x103401
-Default PCM: rates 0x7e0, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
-Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
-Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x5f 0x5f]
-  Power: 0x0
-Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0xff 0xff]
-  Power: 0x0
-Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x6f 0x6a]
-  Power: 0x0
-Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x72 0x72]
-  Power: 0x0
-Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo
-  Power: 0x0
-  Connection: 1
-     0x17
-Node 0x07 [Audio Input] wcaps 0x1d0541: Stereo
-  Power: 0x0
-  Connection: 1
-     0x18
-Node 0x08 [Audio Output] wcaps 0x40211: Stereo Digital
-  PCM: rates 0x7e0, bits 0x0e, types 0x5
-Node 0x09 [Audio Input] wcaps 0x140311: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x5
-  Connection: 1
-     0x11
-Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x08173f: IN OUT HP Detect
-  Pin Default 0x0101e022: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = White
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x90afe112: [Fixed] Mic at Int N/A
-    Conn = Other, Color = White
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x04
-Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x9017e121: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = White
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x03
-Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x08173f: IN OUT HP Detect
-  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
-    Conn = Unknown, Color = White
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0824: IN Detect
-  Pin Default 0x41f0e032: [N/A] Other at Ext Rear
-    Conn = Unknown, Color = White
-  Pin-ctls: 0x20: IN
-Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x0181e031: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = White
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x05
-Node 0x10 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x1145f023: [Jack] SPDIF Out at Int Rear
-    Conn = Optical, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 3
-     0x08* 0x17 0x19
-Node 0x11 [Pin Complex] wcaps 0x430681: Stereo Digital
-  Pincap 0x0810024: IN EAPD Detect
-  Pin Default 0x11c5c032: [Jack] SPDIF In at Int Rear
-    Conn = Optical, Color = UNKNOWN
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x02 0x02]
-  Connection: 7
-     0x0e 0x15 0x0f* 0x0b 0x0c 0x0d 0x0a
-Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 7
-     0x0e 0x15* 0x0f 0x0b 0x0c 0x0d 0x0a
-Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0
-  Amp-Out vals:  [0x00]
-Node 0x15 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
-    Conn = Unknown, Color = White
-  Pin-ctls: 0x00:
-Node 0x16 [Volume Knob Widget] wcaps 0x600000: Mono
-Node 0x17 [Audio Selector] wcaps 0x300903: Stereo Amp-In
-  Amp-In caps: N/A
-  Amp-In vals:  [0x0a 0x0a]
-  Connection: 1
-     0x12
-Node 0x18 [Audio Selector] wcaps 0x300903: Stereo Amp-In
-  Amp-In caps: N/A
-  Amp-In vals:  [0x80 0x80]
-  Connection: 1
-     0x13
-Node 0x19 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
-Node 0x1a [Audio Output] wcaps 0x30201: Stereo Digital
-Node 0x1b [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x4180e100: [N/A] Line In at Ext Rear
-    Conn = Unknown, Color = White
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x1a
+http://bugzilla.gnome.org/show_bug.cgi?id=342085
+
+The situtation seem to be solved if the driver set both period_bytes_min
+and period_bytes_max to 4096 as described in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724#10832 , however
+jackd
+can only run with 2 playback and 2 capture channels.
+
+Can jackd run on sound card with different number of playback and capture
+channels. (different period size for playback and capture stream) ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 12:09 enlighter      New Issue                                    
-06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
-06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
-06-14-06 09:47 enlighter      Issue Monitored: enlighter                    
-06-18-06 09:27 enlighter      Note Added: 0010297                          
-06-18-06 09:29 enlighter      Note Added: 0010298                          
-06-25-06 20:17 enlighter      Note Added: 0010518                          
-06-26-06 16:08 tiwai          Note Added: 0010541                          
-06-26-06 16:20 enlighter      Note Added: 0010546                          
-06-26-06 16:34 tiwai          Note Added: 0010547                          
-06-29-06 17:48 tiwai          Note Added: 0010676                          
-07-05-06 04:18 Gendo          Note Added: 0010830                          
-07-05-06 15:21 tiwai          Note Added: 0010838                          
-07-06-06 03:13 Gendo          Note Added: 0010848                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
+01-31-06 13:49 perex          Relationship added       related to 0001724  
+02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
+      
+02-04-06 06:14 Raymond        Note Added: 0007911                          
+02-18-06 08:34 Raymond        Note Added: 0008117                          
+02-20-06 15:32 Raymond        Note Edited: 0007773                         
+02-27-06 05:07 Raymond        Note Added: 0008213                          
+02-27-06 05:14 rlrevell       Note Added: 0008214                          
+02-27-06 05:55 Raymond        Note Added: 0008215                          
+02-27-06 09:30 Raymond        Note Added: 0008220                          
+02-27-06 09:32 Raymond        Note Edited: 0008220                         
+02-27-06 19:15 rlrevell       Note Added: 0008228                          
+02-28-06 02:44 Raymond        Note Edited: 0008215                         
+02-28-06 07:08 Raymond        Note Added: 0008241                          
+03-01-06 07:55 Raymond        Note Added: 0008274                          
+03-03-06 08:12 Raymond        Note Added: 0008335                          
+03-03-06 08:41 mjander        Note Added: 0008337                          
+03-03-06 09:02 Raymond        Note Added: 0008338                          
+03-03-06 10:49 Raymond        Note Added: 0008340                          
+03-03-06 22:36 mjander        Note Added: 0008343                          
+03-04-06 04:47 Raymond        Note Edited: 0008241                         
+04-06-06 08:41 Raymond        Note Edited: 0008215                         
+04-06-06 08:42 Raymond        Note Edited: 0008215                         
+05-14-06 13:39 Raymond        Note Deleted: 0007816                        
+05-14-06 13:40 Raymond        Note Deleted: 0007773                        
+05-14-06 13:41 Raymond        Note Deleted: 0008335                        
+05-23-06 03:31 Raymond        Issue Monitored: ponchick                    
+05-23-06 03:31 Raymond        Note Added: 0009924                          
+05-23-06 03:33 Raymond        Note Edited: 0009924                         
+05-23-06 03:39 Raymond        Note Edited: 0009924                         
+05-23-06 03:40 Raymond        Note Edited: 0009924                         
+05-23-06 03:44 Raymond        Note Edited: 0009924                         
+05-24-06 13:38 Raymond        Note Added: 0009955                          
+05-24-06 13:48 fuman          Issue Monitored: fuman                       
+05-26-06 08:22 Raymond        Note Added: 0009973                          
+06-28-06 04:58 Raymond        Note Added: 0010609                          
+06-28-06 05:01 Raymond        Note Edited: 0010609                         
+07-06-06 03:24 Raymond        Note Added: 0010849                          
 ======================================================================
 
 
