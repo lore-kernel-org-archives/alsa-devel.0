@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
-Date: Thu, 6 Jul 2006 15:52:43 +0200
-Message-ID: <8b0a374dcf599c5a5022c9f88dd53fae@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002239]: No sound on SPDIF,
+	Sampling rate not (re)set? if compiled with -D_FILE_OFFSET_BITS=64
+Date: Thu, 6 Jul 2006 15:56:16 +0200
+Message-ID: <2eba5f5c0f9edf89cfa265dd2b75ae7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DAF118D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D79E25B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 15:52:43 +0200 (MEST)
+	Thu,  6 Jul 2006 15:56:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,70 +24,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
-======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2200
-Category:                   PCI - hda-intel
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2239> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - lib
+Issue ID:                   2239
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware
-Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
-enough to reproduce this)
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             06-11-2006 17:50 CEST
-Last Modified:              07-06-2006 15:52 CEST
-======================================================================
-Summary:                    PCM channel doesn't exist!
-Description: 
-Since the early release candidates of ALSA 1.0.11, up to the final version,
-I seem to have lost the PCM channel from alsamixer.
-======================================================================
+Status:                     new
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-28-2006 11:02 CEST
+Last Modified:              07-06-2006 15:56 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No sound on SPDIF, Sampling rate not (re)set? if
+compiled with -D_FILE_OFFSET_BITS=3D64
+Description: =
+
+I use a Teratec Aureon 7.1 Space with a Envy24HT Chip and digital optical
+output.
+I get no sound if alsa-lib will by compiled with -D_FILE_OFFSET_BITS=3D64
+(this is defualt in Geexbox 1.0, TARGET_CFLAGS=3D"-Os -Wall -pipe
+-D_FILE_OFFSET_BITS=3D64 -D_LARGEFILE_SOURCE"). It=B4s  sems as the sampling
+rate don=B4t by set at the second time. The first (background video) from
+GeexBox has a samplin of 32K, if i play a video (48K) or music 44.1K the
+sampling rate on my ampiler keep on 32K?
+
+My Mplayer parameter:
+-ao alsa:device=3Dplughw=3D0.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- quetzyg - 07-05-06 23:26 
-----------------------------------------------------------------------
-It seems that PCM doesn't like my asound.conf. I remove it, and now the PCM
-sound controler works fine.
+ konczalski - 07-03-06 21:33 =
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 15:52 
+alsa:device=3Dplug=3Dspdif works fine too, but only if i complie with
+-D_FILE_OFFSET_BITS=3D32
+
 ----------------------------------------------------------------------
-OK, then let's close this bug.
+ tiwai - 07-06-06 15:56 =
+
+----------------------------------------------------------------------
+I cannot reproduce here...
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-11-06 17:50 quetzyg        New Issue                                    
-06-11-06 17:50 quetzyg        Distribution              => Slackware       
-06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
-version >= 2.6.16 should be enough to reproduce this)
-06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
-06-27-06 12:47 quetzyg        Note Added: 0010587                          
-06-27-06 12:52 tiwai          Note Added: 0010589                          
-06-27-06 12:59 quetzyg        Note Added: 0010590                          
-06-29-06 17:46 tiwai          Note Added: 0010675                          
-06-29-06 18:45 quetzyg        File Added: alsactl.out                      
-06-29-06 18:46 quetzyg        File Added: lspci.out                        
-06-29-06 18:51 quetzyg        Note Added: 0010692                          
-07-05-06 23:26 quetzyg        Note Added: 0010843                          
-07-06-06 15:52 tiwai          Status                   assigned => resolved
-07-06-06 15:52 tiwai          Resolution               open => fixed       
-07-06-06 15:52 tiwai          Note Added: 0010863                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-28-06 11:02 konczalski     New Issue                                    =
+
+06-29-06 18:00 tiwai          Note Added: 0010680                          =
+
+07-03-06 21:33 konczalski     Note Added: 0010807                          =
+
+07-06-06 15:56 tiwai          Note Added: 0010864                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
