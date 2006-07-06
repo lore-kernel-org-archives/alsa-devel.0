@@ -1,76 +1,56 @@
-From: David Brownell <david-b@pacbell.net>
-Subject: Re: [RFC] g_midi: New USB MIDI Gadget class
-	driver.
-Date: Thu, 6 Jul 2006 09:31:40 -0700
-Message-ID: <200607060931.41012.david-b@pacbell.net>
-References: <44ACA882.7090209@greyinnovation.com>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: [PATCH] hda: fix sigmatel 9227/8/9 codec support
+Date: Thu, 6 Jul 2006 11:48:31 -0500
+Message-ID: <20060706164831.GA11413@gate.crashing.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44ACA882.7090209@greyinnovation.com>
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7100C178
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 Jul 2006 18:42:38 +0200 (MEST)
 Content-Disposition: inline
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
-List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: linux-usb-devel-bounces@lists.sourceforge.net
-Errors-To: linux-usb-devel-bounces@lists.sourceforge.net
-To: Ben Williamson <ben.williamson@greyinnovation.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>, linux-usb-devel@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 05 July 2006 11:06 pm, Ben Williamson wrote:
+SigmaTel 9227/8/9 IDs must use the 927x patch.
 
-> Included are usb_audio.h and usb_midi.h containing definitions from
-> the relevant USB specifications for USB audio and USB MIDI devices.
-> The definitions of struct usb_ms_header_descriptor and struct
-> usb_ms_endpoint_descriptor are the same as those that appear in
-> sound/usb/usbmidi.c, with the intention of that file including
-> <linux/usb_midi.h> instead. I have not included that change here.
+Signed-off-by: Matt Porter <mporter@embeddedalley.com>
 
-Make that <linux/usb/midi.h> or maybe <linux/usb/audio.h> ... in
-fact, several pending patches move <linux/usb_*.h> files into that
-subdirectory, so watch out when this is ready to submit.
-
-Glad to see such a driver.  I won't comment on the MIDI bits, but
-quick comments on other parts are below.
-
-- Dave
-
-
-
-This still have some debris left over from gadget zero, like mentions
-of having two configurations, using endpoint names rather than just
-the endpoints, and even comments describing itself as being gadget zero. 
-Best to clean that stuff up more; gadget zero did a bunch of stuff
-mostly to make sure that APIs get tested, or to work with earlier
-versions of the gadget framework, and your driver can be smaller.
-
-I don't think this is a case where usb_ep_alloc_buffer() and friends
-are desired ... such buffers are normally not cacheable.
-
-You should have driver code to support high speed controllers, e.g. the
-high speed descriptors including the device qualifier.
-
-
-> +static const struct USB_MIDI_OUT_JACK_DESCRIPTOR(1) jack_out_emb_desc = {
-
-What's with the SHOUTING in a struct name?  Those are nasty macros.
-All the struct names should be lowercase.
-
-
-Note that this attachment got mangled a bit too (STATE_SYSEX_2 line wrapped).
-
+diff -r 0f0815e642ce pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Thu Jul 06 15:13:00 2006 +0200
++++ b/pci/hda/patch_sigmatel.c	Thu Jul 06 09:27:10 2006 -0700
+@@ -1524,12 +1524,12 @@ struct hda_codec_preset snd_hda_preset_s
+  	{ .id = 0x83847681, .name = "STAC9220D/9223D A2", .patch = patch_stac922x },
+  	{ .id = 0x83847682, .name = "STAC9221 A2", .patch = patch_stac922x },
+  	{ .id = 0x83847683, .name = "STAC9221D A2", .patch = patch_stac922x },
+- 	{ .id = 0x83847618, .name = "STAC9227", .patch = patch_stac922x },
+- 	{ .id = 0x83847619, .name = "STAC9227", .patch = patch_stac922x },
+- 	{ .id = 0x83847616, .name = "STAC9228", .patch = patch_stac922x },
+- 	{ .id = 0x83847617, .name = "STAC9228", .patch = patch_stac922x },
+- 	{ .id = 0x83847614, .name = "STAC9229", .patch = patch_stac922x },
+- 	{ .id = 0x83847615, .name = "STAC9229", .patch = patch_stac922x },
++ 	{ .id = 0x83847618, .name = "STAC9227", .patch = patch_stac927x },
++ 	{ .id = 0x83847619, .name = "STAC9227", .patch = patch_stac927x },
++ 	{ .id = 0x83847616, .name = "STAC9228", .patch = patch_stac927x },
++ 	{ .id = 0x83847617, .name = "STAC9228", .patch = patch_stac927x },
++ 	{ .id = 0x83847614, .name = "STAC9229", .patch = patch_stac927x },
++ 	{ .id = 0x83847615, .name = "STAC9229", .patch = patch_stac927x },
+  	{ .id = 0x83847620, .name = "STAC9274", .patch = patch_stac927x },
+  	{ .id = 0x83847621, .name = "STAC9274D", .patch = patch_stac927x },
+  	{ .id = 0x83847622, .name = "STAC9273X", .patch = patch_stac927x },
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-_______________________________________________
-linux-usb-devel@lists.sourceforge.net
-To unsubscribe, use the last form field at:
-https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
