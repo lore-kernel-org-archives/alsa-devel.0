@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002259]: `IRQF_DISABLED' `IRQF_SHARED'
-	- undeclared (first use in this function)
-Date: Thu, 6 Jul 2006 14:08:50 +0200
-Message-ID: <2f7e534e24176d657c34461098b42058@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Thu, 6 Jul 2006 15:37:05 +0200
+Message-ID: <31d36b9d10deb00a2aaef9a5d6a8fc8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CE4724F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64AB3186
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 14:08:51 +0200 (MEST)
+	Thu,  6 Jul 2006 15:37:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,74 +26,105 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                skunk
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2259
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-06-2006 06:51 CEST
-Last Modified:              07-06-2006 14:08 CEST
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              07-06-2006 15:37 CEST
 ======================================================================
-Summary:                    `IRQF_DISABLED' `IRQF_SHARED'  - undeclared (first
-use in this function)
+Summary:                    System freeze at end of MIDI playback
 Description: 
-Is there any backward compatiable patch for kernel 2.4 ?
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=467cbbd896c410fe24d908f940bf588f6baa7441;style=gitweb
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
 
-gcc32 -D__KERNEL__ -DMODULE=1 -I/root/alsa/alsa-driver/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
--DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
-intel8x0.c: In function `intel8x0_resume':
-intel8x0.c:2499: `IRQF_DISABLED' undeclared (first use in this function)
-intel8x0.c:2499: (Each undeclared identifier is reported only once
-intel8x0.c:2499: for each function it appears in.)
-intel8x0.c:2499: `IRQF_SHARED' undeclared (first use in this function)
-intel8x0.c: In function `intel8x0_measure_ac97_clock':
-intel8x0.c:2633: warning: implicit declaration of function
-`snd_ac97_update_power'
-intel8x0.c: In function `snd_intel8x0_create':
-intel8x0.c:2873: `IRQF_DISABLED' undeclared (first use in this function)
-intel8x0.c:2873: `IRQF_SHARED' undeclared (first use in this function)
-intel8x0.c: At top level:
-intel8x0.c:93: warning: `enable' defined but not used
-intel8x0.c:95: warning: `joystick' defined but not used
-make[1]: *** [intel8x0.o] Error 1
-make[1]: Leaving directory `/root/alsa/alsa-driver/pci'
-make: *** [compile] Error 1
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
 
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-06-06 13:58 
+ amarsh04 - 07-06-06 10:14 
 ----------------------------------------------------------------------
-Please close this bug, I find the patch in alsa-driver
+After installing new ALSA modules, don't forget to reload the soundfonts!
 
-http://hg-mirror.alsa-project.org/alsa-driver?cmd=changeset;node=711cd0dc60a1;style=gitweb
+E.G.
+
+asfxload /usr/share/sounds/sf2/8mbgmsfx.sf2
+
+----------------------------------------------------------------------
+ rlrevell - 07-06-06 15:37 
+----------------------------------------------------------------------
+Fixed in Hg repo
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-06 06:51 Raymond        New Issue                                    
-07-06-06 13:58 Raymond        Note Added: 0010859                          
-07-06-06 14:08 perex          Status                   assigned => resolved
-07-06-06 14:08 perex          Resolution               open => fixed       
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
+06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:50 rlrevell       Note Added: 0010088                          
+06-08-06 09:28 skunk          Note Added: 0010109                          
+06-27-06 23:35 phorn          File Added: kernel_spinlock-2.6.17.1-nosmp.txt    
+               
+06-27-06 23:43 phorn          Note Added: 0010602                          
+06-28-06 00:03 rlrevell       Note Added: 0010603                          
+06-28-06 03:50 phorn          Note Added: 0010605                          
+07-02-06 15:33 amarsh04       Issue Monitored: amarsh04                    
+07-02-06 15:37 amarsh04       Note Added: 0010791                          
+07-02-06 20:07 riesebie       Issue Monitored: riesebie                    
+07-03-06 02:57 amarsh04       Note Added: 0010796                          
+07-03-06 18:04 rlrevell       File Added: alsa-timer-irqsave.patch              
+     
+07-03-06 18:05 rlrevell       Note Added: 0010801                          
+07-03-06 20:24 riesebie       Note Added: 0010806                          
+07-03-06 20:25 riesebie       Note Edited: 0010806                         
+07-04-06 03:23 amarsh04       Note Added: 0010813                          
+07-04-06 04:58 phorn          Note Added: 0010814                          
+07-04-06 07:20 amarsh04       Note Added: 0010816                          
+07-04-06 17:07 rlrevell       Note Added: 0010821                          
+07-04-06 17:46 amarsh04       Note Added: 0010822                          
+07-04-06 17:53 rlrevell       Note Added: 0010823                          
+07-04-06 17:56 rlrevell       Note Added: 0010824                          
+07-04-06 19:32 crimsunkg      Note Added: 0010825                          
+07-05-06 05:34 amarsh04       Note Added: 0010831                          
+07-05-06 09:32 riesebie       Note Added: 0010833                          
+07-05-06 13:20 amarsh04       Note Added: 0010835                          
+07-06-06 09:30 amarsh04       Note Added: 0010856                          
+07-06-06 10:14 amarsh04       Note Added: 0010858                          
+07-06-06 15:37 rlrevell       Status                   new => resolved     
+07-06-06 15:37 rlrevell       Resolution               open => fixed       
+07-06-06 15:37 rlrevell       Assigned To               => rlrevell        
+07-06-06 15:37 rlrevell       Note Added: 0010860                          
 ======================================================================
 
 
