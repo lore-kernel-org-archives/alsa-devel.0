@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play
-	48000Hz via digital out. 44100 is garbled.
-Date: Thu, 6 Jul 2006 20:22:01 +0200
-Message-ID: <e9b467b3f66f94adf7fa7f5d4898f7b9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002250]: No/Broken Master/PCM volume
+	control
+Date: Thu, 6 Jul 2006 20:23:54 +0200
+Message-ID: <d21ac490b5144bb6797a98b318dc2fbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71C0725F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27BD425F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 20:22:01 +0200 (MEST)
+	Thu,  6 Jul 2006 20:23:55 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,100 +26,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2250> 
 ======================================================================
-Reported By:                WhereIsTheCloud
-Assigned To:                tiwai
+Reported By:                jengelh
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2108
-Category:                   PCI - hda-intel
+Issue ID:                   2250
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15-1-686-smp
+Status:                     new
+Distribution:               SUSE LINUX 10.1 (i586)
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-09-2006 00:28 CEST
-Last Modified:              07-06-2006 20:22 CEST
+Date Submitted:             07-02-2006 00:51 CEST
+Last Modified:              07-06-2006 20:23 CEST
 ======================================================================
-Summary:                    snd-hda-intel: Can only play 48000Hz via digital
-out.  44100 is garbled.
+Summary:                    No/Broken Master/PCM volume control
 Description: 
-Hi all.  I am having trouble getting my computer to play 44100Hz with my 
-digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
-(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
-miniport(?) jacks, and one fiber optical connector.  I use the fiber
-optical 
-connector to connect the motherboard to my reciever.
+My onboard soundcard does not show any volume control for "Master" in
+`alsamixer` (see attached file). Changing the "PCM" volume also has no
+effect (it is always loud, even when set to 2%), only Mute works.
 
-I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
-Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
-upsampling degrades sound quality.
+$ lspci
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+AC'97 Sound Controller (rev a0)
+$ lspci -n
+00:02.7 Class 0401: 1039:7012 (rev a0)
+$ cat /etc/SuSE-release 
+SUSE LINUX 10.1 (i586)
+VERSION = 10.1
+$ rpm -q alsa
+alsa-1.0.11-32
 
-If I dual boot to MS windows, I can select between 44100, 48000, and 96000
-Hz output, using the realtek drivers.  All work fine and my reciever
-reports getting the correct format, so it is NOT a hardware problem.
-
-I'm not sure if this is a driver issue or a libasound issue.
-
-
-Thank you in advance for your help!
-
-Peter
+I believe this is a hardware limitation, though.
 ======================================================================
 
 ----------------------------------------------------------------------
- WhereIsTheCloud - 07-02-06 01:35 
+ tiwai - 07-06-06 20:23 
 ----------------------------------------------------------------------
-aplay -Dspdif 44khz.wav is the same as the other -D 's.  Output is:
-Playing WAVE '44khz.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-but a 48000 PCM signal is sent to the reciever and sound is messed up.
-
-iecset with nothing playing:
-Mode: consumer
-Data: audio
-Rate: 44100 Hz
-Copyright: permitted
-Emphasis: none
-Category: general
-Original: 1st generation
-Clock: 1000 ppm
-
-While playing 44khz _OR_ 48khz it shows:
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: permitted
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
-
-Trying "iecset rate 44100", while either wav is playing:
-snd_ctl_elem_write: Operation not permitted
-
-----------------------------------------------------------------------
- tiwai - 07-06-06 20:22 
-----------------------------------------------------------------------
-The rate iecset reports is anyway bogus on hda-intel.  HD-audio codec has
-no specific register for SPDIF rate bits.  The corresponding SPDIF bits
-should be automatically updated from the actual rate.
+There is no master control on your codec.  The PCM volume is implemented in
+alsa-lib plugin, so it doesn't work for kernel OSS emulation, which I
+guess you're doing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 00:28 WhereIsTheCloudNew Issue                                    
-05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
-05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
-05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
-06-08-06 05:33 legoguy        Note Added: 0010108                          
-06-16-06 19:03 tiwai          Note Added: 0010258                          
-06-29-06 18:28 tiwai          Note Added: 0010686                          
-07-02-06 01:35 WhereIsTheCloudNote Added: 0010766                          
-07-06-06 20:22 tiwai          Note Added: 0010877                          
+07-02-06 00:51 jengelh        New Issue                                    
+07-02-06 00:51 jengelh        File Added: alsamixer-c1.png                    
+07-02-06 00:51 jengelh        Distribution              => SUSE LINUX 10.1
+(i586)
+07-06-06 20:23 tiwai          Note Added: 0010878                          
 ======================================================================
 
 
