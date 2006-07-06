@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002250]: No/Broken Master/PCM volume
-	control
-Date: Thu, 6 Jul 2006 20:23:54 +0200
-Message-ID: <d21ac490b5144bb6797a98b318dc2fbd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
+	drivers
+Date: Thu, 6 Jul 2006 20:29:57 +0200
+Message-ID: <40873676d62fa7fdc060a82949f57912@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27BD425F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD8BE25F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 20:23:55 +0200 (MEST)
+	Thu,  6 Jul 2006 20:29:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,59 +26,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2250> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
 ======================================================================
-Reported By:                jengelh
-Assigned To:                
+Reported By:                jmclennan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2250
-Category:                   PCI - intel8x0
+Issue ID:                   2211
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SUSE LINUX 10.1 (i586)
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2133_FC5smp
 ======================================================================
-Date Submitted:             07-02-2006 00:51 CEST
-Last Modified:              07-06-2006 20:23 CEST
+Date Submitted:             06-15-2006 20:33 CEST
+Last Modified:              07-06-2006 20:29 CEST
 ======================================================================
-Summary:                    No/Broken Master/PCM volume control
+Summary:                    No sound using snd-hda-intel drivers
 Description: 
-My onboard soundcard does not show any volume control for "Master" in
-`alsamixer` (see attached file). Changing the "PCM" volume also has no
-effect (it is always loud, even when set to 2%), only Mute works.
+On a new HP DC7600 dual core Pentium D, sound card is detected, but no
+sound from either the front jack, rear jack or even the system speaker.
 
-$ lspci
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
-AC'97 Sound Controller (rev a0)
-$ lspci -n
-00:02.7 Class 0401: 1039:7012 (rev a0)
-$ cat /etc/SuSE-release 
-SUSE LINUX 10.1 (i586)
-VERSION = 10.1
-$ rpm -q alsa
-alsa-1.0.11-32
+kernel: 2.6.16-1.2133_FC5smp
+alsa-driver version: 1.0.11
 
-I believe this is a hardware limitation, though.
+Everything is unmuted, alsamixer can turn the volume controls up and down
+(all levels set to 100%.)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 20:23 
+ gvidal - 06-30-06 11:03 
 ----------------------------------------------------------------------
-There is no master control on your codec.  The PCM volume is implemented in
-alsa-lib plugin, so it doesn't work for kernel OSS emulation, which I
-guess you're doing.
+No change for me. I have installed the lastest release (1.0.12rc1)
+and I didn't notice any change..
+
+With 
+  options snd-hda-intel model=auto
+in /etc/modprobe.conf only the PC speaker works (despite the
+settings in alsamixer).
+
+With 
+  options snd-hda-intel model=basic
+everything seems fine, but
+- volume control in the gnome desktop doesn't work
+- no system beeps
+It is a pity not having system beeps (I'm quite used to) but
+at least everything else more or less works.
+
+----------------------------------------------------------------------
+ tiwai - 07-06-06 20:29 
+----------------------------------------------------------------------
+OK, then we'd need new entries for such machines.
+
+Please make sure that model=basic is the best option.  There are different
+values for ALC260, for example, model=hp.  See ALSA-Configuration.txt.
+
+Then attach the contents of /proc/asound/card0/codec#* file(s).
+
+Finally, show the output of "lspci -nv" (only for class 0403 device).
+
+After all these are given, I'll be able to add a proper entry to the
+driver code...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-06 00:51 jengelh        New Issue                                    
-07-02-06 00:51 jengelh        File Added: alsamixer-c1.png                    
-07-02-06 00:51 jengelh        Distribution              => SUSE LINUX 10.1
-(i586)
-07-06-06 20:23 tiwai          Note Added: 0010878                          
+06-15-06 20:33 jmclennan      New Issue                                    
+06-15-06 20:33 jmclennan      File Added: scsound.log                      
+06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
+06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
+06-15-06 20:34 jmclennan      Note Added: 0010244                          
+06-15-06 20:37 jmclennan      Note Added: 0010245                          
+06-20-06 00:38 jmclennan      Note Added: 0010324                          
+06-20-06 18:22 gvidal         Note Added: 0010339                          
+06-20-06 19:35 tiwai          Note Added: 0010340                          
+06-20-06 19:38 gvidal         Note Added: 0010342                          
+06-21-06 14:35 jmclennan      Note Added: 0010397                          
+06-21-06 14:59 gvidal         Note Added: 0010398                          
+06-29-06 18:12 tiwai          Note Added: 0010683                          
+06-30-06 11:03 gvidal         Note Added: 0010724                          
+07-06-06 20:25 tiwai          Note View State: private: 10245                   
+
+07-06-06 20:25 tiwai          Note View State: public: 10245                    
+07-06-06 20:29 tiwai          Note Added: 0010879                          
 ======================================================================
 
 
