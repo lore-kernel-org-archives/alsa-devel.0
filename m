@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002248]: Sounds stops and continue
-Date: Thu, 6 Jul 2006 19:37:31 +0200
-Message-ID: <409f6db64d8232678430de5c8112bc0c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002253]: Intel D945PSNLK : No sound on
+	frontpanel output
+Date: Thu, 6 Jul 2006 19:47:21 +0200
+Message-ID: <824864806b13a948b0e77474dae07c1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A2A125F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD2AA187
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 19:37:31 +0200 (MEST)
+	Thu,  6 Jul 2006 19:47:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,56 +26,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2253> 
 ======================================================================
-Reported By:                gwagner
-Assigned To:                
+Reported By:                vogelchr
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2248
-Category:                   PCI - via82xx
+Issue ID:                   2253
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.17.3
 ======================================================================
-Date Submitted:             06-30-2006 06:05 CEST
-Last Modified:              07-06-2006 19:37 CEST
+Date Submitted:             07-02-2006 19:41 CEST
+Last Modified:              07-06-2006 19:47 CEST
 ======================================================================
-Summary:                    Sounds stops and continue
+Summary:                    Intel D945PSNLK : No sound on frontpanel output
 Description: 
-Every sounds "music movies" are having little pauses, it's pausing for few
-miliseconds and continue. It's happen on every kind of aplication.
-My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
-that should work with snd_via82xx. I have an soud blaster card too, but
-that work fine.
+Since upgrading the linux kernel from 2.6.15 to 2.6.17.3 the frontpanel
+output no longer produces sound, back output works.
 ======================================================================
 
 ----------------------------------------------------------------------
- gwagner - 07-06-06 19:31 
+ tiwai - 07-06-06 19:47 
 ----------------------------------------------------------------------
-There is no improvement with 1.0.12-rc1. 
-The problem only happen when the sound blaster-card is pluged if I remove
-it, the snd_via82xx work fine.
-
-----------------------------------------------------------------------
- rlrevell - 07-06-06 19:37 
-----------------------------------------------------------------------
-Hmm, that's strange.  I remember that with some boards VIA's BIOS disables
-the on board sound if a PCI soundcard is plugged in.  This was overridden
-in recent kernels.  Maybe the BIOS behavior was there for a reason.
+Could you try the latest ALSA HG version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-06 06:05 gwagner        New Issue                                    
-06-30-06 16:36 rlrevell       Note Added: 0010740                          
-07-05-06 15:40 gwagner        Note Added: 0010841                          
-07-05-06 16:48 rlrevell       Note Added: 0010842                          
-07-06-06 19:31 gwagner        Note Added: 0010871                          
-07-06-06 19:37 rlrevell       Note Added: 0010872                          
+07-02-06 19:41 vogelchr       New Issue                                    
+07-02-06 19:41 vogelchr       Distribution              => Ubuntu          
+07-02-06 19:41 vogelchr       Kernel Version            => 2.6.17.3        
+07-02-06 19:41 vogelchr       Issue Monitored: vogelchr                    
+07-06-06 19:47 tiwai          Note Added: 0010874                          
 ======================================================================
 
 
