@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002153]: Line In and Aux are switched
-Date: Thu, 6 Jul 2006 20:30:17 +0200
-Message-ID: <66b8e5918e52affe9aaee6488bca7f96@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Thu, 6 Jul 2006 20:33:48 +0200
+Message-ID: <1afa582550d07f6732bf4b26a8becacf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E6D4260
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83633260
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 20:30:17 +0200 (MEST)
+	Thu,  6 Jul 2006 20:33:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,46 +24,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2153> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
 ======================================================================
-Reported By:                buboleck
-Assigned To:                
+Reported By:                rshura
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2153
-Category:                   PCI - intel8x0
+Issue ID:                   2229
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-23-2006 21:57 CEST
-Last Modified:              07-06-2006 20:30 CEST
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              07-06-2006 20:33 CEST
 ======================================================================
-Summary:                    Line In and Aux are switched
+Summary:                    No stereo: sright channel is dead
 Description: 
-Line In and Aux are switched. 
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
-Hardware: Nvidia nForce4 (Intel edition MCP04, Realtek ALC850)
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
+
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- buboleck - 07-06-06 20:30 
+ rshura - 06-29-06 19:31 
 ----------------------------------------------------------------------
-The board is MSI P4N SlI-FI ((nForce 4 Crush (nForce 4 SLI Intel Edition))
-00:13.0 Multimedia audio controller: nVidia Corporation MCP04 AC'97 Audio
-Controller (rev a1)
+Exchanged the motherboard and both channels work now!
+
+As this is a hardware issue and has nothing to do with the driver, this
+can be closed. Thanks for your help!
+
+----------------------------------------------------------------------
+ tiwai - 07-06-06 20:33 
+----------------------------------------------------------------------
+OK, let's close.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 21:57 buboleck       New Issue                                    
-05-24-06 13:52 fuman          Issue Monitored: fuman                       
-07-06-06 20:30 buboleck       Note Added: 0010880                          
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
+06-25-06 05:43 Raymond        Note Added: 0010500                          
+06-25-06 05:49 rshura         File Added: asound.cards                     
+06-25-06 05:50 rshura         File Added: ac97#0-0                         
+06-25-06 05:50 rshura         File Added: ac97#0-0+regs                    
+06-25-06 05:50 rshura         File Added: amixer                           
+06-25-06 05:51 rshura         Note Added: 0010501                          
+06-26-06 07:15 rshura         Note Added: 0010525                          
+06-26-06 16:07 tiwai          Note Added: 0010540                          
+06-27-06 05:51 rshura         Note Added: 0010565                          
+06-27-06 12:15 tiwai          Note Added: 0010582                          
+06-27-06 16:41 rshura         Note Added: 0010596                          
+06-29-06 19:31 rshura         Note Added: 0010699                          
+07-06-06 20:33 tiwai          Status                   new => resolved     
+07-06-06 20:33 tiwai          Resolution               open => not an issue
+07-06-06 20:33 tiwai          Assigned To               => tiwai           
+07-06-06 20:33 tiwai          Note Added: 0010881                          
 ======================================================================
 
 
