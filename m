@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002154]: No sound on HDA-Intel Card
-Date: Thu, 6 Jul 2006 15:50:18 +0200
-Message-ID: <94578c29936d6166ae973d0d9153e5e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
+Date: Thu, 6 Jul 2006 15:52:43 +0200
+Message-ID: <8b0a374dcf599c5a5022c9f88dd53fae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F05A325B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DAF118D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 15:50:18 +0200 (MEST)
+	Thu,  6 Jul 2006 15:52:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,56 +23,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
 ======================================================================
-Reported By:                hawk
-Assigned To:                
+Reported By:                quetzyg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2154
+Issue ID:                   2200
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC
+Status:                     resolved
+Distribution:               Slackware
+Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
+enough to reproduce this)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-23-2006 22:02 CEST
-Last Modified:              07-06-2006 15:50 CEST
+Date Submitted:             06-11-2006 17:50 CEST
+Last Modified:              07-06-2006 15:52 CEST
 ======================================================================
-Summary:                    No sound on HDA-Intel Card
+Summary:                    PCM channel doesn't exist!
 Description: 
-HDA-Intel - HDA ULI M5461 card on Intel machine running Fedora Core 5.
-I can't hear any sound even though the driver shows no problem installing.
-Even xmms and realplayer show that everything is runnign smoothly, I have
-checked that the alsamixer has not muted any of the controls. I have also
-followed the instructions given at
-http://people.redhat.com/stransky/alsa/
-but to no results.
-Please help.
+Since the early release candidates of ALSA 1.0.11, up to the final version,
+I seem to have lost the PCM channel from alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-06-06 15:50 
+ quetzyg - 07-05-06 23:26 
 ----------------------------------------------------------------------
-Please try the latest version.  If still doesn't work, try various model
-option as found in ALSA-Configuration.txt.  You can find your codec chip
-from /proc/asound/card0/codec#* file(s).
-Also, don't forget to unmute/adjust volume after changing model.
+It seems that PCM doesn't like my asound.conf. I remove it, and now the PCM
+sound controler works fine.
+
+----------------------------------------------------------------------
+ tiwai - 07-06-06 15:52 
+----------------------------------------------------------------------
+OK, then let's close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 22:02 hawk           New Issue                                    
-05-23-06 22:02 hawk           Distribution              => Fedora Core 5   
-05-23-06 22:02 hawk           Kernel Version            => 2.6.16-1.2111_FC
-05-24-06 13:51 fuman          Issue Monitored: fuman                       
-07-06-06 03:12 Adrian Bunk    Category                 1_OTHERS => PCI -
-hda-intel
-07-06-06 15:50 tiwai          Note Added: 0010862                          
+06-11-06 17:50 quetzyg        New Issue                                    
+06-11-06 17:50 quetzyg        Distribution              => Slackware       
+06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
+version >= 2.6.16 should be enough to reproduce this)
+06-11-06 17:51 quetzyg        Issue Monitored: quetzyg                     
+06-27-06 12:47 quetzyg        Note Added: 0010587                          
+06-27-06 12:52 tiwai          Note Added: 0010589                          
+06-27-06 12:59 quetzyg        Note Added: 0010590                          
+06-29-06 17:46 tiwai          Note Added: 0010675                          
+06-29-06 18:45 quetzyg        File Added: alsactl.out                      
+06-29-06 18:46 quetzyg        File Added: lspci.out                        
+06-29-06 18:51 quetzyg        Note Added: 0010692                          
+07-05-06 23:26 quetzyg        Note Added: 0010843                          
+07-06-06 15:52 tiwai          Status                   assigned => resolved
+07-06-06 15:52 tiwai          Resolution               open => fixed       
+07-06-06 15:52 tiwai          Note Added: 0010863                          
 ======================================================================
 
 
