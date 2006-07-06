@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002254]: Compilation warnings that
-	result in the module to not be loaded
-Date: Thu, 6 Jul 2006 02:29:00 +0200
-Message-ID: <8eb5acf22f69df8711943850ca9f61e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002052]: Usiung onboard Intel ICH4
+	AC'97 Audio results in no audio until switch is turned off
+Date: Thu, 6 Jul 2006 02:32:56 +0200
+Message-ID: <0c74f4c920c87840f1fe4913892b0130@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C07E124E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54A75239
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jul 2006 02:29:00 +0200 (MEST)
+	Thu,  6 Jul 2006 02:32:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,69 +24,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2254> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2052> 
 ======================================================================
-Reported By:                LordRaiden
+Reported By:                n0yd
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2254
-Category:                   PCI - via82xx
+Issue ID:                   2052
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             kernel 2.6.17-3
+Status:                     closed
+Distribution:               
+Kernel Version:             2.6.15
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-03-2006 05:47 CEST
-Last Modified:              07-06-2006 02:28 CEST
+Date Submitted:             04-21-2006 16:20 CEST
+Last Modified:              07-06-2006 02:32 CEST
 ======================================================================
-Summary:                    Compilation warnings that result in the module to
-not be loaded
+Summary:                    Usiung onboard Intel ICH4 AC'97 Audio results in no
+audio until switch is turned off
 Description: 
-I tried both 1.0.11 and 1.0.12rc1, both with the same result. i'm trying to
-compile via82xx drivers, but I think the problems are in an acore/sound.c
-file (everything else compiles without errors or warnings.
-
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c: In function
-&#8216;snd_register_device&#8217;:
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 2 of &#8216;class_device_create&#8217; makes pointer from
-integer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 3 of &#8216;class_device_create&#8217; makes integer from
-pointer without a cast
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 4 of &#8216;class_device_create&#8217; from incompatible
-pointer type
-/home/raiden/alsa/alsa-driver-1.0.12rc1/acore/sound.c:293: warning:
-passing argument 5 of &#8216;class_device_create&#8217; discards
-qualifiers from pointer target type
-
+Using the Intel ICH4/AC'97 sound (usually built on laptops) what happens is
+the sound will not work until the user goes into alsamixer (or the mixer
+of their choice) and switches off the "External Amplifier" switch
 ======================================================================
 
 ----------------------------------------------------------------------
- Adrian Bunk - 07-06-06 02:28 
+ tiwai - 04-21-06 16:31 
 ----------------------------------------------------------------------
-I doubt these warnings are related to your problem.
+Try ac97_quirk=inv_eapd module option for snd-intel8x0 driver.
 
-What are the error messages when loading the module?
-And what is the result when using the driver shipped with 2.6.17?
+If this helps, show the output of "lspci -nv" (for class 0401) to enable
+it as default for your device.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-06 05:47 LordRaiden     New Issue                                    
-07-03-06 05:47 LordRaiden     Distribution              => Ubuntu          
-07-03-06 05:47 LordRaiden     Kernel Version            => kernel 2.6.17-3 
-07-03-06 05:49 LordRaiden     Issue Monitored: LordRaiden                    
-07-06-06 02:28 Adrian Bunk    Note Added: 0010846                          
-07-06-06 02:28 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - via82xx
-07-06-06 02:28 Adrian Bunk    Steps to Reproduce Updated                    
+04-21-06 16:20 n0yd           New Issue                                    
+04-21-06 16:20 n0yd           Kernel Version            => 2.6.15          
+04-21-06 16:31 tiwai          Note Added: 0009413                          
+07-06-06 02:32 Adrian Bunk    Status                   assigned => closed  
+07-06-06 02:32 Adrian Bunk    Resolution               open => unable to
+duplicate
+07-06-06 02:32 Adrian Bunk    Category                 0_compilation problem_!!!
+=> PCI - intel8x0
 ======================================================================
 
 
