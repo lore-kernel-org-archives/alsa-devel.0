@@ -1,17 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002262]: Why does the hadware mixer of
-	"sound blaster live 24bit model sb04100 chip ca0106" never
-	was implemented??? There is no one??
-Date: Fri, 7 Jul 2006 01:44:03 +0200
-Message-ID: <85c5a87cb579bbc8d37c38abad83888d@bugtrack.alsa-project.org>
+From: Ben Williamson <ben.williamson@greyinnovation.com>
+Subject: Re: [RFC] g_midi: New USB MIDI Gadget class driver.
+Date: Fri, 07 Jul 2006 10:37:50 +1000
+Message-ID: <44ADACDE.3040404@greyinnovation.com>
+References: <44ACA882.7090209@greyinnovation.com>
+	<20060706092715.GA13194@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C04F178
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 01:44:03 +0200 (MEST)
+In-Reply-To: <20060706092715.GA13194@turing.informatik.uni-halle.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,52 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: David Brownell <david-b@pacbell.net>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+> You need something like this:
+> 	depends on SND
+> 	select SND_RAWMIDI
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2262> 
-======================================================================
-Reported By:                gwagner
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2262
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-07-2006 01:39 CEST
-Last Modified:              07-07-2006 01:44 CEST
-======================================================================
-Summary:                    Why does the hadware mixer of "sound blaster live
-24bit model sb04100 chip ca0106" never was implemented??? There is no one??
-Description: 
-I already read that the "sound blaster live 24bit" has no hadware mixer,
-but I don't believe that. Someone really know something about it???
-======================================================================
+Thanks, will do.
 
-----------------------------------------------------------------------
- rlrevell - 07-07-06 01:44 
-----------------------------------------------------------------------
-Believe it or not, it's true.  The CA0106 has no hardware mixing.  All
-mixing is done in software by the Windows driver (or ALSA + dmix).
+>> +	card = snd_card_new(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1, THIS_MODULE, 0);
+> 
+> Other ALSA drivers have module options for index and id.
 
-Creative really screwed their users and damaged their brand by calling
-this an "SBLive"
+How's this?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-06 01:39 gwagner        New Issue                                    
-07-07-06 01:44 rlrevell       Note Added: 0010890                          
-======================================================================
+static int index = SNDRV_DEFAULT_IDX1;
+static char *id = SNDRV_DEFAULT_STR1;
+
+module_param(index, int, 0444);
+MODULE_PARM_DESC(index, "Index value for the USB MIDI Gadget adapter.");
+module_param(id, charp, 0444);
+MODULE_PARM_DESC(id, "ID string for the USB MIDI Gadget adapter.");
+
+	card = snd_card_new(index, id, THIS_MODULE, 0);
+
+I see lots of drivers with arrays for those, but I think I can use the excuse that
+there is at most once instance of gmidi. As far as I can tell, the gadget subsystem
+only handles one udc interface, at least for now.
+
+Thanks for the feedback, I'll post another version when I can incorporating all the
+suggestions.
+
+Cheers,
+
+- Ben.
 
 
 
