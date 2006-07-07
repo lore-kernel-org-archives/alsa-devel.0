@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Fri, 7 Jul 2006 13:59:46 +0200
-Message-ID: <d92f0ba8ace43b3ea30c70283febd40c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002205]: Everything seems ok,
+	but there's no sound
+Date: Fri, 7 Jul 2006 13:02:05 +0200
+Message-ID: <f500488e45792bd289d9a15fab55b9d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7F84277
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6653726E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 13:59:46 +0200 (MEST)
+	Fri,  7 Jul 2006 13:02:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,69 +26,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
 ======================================================================
-Reported By:                mini
+Reported By:                rematch
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2170
+Issue ID:                   2205
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-07-2006 13:59 CEST
+Date Submitted:             06-13-2006 11:31 CEST
+Last Modified:              07-07-2006 13:02 CEST
 ======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
+Summary:                    Everything seems ok, but there's no sound
 Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
+After loading snd-hda-intel modul, there's no sound on my acer travelmate
+3012 laptop. 
+OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-07-06 12:48 
+ tiwai - 07-05-06 15:23 
 ----------------------------------------------------------------------
-Wow, it's interesting that the default pin configuration is rewritten so
-dynamically by BIOS.
-
-Does SPDIF work on battery once after the driver recognizes?  If yes, we
-can add a  static pin configuration table to enable SPDIF regardless of
-power state...
+Something is wrong in your configuration.  If you have any /etc/asound.conf
+or ~/.asoundrc, remove it first.
+Also, make sure that you have no duplicated libasound.so, e.g. /lib and
+/usr/lib.
 
 ----------------------------------------------------------------------
- mini - 07-07-06 13:59 
+ rematch - 07-07-06 13:02 
 ----------------------------------------------------------------------
-*Sigh*
+i can't compile the alsa-lib. are there any howto, faq, or documentation?
+when i run hgcompile, the result are:
 
-It seems S/PDIF *still* does not work, even though the pin config is
-there, alsamixer has the IEC... control enabled, and i run mplayer -ac
-hwac3 dvd://1
-
-Also tried with totem, but no luck...
-
-Also, it seems the BIOS magic only happens after a suspend/resume cycle -
-if I boot without AC, it still shows no S/PDIF.
-
-But in any case, still no sound. I *have* got sound in Windows (still the
-AC issue, though), so there is another issue somewhere.
+make[1]: Entering directory `/usr/src/alsa-hg/alsa-lib/alsalisp'
+make[1]: *** No rule to make target `../src/libasound.la', needed by
+`alsalisp'.  Stop.
+make[1]: Leaving directory `/usr/src/alsa-hg/alsa-lib/alsalisp'
+make: *** [all-recursive] Error 1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-07-06-06 19:46 tiwai          Note Added: 0010873                          
-07-06-06 23:12 mini           Note Added: 0010884                          
-07-06-06 23:22 mini           Note Added: 0010885                          
-07-07-06 12:48 tiwai          Note Added: 0010906                          
-07-07-06 13:59 mini           Note Added: 0010909                          
+06-13-06 11:31 rematch        New Issue                                    
+06-13-06 11:48 rematch        Issue Monitored: rematch                     
+06-27-06 09:04 rematch        Note Added: 0010570                          
+06-27-06 12:16 tiwai          Note Added: 0010583                          
+06-27-06 12:24 rematch        Note Added: 0010584                          
+06-28-06 09:25 rematch        Note Added: 0010611                          
+07-04-06 19:49 rematch        Note Added: 0010826                          
+07-04-06 19:56 rlrevell       Note Added: 0010827                          
+07-04-06 21:19 rematch        Note Added: 0010828                          
+07-05-06 15:23 tiwai          Note Added: 0010839                          
+07-07-06 13:02 rematch        Note Added: 0010908                          
 ======================================================================
 
 
