@@ -1,17 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002262]: Why does the hadware mixer of
-	"sound blaster live 24bit model sb04100 chip ca0106" never
-	was implemented??? There is no one??
-Date: Fri, 7 Jul 2006 03:12:01 +0200
-Message-ID: <0dd938dba250f7c993ab1146b43a7d7a@bugtrack.alsa-project.org>
+From: David Brownell <david-b@pacbell.net>
+Subject: Re: [RFC] g_midi: New USB MIDI Gadget class driver.
+Date: Thu, 6 Jul 2006 19:49:39 -0700
+Message-ID: <200607061949.40459.david-b@pacbell.net>
+References: <44ACA882.7090209@greyinnovation.com>
+	<20060706092715.GA13194@turing.informatik.uni-halle.de>
+	<44ADACDE.3040404@greyinnovation.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 401F6227
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 03:12:01 +0200 (MEST)
+In-Reply-To: <44ADACDE.3040404@greyinnovation.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,59 +20,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Ben Williamson <ben.williamson@greyinnovation.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2262> 
-======================================================================
-Reported By:                gwagner
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2262
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             07-07-2006 01:39 CEST
-Last Modified:              07-07-2006 03:12 CEST
-======================================================================
-Summary:                    Why does the hadware mixer of "sound blaster live
-24bit model sb04100 chip ca0106" never was implemented??? There is no one??
-Description: 
-I already read that the "sound blaster live 24bit" has no hadware mixer,
-but I don't believe that. Someone really know something about it???
-======================================================================
+> I see lots of drivers with arrays for those, but I think I can use the excuse that
+> there is at most once instance of gmidi. As far as I can tell, the gadget subsystem
+> only handles one udc interface, at least for now.
 
-----------------------------------------------------------------------
- gwagner - 07-07-06 03:06 
-----------------------------------------------------------------------
-I'm hating this card I will sell it... They're stealing their consumers.
+One UDC, yes -- that's a very basic USB definition thing.  But surely one
+MIDI gadget can support multiple channels, one interface each?
 
-----------------------------------------------------------------------
- rlrevell - 07-07-06 03:12 
-----------------------------------------------------------------------
-Closed -> crappy hardware
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-06 01:39 gwagner        New Issue                                    
-07-07-06 01:44 rlrevell       Note Added: 0010890                          
-07-07-06 03:06 gwagner        Note Added: 0010891                          
-07-07-06 03:12 rlrevell       Status                   assigned => closed  
-07-07-06 03:12 rlrevell       Note Added: 0010892                          
-======================================================================
-
+- Dave
 
 
 Using Tomcat but need to do more? Need to support web services, security?
