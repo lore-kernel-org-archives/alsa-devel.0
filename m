@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Fri, 7 Jul 2006 14:16:12 +0200
-Message-ID: <3f817ec3cde020b375e8a2c1d3907b9e@bugtrack.alsa-project.org>
+Date: Fri, 7 Jul 2006 14:37:06 +0200
+Message-ID: <53e04180d05826c3e261c752654a337c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C93C9277
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FB87275
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 14:16:12 +0200 (MEST)
+	Fri,  7 Jul 2006 14:37:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-07-2006 14:16 CEST
+Last Modified:              07-07-2006 14:37 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,32 +71,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-07-06 12:24 
-----------------------------------------------------------------------
-Refer to reload-ens1371-log, 
-
-It seem neither snd_es1371_codec_read() nor snd_es1371_codec_write() work.
-
-The only way is to revert patch which related to read/write of ac97 codec
-by ens1371 if this driver really work before. otherwise you may need to
-rewrite the two routines.
-
-
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 8030ffff
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 0000
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 8000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = a0a0
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80020000
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f9f
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 9090
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f1f
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029090
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029010
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 9f1f
-
-----------------------------------------------------------------------
  yafrank - 07-07-06 14:16 
 ----------------------------------------------------------------------
 Reverse patch the
@@ -119,6 +93,16 @@ Hunk #5 FAILED at 676.
 alsa-kernel/pci/ens1370.c.rej
 ...
     Is there anything else I can try?
+
+----------------------------------------------------------------------
+ Raymond - 07-07-06 14:37 
+----------------------------------------------------------------------
+You have to ask rlrevell about how to revert patch from HG repo (e.g. HG
+bisect)
+
+The easy way is replace snd_es1371_codec_read() nor
+snd_es1371_codec_write() by copy the old routines from
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=file;file=pci/ens1370.c;filenode=7387229b3f12136fe7b4d525a1c0629b0db45d34;style=raw
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -217,6 +201,8 @@ ens1371
 07-07-06 12:08 yafrank        Note Added: 0010904                          
 07-07-06 12:24 Raymond        Note Added: 0010905                          
 07-07-06 14:16 yafrank        Note Added: 0010910                          
+07-07-06 14:27 yafrank        File Added: ens1370.c.rej                    
+07-07-06 14:37 Raymond        Note Added: 0010911                          
 ======================================================================
 
 
