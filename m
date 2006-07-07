@@ -1,16 +1,16 @@
-From: Ben Williamson <ben.williamson@greyinnovation.com>
-Subject: Re: [RFC] g_midi: New USB MIDI Gadget class driver.
-Date: Fri, 07 Jul 2006 14:14:25 +1000
-Message-ID: <44ADDFA1.50109@greyinnovation.com>
-References: <44ACA882.7090209@greyinnovation.com>
-	<20060706092715.GA13194@turing.informatik.uni-halle.de>
-	<44ADACDE.3040404@greyinnovation.com>
-	<200607061949.40459.david-b@pacbell.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001183]: Details about known bug
+	"Capture doesn't work"
+Date: Fri, 7 Jul 2006 06:36:47 +0200
+Message-ID: <4a7aa0ce20ac45ef80a09b83bcf43c4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200607061949.40459.david-b@pacbell.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E153197
+	for <alsa-devel@alsa-project.org>;
+	Fri,  7 Jul 2006 06:36:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,25 +20,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: David Brownell <david-b@pacbell.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-David Brownell wrote:
-> One UDC, yes -- that's a very basic USB definition thing.  But surely one
-> MIDI gadget can support multiple channels, one interface each?
 
-Actually I was wondering if you plan to support plugging in multiple NetChip UDC
-cards, but I can't imagine it would be all that useful.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1183> 
+======================================================================
+Reported By:                Jochen
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1183
+Category:                   PCI - es1968
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-11-2005 20:34 CEST
+Last Modified:              07-07-2006 06:36 CEST
+======================================================================
+Summary:                    Details about known bug "Capture doesn't work"
+Description: 
+I'm experiencing the problem with es1968 not supporting capture described
+in various places. This bug keeps me from using skype: the second it tries
+to read from the OSS compatibility device it receives and EINVAL
 
-At this stage g_midi only support one MIDI in jack and one MIDI out jack, because
-that's all I need for now. In order to support more than that one would need to
-add more jack descriptors and corresponding rawmidi substreams, none of which
-should be too tough. But I think it would make the most sense for all that to
-still appear under the one ALSA "card", with a single index and id as Clemens
-suggested, at least as I understand it.
+using the old OSS maestro driver works thou.
 
-- Ben.
+apparently this is the known bug "capture doesn't work"
+
+I'd like to ask for a little more information on this bug, and whether
+it's possible to contribute here.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000895 Es1968 driver seems not to support &quo...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 00:35 
+----------------------------------------------------------------------
+Was this fixed in later ALSA versions?
+
+----------------------------------------------------------------------
+ Raymond - 07-07-06 06:36 
+----------------------------------------------------------------------
+Post output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-11-05 20:34 Jochen         New Issue                                    
+06-13-05 13:07 tiwai          Note Added: 0005007                          
+06-13-05 15:53 Jochen         Note Added: 0005011                          
+06-15-05 14:42 tiwai          Note Added: 0005028                          
+09-26-05 10:04 LawrenceG      Issue Monitored: LawrenceG                    
+09-26-05 10:20 LawrenceG      Note Added: 0006390                          
+09-26-05 10:43 LawrenceG      Note Added: 0006391                          
+03-22-06 00:35 rlrevell       Note Added: 0008763                          
+03-22-06 00:37 rlrevell       Relationship added       related to 0000895  
+07-07-06 06:36 Raymond        Note Added: 0010894                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
