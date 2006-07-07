@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Fri, 7 Jul 2006 14:42:24 +0200
-Message-ID: <883b8a2cc01edb9a0b338d6537c755a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002068]: No sound in headphones - A3H
+	ASUS
+Date: Fri, 7 Jul 2006 14:51:46 +0200
+Message-ID: <5710b2770dab448d90483b052a874f9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FD0927C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD90227B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 14:42:25 +0200 (MEST)
+	Fri,  7 Jul 2006 14:51:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,73 +26,115 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
 ======================================================================
-Reported By:                mini
+Reported By:                awisniewski
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2170
+Issue ID:                   2068
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-07-2006 14:42 CEST
+Date Submitted:             04-25-2006 12:03 CEST
+Last Modified:              07-07-2006 14:51 CEST
 ======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
+Summary:                    No sound in headphones - A3H ASUS
 Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
+Hello
+
+I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
+kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
+and it seems to be working propertly till I'm not trying use headphone
+(internal speaker from laptop is working propertly). When I plug in
+headphones into the jack port in laptop, internal speaker is silent but I
+can not hear anything in headphones. It seems like turned on MUTT option
+in mixer but I can not find option for headphones in my mixer
+application.
+ 
+Few facts:
+
+lapek:/proc/asound# cat version 
+Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
+08:57:20 2006 UTC).
+
+andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
+Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
+
+lapek:/proc/asound# cat timers 
+G0: system timer : 4000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+
+lapek:/proc/asound# cat pcm 
+00-01: ALC880 Digital : ALC880 Digital : playback 1
+00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
+
+lapek:/proc/asound# cat devices 
+  0: [ 0]   : control
+ 16: [ 0- 0]: digital audio playback
+ 17: [ 0- 1]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 33:        : timer
+
+I will add /proc/asound/card0/codec#0 file also (as attachmets).
+
 ======================================================================
 
 ----------------------------------------------------------------------
- mini - 07-07-06 13:59 
+ awisniewski - 05-10-06 08:15 
 ----------------------------------------------------------------------
-*Sigh*
+Because I had to recompile kernel and in this case alsa drivers also I can
+be 100% sure that I must go into test mode (in assus mode I can not do
+anything with headphones) and :
 
-It seems S/PDIF *still* does not work, even though the pin config is
-there, alsamixer has the IEC... control enabled, and i run mplayer -ac
-hwac3 dvd://1
+- Front must have some volume level
+- Front pi must be Line Out
+- Surround must have some volume level (with this option I can chanege
+volume in my headphones)
+- Surround pi must be Line Out  
 
-Also tried with totem, but no luck...
+When I used asus or default model option in my alsa driver I can not
+change volume for headphones even if I had Surround option in my
+alsamixer.
 
-Also, it seems the BIOS magic only happens after a suspend/resume cycle -
-if I boot without AC, it still shows no S/PDIF.
-
-But in any case, still no sound. I *have* got sound in Windows (still the
-AC issue, though), so there is another issue somewhere.
+I think it's all what you need :)
+Tx again ...
 
 ----------------------------------------------------------------------
- tiwai - 07-07-06 14:42 
+ dcomsa - 07-07-06 14:51 
 ----------------------------------------------------------------------
-Did you test it with AC, i.e. AC on the whole time from boot to test ?
+Hi,
 
-Anyway, you should use a different program for testing.  For example, you
-can use aplay like:
-
-  % aplay -Dspdif foo.wav
-
-for playing a WAV over SPDIF.  First try a WAV file with 48kHz/2ch/16bit. 
-There might be a problem with another sample rate.
+I'm facing the same issue. How can I help to fix this? Following the
+instructions above, i was able to get the headphones working, using the
+model test. I'm willing to provide you any info so that the headphones
+will work by default. Please note that I'm not an expert, rather an medium
+linux user.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-07-06-06 19:46 tiwai          Note Added: 0010873                          
-07-06-06 23:12 mini           Note Added: 0010884                          
-07-06-06 23:22 mini           Note Added: 0010885                          
-07-07-06 12:48 tiwai          Note Added: 0010906                          
-07-07-06 13:59 mini           Note Added: 0010909                          
-07-07-06 14:42 tiwai          Note Added: 0010912                          
+04-25-06 12:03 awisniewski    New Issue                                    
+04-25-06 12:03 awisniewski    File Added: codec#0                          
+04-25-06 12:08 awisniewski    File Added: codec.zip                        
+04-25-06 18:16 tiwai          Note Added: 0009493                          
+04-25-06 18:21 tiwai          Note Added: 0009494                          
+04-26-06 12:49 awisniewski    Note Added: 0009506                          
+04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
+04-26-06 13:01 tiwai          Note Added: 0009507                          
+04-26-06 13:49 awisniewski    Note Added: 0009509                          
+04-26-06 14:34 tiwai          Note Added: 0009510                          
+04-26-06 20:26 awisniewski    Note Added: 0009523                          
+05-10-06 08:15 awisniewski    Note Added: 0009702                          
+07-07-06 14:51 dcomsa         Note Added: 0010913                          
 ======================================================================
 
 
