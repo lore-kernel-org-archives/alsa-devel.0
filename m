@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002263]: All sound plays in an endless
-	loop
-Date: Fri, 7 Jul 2006 16:52:47 +0200
-Message-ID: <d49162beb2fe8e29d5b3e12c2a0ae170@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002248]: Sounds stops and continue
+Date: Fri, 7 Jul 2006 17:32:24 +0200
+Message-ID: <1b7c60e5e421104fd81ca3430d188c19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 701F8147
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57624284
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 16:52:47 +0200 (MEST)
+	Fri,  7 Jul 2006 17:32:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +25,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2263> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2248> 
 ======================================================================
-Reported By:                NathanF
+Reported By:                gwagner
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2263
+Issue ID:                   2248
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Grafpup Linux
-Kernel Version:             2.6.17.3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-07-2006 08:06 CEST
-Last Modified:              07-07-2006 16:52 CEST
+Date Submitted:             06-30-2006 06:05 CEST
+Last Modified:              07-07-2006 17:32 CEST
 ======================================================================
-Summary:                    All sound plays in an endless loop
+Summary:                    Sounds stops and continue
 Description: 
-dmesg reports 'snd_via82xx_modem: Unknown symbol snd_verbose_printk'
-
-Playing a sound file results in the first second repeating in an endless
-loop until the process is killed. Some applications will not play at all,
-flash animations in a browser play silently.
+Every sounds "music movies" are having little pauses, it's pausing for few
+miliseconds and continue. It's happen on every kind of aplication.
+My matherborad is an Asus-A8V-Deluxe, chipset Via VT8237, Athlon 64 3000,
+that should work with snd_via82xx. I have an soud blaster card too, but
+that work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- NathanF - 07-07-06 16:31 
+ gwagner - 07-07-06 01:21 
 ----------------------------------------------------------------------
-Thanks you for the speedy reply, that boosts my confidence. I've attached
-the full txt of dmesg. To answer your other question, yes this worked
-under 2.6.16, also under 2.4.29 if that is relevent. I'm wondering if
-maybe I tried to compile in too much support trying to get a generic
-kernel, since you mention an IRQ problem.
-
-I will try reverting the patches you suggest.
+Yes, I already heard this history about BIOS of ASUS A8V Deluxe too.
+The output of "lspci -vvxxx" and bootdmesg both with and without sound
+blaster pci board is attached.
 
 ----------------------------------------------------------------------
- vsu - 07-07-06 16:52 
+ vsu - 07-07-06 17:32 
 ----------------------------------------------------------------------
-The dmesg output is truncated - probably the message buffer in the kernel
-or the dmesg program itself was too small.  You can boot with
-"log_buf_len=64k" option to set the kernel message buffer size to 64 KB
-(this should be enough, unless something floods the buffer with messages),
-and use "dmesg -s 65536" to make sure that dmesg reads all data in the
-buffer.
+Unfortunately, the kernel version number is not visible in the dmesg
+output; I presume that you are using either 2.6.17 or a recent 2.6.16.x
+version.
 
-However, that dmesg piece confirms that your system uses PIC for IRQ
-routing, which is exactly the mode in which that VIA IRQ problems appear
-in 2.6.17 (and also 2.6.16.17 - that buggy patches went there too).  And
-there is no "VIA IRQ quirk" message for the 0000:00:11.5 PCI device (this
-is the builtin audio device in VIA southbridges). Please give the dmesg
-output from 2.6.16 for comparison - probably it contains that IRQ quirk
-message, which would explain why sound works on 2.6.16 and fails on
-2.6.17.
+Also seems that you have grabbed the "lspci -vvxxx" output without the PCI
+sound card when the snd-via82xx module was not loaded.
 
-Lots of "Unknown symbol" messages... Probably you have a mixture of
-modules built from different sources in /lib/modules/`uname -r`/ directory
-(e.g., some from the in-kernel ALSA, some from the externally compiled
-version).  If you intend to compile ALSA separately from the kernel, you
-should disable all ALSA support in the kernel configuration (enable just
-"Sound card support").  Or maybe this is from multiple attempts to compile
-and install ALSA drivers for the same kernel.
+But I see the important difference anyway - when the PCI sound card is
+present, the PCI_INTERRUPT_LINE register of the builtin audio device is
+not set properly, which is important for VIA southbridges.  For testing,
+you can try to set this register manually:
+
+  setpci -s 00:11.5 INTERRUPT_LINE=05
+
+(before doing this, double check the "lspci -s 00:11.5 -vv" output to make
+sure that Linux assigned IRQ 5 to the device).
+
+If this command fixes the sound problem, then the broken VIA IRQ quirk
+patches which have gone into 2.6.17 and 2.6.16.17 are the culprit.  Try to
+revert (patch -p1 -R <file.patch) these patches:
+
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=a7b862f663d81858531dfccc0537bc9d8a2a4121
+
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=75cf7456dd87335f574dcd53c4ae616a2ad71a11
+
+After reverting these patches the kernel will set the PCI_INTERRUPT_LINE
+register for all VIA devices, and interrupt routing will work properly
+without that setpci command.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-06 08:06 NathanF        New Issue                                    
-07-07-06 08:06 NathanF        Distribution              => Grafpup Linux   
-07-07-06 08:06 NathanF        Kernel Version            => 2.6.17.3        
-07-07-06 10:58 vsu            Note Added: 0010902                          
-07-07-06 10:59 vsu            Issue Monitored: vsu                         
-07-07-06 16:25 NathanF        File Added: dmesgout.txt                     
-07-07-06 16:31 NathanF        Note Added: 0010915                          
-07-07-06 16:52 vsu            Note Added: 0010916                          
+06-30-06 06:05 gwagner        New Issue                                    
+06-30-06 16:36 rlrevell       Note Added: 0010740                          
+07-05-06 15:40 gwagner        Note Added: 0010841                          
+07-05-06 16:48 rlrevell       Note Added: 0010842                          
+07-06-06 19:31 gwagner        Note Added: 0010871                          
+07-06-06 19:37 rlrevell       Note Added: 0010872                          
+07-06-06 19:57 vsu            Note Added: 0010875                          
+07-06-06 19:57 vsu            Issue Monitored: vsu                         
+07-06-06 19:58 vsu            Note Edited: 0010875                         
+07-07-06 00:49 gwagner        File Added: bootdmesg_without_sbpci               
+    
+07-07-06 00:50 gwagner        File Added: bootdmesg_with_sbpci                  
+ 
+07-07-06 00:51 gwagner        File Added: lspci_without_sbpci                   
+
+07-07-06 00:51 gwagner        File Added: lspci_with_sbpci                    
+07-07-06 01:21 gwagner        Note Added: 0010888                          
+07-07-06 17:32 vsu            Note Added: 0010917                          
 ======================================================================
 
 
