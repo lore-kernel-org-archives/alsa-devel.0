@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002170]: No S/PDIF controls on STAC
-	9200
-Date: Fri, 7 Jul 2006 16:19:04 +0200
-Message-ID: <232c0699c1b1cb84d760ffd3cb574da2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002263]: All sound plays in an endless
+	loop
+Date: Fri, 7 Jul 2006 16:31:36 +0200
+Message-ID: <7cb10404413902a1524fab5f28a29e35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6241E165
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6792527D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 16:19:04 +0200 (MEST)
+	Fri,  7 Jul 2006 16:31:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,69 +26,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2263> 
 ======================================================================
-Reported By:                mini
-Assigned To:                tiwai
+Reported By:                NathanF
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2170
-Category:                   PCI - hda-intel
+Issue ID:                   2263
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               Grafpup Linux
+Kernel Version:             2.6.17.3
 ======================================================================
-Date Submitted:             05-29-2006 12:34 CEST
-Last Modified:              07-07-2006 16:19 CEST
+Date Submitted:             07-07-2006 08:06 CEST
+Last Modified:              07-07-2006 16:31 CEST
 ======================================================================
-Summary:                    No S/PDIF controls on STAC 9200
+Summary:                    All sound plays in an endless loop
 Description: 
-I know this laptop (Dell XPS M1710) has S/PDIF out, but there is no ALSA
-control for it in alsamixer.
+dmesg reports 'snd_via82xx_modem: Unknown symbol snd_verbose_printk'
+
+Playing a sound file results in the first second repeating in an endless
+loop until the process is killed. Some applications will not play at all,
+flash animations in a browser play silently.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-07-06 14:42 
+ vsu - 07-07-06 10:58 
 ----------------------------------------------------------------------
-Did you test it with AC, i.e. AC on the whole time from boot to test ?
+This looks like an IRQ problem.  Did sound work with older kernels (e.g.,
+2.6.16)?
 
-Anyway, you should use a different program for testing.  For example, you
-can use aplay like:
+Please attach dmesg output - it may contain useful information to diagnose
+the problem.
 
-  % aplay -Dspdif foo.wav
+Also you may try to revert (patch -p1 -R <file.patch) these patches from
+your 2.6.17.3 kernel:
 
-for playing a WAV over SPDIF.  First try a WAV file with 48kHz/2ch/16bit. 
-There might be a problem with another sample rate.
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=a7b862f663d81858531dfccc0537bc9d8a2a4121
+
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=75cf7456dd87335f574dcd53c4ae616a2ad71a11
+
+These patches were supposed to stop VIA IRQ setup code from running on
+non-motherboard devices, but they seem to break IRQ routing on many
+systems.
 
 ----------------------------------------------------------------------
- mini - 07-07-06 16:19 
+ NathanF - 07-07-06 16:31 
 ----------------------------------------------------------------------
-I tried a wav-file with "RIFF (little-endian) data, WAVE audio, Microsoft
-PCM, 16 bit, stereo 48000 Hz" and aplay -D spdif.
+Thanks you for the speedy reply, that boosts my confidence. I've attached
+the full txt of dmesg. To answer your other question, yes this worked
+under 2.6.16, also under 2.4.29 if that is relevent. I'm wondering if
+maybe I tried to compile in too much support trying to get a generic
+kernel, since you mention an IRQ problem.
 
-No sound.... even though the alsamixer control is enabled.
-
-Booting on AC or not does not seem to make any difference.
-
-Oh well...
+I will try reverting the patches you suggest.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 12:34 mini           New Issue                                    
-05-29-06 12:34 mini           Distribution              => Ubuntu Dapper   
-05-29-06 12:34 mini           Kernel Version            => 2.6.15          
-07-02-06 23:54 mini           Note Added: 0010795                          
-07-06-06 19:46 tiwai          Note Added: 0010873                          
-07-06-06 23:12 mini           Note Added: 0010884                          
-07-06-06 23:22 mini           Note Added: 0010885                          
-07-07-06 12:48 tiwai          Note Added: 0010906                          
-07-07-06 13:59 mini           Note Added: 0010909                          
-07-07-06 14:42 tiwai          Note Added: 0010912                          
-07-07-06 16:19 mini           Note Added: 0010914                          
+07-07-06 08:06 NathanF        New Issue                                    
+07-07-06 08:06 NathanF        Distribution              => Grafpup Linux   
+07-07-06 08:06 NathanF        Kernel Version            => 2.6.17.3        
+07-07-06 10:58 vsu            Note Added: 0010902                          
+07-07-06 10:59 vsu            Issue Monitored: vsu                         
+07-07-06 16:25 NathanF        File Added: dmesgout.txt                     
+07-07-06 16:31 NathanF        Note Added: 0010915                          
 ======================================================================
 
 
