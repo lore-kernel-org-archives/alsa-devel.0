@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Fri, 7 Jul 2006 12:24:37 +0200
-Message-ID: <f6c5cc51d97ab8e3a5543864a82d9afb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002264]: Multi-streaming with Intel HDA
+Date: Fri, 7 Jul 2006 12:43:19 +0200
+Message-ID: <5a493cc2ce077c92783cf9dabf7b254f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58556271
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3655172
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 12:24:38 +0200 (MEST)
+	Fri,  7 Jul 2006 12:43:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,184 +23,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2264> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                chetan13
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   2264
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-07-2006 12:24 CEST
+Date Submitted:             07-07-2006 12:43 CEST
+Last Modified:              07-07-2006 12:43 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    Multi-streaming with Intel HDA
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+Hi, i have the intel D915GAV motherboard. The snd-hda-intel driver supports
+it. 
+Currently, i have a headphone switch in alsamixer which enables the
+headphone jack on the front panel of my cabinet. But this audio is always
+the same as the audio that goes to the speakers. Intel HDA supports
+sending different streams to the speakers and the headset.
+I'll quote http://www.intel.com/design/chipsets/hdaudio.htm 
+"Consumers also want the ability to play back two different audio tracks.
+Intel HD Audio features multi-streaming capabilities that give users the
+ability to send two or more different audio streams to different locations
+at the same time, from the same PC. Send a game's sound through 5.1
+speakers while the Internet chatting audio is sent through your headset."
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
+Essentially, it's like having two soundcards. Does alsa support sending
+the game audio through the speakers and chat audio through the headset? If
+so, how do i do it?
 
 ======================================================================
-
-----------------------------------------------------------------------
- yafrank - 07-07-06 12:08 
-----------------------------------------------------------------------
-Raymond,
-As of 0010899, I've attached the system log after reload the driver as
-reload-ens1371-log. I'll try to revert the patch introduced in
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1308&type=bug
-and re-compile the driver. 
-Thanks!
-
-----------------------------------------------------------------------
- Raymond - 07-07-06 12:24 
-----------------------------------------------------------------------
-Refer to reload-ens1371-log, 
-
-It seem neither snd_es1371_codec_read() nor snd_es1371_codec_write() work.
-
-The only way is to revert patch which related to read/write of ac97 codec
-by ens1371 if this driver really work before. otherwise you may need to
-rewrite the two routines.
-
-
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 8030ffff
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 0000
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 8000
-Jul  7 16:56:13 twinhead kernel: codec write 02 = a0a0
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80020000
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f9f
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 9090
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f1f
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029090
-Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029010
-Jul  7 16:56:13 twinhead kernel: codec write 02 = 9f1f
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
-06-09-06 06:51 Raymond        Note Added: 0010132                          
-06-14-06 15:01 Raymond        Note Deleted: 0010132                        
-06-14-06 15:13 Raymond        Note Deleted: 0010072                        
-06-24-06 04:14 Raymond        Note Added: 0010465                          
-06-24-06 21:51 bobcat98       Note Added: 0010489                          
-06-25-06 02:04 Raymond        Note Added: 0010497                          
-06-25-06 07:44 bobcat98       Note Added: 0010503                          
-06-25-06 08:18 Raymond        Note Added: 0010504                          
-06-25-06 18:13 bobcat98       Note Added: 0010517                          
-06-26-06 02:10 Raymond        Note Added: 0010521                          
-06-26-06 04:10 bobcat98       Note Added: 0010523                          
-06-26-06 17:36 Raymond        Note Added: 0010551                          
-06-26-06 17:40 rlrevell       Note Added: 0010553                          
-06-26-06 17:51 Raymond        Note Edited: 0010551                         
-06-26-06 18:01 Raymond        Note Added: 0010555                          
-06-26-06 18:09 rlrevell       Note Added: 0010556                          
-06-27-06 04:48 Raymond        Note Added: 0010564                          
-06-28-06 04:36 Raymond        Note Added: 0010608                          
-06-28-06 04:36 Raymond        Note Edited: 0010608                         
-06-29-06 11:14 Raymond        Note Edited: 0010608                         
-07-01-06 05:26 Raymond        Note Added: 0010758                          
-07-07-06 07:59 yafrank        Note Added: 0010896                          
-07-07-06 09:13 yafrank        Note Added: 0010898                          
-07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
-07-07-06 09:21 Raymond        Note Added: 0010899                          
-07-07-06 09:58 Raymond        Note Added: 0010900                          
-07-07-06 10:12 Raymond        Note Added: 0010901                          
-07-07-06 10:20 Raymond        Note Edited: 0010901                         
-07-07-06 11:59 yafrank        File Added: reload-ens1371-log                    
-07-07-06 12:08 yafrank        Note Added: 0010904                          
-07-07-06 12:24 Raymond        Note Added: 0010905                          
+07-07-06 12:43 chetan13       New Issue                                    
 ======================================================================
 
 
