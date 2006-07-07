@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002068]: No sound in headphones - A3H
-	ASUS
-Date: Fri, 7 Jul 2006 14:51:46 +0200
-Message-ID: <5710b2770dab448d90483b052a874f9e@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: snd-aoa: g5 tas codec problems
+Date: Fri, 07 Jul 2006 15:43:37 +0200
+Message-ID: <1152279817.4792.2.camel@localhost>
+References: <1152258426.9862.44.camel@localhost.localdomain>
+	<1152258601.9862.47.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1830523231=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD90227B
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FDD727B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 14:51:46 +0200 (MEST)
+	Fri,  7 Jul 2006 15:44:00 +0200 (MEST)
+In-Reply-To: <1152258601.9862.47.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,126 +21,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: linuxppc-dev list <linuxppc-dev@ozlabs.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
-======================================================================
-Reported By:                awisniewski
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2068
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-25-2006 12:03 CEST
-Last Modified:              07-07-2006 14:51 CEST
-======================================================================
-Summary:                    No sound in headphones - A3H ASUS
-Description: 
-Hello
-
-I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
-kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
-and it seems to be working propertly till I'm not trying use headphone
-(internal speaker from laptop is working propertly). When I plug in
-headphones into the jack port in laptop, internal speaker is silent but I
-can not hear anything in headphones. It seems like turned on MUTT option
-in mixer but I can not find option for headphones in my mixer
-application.
- 
-Few facts:
-
-lapek:/proc/asound# cat version 
-Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
-08:57:20 2006 UTC).
-
-andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
-Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
-
-lapek:/proc/asound# cat timers 
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-
-lapek:/proc/asound# cat pcm 
-00-01: ALC880 Digital : ALC880 Digital : playback 1
-00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
-
-lapek:/proc/asound# cat devices 
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 33:        : timer
-
-I will add /proc/asound/card0/codec#0 file also (as attachmets).
-
-======================================================================
-
-----------------------------------------------------------------------
- awisniewski - 05-10-06 08:15 
-----------------------------------------------------------------------
-Because I had to recompile kernel and in this case alsa drivers also I can
-be 100% sure that I must go into test mode (in assus mode I can not do
-anything with headphones) and :
-
-- Front must have some volume level
-- Front pi must be Line Out
-- Surround must have some volume level (with this option I can chanege
-volume in my headphones)
-- Surround pi must be Line Out  
-
-When I used asus or default model option in my alsa driver I can not
-change volume for headphones even if I had Surround option in my
-alsamixer.
-
-I think it's all what you need :)
-Tx again ...
-
-----------------------------------------------------------------------
- dcomsa - 07-07-06 14:51 
-----------------------------------------------------------------------
-Hi,
-
-I'm facing the same issue. How can I help to fix this? Following the
-instructions above, i was able to get the headphones working, using the
-model test. I'm willing to provide you any info so that the headphones
-will work by default. Please note that I'm not an expert, rather an medium
-linux user.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-25-06 12:03 awisniewski    New Issue                                    
-04-25-06 12:03 awisniewski    File Added: codec#0                          
-04-25-06 12:08 awisniewski    File Added: codec.zip                        
-04-25-06 18:16 tiwai          Note Added: 0009493                          
-04-25-06 18:21 tiwai          Note Added: 0009494                          
-04-26-06 12:49 awisniewski    Note Added: 0009506                          
-04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
-04-26-06 13:01 tiwai          Note Added: 0009507                          
-04-26-06 13:49 awisniewski    Note Added: 0009509                          
-04-26-06 14:34 tiwai          Note Added: 0009510                          
-04-26-06 20:26 awisniewski    Note Added: 0009523                          
-05-10-06 08:15 awisniewski    Note Added: 0009702                          
-07-07-06 14:51 dcomsa         Note Added: 0010913                          
-======================================================================
+--===============1830523231==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-RrYmxRMSvPvy4F0qXPVZ"
 
 
+--=-RrYmxRMSvPvy4F0qXPVZ
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2006-07-07 at 17:50 +1000, Benjamin Herrenschmidt wrote:
+
+> I'll do a combo patch later (or you can do one if you want)
+
+Don't, I just made the whole thing a 9 patch series.
+
+johannes
+
+--=-RrYmxRMSvPvy4F0qXPVZ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Johannes Berg (powerbook)
+
+iQIVAwUARK5lCKVg1VMiehFYAQIywA/9Ek5jovyyLVGWHZGg/3eJ1PPo1as/kJcq
+KLirYQM+R5viejC0pq2ZHRzPLXcgVL1I8hUpuqsWlK52LgrUuHYwF3d7lS1u0JqG
+7IZM/7fRxsVoQNUqEtFtfUmfZqsVR9yEFcjbvypmBHuCf4N7dhPyOvteTkoAVksu
+y1Kxz8vGJLTrxXVVhWU56A8HcwVUyUbvAA+j6wtnVVx3eOi6UhGu6H3f8q/eYnXu
+6GWgMSwiFR5TQtt61Yf8GDxw148e/OP0JVGhlKNui4SXsU2uamBAmlnNaGCEZKXN
+HCbIhSvZZcaNnqCAt79sPpA5nstkqPr0DPwMvnZF3XhKqm4o845p6DxADUJ2GX8v
+J8JR8T7g6Dwc8Sk00G31wzxBnGj+FRSEJVi57FYp1u5helD1Fs4Ip2dEiw/Da+sY
+pJC4SXcggjfFgLGvtk4XZizcgzDAAK6YX+ALLOV4uBtuJHd47/NjR9bLsp123tdR
+wMtHA0KNcp2Pov9dy5vYNuLY6KoPgIG7/DK3p7ylgO8miq1VqUNnCaetJJrVB6fu
+Wg+IiHlcSDgqDlzZ34SM9d0T3AyTAHkaRVQ2+9FPCnyQeRYUS6h8xf/aaQm8Kb+Y
+V2oVKqLJmGAQkTEOz6rO8ZclPywZp8zM7+dlsR7ANt/SvSbzD0evpJOs64Krs0dW
+Ox1YR395kZA=
+=mtgR
+-----END PGP SIGNATURE-----
+
+--=-RrYmxRMSvPvy4F0qXPVZ--
+
+
+
+--===============1830523231==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1830523231==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1830523231==--
