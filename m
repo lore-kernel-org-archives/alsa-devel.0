@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Fri, 7 Jul 2006 09:13:04 +0200
-Message-ID: <f408bc0061aaa8f170fd21d14c929666@bugtrack.alsa-project.org>
+Date: Fri, 7 Jul 2006 09:21:18 +0200
+Message-ID: <771992148d4b37cc99f7b746d43cb492@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE26F246
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09F7F246
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 09:13:04 +0200 (MEST)
+	Fri,  7 Jul 2006 09:21:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-07-2006 09:13 CEST
+Last Modified:              07-07-2006 09:21 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,12 +71,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- yafrank - 07-07-06 07:59 
-----------------------------------------------------------------------
-Ok, the "irq 5: nobody cared" problem goes away if "irqpoll" parameter used
-in official 2.6.17 kernel. I'll try to follow the suggestion in 0010521.
-
-----------------------------------------------------------------------
  yafrank - 07-07-06 09:13 
 ----------------------------------------------------------------------
 1. Extract alsa-1.0.12rc1 source and modify alsa-kernel/pci/ens1370.c as
@@ -87,6 +81,23 @@ options
 3. Boot the kernel with "irqpoll" parameter (to avoid "irq 5: nobody
 cared" problem)
 4. dmesg > /tmp/ens1371-hack-dmesg    # uploaded
+
+----------------------------------------------------------------------
+ Raymond - 07-07-06 09:21 
+----------------------------------------------------------------------
+Refer to ens1371-hack-dmesg , reload the driver and post the system log
+since you still need to hack the other registers.
+
+alsamixer should return the name of codec after the hack 
+
+                    if ( (( x >> 16 ) & 0x7f ) != reg ) {
+                        switch(reg){
+                        case 0: return 0x0140;
+                        case 0x7c: return 0x8384;
+                        case 0x7e: return 0x7605;
+                        default: break;
+                        }
+                       }
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -176,6 +187,8 @@ ens1371
 07-01-06 05:26 Raymond        Note Added: 0010758                          
 07-07-06 07:59 yafrank        Note Added: 0010896                          
 07-07-06 09:13 yafrank        Note Added: 0010898                          
+07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
+07-07-06 09:21 Raymond        Note Added: 0010899                          
 ======================================================================
 
 
