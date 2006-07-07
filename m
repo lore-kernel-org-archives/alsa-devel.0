@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Fri, 7 Jul 2006 12:08:33 +0200
-Message-ID: <8e0f860db6d7aae7f1539eda6ba1d2b4@bugtrack.alsa-project.org>
+Date: Fri, 7 Jul 2006 12:24:37 +0200
+Message-ID: <f6c5cc51d97ab8e3a5543864a82d9afb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC096276
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58556271
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 12:08:33 +0200 (MEST)
+	Fri,  7 Jul 2006 12:24:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-07-2006 12:08 CEST
+Last Modified:              07-07-2006 12:24 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,41 +71,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-07-06 10:20 
-----------------------------------------------------------------------
-yafrank,
-
-It seem snd_es1371_codec_read() seem always fail on your ens1371 and the
-hack will not help.
-
-The only hope is to revert patch to find out the cause, try
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#10556
-
-
-codec read 7c : 807f0000
-codec read 7e : 807c8384
-codec write 00 = 0000
-codec write 3c = 0000
-codec read 00 : 807e7605  <---- The hack work only when this value is
-coorect
-codec read 7c : 80000140
-codec read 7e : 807c8384
-codec read 7c : 807e7605
-codec read 7e : 807c8384
-codec read 00 : 807e7605
-codec read 28 : 80000140
-codec read 3c : 8028ffff
-codec write 26 = 0000
-codec write 00 = 0000
-codec write 26 = 0000
-codec write 20 = 0000
-codec read 26 : 803cffff  <---- The hack work only when this value is
-coorect
-codec read 2a : 8026000f
-
-
-
-----------------------------------------------------------------------
  yafrank - 07-07-06 12:08 
 ----------------------------------------------------------------------
 Raymond,
@@ -114,6 +79,32 @@ reload-ens1371-log. I'll try to revert the patch introduced in
 https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1308&type=bug
 and re-compile the driver. 
 Thanks!
+
+----------------------------------------------------------------------
+ Raymond - 07-07-06 12:24 
+----------------------------------------------------------------------
+Refer to reload-ens1371-log, 
+
+It seem neither snd_es1371_codec_read() nor snd_es1371_codec_write() work.
+
+The only way is to revert patch which related to read/write of ac97 codec
+by ens1371 if this driver really work before. otherwise you may need to
+rewrite the two routines.
+
+
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 8030ffff
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
+Jul  7 16:56:13 twinhead kernel: codec write 02 = 0000
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80028000
+Jul  7 16:56:13 twinhead kernel: codec write 02 = 8000
+Jul  7 16:56:13 twinhead kernel: codec write 02 = a0a0
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80020000
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f9f
+Jul  7 16:56:13 twinhead kernel: codec write 02 = 9090
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029f1f
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029090
+Jul  7 16:56:13 twinhead kernel: codec read 02 : 80029010
+Jul  7 16:56:13 twinhead kernel: codec write 02 = 9f1f
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -210,6 +201,7 @@ ens1371
 07-07-06 10:20 Raymond        Note Edited: 0010901                         
 07-07-06 11:59 yafrank        File Added: reload-ens1371-log                    
 07-07-06 12:08 yafrank        Note Added: 0010904                          
+07-07-06 12:24 Raymond        Note Added: 0010905                          
 ======================================================================
 
 
