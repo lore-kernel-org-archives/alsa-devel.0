@@ -1,17 +1,16 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: snd-aoa: g5 tas codec problems
-Date: Fri, 07 Jul 2006 17:50:00 +1000
-Message-ID: <1152258601.9862.47.camel@localhost.localdomain>
-References: <1152258426.9862.44.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Fri, 7 Jul 2006 09:58:50 +0200
+Message-ID: <03ee41517cf8cbfe576fa10e5a902d0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E42626A
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A963726F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 09:50:13 +0200 (MEST)
-In-Reply-To: <1152258426.9862.44.camel@localhost.localdomain>
+	Fri,  7 Jul 2006 09:58:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,462 +20,172 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linuxppc-dev list <linuxppc-dev@ozlabs.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-07-07 at 17:47 +1000, Benjamin Herrenschmidt wrote:
 
-> Note that the patch applies on top of Andreas latest one fixing the irq
-> on latest git.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+======================================================================
+Reported By:                yafrank
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
+======================================================================
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              07-07-2006 09:58 CEST
+======================================================================
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Description: 
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-Actually, it applies on top of Andres patch, plus my patch fixing the
-resources on g5, updated to apply on top of latest git:
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-I'll do a combo patch later (or you can do one if you want)
 
-Ben.
+======================================================================
 
-Index: linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus-core.c
-===================================================================
---- linux-irq-work.orig/sound/aoa/soundbus/i2sbus/i2sbus-core.c	2006-07-07 15:40:53.000000000 +1000
-+++ linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus-core.c	2006-07-07 15:45:06.000000000 +1000
-@@ -7,13 +7,16 @@
-  */
- 
- #include <linux/module.h>
--#include <asm/macio.h>
--#include <asm/dbdma.h>
- #include <linux/pci.h>
- #include <linux/interrupt.h>
-+#include <linux/dma-mapping.h>
-+
- #include <sound/driver.h>
- #include <sound/core.h>
--#include <linux/dma-mapping.h>
-+
-+#include <asm/macio.h>
-+#include <asm/dbdma.h>
-+
- #include "../soundbus.h"
- #include "i2sbus.h"
- 
-@@ -24,6 +27,12 @@
-  * string that macio puts into the relevant device */
- MODULE_ALIAS("of:Ni2sTi2sC");
- 
-+static int force;
-+module_param(force, int, 0444);
-+MODULE_PARM_DESC(force, "Force loading i2sbus even when"
-+		 " no layout-id property is present");
-+
-+
- static struct of_device_id i2sbus_match[] = {
- 	{ .name = "i2s" },
- 	{ }
-@@ -73,7 +82,7 @@
-  	if (i2sdev->intfregs) iounmap(i2sdev->intfregs);
-  	if (i2sdev->out.dbdma) iounmap(i2sdev->out.dbdma);
-  	if (i2sdev->in.dbdma) iounmap(i2sdev->in.dbdma);
--	for (i=0;i<3;i++)
-+	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++)
- 		if (i2sdev->allocated_resource[i])
- 			release_and_free_resource(i2sdev->allocated_resource[i]);
- 	free_dbdma_descriptor_ring(i2sdev, &i2sdev->out.dbdma_ring);
-@@ -101,10 +110,47 @@
- 	return IRQ_HANDLED;
- }
- 
--static int force;
--module_param(force, int, 0444);
--MODULE_PARM_DESC(force, "Force loading i2sbus even when"
--			" no layout-id property is present");
-+/*
-+ * XXX FIXME: We have to test the layout_id's here to get the proper way
-+ * of mapping in various registers, thanks to bugs in Apple device-trees.
-+ * Ideally, that should be handled by the layout fabric but doing so would
-+ * require a little bit of shuffling around
-+ */
-+static int i2sbus_get_and_fixup_rsrc(struct device_node *np, int index,
-+				     int layout, struct resource *res)
-+{
-+	struct device_node *parent;
-+	int pindex, rc = -ENXIO;
-+	u32 *reg;
-+
-+	/* Machines with layout 76 and 36 (K2 based) have a weird device
-+	 * tree what we need to special case.
-+	 * Normal machines just fetch the resource from the i2s-X node.
-+	 * Darwin further divides normal machines into old and new layouts
-+	 * with a subtely different code path but that doesn't seem necessary
-+	 * in practice, they just bloated it. In addition, even on our K2
-+	 * case the i2s-modem node, if we ever want to handle it, uses the
-+	 * normal layout
-+	 */
-+	if (layout != 76 && layout != 36)
-+		return of_address_to_resource(np, index, res);
-+
-+	parent = of_get_parent(np);
-+	pindex = (index == aoa_resource_i2smmio) ? 0 : 1;
-+	rc = of_address_to_resource(parent, pindex, res);
-+	if (rc)
-+		goto bail;
-+	reg = (u32 *)get_property(np, "reg", NULL);
-+	if (reg == NULL) {
-+		rc = -ENXIO;
-+		goto bail;
-+	}
-+	res->start += reg[index * 2];
-+	res->end = res->start + reg[index * 2 + 1] - 1;
-+ bail:
-+	of_node_put(parent);
-+	return rc;
-+}
- 
- /* FIXME: look at device node refcounting */
- static int i2sbus_add_dev(struct macio_dev *macio,
-@@ -113,7 +159,8 @@
- {
- 	struct i2sbus_dev *dev;
- 	struct device_node *child = NULL, *sound = NULL;
--	int i;
-+	struct resource *r;
-+	int i, layout = 0;
- 	static const char *rnames[] = { "i2sbus: %s (control)",
- 					"i2sbus: %s (tx)",
- 					"i2sbus: %s (rx)" };
-@@ -144,8 +191,9 @@
- 		u32 *layout_id;
- 		layout_id = (u32*) get_property(sound, "layout-id", NULL);
- 		if (layout_id) {
-+			layout = *layout_id;
- 			snprintf(dev->sound.modalias, 32,
--				 "sound-layout-%d", *layout_id);
-+				 "sound-layout-%d", layout);
- 			force = 1;
- 		}
- 	}
-@@ -175,23 +223,32 @@
- 	dev->bus_number = np->name[4] - 'a';
- 	INIT_LIST_HEAD(&dev->sound.codec_list);
- 
--	for (i=0;i<3;i++) {
-+	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++) {
- 		dev->interrupts[i] = -1;
--		snprintf(dev->rnames[i], sizeof(dev->rnames[i]), rnames[i], np->name);
-+		snprintf(dev->rnames[i], sizeof(dev->rnames[i]), rnames[i],
-+			 np->name);
- 	}
--	for (i=0;i<3;i++) {
-+	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++) {
- 		int irq = irq_of_parse_and_map(np, i);
- 		if (request_irq(irq, ints[i], 0, dev->rnames[i], dev))
- 			goto err;
- 		dev->interrupts[i] = irq;
- 	}
- 
--	for (i=0;i<3;i++) {
--		if (of_address_to_resource(np, i, &dev->resources[i]))
-+	/* Resource handling is problematic as some device-trees contain
-+	 * useless crap (ugh ugh ugh). We work around that here by calling
-+	 * specific functions for calculating the appropriate resources.
-+	 *
-+	 * This will all be moved to macio_asic.c at one point
-+	 */
-+	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++) {
-+		if (i2sbus_get_and_fixup_rsrc(np,i,layout,&dev->resources[i]))
- 			goto err;
--		/* if only we could use our resource dev->resources[i]...
-+
-+		/* If only we could use our resource dev->resources[i]...
- 		 * but request_resource doesn't know about parents and
--		 * contained resources... */
-+		 * contained resources...
-+		 */
- 		dev->allocated_resource[i] = 
- 			request_mem_region(dev->resources[i].start,
- 					   dev->resources[i].end -
-@@ -203,12 +260,12 @@
- 		}
- 	}
- 	/* should do sanity checking here about length of them */
--	dev->intfregs = ioremap(dev->resources[0].start,
--				dev->resources[0].end-dev->resources[0].start+1);
--	dev->out.dbdma = ioremap(dev->resources[1].start,
--			 	 dev->resources[1].end-dev->resources[1].start+1);
--	dev->in.dbdma = ioremap(dev->resources[2].start,
--				dev->resources[2].end-dev->resources[2].start+1);
-+	r = &dev->resources[aoa_resource_i2smmio];
-+	dev->intfregs = ioremap(r->start, r->end - r->start + 1);
-+	r = &dev->resources[aoa_resource_txdbdma];
-+	dev->out.dbdma = ioremap(r->start, r->end - r->start + 1);
-+	r = &dev->resources[aoa_resource_rxdbdma];
-+	dev->in.dbdma = ioremap(r->start, r->end - r->start + 1);
- 	if (!dev->intfregs || !dev->out.dbdma || !dev->in.dbdma)
- 		goto err;
- 
-Index: linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus.h
-===================================================================
---- linux-irq-work.orig/sound/aoa/soundbus/i2sbus/i2sbus.h	2006-06-23 13:22:14.000000000 +1000
-+++ linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus.h	2006-07-07 15:41:40.000000000 +1000
-@@ -7,20 +7,22 @@
-  */
- #ifndef __I2SBUS_H
- #define __I2SBUS_H
--#include <asm/dbdma.h>
- #include <linux/interrupt.h>
--#include <sound/pcm.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
-+
-+#include <sound/pcm.h>
-+
- #include <asm/prom.h>
-+#include <asm/pmac_feature.h>
-+#include <asm/dbdma.h>
-+
- #include "i2sbus-interface.h"
--#include "i2sbus-control.h"
- #include "../soundbus.h"
- 
- struct i2sbus_control {
--	volatile struct i2s_control_regs __iomem *controlregs;
--	struct resource rsrc;
- 	struct list_head list;
-+	struct macio_chip *macio;
- };
- 
- #define MAX_DBDMA_COMMANDS	32
-@@ -45,6 +47,12 @@
- 	volatile struct dbdma_regs __iomem *dbdma;
- };
- 
-+enum {
-+	aoa_resource_i2smmio = 0,
-+	aoa_resource_txdbdma,
-+	aoa_resource_rxdbdma,
-+};
-+
- struct i2sbus_dev {
- 	struct soundbus_dev sound;
- 	struct macio_dev *macio;
-Index: linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus-control.c
-===================================================================
---- linux-irq-work.orig/sound/aoa/soundbus/i2sbus/i2sbus-control.c	2006-06-23 13:22:14.000000000 +1000
-+++ linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus-control.c	2006-07-07 15:41:40.000000000 +1000
-@@ -6,12 +6,16 @@
-  * GPL v2, can be found in COPYING.
-  */
- 
--#include <asm/io.h>
-+#include <linux/kernel.h>
- #include <linux/delay.h>
-+
-+#include <asm/io.h>
- #include <asm/prom.h>
- #include <asm/macio.h>
- #include <asm/pmac_feature.h>
- #include <asm/pmac_pfunc.h>
-+#include <asm/keylargo.h>
-+
- #include "i2sbus.h"
- 
- int i2sbus_control_init(struct macio_dev* dev, struct i2sbus_control **c)
-@@ -22,26 +26,12 @@
- 
- 	INIT_LIST_HEAD(&(*c)->list);
- 
--	if (of_address_to_resource(dev->ofdev.node, 0, &(*c)->rsrc))
--		goto err;
--	/* we really should be using feature calls instead of mapping
--	 * these registers. It's safe for now since no one else is
--	 * touching them... */
--	(*c)->controlregs = ioremap((*c)->rsrc.start,
--				    sizeof(struct i2s_control_regs));
--	if (!(*c)->controlregs)
--		goto err;
--
-+	(*c)->macio = dev->bus->chip;
- 	return 0;
-- err:
--	kfree(*c);
--	*c = NULL;
--	return -ENODEV;
- }
- 
- void i2sbus_control_destroy(struct i2sbus_control *c)
- {
--	iounmap(c->controlregs);
- 	kfree(c);
- }
- 
-@@ -93,19 +83,19 @@
- 			  struct i2sbus_dev *i2sdev)
- {
- 	struct pmf_args args = { .count = 0 };
--	int cc;
-+	struct macio_chip *macio = c->macio;
- 
- 	if (i2sdev->enable)
- 		return pmf_call_one(i2sdev->enable, &args);
- 
-+	if (macio == NULL || macio->base == NULL)
-+		return -ENODEV;
- 	switch (i2sdev->bus_number) {
- 	case 0:
--		cc = in_le32(&c->controlregs->cell_control);
--		out_le32(&c->controlregs->cell_control, cc | CTRL_CLOCK_INTF_0_ENABLE);
-+		MACIO_BIS(KEYLARGO_FCR1, KL1_I2S0_ENABLE);
- 		break;
- 	case 1:
--		cc = in_le32(&c->controlregs->cell_control);
--		out_le32(&c->controlregs->cell_control, cc | CTRL_CLOCK_INTF_1_ENABLE);
-+		MACIO_BIS(KEYLARGO_FCR1, KL1_I2S1_ENABLE);
- 		break;
- 	default:
- 		return -ENODEV;
-@@ -118,7 +108,7 @@
- 			int enable)
- {
- 	struct pmf_args args = { .count = 0 };
--	int cc;
-+	struct macio_chip *macio = c->macio;
- 
- 	switch (enable) {
- 	case 0:
-@@ -133,18 +123,21 @@
- 		printk(KERN_ERR "i2sbus: INVALID CELL ENABLE VALUE\n");
- 		return -ENODEV;
- 	}
-+
-+	if (macio == NULL || macio->base == NULL)
-+		return -ENODEV;
- 	switch (i2sdev->bus_number) {
- 	case 0:
--		cc = in_le32(&c->controlregs->cell_control);
--		cc &= ~CTRL_CLOCK_CELL_0_ENABLE;
--		cc |= enable * CTRL_CLOCK_CELL_0_ENABLE;
--		out_le32(&c->controlregs->cell_control, cc);
-+		if (enable)
-+			MACIO_BIS(KEYLARGO_FCR1, KL1_I2S0_CELL_ENABLE);
-+		else
-+			MACIO_BIC(KEYLARGO_FCR1, KL1_I2S0_CELL_ENABLE);
- 		break;
- 	case 1:
--		cc = in_le32(&c->controlregs->cell_control);
--		cc &= ~CTRL_CLOCK_CELL_1_ENABLE;
--		cc |= enable * CTRL_CLOCK_CELL_1_ENABLE;
--		out_le32(&c->controlregs->cell_control, cc);
-+		if (enable)
-+			MACIO_BIS(KEYLARGO_FCR1, KL1_I2S1_CELL_ENABLE);
-+		else
-+			MACIO_BIC(KEYLARGO_FCR1, KL1_I2S1_CELL_ENABLE);
- 		break;
- 	default:
- 		return -ENODEV;
-@@ -157,7 +150,7 @@
- 			 int enable)
- {
- 	struct pmf_args args = { .count = 0 };
--	int cc;
-+	struct macio_chip *macio = c->macio;
- 
- 	switch (enable) {
- 	case 0:
-@@ -172,18 +165,20 @@
- 		printk(KERN_ERR "i2sbus: INVALID CLOCK ENABLE VALUE\n");
- 		return -ENODEV;
- 	}
-+	if (macio == NULL || macio->base == NULL)
-+		return -ENODEV;
- 	switch (i2sdev->bus_number) {
- 	case 0:
--		cc = in_le32(&c->controlregs->cell_control);
--		cc &= ~CTRL_CLOCK_CLOCK_0_ENABLE;
--		cc |= enable * CTRL_CLOCK_CLOCK_0_ENABLE;
--		out_le32(&c->controlregs->cell_control, cc);
-+		if (enable)
-+			MACIO_BIS(KEYLARGO_FCR1, KL1_I2S0_CLK_ENABLE_BIT);
-+		else
-+			MACIO_BIC(KEYLARGO_FCR1, KL1_I2S0_CLK_ENABLE_BIT);
- 		break;
- 	case 1:
--		cc = in_le32(&c->controlregs->cell_control);
--		cc &= ~CTRL_CLOCK_CLOCK_1_ENABLE;
--		cc |= enable * CTRL_CLOCK_CLOCK_1_ENABLE;
--		out_le32(&c->controlregs->cell_control, cc);
-+		if (enable)
-+			MACIO_BIS(KEYLARGO_FCR1, KL1_I2S1_CLK_ENABLE_BIT);
-+		else
-+			MACIO_BIC(KEYLARGO_FCR1, KL1_I2S1_CLK_ENABLE_BIT);
- 		break;
- 	default:
- 		return -ENODEV;
-Index: linux-irq-work/sound/aoa/soundbus/i2sbus/i2sbus-control.h
-===================================================================
---- linux-irq-work.orig/sound/aoa/soundbus/i2sbus/i2sbus-control.h	2006-06-23 13:22:14.000000000 +1000
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,37 +0,0 @@
--/*
-- * i2sbus driver -- bus register definitions
-- *
-- * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
-- *
-- * GPL v2, can be found in COPYING.
-- */
--#ifndef __I2SBUS_CONTROLREGS_H
--#define __I2SBUS_CONTROLREGS_H
--
--/* i2s control registers, at least what we know about them */
--
--#define __PAD(m,n) u8 __pad##m[n]
--#define _PAD(line, n) __PAD(line, n)
--#define PAD(n) _PAD(__LINE__, (n))
--struct i2s_control_regs {
--	PAD(0x38);
--	__le32 fcr0;		/* 0x38 (unknown) */
--	__le32 cell_control;	/* 0x3c (fcr1) */
--	__le32 fcr2;		/* 0x40 (unknown) */
--	__le32 fcr3;		/* 0x44 (fcr3) */
--	__le32 clock_control;	/* 0x48 (unknown) */
--	PAD(4);
--	/* total size: 0x50 bytes */
--}  __attribute__((__packed__));
--
--#define CTRL_CLOCK_CELL_0_ENABLE	(1<<10)
--#define CTRL_CLOCK_CLOCK_0_ENABLE	(1<<12)
--#define CTRL_CLOCK_SWRESET_0		(1<<11)
--#define CTRL_CLOCK_INTF_0_ENABLE	(1<<13)
--
--#define CTRL_CLOCK_CELL_1_ENABLE	(1<<17)
--#define CTRL_CLOCK_CLOCK_1_ENABLE	(1<<18)
--#define CTRL_CLOCK_SWRESET_1		(1<<19)
--#define CTRL_CLOCK_INTF_1_ENABLE	(1<<20)
--
--#endif /* __I2SBUS_CONTROLREGS_H */
-Index: linux-irq-work/sound/aoa/codecs/snd-aoa-codec-tas.c
-===================================================================
---- linux-irq-work.orig/sound/aoa/codecs/snd-aoa-codec-tas.c	2006-06-23 13:22:14.000000000 +1000
-+++ linux-irq-work/sound/aoa/codecs/snd-aoa-codec-tas.c	2006-07-07 17:49:19.000000000 +1000
-@@ -310,6 +310,7 @@
- }
- 
- MIXER_CONTROL(pcm1, "PCM1", 0);
-+MIXER_CONTROL(pcm2, "PCM2", 1);
- MIXER_CONTROL(monitor, "Monitor", 2);
- 
- static int tas_snd_capture_source_info(struct snd_kcontrol *kcontrol,
-@@ -507,6 +508,10 @@
- 	if (err)
- 		goto error;
- 
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&pcm2_control, tas));
-+	if (err)
-+		goto error;
-+
- 	err = aoa_snd_ctl_add(snd_ctl_new1(&monitor_control, tas));
- 	if (err)
- 		goto error;
+----------------------------------------------------------------------
+ Raymond - 07-07-06 09:21 
+----------------------------------------------------------------------
+Refer to ens1371-hack-dmesg , reload the driver and post the system log
+since you still need to hack the other registers.
+
+alsamixer should return the name of codec after the hack 
+
+                    if ( (( x >> 16 ) & 0x7f ) != reg ) {
+                        switch(reg){
+                        case 0: return 0x0140;
+                        case 0x7c: return 0x8384;
+                        case 0x7e: return 0x7605;
+                        default: break;
+                        }
+                       }
+
+----------------------------------------------------------------------
+ Raymond - 07-07-06 09:58 
+----------------------------------------------------------------------
+May need to add AC97_SCAP_SKIP_MODEM to prevent probing modem registers
+
+	ac97.scaps = AC97_SCAP_AUDIO | AC97_SCAP_SKIP_MODEM;
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
+06-09-06 06:51 Raymond        Note Added: 0010132                          
+06-14-06 15:01 Raymond        Note Deleted: 0010132                        
+06-14-06 15:13 Raymond        Note Deleted: 0010072                        
+06-24-06 04:14 Raymond        Note Added: 0010465                          
+06-24-06 21:51 bobcat98       Note Added: 0010489                          
+06-25-06 02:04 Raymond        Note Added: 0010497                          
+06-25-06 07:44 bobcat98       Note Added: 0010503                          
+06-25-06 08:18 Raymond        Note Added: 0010504                          
+06-25-06 18:13 bobcat98       Note Added: 0010517                          
+06-26-06 02:10 Raymond        Note Added: 0010521                          
+06-26-06 04:10 bobcat98       Note Added: 0010523                          
+06-26-06 17:36 Raymond        Note Added: 0010551                          
+06-26-06 17:40 rlrevell       Note Added: 0010553                          
+06-26-06 17:51 Raymond        Note Edited: 0010551                         
+06-26-06 18:01 Raymond        Note Added: 0010555                          
+06-26-06 18:09 rlrevell       Note Added: 0010556                          
+06-27-06 04:48 Raymond        Note Added: 0010564                          
+06-28-06 04:36 Raymond        Note Added: 0010608                          
+06-28-06 04:36 Raymond        Note Edited: 0010608                         
+06-29-06 11:14 Raymond        Note Edited: 0010608                         
+07-01-06 05:26 Raymond        Note Added: 0010758                          
+07-07-06 07:59 yafrank        Note Added: 0010896                          
+07-07-06 09:13 yafrank        Note Added: 0010898                          
+07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
+07-07-06 09:21 Raymond        Note Added: 0010899                          
+07-07-06 09:58 Raymond        Note Added: 0010900                          
+======================================================================
 
 
 
