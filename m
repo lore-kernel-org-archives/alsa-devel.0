@@ -1,18 +1,16 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: snd-aoa: g5 tas codec problems
-Date: Fri, 07 Jul 2006 18:56:25 +1000
-Message-ID: <1152262585.9862.61.camel@localhost.localdomain>
-References: <1152258426.9862.44.camel@localhost.localdomain>
-	<1152262148.15068.30.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002263]: All sound plays in an endless
+	loop
+Date: Fri, 7 Jul 2006 10:58:45 +0200
+Message-ID: <782711d2560b9e88aee7e8f7659f4d75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63B4C245
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1D8D245
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Jul 2006 10:56:32 +0200 (MEST)
-In-Reply-To: <1152262148.15068.30.camel@localhost>
+	Fri,  7 Jul 2006 10:58:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,24 +20,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linuxppc-dev list <linuxppc-dev@ozlabs.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-07-07 at 10:49 +0200, Johannes Berg wrote:
-> On Fri, 2006-07-07 at 17:47 +1000, Benjamin Herrenschmidt wrote:
-> > Also, we should try
-> > (if not already the case) to cache our clock/i2s state so that
-> > subsequent prepare() don't try to change things that are already ok. 
-> 
-> I do that, the function reads the dws and sfr registers and exits early
-> if they match.
 
-Ok. Be careful that I've removed the initial init of TAS thinking we
-always get to clock restart to do it in prepare()... might need to be
-put back.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2263> 
+======================================================================
+Reported By:                NathanF
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2263
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Grafpup Linux
+Kernel Version:             2.6.17.3
+======================================================================
+Date Submitted:             07-07-2006 08:06 CEST
+Last Modified:              07-07-2006 10:58 CEST
+======================================================================
+Summary:                    All sound plays in an endless loop
+Description: 
+dmesg reports 'snd_via82xx_modem: Unknown symbol snd_verbose_printk'
 
-Ben.
+Playing a sound file results in the first second repeating in an endless
+loop until the process is killed. Some applications will not play at all,
+flash animations in a browser play silently.
+======================================================================
+
+----------------------------------------------------------------------
+ vsu - 07-07-06 10:58 
+----------------------------------------------------------------------
+This looks like an IRQ problem.  Did sound work with older kernels (e.g.,
+2.6.16)?
+
+Please attach dmesg output - it may contain useful information to diagnose
+the problem.
+
+Also you may try to revert (patch -p1 -R <file.patch) these patches from
+your 2.6.17.3 kernel:
+
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=a7b862f663d81858531dfccc0537bc9d8a2a4121
+
+http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=75cf7456dd87335f574dcd53c4ae616a2ad71a11
+
+These patches were supposed to stop VIA IRQ setup code from running on
+non-motherboard devices, but they seem to break IRQ routing on many
+systems.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-07-06 08:06 NathanF        New Issue                                    
+07-07-06 08:06 NathanF        Distribution              => Grafpup Linux   
+07-07-06 08:06 NathanF        Kernel Version            => 2.6.17.3        
+07-07-06 10:58 vsu            Note Added: 0010902                          
+======================================================================
 
 
 
