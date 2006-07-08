@@ -1,10 +1,15 @@
-From: "Stefano D'Angelo" <zanga.mail@gmail.com>
-Subject: Line6 Toneport UX1 driver again
-Date: Sat, 8 Jul 2006 18:14:15 +0200
-Message-ID: <160c13350607080914t3db9724cnb5920e7a133d2f76@mail.gmail.com>
+From: Rene Rebe <rene@exactcode.de>
+Subject: ALSA Intel HDA MacBook
+Date: Sat, 8 Jul 2006 21:20:02 +0200
+Message-ID: <200607082120.02137.rene@exactcode.de>
+References: <200607081323.17265.rene@exactcode.de>
+	<200607081354.33539.rene@exactcode.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2120498811=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <200607081354.33539.rene@exactcode.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,155 +19,196 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Matt Porter <mporter@embeddedalley.com>, Nicolas Boichat <nicolas@boichat.ch>
 List-Id: alsa-devel@alsa-project.org
 
---===============2120498811==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_8348_32661238.1152375255962"
+Hi all,
 
-------=_Part_8348_32661238.1152375255962
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I try to figure out how to finalize the Intel HDA driver for MacBook
+(not Pro, the normal MacBook). Currently I use this patch on top of
+e.g. Linux-2.6.17.x (continue to read below for the problem desc.):
 
-Excuse me if I'm repeatedly asking the same things, but I still can't
-understand how some stuff works probably.
-I have these lines of code:
+--- ./sound/pci/hda/patch_sigmatel.c.orig	2006-07-08 12:09:09.000000000 +02=
+00
++++ ./sound/pci/hda/patch_sigmatel.c	2006-07-08 12:09:17.000000000 +0200
+@@ -41,6 +41,7 @@
+ #define STAC_REF		0
+ #define STAC_D945GTP3		1
+ #define STAC_D945GTP5		2
++#define STAC_APPLE		3 /* Apple MacBook, MacBook Pro, Mac Mini */
+ =
 
-static snd_pcm_hardware_t snd_line6_tp_ux1_playback_hw = {
-    .info             = SNDRV_PCM_INFO_INTERLEAVED |
-                        SNDRV_PCM_INFO_BLOCK_TRANSFER,
-    .formats          = SNDRV_PCM_FMTBIT_S16_LE,
-    .rates            = SNDRV_PCM_RATE_48000,
-    .rate_min         = 48000,
-    .rate_max         = 48000,
-    .channels_min     = 2,
-    .channels_max     = 2,
-    /* double buffering */
-    .buffer_bytes_max = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 * 2,
-    .period_bytes_min = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,
-    .period_bytes_max = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,
-    .periods_min      = 1,
-    .periods_max      = 2
-};
+ struct sigmatel_spec {
+ 	struct snd_kcontrol_new *mixers[4];
+@@ -52,6 +53,7 @@
+ 	unsigned int mic_switch: 1;
+ 	unsigned int alt_switch: 1;
+ 	unsigned int hp_detect: 1;
++	unsigned int gpio_mute: 1;
+ =
 
-and then also:
+ 	/* playback */
+ 	struct hda_multi_out multiout;
+@@ -289,10 +291,17 @@
+ 	0x02a19320, 0x40000100,
+ };
+ =
 
-static snd_pcm_uframes_t snd_line6_tp_ux1_pcm_pointer (
-                                               snd_pcm_substream_t*
-substream)
-{
-    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
++static unsigned int apple_pin_configs[10] =3D {
++	0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
++	0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
++	0x400000FC, 0x400000FB,
++};
++
+ static unsigned int *stac922x_brd_tbl[] =3D {
+ 	ref922x_pin_configs,
+ 	d945gtp3_pin_configs,
+ 	d945gtp5_pin_configs,
++	apple_pin_configs,
+ };
+ =
 
-    printk ("pos: %d\n", chip->playback_pos);
-    return chip->playback_pos;
-}
+ static struct hda_board_config stac922x_cfg_tbl[] =3D {
+@@ -324,6 +333,9 @@
+ 	{ .pci_subvendor =3D PCI_VENDOR_ID_INTEL,
+ 	  .pci_subdevice =3D 0x0417,
+ 	  .config =3D STAC_D945GTP5 },	/* Intel D975XBK - 5 Stack */
++	{ .pci_subvendor =3D 0x8384,
++	  .pci_subdevice =3D 0x7680,
++	  .config =3D STAC_APPLE },       /* Apple Mac Mini (early 2006) / MacBoo=
+k Pro =
 
-static int snd_line6_tp_ux1_playback_copy (snd_pcm_substream_t *substream,
-                                           int channel, snd_pcm_uframes_t
-pos,
-                                           void *src, snd_pcm_uframes_t
-count)
-{
-    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
-    snd_pcm_runtime_t *runtime = substream->runtime;
-    static struct urb* urb;
+*/
+ 	{} /* terminator */
+ };
+ =
 
-    int i = 0;
-    static int j = 0;
+@@ -841,6 +853,19 @@
+ 		}
+ 	}
+ =
 
-    urb = usb_alloc_urb (2, GFP_ATOMIC);
-    urb->dev = chip->dev;
-    urb->pipe = usb_sndisocpipe (urb->dev, 1);
-    urb->complete = snd_line6_tp_ux1_complete_playback_transfer;
-    urb->context = substream;
-    urb->transfer_buffer = kmalloc (LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT *
-2, GFP_ATOMIC);
-    urb->transfer_buffer_length = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2;
-    urb->transfer_flags = URB_ISO_ASAP;
++      if (imux->num_items =3D=3D 1) {
++              /*
++               * Set the current input for the muxes.
++               * The STAC9221 has two input muxes with identical source
++               * NID lists.  Hopefully this won't get confused.
++               */
++              for (i =3D 0; i < spec->num_muxes; i++) {
++                      snd_hda_codec_write(codec, spec->mux_nids[i], 0,
++                                          AC_VERB_SET_CONNECT_SEL,
++                                          imux->items[0].index);
++              }
++      }
++
+ 	return 0;
+ }
+ =
 
-    memcpy (urb->transfer_buffer, src, count * 2 * 2);
+@@ -946,6 +971,45 @@
+ 	return 1;
+ }
+ =
 
-    for (; i < LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT; i++) {
-        printk ("%d\n", ((s16*)urb->transfer_buffer)[i]);
-    }
-    printk ("---------\n");
++/*
++ * Early 2006 Intel Macintoshes with STAC9220X5 codecs seem to have a
++ * funky external mute control using GPIO pins.
++ */
++
++static void stac922x_gpio_mute(struct hda_codec *codec, int pin, int muted)
++{
++      unsigned int gpiostate, gpiomask, gpiodir;
++
++      gpiostate =3D snd_hda_codec_read(codec, codec->afg, 0,
++                                     AC_VERB_GET_GPIO_DATA, 0);
++
++      if (!muted)
++              gpiostate |=3D (1 << pin);
++      else
++              gpiostate &=3D ~(1 << pin);
++
++      gpiomask =3D snd_hda_codec_read(codec, codec->afg, 0,
++                                    AC_VERB_GET_GPIO_MASK, 0);
++      gpiomask |=3D (1 << pin);
++
++      gpiodir =3D snd_hda_codec_read(codec, codec->afg, 0,
++                                   AC_VERB_GET_GPIO_DIRECTION, 0);
++      gpiodir |=3D (1 << pin);
++
++      /* AppleHDA seems to do this -- WTF is this verb?? */
++      snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0);
++
++      snd_hda_codec_write(codec, codec->afg, 0,
++                          AC_VERB_SET_GPIO_MASK, gpiomask);
++      snd_hda_codec_write(codec, codec->afg, 0,
++                          AC_VERB_SET_GPIO_DIRECTION, gpiodir);
++
++      msleep(1);
++
++      snd_hda_codec_write(codec, codec->afg, 0,
++                          AC_VERB_SET_GPIO_DATA, gpiostate);
++}
++
+ static int stac92xx_init(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec =3D codec->spec;
+@@ -982,6 +1046,11 @@
+ 		stac92xx_auto_set_pinctl(codec, cfg->dig_in_pin,
+ 					 AC_PINCTL_IN_EN);
+ =
 
-    urb->interval = 1;
-    urb->number_of_packets = 2;
-    urb->iso_frame_desc[0].offset = 0;
-    urb->iso_frame_desc[0].length = urb->iso_frame_desc[1].offset =
-    urb->iso_frame_desc[1].length = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;
-    if (chip->playback_pos)
-        chip->playback_pos = 0;
-    else
-        chip->playback_pos = count;
-    j++;
-    printk (":: %d %d %d\n", j, chip->playback_pos, runtime->buffer_size);
-    snd_pcm_period_elapsed (substream);
-    usb_submit_urb (urb, GFP_KERNEL);
++      if (spec->gpio_mute) {
++              stac922x_gpio_mute(codec, 0, 0);
++              stac922x_gpio_mute(codec, 1, 0);
++      }
++
+ 	return 0;
+ }
+ =
 
-    return count;
-}
+@@ -1154,6 +1223,9 @@
+ 		return err;
+ 	}
+ =
 
-Don't care about printk()s and codying style, count in the copy callback is
-always 96, which is the # of frames of a period, so everytime the copy
-callback is called, a period is elapsed. Since the buffer is long 2 periods,
-the playback position pointer should be either 0 or 96, I think (beginning
-or half of the buffer).
-Now, instead of working as expected, the copy callback just works twice, for
-the first two periods (one buffer length). Then the pointer becomes 0 and I
-can't understand why the playback stops.
-Please help! I have some people who keep on asking me about the driver, and
-it's a pity that I can't overcome such simple problems and let them use
-their sound card!
-Thanks,
-Stefano
++	if (spec->board_config =3D=3D STAC_APPLE)
++	    spec->gpio_mute =3D 1;
++
+ 	codec->patch_ops =3D stac92xx_patch_ops;
+ =
 
-------=_Part_8348_32661238.1152375255962
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ 	return 0;
 
-Excuse me if I'm repeatedly asking the same things, but I still can't understand how some stuff works probably.<br>I have these lines of code:<br><br>static snd_pcm_hardware_t snd_line6_tp_ux1_playback_hw = {<br>&nbsp;&nbsp;&nbsp; .info&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = SNDRV_PCM_INFO_INTERLEAVED |
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SNDRV_PCM_INFO_BLOCK_TRANSFER,<br>&nbsp;&nbsp;&nbsp; .formats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = SNDRV_PCM_FMTBIT_S16_LE,<br>&nbsp;&nbsp;&nbsp; .rates&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = SNDRV_PCM_RATE_48000,<br>&nbsp;&nbsp;&nbsp; .rate_min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 48000,<br>&nbsp;&nbsp;&nbsp; .rate_max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 48000,
-<br>&nbsp;&nbsp;&nbsp; .channels_min&nbsp;&nbsp;&nbsp;&nbsp; = 2,<br>&nbsp;&nbsp;&nbsp; .channels_max&nbsp;&nbsp;&nbsp;&nbsp; = 2,<br>&nbsp;&nbsp;&nbsp; /* double buffering */<br>&nbsp;&nbsp;&nbsp; .buffer_bytes_max = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 * 2,<br>&nbsp;&nbsp;&nbsp; .period_bytes_min = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,
-<br>&nbsp;&nbsp;&nbsp; .period_bytes_max = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,<br>&nbsp;&nbsp;&nbsp; .periods_min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 1,<br>&nbsp;&nbsp;&nbsp; .periods_max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 2<br>};<br><br>and then also:<br><br>static snd_pcm_uframes_t snd_line6_tp_ux1_pcm_pointer (<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snd_pcm_substream_t* substream)<br>{<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br><br>&nbsp;&nbsp;&nbsp; printk (&quot;pos: %d\n&quot;, chip-&gt;playback_pos);
-<br>&nbsp;&nbsp;&nbsp; return chip-&gt;playback_pos;<br>}<br><br>static int snd_line6_tp_ux1_playback_copy (snd_pcm_substream_t *substream,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int channel, snd_pcm_uframes_t pos,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *src, snd_pcm_uframes_t count)
-<br>{<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;<br>&nbsp;&nbsp;&nbsp; static struct urb* urb;<br><br>&nbsp;&nbsp;&nbsp; int i = 0;<br>&nbsp;&nbsp;&nbsp; static int j = 0;<br>
-<br>&nbsp;&nbsp;&nbsp; urb = usb_alloc_urb (2, GFP_ATOMIC);<br>&nbsp;&nbsp;&nbsp; urb-&gt;dev = chip-&gt;dev;<br>&nbsp;&nbsp;&nbsp; urb-&gt;pipe = usb_sndisocpipe (urb-&gt;dev, 1);<br>&nbsp;&nbsp;&nbsp; urb-&gt;complete = snd_line6_tp_ux1_complete_playback_transfer;<br>&nbsp;&nbsp;&nbsp; urb-&gt;context = substream;
-<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer = kmalloc (LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_ATOMIC);<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer_length = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2;<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_flags = URB_ISO_ASAP;
-<br><br>&nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, src, count * 2 * 2);<br><br>&nbsp;&nbsp;&nbsp; for (; i &lt; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT; i++) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; printk (&quot;%d\n&quot;, ((s16*)urb-&gt;transfer_buffer)[i]);<br>&nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp; printk (&quot;---------\n&quot;);<br><br>&nbsp;&nbsp;&nbsp; urb-&gt;interval = 1;<br>&nbsp;&nbsp;&nbsp; urb-&gt;number_of_packets = 2;<br>&nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].offset = 0;<br>&nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].length = urb-&gt;iso_frame_desc[1].offset =
-<br>&nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[1].length = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;<br>&nbsp;&nbsp;&nbsp; if (chip-&gt;playback_pos)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos = 0;<br>&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos = count;<br>&nbsp;&nbsp;&nbsp; j++;<br>
-&nbsp;&nbsp;&nbsp; printk (&quot;:: %d %d %d\n&quot;, j, chip-&gt;playback_pos, runtime-&gt;buffer_size);<br>&nbsp;&nbsp;&nbsp; snd_pcm_period_elapsed (substream);<br>&nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_KERNEL);<br><br>&nbsp;&nbsp;&nbsp; return count;<br>}<br><br>Don't care about printk()s and codying style, count in the copy callback is always 96, which is the # of frames of a period, so everytime the copy callback is called, a period is elapsed. Since the buffer is long 2 periods, the playback position pointer should be either 0 or 96, I think (beginning or half of the buffer).
-<br>Now, instead of working as expected, the copy callback just works twice, for the first two periods (one buffer length). Then the pointer becomes 0 and I can't understand why the playback stops.<br>Please help! I have some people who keep on asking me about the driver, and it's a pity that I can't overcome such simple problems and let them use their sound card!
-<br>Thanks,<br>Stefano<br>
+The patch might work on the MacBook Pro, I have none - how-
+ever the MacBook has three speakers, a left and right one and
+one under the keyboard for the bass and mids. However this
+third speaker is only driver when the headphone right channel
+is unmuted and consequently continous to play the sound
+when the headphone is plugged in and the speakers are suppost
+to be muted. Only the left and right channel is muted in that
+case - this "below the keyboard" bass speaker still emmits
+the audio and it's volume is controlled by the right headphone
+channel (???).
 
-------=_Part_8348_32661238.1152375255962--
+Since I have no spec for the Intel HDA or Sigmatel chip
+(the SigmaTel STAC9221 A1) I feel a bit lost.
+
+Maybe someone has an idea how to route this properly?
+
+Thanks in advance,
+
+-- =
+
+Ren=E9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
+            http://exactcode.de | http://t2-project.org | http://rebe.name
+            +49 (0)30 / 255 897 45
 
 
---===============2120498811==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============2120498811==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============2120498811==--
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
