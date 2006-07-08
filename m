@@ -1,15 +1,16 @@
-From: Maya Falmagne <maya@joe-job.com>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: ALSA Intel HDA MacBook
-Date: Sat, 08 Jul 2006 16:36:40 -0400
-Message-ID: <1152391000.28129.13.camel@mindpipe>
+Date: Sat, 08 Jul 2006 16:38:40 -0400
+Message-ID: <1152391121.28129.15.camel@mindpipe>
 References: <200607081323.17265.rene@exactcode.de>
 	<200607081354.33539.rene@exactcode.de>
 	<200607082120.02137.rene@exactcode.de>
+	<1152391000.28129.13.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200607082120.02137.rene@exactcode.de>
+In-Reply-To: <1152391000.28129.13.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,22 +21,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Rene Rebe <rene@exactcode.de>
-Cc: Nicolas Boichat <nicolas@boichat.ch>, Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net
+Cc: Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net, Nicolas Boichat <nicolas@boichat.ch>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-07-08 at 21:20 +0200, Rene Rebe wrote:
-> Hi all,
+On Sat, 2006-07-08 at 16:36 -0400, Maya Falmagne wrote:
+> On Sat, 2006-07-08 at 21:20 +0200, Rene Rebe wrote:
+> > Hi all,
+> > 
+> > I try to figure out how to finalize the Intel HDA driver for MacBook
+> > (not Pro, the normal MacBook). Currently I use this patch on top of
+> > e.g. Linux-2.6.17.x (continue to read below for the problem desc.):
+> > 
 > 
-> I try to figure out how to finalize the Intel HDA driver for MacBook
-> (not Pro, the normal MacBook). Currently I use this patch on top of
-> e.g. Linux-2.6.17.x (continue to read below for the problem desc.):
-> 
+> First, can you describe what the patch does?  How was it derived
+> (reverse engineering, from Apple code, etc)?
 
-First, can you describe what the patch does?  How was it derived
-(reverse engineering, from Apple code, etc)?
+Sorry, I accidentally selected my girlfriend's account on last message.
 
 Lee
-
 
 
 
