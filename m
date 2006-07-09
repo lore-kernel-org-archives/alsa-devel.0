@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001891]: Sound freezes until I move
-	the mouse
-Date: Sun, 9 Jul 2006 12:14:39 +0200
-Message-ID: <d9c307f413d42a8f9f9f5ec25b29b7d5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0
+	missing
+Date: Sun, 9 Jul 2006 12:15:28 +0200
+Message-ID: <f426b8eee58e73f37e5d4ffc7653d432@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9CB926E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F7C726E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 12:14:39 +0200 (MEST)
+	Sun,  9 Jul 2006 12:15:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,57 +26,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1891> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
 ======================================================================
-Reported By:                moobaxx
+Reported By:                chibo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1891
+Issue ID:                   1958
 Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   crash
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.4
+Distribution:               Ubuntu (Breezy)
+Kernel Version:             2.6.12-10-386
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-04-2006 22:31 CET
-Last Modified:              07-09-2006 12:14 CEST
+Date Submitted:             03-24-2006 13:28 CET
+Last Modified:              07-09-2006 12:15 CEST
 ======================================================================
-Summary:                    Sound freezes until I move the mouse
+Summary:                    /proc/asound/card0/codec#0 missing
 Description: 
-I have a strange problem: when a sound is played (ex. beep when I get a
-message in Gaim, or in UT2004,or xmms etc.) then the sound sort of freezes
-and keeps repeating until I move the mouse. If I move it fast, sounds
-great... 
-Does anyone have any idea ? Tnx!
+The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
+has only a single line: --- no soundcards ---
+
+lsmod | grep snd
+snd_hda_intel          18196  0
+snd_hda_codec         139056  1 snd_hda_intel
+snd_pcm_oss            45984  0
+snd_mixer_oss          16640  1 snd_pcm_oss
+snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              23044  1 snd_pcm
+snd                    56904  7
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9184  1 snd
+snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
+
+lspci | grep Audio
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-05-06 22:59 
+ tiwai - 03-29-06 19:08 
 ----------------------------------------------------------------------
-What hardware?
-
-Can you try a newer kernel like 2.6.15?
-
-----------------------------------------------------------------------
- tiwai - 03-23-06 17:53 
-----------------------------------------------------------------------
-I bet it's an IRQ routing problem.  Play with ACPI boot option.
+There must be related kernel error messages.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-06 22:31 moobaxx        New Issue                                    
-03-04-06 22:31 moobaxx        Distribution              => Slackware       
-03-04-06 22:31 moobaxx        Kernel Version            => 2.4             
-03-05-06 22:59 rlrevell       Note Added: 0008359                          
-03-23-06 17:53 tiwai          Note Added: 0008899                          
-07-09-06 12:14 Adrian Bunk    Status                   new => closed       
-07-09-06 12:14 Adrian Bunk    Resolution               open => unable to
+03-24-06 13:28 chibo          New Issue                                    
+03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
+03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
+03-24-06 14:22 chibo          Issue Monitored: chibo                       
+03-29-06 19:08 tiwai          Note Added: 0009009                          
+03-29-06 22:32 palcolor       Issue Monitored: palcolor                    
+07-09-06 12:15 Adrian Bunk    Status                   new => closed       
+07-09-06 12:15 Adrian Bunk    Resolution               open => unable to
 duplicate
 ======================================================================
 
