@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Sun, 9 Jul 2006 10:58:21 +0200
-Message-ID: <0b9ac9325aa267cecf2a9c0909fca0bb@bugtrack.alsa-project.org>
+Date: Sun, 9 Jul 2006 11:05:26 +0200
+Message-ID: <4217fd4629a26ade4afa5de85877874e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2121D26C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48475D8
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 10:58:22 +0200 (MEST)
+	Sun,  9 Jul 2006 11:05:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-09-2006 10:58 CEST
+Last Modified:              07-09-2006 11:05 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,70 +71,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-09-06 10:41 
-----------------------------------------------------------------------
-Are you able to read the label print on the 48-pin ac97 codec on your
-ev1938 ?
-
-The value of some registers seem not match with those values on
-STAC9704spec.pdf 
- or http://sourceforge.net/mailarchive/message.php?msg_id=17753911
-
-The probing of extended registers (30, 2c) is due to incorrect values
-return for register (26 and 2a)
-
-
-codec write 26 = 0000
-codec write 00 = 0000
-codec write 26 = 0000
-codec write 20 = 0000
-codec read 26 : 803cffff  <---
-codec read 2a : 8026000f  <---
-codec write 2a = 014f
-codec read 30 : 802affff
-codec write 30 = 2af8
-codec write 2c = 2af8
-codec read 30 : 8030ffff
-codec write 30 = 1f40
-codec write 2c = 1f40
-codec read 30 : 8030ffff
-codec write 30 = 2b11
-codec write 2c = 2b11
-codec read 30 : 8030ffff
-codec write 30 = 3e80
-codec write 2c = 3e80
-codec read 30 : 8030ffff
-codec write 30 = 5622
-codec write 2c = 5622
-codec read 30 : 8030ffff
-codec write 30 = 7d00
-codec write 2c = 7d00
-codec read 30 : 8030ffff
-codec write 30 = ac44
-codec write 2c = ac44
-codec read 30 : 8030ffff
-codec write 30 = bb80
-codec write 2c = bb80
-codec read 30 : 8030ffff
-codec write 30 = ffff
-codec write 2c = ffff
-
-
-             if ( (( x >> 16 ) & 0x7f ) != reg ) {
-                   switch(reg){
-                   case 0: return 0x6940;
-                   case 0x28: return 0;
-                   case 0x2a: return 0;
-                   case 0x3c: return 0;
-                   case 0x7c: return 0x8384;
-                   case 0x7e: return 0x7605;
-                   default: break;
-                   }
-              }
-
-
-
-----------------------------------------------------------------------
  yafrank - 07-09-06 10:58 
 ----------------------------------------------------------------------
 This is an old laptop. I only know how to open the keyboard, but not how to
@@ -143,6 +79,13 @@ label on the 48-pin chip if I'm lucky.
 Frankly, I understand little about the alsa driver source code. Please
 just tell me what I need to do to get useful hint. Refer to 0010940, do
 you want me to put those codes into the snd_es1371_codec_read() routine?
+
+----------------------------------------------------------------------
+ Raymond - 07-09-06 11:05 
+----------------------------------------------------------------------
+Since snd_es1371_codec_read() fail most of time, it seem that it is
+impossible to return correct hacked values for the powerdown status
+register (26).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -274,6 +217,7 @@ ens1371
 07-09-06 10:39 Raymond        Note Edited: 0010940                         
 07-09-06 10:41 Raymond        Note Edited: 0010940                         
 07-09-06 10:58 yafrank        Note Added: 0010941                          
+07-09-06 11:05 Raymond        Note Added: 0010942                          
 ======================================================================
 
 
