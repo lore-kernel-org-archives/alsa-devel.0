@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem
-	drivers.
-Date: Sun, 9 Jul 2006 13:47:17 +0200
-Message-ID: <a605976cf256c93b746fec6f91c828be@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002168]: --enable-shared=no
+	--enable-static=yes fails
+Date: Sun, 9 Jul 2006 13:54:45 +0200
+Message-ID: <a01bc66a0984c877b31555efd2bff22b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC0E1277
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A369198
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 13:47:17 +0200 (MEST)
+	Sun,  9 Jul 2006 13:54:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2168> 
 ======================================================================
-Reported By:                GPLed
-Assigned To:                sashak
+Reported By:                pierrelux
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1483
+Issue ID:                   2168
 Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             10-18-2005 13:01 CEST
-Last Modified:              07-09-2006 13:47 CEST
+Date Submitted:             05-28-2006 19:30 CEST
+Last Modified:              07-09-2006 13:54 CEST
 ======================================================================
-Summary:                    PCM.C errors: Using modem drivers.
+Summary:                    --enable-shared=no --enable-static=yes fails
 Description: 
-snd-intel-8x0m driver. I have successfully loaded the driver and ran
-slmodemd --alsa but it gives me the following output:
+It seems to be impossible to compile alsa-lib 1.0.11 statically. Here's
+where it fails:
 
-error: mixer setup: attach hw:1 error: No such file or directory
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
-definition (id: modem, value: cards.pcm.modem)
-error: alsa setup: cannot open playback device 'modem:1': Invalid
-argument
-error: cannot setup device `modem:1'
+make[1]: Entering directory
+`/home/pierre-luc/fLux/alsa-lib-1.0.11/aserver'
+if i486-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-I../src/pcm    -g -O2 -MT aserver.o -MD -MP -MF ".deps/aserver.Tpo" -c -o
 
-Some other people also get the very same problem on FC4. Is there anything
-that can be done? Please help.
+then mv -f ".deps/aserver.Tpo" ".deps/aserver.Po"; else rm -f
+".deps/aserver.Tpo"; exit 1; fi
+/bin/sh ../libtool --tag=CC --mode=link i486-linux-gcc  -g -O2   -o
+aserver  aserver.o ../src/libasound.la
+i486-linux-gcc -g -O2 -o aserver aserver.o  ../src/.libs/libasound.a -lm
+-ldl -lpthread
+ ../src/.libs/libasound.a(pcm_symbols.o):(.data+0x60): undefined reference
+to `_snd_module_pcm_extplug'
+ ../src/.libs/libasound.a(pcm_symbols.o):(.data+0x64): undefined reference
+to `_snd_module_pcm_ioplug'
+collect2: ld returned 1 exit status
+make[1]: *** [aserver] Error 1
+make[1]: Leaving directory
+`/home/pierre-luc/fLux/alsa-lib-1.0.11/aserver'
+make: *** [all-recursive] Error 1 
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 11-22-05 00:26 
+ Adrian Bunk - 07-09-06 13:54 
 ----------------------------------------------------------------------
-It is likely not updated configuration on FC4. Which card/driver you are
-using and which version of alsa-lib?
+Works for me with 1.0.11 (normal glibc system).
 
-----------------------------------------------------------------------
- sashak - 01-06-06 16:39 
-----------------------------------------------------------------------
-Reporter, any news with it? Does alsa-lib upgrade help?
+Please try with a freshly unpacked 1.0.11 tarball on the glibc system.
+
+If it still fails, please attach the complete configure and make logs to
+this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 13:01 GPLed          New Issue                                    
-11-22-05 00:24 sashak         Status                   new => assigned     
-11-22-05 00:24 sashak         Assigned To               => sashak          
-11-22-05 00:26 sashak         Note Added: 0006782                          
-01-06-06 16:39 sashak         Note Added: 0007487                          
-07-09-06 13:47 Adrian Bunk    Status                   assigned => closed  
-07-09-06 13:47 Adrian Bunk    Resolution               open => unable to
-duplicate
+05-28-06 19:30 pierrelux      New Issue                                    
+07-09-06 13:54 Adrian Bunk    Note Added: 0010947                          
 ======================================================================
 
 
