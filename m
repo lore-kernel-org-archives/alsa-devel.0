@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001841]: Mixer not working / fujitsu
-	laptop V2060 with HDA intel & AD1986A
-Date: Sun, 9 Jul 2006 12:20:03 +0200
-Message-ID: <296f2a687b3ea853f7e3cc4d8ff5bc33@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002160]: ALi Corporation M5455 PCI
+	AC-Link Controller Audio Device (rev 20)
+Date: Sun, 9 Jul 2006 12:23:14 +0200
+Message-ID: <fb1e58cfb443765004f8b1bd18a4793d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9275273
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10EF726E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 12:20:03 +0200 (MEST)
+	Sun,  9 Jul 2006 12:23:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,198 +24,184 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001714 has been removed as a DUPLICATE OF the following issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
-======================================================================
-Reported By:                fchevalier
-Assigned To:                tiwai
-======================================================================
+The following issue has been UPDATED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2160> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                marciovinicius
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Issue ID:                   1841
-Category:                   PCI - hda-intel
+Issue ID:                   2160
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-13-2006 15:36 CET
-======================================================================
-Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
-intel & AD1986A
-Description: 
-Hi all,
+Status:                     new
+Distribution:               Ubuntu Dapper Beta 2
+Kernel Version:             =
 
-I am unable to use mixer settings on my laptop.
-Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
-settings are there but changing volume, muting/unmuting does not make any
-difference. Playing  mp3 file with xmms sometimes i can hear some sound,
-but not loud enough.
-I tried with the latest ALSA version available, still not luck :-(
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             05-25-2006 22:13 CEST
+Last Modified:              07-09-2006 12:23 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    ALi Corporation M5455 PCI AC-Link Controller Au=
+dio
+Device (rev 20)
+Description: =
 
-Can anyone help ?
-
-Fabien
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001478 No sound after volume adjustment during...
-has duplicate       0001531 PCM output is muted most of the time
-======================================================================
+The sound card "ALi Corporation M5455 PCI AC-Link Controller Audio Device
+(rev 20)" which cames onboard "Asus k8u-x" motherboard simply doesn=B4t
+work. It is recognized by the system but doesn't work.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- fchevalier - 03-09-06 17:01 
-----------------------------------------------------------------------
-Looks like afterwards this is a duplicated of bug id 1531...
+ rlrevell - 05-25-06 22:26 =
 
 ----------------------------------------------------------------------
- tiwai - 03-09-06 18:23 
-----------------------------------------------------------------------
-Could you check whether the attached patch works with "model=3stack" module
-option?
+"Doesn't work" is not a useful bug report.
+
+Please provide the output of "aadebug" and describe how you are testing
+it.
 
 ----------------------------------------------------------------------
- tiwai - 03-09-06 18:25 
-----------------------------------------------------------------------
-Or, try "model=2ch" at first, then "model=3stack".
+ marciovinicius - 05-25-06 22:38 =
 
 ----------------------------------------------------------------------
- tiwai - 03-09-06 18:43 
-----------------------------------------------------------------------
-Forgot to add: the patch is to the latest ALSA CVS version.  Don't try it
-with 1.0.11rc3.
+Sorry, I'm new here. What is "aadebug"? And the tests are described in the
+links I posted here. (mainly
+http://www.ubuntuforums.org/showthread.php?t=3D169987)
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 18:17 
-----------------------------------------------------------------------
-i have the same hardware (see bugid 1714) and i can confirm the patch
-works
-sound is better with "model=2ch" than "model=3stack"
-with "model=3stack" the sound is really scratchy
+ rlrevell - 05-25-06 22:56 =
 
 ----------------------------------------------------------------------
- tiwai - 03-10-06 18:25 
-----------------------------------------------------------------------
-Good to hear that something gets better.
+http://alsa.opensrc.org/aadebug
 
-Please provide the output of "lspci -nv" (only for the corresponding
-device) to choose this model for your laptop as default.
+It sounds like a Ubuntu bug.
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 20:28 
-----------------------------------------------------------------------
-root@hermes:~# lspci -s 00:1b.0
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-root@hermes:~# lspci -s 00:1b.0 -nv
-00:1b.0 0403: 8086:2668 (rev 03)
-        Subsystem: 144d:c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+ marciovinicius - 05-26-06 03:00 =
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 23:12 
+ALSA Audio Debug v0.1.0 - Qui Mai 25 21:58:04 BRT 2006
+http://alsa.opensrc.org/index.php?page=3Daadebug
+http://www.gnu.org/licenses/gpl.txt
+
+Kernel ----------------------------------------------------
+Linux ubuntu 2.6.15-23-amd64-generic #1 SMP PREEMPT Tue May 23 13:45:47
+UTC 2006 x86_64 GNU/Linux
+
+Loaded Modules --------------------------------------------
+snd_intel8x0           38440  0
+snd_ac97_codec        110268  1 snd_intel8x0
+snd_ac97_bus            4096  1 snd_ac97_codec
+snd_pcm_oss            59424  0
+snd_mixer_oss          20608  1 snd_pcm_oss
+snd_pcm               104712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              29064  1 snd_pcm
+snd                    68576  6
+snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+snd_page_alloc         13968  2 snd_intel8x0,snd_pcm
+
+Modprobe Conf ---------------------------------------------
+Warning: module config file does not exist
+This means any kernel modules will not be auto loaded
+See your linux distro docs on how to create this file
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+--- no soundcards ---
+ 33:       : timer
+cat: /proc/asound/hwdep: Arquivo ou diret=F3rio n&#227;o encontrado
+cat: /proc/asound/seq/clients: Arquivo ou diret=F3rio n&#227;o encontrado
+
+Dev Snd ---------------------------------------------------
+timer
+
+CPU -------------------------------------------------------
+model name      : AMD Athlon(tm) 64 Processor 3000+
+cpu MHz         : 1999.965
+
+RAM -------------------------------------------------------
+MemTotal:       512052 kB
+SwapTotal:      497972 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: ALi Corporation M1689 K8 Northbridge [Super K8
+Single Chip]
+0000:00:04.0 Multimedia audio controller: ALi Corporation M5455 PCI
+AC-Link Controller Audio Device (rev 20)
+0000:00:18.0 Host bridge: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] HyperTransport Technology Configuration
+0000:00:18.1 Host bridge: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] Address Map
+0000:00:18.2 Host bridge: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] DRAM Controller
+0000:00:18.3 Host bridge: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] Miscellaneous Control
+
 ----------------------------------------------------------------------
-not the right place, I know
-
-but i tried teamspeak and i could hear people but recording didn't work so
-they didn't hear me
-any ideas or information you would need to solve this problem?
-
-now i'm trying to get this hda softmodem to work :)
+ marciovinicius - 05-26-06 03:14 =
 
 ----------------------------------------------------------------------
- fchevalier - 03-12-06 20:27 
-----------------------------------------------------------------------
-Hi guys,
-
-Sorry for this late answer, but fact is that as was off to my parents
-house for a long WE, with no Internet access of course :-(
-
-Takashi, i tried your patch and it works FINE for my laptop too (Tested
-PCM playback only). Model i used was model=2ch
-By the way i had been working this WE on a patch of my own and was ready
-to submit it to you :-). I attached it anyway so that you can grab my
-vendor/device id.
-
-HOWEVER,
-Using my patch i never got microphone to work properly, and for now i
-don't have any microphone under my hands anymore to test your patch, its
-too bad :-(
-
-Some more random comments to further improbe things on a laptop
-configuration:
- - For what i've tried, Headphone volume is useless. Headphone volume is
-the same as Front DAC. (==>remove it from mixer list ??)
- - PC speaker is not connected to anything (==>remove it from mixer list
-??)
- - Is stereo downmix switch usefull on a 2ch configutation ? (It might be
-a dumb question, i'm not familiar to this stuff ;-) )
- - I'm not sure if mono input is usefull.
-
-
-By the way here the decription of the connectivity on my laptop:
- - A set of speakers, obviously connected to Front DAC.
- - A microphone input
- - A line in input
- - A headset output
- - A SPDIF output 
- ... and that' all :-)
-
-Many thanks for the good work anyway !!
-
-----------------------------------------------------------------------
- tiwai - 03-13-06 15:27 
-----------------------------------------------------------------------
-Applied the fixed patch to CVS.
-
-Let's close this bug once.  For a problem with recording, please open
-another bug.  The bug might have been fixed by my recent udpates.  Try CVS
-version at first.
+If you see the links I posted you'll see that it happens at least with
+Debian and Fedora too (not only with Ubuntu). It likely refers to the
+AMD64 version of the kernel, but I think it is an ALSA issue too.
+As a matter of fact the kernel version is 2.6.15-23-amd64-generic (as you
+can see in aadebug report). I couldn't write at the time when I made the
+report and I don't know how to change the report (I don't know if I can do
+it). Actually I'd like to change the severity of the report to major too -
+I don't have sound! :(
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-11-06 14:13 fchevalier     New Issue                                    
-03-09-06 17:01 fchevalier     Note Added: 0008392                          
-03-09-06 18:23 tiwai          Note Added: 0008393                          
-03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
-03-09-06 18:25 tiwai          Note Added: 0008394                          
-03-09-06 18:43 tiwai          Note Added: 0008395                          
-03-10-06 18:17 kratz00        Note Added: 0008406                          
-03-10-06 18:25 tiwai          Note Added: 0008407                          
-03-10-06 18:26 tiwai          Relationship added       has duplicate 0001714
-03-10-06 20:28 kratz00        Note Added: 0008410                          
-03-10-06 23:12 kratz00        Note Added: 0008412                          
-03-12-06 20:27 fchevalier     Note Added: 0008434                          
-03-12-06 20:28 fchevalier     File Added: patch_analog_ad1986a_laptop.diff      
-             
-03-13-06 15:27 tiwai          Status                   assigned => resolved
-03-13-06 15:27 tiwai          Resolution               open => fixed       
-03-13-06 15:27 tiwai          Note Added: 0008445                          
-03-13-06 15:36 tiwai          Relationship added       related to 0001531  
-03-13-06 15:37 tiwai          Relationship replaced    has duplicate 0001531
-03-13-06 17:35 rlrevell       Relationship added       duplicate of 0001478
-03-26-06 21:25 dlm1065        Issue Monitored: dlm1065                     
-07-09-06 12:20 Adrian Bunk    Relationship deleted     has duplicate 0001714
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+05-25-06 22:13 marciovinicius New Issue                                    =
+
+05-25-06 22:13 marciovinicius Distribution              =3D> Ubuntu Dapper =
+Beta 2
+05-25-06 22:26 rlrevell       Note Added: 0009965                          =
+
+05-25-06 22:38 marciovinicius Note Added: 0009966                          =
+
+05-25-06 22:56 rlrevell       Note Added: 0009968                          =
+
+05-26-06 03:00 marciovinicius Note Added: 0009971                          =
+
+05-26-06 03:14 marciovinicius Note Added: 0009972                          =
+
+07-09-06 12:23 Adrian Bunk    Category                 1_OTHERS =3D> PCI -
+intel8x0
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
