@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001820]: Noise scramble when playing
-	any sound
-Date: Sun, 9 Jul 2006 11:43:22 +0200
-Message-ID: <48520beecca0bdedc46f60930048401e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001829]: No Sound
+Date: Sun, 9 Jul 2006 11:46:28 +0200
+Message-ID: <d6652ca9cea3f5a6b1d2b88712fc2106@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3096B257
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85749257
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 11:43:23 +0200 (MEST)
+	Sun,  9 Jul 2006 11:46:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,52 +25,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1820> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1829> 
 ======================================================================
-Reported By:                eIf
+Reported By:                sumeet
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1820
+Issue ID:                   1829
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Linux
-Kernel Version:             Linux 2.6.14-1.1656_FC4 #1 Thu Jan 5 22:13:22 EST
-2006
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-04-2006 22:58 CET
-Last Modified:              07-09-2006 11:43 CEST
+Date Submitted:             02-08-2006 06:11 CET
+Last Modified:              07-09-2006 11:46 CEST
 ======================================================================
-Summary:                    Noise scramble when playing any sound
+Summary:                    No Sound
 Description: 
-Each time I play a sound, even using "system-config-soundcard", I hear an
-annoying noise that interfers with the expected playing sound. As a
-particular aspect, if I try to low down the sound from the top-right
-Volume Control icon, I won't be able to hear any sound until the next
-restart of the PC.
-
+I tried to configure each and every option i could. N=But was not possible
+to start the sound in my toshiba m45 s265 laptop. It has an inbuilt analog
+ad1981b sound card. Also i saw on many forums lots of people have issue
+with this thing. I tried alsaconf and after that i can hearjerky sound.
+Also i saw that the time displayed on amarok was 32100....minutes....Its
+gone craxy.. i even updated alsa from the packman rpm to the latest
+version. Still had a lot of problem
 ======================================================================
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-09-06 11:43 
-----------------------------------------------------------------------
-This might be fixed by a fix in ALSA 1.0.11.
-
-Can you still reproduce it with ALSA 1.0.11?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-04-06 22:58 eIf            New Issue                                    
-02-04-06 22:58 eIf            Distribution              => Linux           
-02-04-06 22:58 eIf            Kernel Version            => Linux
-2.6.14-1.1656_FC4 #1 Thu Jan 5 22:13:22 EST 2006
-02-04-06 23:20 eIf            Issue Monitored: eIf                         
-07-09-06 11:43 Adrian Bunk    Note Added: 0010944                          
-07-09-06 11:43 Adrian Bunk    Category                 1_OTHERS => PCI -
+02-08-06 06:11 sumeet         New Issue                                    
+07-09-06 11:46 Adrian Bunk    Category                 1_OTHERS => PCI -
 hda-intel
 ======================================================================
 
