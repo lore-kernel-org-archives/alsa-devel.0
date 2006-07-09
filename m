@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Sun, 9 Jul 2006 12:19:59 +0200
-Message-ID: <41df087c37048d81f698359cd8335784@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001841]: Mixer not working / fujitsu
+	laptop V2060 with HDA intel & AD1986A
+Date: Sun, 9 Jul 2006 12:20:03 +0200
+Message-ID: <296f2a687b3ea853f7e3cc4d8ff5bc33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAB6C26E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9275273
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 12:19:59 +0200 (MEST)
+	Sun,  9 Jul 2006 12:20:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,100 +24,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0001841.
+The issue 0001714 has been removed as a DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                fchevalier
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1714
+Issue ID:                   1841
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               LFS
-Kernel Version:             2.6.15
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              07-09-2006 12:19 CEST
+Date Submitted:             02-11-2006 14:13 CET
+Last Modified:              03-13-2006 15:36 CET
 ======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
+Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
+intel & AD1986A
 Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
+Hi all,
 
+I am unable to use mixer settings on my laptop.
+Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
+settings are there but changing volume, muting/unmuting does not make any
+difference. Playing  mp3 file with xmms sometimes i can hear some sound,
+but not loud enough.
+I tried with the latest ALSA version available, still not luck :-(
+
+Can anyone help ?
+
+Fabien
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001478 No sound after volume adjustment during...
+has duplicate       0001531 PCM output is muted most of the time
+======================================================================
+
+----------------------------------------------------------------------
+ fchevalier - 03-09-06 17:01 
+----------------------------------------------------------------------
+Looks like afterwards this is a duplicated of bug id 1531...
+
+----------------------------------------------------------------------
+ tiwai - 03-09-06 18:23 
+----------------------------------------------------------------------
+Could you check whether the attached patch works with "model=3stack" module
+option?
+
+----------------------------------------------------------------------
+ tiwai - 03-09-06 18:25 
+----------------------------------------------------------------------
+Or, try "model=2ch" at first, then "model=3stack".
+
+----------------------------------------------------------------------
+ tiwai - 03-09-06 18:43 
+----------------------------------------------------------------------
+Forgot to add: the patch is to the latest ALSA CVS version.  Don't try it
+with 1.0.11rc3.
+
+----------------------------------------------------------------------
+ kratz00 - 03-10-06 18:17 
+----------------------------------------------------------------------
+i have the same hardware (see bugid 1714) and i can confirm the patch
+works
+sound is better with "model=2ch" than "model=3stack"
+with "model=3stack" the sound is really scratchy
+
+----------------------------------------------------------------------
+ tiwai - 03-10-06 18:25 
+----------------------------------------------------------------------
+Good to hear that something gets better.
+
+Please provide the output of "lspci -nv" (only for the corresponding
+device) to choose this model for your laptop as default.
+
+----------------------------------------------------------------------
+ kratz00 - 03-10-06 20:28 
+----------------------------------------------------------------------
+root@hermes:~# lspci -s 00:1b.0
 00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
-
-======================================================================
-
-----------------------------------------------------------------------
- kratz00 - 01-30-06 13:40 
-----------------------------------------------------------------------
-tried alsa-driver-1.0.11rc3 and still no luck :/
-
-----------------------------------------------------------------------
- tiwai - 03-10-06 18:26 
-----------------------------------------------------------------------
-The patch is in #1841.
-
-----------------------------------------------------------------------
- kratz00 - 03-15-06 21:49 
-----------------------------------------------------------------------
-sorry that i have to reopen this bug again
-
-if I use your attached patch from #1841 line out works but after you
-checked it in and changed something in current cvs it dosen't work anymore
-:(
-
-----------------------------------------------------------------------
- tiwai - 03-23-06 17:45 
-----------------------------------------------------------------------
-Could you try 1.0.11rc4?
-
-----------------------------------------------------------------------
- kratz00 - 03-25-06 15:31 
-----------------------------------------------------------------------
-i did, still the same :(
-
-i will attach asound.state
-
-----------------------------------------------------------------------
- tiwai - 03-26-06 01:39 
-----------------------------------------------------------------------
-Try "model=laptop" module optoin.  It should work.
-
-Show the output of "lspci -nv" for class 0403 device.
-
-----------------------------------------------------------------------
- kratz00 - 03-26-06 12:11 
-----------------------------------------------------------------------
-tried model=laptop but still the same
-
+root@hermes:~# lspci -s 00:1b.0 -nv
 00:1b.0 0403: 8086:2668 (rev 03)
         Subsystem: 144d:c01e
         Flags: bus master, fast devsel, latency 0, IRQ 11
@@ -129,55 +125,90 @@ Enable-
         Capabilities: [130] Unknown (5)
 
 ----------------------------------------------------------------------
- kratz00 - 04-15-06 14:43 
+ kratz00 - 03-10-06 23:12 
 ----------------------------------------------------------------------
-still existent for rc5
+not the right place, I know
+
+but i tried teamspeak and i could hear people but recording didn't work so
+they didn't hear me
+any ideas or information you would need to solve this problem?
+
+now i'm trying to get this hda softmodem to work :)
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 14:48 
+ fchevalier - 03-12-06 20:27 
 ----------------------------------------------------------------------
-How about model=laptop-eapd ?
+Hi guys,
+
+Sorry for this late answer, but fact is that as was off to my parents
+house for a long WE, with no Internet access of course :-(
+
+Takashi, i tried your patch and it works FINE for my laptop too (Tested
+PCM playback only). Model i used was model=2ch
+By the way i had been working this WE on a patch of my own and was ready
+to submit it to you :-). I attached it anyway so that you can grab my
+vendor/device id.
+
+HOWEVER,
+Using my patch i never got microphone to work properly, and for now i
+don't have any microphone under my hands anymore to test your patch, its
+too bad :-(
+
+Some more random comments to further improbe things on a laptop
+configuration:
+ - For what i've tried, Headphone volume is useless. Headphone volume is
+the same as Front DAC. (==>remove it from mixer list ??)
+ - PC speaker is not connected to anything (==>remove it from mixer list
+??)
+ - Is stereo downmix switch usefull on a 2ch configutation ? (It might be
+a dumb question, i'm not familiar to this stuff ;-) )
+ - I'm not sure if mono input is usefull.
+
+
+By the way here the decription of the connectivity on my laptop:
+ - A set of speakers, obviously connected to Front DAC.
+ - A microphone input
+ - A line in input
+ - A headset output
+ - A SPDIF output 
+ ... and that' all :-)
+
+Many thanks for the good work anyway !!
 
 ----------------------------------------------------------------------
- kratz00 - 04-20-06 23:14 
+ tiwai - 03-13-06 15:27 
 ----------------------------------------------------------------------
-upgraded to 1.0.11
+Applied the fixed patch to CVS.
 
-still the same problem with model=laptop
-then i tried model=laptop-eapd and i got sound from the speakers and from
-the headphone but not i don't have a mixer setting for line in anymore
+Let's close this bug once.  For a problem with recording, please open
+another bug.  The bug might have been fixed by my recent udpates.  Try CVS
+version at first.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
-03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
-03-10-06 18:26 tiwai          Status                   new => resolved     
-03-10-06 18:26 tiwai          Resolution               open => duplicate   
-03-10-06 18:26 tiwai          Assigned To               => tiwai           
-03-10-06 18:26 tiwai          Note Added: 0008408                          
-03-15-06 21:49 kratz00        Status                   resolved => feedback
-03-15-06 21:49 kratz00        Resolution               duplicate => reopened
-03-15-06 21:49 kratz00        Note Added: 0008574                          
-03-23-06 17:45 tiwai          Note Added: 0008896                          
-03-25-06 15:31 kratz00        Note Added: 0008948                          
-03-25-06 15:31 kratz00        File Added: asound.state                     
-03-26-06 01:39 tiwai          Note Added: 0008959                          
-03-26-06 12:11 kratz00        Note Added: 0008969                          
-04-15-06 14:43 kratz00        Note Added: 0009296                          
-04-20-06 14:48 tiwai          Note Added: 0009378                          
-04-20-06 23:14 kratz00        Note Added: 0009401                          
-06-08-06 02:49 rbenech        Issue Monitored: rbenech                     
-07-09-06 12:19 Adrian Bunk    Status                   feedback => assigned
-07-09-06 12:19 Adrian Bunk    Category                 1_OTHERS => PCI -
-hda-intel
-07-09-06 12:19 Adrian Bunk    Relationship deleted     duplicate of 0001841
+02-11-06 14:13 fchevalier     New Issue                                    
+03-09-06 17:01 fchevalier     Note Added: 0008392                          
+03-09-06 18:23 tiwai          Note Added: 0008393                          
+03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
+03-09-06 18:25 tiwai          Note Added: 0008394                          
+03-09-06 18:43 tiwai          Note Added: 0008395                          
+03-10-06 18:17 kratz00        Note Added: 0008406                          
+03-10-06 18:25 tiwai          Note Added: 0008407                          
+03-10-06 18:26 tiwai          Relationship added       has duplicate 0001714
+03-10-06 20:28 kratz00        Note Added: 0008410                          
+03-10-06 23:12 kratz00        Note Added: 0008412                          
+03-12-06 20:27 fchevalier     Note Added: 0008434                          
+03-12-06 20:28 fchevalier     File Added: patch_analog_ad1986a_laptop.diff      
+             
+03-13-06 15:27 tiwai          Status                   assigned => resolved
+03-13-06 15:27 tiwai          Resolution               open => fixed       
+03-13-06 15:27 tiwai          Note Added: 0008445                          
+03-13-06 15:36 tiwai          Relationship added       related to 0001531  
+03-13-06 15:37 tiwai          Relationship replaced    has duplicate 0001531
+03-13-06 17:35 rlrevell       Relationship added       duplicate of 0001478
+03-26-06 21:25 dlm1065        Issue Monitored: dlm1065                     
+07-09-06 12:20 Adrian Bunk    Relationship deleted     has duplicate 0001714
 ======================================================================
 
 
