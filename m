@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Is alsa-project.org  down?
-Date: Sun, 9 Jul 2006 19:36:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0607091923130.9074@tm8103.perex-int.cz>
-References: <44B12381.8080505@superbug.co.uk>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Re: build failures in asihpi (was: ALSA 1.0.12rc1
+	release)
+Date: Mon, 10 Jul 2006 10:21:35 +1200
+Message-ID: <200607101021.35954.linux@blennerhassett.gen.nz>
+References: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>
+	<200607022100.58844.linux@blennerhassett.gen.nz>
+	<20060702123404.GI5158@neu.nirvana>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44B12381.8080505@superbug.co.uk>
+In-Reply-To: <20060702123404.GI5158@neu.nirvana>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,26 +21,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, ALSA development <alsa-devel@alsa-project.org>, ATrpms development list <atrpms-devel@ATrpms.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 9 Jul 2006, James Courtier-Dutton wrote:
+On Mon, 03 Jul 2006 00:34, Axel Thimm wrote:
+> On Sun, Jul 02, 2006 at 09:00:58PM +1200, Eliot Blennerhassett wrote:
+> > On Sun, 02 Jul 2006 11:17, Axel Thimm wrote:
+> > > I'm having troubles compiling this on x86_64 distributions (from
+> > > 2.6.10 to 2.6.17 based kernels). The build fails on asihpi...
+> >
+> > Currently asihpi does not support x86_64.     Sorry.
+> >
+> > The Kconfig for asihpi does say:
+> > depends on SND && X86 && !X86_64
+> > (hmm, perhaps the ordinary make system doesn't know about this)
+>
+> You mean asihpi uses some next generation Kconfig?
 
-> http://www.alsa-project.org/  appears to be down.
-> 
-> Any idea how long this will be for?
+No, just ordinary Kconfig.
 
-Yes, the server is down. We had big storm here on Friday with short 
-power outages and appearently something went wrong. I'll try to fix it 
-tomorrow.
+> So how do I turn asihpi off?
 
-						Jaroslav
+AFAIK the "depends on SND && X86 && !X86_64"  should result in asihpi not 
+being built on x86_64.   Have you figured out why this doesn't work?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+CS5535 driver in alsa-kernel has the same depends - does it work (i.e. driver 
+is not built)?
+
+I'm not sure what the problem with asihpi is, but the short term answer is to 
+fix the Kconfig or other part of build system to force it not to be built for 
+X86_64.
+
+-- Eliot
+
+
+
+
 
 
 -------------------------------------------------------------------------
