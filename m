@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0
-	missing
-Date: Sun, 9 Jul 2006 12:15:28 +0200
-Message-ID: <f426b8eee58e73f37e5d4ffc7653d432@bugtrack.alsa-project.org>
+Subject: =?iso-8859-1?q?=5BALSA_-_driver_0002015=5D=3A_The_so?=
+ =?iso-8859-1?q?und_isn=B4t_coordinate_with_the_video=2C_i_can=B4t_use_my_?=
+ =?iso-8859-1?q?5=2E1_speakers?=
+Date: Sun, 9 Jul 2006 12:16:43 +0200
+Message-ID: <15fc654e8f9548d97a803e2c058775be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F7C726E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 490BE26E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 12:15:28 +0200 (MEST)
+	Sun,  9 Jul 2006 12:16:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,74 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 
 The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
-======================================================================
-Reported By:                chibo
-Assigned To:                
-======================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2015> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Newcastle
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Issue ID:                   1958
+Issue ID:                   2015
 Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Ubuntu (Breezy)
-Kernel Version:             2.6.12-10-386
+Distribution:               Ubuntu
+Kernel Version:             2.6.15
 Resolution:                 unable to duplicate
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-24-2006 13:28 CET
-Last Modified:              07-09-2006 12:15 CEST
-======================================================================
-Summary:                    /proc/asound/card0/codec#0 missing
-Description: 
-The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
-has only a single line: --- no soundcards ---
+Fixed in Version:           =
 
-lsmod | grep snd
-snd_hda_intel          18196  0
-snd_hda_codec         139056  1 snd_hda_intel
-snd_pcm_oss            45984  0
-snd_mixer_oss          16640  1 snd_pcm_oss
-snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              23044  1 snd_pcm
-snd                    56904  7
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9184  1 snd
-snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             04-10-2006 20:34 CEST
+Last Modified:              07-09-2006 12:16 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    The sound isn=B4t coordinate with the video, i =
+can=B4t
+use my 5.1 speakers
+Description: =
 
-lspci | grep Audio
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
+Hi, when i play a DVD or Game the video show before the sound..., and in my
+AC'97 Atiixp i cant enable the 5.1 speakers, or i havn=B4t any
+documentation
 
-======================================================================
+Any solution?
+Any documentation?
+
+Regards
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:08 
+ tiwai - 04-20-06 15:30 =
+
 ----------------------------------------------------------------------
-There must be related kernel error messages.
+More specific bug report is required.  What you tested with which
+configuration, and the exact symptom that happened.
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-06 13:28 chibo          New Issue                                    
-03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
-03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
-03-24-06 14:22 chibo          Issue Monitored: chibo                       
-03-29-06 19:08 tiwai          Note Added: 0009009                          
-03-29-06 22:32 palcolor       Issue Monitored: palcolor                    
-07-09-06 12:15 Adrian Bunk    Status                   new => closed       
-07-09-06 12:15 Adrian Bunk    Resolution               open => unable to
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+04-10-06 20:34 Newcastle      New Issue                                    =
+
+04-10-06 20:34 Newcastle      Distribution              =3D> Ubuntu        =
+  =
+
+04-10-06 20:34 Newcastle      Kernel Version            =3D> 2.6.15        =
+  =
+
+04-20-06 15:30 tiwai          Note Added: 0009385                          =
+
+07-09-06 12:16 Adrian Bunk    Status                   new =3D> closed     =
+  =
+
+07-09-06 12:16 Adrian Bunk    Resolution               open =3D> unable to
 duplicate
-======================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
