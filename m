@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Sun, 9 Jul 2006 10:22:29 +0200
-Message-ID: <d42bd8c38aa3225ea423f8948cc8e9f9@bugtrack.alsa-project.org>
+Date: Sun, 9 Jul 2006 10:58:21 +0200
+Message-ID: <0b9ac9325aa267cecf2a9c0909fca0bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C05E245
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2121D26C
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 10:22:29 +0200 (MEST)
+	Sun,  9 Jul 2006 10:58:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-09-2006 10:22 CEST
+Last Modified:              07-09-2006 10:58 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -71,27 +71,14 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-09-06 06:34 
-----------------------------------------------------------------------
-Please note that the goal of revert patch is to ensure
-snd_es1371_codec_read()  and snd_es1371_codec_write() work.
-
-codec read 7c : xxxx8384
-codec read 7e : xxxx7605
-
-However that aim of the hack is just to force the driver to build up
-volume controls which allow you to change sound volume only
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-09-06 10:22 
+ Raymond - 07-09-06 10:41 
 ----------------------------------------------------------------------
 Are you able to read the label print on the 48-pin ac97 codec on your
 ev1938 ?
 
 The value of some registers seem not match with those values on
 STAC9704spec.pdf 
+ or http://sourceforge.net/mailarchive/message.php?msg_id=17753911
 
 The probing of extended registers (30, 2c) is due to incorrect values
 return for register (26 and 2a)
@@ -135,7 +122,7 @@ codec write 2c = ffff
 
              if ( (( x >> 16 ) & 0x7f ) != reg ) {
                    switch(reg){
-                   case 0: return 0x0140;
+                   case 0: return 0x6940;
                    case 0x28: return 0;
                    case 0x2a: return 0;
                    case 0x3c: return 0;
@@ -144,6 +131,18 @@ codec write 2c = ffff
                    default: break;
                    }
               }
+
+
+
+----------------------------------------------------------------------
+ yafrank - 07-09-06 10:58 
+----------------------------------------------------------------------
+This is an old laptop. I only know how to open the keyboard, but not how to
+dismantle the rest part to get the motherboard out. I'll try to read the
+label on the 48-pin chip if I'm lucky. 
+Frankly, I understand little about the alsa driver source code. Please
+just tell me what I need to do to get useful hint. Refer to 0010940, do
+you want me to put those codes into the snd_es1371_codec_read() routine?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -272,6 +271,9 @@ ens1371
 07-09-06 06:34 Raymond        Note Edited: 0010938                         
 07-09-06 06:37 Raymond        Note Edited: 0010937                         
 07-09-06 10:22 Raymond        Note Added: 0010940                          
+07-09-06 10:39 Raymond        Note Edited: 0010940                         
+07-09-06 10:41 Raymond        Note Edited: 0010940                         
+07-09-06 10:58 yafrank        Note Added: 0010941                          
 ======================================================================
 
 
