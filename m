@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Sun, 9 Jul 2006 12:19:33 +0200
-Message-ID: <10da7f54f790a56ec12568f49d2b2ca9@bugtrack.alsa-project.org>
+Date: Sun, 9 Jul 2006 12:19:59 +0200
+Message-ID: <41df087c37048d81f698359cd8335784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1ADA026E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAB6C26E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 12:19:34 +0200 (MEST)
+	Sun,  9 Jul 2006 12:19:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been UNset as DUPLICATE OF issue 0001841.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
@@ -73,10 +73,65 @@ snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
 snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-======================================================================
+ kratz00 - 01-30-06 13:40 
+----------------------------------------------------------------------
+tried alsa-driver-1.0.11rc3 and still no luck :/
+
+----------------------------------------------------------------------
+ tiwai - 03-10-06 18:26 
+----------------------------------------------------------------------
+The patch is in #1841.
+
+----------------------------------------------------------------------
+ kratz00 - 03-15-06 21:49 
+----------------------------------------------------------------------
+sorry that i have to reopen this bug again
+
+if I use your attached patch from #1841 line out works but after you
+checked it in and changed something in current cvs it dosen't work anymore
+:(
+
+----------------------------------------------------------------------
+ tiwai - 03-23-06 17:45 
+----------------------------------------------------------------------
+Could you try 1.0.11rc4?
+
+----------------------------------------------------------------------
+ kratz00 - 03-25-06 15:31 
+----------------------------------------------------------------------
+i did, still the same :(
+
+i will attach asound.state
+
+----------------------------------------------------------------------
+ tiwai - 03-26-06 01:39 
+----------------------------------------------------------------------
+Try "model=laptop" module optoin.  It should work.
+
+Show the output of "lspci -nv" for class 0403 device.
+
+----------------------------------------------------------------------
+ kratz00 - 03-26-06 12:11 
+----------------------------------------------------------------------
+tried model=laptop but still the same
+
+00:1b.0 0403: 8086:2668 (rev 03)
+        Subsystem: 144d:c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+----------------------------------------------------------------------
+ kratz00 - 04-15-06 14:43 
+----------------------------------------------------------------------
+still existent for rc5
 
 ----------------------------------------------------------------------
  tiwai - 04-20-06 14:48 
@@ -122,6 +177,7 @@ Date Modified  Username       Field                    Change
 07-09-06 12:19 Adrian Bunk    Status                   feedback => assigned
 07-09-06 12:19 Adrian Bunk    Category                 1_OTHERS => PCI -
 hda-intel
+07-09-06 12:19 Adrian Bunk    Relationship deleted     duplicate of 0001841
 ======================================================================
 
 
