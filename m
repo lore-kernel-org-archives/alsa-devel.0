@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001231]: Sharing soundcard via dmix does
-	not work when mixing 32bit and 64bit applications.
-Date: Sun, 9 Jul 2006 13:44:17 +0200
-Message-ID: <a8121cf7574c5297088ee6eee84c3046@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem
+	drivers.
+Date: Sun, 9 Jul 2006 13:47:17 +0200
+Message-ID: <a605976cf256c93b746fec6f91c828be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F1B6277
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC0E1277
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Jul 2006 13:44:17 +0200 (MEST)
+	Sun,  9 Jul 2006 13:47:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,66 +24,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1231> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
 ======================================================================
-Reported By:                Tobias Diedrich
-Assigned To:                
+Reported By:                GPLed
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1231
+Issue ID:                   1483
 Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     closed
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-04-2005 16:30 CEST
-Last Modified:              07-09-2006 13:44 CEST
+Date Submitted:             10-18-2005 13:01 CEST
+Last Modified:              07-09-2006 13:47 CEST
 ======================================================================
-Summary:                    Sharing soundcard via dmix does not work when mixing
-32bit and 64bit applications.
+Summary:                    PCM.C errors: Using modem drivers.
 Description: 
-I have configured a friends AMD64-System to use dmix by default.
-I also made the same configuration for the 32bit-chroot and made sure
-that
-/tmp is a bind-mount, so the dmix-Socket is shared between 32bit and 64bit
-applications.
-However while sharing between one type of applications (either all 32bit
-or all 64bit) works fine, mixed sharing doesn't work.  A strace shows that
-the socket is opened by apparently communication fails.
-I suspect that the structures passed by dmix have problems with differntly
-sized fields between 32bit and 64bit.
+snd-intel-8x0m driver. I have successfully loaded the driver and ran
+slmodemd --alsa but it gives me the following output:
+
+error: mixer setup: attach hw:1 error: No such file or directory
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
+definition (id: modem, value: cards.pcm.modem)
+error: alsa setup: cannot open playback device 'modem:1': Invalid
+argument
+error: cannot setup device `modem:1'
+
+Some other people also get the very same problem on FC4. Is there anything
+that can be done? Please help.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 12:00 
+ sashak - 11-22-05 00:26 
 ----------------------------------------------------------------------
-Yes, it's incompatible between 32 and 64bits.  The struct shared in shmem
-doesn't match.
-snd_pcm_direct_share_t in pcm_direct.h defines the shared struct and the
-size of snd_pcm_[su]frames_t is long, so it depends on architecture.
-Also, we should be careful about alignment, too...
+It is likely not updated configuration on FC4. Which card/driver you are
+using and which version of alsa-lib?
 
 ----------------------------------------------------------------------
- ikonst - 08-18-05 22:29 
+ sashak - 01-06-06 16:39 
 ----------------------------------------------------------------------
-Same as bug 0001336 which I've filled and is indeed resolved in CVS (I've
-just checked). Please mark as resolved.
+Reporter, any news with it? Does alsa-lib upgrade help?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-05 16:30 Tobias DiedrichNew Issue                                    
-07-08-05 12:00 tiwai          Note Added: 0005412                          
-08-18-05 22:29 ikonst         Note Added: 0005858                          
-11-18-05 03:54 mr511          Issue Monitored: mr511                       
-11-18-05 03:55 mr511          Issue End Monitor: mr511                     
-07-09-06 13:44 Adrian Bunk    Status                   new => resolved     
-07-09-06 13:44 Adrian Bunk    Resolution               open => fixed       
+10-18-05 13:01 GPLed          New Issue                                    
+11-22-05 00:24 sashak         Status                   new => assigned     
+11-22-05 00:24 sashak         Assigned To               => sashak          
+11-22-05 00:26 sashak         Note Added: 0006782                          
+01-06-06 16:39 sashak         Note Added: 0007487                          
+07-09-06 13:47 Adrian Bunk    Status                   assigned => closed  
+07-09-06 13:47 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
