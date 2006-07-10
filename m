@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002201]: Duplicate of Issue 0001622 -
-	Sound freezes after less a second of play
-Date: Mon, 10 Jul 2006 18:10:19 +0200
-Message-ID: <b3bcbc32df897a7072cbe6151f1272c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
+	Ectiva silent playout + new line-in capture failure
+Date: Mon, 10 Jul 2006 18:14:19 +0200
+Message-ID: <2b2fce36d10f5b581921371b165a8743@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2AAD167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F014919D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 18:10:19 +0200 (MEST)
+	Mon, 10 Jul 2006 18:14:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,65 +24,132 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2201> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
 ======================================================================
-Reported By:                ggeorgak
+Reported By:                wood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2201
-Category:                   PCI - via82xx
+Issue ID:                   1389
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               OpenSuSE
-Kernel Version:             2.6.16.13-4-smp
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Modified Redhat 9.0
+Kernel Version:             2.4.24 self compiled
 ======================================================================
-Date Submitted:             06-12-2006 02:55 CEST
-Last Modified:              07-10-2006 18:10 CEST
+Date Submitted:             09-01-2005 20:32 CEST
+Last Modified:              07-10-2006 18:14 CEST
 ======================================================================
-Summary:                    Duplicate of Issue 0001622 - Sound freezes after
-less a second of play
+Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
++ new line-in capture failure
 Description: 
-It's a duplicate of issue 0001622, though that issue is marked as resolved
-and the patch is upstreamed to newer versions of alsa (1.0.9 mentioned
-there). Again the motheroboard is Asus A8V-MX with onboard Realtek AC97
-sound chip. Glady I will provide any information asked.
+Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
+Chip Label: Creative EV1938
+
+Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
+          w/ multiple soundcards. ALSA compiled from source
+          works with VIA motherboard Audio
+          and some other Creative PCI soundcards. Need a stable ALSA
+driver
+          for this soundcard.
+
+Problem:
+The snd-ens1371 module loads correctly as 3rd sound device (First audio
+device is VIA 8235 from motherboard, 2nd is PCSP).
+
+Alsamixer -c 2 shows a reasonable set of
+controls. Playout either with OSS emulation (play) or ALSA player
+(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
+releases.  
+On ALSA 1.0.9 codebase,the Master Volume does not always show in
+alsamixer. 
+In 1.0.10rc1 it does always show.
+ALSO:
+  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
+and with ALSA arecord.
+On the latest development release ALSA 1.0.10rc1, the Line-In
+capture no longer works. So a new problem has been introduced from .9 to
+.10.
+
+
+Other info:
+Native OSS driver es1371 works fine with this card. But I want to switch
+to ALSA.
+
+Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
+works fine with both tested ALSA releases using same platform
+configuration.
+
+Audigy 2 Value also works fine using snd-emu10k1 with same configuration
+(I included this card info to rule out basic config problems).
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ggeorgak - 06-12-06 04:46 
+ wood - 06-13-06 19:46 
 ----------------------------------------------------------------------
-You mean it's still problematic from 1.0.9 because I have the release
-candidate 3 version? Any rpm repositories that you know of?
+Raymond,
+ This sound card has one stereo audio output,
+one mic input and one line input (green,pink,blue).
+It also has a MIDI connector. It does NOT have an
+extra black output. So I guess it is a 2 channel codec.
+
+Yes I really do have 3 sound drivers( 2 cards plus PC Speaker). This is
+an
+embedded device that is based on heavy audio processing.
+
+: cat /proc/asound/cards
+ 0 [V8235          ]: VIA8233 - VIA 8235
+                      VIA 8235 with VT1616i at 0xd400, irq 12
+ 1 [pcsp           ]: PC-Speaker - pcsp
+                      Internal PC-Speaker at port 0x61, irq 0
+ 2 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                      Ensoniq AudioPCI ENS1371 at 0xe000, irq 10
+
+
+
+
+I cannot work further on this for about a week. So I will try your printk
+suggestions later on.  Thanks.
 
 ----------------------------------------------------------------------
- rlrevell - 06-12-06 04:51 
+ Raymond - 07-10-06 18:14 
 ----------------------------------------------------------------------
-Yes, the bug was fixed between 1.0.11-rc3 and 1.0.11.
+Refer to the tests performed by yafrank in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023
 
-Sorry, I don't know any RPM repositories.  You may have to wait for your
-distro to release an ALSA 1.0.11 package.
+It is because the snd_es1731_codec_read() fails most of the time for
+ev1938 and this cause both snd_ac97_try_bit() and
+check_volume_resolution() fail
+
+Most likely someone has to find out how to make snd_es1371_codec_read()
+and snd_es1371_codec_write() work so that ev1938 can read/write ac97
+codec.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-06 02:55 ggeorgak       New Issue                                    
-06-12-06 02:55 ggeorgak       Distribution              => OpenSuSE        
-06-12-06 02:55 ggeorgak       Kernel Version            => 2.6.16.13-4-smp 
-06-12-06 02:56 ggeorgak       Issue Monitored: ggeorgak                    
-06-12-06 03:07 rlrevell       Note Added: 0010156                          
-06-12-06 04:15 ggeorgak       Note Added: 0010159                          
-06-12-06 04:34 rlrevell       Note Added: 0010160                          
-06-12-06 04:46 ggeorgak       Note Added: 0010162                          
-06-12-06 04:51 rlrevell       Note Added: 0010163                          
-07-10-06 18:10 Adrian Bunk    Status                   new => resolved     
-07-10-06 18:10 Adrian Bunk    Resolution               open => fixed       
+09-01-05 20:32 wood           New Issue                                    
+09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
+09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
+06-13-06 05:06 Raymond        Note Added: 0010186                          
+06-13-06 06:43 wood           Note Added: 0010188                          
+06-13-06 07:05 Raymond        Note Added: 0010189                          
+06-13-06 07:28 Raymond        Note Edited: 0010189                         
+06-13-06 16:26 wood           Note Added: 0010194                          
+06-13-06 16:51 Raymond        Note Added: 0010196                          
+06-13-06 16:59 wood           Note Added: 0010197                          
+06-13-06 19:05 Raymond        Note Added: 0010201                          
+06-13-06 19:46 wood           Note Added: 0010203                          
+06-14-06 14:42 Raymond        Note Added: 0010212                          
+07-06-06 04:04 Raymond        Note Added: 0010851                          
+07-09-06 17:17 Raymond        Note Deleted: 0010851                        
+07-10-06 10:52 Raymond        Note Deleted: 0010212                        
+07-10-06 18:14 Raymond        Note Added: 0010962                          
 ======================================================================
 
 
