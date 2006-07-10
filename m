@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Mon, 10 Jul 2006 13:36:40 +0200
-Message-ID: <8a200a77ac2bbdae3dcd1eddbe280b52@bugtrack.alsa-project.org>
+From: Rene Rebe <rene@exactcode.de>
+Subject: Re: ALSA Intel HDA MacBook
+Date: Mon, 10 Jul 2006 13:44:13 +0200
+Message-ID: <200607101344.13837.rene@exactcode.de>
+References: <200607081323.17265.rene@exactcode.de>
+	<200607082120.02137.rene@exactcode.de>
+	<s5hk66lda2l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D757D219
-	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 13:36:40 +0200 (MEST)
+In-Reply-To: <s5hk66lda2l.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,255 +20,205 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Nicolas Boichat <nicolas@boichat.ch>, Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
-======================================================================
-Reported By:                yafrank
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-10-2006 13:36 CEST
-======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
-Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+On Monday 10 July 2006 12:32, Takashi Iwai wrote:
+> At Sat, 8 Jul 2006 21:20:02 +0200,
+> Rene Rebe wrote:
+> > =
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+> > +static unsigned int apple_pin_configs[10] =3D {
+> > +	0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
+> > +	0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
+> > +	0x400000FC, 0x400000FB,
+> > +};
+> > +
+> =
 
+> Interesting.  How did yo figure this out?
 
-======================================================================
+No idea, as I wrote the best patch "I found" on the internet. I think
+it was Nicolas who came up with it.
 
-----------------------------------------------------------------------
- yafrank - 07-10-06 13:01 
-----------------------------------------------------------------------
-Yes, it can capture stereo sound both in 1.0.7 and 1.0.8rc1 driver. But I
-have to add  a '-D hw:0,0' parameter to the arecord command, or the
-following error will occur:
-[frank@twinhead tmp]$ LC_ALL=C arecord -f cd -d 10 test.wav
-ALSA lib pcm_dmix.c:769:(snd_pcm_dmix_open) The dmix plugin supports only
-playback stream
-arecord: main:544: audio open error: Invalid argument
+> > The patch might work on the MacBook Pro, I have none - how-
+> > ever the MacBook has three speakers, a left and right one and
+> > one under the keyboard for the bass and mids. However this
+> > third speaker is only driver when the headphone right channel
+> > is unmuted and consequently continous to play the sound
+> > when the headphone is plugged in and the speakers are suppost
+> > to be muted. Only the left and right channel is muted in that
+> > case - this "below the keyboard" bass speaker still emmits
+> > the audio and it's volume is controlled by the right headphone
+> > channel (???).
+> =
 
-Even Mic value is set to zero, choose Mix can still capture outside noise,
-like key stroke, especially when Mic Boos is on.
+> Is the headphone itself controlled via "Headphone" volume mixer?
+> Or is it unaffected?
 
-----------------------------------------------------------------------
- Raymond - 07-10-06 13:36 
-----------------------------------------------------------------------
-dmix/dsnoop not yet fully supported in alsa-1.0.8rc1
+Yes, the headphone is controlled with Headphone volume control
+just that it's right channel also controlls this center speaker below
+the keyboard.
 
-Use dmix/dsnoop for default PCM - ENS1371.conf - Jan 31 2005 
+> Anyway, show /proc/asound/card0/codec#*, and the kernel message
+> regarding pin detections (after compiling with debug option).
 
-front is device 0
-rear is device 1
+Codec: SigmaTel STAC9221 A1
+Address: 0
+Vendor Id: 0x83847680
+Subsystem Id: 0x100
+Revision Id: 0x103401
+Default PCM: rates 0x7e0, bits 0x0e, types 0x1
+Default Amp-In caps: ofs=3D0x00, nsteps=3D0x0e, stepsize=3D0x05, mute=3D1
+Default Amp-Out caps: ofs=3D0x7f, nsteps=3D0x7f, stepsize=3D0x02, mute=3D1
+Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x17
+Node 0x07 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x18
+Node 0x08 [Audio Output] wcaps 0x40211: Stereo Digital
+  PCM: rates 0x7e0, bits 0x0e, types 0x5
+Node 0x09 [Audio Input] wcaps 0x140311: Stereo Digital
+  PCM: rates 0x160, bits 0x0e, types 0x5
+  Connection: 1
+     0x11
+Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173f: IN OUT HP
+  Pin Default 0x0121e230: [Jack] HP Out at Ext Rear
+    Conn =3D 1/8, Color =3D White
+  Pin-ctls: 0x80: HP
+  Connection: 1
+     0x02
+Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081737: IN OUT
+  Pin Default 0x90a70120: [Fixed] Mic at Int N/A
+    Conn =3D Analog, Color =3D Unknown
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x04
+Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081737: IN OUT
+  Pin Default 0x9017e110: [Fixed] Speaker at Int N/A
+    Conn =3D Analog, Color =3D White
+  Pin-ctls: 0x60: IN OUT
+  Connection: 1
+     0x03
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173f: IN OUT HP
+  Pin Default 0x400000fe: [N/A] Line Out at Ext N/A
+    Conn =3D Unknown, Color =3D Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
+Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0824: IN
+  Pin Default 0x400000fd: [N/A] Line Out at Ext N/A
+    Conn =3D Unknown, Color =3D Unknown
+  Pin-ctls: 0x20: IN
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0837: IN OUT
+  Pin Default 0x0181e021: [Jack] Line In at Ext Rear
+    Conn =3D 1/8, Color =3D White
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x05
+Node 0x10 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x1145e040: [Jack] SPDIF Out at Int Rear
+    Conn =3D Optical, Color =3D White
+  Pin-ctls: 0x40: OUT
+  Connection: 3
+     0x08* 0x17 0x19
+Node 0x11 [Pin Complex] wcaps 0x430681: Stereo Digital
+  Pincap 0x0810024: IN
+  Pin Default 0x400000fa: [N/A] Line Out at Ext N/A
+    Conn =3D Unknown, Color =3D Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=3D0x00, nsteps=3D0x04, stepsize=3D0x27, mute=3D0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 7
+     0x0e* 0x15 0x0f 0x0b 0x0c 0x0d 0x0a
+Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=3D0x00, nsteps=3D0x04, stepsize=3D0x27, mute=3D0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 7
+     0x0e 0x15* 0x0f 0x0b 0x0c 0x0d 0x0a
+Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=3D0x03, nsteps=3D0x03, stepsize=3D0x17, mute=3D0
+  Amp-Out vals:  [0x00]
+Node 0x15 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x400000fc: [N/A] Line Out at Ext N/A
+    Conn =3D Unknown, Color =3D Unknown
+  Pin-ctls: 0x00:
+Node 0x16 [Volume Knob Widget] wcaps 0x600000: Mono
+Node 0x17 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x80 0x80]
+  Connection: 1
+     0x12
+Node 0x18 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x80 0x80]
+  Connection: 1
+     0x13
+Node 0x19 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
+Node 0x1a [Audio Output] wcaps 0x30201: Stereo Digital
+Node 0x1b [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x400000fb: [N/A] Line Out at Ext N/A
+    Conn =3D Unknown, Color =3D Unknown
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x1a
 
-http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;filenode=32abab8fa073e0c43f3f97552b0d8b9427fbbc78;file=src/conf/cards/ENS1371.conf;style=gitweb
+I think there is no printout of the snd-intel-hda driver about pin
+config, should there?
 
-Are you sure that you can select different capture source ?
+> > Since I have no spec for the Intel HDA or Sigmatel chip
+> > (the SigmaTel STAC9221 A1) I feel a bit lost.
+> =
 
-select mix as capture source should record what you are playing instead of
-mic.
+> Heh, nor do I ;)
 
-You can use the hack to remove those LEF/CENTER, Bass/Treble controls
-which are not exist in a Sigmatec Stereo codec
+Ouhm.
 
-Any other problem related to playback/capture/mixer ?
+-- =
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
-06-09-06 06:51 Raymond        Note Added: 0010132                          
-06-14-06 15:01 Raymond        Note Deleted: 0010132                        
-06-14-06 15:13 Raymond        Note Deleted: 0010072                        
-06-24-06 04:14 Raymond        Note Added: 0010465                          
-06-24-06 21:51 bobcat98       Note Added: 0010489                          
-06-25-06 02:04 Raymond        Note Added: 0010497                          
-06-25-06 07:44 bobcat98       Note Added: 0010503                          
-06-25-06 08:18 Raymond        Note Added: 0010504                          
-06-25-06 18:13 bobcat98       Note Added: 0010517                          
-06-26-06 02:10 Raymond        Note Added: 0010521                          
-06-26-06 04:10 bobcat98       Note Added: 0010523                          
-06-26-06 17:36 Raymond        Note Added: 0010551                          
-06-26-06 17:40 rlrevell       Note Added: 0010553                          
-06-26-06 17:51 Raymond        Note Edited: 0010551                         
-06-26-06 18:01 Raymond        Note Added: 0010555                          
-06-26-06 18:09 rlrevell       Note Added: 0010556                          
-06-27-06 04:48 Raymond        Note Added: 0010564                          
-06-28-06 04:36 Raymond        Note Added: 0010608                          
-06-28-06 04:36 Raymond        Note Edited: 0010608                         
-06-29-06 11:14 Raymond        Note Edited: 0010608                         
-07-01-06 05:26 Raymond        Note Added: 0010758                          
-07-07-06 07:59 yafrank        Note Added: 0010896                          
-07-07-06 09:13 yafrank        Note Added: 0010898                          
-07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
-07-07-06 09:21 Raymond        Note Added: 0010899                          
-07-07-06 09:58 Raymond        Note Added: 0010900                          
-07-07-06 10:12 Raymond        Note Added: 0010901                          
-07-07-06 10:20 Raymond        Note Edited: 0010901                         
-07-07-06 11:59 yafrank        File Added: reload-ens1371-log                    
-07-07-06 12:08 yafrank        Note Added: 0010904                          
-07-07-06 12:24 Raymond        Note Added: 0010905                          
-07-07-06 14:16 yafrank        Note Added: 0010910                          
-07-07-06 14:27 yafrank        File Added: ens1370.c.rej                    
-07-07-06 14:37 Raymond        Note Added: 0010911                          
-07-07-06 18:35 yafrank        Note Added: 0010918                          
-07-07-06 18:38 yafrank        File Added: ens1370-routine-replace-error         
-          
-07-08-06 04:55 Raymond        Note Added: 0010927                          
-07-08-06 04:57 Raymond        Note Added: 0010928                          
-07-08-06 04:58 Raymond        Note Deleted: 0010927                        
-07-08-06 12:45 yafrank        File Added: old-routine-dmesg                    
-07-08-06 12:49 yafrank        Note Added: 0010930                          
-07-08-06 15:48 Raymond        Note Added: 0010931                          
-07-08-06 16:17 Raymond        Note Edited: 0010931                         
-07-08-06 16:21 Raymond        Note Edited: 0010931                         
-07-08-06 16:24 Raymond        Note Edited: 0010931                         
-07-09-06 02:19 Raymond        Note Added: 0010932                          
-07-09-06 03:16 yafrank        File Added: hack-83847605-dmesg                   
-
-07-09-06 03:59 yafrank        Note Added: 0010933                          
-07-09-06 04:39 yafrank        Note Added: 0010934                          
-07-09-06 04:51 yafrank        Note Added: 0010935                          
-07-09-06 05:56 yafrank        File Added: old-routine-1.0.7-dmesg               
-    
-07-09-06 06:10 yafrank        Note Added: 0010936                          
-07-09-06 06:16 Raymond        Note Added: 0010937                          
-07-09-06 06:17 yafrank        File Added: old-routine-1.0.7-skip-modem-dmesg    
-               
-07-09-06 06:31 Raymond        Note Added: 0010938                          
-07-09-06 06:34 Raymond        Note Edited: 0010938                         
-07-09-06 06:37 Raymond        Note Edited: 0010937                         
-07-09-06 10:22 Raymond        Note Added: 0010940                          
-07-09-06 10:39 Raymond        Note Edited: 0010940                         
-07-09-06 10:41 Raymond        Note Edited: 0010940                         
-07-09-06 10:58 yafrank        Note Added: 0010941                          
-07-09-06 11:05 Raymond        Note Added: 0010942                          
-07-09-06 11:25 Raymond        Note Added: 0010943                          
-07-09-06 11:28 Raymond        Note Edited: 0010943                         
-07-09-06 11:59 Raymond        Note Added: 0010945                          
-07-09-06 12:05 Raymond        Note Edited: 0010945                         
-07-09-06 13:13 yafrank        Note Added: 0010946                          
-07-09-06 13:15 yafrank        File Added: p88te-lspci-v                    
-07-09-06 14:55 yafrank        Note Added: 0010948                          
-07-09-06 14:57 yafrank        File Added: norm-1.0.8rc1-2.6.12.6-dmesg          
-         
-07-09-06 15:48 yafrank        Note Added: 0010949                          
-07-09-06 15:51 Raymond        Note Added: 0010950                          
-07-09-06 15:57 yafrank        File Added: abnorm-1.0.8rc2-2.6.12.6-dmesg        
-           
-07-09-06 16:52 Raymond        Note Added: 0010951                          
-07-10-06 01:38 Raymond        Note Edited: 0010938                         
-07-10-06 02:23 Raymond        Note Deleted: 0010951                        
-07-10-06 04:50 Raymond        Note Added: 0010955                          
-07-10-06 04:53 Raymond        Note Edited: 0010955                         
-07-10-06 10:49 yafrank        Note Added: 0010957                          
-07-10-06 10:51 yafrank        File Added: asound.state-1.0.8rc1                 
-  
-07-10-06 11:08 Raymond        Note Added: 0010958                          
-07-10-06 11:16 Raymond        Note Edited: 0010958                         
-07-10-06 13:01 yafrank        Note Added: 0010959                          
-07-10-06 13:36 Raymond        Note Added: 0010960                          
-======================================================================
-
-
+Ren=E9 Rebe - ExactCODE - Berlin (Europe / Germany)
+            http://exactcode.de | http://t2-project.org | http://rene.rebe.=
+name
+            +49 (0)30 / 255 897 45
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
