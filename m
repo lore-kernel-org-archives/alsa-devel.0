@@ -1,16 +1,20 @@
-From: Nicolas Boichat <nicolas@boichat.ch>
-Subject: Re: ALSA Intel HDA MacBook
-Date: Mon, 10 Jul 2006 14:00:40 +0200
-Message-ID: <44B24168.10405@boichat.ch>
-References: <200607081323.17265.rene@exactcode.de>
-	<200607082120.02137.rene@exactcode.de>
-	<s5hk66lda2l.wl%tiwai@suse.de>
-	<200607101344.13837.rene@exactcode.de>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: OSS driver removal, 2nd round (v2)
+Date: Mon, 10 Jul 2006 15:57:02 +0200
+Message-ID: <20060710135702.GZ13938__22513.8975227766$1152539900$gmane$org@stusta.de>
+References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
+	<1152458300.28129.45.camel@mindpipe>
+	<20060710132810.551a4a8d.atlka@pg.gda.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200607101344.13837.rene@exactcode.de>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5580B194
+	for <alsa-devel@alsa-project.org>;
+	Mon, 10 Jul 2006 15:57:03 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060710132810.551a4a8d.atlka@pg.gda.pl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,65 +24,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Rene Rebe <rene@exactcode.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net
+To: Adam =?utf-8?Q?Tla=C5=82ka?= <atlka@pg.gda.pl>
+Cc: alsa-devel@alsa-project.org, ak@suse.de, linux-kernel@vger.kernel.org, Lee Revell <rlrevell@joe-job.com>, alan@lxorguk.ukuu.org.uk, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Rene Rebe wrote:
-> Hi,
->
-> On Monday 10 July 2006 12:32, Takashi Iwai wrote:
->   
->> At Sat, 8 Jul 2006 21:20:02 +0200,
->> Rene Rebe wrote:
->>     
->>> +static unsigned int apple_pin_configs[10] = {
->>> +	0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
->>> +	0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
->>> +	0x400000FC, 0x400000FB,
->>> +};
->>> +
->>>       
->> Interesting.  How did yo figure this out?
->>     
->
-> No idea, as I wrote the best patch "I found" on the internet. I think
-> it was Nicolas who came up with it.
->   
-I also don't know .-) I picked these from an old patch provided by gimli
-(mactel-linux), the only infos I have are:
-
-+/* These come from the windows inf files from bootcamp*/
-+#if 0
-+/*This has mic/line in*/
-+static unsigned int minimac_pin_configs[10] = {
-+       0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
-+       0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
-+       0x400000FC, 0x400000FB,
-+};
-+#else
-+/*This has only line in*/
-+static unsigned int minimac_pin_configs[10] = {
-+       0x0121E220, 0x400000FF, 0x9017E110, 0x400000FE,
-+       0x400000FD, 0x0181E040, 0x1145E030, 0x11C5E040,
-+       0x400000FC, 0x400000FB,
-+};
-+#endif
-+
-
-I picked up the first one so the mic works.
-
-I have no which inf he got these infos.
-
-Best regards,
-
-Nicolas
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+T24gTW9uLCBKdWwgMTAsIDIwMDYgYXQgMDE6Mjg6MTBQTSArMDIwMCwgQWRhbSBUbGHFgmthIHdy
+b3RlOgo+IE9uIFN1biwgMDkgSnVsIDIwMDYgMTE6MTg6MTkgLTA0MDAKPiBMZWUgUmV2ZWxsIDxy
+bHJldmVsbEBqb2Utam9iLmNvbT4gd3JvdGU6Cj4gCj4gPiBPbiBTYXQsIDIwMDYtMDctMDggYXQg
+MDE6NTAgKzAyMDAsIEFuZGkgS2xlZW4gd3JvdGU6Cj4gPiA+IEFkcmlhbiBCdW5rIDxidW5rQHN0
+dXN0YS5kZT4gd3JpdGVzOgo+ID4gPiA+IAo+ID4gPiA+IFE6IFdoYXQgYWJvdXQgdGhlIE9TUyBl
+bXVsYXRpb24gaW4gQUxTQT8KPiA+ID4gPiBBOiBUaGUgT1NTIGVtdWxhdGlvbiBpbiBBTFNBIGlz
+IG5vdCBhZmZlY3RlZCBieSBteSBwYXRjaGVzCj4gPiA+ID4gICAgKGFuZCBpdCdzIG5vdCBpbiBh
+bnkgd2F5IHNjaGVkdWxlZCBmb3IgcmVtb3ZhbCkuCj4gPiA+IAo+ID4gPiBJIGFnYWluIG9iamVj
+dCB0byByZW1vdmluZyB0aGUgb2xkIElDSCBzb3VuZCBkcml2ZXIuCj4gPiA+IEl0IGRvZXMgdGhl
+IHNhbWUgYXMgdGhlIEFsc2EgZHJpdmVyIGluIG11Y2ggbGVzcyBjb2RlIGFuZCBpcyBpZGVhbAo+
+ID4gPiBmb3IgZ2VuZXJpYyBtb25vbGl0aGljIGtlcm5lbHMKPiA+IAo+ID4gSXQgZG9lc24ndCBk
+byB0aGUgc2FtZSB0aGluZyAtIHNvZnR3YXJlIG1peGluZyBpcyBpbXBvc3NpYmxlIHdpdGggT1NT
+Lgo+IAo+IE9ubHkgR1BMJ2VkIHZlcnNpb24gaGFzIHRoaXMgbGltaXRhdGlvbiAtIGl0cyBqdXN0
+IG5vdCBpbXBsZW1lbnRlZCBiZWNhdXNlIGFsbCB0aGlzCj4gR1BMJ2VkIE9TUyBpcyBhYmFuZG9u
+ZWQuCj4gVGhlIGNvbW1lcmNpYWwgdmVyc2lvbiBmcm9tIHd3dy5vcGVuc291bmQuY29tIGRvZXMg
+aW5wdXQvb3V0cHV0IG1peGluZwo+IGluIHNvZnR3YXJlIGluIGtlcm5lbCBzcGFjZS4KPi4uLgoK
+V2hlbiB3ZSBhcmUgdGFsa2luZyBhYm91dCBPU1MsIHdlIGFyZSB0YWxraW5nIGFib3V0IHdoYXQg
+aXMgdW5kZXIgCnNvdW5kL29zcy8gaW4gdGhlIGtlcm5lbCBzb3VyY2VzLgoKVGhlIGNvbW1lcmNp
+YWwgT1NTIG1pZ2h0IGJlIG11Y2ggYmV0dGVyLCBidXQgaXQncyBub3QgcmVsZXZhbnQgc2luY2Ug
+Cml0J3Mgbm90IEdQTCdlZCBhbmQgdGhlcmVmb3JlIG5vdCBhIGNhbmRpZGF0ZSBmb3IgaW5jbHVz
+aW9uIGludG8gdGhlIAprZXJuZWwuCgpBcyB5b3Ugc2FpZCB5b3Vyc2VsZiwgdGhlICJHUEwnZWQg
+T1NTIGlzIGFiYW5kb25lZCIuCkFuZCBBTFNBIGlzIGl0J3Mgc3VjY2Vzc29yIGluIHRoZSBrZXJu
+ZWwuCgpjdQpBZHJpYW4KCi0tIAoKICAgICAgICJJcyB0aGVyZSBub3QgcHJvbWlzZSBvZiByYWlu
+PyIgTGluZyBUYW4gYXNrZWQgc3VkZGVubHkgb3V0CiAgICAgICAgb2YgdGhlIGRhcmtuZXNzLiBU
+aGVyZSBoYWQgYmVlbiBuZWVkIG9mIHJhaW4gZm9yIG1hbnkgZGF5cy4KICAgICAgICJPbmx5IGEg
+cHJvbWlzZSwiIExhbyBFciBzYWlkLgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBQZWFybCBTLiBCdWNrIC0gRHJhZ29uIFNlZWQKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpVc2lu
+ZyBUb21jYXQgYnV0IG5lZWQgdG8gZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNl
+cywgc2VjdXJpdHk/CkdldCBzdHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0
+ZWNobm9sb2d5IHRvIG1ha2UgeW91ciBqb2IgZWFzaWVyCkRvd25sb2FkIElCTSBXZWJTcGhlcmUg
+QXBwbGljYXRpb24gU2VydmVyIHYuMS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6
+Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcm
+ZGF0PTEyMTY0MgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
