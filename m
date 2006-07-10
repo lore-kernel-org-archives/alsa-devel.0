@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround
-	mixer doesn't work with a CM9761chip
-Date: Mon, 10 Jul 2006 18:01:43 +0200
-Message-ID: <51eb7e79289038aac11cae66b4a5f02a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001886]: Problems on reboot
+Date: Mon, 10 Jul 2006 18:06:03 +0200
+Message-ID: <1a16bcc75e61134bb4e86e99c1b936f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F332F244
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5242A244
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 18:01:43 +0200 (MEST)
+	Mon, 10 Jul 2006 18:06:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,95 +23,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
 ======================================================================
-Reported By:                midnight
+Reported By:                eric
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1378
+Issue ID:                   1886
 Category:                   PCI - via82xx
-Reproducibility:            always
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
-Resolution:                 fixed
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              07-10-2006 18:01 CEST
+Date Submitted:             03-01-2006 17:59 CET
+Last Modified:              07-10-2006 18:06 CEST
 ======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
+Summary:                    Problems on reboot
 Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+Hi, i have little problem with my alsa configuration,
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+i use kernel 2.6.15 and alsa release 10RC3
 
-I use the via82xx module
+on my configuration i use 
 
-thanks
+1 X snd-via82xx and 2 X snd-ice1724
+
+sometime when i reboot i card as inverted and i have this udev message:
+
+ VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-20-05 14:55 
+ tiwai - 03-02-06 12:49 
 ----------------------------------------------------------------------
-... or try 1.0.10rc2.
+You have two definitions of snd-ice1724 options, and the latter one
+overrides.
+Combine the options for ice1724 into a single line.
 
 ----------------------------------------------------------------------
- midnight - 11-03-05 12:26 
+ eric - 03-02-06 18:49 
 ----------------------------------------------------------------------
-all seams to work fine with the last CVS.
-
-
-Thank you very much for your help and support.
+Problem solved !!! thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
-09-08-05 18:58 tiwai          Note Added: 0006076                          
-09-08-05 19:00 midnight       Note Added: 0006077                          
-09-08-05 19:12 tiwai          Note Added: 0006080                          
-09-08-05 19:58 midnight       Note Added: 0006081                          
-09-08-05 20:42 tiwai          Note Added: 0006082                          
-09-08-05 20:44 tiwai          Note Added: 0006083                          
-09-08-05 23:20 midnight       Note Added: 0006084                          
-09-09-05 12:47 tiwai          Note Added: 0006096                          
-09-09-05 14:16 midnight       File Added: ac97#0-0                         
-09-09-05 14:16 midnight       File Added: asound.state                     
-09-09-05 14:21 midnight       Note Added: 0006097                          
-09-09-05 14:29 tiwai          Note Added: 0006098                          
-09-09-05 14:54 midnight       Note Added: 0006099                          
-09-09-05 16:32 tiwai          Note Added: 0006100                          
-09-09-05 19:50 midnight       Note Added: 0006104                          
-09-09-05 20:14 tiwai          Note Added: 0006105                          
-09-09-05 23:41 midnight       Note Added: 0006106                          
-09-13-05 18:27 tiwai          Note Added: 0006155                          
-09-18-05 12:05 midnight       Note Added: 0006270                          
-09-18-05 15:59 midnight       Note Edited: 0006270                         
-09-24-05 14:34 midnight       Note Added: 0006370                          
-10-05-05 19:04 tiwai          Note Added: 0006439                          
-10-10-05 23:26 midnight       Note Added: 0006450                          
-10-11-05 16:27 tiwai          Note Added: 0006451                          
-10-20-05 14:55 tiwai          Note Added: 0006506                          
-11-03-05 12:24 midnight       Issue Monitored: midnight                    
-11-03-05 12:26 midnight       Note Added: 0006602                          
-11-13-05 12:02 midnight       Issue End Monitor: midnight                    
-07-10-06 18:01 Adrian Bunk    Status                   new => resolved     
-07-10-06 18:01 Adrian Bunk    Resolution               open => fixed       
+03-01-06 17:59 eric           New Issue                                    
+03-01-06 18:01 eric           Note Added: 0008285                          
+03-02-06 12:49 tiwai          Note Added: 0008299                          
+03-02-06 15:50 eric           Note Added: 0008312                          
+03-02-06 18:49 eric           Note Deleted: 0008312                        
+03-02-06 18:49 eric           Note Added: 0008326                          
+03-04-06 10:03 eric           Issue Monitored: eric                        
+03-04-06 10:04 eric           Issue End Monitor: eric                      
+07-10-06 18:06 Adrian Bunk    Status                   new => closed       
+07-10-06 18:06 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
