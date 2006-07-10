@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
 	Ectiva silent playout + new line-in capture failure
-Date: Mon, 10 Jul 2006 18:14:19 +0200
-Message-ID: <2b2fce36d10f5b581921371b165a8743@bugtrack.alsa-project.org>
+Date: Mon, 10 Jul 2006 19:36:36 +0200
+Message-ID: <94520c48c049b9ea5807036016a7244d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F014919D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17DCF19D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 18:14:19 +0200 (MEST)
+	Mon, 10 Jul 2006 19:36:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Modified Redhat 9.0
 Kernel Version:             2.4.24 self compiled
 ======================================================================
 Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              07-10-2006 18:14 CEST
+Last Modified:              07-10-2006 19:36 CEST
 ======================================================================
 Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
 + new line-in capture failure
@@ -90,33 +90,6 @@ Audigy 2 Value also works fine using snd-emu10k1 with same configuration
 ======================================================================
 
 ----------------------------------------------------------------------
- wood - 06-13-06 19:46 
-----------------------------------------------------------------------
-Raymond,
- This sound card has one stereo audio output,
-one mic input and one line input (green,pink,blue).
-It also has a MIDI connector. It does NOT have an
-extra black output. So I guess it is a 2 channel codec.
-
-Yes I really do have 3 sound drivers( 2 cards plus PC Speaker). This is
-an
-embedded device that is based on heavy audio processing.
-
-: cat /proc/asound/cards
- 0 [V8235          ]: VIA8233 - VIA 8235
-                      VIA 8235 with VT1616i at 0xd400, irq 12
- 1 [pcsp           ]: PC-Speaker - pcsp
-                      Internal PC-Speaker at port 0x61, irq 0
- 2 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-                      Ensoniq AudioPCI ENS1371 at 0xe000, irq 10
-
-
-
-
-I cannot work further on this for about a week. So I will try your printk
-suggestions later on.  Thanks.
-
-----------------------------------------------------------------------
  Raymond - 07-10-06 18:14 
 ----------------------------------------------------------------------
 Refer to the tests performed by yafrank in
@@ -129,6 +102,17 @@ check_volume_resolution() fail
 Most likely someone has to find out how to make snd_es1371_codec_read()
 and snd_es1371_codec_write() work so that ev1938 can read/write ac97
 codec.
+
+----------------------------------------------------------------------
+ wood - 07-10-06 19:36 
+----------------------------------------------------------------------
+Raymond,
+   Thanks much for the research on this problem and narrowing down the
+issue to 
+snd_es1731_codec_read() failure. I have been much too busy to get back to
+testing this issue. It could be a while longer yet before I can do more
+work. Right now, I am using my hacked version of the ALSA code, but of
+course a real and integrated solution would be best.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +134,7 @@ Date Modified  Username       Field                    Change
 07-09-06 17:17 Raymond        Note Deleted: 0010851                        
 07-10-06 10:52 Raymond        Note Deleted: 0010212                        
 07-10-06 18:14 Raymond        Note Added: 0010962                          
+07-10-06 19:36 wood           Note Added: 0010963                          
 ======================================================================
 
 
