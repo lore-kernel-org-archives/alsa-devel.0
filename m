@@ -1,20 +1,18 @@
-From: "Adrian McMenamin" <adrian@newgolddream.dyndns.info>
-Subject: Alsa mailing list problems (again)
-Date: Mon, 10 Jul 2006 12:12:03 +0100 (BST)
-Message-ID: <47133.217.150.108.178.1152529923.squirrel@newgolddream.dyndns.info>
+From: Adam =?ISO-8859-2?B?VGxhs2th?= <atlka@pg.gda.pl>
+Subject: Re: OSS driver removal, 2nd round (v2)
+Date: Mon, 10 Jul 2006 13:28:10 +0200
+Message-ID: <20060710132810.551a4a8d.atlka@pg.gda.pl>
+References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
+	<1152458300.28129.45.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk
-	[81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F2F5A1AA
+Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94EBB219
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 13:12:11 +0200 (MEST)
-Received: from newgolddream.dyndns.info (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.13.5.20060308/8.13.5/Debian-3ubuntu1) with
-	ESMTP id k6ABC3qa026843
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2006 12:12:03 +0100
+	Mon, 10 Jul 2006 13:26:05 +0200 (MEST)
+In-Reply-To: <1152458300.28129.45.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,20 +22,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alan@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, ak@suse.de, perex@suse.cz, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I am now being forced to resubscribe to this list again and again and
-again because my sendmail is set up to refuse to relay spam.
+On Sun, 09 Jul 2006 11:18:19 -0400
+Lee Revell <rlrevell@joe-job.com> wrote:
 
-What is the problem about getting some additional filters added to this
-list? The list may remain open but there is absolutely no reason why it
-should relaying viruses and phishing emails!
+> On Sat, 2006-07-08 at 01:50 +0200, Andi Kleen wrote:
+> > Adrian Bunk <bunk@stusta.de> writes:
+> > > =
 
+> > > Q: What about the OSS emulation in ALSA?
+> > > A: The OSS emulation in ALSA is not affected by my patches
+> > >    (and it's not in any way scheduled for removal).
+> > =
+
+> > I again object to removing the old ICH sound driver.
+> > It does the same as the Alsa driver in much less code and is ideal
+> > for generic monolithic kernels
+> =
+
+> It doesn't do the same thing - software mixing is impossible with OSS.
+
+Only GPL'ed version has this limitation - its just not implemented because =
+all this
+GPL'ed OSS is abandoned.
+The commercial version from www.opensound.com does input/output mixing
+in software in kernel space.
+It is free for home/personal use and only one thing you must do is to update
+it regularly - once every 4 months. It works out of the box with 2.6.xx ker=
+nels and you don't
+need additional sound daemons or hidden library threads (ALSA approach).
+It has included scripts for module compilation in case of kernel change
+and you can also have automatic updates and mixer settings restore without =
+need
+for instaling additional software packages.
+It has also text and graphical configuration tools and mixers.
+So users have still a choise and they will chose a product which best fits =
+they needs.
+
+>From my point of view ALSA has many advantages if you want to dig in the ca=
+rd driver
+buffers/period etc. settings but lacks ease of use and some of simple in th=
+eory
+functionality is a pain - device enumeration or switching output mode/device
+without restarting apps or rewritting them so they have special function fo=
+r that purpose.
+
+esd, arts, jackd, polypd and other prove that ALSA is not enough
+and its functionality is far from perfect.
+
+We have more and more audio devices - USB and Bluetooth ones - and
+we need switch ouput from one to other device without changes in apps.
+
+So better is to have some virtual sound device, then some mixing/effects/pl=
+ugins
+modules and then true sound device or network stream. Normal app just doesn=
+'t
+need to now mutch about sound device. It just sets basic audio parameters
+and plays. Is ALSA going in that direction?
+
+ALSA api is too complicated - too many possibilities to obtain the same eff=
+ect -
+and additionaly there is no good docs how to use this api properly.
+Some methods don't work in some situactions - callback method for example u=
+ses signals
+and in case of apps which turns some signals off there will be no sound at =
+all.
+
+Developers of ALSA say that they have no time to write docs. True - but inc=
+luding in kernel
+some functionality for which users have no good docs is not good for anybod=
+y.
+We have many programs which use ALSA and don't work properly.
+Forcing users to use ALSA is some kind of misunderstanding in this situacti=
+on.
+
+We have also almost no docs about ALSA drvier <-> ALSA lib interface which =
+is a strange
+in case of GPL'ed software if we want to implement a new hw driver.
+
+So is ALSA really what the users need? The future is unknown.
+ =
+
+Regards
+-- =
+
+Adam Tla=B3ka       mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+Computer Center,  Gda=F1sk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
