@@ -1,20 +1,16 @@
-From: Luca Abeni <lucabe72@email.it>
-Subject: Re: Problems with osprey 230 and snd-bt87x
-Date: Mon, 10 Jul 2006 15:27:37 +0200
-Message-ID: <1152538057.1009.43.camel@labeni.mm.mbigroup.it>
-References: <1152523026.1005.28.camel@labeni.mm.mbigroup.it>
+From: Nicolas Boichat <nicolas@boichat.ch>
+Subject: Re: ALSA Intel HDA MacBook
+Date: Mon, 10 Jul 2006 14:00:40 +0200
+Message-ID: <44B24168.10405@boichat.ch>
+References: <200607081323.17265.rene@exactcode.de>
+	<200607082120.02137.rene@exactcode.de>
+	<s5hk66lda2l.wl%tiwai@suse.de>
+	<200607101344.13837.rene@exactcode.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp-out2.email.it (smtp-out2.email.it [80.247.70.7])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA587167
-	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 15:23:49 +0200 (MEST)
-Received: from labeni.mm.mbigroup.it (unknown [84.233.239.122])by
-	smtp-out2.email.it (Email.it) with ESMTP id 73AD71BC4A9for
-	<alsa-devel@alsa-project.org>; Mon, 10 Jul 2006 15:23:40 +0200 (CEST)
-In-Reply-To: <1152523026.1005.28.camel@labeni.mm.mbigroup.it>
+In-Reply-To: <200607101344.13837.rene@exactcode.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,44 +20,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Rene Rebe <rene@exactcode.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi,
 
-On Mon, 2006-07-10 at 11:17 +0200, Luca Abeni wrote:
-> Hi all,
-> 
-> I am trying to capture some audio from an osprey 230 card (using the
-> snd-bt87x module), but it does not seem to work well.
-[...]
-> I am pretty sure that the card is not broken, because the driver
-> distributed by the manufacturer (a patched version of some old
-> "btaudio") is able to correctly capture analog audio.
-I had a look at such patched version of btaudio, and it seems that the
-osprey 230 card is handled in a different way respect to the osprey200
-(which seems to be the one supported by snd-bt87x). In particular, the
-patched btaudio driver has some calls to bttv_I2CWrite(), gpio_andor(),
-and some other gpio_*. Such calls seem to be used to set the volume on
-the osprey230. Maybe this explains why the snd-bt87x driver is not
-working properly here.
+Rene Rebe wrote:
+> Hi,
+>
+> On Monday 10 July 2006 12:32, Takashi Iwai wrote:
+>   
+>> At Sat, 8 Jul 2006 21:20:02 +0200,
+>> Rene Rebe wrote:
+>>     
+>>> +static unsigned int apple_pin_configs[10] = {
+>>> +	0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
+>>> +	0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
+>>> +	0x400000FC, 0x400000FB,
+>>> +};
+>>> +
+>>>       
+>> Interesting.  How did yo figure this out?
+>>     
+>
+> No idea, as I wrote the best patch "I found" on the internet. I think
+> it was Nicolas who came up with it.
+>   
+I also don't know .-) I picked these from an old patch provided by gimli
+(mactel-linux), the only infos I have are:
 
-I also contacted the technical support at ViewCast (the producer of
-osprey230), and I've been told that "the drivers are in the midst of a
-major rewrite. So, ALSA support should be available in the V4L2 drivers.
-Again, I expect, but cannot guarantee, this support in the 2.6.18
-kernel". Can anyone confirm that someone is working on ALSA support for
-osprey230 cards? (I see that it will not be in 2.6.18, but this is not a
-problem... I just want to know if there really is some ongoing work).
++/* These come from the windows inf files from bootcamp*/
++#if 0
++/*This has mic/line in*/
++static unsigned int minimac_pin_configs[10] = {
++       0x0121E230, 0x90A70120, 0x9017E110, 0x400000FE,
++       0x400000FD, 0x0181E021, 0x1145E040, 0x400000FA,
++       0x400000FC, 0x400000FB,
++};
++#else
++/*This has only line in*/
++static unsigned int minimac_pin_configs[10] = {
++       0x0121E220, 0x400000FF, 0x9017E110, 0x400000FE,
++       0x400000FD, 0x0181E040, 0x1145E030, 0x11C5E040,
++       0x400000FC, 0x400000FB,
++};
++#endif
++
 
+I picked up the first one so the mic works.
 
-			Thanks,
-				Luca
--- 
-_____________________________________________________________________________
-Copy this in your signature, if you think it is important:
-                               N O    W A R ! ! !
+I have no which inf he got these infos.
 
+Best regards,
+
+Nicolas
 
 
 -------------------------------------------------------------------------
