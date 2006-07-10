@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000026]: Noises when playing sound on
-	VT8237+ALC655
-Date: Mon, 10 Jul 2006 17:59:18 +0200
-Message-ID: <2e7b463679b4fe116627f7fcb71a17b6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000448]: System hangs up
+Date: Mon, 10 Jul 2006 17:58:01 +0200
+Message-ID: <276ddd44278392dc8d0585f9f1f6e5ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D727244
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13827244
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 17:59:19 +0200 (MEST)
+	Mon, 10 Jul 2006 17:58:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,61 +25,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=26> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=448> 
 ======================================================================
-Reported By:                xram
-Assigned To:                tiwai
+Reported By:                zadnica
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   26
+Issue ID:                   448
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-02-2004 06:22 CET
-Last Modified:              07-10-2006 17:59 CEST
+Date Submitted:             08-17-2004 13:02 CEST
+Last Modified:              07-10-2006 17:58 CEST
 ======================================================================
-Summary:                    Noises when playing sound on VT8237+ALC655
+Summary:                    System hangs up
 Description: 
-I have noisy crackles when playing sound. I tried to set dxs_support=1, 2,
-3 and 4. Best result - dxs_support=4 (minimum crackles). I upgraded my
-system bios, but it didn't solve my problem. My system:
-M/B: Epox 8KRAI
-South Bridge: VIA VT8237
-Codec: Realtek ALC 655
-
-PS.(Sorry for my english :)
+Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
+module via82cxxx_audio everything works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-01-04 19:21 
+ tiwai - 09-06-04 18:29 
 ----------------------------------------------------------------------
-the bugs with ALC655/658 should have been fixed with the recent version.
-try 1.0.3.
+Hmm, then I'd say it's a bug of BIOS.
+
+We can add a workaround code, of course, although it's really
+ugly and I'd like to avoid it as much as possible...
 
 ----------------------------------------------------------------------
- perex - 06-08-05 18:07 
+ jdthood - 04-09-05 14:23 
 ----------------------------------------------------------------------
-Ok, just ping, does this problem persist with the latest ALSA driver?
+sventura: Was this bug fixed or worked around in a later ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-04 06:22 xram           New Issue                                    
-02-02-04 15:16 tiwai          Note Added: 0000106                          
-02-02-04 15:16 tiwai          Status                   new => assigned     
-02-02-04 15:16 tiwai          Assigned To               => tiwai           
-02-03-04 17:37 chb            Note Added: 0000138                          
-03-01-04 19:21 tiwai          Note Added: 0000420                          
-06-08-05 18:07 perex          Note Added: 0004968                          
-07-10-06 17:59 Adrian Bunk    Status                   assigned => resolved
-07-10-06 17:59 Adrian Bunk    Resolution               open => fixed       
+08-17-04 13:02 zadnica        New Issue                                    
+08-22-04 09:51 sventura       Note Added: 0001607                          
+08-22-04 09:52 sventura       File Added: myvia82xx.tar.gz                    
+08-23-04 14:59 tiwai          Note Added: 0001611                          
+08-23-04 14:59 tiwai          File Added: via-crash-fix.dif                    
+09-06-04 18:25 sventura       Note Added: 0001700                          
+09-06-04 18:26 sventura       Note Edited: 0001700                         
+09-06-04 18:27 sventura       Note Edited: 0001700                         
+09-06-04 18:29 tiwai          Note Added: 0001701                          
+09-06-04 18:40 sventura       File Added: via-bug448-fix.diff                   
+
+04-09-05 14:23 jdthood        Note Added: 0004395                          
+07-10-06 17:58 Adrian Bunk    Status                   new => resolved     
+07-10-06 17:58 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
