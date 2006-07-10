@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001950]: got error related to kde in
-	console
-Date: Mon, 10 Jul 2006 18:08:07 +0200
-Message-ID: <e28b0879114a954f7d647a189fe53d7b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002201]: Duplicate of Issue 0001622 -
+	Sound freezes after less a second of play
+Date: Mon, 10 Jul 2006 18:10:19 +0200
+Message-ID: <b3bcbc32df897a7072cbe6151f1272c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CF1F244
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2AAD167
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Jul 2006 18:08:07 +0200 (MEST)
+	Mon, 10 Jul 2006 18:10:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,93 +24,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1950> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2201> 
 ======================================================================
-Reported By:                zebul666
+Reported By:                ggeorgak
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1950
+Issue ID:                   2201
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     closed
-Distribution:               slackware
-Kernel Version:             2.6.15.6
-Resolution:                 not an issue
+Status:                     resolved
+Distribution:               OpenSuSE
+Kernel Version:             2.6.16.13-4-smp
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-21-2006 17:05 CET
-Last Modified:              07-10-2006 18:08 CEST
+Date Submitted:             06-12-2006 02:55 CEST
+Last Modified:              07-10-2006 18:10 CEST
 ======================================================================
-Summary:                    got error related to kde in console
+Summary:                    Duplicate of Issue 0001622 - Sound freezes after
+less a second of play
 Description: 
-when i run something like (kde not running)
-mpg321 somefile.mp3 
-or ogg123 somefile.ogg
-
-i got 
-create link /home/stef/.kde/socket-titan
-can't create mcop directory 
-
-and no sound. 
-titan is my hostname
-why this kde stuff while i use a console application ?!!!!!
-
-if kde is running there is no error and there is some sound. 
-
-it seems it happens with alsa 1.0.11rc3 but not with alsa 1.0.10 with a
-kernel 2.6.15.6 
-
-
+It's a duplicate of issue 0001622, though that issue is marked as resolved
+and the patch is upstreamed to newer versions of alsa (1.0.9 mentioned
+there). Again the motheroboard is Asus A8V-MX with onboard Realtek AC97
+sound chip. Glady I will provide any information asked.
 ======================================================================
 
 ----------------------------------------------------------------------
- zebul666 - 05-04-06 17:23 
+ ggeorgak - 06-12-06 04:46 
 ----------------------------------------------------------------------
-well, i have finally decided to read the doc of libao (that i found in the
-source of libao 0.8.6 but it seems to be the doc for libao 0.8.5 ??) 
-
-and libao have a ranking system to try to detect which driver to use 
-Priority   Drivers
-30  alsa, alsa09
-20  oss, irix, sun
-10  esd,arts
-0  null, all file output
-
-but although alsa has big priority it did not find alsa and decided to use
-arts ??? or what else need /tmp/ksocket-stef ? 
-
-so i made a /etc/libao.conf with 
-default_driver=alsa09
-
-which i should not have to do (because it is the first driver tested isn't
-it ? )
-and it works i do not have the error again. 
-i fillled a bug report at libao dev.
+You mean it's still problematic from 1.0.9 because I have the release
+candidate 3 version? Any rpm repositories that you know of?
 
 ----------------------------------------------------------------------
- zebul666 - 05-05-06 11:12 
+ rlrevell - 06-12-06 04:51 
 ----------------------------------------------------------------------
-i recompiled and reinstalled libao after alsa-lib and now i do not need
-anymore /etc/libao.conf to get things to work
+Yes, the bug was fixed between 1.0.11-rc3 and 1.0.11.
+
+Sorry, I don't know any RPM repositories.  You may have to wait for your
+distro to release an ALSA 1.0.11 package.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-21-06 17:05 zebul666       New Issue                                    
-03-21-06 17:05 zebul666       Distribution              => slackware       
-03-21-06 17:05 zebul666       Kernel Version            => 2.6.15.6        
-03-21-06 17:10 tiwai          Note Added: 0008744                          
-03-21-06 19:34 zebul666       Note Added: 0008757                          
-03-21-06 19:40 tiwai          Note Added: 0008758                          
-05-04-06 17:23 zebul666       Note Added: 0009617                          
-05-05-06 11:12 zebul666       Note Added: 0009624                          
-07-10-06 18:08 Adrian Bunk    Status                   new => closed       
-07-10-06 18:08 Adrian Bunk    Resolution               open => not an issue
+06-12-06 02:55 ggeorgak       New Issue                                    
+06-12-06 02:55 ggeorgak       Distribution              => OpenSuSE        
+06-12-06 02:55 ggeorgak       Kernel Version            => 2.6.16.13-4-smp 
+06-12-06 02:56 ggeorgak       Issue Monitored: ggeorgak                    
+06-12-06 03:07 rlrevell       Note Added: 0010156                          
+06-12-06 04:15 ggeorgak       Note Added: 0010159                          
+06-12-06 04:34 rlrevell       Note Added: 0010160                          
+06-12-06 04:46 ggeorgak       Note Added: 0010162                          
+06-12-06 04:51 rlrevell       Note Added: 0010163                          
+07-10-06 18:10 Adrian Bunk    Status                   new => resolved     
+07-10-06 18:10 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
