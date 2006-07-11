@@ -1,21 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: OSS driver removal, 2nd round (v2)
-Date: Mon, 10 Jul 2006 20:39:03 -0400
-Message-ID: <1152578344.21909.12.camel@mindpipe>
-References: <20060707231716.GE26941@stusta.de>
-	<p737j2potzr.fsf@verdi.suse.de> <1152458300.28129.45.camel@mindpipe>
-	<20060710132810.551a4a8d.atlka@pg.gda.pl>
-	<1152571717.19047.36.camel@mindpipe> <44B2E4FF.9000502@pg.gda.pl>
-	<20060710235934.GC26528@dspnet.fr.eu.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002269]: no sound fortemedia fm801
+Date: Tue, 11 Jul 2006 02:53:33 +0200
+Message-ID: <3eaa89ebae21ca4d6f9e738f17d7d85e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C9276233
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B597C1AC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 02:39:14 +0200 (MEST)
-In-Reply-To: <20060710235934.GC26528@dspnet.fr.eu.org>
+	Tue, 11 Jul 2006 02:53:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,22 +19,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Olivier Galibert <galibert@pobox.com>
-Cc: alsa-devel@alsa-project.org, ak@suse.de, linux-kernel@vger.kernel.org, perex@suse.cz, Adam Tla?ka <atlka@pg.gda.pl>, alan@lxorguk.ukuu.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-07-11 at 01:59 +0200, Olivier Galibert wrote:
-> ALSA lib has something like 7 different methods just to play a sound.
-> Their view of "low level" is quite interesting.  Using it is pure
-> hell.  Debugging what you've done is worse.  And don't bother to hope
-> that your code will still work in six months.
-> 
 
-A small FAQ:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2269> 
+======================================================================
+Reported By:                ldieckow
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2269
+Category:                   PCI - fm801
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE 10.1
+Kernel Version:             kernel-default-2.6.16.13-4
+======================================================================
+Date Submitted:             07-11-2006 02:53 CEST
+Last Modified:              07-11-2006 02:53 CEST
+======================================================================
+Summary:                    no sound fortemedia fm801
+Description: 
+Using distro supplied packages:
 
-Q: But OSS is kewl and ALSA sucks!
-A: The decision for the OSS->ALSA move was four years ago.
-   If ALSA sucks, please help to improve ALSA.
+> rpm -qa|sort|grep alsa
+alsa-1.0.11-32
+alsa-devel-1.0.11-32
+alsa-firmware-1.0.10-13
+alsa-tools-1.0.11-16
+
+There's no sound using ALSA drivers for the FM801. See
+<https://bugzilla.novell.com/show_bug.cgi?id=189476> for the whole story
+so far. Tell me what you need in additional information.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-06 02:53 ldieckow       New Issue                                    
+07-11-06 02:53 ldieckow       Distribution              => SuSE 10.1       
+07-11-06 02:53 ldieckow       Kernel Version            =>
+kernel-default-2.6.16.13-4
+======================================================================
 
 
 
