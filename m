@@ -1,16 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002274]: "checking for versioned symbols"
-	error in ./configure
-Date: Tue, 11 Jul 2006 22:23:32 +0200
-Message-ID: <3b338ca0babf744895e19ce5696e8f0b@bugtrack.alsa-project.org>
+From: "Theodoros V. Kalamatianos" <thkala@softlab.ece.ntua.gr>
+Subject: Re: polypaudio renamed to pulseaudio
+Date: Wed, 12 Jul 2006 00:06:34 +0300 (EEST)
+Message-ID: <Pine.LNX.4.64.0607120004170.5284@rhama.deepcore.ngn>
+References: <Pine.LNX.4.64.0607112016170.5284@rhama.deepcore.ngn>
+	<1152638981.21909.67.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0F8E24F
+Received: from diomedes.noc.ntua.gr (diomedes.noc.ntua.gr [147.102.222.220])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC0A3251
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 22:23:32 +0200 (MEST)
+	Tue, 11 Jul 2006 23:07:52 +0200 (MEST)
+In-Reply-To: <1152638981.21909.67.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,69 +22,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 11 Jul 2006, Lee Revell wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2274> 
-======================================================================
-Reported By:                joeljkp
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2274
-Category:                   0_general
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-11-2006 22:12 CEST
-Last Modified:              07-11-2006 22:23 CEST
-======================================================================
-Summary:                    "checking for versioned symbols" error in
-./configure
-Description: 
-I get the following when I run ./configure:
+> On Tue, 2006-07-11 at 20:23 +0300, Theodoros V. Kalamatianos wrote:
+>> the new PA
+>> project
+>
+> BTW, someone should tell them this is a TERRIBLE acronym - it collides
+> with the PortAudio project which has existed for years.
 
-checking for versioned symbols... ./configure: line 19347: test: "1:
-integer expression expected
-./configure: line 19350: test: "1: integer expression expected
-
-This is caused by my libtool VERSION string:
-VERSION="1.5.22 Debian 1.5.22-2"
-
-The test in configure.in can't currently deal with the quotes.
-======================================================================
-
-----------------------------------------------------------------------
- joeljkp - 07-11-06 22:20 
-----------------------------------------------------------------------
-Proposed patch attached.
-
-----------------------------------------------------------------------
- joeljkp - 07-11-06 22:23 
-----------------------------------------------------------------------
-Note that the patch works even when no quotes are present:
-
-VERSION="1.5.22 Debian 1.5.22-2"
-VERSION=1.5.22 Debian 1.5.22-2
-VERSION=1.5.22
-
-all product the right output.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-11-06 22:12 joeljkp        New Issue                                    
-07-11-06 22:20 joeljkp        File Added: bug2274.patch                    
-07-11-06 22:20 joeljkp        Note Added: 0010980                          
-07-11-06 22:23 joeljkp        Note Added: 0010981                          
-======================================================================
-
-
+Actually I only used the acronym because I was too bored to write both 
+project names. There is nothing official about it, although AFAIK all 
+function names in the library do have a pa_ prefix...
 
 
 -------------------------------------------------------------------------
