@@ -1,16 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: polypaudio renamed to pulseaudio
-Date: Tue, 11 Jul 2006 13:28:19 -0400
-Message-ID: <1152638899.21909.65.camel@mindpipe>
+Date: Tue, 11 Jul 2006 13:29:41 -0400
+Message-ID: <1152638981.21909.67.camel@mindpipe>
 References: <Pine.LNX.4.64.0607112016170.5284@rhama.deepcore.ngn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5E769165
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 30C4F234
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 19:28:17 +0200 (MEST)
+	Tue, 11 Jul 2006 19:29:39 +0200 (MEST)
 In-Reply-To: <Pine.LNX.4.64.0607112016170.5284@rhama.deepcore.ngn>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -26,17 +26,11 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2006-07-11 at 20:23 +0300, Theodoros V. Kalamatianos wrote:
-> Hi,
-> 
-> According to www.pulseaudio.org the polypaudio project was renamed to 
-> pulseaudio. As a result the names of the header files and some other stuff 
-> have changed and alsa-plugins cannot be built with support for pulseaudio. 
-> I think that a new plugin should be added with support for the new PA 
-> project. It would probably be mostly a copy of the polyp plugin with 
-> minimal changes.
+> the new PA 
+> project 
 
-This can be fixed as soon as the polpyaudio/pulseaudio developers submit
-patches.
+BTW, someone should tell them this is a TERRIBLE acronym - it collides
+with the PortAudio project which has existed for years.
 
 Lee
 
