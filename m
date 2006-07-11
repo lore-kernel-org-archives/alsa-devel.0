@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000225]: No PCM-mixer on Epox 8RDA3I
-	and no sound
-Date: Tue, 11 Jul 2006 12:43:44 +0200
-Message-ID: <3c3b6fc6b440301284e41c94d635bff9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000255]: CM9739 does not sound
+Date: Tue, 11 Jul 2006 12:43:55 +0200
+Message-ID: <9715cf1e821a46c8afabded2c7498413@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3652E223
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84779223
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 12:43:45 +0200 (MEST)
+	Tue, 11 Jul 2006 12:43:55 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,59 +25,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=255> 
 ======================================================================
 Reported By:                qeldroma
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   225
+Issue ID:                   255
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               gentoo 2004.1
-Kernel Version:             2.6.5-gentoo-dev-sources
+Distribution:               Gentoo 2004.1
+Kernel Version:             2.6.5
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-20-2004 10:50 CEST
+Date Submitted:             05-06-2004 13:06 CEST
 Last Modified:              07-11-2006 12:43 CEST
 ======================================================================
-Summary:                    No PCM-mixer on Epox 8RDA3I and no sound
+Summary:                    CM9739 does not sound
 Description: 
-I recently changed from a leadtek nforce2 board to the epox nforce2 board.
-AFAIK, they got both the same onboard audio chip, so i didn't changed any
-setting i had done for the leadtek, because i could keep them in my eyes.
-
-But now, all is working well (xmms even shows the equalizer going up and
-down!), but i can't hear anything.
-
-First i thought, sthg. is muted, but a look at "alsamixer" told me, that
-all is up and unmuted. Only PCM is not changeable and keeps at 0%.
-
->From the leadtek i know, that PCM is the main-volume tab in alsa, so i
-think, that this broken PCM-mixer is the reason fro the broken alsa.
-
-Btw, i am not the only person with this fault.
+I've got the Epox 8RDA3+ Board with this onboard-sound-chip.
+The intel8x0 driver is loading without errors, i can adjust the mixers,
+but there's definetely no sound.
+Under WinXP all is ok.
+I googled and found out, that there are several people with this problem.
+However, i can give you no hint, where in detail the problem is, perhaps
+the CM9739 isn't fully supported right now?
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000255 CM9739 does not sound
+duplicate of        0000225 No PCM-mixer on Epox 8RDA3I and no sound
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:45 
-----------------------------------------------------------------------
-Submitter: Problems like this are often the result of faulty mixer
-settings.
-Were you ever able to resolve the problem, e.g., by adjusting mixer
-settings
-with gamix or by upgrading your ALSA drivers to the latest release?
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 16:06 
+ jdthood - 03-23-05 16:07 
 ----------------------------------------------------------------------
 Please send the output of
 
@@ -91,16 +74,11 @@ Please send the output of
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-04 10:50 qeldroma       New Issue                                    
-04-20-04 10:50 qeldroma       Distribution              => gentoo 2004.1   
-04-20-04 10:50 qeldroma       Kernel Version            =>
-2.6.5-gentoo-dev-sources
-04-20-04 12:28 tiwai          Note Added: 0000871                          
-04-20-04 12:39 qeldroma       Note Added: 0000873                          
-03-23-05 15:45 jdthood        Note Added: 0004165                          
-03-23-05 15:45 jdthood        Relationship added       has duplicate 0000255
-03-23-05 16:06 jdthood        Note Added: 0004172                          
-04-18-06 04:01 segfault       Issue Monitored: segfault                    
+05-06-04 13:06 qeldroma       New Issue                                    
+05-06-04 13:06 qeldroma       Distribution              => Gentoo 2004.1   
+05-06-04 13:06 qeldroma       Kernel Version            => 2.6.5           
+03-23-05 15:45 jdthood        Relationship added       duplicate of 0000225
+03-23-05 16:07 jdthood        Note Added: 0004173                          
 07-11-06 12:43 Adrian Bunk    Status                   new => closed       
 07-11-06 12:43 Adrian Bunk    Resolution               open => unable to
 duplicate
