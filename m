@@ -1,7 +1,7 @@
-From: Adam =?ISO-8859-2?B?VGxhs2th?= <atlka@pg.gda.pl>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: OSS driver removal, 2nd round (v2)
-Date: Tue, 11 Jul 2006 11:08:10 +0200
-Message-ID: <20060711110811.947e15ed.atlka@pg.gda.pl>
+Date: Tue, 11 Jul 2006 11:52:56 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0607111110280.9147@tm8103.perex-int.cz>
 References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
 	<1152458300.28129.45.camel@mindpipe>
 	<20060710132810.551a4a8d.atlka@pg.gda.pl>
@@ -10,15 +10,15 @@ References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
 	<1152578344.21909.12.camel@mindpipe>
 	<20060711085952.f1254229.atlka@pg.gda.pl>
 	<Pine.LNX.4.61.0607110937160.9147@tm8103.perex-int.cz>
+	<20060711110811.947e15ed.atlka@pg.gda.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1798431545-1152611576=:9147"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F40A5220
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DCE9220
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 11:06:10 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0607110937160.9147@tm8103.perex-int.cz>
+	Tue, 11 Jul 2006 11:52:57 +0200 (MEST)
+In-Reply-To: <20060711110811.947e15ed.atlka@pg.gda.pl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,211 +28,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
+To: Adam =?ISO-8859-2?B?VGxhs2th?= <atlka@pg.gda.pl>
 Cc: alsa-devel@alsa-project.org, rlrevell@joe-job.com, galibert@pobox.com, alan@lxorguk.ukuu.org.uk, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Jul 2006 09:58:26 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
-
-> On Tue, 11 Jul 2006, Adam Tla=B3ka wrote:
-> =
-
-> > On Mon, 10 Jul 2006 20:39:03 -0400
-> > Lee Revell <rlrevell@joe-job.com> wrote:
-> > =
-
-> > > On Tue, 2006-07-11 at 01:59 +0200, Olivier Galibert wrote:
-> > > > ALSA lib has something like 7 different methods just to play a soun=
-d.
-> > > > Their view of "low level" is quite interesting.  Using it is pure
-> > > > hell.  Debugging what you've done is worse.  And don't bother to ho=
-pe
-> > > > that your code will still work in six months.
-> > > > =
-
-> > > =
-
-> > > A small FAQ:
-> > > =
-
-> > > Q: But OSS is kewl and ALSA sucks!
-> > > A: The decision for the OSS->ALSA move was four years ago.
-> > >    If ALSA sucks, please help to improve ALSA.
-> > =
-
-> > The problem is that ALSA is done a Windows way with too many not always =
-
-> > working ways of obtaining sound and lack of user docs. So there is stil=
-l =
-
-> =
-
-> The docs are available: =
-
-> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
-> =
-
-> If you have some comment or idea to improve it, please, post it to =
-
-> the relevant mailing list.
->
-
-I posted some ideas in the past but with current design it's no go.
- =
-
-> > the general question: Is it the proper way? How I can help improve ALSA =
-
-> > if I just dislike its design?
-> =
-
-> Then it is your problem. I've not seen a single problematic technical =
-
-> information from your mails.
-
-Pity. Me and probably many users have this problem.
-
-> =
-
-> > I spent some time improving dmix and aoss in the past. I have a version =
-
-> > of aoss which uses callbacks and works properly with some not properly =
-
-> > written OSS apps. It's very interesting that with some apps aoss method =
-
-> > gives better sound A/V synchronization then using native ALSA app =
-
-> > support ;-). But callbacks not always work and LD_PRELOAD method is =
-
-> > generally not secure and some kind of a hack. So I just don't think it =
-
-> > could be improved with it's current design. In my opinion it should wor=
-k =
-
-> > out of the box without need to rewrite old or proprietary apps and =
-
-> > messing with LD_PRELOAD. So /dev/dsp compatibility is a must. But with =
-
-> > all input/output mixing of course. Userspace thread method leads to man=
-y =
-
-> > problems - swapping and rescheduling leads to bad acustic effects. Of =
-
-> > course if an app can't supply data when it should we can't do anything =
-
-> > but if scheduling or swapping causes problems the design seems to be =
-
-> > bad.
-> >
-> > There are many devices which need to be served at the some critical =
-
-> > point in time
-> > - sound cards, video and tv grabbers, some dedicated lab cards, i/o =
-
-> >   ports etc.  Generally on the really low level this is a kernel driver =
-
-> >   which sticks to the hardware and should ``know'' how critical is to =
-
-> >   serve hw requests just in time. If we have data in a buffer programin=
-g =
-
-> >   DMA transfer is a quite quick operation but must be done at the prope=
-r =
-
-> >   moment.  So maybe we should delay a bit other io for example and just =
-
-> >   do it. But it must be done in kernel because kernel should know these =
-
-> >   critical time parameters for all devices in the system and decide =
-
-> >   which to serve and when. Maybe this is not needed for all devices but =
-
-> >   for audio/video devices it's a must. Better kernel support for these =
-
-> >   kind of devices is absolutely needed.
-> =
-
-> You're a bit mixing things:
-> =
-
-> a) we're not trying to be more compatible than OSS code in kernel, if you =
-
->    like to do the mixing in kernel, simply write a new ALSA lowlevel =
-
->    driver which will do it; I'm sure when the quality of your code will b=
-e =
-
->    good,  we'll include it to the ALSA tree, but we are not going this
->    way unless someone else will maintain this code
-
-OSS kernel compatibility is only partial and aoss method is not fully compa=
-tible either
-I will try to write some code but I have very little free time for that so =
-I am trying
-to convince people to rethinking the case =
-
- =
-
-> b) you're requestion to avoid scheduler participation in the audio =
-
->    processing and yes, we have this solution already (dmix), but not in =
-
->    kernel
-
-just the contrary - scheduler participation is needed to avoid sound distor=
-tion
-and missing samples =
-
-
-> c) as you said, the kernel should contain only critical code to drive
->    hardware, sample rate conversion, sample format conversions and so on
->    are NOT part of this code in my opinion
-
-if doing this operations behind application back can lead to not delivering
-data to kernel driver in time then these are time critical operations too!
-
-> =
-
-> > ALSA in lib way has its limitations and drawbacks and adding more =
-
-> > feaures this way leads to more complications only IMHO.
-> =
-
-> Which limitations? We can do all things like OSS API. The whole point of =
-
-> all problems is that OSS has the API entry point in syscalls which is =
-
-> quite bad so the redirection is problematic.
-
-Yes but what a complicated way. And you cannot use kernel OSS emulation
-and ALSA aware apps at the same time. Also aoss with dmix are in
-conflict with jackd for example.
-
-Kernel redirector is not a bad solution - there should be some kind
-of interface for such redirectors for different purposes. netlink device ma=
-ybe?
-For example you should redirect all these traffic to some RT daemon
-doing all job.
-
-Same with filesystem redirections. I hate these special gnomevfs or kdeio
-helpers which forces to rebuilding apps with more and more libs.
-Change LD_PRELOAD or LD_LIBRARY_PATH and you app will go to hell.
-This is the Windows way of doing uncontrolled mess.
-This plugin architecture without mandatory kernel access control leads
-to serious security risc.
-
-Regards
--- =
-
-Adam Tla=B3ka       mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-Computer Center,  Gda=F1sk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323584-1798431545-1152611576=:9147
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Tue, 11 Jul 2006, Adam Tla=B3ka wrote:
+
+> OSS kernel compatibility is only partial and aoss method is not fully=20
+
+Partial? Elaborate please. And talk about OSS drivers in 2.6 kernel.
+
+> > b) you're requestion to avoid scheduler participation in the audio=20
+> >    processing and yes, we have this solution already (dmix), but not in=
+=20
+> >    kernel
+>=20
+> just the contrary - scheduler participation is needed to avoid sound=20
+> distortion and missing samples
+
+Nope. You're missing that dmix does not add any extra latencies, because
+samples are written directly to the DMA buffer.
+
+> > c) as you said, the kernel should contain only critical code to drive
+> >    hardware, sample rate conversion, sample format conversions and so o=
+n
+> >    are NOT part of this code in my opinion
+>=20
+> if doing this operations behind application back can lead to not deliveri=
+ng
+> data to kernel driver in time then these are time critical operations too=
+!
+
+Sorry, but you have limited resources (CPU power). It's completely=20
+irrelevant, if you do processing in the user space or in kernel (in my=20
+opinion it's even worse to do such things in the interrupt context).
+It's probably better to think how to instruct scheduler to wake up
+the sound applications as soon as possible.
+
+> > > ALSA in lib way has its limitations and drawbacks and adding more=20
+> > > feaures this way leads to more complications only IMHO.
+> >=20
+> > Which limitations? We can do all things like OSS API. The whole point o=
+f=20
+> > all problems is that OSS has the API entry point in syscalls which is=
+=20
+> > quite bad so the redirection is problematic.
+>=20
+> Yes but what a complicated way. And you cannot use kernel OSS emulation
+> and ALSA aware apps at the same time. Also aoss with dmix are in
+> conflict with jackd for example.
+
+??? Elaborate. It should work.
+
+> Kernel redirector is not a bad solution - there should be some kind of=20
+> interface for such redirectors for different purposes. netlink device=20
+> maybe? For example you should redirect all these traffic to some RT=20
+> daemon doing all job.
+
+I would prefer probably a network lowlevel ALSA driver. You'll get the=20
+network transparency as benefit.
+
+> Same with filesystem redirections. I hate these special gnomevfs or kdeio
+> helpers which forces to rebuilding apps with more and more libs.
+> Change LD_PRELOAD or LD_LIBRARY_PATH and you app will go to hell.
+> This is the Windows way of doing uncontrolled mess.
+> This plugin architecture without mandatory kernel access control leads
+> to serious security risc.
+
+Unfortunately, more functionality requires more code. You have to deal=20
+with bloating the user or kernel space.
+
+=09=09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
+--8323584-1798431545-1152611576=:9147
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+
+--8323584-1798431545-1152611576=:9147
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--8323584-1798431545-1152611576=:9147--
