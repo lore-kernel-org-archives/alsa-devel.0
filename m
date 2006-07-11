@@ -1,16 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Tue, 11 Jul 2006 08:48:33 +0200
-Message-ID: <77b8701eefc10ca7730a4a01754b1a93@bugtrack.alsa-project.org>
+From: Adam =?ISO-8859-2?B?VGxhs2th?= <atlka@pg.gda.pl>
+Subject: Re: OSS driver removal, 2nd round (v2)
+Date: Tue, 11 Jul 2006 08:59:52 +0200
+Message-ID: <20060711085952.f1254229.atlka@pg.gda.pl>
+References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
+	<1152458300.28129.45.camel@mindpipe>
+	<20060710132810.551a4a8d.atlka@pg.gda.pl>
+	<1152571717.19047.36.camel@mindpipe> <44B2E4FF.9000502@pg.gda.pl>
+	<20060710235934.GC26528@dspnet.fr.eu.org>
+	<1152578344.21909.12.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A031A1AC
+Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52C8D1AC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 08:48:33 +0200 (MEST)
+	Tue, 11 Jul 2006 08:57:44 +0200 (MEST)
+In-Reply-To: <1152578344.21909.12.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,256 +26,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, galibert@pobox.com, perex@suse.cz, alan@lxorguk.ukuu.org.uk, ak@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 10 Jul 2006 20:39:03 -0400
+Lee Revell <rlrevell@joe-job.com> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
-======================================================================
-Reported By:                yafrank
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-11-2006 08:48 CEST
-======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
-Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+> On Tue, 2006-07-11 at 01:59 +0200, Olivier Galibert wrote:
+> > ALSA lib has something like 7 different methods just to play a sound.
+> > Their view of "low level" is quite interesting.  Using it is pure
+> > hell.  Debugging what you've done is worse.  And don't bother to hope
+> > that your code will still work in six months.
+> > =
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+> =
 
+> A small FAQ:
+> =
 
-======================================================================
+> Q: But OSS is kewl and ALSA sucks!
+> A: The decision for the OSS->ALSA move was four years ago.
+>    If ALSA sucks, please help to improve ALSA.
 
-----------------------------------------------------------------------
- Raymond - 07-11-06 06:31 
-----------------------------------------------------------------------
-You cannot perform suspend/resume since snd_es1371_codec_read() fail most
-of the time when reading powerdown status.
+The problem is that ALSA is done a Windows way with too many not always wor=
+king ways
+of obtaining sound and lack of user docs. So there is still the general que=
+stion:
+Is it the proper way? How I can help improve ALSA if I just dislike its des=
+ign?
 
-            if ( (( x >> 16 ) & 0x7f ) != reg ) {
-                    switch(reg){
-                    case 0: return 0x0140;   
-                    case 0x28: return 0;
-                    case 0x2a: return 0;
-                    case 0x3c: return 0;
-                    case 0x7c: return 0x8384;
-                    case 0x7e: return 0x7605;
-                    default: break;
-                    }
-               }
+I spent some time improving dmix and aoss in the past. I have a version of =
+aoss
+which uses callbacks and works properly with some not properly written OSS =
+apps.
+It's very interesting that with some apps aoss method gives better sound A/=
+V synchronization then using native ALSA app support ;-).
+But callbacks not always work and LD_PRELOAD method is generally not secure
+and some kind of a hack. So I just don't think it could be improved with it=
+'s current design.
+In my opinion it should work out of the box without need to rewrite old or =
+proprietary apps
+and messing with LD_PRELOAD. So /dev/dsp compatibility is a must. But with =
+all input/output
+mixing of course. Userspace thread method leads to many problems - swapping=
+ and rescheduling leads to bad acustic effects. Of course if an app can't s=
+upply data when it should we can't do anything but if scheduling or swappin=
+g causes problems the design seems to be bad.
 
-You either use alsa-1.0.8rc1 (if dmix work) or modified wood's hack
-'special_card = (ac97->id == 0x83847605);' to bypass the
-checkvolumeresolution() and some of snd_ac97_try_bit() for alsa version
-after alsa-1.0.8rc2 ) until someone fix snd_es1371_codec_read() and
-snd_es1371_codec_write()
+There are many devices which need to be served at the some critical point i=
+n time
+- sound cards, video and tv grabbers, some dedicated lab cards, i/o ports e=
+tc.
+Generally on the really low level this is a kernel driver which sticks to t=
+he hardware and should ``know'' how critical is to serve hw requests just i=
+n time. If we have data in a buffer programing DMA transfer is a quite quic=
+k operation but must be done at the proper moment.
+So maybe we should delay a bit other io for example and just do it. But it =
+must be done in kernel because kernel should know these critical time param=
+eters for all devices in the system and decide which to serve and when. May=
+be this is not needed for all devices but for audio/video devices it's a mu=
+st. Better kernel support for these kind of devices is absolutely needed.
 
+ALSA in lib way has its limitations and drawbacks and adding more feaures t=
+his way
+leads to more complications only IMHO.
 
+Regards
+-- =
 
-----------------------------------------------------------------------
- yafrank - 07-11-06 08:48 
-----------------------------------------------------------------------
-I tried Wood's hack in 1.0.11 and it works fine, both playback and capture.
-I didn't modify his hack though, because I noticed the the chip listed in
-alsamixer of 1.0.8rc1 driver is 0x8a058384.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
-06-09-06 06:51 Raymond        Note Added: 0010132                          
-06-14-06 15:01 Raymond        Note Deleted: 0010132                        
-06-14-06 15:13 Raymond        Note Deleted: 0010072                        
-06-24-06 04:14 Raymond        Note Added: 0010465                          
-06-24-06 21:51 bobcat98       Note Added: 0010489                          
-06-25-06 02:04 Raymond        Note Added: 0010497                          
-06-25-06 07:44 bobcat98       Note Added: 0010503                          
-06-25-06 08:18 Raymond        Note Added: 0010504                          
-06-25-06 18:13 bobcat98       Note Added: 0010517                          
-06-26-06 02:10 Raymond        Note Added: 0010521                          
-06-26-06 04:10 bobcat98       Note Added: 0010523                          
-06-26-06 17:36 Raymond        Note Added: 0010551                          
-06-26-06 17:40 rlrevell       Note Added: 0010553                          
-06-26-06 17:51 Raymond        Note Edited: 0010551                         
-06-26-06 18:01 Raymond        Note Added: 0010555                          
-06-26-06 18:09 rlrevell       Note Added: 0010556                          
-06-27-06 04:48 Raymond        Note Added: 0010564                          
-06-28-06 04:36 Raymond        Note Added: 0010608                          
-06-28-06 04:36 Raymond        Note Edited: 0010608                         
-06-29-06 11:14 Raymond        Note Edited: 0010608                         
-07-01-06 05:26 Raymond        Note Added: 0010758                          
-07-07-06 07:59 yafrank        Note Added: 0010896                          
-07-07-06 09:13 yafrank        Note Added: 0010898                          
-07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
-07-07-06 09:21 Raymond        Note Added: 0010899                          
-07-07-06 09:58 Raymond        Note Added: 0010900                          
-07-07-06 10:12 Raymond        Note Added: 0010901                          
-07-07-06 10:20 Raymond        Note Edited: 0010901                         
-07-07-06 11:59 yafrank        File Added: reload-ens1371-log                    
-07-07-06 12:08 yafrank        Note Added: 0010904                          
-07-07-06 12:24 Raymond        Note Added: 0010905                          
-07-07-06 14:16 yafrank        Note Added: 0010910                          
-07-07-06 14:27 yafrank        File Added: ens1370.c.rej                    
-07-07-06 14:37 Raymond        Note Added: 0010911                          
-07-07-06 18:35 yafrank        Note Added: 0010918                          
-07-07-06 18:38 yafrank        File Added: ens1370-routine-replace-error         
-          
-07-08-06 04:55 Raymond        Note Added: 0010927                          
-07-08-06 04:57 Raymond        Note Added: 0010928                          
-07-08-06 04:58 Raymond        Note Deleted: 0010927                        
-07-08-06 12:45 yafrank        File Added: old-routine-dmesg                    
-07-08-06 12:49 yafrank        Note Added: 0010930                          
-07-08-06 15:48 Raymond        Note Added: 0010931                          
-07-08-06 16:17 Raymond        Note Edited: 0010931                         
-07-08-06 16:21 Raymond        Note Edited: 0010931                         
-07-08-06 16:24 Raymond        Note Edited: 0010931                         
-07-09-06 02:19 Raymond        Note Added: 0010932                          
-07-09-06 03:16 yafrank        File Added: hack-83847605-dmesg                   
-
-07-09-06 03:59 yafrank        Note Added: 0010933                          
-07-09-06 04:39 yafrank        Note Added: 0010934                          
-07-09-06 04:51 yafrank        Note Added: 0010935                          
-07-09-06 05:56 yafrank        File Added: old-routine-1.0.7-dmesg               
-    
-07-09-06 06:10 yafrank        Note Added: 0010936                          
-07-09-06 06:16 Raymond        Note Added: 0010937                          
-07-09-06 06:17 yafrank        File Added: old-routine-1.0.7-skip-modem-dmesg    
-               
-07-09-06 06:31 Raymond        Note Added: 0010938                          
-07-09-06 06:34 Raymond        Note Edited: 0010938                         
-07-09-06 06:37 Raymond        Note Edited: 0010937                         
-07-09-06 10:22 Raymond        Note Added: 0010940                          
-07-09-06 10:39 Raymond        Note Edited: 0010940                         
-07-09-06 10:41 Raymond        Note Edited: 0010940                         
-07-09-06 10:58 yafrank        Note Added: 0010941                          
-07-09-06 11:05 Raymond        Note Added: 0010942                          
-07-09-06 11:25 Raymond        Note Added: 0010943                          
-07-09-06 11:28 Raymond        Note Edited: 0010943                         
-07-09-06 11:59 Raymond        Note Added: 0010945                          
-07-09-06 12:05 Raymond        Note Edited: 0010945                         
-07-09-06 13:13 yafrank        Note Added: 0010946                          
-07-09-06 13:15 yafrank        File Added: p88te-lspci-v                    
-07-09-06 14:55 yafrank        Note Added: 0010948                          
-07-09-06 14:57 yafrank        File Added: norm-1.0.8rc1-2.6.12.6-dmesg          
-         
-07-09-06 15:48 yafrank        Note Added: 0010949                          
-07-09-06 15:51 Raymond        Note Added: 0010950                          
-07-09-06 15:57 yafrank        File Added: abnorm-1.0.8rc2-2.6.12.6-dmesg        
-           
-07-09-06 16:52 Raymond        Note Added: 0010951                          
-07-10-06 01:38 Raymond        Note Edited: 0010938                         
-07-10-06 02:23 Raymond        Note Deleted: 0010951                        
-07-10-06 04:50 Raymond        Note Added: 0010955                          
-07-10-06 04:53 Raymond        Note Edited: 0010955                         
-07-10-06 10:49 yafrank        Note Added: 0010957                          
-07-10-06 10:51 yafrank        File Added: asound.state-1.0.8rc1                 
-  
-07-10-06 11:08 Raymond        Note Added: 0010958                          
-07-10-06 11:16 Raymond        Note Edited: 0010958                         
-07-10-06 13:01 yafrank        Note Added: 0010959                          
-07-10-06 13:36 Raymond        Note Added: 0010960                          
-07-11-06 06:02 yafrank        Note Added: 0010965                          
-07-11-06 06:28 Raymond        Note Added: 0010967                          
-07-11-06 06:31 Raymond        Note Edited: 0010967                         
-07-11-06 08:48 yafrank        Note Added: 0010969                          
-======================================================================
-
-
+Adam Tla=B3ka       mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+Computer Center,  Gda=F1sk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
