@@ -1,11 +1,16 @@
-From: =?utf-8?B?TWlsYW4gQXZyYW1vdmnEhw==?= <milan@datagate.net.uk>
-Subject: Help needed - driver for ice1724
-Date: Tue, 11 Jul 2006 21:01:31 +0100
-Message-ID: <op.tcji8tmrss8uby@zwer>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002274]: "checking for versioned symbols"
+	error in ./configure
+Date: Tue, 11 Jul 2006 22:12:45 +0200
+Message-ID: <8a8997c87b2505966007640f255ade68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 607EE24F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Jul 2006 22:12:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,25 +20,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I got a VT1722 based sound card, wrongly thinking it'll be supported by  
-alsa.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2274> 
+======================================================================
+Reported By:                joeljkp
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2274
+Category:                   0_general
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-11-2006 22:12 CEST
+Last Modified:              07-11-2006 22:12 CEST
+======================================================================
+Summary:                    "checking for versioned symbols" error in
+./configure
+Description: 
+I get the following when I run ./configure:
 
-I tried to write a section for the ice driver to support it, but have hit  
-a block. Can someone with more experience with this driver please give me  
-a hand?
+checking for versioned symbols... ./configure: line 19347: test: "1:
+integer expression expected
+./configure: line 19350: test: "1: integer expression expected
 
-I've collected all I've done so far at
+This is caused by my libtool VERSION string:
+VERSION="1.5.22 Debian 1.5.22-2"
 
-http://chomee-be.datagate.net.uk/psc/psc.html
+The test in configure.in can't currently deal with the quotes.
+======================================================================
 
-If you can take a look and give me some hints, I'll be most grateful.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-06 22:12 joeljkp        New Issue                                    
+======================================================================
 
-Cheers, Milan
+
 
 
 -------------------------------------------------------------------------
