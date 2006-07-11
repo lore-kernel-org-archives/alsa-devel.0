@@ -1,21 +1,16 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: OSS driver removal, 2nd round (v2)
-Date: Mon, 10 Jul 2006 22:09:51 -0400
-Message-ID: <200607110209.k6B29psN007504@turing-police.cc.vt.edu>
-References: <20060707231716.GE26941@stusta.de> <p737j2potzr.fsf@verdi.suse.de>
-	<1152458300.28129.45.camel@mindpipe>
-	<20060710132810.551a4a8d.atlka@pg.gda.pl>
-	<1152571717.19047.36.camel@mindpipe> <44B2E4FF.9000502@pg.gda.pl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Tue, 11 Jul 2006 05:58:46 +0200
+Message-ID: <edfee6b7a93145a1fb238caa3cabcac2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0637255908=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from turing-police.cc.vt.edu
-	(pool-72-66-204-177.ronkva.east.verizon.net [72.66.204.177])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEEA7223
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BD66229
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 04:09:58 +0200 (MEST)
-In-Reply-To: Your message of "Tue, 11 Jul 2006 01:38:39 +0200."
-	<44B2E4FF.9000502@pg.gda.pl>
+	Tue, 11 Jul 2006 05:58:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,59 +20,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Cc: alsa-devel@alsa-project.org, ak@suse.de, linux-kernel@vger.kernel.org, Lee Revell <rlrevell@joe-job.com>, perex@suse.cz, alan@lxorguk.ukuu.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0637255908==
-Content-Type: multipart/signed; boundary="==_Exmh_1152583790_4450P";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
 
---==_Exmh_1152583790_4450P
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+======================================================================
+Reported By:                bitmage2
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1869
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
+======================================================================
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-11-2006 05:58 CEST
+======================================================================
+Summary:                    Playing surround sound produces 100% CPU load
+Description: 
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-On Tue, 11 Jul 2006 01:38:39 +0200, =3D?ISO-8859-2?Q?Adam_Tla=3DB3ka?=3D =
-said:
-> U=BFytkownik Lee Revell napisa=B3:
->
-> > esd and artsd are no longer needed since ALSA began to enable softwar=
-e
-> > mixing by default in release 1.0.9.
->  >
->=20
-> So why they are still exist in so many Linux distributions?
-
-As soon as somebody writes a patch to make the e16 window manager talk AL=
-SA
-rather than use esd, I'm heaving esd over the side.
-
-Of course, I've been saying that since ALSA 1.0.9 came out.  (And don't
-suggest I write it myself - I could if I was motivated enough, but I'm no=
-t
-motivated at the current time. :)
-
---==_Exmh_1152583790_4450P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
-
-iD8DBQFEswhucC3lWbTT17ARAhdwAKD6LORdtti4AHXf2rkazFe9VVvmVwCcCZR4
-MKS1rlYYDh5NQaOKL8sZ9o4=
-=HPen
------END PGP SIGNATURE-----
-
---==_Exmh_1152583790_4450P--
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
 
---===============0637255908==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+======================================================================
+
+----------------------------------------------------------------------
+ bitmage2 - 02-23-06 00:54 
+----------------------------------------------------------------------
+A similar behaviour is reported here (I also get this behaviour):
+http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg14867.html
+
+----------------------------------------------------------------------
+ Raymond - 07-11-06 05:58 
+----------------------------------------------------------------------
+remove .asoundrc , center_lfe is device 3
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+======================================================================
+
+
 
 
 -------------------------------------------------------------------------
@@ -85,16 +93,3 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============0637255908==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0637255908==--
