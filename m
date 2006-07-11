@@ -1,20 +1,21 @@
-From: "Theodoros V. Kalamatianos" <thkala@softlab.ece.ntua.gr>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: polypaudio renamed to pulseaudio
-Date: Wed, 12 Jul 2006 01:12:50 +0300 (EEST)
-Message-ID: <Pine.LNX.4.64.0607120100020.5284@rhama.deepcore.ngn>
+Date: Tue, 11 Jul 2006 18:21:33 -0400
+Message-ID: <1152656493.21909.96.camel@mindpipe>
 References: <Pine.LNX.4.64.0607112016170.5284@rhama.deepcore.ngn>
 	<1152638981.21909.67.camel@mindpipe>
 	<Pine.LNX.4.64.0607120004170.5284@rhama.deepcore.ngn>
 	<1152653194.21909.85.camel@mindpipe>
+	<Pine.LNX.4.64.0607120100020.5284@rhama.deepcore.ngn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from achilles.noc.ntua.gr (achilles.noc.ntua.gr [147.102.222.210])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82B5A17A
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6293117A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Jul 2006 00:14:31 +0200 (MEST)
-In-Reply-To: <1152653194.21909.85.camel@mindpipe>
+	Wed, 12 Jul 2006 00:21:40 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.64.0607120100020.5284@rhama.deepcore.ngn>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,34 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
+To: "Theodoros V. Kalamatianos" <thkala@softlab.ece.ntua.gr>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Jul 2006, Lee Revell wrote:
+On Wed, 2006-07-12 at 01:12 +0300, Theodoros V. Kalamatianos wrote:
+> On Tue, 11 Jul 2006, Lee Revell wrote:
+> > It reeks of NIH.
+> 
+> NIH = ?
+> 
 
-> Yup, that bothers me too.  Also the fact that they seem to have
-> developed PulseAudio in complete isolation - they did not as much as
-> post to the ALSA list before it was done.  How do we even know it was
-> necessary to develop yet another sound server, rather than improve ALSA?
+Not Invented Here.  The tendency in software development to constantly
+reinvent the wheel by writing your own system rather than improving on
+what's already available.
 
-I suppose that PulseAudio has a networked aspect that may be out of the 
-scope of ALSA and its design seems more flexible than ESD and less complex 
-than JACK, but I don't know how it measures up to other sound servers like 
-artsd or NAS. I seem to remember though that the polyp ALSA plugin was 
-developed after a bounty from some company, so its necessity may have not 
-been examined very objectively - money does have the tendency to twist the 
-way people think :-)
+Lee
 
-> It reeks of NIH.
-
-NIH = ?
-
-> Lee
-
-Regards,
-
-Theodoros Kalamatianos
 
 
 -------------------------------------------------------------------------
