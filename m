@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002183]: Silence on riptide card
-Date: Tue, 11 Jul 2006 08:38:40 +0200
-Message-ID: <3ee94159014a57e00b6215236b5d69e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Tue, 11 Jul 2006 08:48:33 +0200
+Message-ID: <77b8701eefc10ca7730a4a01754b1a93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A608718F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A031A1AC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 08:38:40 +0200 (MEST)
+	Tue, 11 Jul 2006 08:48:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,264 +26,243 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                Hawk777
-Assigned To:                
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2183
-Category:                   PCI - riptide
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             Linux hp 2.6.16-gentoo-r7 #8 Thu Jun 1 22:10:53 PDT
-2006 i686 Celeron (Mendocino) GNU/Linux
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             06-02-2006 21:03 CEST
-Last Modified:              07-11-2006 08:38 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              07-11-2006 08:48 CEST
 ======================================================================
-Summary:                    Silence on riptide card
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-The summary says it all: everything works perfectly, except that no matter
-what I do, no sound ever comes out. I've tried the CVS version from
-SourceForge as well as 1.0.11: same result.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-I have some programming skill (though little experience in drivers); I can
-work with you to debug this.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- nokos - 07-06-06 16:21 
+ Raymond - 07-11-06 06:31 
 ----------------------------------------------------------------------
-Can you include the contents of /proc/asound/card0/riptide
-while playing (multiple) streams and/or recording?
-is there a difference if xou play 44100 Hz streams in comparison to
-48000 Hz signed 16bit Little Endian streams.
-(They take different paths through the sound HW)
+You cannot perform suspend/resume since snd_es1371_codec_read() fail most
+of the time when reading powerdown status.
+
+            if ( (( x >> 16 ) & 0x7f ) != reg ) {
+                    switch(reg){
+                    case 0: return 0x0140;   
+                    case 0x28: return 0;
+                    case 0x2a: return 0;
+                    case 0x3c: return 0;
+                    case 0x7c: return 0x8384;
+                    case 0x7e: return 0x7605;
+                    default: break;
+                    }
+               }
+
+You either use alsa-1.0.8rc1 (if dmix work) or modified wood's hack
+'special_card = (ac97->id == 0x83847605);' to bypass the
+checkvolumeresolution() and some of snd_ac97_try_bit() for alsa version
+after alsa-1.0.8rc2 ) until someone fix snd_es1371_codec_read() and
+snd_es1371_codec_write()
+
+
 
 ----------------------------------------------------------------------
- Hawk777 - 07-11-06 08:38 
+ yafrank - 07-11-06 08:48 
 ----------------------------------------------------------------------
-Nothing playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (0)5022
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00003f3f 14: 00000000 18: 00000001 1c: 00000001
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 6926 6926
- 1: 6926 6926
- 2: 6926 6926
- 3: 6926 6926
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 978 failed: 1 time: 2107 max: 7 min: 0
-Open streams 0:
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d b->0
-
-
-
-One 44100Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (196)19817
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 000c3fcc 18: 00000001 1c: 000c3fcd
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 6926 6926
- 3: 6926 6926
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 1156 failed: 1 time: 2385 max: 7 min: 0
-Open streams 1:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d 8->4 b->0
-
-
-
-Two 44100Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (1464)21187
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 0004400a 18: 00000001 1c: 0004400b
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 1871 failed: 1 time: 3677 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-stream: 1 mixer: 1 source: 1 (9,255)
-rate: 44100
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1f->11 1e->10 29->d 8->4 9->1 b->0
-
-
-
-One 48000Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (3169)23068
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 00034008 18: 00000001 1c: 00034009
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 0 0
- 3: 0 0
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 2891 failed: 1 time: 5576 max: 7 min: 0
-Open streams 1:
-stream: 4 mixer: 0 source: 4 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 29->d 1e->4 b->0
-
-
-
-Two 48000Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (4180)24186
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 003a000c 18: 00000001 1c: 003a000d
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 3473 failed: 1 time: 6639 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (255,255)
-rate: 0
-stream: 1 mixer: 1 source: 1 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 29->d 1e->4 1f->1 b->0
-
-
-
-One of each playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (5699)25841
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 00048010 18: 00000001 1c: 00048011
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 4332 failed: 1 time: 8365 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-stream: 1 mixer: 1 source: 1 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d 8->4 1f->1 b->0
-
-
-
-All sounds are little-endian.
+I tried Wood's hack in 1.0.11 and it works fine, both playback and capture.
+I didn't modify his hack though, because I noticed the the chip listed in
+alsamixer of 1.0.8rc1 driver is 0x8a058384.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-06 21:03 Hawk777        New Issue                                    
-06-02-06 21:03 Hawk777        Distribution              => Gentoo          
-06-02-06 21:03 Hawk777        Kernel Version            => Linux hp
-2.6.16-gentoo-r7 #8 Thu Jun 1 22:10:53 PDT 2006 i686 Celeron (Mendocino)
-GNU/Linux
-06-02-06 21:16 Hawk777        Issue Monitored: Hawk777                     
-06-02-06 21:21 Hawk777        Note Added: 0010055                          
-07-06-06 16:21 nokos          Note Added: 0010867                          
-07-06-06 16:22 nokos          Issue Monitored: nokos                       
-07-11-06 08:38 Hawk777        Note Added: 0010968                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
+06-09-06 06:51 Raymond        Note Added: 0010132                          
+06-14-06 15:01 Raymond        Note Deleted: 0010132                        
+06-14-06 15:13 Raymond        Note Deleted: 0010072                        
+06-24-06 04:14 Raymond        Note Added: 0010465                          
+06-24-06 21:51 bobcat98       Note Added: 0010489                          
+06-25-06 02:04 Raymond        Note Added: 0010497                          
+06-25-06 07:44 bobcat98       Note Added: 0010503                          
+06-25-06 08:18 Raymond        Note Added: 0010504                          
+06-25-06 18:13 bobcat98       Note Added: 0010517                          
+06-26-06 02:10 Raymond        Note Added: 0010521                          
+06-26-06 04:10 bobcat98       Note Added: 0010523                          
+06-26-06 17:36 Raymond        Note Added: 0010551                          
+06-26-06 17:40 rlrevell       Note Added: 0010553                          
+06-26-06 17:51 Raymond        Note Edited: 0010551                         
+06-26-06 18:01 Raymond        Note Added: 0010555                          
+06-26-06 18:09 rlrevell       Note Added: 0010556                          
+06-27-06 04:48 Raymond        Note Added: 0010564                          
+06-28-06 04:36 Raymond        Note Added: 0010608                          
+06-28-06 04:36 Raymond        Note Edited: 0010608                         
+06-29-06 11:14 Raymond        Note Edited: 0010608                         
+07-01-06 05:26 Raymond        Note Added: 0010758                          
+07-07-06 07:59 yafrank        Note Added: 0010896                          
+07-07-06 09:13 yafrank        Note Added: 0010898                          
+07-07-06 09:15 yafrank        File Added: ens1371-hack-dmesg                    
+07-07-06 09:21 Raymond        Note Added: 0010899                          
+07-07-06 09:58 Raymond        Note Added: 0010900                          
+07-07-06 10:12 Raymond        Note Added: 0010901                          
+07-07-06 10:20 Raymond        Note Edited: 0010901                         
+07-07-06 11:59 yafrank        File Added: reload-ens1371-log                    
+07-07-06 12:08 yafrank        Note Added: 0010904                          
+07-07-06 12:24 Raymond        Note Added: 0010905                          
+07-07-06 14:16 yafrank        Note Added: 0010910                          
+07-07-06 14:27 yafrank        File Added: ens1370.c.rej                    
+07-07-06 14:37 Raymond        Note Added: 0010911                          
+07-07-06 18:35 yafrank        Note Added: 0010918                          
+07-07-06 18:38 yafrank        File Added: ens1370-routine-replace-error         
+          
+07-08-06 04:55 Raymond        Note Added: 0010927                          
+07-08-06 04:57 Raymond        Note Added: 0010928                          
+07-08-06 04:58 Raymond        Note Deleted: 0010927                        
+07-08-06 12:45 yafrank        File Added: old-routine-dmesg                    
+07-08-06 12:49 yafrank        Note Added: 0010930                          
+07-08-06 15:48 Raymond        Note Added: 0010931                          
+07-08-06 16:17 Raymond        Note Edited: 0010931                         
+07-08-06 16:21 Raymond        Note Edited: 0010931                         
+07-08-06 16:24 Raymond        Note Edited: 0010931                         
+07-09-06 02:19 Raymond        Note Added: 0010932                          
+07-09-06 03:16 yafrank        File Added: hack-83847605-dmesg                   
+
+07-09-06 03:59 yafrank        Note Added: 0010933                          
+07-09-06 04:39 yafrank        Note Added: 0010934                          
+07-09-06 04:51 yafrank        Note Added: 0010935                          
+07-09-06 05:56 yafrank        File Added: old-routine-1.0.7-dmesg               
+    
+07-09-06 06:10 yafrank        Note Added: 0010936                          
+07-09-06 06:16 Raymond        Note Added: 0010937                          
+07-09-06 06:17 yafrank        File Added: old-routine-1.0.7-skip-modem-dmesg    
+               
+07-09-06 06:31 Raymond        Note Added: 0010938                          
+07-09-06 06:34 Raymond        Note Edited: 0010938                         
+07-09-06 06:37 Raymond        Note Edited: 0010937                         
+07-09-06 10:22 Raymond        Note Added: 0010940                          
+07-09-06 10:39 Raymond        Note Edited: 0010940                         
+07-09-06 10:41 Raymond        Note Edited: 0010940                         
+07-09-06 10:58 yafrank        Note Added: 0010941                          
+07-09-06 11:05 Raymond        Note Added: 0010942                          
+07-09-06 11:25 Raymond        Note Added: 0010943                          
+07-09-06 11:28 Raymond        Note Edited: 0010943                         
+07-09-06 11:59 Raymond        Note Added: 0010945                          
+07-09-06 12:05 Raymond        Note Edited: 0010945                         
+07-09-06 13:13 yafrank        Note Added: 0010946                          
+07-09-06 13:15 yafrank        File Added: p88te-lspci-v                    
+07-09-06 14:55 yafrank        Note Added: 0010948                          
+07-09-06 14:57 yafrank        File Added: norm-1.0.8rc1-2.6.12.6-dmesg          
+         
+07-09-06 15:48 yafrank        Note Added: 0010949                          
+07-09-06 15:51 Raymond        Note Added: 0010950                          
+07-09-06 15:57 yafrank        File Added: abnorm-1.0.8rc2-2.6.12.6-dmesg        
+           
+07-09-06 16:52 Raymond        Note Added: 0010951                          
+07-10-06 01:38 Raymond        Note Edited: 0010938                         
+07-10-06 02:23 Raymond        Note Deleted: 0010951                        
+07-10-06 04:50 Raymond        Note Added: 0010955                          
+07-10-06 04:53 Raymond        Note Edited: 0010955                         
+07-10-06 10:49 yafrank        Note Added: 0010957                          
+07-10-06 10:51 yafrank        File Added: asound.state-1.0.8rc1                 
+  
+07-10-06 11:08 Raymond        Note Added: 0010958                          
+07-10-06 11:16 Raymond        Note Edited: 0010958                         
+07-10-06 13:01 yafrank        Note Added: 0010959                          
+07-10-06 13:36 Raymond        Note Added: 0010960                          
+07-11-06 06:02 yafrank        Note Added: 0010965                          
+07-11-06 06:28 Raymond        Note Added: 0010967                          
+07-11-06 06:31 Raymond        Note Edited: 0010967                         
+07-11-06 08:48 yafrank        Note Added: 0010969                          
 ======================================================================
 
 
