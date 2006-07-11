@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001907]: Maestro3 driver does not work
-	with Fedora Xen Kernels
-Date: Tue, 11 Jul 2006 12:35:14 +0200
-Message-ID: <0e0fc69af4b83e61a6598fe9ecea7ffb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000890]: no dialtone with modem &
+	strange log "semaphore is not ready [0x1][0x701300]"
+Date: Tue, 11 Jul 2006 12:39:05 +0200
+Message-ID: <c824d9cad758e63e9276f691865a2dee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94C021A9
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E80F220
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 12:35:16 +0200 (MEST)
+	Tue, 11 Jul 2006 12:39:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,80 +24,133 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=890> 
 ======================================================================
-Reported By:                xaoslaad
-Assigned To:                tiwai
+Reported By:                hothead
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1907
-Category:                   PCI - maestro3
+Issue ID:                   890
+Category:                   PCI - intel8x0m
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 5 Test 3
-Kernel Version:             kernel-xen0-2.6.15-1.2038_FC5
-Resolution:                 not an issue
+Status:                     closed
+Distribution:               
+Kernel Version:             2.6.9
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-11-2006 02:29 CET
-Last Modified:              07-11-2006 12:35 CEST
+Date Submitted:             02-08-2005 14:33 CET
+Last Modified:              07-11-2006 12:39 CEST
 ======================================================================
-Summary:                    Maestro3 driver does not work with Fedora Xen
-Kernels
+Summary:                    no dialtone with modem & strange log "semaphore is
+not ready [0x1][0x701300]"
 Description: 
-maestro3.c contains the following check which causes the driver to fail to
-work when using Fedora Xen0 kernels:
+Hi,
 
------------------------------------------------------------------------------
-        /* check, if we can restrict PCI DMA transfers to 28 bits */
-        if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
-            pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-                snd_printk(KERN_ERR "architecture does not support 28bit
-PCI busmaster DMA\n");
-                pci_disable_device(pci);
-                return -ENXIO;
-        }
------------------------------------------------------------------------------
+I want to tell you that snd-intel8x0m works with the ag&#232;re modem on
+my 
+thinkpad t41p. The problem is that I can not get the dialtone working.
+Do you have any suggestion concerning this problem?
 
-Commenting out the lines:
 
-                pci_disable_device(pci);
-                return -ENXIO;
+# System Information
+# ***********************
+System uname: 2.6.9-thinkpad-r1 i686 Intel(R) Pentium(R) M processor
+1700MHz
+Gentoo Base System version 1.6.9
+Python:              dev-lang/python-2.3.4 [2.3.4 (#1, Dec 30 2004,
+09:19:20)]
+distcc 2.16 i686-pc-linux-gnu (protocols 1 and 2) (default port 3632) 
+[enabled]
+dev-lang/python:     2.3.4
+sys-devel/autoconf:  2.13, 2.59-r6
+sys-devel/automake:  1.4_p6, 1.7.9-r1, 1.8.5-r3, 1.6.3, 1.9.4, 1.5
+sys-devel/binutils:  2.15.92.0.2-r1
+sys-devel/libtool:   1.5.10-r4
+virtual/os-headers:  2.6.8.1-r2
 
-causes the driver to load and seemingly work properly.  Not sure what
-negative impact removing this check can have.
 
+
+# Furthermore I get curious messages from the driver:
+# *********************************************************
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
+
+codec_write 1: semaphore is not ready for register 0x54
+
+
+It would be great if you could help me!
+
+Regards
+
+Ruben Jenster
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000509 Conexant Moden &quot;not ready&quot;
+related to          0000857 intel8x0m does not work on asus a3n laptop
 ======================================================================
 
 ----------------------------------------------------------------------
- chrisw - 03-14-06 04:46 
+ perex - 03-02-05 15:19 
 ----------------------------------------------------------------------
-File this under kernel-xen in Fedora Bugzilla (it's a Xen issue).  Also,
-please include the dmesg from bootup.  It will show swiotlb info that's
-useful.  Specifically, if the swiotlb is in use, and mapped up too high,
-it won't be able to handle 28-bit dma mask.
+Please, can you provide output of ac97*regs like in bug #509?
 
 ----------------------------------------------------------------------
- xaoslaad - 03-15-06 14:06 
+ jals - 03-03-05 03:13 
 ----------------------------------------------------------------------
-Will file as you said, and leave the information you suggested.
+You can take the line off hook using alsamixer. You'll find an Off-Hook
+control.
+When it is muted, the line is on hook. To take off-hook, unmute it. This
+should do.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 02:29 xaoslaad       New Issue                                    
-03-11-06 02:29 xaoslaad       Distribution              => Fedora Core 5 Test 3
-03-11-06 02:29 xaoslaad       Kernel Version            =>
-kernel-xen0-2.6.15-1.2038_FC5
-03-13-06 15:49 tiwai          Note Added: 0008448                          
-03-14-06 04:46 chrisw         Note Added: 0008473                          
-03-15-06 14:06 xaoslaad       Note Added: 0008547                          
-07-11-06 12:35 Adrian Bunk    Status                   assigned => resolved
-07-11-06 12:35 Adrian Bunk    Resolution               open => not an issue
+02-08-05 14:33 hothead        New Issue                                    
+02-08-05 14:33 hothead        Kernel Version            => 2.6.9           
+03-02-05 14:12 perex          Note Added: 0003772                          
+03-02-05 15:15 perex          Note Added: 0003778                          
+03-02-05 15:17 perex          Relationship added       related to 0000509  
+03-02-05 15:19 perex          Note Added: 0003779                          
+03-02-05 15:19 perex          Relationship added       related to 0000857  
+03-03-05 03:13 jals           Note Added: 0003782                          
+07-11-06 12:39 Adrian Bunk    Status                   assigned => closed  
+07-11-06 12:39 Adrian Bunk    Resolution               open => unable to
+duplicate
+07-11-06 12:39 Adrian Bunk    Description Updated                          
 ======================================================================
 
 
