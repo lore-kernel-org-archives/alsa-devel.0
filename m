@@ -1,19 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: polypaudio renamed to pulseaudio
-Date: Tue, 11 Jul 2006 17:26:33 -0400
-Message-ID: <1152653194.21909.85.camel@mindpipe>
-References: <Pine.LNX.4.64.0607112016170.5284@rhama.deepcore.ngn>
-	<1152638981.21909.67.camel@mindpipe>
-	<Pine.LNX.4.64.0607120004170.5284@rhama.deepcore.ngn>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002275]: Speakers don't mute,
+	no headphone sound with nforce MCP51
+Date: Tue, 11 Jul 2006 23:41:03 +0200
+Message-ID: <ed77b268cdd98221eac59c1d3502b0be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 72D4024A
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16905192
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 23:26:41 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.64.0607120004170.5284@rhama.deepcore.ngn>
+	Tue, 11 Jul 2006 23:41:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,32 +20,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "Theodoros V. Kalamatianos" <thkala@softlab.ece.ntua.gr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-07-12 at 00:06 +0300, Theodoros V. Kalamatianos wrote:
-> On Tue, 11 Jul 2006, Lee Revell wrote:
-> 
-> > On Tue, 2006-07-11 at 20:23 +0300, Theodoros V. Kalamatianos wrote:
-> >> the new PA
-> >> project
-> >
-> > BTW, someone should tell them this is a TERRIBLE acronym - it collides
-> > with the PortAudio project which has existed for years.
-> 
-> Actually I only used the acronym because I was too bored to write both 
-> project names. There is nothing official about it, although AFAIK all 
-> function names in the library do have a pa_ prefix...
-> 
 
-Yup, that bothers me too.  Also the fact that they seem to have
-developed PulseAudio in complete isolation - they did not as much as
-post to the ALSA list before it was done.  How do we even know it was
-necessary to develop yet another sound server, rather than improve ALSA?
-It reeks of NIH.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2275> 
+======================================================================
+Reported By:                tekhedd
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2275
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.17-gentoo-r2 #13 SMP Mon Jul 10 19:41:49 MDT
+2006 x86_64 AMD Turion(tm) 64 X2  AuthenticAMD
+======================================================================
+Date Submitted:             07-11-2006 23:41 CEST
+Last Modified:              07-11-2006 23:41 CEST
+======================================================================
+Summary:                    Speakers don't mute, no headphone sound with nforce
+MCP51
+Description: 
+I am using a non-kernel 1.0.12rc1 build. The card is recognized using
+default options, and has both an output level and PCM level fader. When
+inserting the headphones, the speakers do not mute, and the headphones
+produce no sound.
 
-Lee
+Possibly related to bug 2251. Possibly not. I'm don't even know what this
+chip really is. Rebranding should be illegal.
+
+Otherwise it works very nicely (if you accept the sound of the built in
+speakers as "nice" :-)
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-06 23:41 tekhedd        New Issue                                    
+07-11-06 23:41 tekhedd        Distribution              => Gentoo          
+07-11-06 23:41 tekhedd        Kernel Version            => 2.6.17-gentoo-r2 #13
+SMP Mon Jul 10 19:41:49 MDT 2006 x86_64 AMD Turion(tm) 64 X2  AuthenticAMD
+======================================================================
+
 
 
 
