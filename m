@@ -1,16 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002258]: nForce4 + intel8x0 + Dolby
-	Digital 5.1 + S/PDIF = crackle at start of playback
-Date: Tue, 11 Jul 2006 18:54:26 +0200
-Message-ID: <a667e2b91e9c47ea793e05abfb2f26ea@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: OSS driver removal, 2nd round (v2)
+Date: Tue, 11 Jul 2006 12:57:43 -0400
+Message-ID: <1152637064.21909.61.camel@mindpipe>
+References: <20060707231716.GE26941@stusta.de>
+	<p737j2potzr.fsf@verdi.suse.de> <1152458300.28129.45.camel@mindpipe>
+	<20060710132810.551a4a8d.atlka@pg.gda.pl>
+	<1152571717.19047.36.camel@mindpipe> <44B2E4FF.9000502@pg.gda.pl>
+	<200607110209.k6B29psN007504@turing-police.cc.vt.edu>
+	<20060711081528.4d3ab197.atlka@pg.gda.pl>
+	<200607111430.k6BEUUus006736@turing-police.cc.vt.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 130A31AC
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9929D253
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 18:54:26 +0200 (MEST)
+	Tue, 11 Jul 2006 18:57:42 +0200 (MEST)
+In-Reply-To: <200607111430.k6BEUUus006736@turing-police.cc.vt.edu>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,95 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Valdis.Kletnieks@vt.edu
+Cc: Adam =?iso-8859-2?Q?Tla=B3ka?= <atlka@pg.gda.pl>, alsa-devel@alsa-project.org, alan@lxorguk.ukuu.org.uk, linux-kernel@vger.kernel.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-07-11 at 10:30 -0400, Valdis.Kletnieks@vt.edu wrote:
+> On Tue, 11 Jul 2006 08:15:28 +0200, Adam =?ISO-8859-2?B?VGxhs2th?= said:
+> > Sorry to say but it is just not that way. Window manager is for managing windows
+> > and it shouldn't depend on any audio system. It should use an external app using exec call
+> > to play sounds (aplay, sox, wavplay etc.) configured by some config option.
+> 
+> So what you're saying is that something like 'esd' *is* needed.  (It's
+> certainly silly to keep doing fork/exec for every little sound sample when
+> you can just leave the app running and hand it requests...)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2258> 
-======================================================================
-Reported By:                Human
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2258
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               KnoppMyth
-Kernel Version:             2.6.17-chw-2
-======================================================================
-Date Submitted:             07-05-2006 22:12 CEST
-Last Modified:              07-11-2006 18:54 CEST
-======================================================================
-Summary:                    nForce4 + intel8x0 + Dolby Digital 5.1 + S/PDIF =
-crackle at start of playback
-Description: 
-Playing stereo audio never causes a crackle.  However, playback of 5.1
-Dobly Digital content (standalone audio or audio embedded in video) causes
-a quick but very loud sub-second audio crackle before playback continues,
-when the previous playback was _not_ also multi-channel content.  The
-problem always happens when the card is being asked to _switch_ to
-multichannel audio _from_ either stereo or a non-initialized state.  The
-crackle happens on both coaxial and optical S/PDIF connections to the
-nForce4 (CK804) onboard soundcard.
+That approach also won't be reliable as it ignores the realtime
+constraint that is inherent in audio playback.  It will probably work on
+a fast/lightly loaded machine but will glitch out under load.
 
-The same receiver has not had a problem with S/PDIF with a different card
-(Chaintech AV-710 / ice1724).
-======================================================================
+It's how GDM plays startup/shutdown sounds and it sucks - on shutdown
+the sound is choppy.  You either need a dedicated daemon running
+SCHED_FIFO or an RT thread for reliable audio playback.
 
-----------------------------------------------------------------------
- tiwai - 07-11-06 18:38 
-----------------------------------------------------------------------
-It's a known problem of SPDIF on nForce chipsets.  SPDIF non-audio output
-doesn't work well because of lack of proper SPDIF status bit setting. 
-Since SPDIF is transmitted directly from the audio chip, the changing
-register in AC97 codec doesn't help.
-
-Unfortuantely, we have no datasheet to fix this...
-
-----------------------------------------------------------------------
- Human - 07-11-06 18:54 
-----------------------------------------------------------------------
-Hi, tiwai.  I don't understand the cause fully, but maybe I can still help.
- Is a workaround possible?  Half a second of silence would be far better
-than half a second of static.  Perhaps muting the line, then using the
-buggy procedure, then unmuting?  Or is the problem that the receiver is
-being asked to switch to multichannel mode in such a way that the receiver
-interprets part of the switch request as audible noise, so muting the
-source would not help?  Is any workaround possible?
-
-As for a real fix, has nVidia refused to provide the necessary datasheet
-for the nForce4 chipset when asked?  If you tell me what specifically
-would help fix the problem, I will do what I can to provide it.  I don't
-exactly have an "in" with nVidia, but as a vendor who sells nVidia
-products, they have assigned Linux troubleshooting techs to my requests in
-the past.
-
-Finally, if you point me to the relevant code in which the S/PDIF status
-bit is set, couldn't I iterate through all possible settings and
-eventually find the right one?  If the solution space is small enough, it
-may be feasible.  Are we talking a 4-bit value or a 16-bit value?
-
-If it's not appropriate to keep conversing back and forth in this bug
-report, we can switch to email.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-05-06 22:12 Human          New Issue                                    
-07-05-06 22:12 Human          File Added: asound.conf                      
-07-05-06 22:12 Human          Distribution              => KnoppMyth       
-07-05-06 22:12 Human          Kernel Version            => 2.6.17-chw-2    
-07-05-06 22:13 Human          Issue Monitored: Human                       
-07-11-06 18:34 Human          Note Added: 0010977                          
-07-11-06 18:38 tiwai          Note Added: 0010978                          
-07-11-06 18:54 Human          Note Added: 0010979                          
-======================================================================
-
+Lee
 
 
 
