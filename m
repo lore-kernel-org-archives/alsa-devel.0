@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002274]: "checking for versioned symbols"
 	error in ./configure
-Date: Tue, 11 Jul 2006 22:12:45 +0200
-Message-ID: <8a8997c87b2505966007640f255ade68@bugtrack.alsa-project.org>
+Date: Tue, 11 Jul 2006 22:20:22 +0200
+Message-ID: <39ad0919c75ecbaba640755a9aa7a328@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 607EE24F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEA3A192
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Jul 2006 22:12:45 +0200 (MEST)
+	Tue, 11 Jul 2006 22:20:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2274> 
 ======================================================================
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-11-2006 22:12 CEST
-Last Modified:              07-11-2006 22:12 CEST
+Last Modified:              07-11-2006 22:20 CEST
 ======================================================================
 Summary:                    "checking for versioned symbols" error in
 ./configure
@@ -57,10 +57,17 @@ VERSION="1.5.22 Debian 1.5.22-2"
 The test in configure.in can't currently deal with the quotes.
 ======================================================================
 
+----------------------------------------------------------------------
+ joeljkp - 07-11-06 22:20 
+----------------------------------------------------------------------
+Proposed patch attached.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-11-06 22:12 joeljkp        New Issue                                    
+07-11-06 22:20 joeljkp        File Added: bug2274.patch                    
+07-11-06 22:20 joeljkp        Note Added: 0010980                          
 ======================================================================
 
 
