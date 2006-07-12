@@ -1,15 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Line6 Toneport UX1 driver again
-Date: Wed, 12 Jul 2006 11:43:18 +0200
-Message-ID: <20060712094318.GB22449@turing.informatik.uni-halle.de>
-References: <160c13350607110559v28640db3x7abc13946b58adca@mail.gmail.com>
-	<s5hveq45llx.wl%tiwai@suse.de>
-	<160c13350607110815v4cf22dafg1485709d21dba49b@mail.gmail.com>
+Subject: Re: independent play(write) on the left/right channel
+ of audio devic	e
+Date: Wed, 12 Jul 2006 11:53:19 +0200
+Message-ID: <20060712095319.GC22449@turing.informatik.uni-halle.de>
+References: <C980A03F3B62744E814B843AF92AC6D81ED3E1@tndki007.kiel.thales-naval.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <160c13350607110815v4cf22dafg1485709d21dba49b@mail.gmail.com>
+In-reply-to: <C980A03F3B62744E814B843AF92AC6D81ED3E1@tndki007.kiel.thales-naval.de>
 Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,21 +19,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Stefano D'Angelo <zanga.mail@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: "Steen, Gerd" <gerd.steen@de.thalesgroup.com>
+Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Stefano D'Angelo wrote:
-> But maybe there's another solution to the problem: since this card has just
-> some differences at initialization and playback start with normal USB cards,
-> maybe usb-snd-audio could be used.
+Steen, Gerd wrote:
+> my configuration are 2 total independent Task, which need to write on the
+> audio device. 
+> 
+> ->Task one needs to write on the right channel of stereo device Task two 
+> ->needs to write on the left channel of stereo device
 
-This would be preferrable.
+Put the following in ~/.asoundrc or /etc/asound.conf:
 
-What are the differences?
+pcm.left {
+	type dshare
+	slave {
+		pcm "hw:0"	# or whatever the stereo device is
+		channels 2
+	}
+	bindings {
+		0 0
+	}
+}	
+
+pcm.right {
+	type dshare
+	slave {
+		pcm "hw:0"
+		channels 2
+	}
+	bindings {
+		0 1
+	}
+}	
+
+Then use devices "left" and "right", or "plug:left" etc. for automatic
+sample rate/format conversion.
 
 
-Regards,
+HTH
 Clemens
 
 
