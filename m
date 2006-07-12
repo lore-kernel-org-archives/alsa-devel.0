@@ -1,17 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?q?=5BALSA_-_WWW_server_0002247=5D=3A_Fa?=
- =?iso-8859-1?q?tal_error=3A_Call_to_undefined_function=3A_mail=28=29__/_C?=
- =?iso-8859-1?q?an=B4t_add_note_for_a_soundcard?=
-Date: Wed, 12 Jul 2006 05:53:06 +0200
-Message-ID: <7dab7204551510b9c415f3f0692f43f1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002276]: No sound
+Date: Wed, 12 Jul 2006 06:49:22 +0200
+Message-ID: <24c6faebca91131c4330402cbb0f84d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D986236
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5DB724F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Jul 2006 05:53:06 +0200 (MEST)
+	Wed, 12 Jul 2006 06:49:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,109 +23,154 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2247> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                konczalski
-Assigned To:                =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - WWW server
-Issue ID:                   2247
-Category:                   wrong html/css syntax
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2276> 
+======================================================================
+Reported By:                yann
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2276
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-29-2006 12:07 CEST
-Last Modified:              07-12-2006 05:53 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Fatal error: Call to undefined function: mail()=
-  /
-Can=B4t add note for a soundcard
-Description: =
+Status:                     assigned
+Distribution:               Ubuntu 6.06
+Kernel Version:             2.6.15-26-686 SMP
+======================================================================
+Date Submitted:             07-12-2006 06:49 CEST
+Last Modified:              07-12-2006 06:49 CEST
+======================================================================
+Summary:                    No sound
+Description: 
+Conexant codec (14f1/5047)seems unsuported:
 
-I try to add a coment =
+/$ cat /proc/asound/card0/codec#0
+Codec: Generic 14f1 ID 5047
+Address: 0
+Vendor Id: 0x14f15047
+Subsystem Id: 0x1179ff31
+Revision Id: 0x100000
+Default PCM: rates 0x040, bits 0x02, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x0e 0x0e] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+  Connection: 6
+     0x19* 0x14 0x15 0x1a 0x16 0x10
+Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  Pincap 0x081001c: OUT HP
+  Pin Default 0xc3111010: [Both] Speaker at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Power: 0x0
+  Connection: 3
+     0x19* 0x10 0x16
+Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03811011: [Jack] Line In at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 2
+     0x19* 0x16
+Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03a11012: [Jack] Mic at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x0860: IN
+  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
+  Pincap 0x08324: IN
+  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
+    Conn = RCA, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+  Connection: 1
+     0x11
+Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x07 0x07] [0x07 0x07] [0x80 0x80] [0x17 0x17]
+  Power: 0x0
+  Connection: 4
+     0x10 0x1b 0x1a 0x16
+Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Power: 0x0
+  Connection: 3
+     0x15* 0x14 0x17
+Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
+  Power: 0x0
+  Connection: 2
+     0x14* 0x15
+Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x08314: OUT
+  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
 
-#############################
-Since ALSA version 1.0.10 is no more need to specifiy the S32_LE format.
-To play sound with MPlayer over optical output use this parameter: =
 
-
-mplayer -ao alsa:device=3Dplughw=3D0.1 file.avi
-#############################
-to this side:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=3DTerrate=
-c&card=3DAureon+5.1+Space.&chip=3DEnvy24HT+%28ICE1724%29&module=3Dice1724
-but i get this error:
-
-
-###########################################
-Thanks, your addition has been delivered
-
-We will include it as soon as possible.
-
-Return to the page you were reading
-
-Fatal error: Call to undefined function: mail() in
-/shm/var/data/www/htdocs/alsa-doc/doc-php/docs-add-notes-preview.php on
-line 386
-#########################################
-
-At second: please change the name of "Aureon 5.1 Space" to "Aureon 7.1
-Space" (vendor Terratec), "Aureon 5.1 Space" does not exist, see issue
-0001885.
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- Raymond - 07-12-06 05:53 =
-
-----------------------------------------------------------------------
-It seem that they want to mirgate the current ALSA WIKI -
-http://alsa.opensrc.org/
-
-to a new ALSA WIKI - http://alsa2.opensrc.org/
-
-but there is not link in old WIKI to tell user to use new WIKI
+======================================================================
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-29-06 12:07 konczalski     New Issue                                    =
-
-07-12-06 05:53 Raymond        Note Added: 0010982                          =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+07-12-06 06:49 yann           New Issue                                    
+07-12-06 06:49 yann           Distribution              => Ubuntu 6.06     
+07-12-06 06:49 yann           Kernel Version            => 2.6.15-26-686 SMP
+======================================================================
 
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
