@@ -1,14 +1,16 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: How to send patch with moves?
-Date: Wed, 12 Jul 2006 09:25:28 +0200
-Message-ID: <44B4A3E8.8060509@cendio.se>
+From: "Grace Baldonasa" <gbaldona@gmail.com>
+Subject: question about sampling rate
+Date: Wed, 12 Jul 2006 16:05:20 +0800
+Message-ID: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1561212005=="
+Content-Type: multipart/mixed; boundary="===============0762305437=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEAE2167
+Received: from hu-out-0102.google.com (hu-out-0102.google.com [72.14.214.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0EA7238
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Jul 2006 09:25:33 +0200 (MEST)
+	Wed, 12 Jul 2006 10:05:21 +0200 (MEST)
+Received: by hu-out-0102.google.com with SMTP id 38so3383284huc
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2006 01:05:21 -0700 (PDT)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,52 +20,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============1561212005==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigDE1028887F425BD5C83F117B"
+--===============0762305437==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_6810_17705304.1152691520104"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDE1028887F425BD5C83F117B
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+------=_Part_6810_17705304.1152691520104
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hi there!
+Hi all,
 
-I've updated the polypaudio plugin (in alsa-plugins) to the latest
-release. Polypaudio recently changed its name to PulseAudio, so I've
-made the corresponding changes in ALSA. I am at a loss on how to
-generate a patch that will carry the necessary information though as it
-would be nice to keep the history of the files as they are renamed (I
-have moved them locally with 'hg mv')
+I have a very simple question regarding the convertion of sampling rate to
+usb full/high speed rate, is this the right mailing list to throw the
+question?
 
---=20
-Pierre Ossman                Telephone: +46-13-21 46 00
-Cendio AB                    Web: http://www.cendio.com
+any reply will be greatly appreciate.
+Thanks.
 
+grace
 
---------------enigDE1028887F425BD5C83F117B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+------=_Part_6810_17705304.1152691520104
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+<div>Hi all,</div>
+<div>&nbsp;</div>
+<div>I have a very simple question regarding the convertion of sampling rate to usb full/high speed rate, is this the right mailing list to throw the question?</div>
+<div>&nbsp;</div>
+<div>any reply will be greatly appreciate.</div>
+<div>Thanks.</div>
+<div>&nbsp;</div>
+<div>grace</div>
+<div>&nbsp;</div>
 
-iD8DBQFEtKPr7b8eESbyJLgRAsZkAKDAb6uf605+S8GWruAxtejyN5GBqACeLoy9
-rkDNnDqYH5hqYR9YZk6R4R0=
-=ewaN
------END PGP SIGNATURE-----
-
---------------enigDE1028887F425BD5C83F117B--
+------=_Part_6810_17705304.1152691520104--
 
 
---===============1561212005==
+--===============0762305437==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -76,7 +74,7 @@ Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
 
---===============1561212005==
+--===============0762305437==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -87,4 +85,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1561212005==--
+--===============0762305437==--
