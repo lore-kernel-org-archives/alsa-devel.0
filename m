@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Wed, 12 Jul 2006 17:52:48 +0200
-Message-ID: <96d307bd6a589b587e3e2f8ae66dfba4@bugtrack.alsa-project.org>
+Date: Wed, 12 Jul 2006 18:02:22 +0200
+Message-ID: <fcb69a2d7321761c0a73eed518d0366c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FBEA1A2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C63CF159
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Jul 2006 17:52:48 +0200 (MEST)
+	Wed, 12 Jul 2006 18:02:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -39,7 +39,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              07-12-2006 17:52 CEST
+Last Modified:              07-12-2006 18:02 CEST
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -59,81 +59,10 @@ related to          0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-09-06 03:28 
+ Raymond - 07-12-06 17:54 
 ----------------------------------------------------------------------
-It depend on aoss open which pcm device and the sound card 
-
-1) hw
-2) plughw
-3) default
-4) ALSA_OSS_PCM_DEVICE
-
-The "type plug" allow mono/stereo conversion, but it also changed the
-values return by snd_pcm_hw_params_get_xxx_min() and
-snd_pcm_hw_params_get_xxx_max()
-
-
-
-#include <alsa/asoundlib.h>
-#include <stdio.h>
-
-char *device_name[3]={"hw:0","plughw:0","default"};
-
-int main(int argc, char **argv)
-{
-    snd_pcm_t *pcm;
-    snd_pcm_info_t *pcm_info;
-    snd_pcm_hw_params_t *hw_params;
-    snd_pcm_format_t format;
-    char device[16];
-    int err,i;
-    int dir,sub;
-    int channels,chn_min,chn_max;
-	
-    printf("ALSA %s\n",snd_asoundlib_version());
-    for (i=0; i<3; i++) {
-	strcpy(device,device_name[i]);
-        for (dir=SND_PCM_STREAM_PLAYBACK; dir<= SND_PCM_STREAM_CAPTURE;
-dir++) {
-            err = snd_pcm_open(&pcm, device, dir,SND_PCM_NONBLOCK);
-            if ( err < 0 ) {
-   	        printf(" open %s fail : %s\n",device,snd_strerror(err));
-            }
-            else {
-                snd_pcm_info_alloca(&pcm_info);
- 	        err = snd_pcm_info(pcm, pcm_info);
-	        if ( err < 0 ) {
- 	      	    printf(" pcm_info : %s\n",snd_strerror(err));
-	        };
-		printf("%s %s %s\n",device,snd_pcm_info_get_name(pcm_info),dir ==
-SND_PCM_STREAM_PLAYBACK ? "Playback" : "Capture");
-                snd_pcm_hw_params_malloc(&hw_params);
-		err = snd_pcm_hw_params_any(pcm, hw_params);
-		if ( err < 0 ) {
-		    printf("hw_params_any error %s\n",snd_strerror(err));
-		} else {
-	            err = snd_pcm_hw_params_get_channels_min(hw_params,
-&chn_min);
-		    printf("%s channel min=%d\n",device,chn_min);
-		    err = snd_pcm_hw_params_get_channels_max(hw_params, &chn_max);
-		    printf("%s channel max=%d\n",device,chn_max);
-
-		    for (channels=chn_min; channels<=chn_max; channels++) {
-			if ( snd_pcm_hw_params_test_channels(pcm,hw_params,channels) == 0 ) 
-			    printf(" channel : %d\n",channels);
-		    };
-                };
-	        snd_pcm_close(pcm);
-   	    };
-        };
-    };
-}
-
-----------------------------------------------------------------------
- Raymond - 07-12-06 17:52 
-----------------------------------------------------------------------
-It seem to be an AOSS bug, it can return all format unless device has
-'plug'
+It seem to be an AOSS bug, it can return all format unless device use
+'plug' plugin
 
 
 case SNDCTL_DSP_GETFMTS:
@@ -144,6 +73,13 @@ case SNDCTL_DSP_GETFMTS:
     DEBUG("SNDCTL_DSP_GETFMTS, %p) -> [%d]\n", arg, *(int *)arg);
     break;
 }
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 07-12-06 18:02 
+----------------------------------------------------------------------
+I have no idea what you mean.  Please be less cryptic.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,6 +110,8 @@ Date Modified  Username       Field                    Change
 06-08-06 17:30 pzad           Note Added: 0010114                          
 06-09-06 03:28 Raymond        Note Added: 0010125                          
 07-12-06 17:52 Raymond        Note Added: 0010984                          
+07-12-06 17:54 Raymond        Note Edited: 0010984                         
+07-12-06 18:02 rlrevell       Note Added: 0010985                          
 ======================================================================
 
 
