@@ -1,15 +1,17 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [alsa-cvslog] alsa-kernel: snd-emu10k1:
- Add	support for	EMU1212m card.
-Date: Wed, 12 Jul 2006 11:41:49 +0100
-Message-ID: <44B4D1ED.1030801@superbug.co.uk>
-References: <ALOGGER1152655949.31@alsa-project.org>	<1152656929.21909.100.camel@mindpipe>	<s5h8xmz5elo.wl%tiwai@suse.de>	<44B4C907.8060909@superbug.co.uk>
-	<s5h64i35e7g.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [alsa-cvslog] alsa-kernel: snd-emu10k1: Add
+ support for EMU1212m card.
+Date: Wed, 12 Jul 2006 13:01:13 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0607121259310.10256@tm8103-a.perex-int.cz>
+References: <ALOGGER1152655949.31@alsa-project.org>
+	<1152656929.21909.100.camel@mindpipe>
+	<s5h8xmz5elo.wl%tiwai@suse.de> <44B4C907.8060909@superbug.co.uk>
+	<s5h64i35e7g.wl%tiwai@suse.de> <44B4D1ED.1030801@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h64i35e7g.wl%tiwai@suse.de>
+In-Reply-To: <44B4D1ED.1030801@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,68 +21,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 12 Jul 2006 11:03:51 +0100,
-> James Courtier-Dutton wrote:
->   
->> Takashi Iwai wrote:
->>     
->>> At Tue, 11 Jul 2006 18:28:48 -0400,
->>> Lee Revell wrote:
->>>   
->>>       
->>>> On Wed, 2006-07-12 at 00:12 +0200, James Courtier-Dutton wrote:
->>>>     
->>>>         
->>>>> +const static unsigned char emu1212m_netlist1[] = {
->>>>> +0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0x99, 0xAA, 0x66,
->>>>> +0x0C, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0xE0,
->>>>> +0x0C, 0x80, 0x06, 0x80, 0x00, 0x00, 0x00, 0xD0,
->>>>>       
->>>>>           
->>>> [ etc ]
->>>>
->>>> You're going to bloat everyone's emu10k1 driver with this gigantic
->>>> structure?  Can't you use the firmware loading interface?  The kernel
->>>> guys will flip when they see this.
->>>>     
->>>>         
->>> Agreed, that's too big.  You should put the binary image in
->>> alsa-firmware package and use request_firmware() to read it.
->>>
->>> Any chance to revert the patch (as exception) from HG tree?
->>>
->>>
->>> Takashi
->>>   
->>>       
->> I will sort it out this weekend.
->> I just wanted to get the code in there so people interested in emu1212m 
->> support could see it.
->> The support for the emu1212m has been a long time coming (years in fact).
->>     
->
-> The problem is, if you commit codes into alsa-kernel tree, it means
-> automatically that the code will appear on linux kernel tree.
-> So, you're pushing unneeded bunch of binary data to the kernel tree
-> now.  The point here is not how well the device is supported.
->
->
-> Takashi
->   
-So, how do I undo this?
-I need a hg repository on the net somewhere that I can use for 
-development work like this. I would use it to backup work in progress 
-alsa development.
-That was always possible with the alsa cvs tree. I did not think that 
-had changed with the hg tree.
+On Wed, 12 Jul 2006, James Courtier-Dutton wrote:
 
-James
+> Takashi Iwai wrote:
+> > At Wed, 12 Jul 2006 11:03:51 +0100,
+> > James Courtier-Dutton wrote:
+> >   
+> >> Takashi Iwai wrote:
+> >>     
+> >>> At Tue, 11 Jul 2006 18:28:48 -0400,
+> >>> Lee Revell wrote:
+> >>>   
+> >>>       
+> >>>> On Wed, 2006-07-12 at 00:12 +0200, James Courtier-Dutton wrote:
+> >>>>     
+> >>>>         
+> >>>>> +const static unsigned char emu1212m_netlist1[] = {
+> >>>>> +0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0x99, 0xAA, 0x66,
+> >>>>> +0x0C, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0xE0,
+> >>>>> +0x0C, 0x80, 0x06, 0x80, 0x00, 0x00, 0x00, 0xD0,
+> >>>>>       
+> >>>>>           
+> >>>> [ etc ]
+> >>>>
+> >>>> You're going to bloat everyone's emu10k1 driver with this gigantic
+> >>>> structure?  Can't you use the firmware loading interface?  The kernel
+> >>>> guys will flip when they see this.
+> >>>>     
+> >>>>         
+> >>> Agreed, that's too big.  You should put the binary image in
+> >>> alsa-firmware package and use request_firmware() to read it.
+> >>>
+> >>> Any chance to revert the patch (as exception) from HG tree?
+> >>>
+> >>>
+> >>> Takashi
+> >>>   
+> >>>       
+> >> I will sort it out this weekend.
+> >> I just wanted to get the code in there so people interested in emu1212m 
+> >> support could see it.
+> >> The support for the emu1212m has been a long time coming (years in fact).
+> >>     
+> >
+> > The problem is, if you commit codes into alsa-kernel tree, it means
+> > automatically that the code will appear on linux kernel tree.
+> > So, you're pushing unneeded bunch of binary data to the kernel tree
+> > now.  The point here is not how well the device is supported.
+> >
+> >
+> > Takashi
+> >   
+> So, how do I undo this?
 
+I did 'hg revert' in alsa-kernel repo.
+
+> I need a hg repository on the net somewhere that I can use for 
+> development work like this. I would use it to backup work in progress 
+> alsa development.
+
+The temporary development should go to the alsa-driver repository.
+
+> That was always possible with the alsa cvs tree. I did not think that 
+> had changed with the hg tree.
+
+Nope. The rules are exactly same. The alsa-kernel tree is for stable code 
+which goes directly to the kernel tree. The experimental code should go to 
+the alsa-driver tree.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------------------------
