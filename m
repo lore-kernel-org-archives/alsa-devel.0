@@ -1,16 +1,15 @@
-From: "Grace Baldonasa" <gbaldona@gmail.com>
-Subject: question about sampling rate
-Date: Wed, 12 Jul 2006 16:05:20 +0800
-Message-ID: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002278]: digital output doesn't work
+Date: Wed, 12 Jul 2006 10:56:31 +0200
+Message-ID: <16e5a51f486c9f336472624cab8c9206@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0762305437=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from hu-out-0102.google.com (hu-out-0102.google.com [72.14.214.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0EA7238
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43E9D189
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Jul 2006 10:05:21 +0200 (MEST)
-Received: by hu-out-0102.google.com with SMTP id 38so3383284huc
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2006 01:05:21 -0700 (PDT)
+	Wed, 12 Jul 2006 10:56:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,49 +22,44 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0762305437==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_6810_17705304.1152691520104"
 
-------=_Part_6810_17705304.1152691520104
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2278> 
+======================================================================
+Reported By:                thrantir
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2278
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian
+Kernel Version:             kernel 2.6.15-k7
+======================================================================
+Date Submitted:             07-12-2006 10:56 CEST
+Last Modified:              07-12-2006 10:56 CEST
+======================================================================
+Summary:                    digital output doesn't work
+Description: 
+yesterday i updated my alsa module using the standard apt-get dist-upgrade
+debian tool. After rebooting the machine, the digital output of my
+soundblaster live 5.1 didn't work any more. The analog output works
+correctly
+======================================================================
 
-Hi all,
-
-I have a very simple question regarding the convertion of sampling rate to
-usb full/high speed rate, is this the right mailing list to throw the
-question?
-
-any reply will be greatly appreciate.
-Thanks.
-
-grace
-
-------=_Part_6810_17705304.1152691520104
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<div>Hi all,</div>
-<div>&nbsp;</div>
-<div>I have a very simple question regarding the convertion of sampling rate to usb full/high speed rate, is this the right mailing list to throw the question?</div>
-<div>&nbsp;</div>
-<div>any reply will be greatly appreciate.</div>
-<div>Thanks.</div>
-<div>&nbsp;</div>
-<div>grace</div>
-<div>&nbsp;</div>
-
-------=_Part_6810_17705304.1152691520104--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-12-06 10:56 thrantir       New Issue                                    
+07-12-06 10:56 thrantir       Distribution              => debian          
+07-12-06 10:56 thrantir       Kernel Version            => kernel 2.6.15-k7
+======================================================================
 
 
---===============0762305437==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -------------------------------------------------------------------------
@@ -73,16 +67,3 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============0762305437==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0762305437==--
