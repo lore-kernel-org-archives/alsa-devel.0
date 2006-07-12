@@ -1,14 +1,17 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: pcm_min.c
-Date: Tue, 11 Jul 2006 21:25:23 -0400
-Message-ID: <1152667523.21909.110.camel@mindpipe>
-References: <1152635800.21909.47.camel@mindpipe>
-	<Pine.LNX.4.61.0607112152000.7907@tm8103-a.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: =?iso-8859-1?q?=5BALSA_-_WWW_server_0002247=5D=3A_Fa?=
+ =?iso-8859-1?q?tal_error=3A_Call_to_undefined_function=3A_mail=28=29__/_C?=
+ =?iso-8859-1?q?an=B4t_add_note_for_a_soundcard?=
+Date: Wed, 12 Jul 2006 05:53:06 +0200
+Message-ID: <7dab7204551510b9c415f3f0692f43f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0607112152000.7907@tm8103-a.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D986236
+	for <alsa-devel@alsa-project.org>;
+	Wed, 12 Jul 2006 05:53:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,33 +21,113 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-07-11 at 21:52 +0200, Jaroslav Kysela wrote:
-> On Tue, 11 Jul 2006, Lee Revell wrote:
-> 
-> > Can someone fix this page:
-> > 
-> > http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm__min_8c-example.html
-> > 
-> > It's very useful for responding to people who say ALSA is too
-> > complicated, but there's no working copy of pcm_min.c online (at least,
-> > Google cannot find one).
-> 
-> Fixed. Thanks.
 
-Why do snd_pcm_set_params, snd_strerror, snd_pcm_writei, and
-snd_pcm_close link to the function documentation, but not snd_pcm_open
-and snd_pcm_recover?
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2247> =
 
-Lee
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                konczalski
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - WWW server
+Issue ID:                   2247
+Category:                   wrong html/css syntax
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-29-2006 12:07 CEST
+Last Modified:              07-12-2006 05:53 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Fatal error: Call to undefined function: mail()=
+  /
+Can=B4t add note for a soundcard
+Description: =
+
+I try to add a coment =
+
+#############################
+Since ALSA version 1.0.10 is no more need to specifiy the S32_LE format.
+To play sound with MPlayer over optical output use this parameter: =
+
+
+mplayer -ao alsa:device=3Dplughw=3D0.1 file.avi
+#############################
+to this side:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=3DTerrate=
+c&card=3DAureon+5.1+Space.&chip=3DEnvy24HT+%28ICE1724%29&module=3Dice1724
+but i get this error:
+
+
+###########################################
+Thanks, your addition has been delivered
+
+We will include it as soon as possible.
+
+Return to the page you were reading
+
+Fatal error: Call to undefined function: mail() in
+/shm/var/data/www/htdocs/alsa-doc/doc-php/docs-add-notes-preview.php on
+line 386
+#########################################
+
+At second: please change the name of "Aureon 5.1 Space" to "Aureon 7.1
+Space" (vendor Terratec), "Aureon 5.1 Space" does not exist, see issue
+0001885.
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ Raymond - 07-12-06 05:53 =
+
+----------------------------------------------------------------------
+It seem that they want to mirgate the current ALSA WIKI -
+http://alsa.opensrc.org/
+
+to a new ALSA WIKI - http://alsa2.opensrc.org/
+
+but there is not link in old WIKI to tell user to use new WIKI
+
+Issue History
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-29-06 12:07 konczalski     New Issue                                    =
+
+07-12-06 05:53 Raymond        Note Added: 0010982                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
