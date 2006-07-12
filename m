@@ -1,17 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [alsa-cvslog] alsa-kernel: snd-emu10k1: Add
- support for EMU1212m card.
-Date: Wed, 12 Jul 2006 13:01:13 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0607121259310.10256@tm8103-a.perex-int.cz>
-References: <ALOGGER1152655949.31@alsa-project.org>
-	<1152656929.21909.100.camel@mindpipe>
-	<s5h8xmz5elo.wl%tiwai@suse.de> <44B4C907.8060909@superbug.co.uk>
-	<s5h64i35e7g.wl%tiwai@suse.de> <44B4D1ED.1030801@superbug.co.uk>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: How to send patch with moves?
+Date: Wed, 12 Jul 2006 14:53:27 +0200
+Message-ID: <44B4F0C7.9070009@cendio.se>
+References: <44B4A3E8.8060509@cendio.se> <s5hac7f5fcu.wl%tiwai@suse.de>
+	<44B4C8CC.8080400@cendio.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2102044250=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44B4D1ED.1030801@superbug.co.uk>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A12A7AC
+	for <alsa-devel@alsa-project.org>;
+	Wed, 12 Jul 2006 14:53:32 +0200 (MEST)
+In-Reply-To: <44B4C8CC.8080400@cendio.se>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,84 +21,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Pierre Ossman <ossman@cendio.se>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 Jul 2006, James Courtier-Dutton wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============2102044250==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig2C131975F228C4B9C2F19184"
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2C131975F228C4B9C2F19184
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Pierre Ossman wrote:
 > Takashi Iwai wrote:
-> > At Wed, 12 Jul 2006 11:03:51 +0100,
-> > James Courtier-Dutton wrote:
-> >   
-> >> Takashi Iwai wrote:
-> >>     
-> >>> At Tue, 11 Jul 2006 18:28:48 -0400,
-> >>> Lee Revell wrote:
-> >>>   
-> >>>       
-> >>>> On Wed, 2006-07-12 at 00:12 +0200, James Courtier-Dutton wrote:
-> >>>>     
-> >>>>         
-> >>>>> +const static unsigned char emu1212m_netlist1[] = {
-> >>>>> +0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0x99, 0xAA, 0x66,
-> >>>>> +0x0C, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0xE0,
-> >>>>> +0x0C, 0x80, 0x06, 0x80, 0x00, 0x00, 0x00, 0xD0,
-> >>>>>       
-> >>>>>           
-> >>>> [ etc ]
-> >>>>
-> >>>> You're going to bloat everyone's emu10k1 driver with this gigantic
-> >>>> structure?  Can't you use the firmware loading interface?  The kernel
-> >>>> guys will flip when they see this.
-> >>>>     
-> >>>>         
-> >>> Agreed, that's too big.  You should put the binary image in
-> >>> alsa-firmware package and use request_firmware() to read it.
-> >>>
-> >>> Any chance to revert the patch (as exception) from HG tree?
-> >>>
-> >>>
-> >>> Takashi
-> >>>   
-> >>>       
-> >> I will sort it out this weekend.
-> >> I just wanted to get the code in there so people interested in emu1212m 
-> >> support could see it.
-> >> The support for the emu1212m has been a long time coming (years in fact).
-> >>     
-> >
-> > The problem is, if you commit codes into alsa-kernel tree, it means
-> > automatically that the code will appear on linux kernel tree.
-> > So, you're pushing unneeded bunch of binary data to the kernel tree
-> > now.  The point here is not how well the device is supported.
-> >
-> >
-> > Takashi
-> >   
-> So, how do I undo this?
+>> Please provide new files, and I'll do hg mv manually.
+>> If any particular changes except for renaming, please let me know,
+>> too.
+>>
+>=20
+> Tarball with files included. They're changed a bit, but only by doing
+> s/polyp/pulse/ and variations thereof.
+>=20
 
-I did 'hg revert' in alsa-kernel repo.
+You might want one of these added to that: :)
 
-> I need a hg repository on the net somewhere that I can use for 
-> development work like this. I would use it to backup work in progress 
-> alsa development.
+Follow Polypaudio/PulseAudio name change
 
-The temporary development should go to the alsa-driver repository.
+Polypaudio recently changed its name to PulseAudio which affects the
+names of libraries of header files. Update the polyp, now pulse, plug-in
+to follow this name change.
 
-> That was always possible with the alsa cvs tree. I did not think that 
-> had changed with the hg tree.
+Signed-off-by: Pierre Ossman <ossman@cendio.se>
 
-Nope. The rules are exactly same. The alsa-kernel tree is for stable code 
-which goes directly to the kernel tree. The experimental code should go to 
-the alsa-driver tree.
+--=20
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+--------------enig2C131975F228C4B9C2F19184
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.4 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+
+iD8DBQFEtPDK7b8eESbyJLgRAnVyAJ99DJyD3aMHI4D93z9k2O5CgXxi8ACfQY90
+VgN3Akw/uUfyAmQEq549uwA=
+=058B
+-----END PGP SIGNATURE-----
+
+--------------enig2C131975F228C4B9C2F19184--
+
+
+--===============2102044250==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -------------------------------------------------------------------------
@@ -106,3 +91,16 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+
+--===============2102044250==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2102044250==--
