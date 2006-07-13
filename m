@@ -1,12 +1,16 @@
-From: <tomkmbox-alsa@yahoo.gr>
-Subject: EMU 1820
-Date: Thu, 13 Jul 2006 08:33:48 +0100 (BST)
-Message-ID: <20060713073348.34697.qmail@web25606.mail.ukl.yahoo.com>
-Reply-To: tomkmbox-alsa@yahoo.gr
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002272]: bt87x does not work with
+	osprey230
+Date: Thu, 13 Jul 2006 11:46:41 +0200
+Message-ID: <059e9d3f55e61c91e27015e3de574e5f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-7"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F63C125
+	for <alsa-devel@alsa-project.org>;
+	Thu, 13 Jul 2006 11:46:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,22 +20,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBoYXZlIGFuIEVNVS0xODIwIGFuZCBuZWVkIHRvIGdldCBpdCB3b3JraW5nIHVuZGVyCkxpbnV4
-IC0gSSBhbSBvZmZlcmluZyBhbnkgYXNzaXN0YW5jZSB0byBoZWxwLgoKCgoKCgoJCgoJCgkJCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-IArX8efz6ezv8O/p5d/05SBZYWhvbyE7IArC4fHl6N7q4fTlIPThIOXt7/fr5/Tp6twg7Oft/ezh
-9OEgKHNwYW0pOyDU7yBZYWhvbyEgTWFpbCAK5Onh6N305ekg9OftIOrh6/305fHnIOT17eH03iDw
-8e/z9OHz3+Eg6uH03CD0+e0g5e3v9+vn9Onq/u0gCuzn7fXs3PT57SBodHRwOi8vbG9naW4ueWFo
-b28uY29tL2NvbmZpZy9tYWlsPy5pbnRsPWdyIAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRv
-bWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBz
-ZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hu
-b2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBs
-aWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3Nl
-bC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9
-MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2272> 
+======================================================================
+Reported By:                lucabe
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2272
+Category:                   PCI - bt87x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             all, up to 2.6.18-rc1
+======================================================================
+Date Submitted:             07-11-2006 15:14 CEST
+Last Modified:              07-13-2006 11:46 CEST
+======================================================================
+Summary:                    bt87x does not work with osprey230
+Description: 
+The osprey 230 card is detected, but the captured analog audio is distorted
+(with kernel 2.6.18-rc1) or silence (with kernel 2.6.8).
+
+alsamixer shows 3 inputs: "TV Tuner", "Mic/Line", and "FM", but the card
+does not have any tuner or radio device
+
+This happens on x86 systems (I tried some different P4 or celeron
+machines) with the kernel provided by Debian Sarge (2.6.8), but also with
+very recent kernels. I just tried with a 2.6.18-rc1 kernel compiled from
+scratch.
+======================================================================
+
+----------------------------------------------------------------------
+ lucabe - 07-13-06 11:46 
+----------------------------------------------------------------------
+Ok, I did some experiments, and it seems that:
+1) The "analog DSP" of the osprey230 is connected to nothing
+2) After the bttv module is loaded, the analog input of the card can be
+captured from the "digital DSP"
+3) The "digital_rate=32000" option has to be forced when loading
+snd-bt87x, otherwise audio is captured at the wrong rate
+4) The captured audio is still very distorted
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-06 15:14 lucabe         New Issue                                    
+07-11-06 15:14 lucabe         Distribution              => Debian          
+07-11-06 15:14 lucabe         Kernel Version            => all, up to 2.6.18-rc1
+07-13-06 11:46 lucabe         Note Added: 0010991                          
+======================================================================
+
+
+
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
