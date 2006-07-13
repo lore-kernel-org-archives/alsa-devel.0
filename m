@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001433]: No sound output
-Date: Thu, 13 Jul 2006 20:04:02 +0200
-Message-ID: <303dc52b4f6ef71b0833a9b7e812d711@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002277]: sound available only after
+	moving the volume slides in the sound mixers
+Date: Thu, 13 Jul 2006 20:25:15 +0200
+Message-ID: <17428ed311cbb40a1e26fba5309b85bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFAA711B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 069E9146
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 20:04:02 +0200 (MEST)
+	Thu, 13 Jul 2006 20:25:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,207 +24,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1433> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
 ======================================================================
-Reported By:                lithium7456
-Assigned To:                
+Reported By:                veli
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1433
-Category:                   PCI - intel8x0
+Issue ID:                   2277
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.4.29
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-18-2005 06:23 CEST
-Last Modified:              07-13-2006 20:04 CEST
+Date Submitted:             07-12-2006 07:50 CEST
+Last Modified:              07-13-2006 20:25 CEST
 ======================================================================
-Summary:                    No sound output
+Summary:                    sound available only after moving the volume slides
+in the sound mixers
 Description: 
-The driver has been installed with the system.
-First I use "alsaconf" to configure my soundcard.
-The program found my soundcard correctly, and there is no error message.
-I use "lsmod" and found that the driver is loaded.
+ 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
 
-then I typed "alsamixer", But got a message saying that "No mixer elems
-found" (I realized that it is the modem)
-so I try "alsamixer -c 1", and I unmute and raise "Master" "PCM"
-Here is the "amixer -c 1"'s result:
+Loaded Modules --------------------------------------------
+snd_maestro3           27780  4
+snd_ac97_codec        100224  1 snd_maestro3
+snd_ac97_bus            2400  1 snd_ac97_codec
+snd_pcm_oss            56448  0
+snd_mixer_oss          20544  1 snd_pcm_oss
+snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
+snd_timer              26884  1 snd_pcm
+snd_page_alloc         11304  1 snd_pcm
+snd                    60004  12
+snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
 
----------BEGIN-------------
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 54 [86%] [on]
-  Front Right: Playback 54 [86%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
+Modprobe Conf ---------------------------------------------
+Warning: module config file does not exist
+This means any kernel modules will not be auto loaded
+See your linux distro docs on how to create this file
 
----------END--------------
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+0 [PCI            ]: Allegro - ESS Allegro PCI
+                     ESS Allegro PCI at 0x7800, irq 9
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-00: Allegro : Allegro : playback 2 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
 
-But there is no sound output.("aplay XXXXX.wav")
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0c  pcmC0D0p  timer
 
-when I start KDE or Gnome, sound system crashed.
+CPU -------------------------------------------------------
+model name      : Pentium III (Coppermine)
+cpu MHz         : 662.353
 
-what should I do?
-Thank you.
+RAM -------------------------------------------------------
+MemTotal:       255520 kB
+SwapTotal:      522072 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
+PRO133x] (rev c4)
+0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
+(rev 20)
+0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
+(rev 10)
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001381 No sound on Thinkpad T40p
-======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-29-05 12:38 
+ Raymond - 07-13-06 16:29 
 ----------------------------------------------------------------------
-Does switching on 'External Amplifier' fix the problem?
+Are there any error message in system log when the driver is loaded and
+alsactl restore ?
+
+----------------------------------------------------------------------
+ veli - 07-13-06 20:25 
+----------------------------------------------------------------------
+Not at all!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-18-05 06:23 lithium7456    New Issue                                    
-09-18-05 06:23 lithium7456    Kernel Version            => 2.4.29          
-09-29-05 12:03 jdthood        Relationship added       duplicate of 0001381
-09-29-05 12:38 jdthood        Note Added: 0006420                          
-07-13-06 20:04 Adrian Bunk    Status                   new => closed       
-07-13-06 20:04 Adrian Bunk    Resolution               open => unable to
-duplicate
+07-12-06 07:50 veli           New Issue                                    
+07-13-06 16:29 Raymond        Note Added: 0010994                          
+07-13-06 20:25 veli           Note Added: 0010995                          
 ======================================================================
 
 
