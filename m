@@ -1,10 +1,21 @@
-From: "Websites: Total" <sgbhhjuzk@activemind.com>
-Subject: Watch POLL end Music
-Date: Mon, 17 Jul 2006 10:42:44 -0200
-Message-ID: <001401c6a97c$f8e9d270$1c7d1053@ST10>
+From: Rodolfo Giometti <giometti@linux.it>
+Subject: [PATCH] Au1xxx sound registration and power management
+Date: Thu, 13 Jul 2006 14:26:53 +0200
+Message-ID: <20060713122653.GI13250@hulk.enneenne.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1075537694=="
+Content-Type: multipart/mixed; boundary="===============1531938107=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mail.enneenne.com (81-174-11-161.f5.ngi.it [81.174.11.161])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61D95148
+	for <alsa-devel@alsa-project.org>;
+	Mon, 17 Jul 2006 12:44:42 +0200 (MEST)
+Received: from hulk.enneenne.com
+	([192.168.32.38] helo=localhost.localdomain ident=Debian-exim)
+	by goldrake.enneenne.com with esmtp (Exim 4.50) id 1G0zKl-0007OY-Mh
+	for alsa-devel@alsa-project.org; Thu, 13 Jul 2006 13:26:20 +0200
+Received: from giometti by localhost.localdomain with local (Exim 4.60)
+	(envelope-from <giometti@hulk.enneenne.com>) id 1G10HN-0007Sw-E6
+	for alsa-devel@alsa-project.org; Thu, 13 Jul 2006 14:26:53 +0200
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,240 +25,400 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1075537694==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0010_01C6A98D.BC61D990"
 
-------=_NextPart_000_0010_01C6A98D.BC61D990
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0011_01C6A98D.BC61D990"
+--===============1531938107==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TdMwOTenGjBWB1uY"
+Content-Disposition: inline
 
 
-------=_NextPart_001_0011_01C6A98D.BC61D990
-Content-Type: text/plain;
-	charset="windows-1250"
+--TdMwOTenGjBWB1uY
+Content-Type: multipart/mixed; boundary="HcXnUX77nabWBLF4"
+Content-Disposition: inline
+
+
+--HcXnUX77nabWBLF4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Closure Forms OPM
-Advanced Guest Level
-trial run ... Comments: At
-Act Fact Sheets
-find text
-laser. Heres trial
-intensive SEARCH FOR: IN: All IT Sites Computer
-cover processor heavy uses
-more Adobe
-Episodes Laughing Man
-Surely
-here: gt ocagt leave LEAVE Closings DC
-Processor Heavy memory
-file Assets
-Advanced
-Info Specs
-Home WebCam var
-including
-want install. isnt
-webmaster any queries relating
-file
-Benefits Career This
-your free weekly Homegt Forumsgt Forumgt a... ::
-Previous Posts
-Wednesday September posted
-at
-Status Strategic Human Capital
-Watch POLL end
-IT Sites Computer Buyer
-Posts
-Gambler Inside Edge Poker Bizarre Viz
-AOL BT Yahoo
+Hello,
 
+here a patch to support device registration and power management for
+the au1xxx ALSA driver.
 
-------=_NextPart_001_0011_01C6A98D.BC61D990
-Content-Type: text/html;
-	charset="windows-1250"
+Signed-off-by: Rodolfo Giometti <giometti@linux.it>
+
+Ciao,
+
+Rodolfo
+
+--=20
+
+GNU/Linux Solutions                  e-mail:    giometti@enneenne.com
+Linux Device Driver                             giometti@gnudd.com
+Embedded Systems                     		giometti@linux.it
+UNIX programming                     phone:     +39 349 2432127
+
+--HcXnUX77nabWBLF4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=patch-au1000_snd-pm-and-registration
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2900.2873" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>
-<A HREF=3D"http://www.therico.com/">
-<IMG alt=3D""=20
-hspace=3D0 src=3D"cid:000f01c6a97c$f8d90990$1c7d1053@ST10" =
-align=3Dbaseline=20
-border=3D0></A></FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Closure Forms OPM</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Advanced Guest Level</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>trial run ... Comments: At</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Act Fact Sheets</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>find text</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>laser. Heres trial</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>intensive SEARCH FOR: IN: All IT Sites Computer</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>cover processor heavy uses</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>more Adobe</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Episodes Laughing Man</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Surely</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>here: gt ocagt leave LEAVE Closings DC</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Processor Heavy memory</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>file Assets</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Advanced</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Info Specs</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Home WebCam var</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>including</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>want install. isnt</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>webmaster any queries relating</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>file</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Benefits Career This</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>your free weekly Homegt Forumsgt Forumgt a... ::</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Previous Posts</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Wednesday September posted</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>at</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Status Strategic Human Capital</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Watch POLL end</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>IT Sites Computer Buyer</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Posts</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>Gambler Inside Edge Poker Bizarre Viz</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2>AOL BT Yahoo</FONT></DIV>
-</BODY></HTML>
+diff --git a/arch/mips/au1000/common/platform.c b/arch/mips/au1000/common/p=
+latform.c
+index 0088889..34de6d3 100644
+--- a/arch/mips/au1000/common/platform.c
++++ b/arch/mips/au1000/common/platform.c
+@@ -88,6 +88,31 @@ static struct platform_device au1xxx_eth
+ #endif
+ #endif
+=20
++#if defined(CONFIG_SND_AU1X00)
++/* AC97 controller */
++static struct resource au1xxx_snd_resources[] =3D {
++	[0] =3D {
++		.name   =3D "snd-base",
++		.start  =3D AC97C_BASE,
++		.end    =3D AC97C_BASE + AC97_IOSIZE - 1,
++		.flags  =3D IORESOURCE_MEM,
++	},
++	[1] =3D {
++		.name	=3D "snd-irq",
++		.start	=3D AU1000_AC97C_INT,
++		.end	=3D AU1000_AC97C_INT,
++		.flags	=3D IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device au1xxx_snd_device =3D {
++		.name   =3D "au1xxx-snd",
++		.id             =3D -1,
++		.num_resources  =3D ARRAY_SIZE(au1xxx_snd_resources),
++		.resource       =3D au1xxx_snd_resources,
++};
++#endif
++
+ /* OHCI (USB full speed host controller) */
+ static struct resource au1xxx_usb_ohci_resources[] =3D {
+ 	[0] =3D {
+@@ -376,6 +401,9 @@ #if defined(CONFIG_SOC_AU1000) || \
+ 	&au1xxx_eth1_device,
+ #endif
+ #endif
++#if defined(CONFIG_SND_AU1X00)
++	&au1xxx_snd_device,
++#endif
+ 	&au1xxx_usb_ohci_device,
+ 	&au1x00_pcmcia_device,
+ #ifdef CONFIG_FB_AU1100
+diff --git a/include/asm-mips/mach-au1x00/au1000.h b/include/asm-mips/mach-=
+au1x00/au1000.h
+index 0988af9..cb8939a 100644
+--- a/include/asm-mips/mach-au1x00/au1000.h
++++ b/include/asm-mips/mach-au1x00/au1000.h
+@@ -1600,6 +1600,9 @@ #define SYS_CPUPLL                0xB190
+ #define SYS_AUXPLL                0xB1900064
+=20
+ /* AC97 Controller */
++#define AC97C_BASE              AC97_PHYS_ADDR
++#define AC97_IOSIZE		0x14
++
+ #define AC97C_CONFIG              0xB0000000
+   #define AC97C_RECV_SLOTS_BIT  13
+   #define AC97C_RECV_SLOTS_MASK (0x3ff << AC97C_RECV_SLOTS_BIT)
+diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
+index cf476fe..2dd6862 100644
+--- a/sound/mips/au1x00.c
++++ b/sound/mips/au1x00.c
+@@ -5,6 +5,8 @@
+  * Copyright 2004 Cooper Street Innovations Inc.
+  * Author: Charles Eidsness	<charles@cooper-street.com>
+  *
++ * PM support added by Rodolfo Giometti <giometti@linux.it>
++ *
+  *  This program is free software; you can redistribute  it and/or modify =
+it
+  *  under  the terms of  the GNU General  Public License as published by t=
+he
+  *  Free Software Foundation;  either version 2 of the  License, or (at yo=
+ur
+@@ -40,6 +42,7 @@ #include <sound/driver.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/version.h>
++#include <linux/platform_device.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+@@ -53,6 +56,8 @@ MODULE_DESCRIPTION("Au1000 AC'97 ALSA Dr
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{AMD,Au1000 AC'97}}");
+=20
++#define DRV_NAME        "au1xxx-snd"
++
+ #define PLAYBACK 0
+ #define CAPTURE 1
+ #define AC97_SLOT_3 0x01
+@@ -526,7 +531,6 @@ get the interupt driven case to work eff
+=20
+ }
+=20
+-
+ static void
+ snd_au1000_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned =
+short val)
+ {
+@@ -550,24 +554,17 @@ get the interupt driven case to work eff
+ 	spin_unlock(&au1000->ac97_lock);
+ }
+=20
++static struct snd_ac97_bus_ops au1000_ac97_ops =3D {
++	.write =3D snd_au1000_ac97_write,
++	.read =3D snd_au1000_ac97_read,
++};
++
+ static int __devinit
+ snd_au1000_ac97_new(struct snd_au1000 *au1000)
+ {
+ 	int err;
+ 	struct snd_ac97_bus *pbus;
+ 	struct snd_ac97_template ac97;
+- 	static struct snd_ac97_bus_ops ops =3D {
+-		.write =3D snd_au1000_ac97_write,
+-		.read =3D snd_au1000_ac97_read,
+-	};
+-
+-	if ((au1000->ac97_res_port =3D request_mem_region(CPHYSADDR(AC97C_CONFIG),
+-	       		0x100000, "Au1x00 AC97")) =3D=3D NULL) {
+-		snd_printk(KERN_ERR "ALSA AC97: can't grap AC97 port\n");
+-		return -EBUSY;
+-	}
+-	au1000->ac97_ioport =3D (struct au1000_ac97_reg *)
+-		KSEG1ADDR(au1000->ac97_res_port->start);
+=20
+ 	spin_lock_init(&au1000->ac97_lock);
+=20
+@@ -588,7 +585,7 @@ snd_au1000_ac97_new(struct snd_au1000 *a
+ 	mdelay(5);
+=20
+ 	/* Initialise AC97 middle-layer */
+-	if ((err =3D snd_ac97_bus(au1000->card, 0, &ops, au1000, &pbus)) < 0)
++	if ((err =3D snd_ac97_bus(au1000->card, 0, &au1000_ac97_ops, au1000, &pbu=
+s)) < 0)
+  		return err;
+=20
+ 	memset(&ac97, 0, sizeof(ac97));
+@@ -626,68 +623,154 @@ snd_au1000_free(struct snd_card *card)
+ 	}
+ }
+=20
++#ifdef CONFIG_PM
++static u32 au1000_ac97_config;
++
++static int au1000_drv_suspend(struct platform_device *pdev, pm_message_t s=
+tate)
++{
++	struct snd_card *card =3D platform_get_drvdata(pdev);
++	struct snd_au1000 *au1000 =3D card->private_data;
++
++	if (!card)
++		return 0;
+=20
+-static struct snd_card *au1000_card;
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
++	snd_pcm_suspend_all(au1000->pcm);
++	snd_ac97_suspend(au1000->ac97);
++
++	/* Save Au1000's AC'97 Control Block and disable the controller */
++	au1000_ac97_config =3D au1000->ac97_ioport->config;
++	au1000->ac97_ioport->cntrl =3D AC97C_RS;
++
++	return 0;
++}
+=20
+-static int __init
+-au1000_init(void)
++static int au1000_drv_resume(struct platform_device *pdev)
+ {
+-	int err;
+-	struct snd_card *card;
+-	struct snd_au1000 *au1000;
++	struct snd_card *card =3D platform_get_drvdata(pdev);
++	struct snd_au1000 *au1000 =3D card->private_data;
++
++	if (!card)
++		return 0;
+=20
++	/* Initialise Au1000's AC'97 Control Block and restore previous
++	 * configuration */
++	au1000->ac97_ioport->cntrl =3D AC97C_RS | AC97C_CE;
++	udelay(10);
++	au1000->ac97_ioport->cntrl =3D AC97C_CE;
++	udelay(10);
++	au1000->ac97_ioport->config =3D au1000_ac97_config;
++
++	snd_ac97_resume(au1000->ac97);
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++
++	return 0;
++}
++#endif
++
++static int __init au1000_drv_probe(struct platform_device *pdev)
++{
++	struct resource *res;
++	struct snd_card *card =3D NULL;
++	struct snd_au1000 *au1000 =3D NULL;
++	int ret;
++
++	/* Get the resource info */
++	ret =3D -ENODEV;
++	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "snd-base");
++	if (!res)
++		goto exit;
++
++	ret =3D -ENOMEM;
+ 	card =3D snd_card_new(-1, "AC97", THIS_MODULE, sizeof(struct snd_au1000));
+ 	if (card =3D=3D NULL)
+-		return -ENOMEM;
++		goto exit;
+=20
++	card->dev =3D &pdev->dev;
+ 	card->private_free =3D snd_au1000_free;
+ 	au1000 =3D card->private_data;
+ 	au1000->card =3D card;
+=20
++	au1000->ac97_res_port =3D res;
++	au1000->ac97_ioport =3D ioremap(res->start, res->end - res->start + 1);
++	ret =3D -ENOMEM;
++	if (!au1000->ac97_ioport) {
++		printk (KERN_ERR "%s: unable to remap address %lx\n",
++			DRV_NAME, res->start);
++		goto exit;
++	}
++
+ 	au1000->stream[PLAYBACK] =3D kmalloc(sizeof(struct audio_stream), GFP_KER=
+NEL);
+ 	au1000->stream[CAPTURE ] =3D kmalloc(sizeof(struct audio_stream), GFP_KER=
+NEL);
+ 	/* so that snd_au1000_free will work as intended */
+- 	au1000->ac97_res_port =3D NULL;
+ 	if (au1000->stream[PLAYBACK])
+ 		au1000->stream[PLAYBACK]->dma =3D -1;
+ 	if (au1000->stream[CAPTURE ])
+ 		au1000->stream[CAPTURE ]->dma =3D -1;
+=20
+ 	if (au1000->stream[PLAYBACK] =3D=3D NULL ||
+-	    au1000->stream[CAPTURE ] =3D=3D NULL) {
+-		snd_card_free(card);
+-		return -ENOMEM;
+-	}
++	    au1000->stream[CAPTURE ] =3D=3D NULL)
++		goto exit;
+=20
+-	if ((err =3D snd_au1000_ac97_new(au1000)) < 0 ) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if ((ret =3D snd_au1000_ac97_new(au1000)) < 0)
++		goto exit;
+=20
+-	if ((err =3D snd_au1000_pcm_new(au1000)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if ((ret =3D snd_au1000_pcm_new(au1000)) < 0)
++		goto exit;
+=20
+ 	strcpy(card->driver, "Au1000-AC97");
+ 	strcpy(card->shortname, "AMD Au1000-AC97");
+ 	sprintf(card->longname, "AMD Au1000--AC97 ALSA Driver");
+=20
+-	if ((err =3D snd_card_register(card)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if ((ret =3D snd_card_register(card)) < 0)
++		goto exit;
++	platform_set_drvdata(pdev, card);
+=20
+ 	printk( KERN_INFO "ALSA AC97: Driver Initialized\n" );
+-	au1000_card =3D card;
++
+ 	return 0;
++
++exit :
++	if (au1000 && au1000->ac97_ioport)
++		iounmap(au1000->ac97_ioport);
++	if (card)
++		snd_card_free(card);
++
++	return ret;
+ }
+=20
+-static void __exit au1000_exit(void)
++static int __exit au1000_drv_remove(struct platform_device *pdev)
+ {
+-	snd_card_free(au1000_card);
++	struct snd_card *card =3D platform_get_drvdata(pdev);
++
++	if (card)
++		snd_card_free(card);
++
++	return 0;
+ }
+=20
+-module_init(au1000_init);
+-module_exit(au1000_exit);
++static struct platform_driver au1000_driver =3D {
++	.probe		=3D au1000_drv_probe,
++	.remove		=3D au1000_drv_remove,
++#ifdef CONFIG_PM
++	.suspend	=3D au1000_drv_suspend,
++	.resume		=3D au1000_drv_resume,
++#endif
++	.driver		=3D {
++		.name	=3D DRV_NAME,
++	},
++};
++
++
++static int __init au1000_snd_init(void)
++{
++	return platform_driver_register(&au1000_driver);
++}
++
++static void __exit au1000_snd_exit(void)
++{
++	platform_driver_unregister(&au1000_driver);
++}
+=20
++module_init(au1000_snd_init);
++module_exit(au1000_snd_exit);
 
-------=_NextPart_001_0011_01C6A98D.BC61D990--
+--HcXnUX77nabWBLF4--
 
-------=_NextPart_000_0010_01C6A98D.BC61D990
-Content-Type: image/gif;
-	name="currently.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000f01c6a97c$f8d90990$1c7d1053@ST10>
+--TdMwOTenGjBWB1uY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-R0lGODdhiAEEAYcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8EAgAGAgAIAgAKAg
-AMAgAOAgAABAACBAAEBAAGBAAIBAAKBAAMBAAOBAAABgACBgAEBgAGBgAIBgAKBgAMBgAOBg
-AACAACCAAECAAGCAAICAAKCAAMCAAOCAAACgACCgAECgAGCgAICgAKCgAMCgAOCgAADAACDA
-AEDAAGDAAIDAAKDAAMDAAODAAADgACDgAEDgAGDgAIDgAKDgAMDgAODgAAAAQCAAQEAAQGAA
-QIAAQKAAQMAAQOAAQAAgQCAgQEAgQGAgQIAgQKAgQMAgQOAgQABAQCBAQEBAQGBAQIBAQKBA
-QMBAQOBAQABgQCBgQEBgQGBgQIBgQKBgQMBgQOBgQACAQCCAQECAQGCAQICAQKCAQMCAQOCA
-QACgQCCgQECgQGCgQICgQKCgQMCgQOCgQADAQCDAQEDAQGDAQIDAQKDAQMDAQODAQADgQCDg
-QEDgQGDgQIDgQKDgQMDgQODgQAAAgCAAgEAAgGAAgIAAgKAAgMAAgOAAgAAggCAggEAggGAg
-gIAggKAggMAggOAggABAgCBAgEBAgGBAgIBAgKBAgMBAgOBAgABggCBggEBggGBggIBggKBg
-gMBggOBggACAgCCAgECAgGCAgICAgKCAgMCAgOCAgACggCCggECggGCggICggKCggMCggOCg
-gADAgCDAgEDAgGDAgIDAgKDAgMDAgODAgADggCDggEDggGDggIDggKDggMDggODggAAAwCAA
-wEAAwGAAwIAAwKAAwMAAwOAAwAAgwCAgwEAgwGAgwIAgwKAgwMAgwOAgwABAwCBAwEBAwGBA
-wIBAwKBAwMBAwOBAwABgwCBgwEBgwGBgwIBgwKBgwMBgwOBgwACAwCCAwECAwGCAwICAwKCA
-wMCAwOCAwACgwCCgwECgwGCgwICgwKCgwMCgwOCgwADAwCDAwEDAwGDAwIDAwKDAwP/78KCg
-pICAgP8AAAD/AP//AAAA//8A/wD//////ywAAAAAiAEEAQcI/gABCBxIsKDBgwgTKlzIsKHD
-hxAjSpxIsaLFixgzatzo8J/HjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bNmzhz6tzJs6fP
-n0CDCh1KtKjRo0iTKl3KtKnTp1CjSp1KtarVq1izat3KtavXr2DDih1LtqzZs2jTql3Ltq3b
-t3Djyp1Lt67du3iLCtjLVwCrewhE9u0b0t69VXvFsDpgb+QBVnxXAXYMee/ikYQ/ZvY4uDFn
-vp8Hixbwb/Tm0X8Dw/zAuvWHM688e3QdkrbIU61PjXTt+tU7ka7PiHxlOyRu1rrzHjVtWXbp
-0SARMC8sxrSY6NVFi1GtGXT3vSAH/t/7Tvo5c9Dny5tH7Xwlb96/Z7euPb8w7/b/3vem3zq+
-R3u8iQSga/gpB1R6Yshm2kfSTfeRPdkt6FGDzHH3zxrehabeent5lll66Jm2jnoIFniSfq7F
-V5x8rIn0DnzAociaf/m5lpxHL66II4wGErUZAhGyEtJmHlUmQD3/HVAdSIglppo99YDnUYT3
-NGYYX9eRF16GHApwgIaYcQlmST8G6ZJt9hDH2issfsCfm8bxduNHxeX4GkjveTagjv8cl1uP
-PnIJIV8WErmeSEJOiGV79iR6AF+JfmTkl2NW2mWWhlqq6ZCCRmhhSsXtCaeOOoraWnvFybPi
-e2z+Y2d9/w/qZyKgOhn66F7jabklribewxelJBn5KYWREmkspHsFlumhnEpJkq185eoerDW2
-WC2cdFLramtqfkDjtXiyJly2yLHW2Bkf+Intjmv2R2tQhtqD5a4b/uNrX2JMBlKEs/7Db2Hz
-Wnpssnutwmyz9XY5cL3yJtZSqH9eK2Oc5kZMLpz22EljijPm+CrFH+w557s8ZbpwSBQOtp2u
-ZIpZ6claNplymM6SJxq9grl8Ugv1pemuxCiCtCeb3Ton453hVvyamqIKze0/RZPsk8lcZopA
-k6KptizOOTsLM5gN3lszyzYPxvXZKh19hmdHU6vxtjMmzWqMLXb7AZsrvv221P4li9mwAAaT
-Hd09Rlo2JV/9Rkhzlgc3nlmEOlM9NsIAF/wwimtf/CZIflppMdCn0u2mqI2t2Pk/IvPd99i3
-CiBt4ySJXd6kJgmLMqRkwxyl2V0nvLWmrb8O6nunvGO0thAfLRtt3Y4Mbp/ItRmr8qrXKqan
-aP/DCn6ZtZ5gYY7iDhLtHmGtZ2Rc/x25y7/Djj1LfMq9Obsy+kebPeiuOb/H0tOP4rfVo8mP
-sBYpTeHqSbtz3UcitDLUKUk9VLKS2Bhnr2h5RGyv24zsEga7Dp7tauKDn7bmpzmPqEs/N7LN
-qzY2wv5B72jOC6BMSlQ2rzHnHNxJGXQUdR4L6bAzH/7kHeUQtkOF4atfJIlfCUu4p3F9JH8h
-c6HdltfC5zUxJFBEogxXcp7t0WszkMPXsMKIPgaRUQANjI5pPkWkwtHMd+epIaS0uJsqurB/
-dmrVR/a2IijqUYkqfBpI9rbFmaBGX1/kEgIOA6l6mOgxkUEkSCBpGWAJiJGAk6SlZta73hXx
-kJ8SobWSiLz6+OlbdkrOikSloira5pQhSWUhZ0nLWtrylrjMpS53ycte+vKXwAymMIdJzGIa
-85jITOYwL6HMZjrzmdCMpjSnSc1qWvOayDQFNrfJzW5685vgDKdT0qGVMYjznOhMpzrXyc52
-uvOd8IynPOdJz3ra8574zP+nPvfJz376858ADahAB0rQghr0oAhNqDMjodCGOvShEI2oRCdK
-0apQo6IYzahD46HRjnr0oxgNAEhRItIAEoAAIDmpSFR60pai9B8uhalLUarSj7xUJiX9SAB2
-utOR8LSnIAHqLWsq05TetKhGZelNlbrSo8Ykpx75KVR1KtWgTnUsMfVIS5OKVKTWlKhaJapT
-W1LVf0BVqFG1alR5mkuxLnWrYW1qXOMK17COlaw/TStVRYLWtfYVq3XNakzdOlewynSpTxVp
-Sa/6V7XuFZeEtetb5dpVpX61ri/p6WL5ytirrvUsl9XqYZka2dCm1KuJNWtJGvvYz9YFCjVh
-amH+X2pYr06WpoO960o0u9rOstWxZTEtbUM708mOlqV0xelvQ8LavAJ3qLi16XDnalTqIvew
-1BUJQUziXOZ69rms/YpwbSrdyk63q6Itqm7/MZCTdNe13D3rdwspW9tmd7blRex9M7tc+Pb2
-uWIp7nVDUl/hOnWpr1jvbs2a0/CCd770dWtx0Yvf5FJ2JoptMIRby2CzgHXA1S3teclr16em
-Fah/5S2HHbzFwB61vuU1L0xHUluWbBbFnVXtije8lQ/TlMa4FexWJ/xiBZPUuVLFsV+FmuS2
-RpauMx2tZGkL5I/0g7+/TfJit7zcJluTxyAF8zvF7FEyj/TMaDaLNoT+Aoc0u/nNcKYJL5pp
-ZonW+S6Ezep9o3zcsdbYxFbt75LZqmXICtnH1U3qcDGLU+8KmsFVLTRaRKzoGIv2yVKmSVnl
-G1/OQve06NVzbU2b3sRmGcDe9fSkjetjTEc3u3pO7WZTTZIU37lHH4a1iymba1nrFdUc9i9o
-Xy1j+xLYuMb2da3na2tDV7nCox6xphX732WrOi0FZvV5h8znCpNku71tbHib7ewLG9jcsdZu
-e8Nd0jkAW9gdXku2Y0xq0h5Y2qaeqoPJ/Wl0/+MBpLZ0opXb133nmC2YvSyRbztiARtZJRkO
-Nq3fHWFQKzzK0S41hWEScXijmsWALbKuZUz/aYG75MZbvja/+53egMO4sAPP7IlTPvGVq8XF
-ML54zom9cbxm2ctMPriT4ZrbEGOc6OnGMo43reFrf/PWD4W6O6XeUKrH+epYz7rWt871roPF
-6lUnSp4Tfm+kJ/3Px52yblstYbQDRd/vHbRmvYwUPsca0ZVOu0ns3m0g49ztQ/muwZ3u71Dv
-mryuZjSsTS7dJ8+7KJumeLwl/5Nes53xLi9Jr3sOaigznihlpSqzC+7gkktW4MS+/IVnvN+B
-jz2/uX1r0m1MbR1T3OZFsXyRMe1t1j+71IA/drEbb1niB7/Ts1Ztcyev/A0/3tgZty6+Oe92
-x6f+1cRFNn9tT/iP/oNdJjUuefSPT/2HG93k5+Y9XrmvY3HDl+aavz69t21Zsre+79VH9rzT
-r/2QgHvZpDduQld3dyV+fiZ7gId/5udthsV/n+cR/+dTXSZxTWd7LPZ85+Z5DTh9wtd6lvZ6
-nmdf6ndyj8Z83rcU4adt+5WCKjGCv8d7DuiBtLd0cVdokhZ/Itdn+9dwAkZgrqdg1kdy9Dd8
-jYZ7JniERqF7avdyqPWAvkeE8feDHZh9TmhjJjh4E4eDiYZoIJhsFJaDnCd9sDeGIrhojdZ8
-3Kdk8AZyQKGEhrdxXxVzPviBD7eB6DeECneGHddapNd9TYWAb9hnb4h3igaGx3ZobTeE/7bF
-c0qnYV1WgZQnFHy3c4KIiEamgCfRg3q3hfTHiCT4aEGXhR5Xbhh2UOTnXt3Ud2cYUKoIaF73
-irAYi7I4i7T4S983ULfoFmNXdIhndnZYhTLnh5BGgyXIN4kXc4bogmTlaOLWXaE3bGTYeCSW
-eacng58YdM1Igbmoi/qHcySWaVB4jcl3hU0XitiGfWU3jdIGiNZIe+0HbOYocSbFc6ImVsR3
-fsr1jqIYivG4av2Hfb03f+24W7Uniu8Hd7Zkf6gVh164VeWQj6NXc3vIhl7xd9d1kRyYgScR
-gZxlhMOIkAmJdwyJkbpmZBzJjBKochO5jU9xeOrIegEnkGGodP8GOXloRZHvopAj+WMNeYru
-JWjZ6Fp0B40xKXu9F2RHlxN7iITxiJO0IlsO53vcNmHqtYAkZZOCB4nyGGAMN4fY1ZCDaJWo
-iIY7hpVbWT1dqF7SyIX9t4xk2Wz9iISABXuDZXQ6N3JUmW+O+HODFokkk5YgRonKCHFIBnRc
-ho0sSUyJ6U+LeU6NyU+PWYuSOZmUWZlzEUNioQiW+WaRmUydiXB8Z5fcdloLF3suSZf0KIia
-xoyeFXrPGHKJOH2EWBOtCWGIWYyrFo1VeYjfCIPatnuzhVg++ZOnFmycFpdgkWtsCZzViGHO
-WIxxd5bQGILUWWLA94+/uWid2Is2oWL/A+hpyCleLxaWF3ePzqmPo+hxThkWgMmIACmGUjhj
-SbmQVDac/xWR96mV7HmAIZZ2GslxBSl5QfkWu3h0damW0mea9viV46WWealuAhFfAWib8Lee
-VRGa+WWd/wmhACCh32mQFpqcGFqdMMmTUJhzvbltyWWfHpqSLip3N0ePJqqCM0mQfVhtfhlc
-/KmbUhmEnPiNP9qjnliKRiiAwYWPFiZ8UbmaN0mhNQmaq/dyRgmfdKhxMmmULOpTM5eGNGek
-R6qbIAamYslXW1qWxvmZLbmjUHagVLpw/SlXbFqVszeDt7lXkhadS8ED4FePglVls9mIoseX
-H6mfEIWmxmSo/wmFqIq5mYzaqI76qJAaqTKkqIyZk11ZiEgZfSs4prX2oqwpjMZYdqO5ppla
-qqu3moHWXKBIqTiRllVaklNqnXoZqFq6Y6wqoh34qoSYeFn6qVwqjLiJFa7aprvHjnNKmOgp
-l8C1lFDRBlHxi7oKhrzKqeD5a2faqSHqFMM6fOLnn9Rqp54aEpSCYukpNdAajbvajQP5k+wH
-YHQHfxV5qbn6oA2KdCVxkqkKqkIpnX8pqlQ4cmoXpN+2bgBYmyppgbdqE9vqqg3ao9N2o9Ym
-dwnbFedKnen6hRx4jTXJj0PJFQtLozpoonLIccznpfrar7nKVagHsktKpIR6kE+aFf8fG61v
-mrInV6b+pYbhOo8h4QcFOJs++qdu2XFwqZ/Zqq2WqK5i+oTAeGSPWJiDCpIRpqCxWo8rG4iz
-GrVCGZ1HG0wTm09fe6haF7aFxAeS+g8FMJnXcLZs27Zu+7ZwG7dyO7d0W7d2e7d4m7d6u7d8
-27d++7eA2xPmFLiEW7iGe7iIi1FskLhFMQ+Me1DasGZJEbkiQbkwYbkoEbmSm7mbCxKaexWY
-u0+Yu7mhWxKaa7ml+w+pOxKj+xGry7qd6xGU27qyu2ap+7ohgbuwW7mxGxO6OxO/6xPBu0uo
-W7yc67mq27srUbySO7zJy7vPm7zNq7y1mxLOW725S70ucb3/26u9QMG9t8S82Hu60Ou6z/u5
-52u7tzu901u76Du70Xu6s8u+1cu874u+nnu/o3u/2Tu/quu+pIu/rku+0ru68lu/AGy/CJy/
-0jvA/Bu/7WtMqPu/6Yu9A8y77Tu/EXzB/5vBAVzAFVy/zUvB/ru/EFy+xpvCvavAKmzBHBy9
-MGzBGqy+F6zCpcu/Jmy8J3xM5EvAOpy/D1zBJty/6vvD/ivCHNzDOPzBP5zEHozE2SvDTxzD
-UvzCVTzEIXzE2QsJUHzCWgy+4fu5PnzApkvDSIzFDlzEG/zFZgzBM9zFM7y+CazGWuzEaRzH
-K/zBLgzDbFzDB2zATKzHJazHEizG/0FcuQycw228vm/Mx4v8yAAMwiE8ybtLxTecx1XMwGX8
-wpfsx5zcxnt8xYIsv2DMS1hMu+bryWdMyJrsyKqcxaccyO7LxyhMurQsx64su7QcxZn8ybn8
-uTZgy4D8ykMcuqVsS2hMwES8xjRMyiSRzGPsxJCcyYYcyeUryZKMy8aMv8rcvwkMu4dczdms
-vMXczU18zGrxDWSBzo9LK+wMiyHQzvI8z/Rcz/a8FV7wTO/8zMNbxzexzzKEyv3czf/svSqx
-zdyszAJMwZUsE87MEkf8zri7zZZMxt0L0d4L0GchvlTc0Axd0A6d0MTczLa8ySHdytYbuxJN
-vQoNyrncEv/cq7sarWb068aYbL6KzNBLzL4KbM0NndOrrMtlrL82fM2TvL9P/McbfMc+DcSy
-3Mol/M1z/MuGrL9W3CMTPMWdzMvpO8FdPb6jvMPXDNRCPMImEcsNXNGJLMhBTdVc3cR2TMmu
-rMQjPdcqzdYdbSBKrMNbLc5yDcfMDMWvi9blbNYL3ct9jNKJ7clGvNRuXctdLMq+TNb+jMZ5
-rRx7zdNbfdSgrNRxXcB4zM+TzcpC7c8vvdgunNiefc6HXc6V3MJO3dh1TdapbdlYXdWODdWQ
-7NquvcfBS9ikTcIufdrTbMV93MKsjctifcfVvNm+DNh2zdVXLTVoLbtZoNtu7Nb/vX3LJT3W
-T23Jr/zcnC3dEV3esCzdz63cZY3exJ3d4rvZETzTG83KBD3VDVzHni3FPJ3G4EzUAbzQd83S
-9qvZ5GzR4rza/z3dUt3RFF3ZN73gB17eSD3LobyZzivfCn7PVHG9hw28Bq3hIB7iIj7iJM5O
-GB4UJ+7hASXQHw7aO6HRpg3SGNzhov0SuPsEvvvgB93i7E1MHP3bncvjGG0TKd7jtl3jT1Hk
-Ka1MP77f5B3dCf7VLo7N9Q3aZpzQUU3l/v3WUQ7Cjf3fzV3EzH3WRV3WHpzUSH3IhazLWn3X
-3p3NIhzfYQ3XOZ3VQR7hOzzM4xvZXwzdGgzdNS7mZh7n/6s8xcvNw7gN1h4xZ+793Wv92bAN
-3ySt2HMu5z/t5ghd4FD+3RN954zN6ZMO6EpOMplt36Md3vkt1s780Kee1hQ91Q8NyC3t12nN
-1HUO6mQe2Mcty5Sd28VU6pcd3aI+zZbd6aje2aSt3tMN2z7N7INc1yex68K+3oAOTdX90cLu
-184e2Gze3WDdzHxOyItc4dqM7Hl+5c8u2BPt57vN60+t5ohu3B0e6+n+zbHs5NgMxLAM5jE8
-63fu5jO+33w9xpNe2MHu6u5O8EsszYde4jAt5BVu4zp+0fXEBNJk0dFe39qgBOCr7ClN4w4f
-8iI/8iRf8iZ/8iiPEzuQ8izf8v8u//IwH/MynxPuNvM2f/M4T0z+kPM83/M+j7i48PPYxA9E
-X/QeQfQfgfRFb/RJv/RHzw8ggfRNHxJLD/X/UPVWP/VJ//ROf/VZ//VZX/JS7/Vk//RlX/Zj
-f/Vnf/Zdv/ZQn/ZUP/ZvH/ZKb/VMD/cjL/dzP/V6//Sysfda7/V9v/V43/Rf7/aAf/dhT/J9
-3/hgb/ZxH/V2P/mQL/klkfiIj/Zqv/aM//iO3/Z4j/VSP/pgr/htf/RmD/iQ7/Snn1ARoDpY
-X/l1n/mRr/WkPxKzTxKUr/pob/St3/ki4fge4QSPT/h0P/exf/ycH/WGT/usz/QnH/qeX/xp
-z/u5n/pWll/4qM/1tM/2i58VXDCZhV/1ld/7ip/9yi/4pN/66R/7ga/9Qh//UyH69F//9n//
-+J//+r//8t///v//APFP4ECCBQ0eRJhQ4UKGDR0+hBhR4sSFAQEAOw==
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
 
-------=_NextPart_000_0010_01C6A98D.BC61D990--
+iD8DBQFEtjwNQaTCYNJaVjMRArv8AKDiHN9vOyx2EjsxJ6XQYFok+cAYRwCfbzm/
++pWBpbVqhiJsxS29QXhNJq8=
+=iMHZ
+-----END PGP SIGNATURE-----
+
+--TdMwOTenGjBWB1uY--
 
 
-
---===============1075537694==
+--===============1531938107==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -260,7 +431,7 @@ Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
 
---===============1075537694==
+--===============1531938107==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -271,4 +442,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1075537694==--
+--===============1531938107==--
