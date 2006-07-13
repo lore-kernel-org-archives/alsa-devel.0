@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001273]: snd_intel8x0 and kexec()
-	don't work together
-Date: Thu, 13 Jul 2006 20:03:06 +0200
-Message-ID: <9a81026668eb7ae958d2950d4843537c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001433]: No sound output
+Date: Thu, 13 Jul 2006 20:04:02 +0200
+Message-ID: <303dc52b4f6ef71b0833a9b7e812d711@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BB5219D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFAA711B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 20:03:07 +0200 (MEST)
+	Thu, 13 Jul 2006 20:04:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,112 +23,207 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1273> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1433> 
 ======================================================================
-Reported By:                hildeb
+Reported By:                lithium7456
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1273
+Issue ID:                   1433
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian/unstable
-Kernel Version:             2.6.13-rc3-git4
-Resolution:                 fixed
+Status:                     closed
+Distribution:               
+Kernel Version:             2.4.29
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-22-2005 10:23 CEST
-Last Modified:              07-13-2006 20:03 CEST
+Date Submitted:             09-18-2005 06:23 CEST
+Last Modified:              07-13-2006 20:04 CEST
 ======================================================================
-Summary:                    snd_intel8x0 and kexec() don't work together
+Summary:                    No sound output
 Description: 
-Whenever I use kexec() to reboot into a new kernel, sound doesn't work
-properly. KDE doesn't display a mixer.
+The driver has been installed with the system.
+First I use "alsaconf" to configure my soundcard.
+The program found my soundcard correctly, and there is no error message.
+I use "lsmod" and found that the driver is loaded.
 
-All modules seem to be loaded, though - and after a reboot using
-"reboot" instead of "kexec", sound works flawlessly with the same setup.
+then I typed "alsamixer", But got a message saying that "No mixer elems
+found" (I realized that it is the modem)
+so I try "alsamixer -c 1", and I unmute and raise "Master" "PCM"
+Here is the "amixer -c 1"'s result:
 
-/etc/init.d/alsa restart doesn't change things, either.
+---------BEGIN-------------
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 63
+  Front Left: Playback 54 [86%] [on]
+  Front Right: Playback 54 [86%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off]
+  Front Right: Playback 0 [0%] [off]
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off]
+  Front Right: Playback 0 [0%] [off]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Video',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
 
-If I unload the sounddriver:
+---------END--------------
 
-# rmmod snd_intel8x0
+But there is no sound output.("aplay XXXXX.wav")
 
-and the reload it:
+when I start KDE or Gnome, sound system crashed.
 
-# modprobe snd_intel8x0
+what should I do?
+Thank you.
 
-I get:
 
-ACPI: PCI Interrupt 0000:00:06.0[A] -> Link [LACI] -> GSI 22 (level, low)
--> IRQ 19
-PCI: Setting latency timer of device 0000:00:06.0 to 64
-AC'97 warm reset still in progress? [0xffffffff]
-Intel ICH: probe of 0000:00:06.0 failed with error -5
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001381 No sound on Thinkpad T40p
 ======================================================================
 
 ----------------------------------------------------------------------
- cartan - 08-09-05 16:19 
+ jdthood - 09-29-05 12:38 
 ----------------------------------------------------------------------
-I get the same error messages with a different setting:
-
-This is Linux 2.6.10 on a Foxconn 915 motherboard.  In /proc/pci it says
-
-Bus  0, device  30, function  2:
-    Multimedia audio controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) AC'97 Audio Controller (rev 3).
-      IRQ 17.
-      I/O at 0xfb00 [0xfbff].
-      I/O at 0xfa00 [0xfa3f].
-      Non-prefetchable 32 bit memory at 0xfdffe000 [0xfdffe1ff].
-      Non-prefetchable 32 bit memory at 0xfdffd000 [0xfdffd0ff].
-
-After I run alsaconf, I get no error and snd_intel8x0 is loaded.  But
-alsamixer fails:
-
-alsamixer: function snd_ctl_open failed for default: No such file or
-directory
-
-In dmesg, I get similar messages as hildeb:
-
-ACPI: PCI interrupt 0000:00:1e.2[A] -> GSI 17 (level, low) -> IRQ 17
-PCI: Setting latency timer of device 0000:00:1e.2 to 64
-ALSA /usr/src/alsa-driver-1.0.9b/pci/intel8x0.c:2182: AC'97 warm reset
-still in progress? [0x6]
-Intel ICH: probe of 0000:00:1e.2 failed with error -5
-
-I installed the alsa-driver-1.0.9b package, but that didn't help, either.
-
-
-
-----------------------------------------------------------------------
- hildeb - 09-04-05 07:30 
-----------------------------------------------------------------------
-I updated to 2.6.13-git3 today and the issue is gone!
-You can close this bug.
+Does switching on 'External Amplifier' fix the problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 10:23 hildeb         New Issue                                    
-07-22-05 10:23 hildeb         Distribution              => Debian/unstable 
-07-22-05 10:23 hildeb         Kernel Version            => 2.6.13-rc3-git4 
-07-22-05 10:25 hildeb         Note Added: 0005545                          
-07-25-05 11:50 hildeb         Issue Monitored: hildeb                      
-08-09-05 15:43 hildeb         Note Added: 0005733                          
-08-09-05 16:18 cartan         Note Added: 0005734                          
-08-09-05 16:19 cartan         Note Edited: 0005734                         
-08-09-05 16:19 cartan         Issue Monitored: cartan                      
-09-04-05 07:30 hildeb         Note Added: 0006035                          
-09-04-05 07:30 hildeb         Issue End Monitor: hildeb                    
-07-13-06 20:03 Adrian Bunk    Status                   new => resolved     
-07-13-06 20:03 Adrian Bunk    Resolution               open => fixed       
+09-18-05 06:23 lithium7456    New Issue                                    
+09-18-05 06:23 lithium7456    Kernel Version            => 2.4.29          
+09-29-05 12:03 jdthood        Relationship added       duplicate of 0001381
+09-29-05 12:38 jdthood        Note Added: 0006420                          
+07-13-06 20:04 Adrian Bunk    Status                   new => closed       
+07-13-06 20:04 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
