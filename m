@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001598]: TeamSpeak works with kernel
-	mode OSS emulation but not with AOSS wrapper
-Date: Thu, 13 Jul 2006 03:11:36 +0200
-Message-ID: <c4f6f251de7686e28267b971e0218f9f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002249]: intel8x0 doesn't include the
+	PCI ID of my NVidia nForce 570 Sound card (it's the MCP55)
+Date: Thu, 13 Jul 2006 04:10:36 +0200
+Message-ID: <48832f033e22a261bd00aeca3e5bdbed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 691FB18C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6083A178
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 03:11:36 +0200 (MEST)
+	Thu, 13 Jul 2006 04:10:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,130 +25,92 @@ List-Id: alsa-devel@alsa-project.org
 
 
 A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1598> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                kyromaster
-Assigned To:                =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2249> 
+======================================================================
+Reported By:                cardoe
+Assigned To:                
+======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1598
-Category:                   CORE OSS - pcm
+Issue ID:                   2249
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               =
+Distribution:               gentoo
+Kernel Version:             2.6.17 w/ external drivers 1.0.12_rc1
+======================================================================
+Date Submitted:             07-01-2006 10:17 CEST
+Last Modified:              07-13-2006 04:10 CEST
+======================================================================
+Summary:                    intel8x0 doesn't include the PCI ID of my NVidia
+nForce 570 Sound card (it's the MCP55)
+Description: 
+intel8x0 doesn't include the PCI ID of my NVidia nForce 570 Sound card
+(it's the MCP55)
 
-Kernel Version:             =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             11-25-2005 14:10 CET
-Last Modified:              07-13-2006 03:11 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    TeamSpeak works with kernel mode OSS emulation =
-but
-not with AOSS wrapper
-Description: =
-
-At first this is a device independant issue. I looked at some forums and
-tested it on several sound devices.
-TeamSpeak works fine with the kernel OSS emulation on my system. But when
-I use the AOSS wrapper to run it beside games which use ALSA (which is the
-most common use of TeamSpeak) sound recording/output doesn=B4t work any
-more. There=B4s a "test mode" in TS where you can hear yourself, when I
-enable it I can=B4t hear anything.
-Please fix this as it=B4s very important for all Linux gamers.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+So sound doesn't work and ALSA says I have no cards. 1 line patch makes
+this all happen properly.
+======================================================================
 
 ----------------------------------------------------------------------
- divinehawk - 04-03-06 03:04 =
+ cardoe - 07-13-06 03:03 
+----------------------------------------------------------------------
+So... just kidding... This seemed to work ONCE and has not worked since. I
+get the following error to dmesg...
+
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/intel8x0.c:561:
+codec_semaphore: semap hore is not ready [0x21][0x21212121]
+
+That is repeated a whole lot. "alsa-driver-1.0.12_rc1-r1 includes my
+patch.
+
+Then when it decides it's going to stop repeating that I get...
+
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/ac97/ac97_codec.c:1928:
+AC'97 0 does not respond - RESET
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/intel8x0.c:561:
+codec_semaphore: semaphore is not ready [0x21][0x21212121]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/intel8x0.c:561:
+codec_semaphore: semaphore is not ready [0x21][0x21212121]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/ac97/ac97_codec.c:1937:
+AC'97 0 access is not valid [0xffffffff], removing mixer.
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/intel8x0.c:2137:
+Unable to initialize codec #0
+Intel ICH: probe of 0000:00:06.1 failed with error -5
 
 ----------------------------------------------------------------------
-The current DEBUG output I get with alsa-oss 1.0.11_rc3 and TeamSpeak is"
-
-Opened PCM dsp0 for stream 0 (result =3D -2)
-Opened PCM default for stream 0 (result =3D 0)
-Opened PCM default for stream 1 (result =3D 0)
-open("/dev/dsp", 2, -1210431528) -> 19
-ioctl(19, SNDCTL_DSP_RESET)
-ioctl(19, SNDCTL_DSP_SETDUPLEX)
-ioctl(19, SNDCTL_DSP_GETCAPS, 0xb4aff158) -> [13056]
-ioctl(19, SNDCTL_DSP_SETFRAGMENT, 0xb4aff15c[3000c])
-dsp ioctl error =3D -22
-close(19) -> 0
-
-To fix/workaround this, I applied the following patch:
-
---- pcm.c       2005-09-01 13:32:52.000000000 -0400
-+++ /root/alsa-oss-1.0.11rc3/alsa/pcm.c 2006-04-02 20:57:29.233826670
--0400
-@@ -262,7 +262,7 @@
-                        err =3D snd_pcm_hw_params_set_access(pcm, hw,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-                        if (err < 0)
-                                return err;
--                       periods_min =3D 2;
-+                       periods_min =3D 16;
-                        err =3D snd_pcm_hw_params_set_periods_min(pcm, hw,
-&periods_min, 0);
-                        if (err < 0)
-                                return err;
-
-I am not sure why it works... but hopefully it may lead to a real fix,
-rather than a workaround.
-
+ cardoe - 07-13-06 04:10 
 ----------------------------------------------------------------------
- Raymond - 07-13-06 03:11 =
-
-----------------------------------------------------------------------
-The OSS enumeration still depends on hardware, espcially for capturing
-since some of the cards still not configured use dsnoop
+Apparently I'm totally wrong. I managed to get the driver to work without
+the patch. Even though it didn't work when I initially set up the box. Who
+knows. You can close this.
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-11-25-05 14:10 kyromaster     New Issue                                    =
-
-04-03-06 03:04 divinehawk     Note Added: 0009080                          =
-
-04-03-06 03:04 divinehawk     Note Added: 0009081                          =
-
-04-03-06 03:05 divinehawk     Note Deleted: 0009081                        =
-
-04-03-06 03:05 divinehawk     Issue Monitored: divinehawk                  =
-  =
-
-07-13-06 03:11 Raymond        Note Added: 0010987                          =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-06 10:17 cardoe         New Issue                                    
+07-01-06 10:17 cardoe         File Added: intel-nforce-mcp55.patch              
+     
+07-01-06 10:17 cardoe         Distribution              => gentoo          
+07-01-06 10:17 cardoe         Kernel Version            => 2.6.17 w/ external
+drivers 1.0.12_rc1
+07-13-06 03:03 cardoe         Note Added: 0010986                          
+07-13-06 04:10 cardoe         Note Added: 0010988                          
+======================================================================
 
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
