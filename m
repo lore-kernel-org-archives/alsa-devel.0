@@ -1,19 +1,12 @@
-From: "Braidy Copp" <braidycopp@chambliss.senate.gov>
-Subject: xiiay VIeAGRA
-Date: Wed, 12 Jul 2006 21:25:12 -0700
-Message-ID: <000001c6a634$552c88d0$6ffaa8c0@kbx26>
-Reply-To: Braidy Copp <braidycopp@chambliss.senate.gov>
+From: <tomkmbox-alsa@yahoo.gr>
+Subject: EMU 1820
+Date: Thu, 13 Jul 2006 08:33:48 +0100 (BST)
+Message-ID: <20060713073348.34697.qmail@web25606.mail.ukl.yahoo.com>
+Reply-To: tomkmbox-alsa@yahoo.gr
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0412680945=="
+Content-Type: text/plain; charset="iso-8859-7"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12DF4197
-	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 06:25:10 +0200 (MEST)
-Received: from chambliss.senate.gov (unknown [222.107.194.8])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	54BB4996F6 for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 06:25:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,92 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============0412680945==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6A5F9.A8CDB0D0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C6A5F9.A8CDB0D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-=20
-VIAGvRA from 3, 35 $
-VALIvUM from 1, 20 $
-AMBIvEN
-CIALxIS from 3, 75 $
-=20
-http://www.yafolinwace.com
-
-=20
-Wood-elves king.
-So you see Bilbo had come in the end by the only road that was any
-good. It might have been some comfort to Mr. Baggins shivering on the
-
-
-------=_NextPart_000_0001_01C6A5F9.A8CDB0D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>VIAGvRA from 3, 35 $<BR>VALIvUM from 1, 20 $<BR>AMBIvEN<BR>CIALxIS =
-from 3, 75 $</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.yafolinwace.com">http://www.yafolinwace.com</A><BR></D=
-IV>
-<DIV>&nbsp;</DIV>
-<DIV>Wood-elves king.<BR>
-   So you see Bilbo had come in the end by the only road that was =
-any<BR>
-good. It might have been some comfort to Mr. Baggins shivering on =
-the<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6A5F9.A8CDB0D0--
-
-
-
-
-
---===============0412680945==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============0412680945==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0412680945==--
+SSBoYXZlIGFuIEVNVS0xODIwIGFuZCBuZWVkIHRvIGdldCBpdCB3b3JraW5nIHVuZGVyCkxpbnV4
+IC0gSSBhbSBvZmZlcmluZyBhbnkgYXNzaXN0YW5jZSB0byBoZWxwLgoKCgoKCgoJCgoJCgkJCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+IArX8efz6ezv8O/p5d/05SBZYWhvbyE7IArC4fHl6N7q4fTlIPThIOXt7/fr5/Tp6twg7Oft/ezh
+9OEgKHNwYW0pOyDU7yBZYWhvbyEgTWFpbCAK5Onh6N305ekg9OftIOrh6/305fHnIOT17eH03iDw
+8e/z9OHz3+Eg6uH03CD0+e0g5e3v9+vn9Onq/u0gCuzn7fXs3PT57SBodHRwOi8vbG9naW4ueWFo
+b28uY29tL2NvbmZpZy9tYWlsPy5pbnRsPWdyIAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRv
+bWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBz
+ZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hu
+b2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBs
+aWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3Nl
+bC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9
+MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
