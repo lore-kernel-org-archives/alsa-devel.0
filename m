@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002277]: sound available only after
-	moving the volume slides in the sound mixers
-Date: Thu, 13 Jul 2006 16:29:23 +0200
-Message-ID: <20887c9eb3419a635f21090d4ca8dc61@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000203]: Line-In is not working with
+	ICH - Intel ICH5 Intel8x0
+Date: Thu, 13 Jul 2006 20:02:29 +0200
+Message-ID: <248b7a504f8904ee7a64d8ef8caae782@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A033621D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B320F19D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Jul 2006 16:29:23 +0200 (MEST)
+	Thu, 13 Jul 2006 20:02:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,94 +24,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=203> 
 ======================================================================
-Reported By:                veli
-Assigned To:                tiwai
+Reported By:                dkg
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2277
-Category:                   PCI - maestro3
+Issue ID:                   203
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Distribution:               Crux Linux
+Kernel Version:             2.6.5
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-12-2006 07:50 CEST
-Last Modified:              07-13-2006 16:29 CEST
+Date Submitted:             04-12-2004 20:16 CEST
+Last Modified:              07-13-2006 20:02 CEST
 ======================================================================
-Summary:                    sound available only after moving the volume slides
-in the sound mixers
+Summary:                    Line-In is not working with ICH - Intel ICH5
+Intel8x0
 Description: 
- 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
-
-Loaded Modules --------------------------------------------
-snd_maestro3           27780  4
-snd_ac97_codec        100224  1 snd_maestro3
-snd_ac97_bus            2400  1 snd_ac97_codec
-snd_pcm_oss            56448  0
-snd_mixer_oss          20544  1 snd_pcm_oss
-snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
-snd_timer              26884  1 snd_pcm
-snd_page_alloc         11304  1 snd_pcm
-snd                    60004  12
-snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-
-Modprobe Conf ---------------------------------------------
-Warning: module config file does not exist
-This means any kernel modules will not be auto loaded
-See your linux distro docs on how to create this file
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-0 [PCI            ]: Allegro - ESS Allegro PCI
-                     ESS Allegro PCI at 0x7800, irq 9
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: Allegro : Allegro : playback 2 : capture 1
-cat: /proc/asound/seq/clients: No such file or directory
-
-Dev Snd ---------------------------------------------------
-controlC0  pcmC0D0c  pcmC0D0p  timer
-
-CPU -------------------------------------------------------
-model name      : Pentium III (Coppermine)
-cpu MHz         : 662.353
-
-RAM -------------------------------------------------------
-MemTotal:       255520 kB
-SwapTotal:      522072 kB
-
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
-PRO133x] (rev c4)
-0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
-(rev 20)
-0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
-(rev 10)
-
-
+ Today I upgraded to 2.6.5 because I thought it may help me in solving my
+problem with my soundcard. But it doesnt. It still exists. Mic and
+Line-Out are ok. But my Line-In is not working. I need it to record sound
+which comes from my turntables. Following are some informations about my
+card. It would be great if someone could help me.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-13-06 16:29 
+ DavidALSA - 08-28-05 00:02 
 ----------------------------------------------------------------------
-Are there any error message in system log when the driver is loaded and
-alsactl restore ?
+Using MEPIS Linux here with kernel 2.6.7 on laptop with Intel 8x0 audio
+hardware, and cannot record from the mic input (laptop has no other
+external sound inputs available). Would appreciate this being added to
+ALSA.
+
+----------------------------------------------------------------------
+ rlrevell - 08-28-05 00:19 
+----------------------------------------------------------------------
+2.6.7 is way too old, does it work with a newer ALSA like 1.0.9b?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-06 07:50 veli           New Issue                                    
-07-13-06 16:29 Raymond        Note Added: 0010994                          
+04-12-04 20:16 dkg            New Issue                                    
+04-12-04 20:16 dkg            Distribution              => Crux Linux      
+04-12-04 20:16 dkg            Kernel Version            => 2.6.5           
+04-13-04 10:51 Voluspa        Note Added: 0000787                          
+04-13-04 10:53 Voluspa        Note Edited: 0000787                         
+03-10-05 15:30 jdthood        Note Added: 0003865                          
+08-28-05 00:02 DavidALSA      Note Added: 0005960                          
+08-28-05 00:19 rlrevell       Note Added: 0005961                          
+07-13-06 20:02 Adrian Bunk    Status                   new => closed       
+07-13-06 20:02 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
