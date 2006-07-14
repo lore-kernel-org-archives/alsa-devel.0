@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Fri, 14 Jul 2006 20:59:37 +0200
-Message-ID: <d49aa2561b37abf84272e18dcbc6b461@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000311]: error messages: boot process,
+	application start
+Date: Fri, 14 Jul 2006 21:00:13 +0200
+Message-ID: <ddbd44ea26b3f314e926893bc0e8c614@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E910197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FFF2197
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 20:59:37 +0200 (MEST)
+	Fri, 14 Jul 2006 21:00:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,105 +24,147 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
-======================================================================
-Reported By:                bitmage2
-Assigned To:                
-======================================================================
+The following issue has been RESOLVED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D311> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                phil
+Assigned To:                =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   311
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
-======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-14-2006 20:59 CEST
-======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
-Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+Status:                     resolved
+Distribution:               Debian sid
+Kernel Version:             vanilla 2.6.5
+Resolution:                 fixed
+Fixed in Version:           =
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             05-27-2004 15:00 CEST
+Last Modified:              07-14-2006 21:00 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    error messages: boot process, application start
+Description: =
+
+Everytime I boot my machine I get the following error code:
+
+PCI: Enabling device 0000:00:1f.5 (0005 -> 0007)
+PCI: Setting latency timer of device 0000:00:1f.5 to 64
+ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
+[0x1][0x700300]
+ALSA sound/pci/ac97/ac97_codec.c:1868: MC'97 1 converters and GPIO not
+ready (0xff00)
+ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
+[0x1][0x700300]
+intel8x0_measure_ac97_clock: measured 49475 usecs
+intel8x0: clocking to 48000
 
 
 
-======================================================================
+And the following one after starting frozen-bubble:
+
+ALSA sound/core/seq/oss/seq_oss_init.c:213: no device found
+ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
+[0x1][0x700300]
+ALSA sound/pci/intel8x0.c:611: codec_write 0: semaphore is not ready for
+register 0x2c
+
+
+That's the only thing. Sound works fine - it's only the message I'm
+concernd about...
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- bitmage2 - 07-14-06 20:57 
-----------------------------------------------------------------------
-I have removed ~/.asoundrc , but the result is the same (100% CPU load with
-5.1).
-
-@Raymond: What am I supposed do with the information "center_lfe is device
-3" ?!?
+ nshmyrev - 01-13-05 23:35 =
 
 ----------------------------------------------------------------------
- bitmage2 - 07-14-06 20:59 
+Still have the same problems with kernel 2.6.10 when I load snd_intel8x0
+and snd_intel8x0m. For me that message doesn't brake anything, but it's
+still not so pleasure to see warnings in syslog.
+
+codec_semaphore: semaphore is not ready [0x1][0x701300]
+codec_write 1: semaphore is not ready for register 0x54
+
+
+Moreower, David G=F3mez <dabisu@gmail.com> reported that such messages
+brakes sound working:
+
+It's broken, at least in 2.6.10. In my case, if i loaded the modem
+driver, the sound one stopped working (with a lot of semaphore
+errors...) My solution is not using the modem driver by now :(. I
+think that Takashi said that there was a problem in common
+initialization in both drivers, so i hope it gets fixed soon ;)
+
+So, hope this problem will be fixed somehow ;)
+
 ----------------------------------------------------------------------
-For your information: *After* removing  ~/.asoudrc , the output looks like
-this:
+ phil - 11-24-05 10:06 =
 
-chris@bjork:~> speaker-test -Dplug:surround51 --channels 6
-
-speaker-test 0.0.8
-
-Playback device is plug:surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 16384
-Period size range from 8 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 16384
-To choose period_size = 4096
-was set period_size = 512
-was set buffer_size = 16384
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 17,710859
-
-
-It says "3 - Rear Right", and it actually plays sound at "rear right".
+----------------------------------------------------------------------
+At the moment I'm using a Debian 2.6.14 kernel and Alsa 1.0.9b -  and the
+messages are gone.
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+05-27-04 15:00 phil           New Issue                                    =
+
+05-27-04 15:00 phil           Distribution              =3D> Debian sid    =
+  =
+
+05-27-04 15:00 phil           Kernel Version            =3D> vanilla 2.6.5 =
+  =
+
+05-28-04 17:03 tiwai          Note Added: 0001266                          =
+
+06-21-04 10:15 phil           Note Added: 0001326                          =
+
+06-30-04 16:35 tiwai          Note Added: 0001357                          =
+
+01-13-05 23:35 nshmyrev       Note Added: 0003205                          =
+
+01-13-05 23:39 nshmyrev       Issue Monitored: nshmyrev                    =
+
+11-24-05 10:06 phil           Note Added: 0006839                          =
+
+07-14-06 21:00 Adrian Bunk    Status                   new =3D> resolved   =
+  =
+
+07-14-06 21:00 Adrian Bunk    Resolution               open =3D> fixed     =
+  =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
