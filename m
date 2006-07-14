@@ -1,23 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: question about sampling rate
-Date: Fri, 14 Jul 2006 19:31:02 +0200
-Message-ID: <20060714173102.GA13816@turing.informatik.uni-halle.de>
-References: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
-	<54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
-	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
-	<20060712093749.GA22449@turing.informatik.uni-halle.de>
-	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002272]: bt87x does not work with
+	osprey230
+Date: Fri, 14 Jul 2006 19:43:55 +0200
+Message-ID: <ae965b06c4fc9e2a79e9dd4204041383@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de
-	[141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 706BB177
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A090C155
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 19:31:35 +0200 (MEST)
-In-reply-to: <7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
-Content-disposition: inline
+	Fri, 14 Jul 2006 19:43:55 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,43 +20,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Grace Baldonasa <gbaldona@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Grace Baldonasa wrote:
-> After computing the rate, value could be of decimal format,
 
-In the computer, all values are binary.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2272> 
+======================================================================
+Reported By:                lucabe
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2272
+Category:                   PCI - bt87x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             all, up to 2.6.18-rc1
+======================================================================
+Date Submitted:             07-11-2006 15:14 CEST
+Last Modified:              07-14-2006 19:43 CEST
+======================================================================
+Summary:                    bt87x does not work with osprey230
+Description: 
+The osprey 230 card is detected, but the captured analog audio is distorted
+(with kernel 2.6.18-rc1) or silence (with kernel 2.6.8).
 
-> is it rounded off to either equal or greater than the whole number
-> itself?
+alsamixer shows 3 inputs: "TV Tuner", "Mic/Line", and "FM", but the card
+does not have any tuner or radio device
 
-There is no whole number, it is interpreted as a number with 16 binary
-fractional digits.
+This happens on x86 systems (I tried some different P4 or celeron
+machines) with the kernel provided by Debian Sarge (2.6.8), but also with
+very recent kernels. I just tried with a 2.6.18-rc1 kernel compiled from
+scratch.
+======================================================================
 
-> subs->freqmax = subs->freqn + (subs->freqn >> 2);
-> Q: why is subs->freqn shifted by 2
+----------------------------------------------------------------------
+ lucabe - 07-13-06 14:40 
+----------------------------------------------------------------------
+Ok, after some other work I discovered how to eliminate the distorsion in
+the captured audio: it seems that something like this patch fixes the
+problem:
 
-It's just subs->freqn plus 25 percent, and that is just some random
-value that should be safe enough for any real sample clock.
+diff -urp -X linux-2.6.18-rc1/Documentation/dontdiff
+linux-2.6.18-rc1/sound/pci/bt87x.c
+linux-2.6.18-rc1-mine/sound/pci/bt87x.c
+--- linux-2.6.18-rc1/sound/pci/bt87x.c  2006-07-06 06:09:49.000000000
++0200
++++ linux-2.6.18-rc1-mine/sound/pci/bt87x.c     2006-07-13
+11:32:23.000000000 +0200
+@@ -354,7 +354,7 @@ static int snd_bt87x_set_digital_hw(stru
+        };
+        int i;
 
-> subs->phase = 0;
-> /* calculate the max. size of packet */
-> maxsize = ((subs->freqmax + 0xffff) * (frame_bits >> 3)) >> 16;
-> 
-> Q: why subs->freqmax is added with 0xffff, then frame_bits is shifted by 3
-> then the whole thing shifted by 16.
+-       chip->reg_control |= CTL_DA_IOM_DA;
++       chip->reg_control |= CTL_DA_IOM_DA | (1 << 16);
+        runtime->hw = snd_bt87x_digital_hw;
+        runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
+        for (i = 0; i < ARRAY_SIZE(ratebits); ++i)
+@@ -380,7 +380,7 @@ static int snd_bt87x_set_analog_hw(struc
+                .rats = &analog_clock
+        };
 
-It's shifted by 16 to throw away the fractional digits; we calculate
-whole bytes.
-"frame_bits/8" is the number of bytes per frame.
-Adding 0xffff ensures that despite the truncation by the final shift,
-the value is rounded up.
+-       chip->reg_control &= ~CTL_DA_IOM_DA;
++       chip->reg_control &= ~(CTL_DA_IOM_DA | (1 << 16));
+        runtime->hw = snd_bt87x_analog_hw;
+        return snd_pcm_hw_constraint_ratnums(runtime, 0,
+SNDRV_PCM_HW_PARAM_RATE,
+                                             &constraint_rates);
 
 
-HTH
-Clemens
+Now, can anyone help me in understanding what that | (1 << 16) means?
+Does anyone know where I can find the specifications for the BT878 chip?
+Is anyone interested in having a working snd-bt87x driver, or should I
+just patch my kernel locally without disturbing you anymore?
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-14-06 19:43 
+----------------------------------------------------------------------
+The "1 << 16" changes the format of the sample data at the chip's digital
+input.
+
+Applying your patch would break capturing on some other cards.  The
+driver
+needs to be changed to setup the sample format for specific cards.
+
+For a manual, Google for "bt878 datasheet".
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-06 15:14 lucabe         New Issue                                    
+07-11-06 15:14 lucabe         Distribution              => Debian          
+07-11-06 15:14 lucabe         Kernel Version            => all, up to 2.6.18-rc1
+07-13-06 11:46 lucabe         Note Added: 0010991                          
+07-13-06 14:40 lucabe         Note Added: 0010992                          
+07-14-06 19:43 Clemens LadischNote Added: 0011001                          
+======================================================================
+
+
 
 
 -------------------------------------------------------------------------
