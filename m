@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Fri, 14 Jul 2006 22:57:19 +0200
-Message-ID: <43ed377be89a0d5946604ee1d5ca9f8e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
+	volume (both in and out)
+Date: Sat, 15 Jul 2006 00:26:57 +0200
+Message-ID: <7df35f7971337f733a16a6737187c48c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75CE819F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4666821D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 22:57:21 +0200 (MEST)
+	Sat, 15 Jul 2006 00:26:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,81 +26,116 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                bitmage2
-Assigned To:                
+Reported By:                garden
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Status:                     feedback
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-14-2006 22:57 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              07-15-2006 00:26 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
-
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
-
-
-
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- bitmage2 - 07-14-06 22:40 
+ killrbuckeye - 07-13-06 23:17 
 ----------------------------------------------------------------------
-Haven't tried. 1.0.12-rc1 is just too new too install. Even most current
-Linux distributions like SuSE 10.1 ship something like 1.0.11-rc2.
-Is ALSA 1.0.12-rc1 qualified to run with Linux 2.6.13 (my current kernel)?
-Just don't want to mess up my ALSA application development environment if
-this setup isn't supported and/or chances are slim that installing
-1.0.12-rc1 will help.
-
-Would it be easier to debug when I install 1.0.12-rc1? rlrevell's comment
-indicates this, but I don't see currentlx how. Do I need to build a debug
-version of ALSA?
+jcdutton, forgive me, but I am very new to Linux.  Could you walk me
+through the process of applying this patch?  I appreciate the effort you
+put into making this available.  Now if only I could figure out how to use
+it... :D
 
 ----------------------------------------------------------------------
- rlrevell - 07-14-06 22:57 
+ snover - 07-15-06 00:26 
 ----------------------------------------------------------------------
-By "too old to debug" I mean that even if the bug is found, a year old ALSA
-version can't be fixed - the answer will be to just upgrade.  1.0.12-rc1
-will work with 2.6.13.
+jcdutton,
 
-We need to determine whether the bug is present in the latest version, so
-you'll have to try 1.0.12-rc1.
+This patch fails to compile on my box.
+Linux 2.6.15-25-amd64-k8 (Ubuntu Dapper 6.06)
+
+$ patch emu10k1_main.c capture-fix.diff
+patching file emu10k1_main.c
+Hunk #1 succeeded at 778 with fuzz 2 (offset -132 lines).
+
+$ make -C /usr/src/linux-headers-`uname -r` SUBDIRS=$PWD modules
+make: Entering directory `/usr/src/linux-headers-2.6.15-25-amd64-k8'
+  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_synth.o
+  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_callback.o
+  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_patch.o
+  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1.o
+  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_main.o
+/home/colin/software/kernel/emu10k1/emu10k1_main.c:781: error: unknown
+field &#8216;adc_1361t&#8217; specified in initializer
+make[1]: *** [/home/colin/software/kernel/emu10k1/emu10k1_main.o] Error 1
+make: *** [_module_/home/colin/software/kernel/emu10k1] Error 2
+make: Leaving directory `/usr/src/linux-headers-2.6.15-25-amd64-k8'
+
+Also this patch is applied only for Audigy 1 ES [SB0160] (rev.4,
+serial:0x00521102); my card is the Audigy 2 ZS [2001] (rev.4,
+serial:0x20011102).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
+01-26-06 21:52 pzad           Note Added: 0007789                          
+01-26-06 21:55 rlrevell       Note Added: 0007790                          
+01-26-06 22:03 pzad           Note Added: 0007791                          
+01-28-06 23:11 andred         Issue Monitored: andred                      
+06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
+06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
+06-21-06 23:18 snover         Note Added: 0010409                          
+06-21-06 23:19 snover         Issue Monitored: snover                      
+06-21-06 23:19 snover         Note Edited: 0010409                         
+06-30-06 16:32 killrbuckeye   Note Added: 0010739                          
+06-30-06 16:34 pzad           Assigned To              pzad =>             
+06-30-06 18:22 jcdutton       Note Added: 0010750                          
+06-30-06 18:23 jcdutton       Assigned To               => jcdutton        
+07-06-06 07:39 L0cKd0wN       Note Added: 0010855                          
+07-06-06 07:40 L0cKd0wN       Note Edited: 0010855                         
+07-06-06 07:40 L0cKd0wN       Issue Monitored: L0cKd0wN                    
+07-09-06 17:38 jcdutton       File Added: capture-fix.diff                    
+07-09-06 17:39 jcdutton       Note Added: 0010953                          
+07-09-06 17:42 jcdutton       Note Added: 0010954                          
+07-09-06 17:42 jcdutton       Status                   assigned => feedback
+07-13-06 23:17 killrbuckeye   Note Added: 0010996                          
+07-15-06 00:26 snover         Note Added: 0011010                          
 ======================================================================
 
 
