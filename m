@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002272]: bt87x does not work with
-	osprey230
-Date: Fri, 14 Jul 2006 19:43:55 +0200
-Message-ID: <ae965b06c4fc9e2a79e9dd4204041383@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002277]: sound available only after
+	moving the volume slides in the sound mixers
+Date: Fri, 14 Jul 2006 19:59:34 +0200
+Message-ID: <6947ddd14ba6a4e738be3762d349b1ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A090C155
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B386913D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 19:43:55 +0200 (MEST)
+	Fri, 14 Jul 2006 19:59:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,99 +26,214 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2272> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
 ======================================================================
-Reported By:                lucabe
-Assigned To:                Clemens Ladisch
+Reported By:                veli
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2272
-Category:                   PCI - bt87x
+Issue ID:                   2277
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             all, up to 2.6.18-rc1
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-11-2006 15:14 CEST
-Last Modified:              07-14-2006 19:43 CEST
+Date Submitted:             07-12-2006 07:50 CEST
+Last Modified:              07-14-2006 19:59 CEST
 ======================================================================
-Summary:                    bt87x does not work with osprey230
+Summary:                    sound available only after moving the volume slides
+in the sound mixers
 Description: 
-The osprey 230 card is detected, but the captured analog audio is distorted
-(with kernel 2.6.18-rc1) or silence (with kernel 2.6.8).
+ 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
 
-alsamixer shows 3 inputs: "TV Tuner", "Mic/Line", and "FM", but the card
-does not have any tuner or radio device
+Loaded Modules --------------------------------------------
+snd_maestro3           27780  4
+snd_ac97_codec        100224  1 snd_maestro3
+snd_ac97_bus            2400  1 snd_ac97_codec
+snd_pcm_oss            56448  0
+snd_mixer_oss          20544  1 snd_pcm_oss
+snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
+snd_timer              26884  1 snd_pcm
+snd_page_alloc         11304  1 snd_pcm
+snd                    60004  12
+snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
 
-This happens on x86 systems (I tried some different P4 or celeron
-machines) with the kernel provided by Debian Sarge (2.6.8), but also with
-very recent kernels. I just tried with a 2.6.18-rc1 kernel compiled from
-scratch.
+Modprobe Conf ---------------------------------------------
+Warning: module config file does not exist
+This means any kernel modules will not be auto loaded
+See your linux distro docs on how to create this file
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+0 [PCI            ]: Allegro - ESS Allegro PCI
+                     ESS Allegro PCI at 0x7800, irq 9
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-00: Allegro : Allegro : playback 2 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
+
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0c  pcmC0D0p  timer
+
+CPU -------------------------------------------------------
+model name      : Pentium III (Coppermine)
+cpu MHz         : 662.353
+
+RAM -------------------------------------------------------
+MemTotal:       255520 kB
+SwapTotal:      522072 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
+PRO133x] (rev c4)
+0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
+(rev 20)
+0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
+(rev 10)
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- lucabe - 07-13-06 14:40 
+ veli - 07-14-06 19:59 
 ----------------------------------------------------------------------
-Ok, after some other work I discovered how to eliminate the distorsion in
-the captured audio: it seems that something like this patch fixes the
-problem:
+The sound card in onboard.
 
-diff -urp -X linux-2.6.18-rc1/Documentation/dontdiff
-linux-2.6.18-rc1/sound/pci/bt87x.c
-linux-2.6.18-rc1-mine/sound/pci/bt87x.c
---- linux-2.6.18-rc1/sound/pci/bt87x.c  2006-07-06 06:09:49.000000000
-+0200
-+++ linux-2.6.18-rc1-mine/sound/pci/bt87x.c     2006-07-13
-11:32:23.000000000 +0200
-@@ -354,7 +354,7 @@ static int snd_bt87x_set_digital_hw(stru
-        };
-        int i;
+veliko@veliko-desktop:~$ lspci -vn
+0000:00:00.0 0600: 1106:0691 (rev c4)
+        Flags: bus master, medium devsel, latency 8
+        Memory at ec000000 (32-bit, prefetchable) [size=64M]
+        Capabilities: <available only to root>
 
--       chip->reg_control |= CTL_DA_IOM_DA;
-+       chip->reg_control |= CTL_DA_IOM_DA | (1 << 16);
-        runtime->hw = snd_bt87x_digital_hw;
-        runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
-        for (i = 0; i < ARRAY_SIZE(ratebits); ++i)
-@@ -380,7 +380,7 @@ static int snd_bt87x_set_analog_hw(struc
-                .rats = &analog_clock
-        };
+0000:00:01.0 0604: 1106:8598
+        Flags: bus master, 66MHz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Memory behind bridge: feb00000-febfffff
+        Prefetchable memory behind bridge: f0000000-fe9fffff
+        Capabilities: <available only to root>
 
--       chip->reg_control &= ~CTL_DA_IOM_DA;
-+       chip->reg_control &= ~(CTL_DA_IOM_DA | (1 << 16));
-        runtime->hw = snd_bt87x_analog_hw;
-        return snd_pcm_hw_constraint_ratnums(runtime, 0,
-SNDRV_PCM_HW_PARAM_RATE,
-                                             &constraint_rates);
+0000:00:02.0 0601: 1106:0596 (rev 12)
+        Flags: bus master, stepping, medium devsel, latency 0
 
+0000:00:02.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
+        Flags: bus master, stepping, medium devsel, latency 32
+        I/O ports at fff0 [size=16]
 
-Now, can anyone help me in understanding what that | (1 << 16) means?
-Does anyone know where I can find the specifications for the BT878 chip?
-Is anyone interested in having a working snd-bt87x driver, or should I
-just patch my kernel locally without disturbing you anymore?
+0000:00:02.2 0c03: 1106:3038 (rev 08)
+        Subsystem: 0925:1234
+        Flags: bus master, medium devsel, latency 22, IRQ 10
+        I/O ports at fce0 [size=32]
+
+0000:00:02.3 0600: 1106:3050 (rev 20)
+        Flags: medium devsel
+
+0000:00:0e.0 0780: 11c1:048c (rev 02)
+        Subsystem: 11c1:044c
+        Flags: bus master, medium devsel, latency 208, IRQ 9
+        Memory at feaffe00 (32-bit, non-prefetchable) [size=256]
+        I/O ports at 6c78 [size=8]
+        I/O ports at 7000 [size=256]
+        Capabilities: <available only to root>
+
+0000:00:10.0 0200: 1106:3106 (rev 8b)
+        Subsystem: 1186:1403
+        Flags: bus master, stepping, medium devsel, latency 24, IRQ 10
+        I/O ports at 7400 [size=256]
+        Memory at feafff00 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <available only to root>
+
+0000:00:12.0 0401: 125d:1988 (rev 10)
+        Subsystem: 1014:017b
+        Flags: bus master, medium devsel, latency 16, IRQ 9
+        I/O ports at 7800 [size=256]
+        Capabilities: <available only to root>
+
+0000:01:00.0 0300: 5333:8a22 (rev 03)
+        Subsystem: 105d:05af
+        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 11
+        Memory at feb80000 (32-bit, non-prefetchable) [size=512K]
+        Memory at f0000000 (32-bit, prefetchable) [size=128M]
+        Expansion ROM at f8000000 [disabled] [size=64K]
+        Capabilities: <available only to root>
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-14-06 19:43 
+ veli - 07-14-06 19:59 
 ----------------------------------------------------------------------
-The "1 << 16" changes the format of the sample data at the chip's digital
-input.
+The sound card is onboard.
 
-Applying your patch would break capturing on some other cards.  The
-driver
-needs to be changed to setup the sample format for specific cards.
+veliko@veliko-desktop:~$ lspci -vn
+0000:00:00.0 0600: 1106:0691 (rev c4)
+        Flags: bus master, medium devsel, latency 8
+        Memory at ec000000 (32-bit, prefetchable) [size=64M]
+        Capabilities: <available only to root>
 
-For a manual, Google for "bt878 datasheet".
+0000:00:01.0 0604: 1106:8598
+        Flags: bus master, 66MHz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Memory behind bridge: feb00000-febfffff
+        Prefetchable memory behind bridge: f0000000-fe9fffff
+        Capabilities: <available only to root>
+
+0000:00:02.0 0601: 1106:0596 (rev 12)
+        Flags: bus master, stepping, medium devsel, latency 0
+
+0000:00:02.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
+        Flags: bus master, stepping, medium devsel, latency 32
+        I/O ports at fff0 [size=16]
+
+0000:00:02.2 0c03: 1106:3038 (rev 08)
+        Subsystem: 0925:1234
+        Flags: bus master, medium devsel, latency 22, IRQ 10
+        I/O ports at fce0 [size=32]
+
+0000:00:02.3 0600: 1106:3050 (rev 20)
+        Flags: medium devsel
+
+0000:00:0e.0 0780: 11c1:048c (rev 02)
+        Subsystem: 11c1:044c
+        Flags: bus master, medium devsel, latency 208, IRQ 9
+        Memory at feaffe00 (32-bit, non-prefetchable) [size=256]
+        I/O ports at 6c78 [size=8]
+        I/O ports at 7000 [size=256]
+        Capabilities: <available only to root>
+
+0000:00:10.0 0200: 1106:3106 (rev 8b)
+        Subsystem: 1186:1403
+        Flags: bus master, stepping, medium devsel, latency 24, IRQ 10
+        I/O ports at 7400 [size=256]
+        Memory at feafff00 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <available only to root>
+
+0000:00:12.0 0401: 125d:1988 (rev 10)
+        Subsystem: 1014:017b
+        Flags: bus master, medium devsel, latency 16, IRQ 9
+        I/O ports at 7800 [size=256]
+        Capabilities: <available only to root>
+
+0000:01:00.0 0300: 5333:8a22 (rev 03)
+        Subsystem: 105d:05af
+        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 11
+        Memory at feb80000 (32-bit, non-prefetchable) [size=512K]
+        Memory at f0000000 (32-bit, prefetchable) [size=128M]
+        Expansion ROM at f8000000 [disabled] [size=64K]
+        Capabilities: <available only to root>
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-11-06 15:14 lucabe         New Issue                                    
-07-11-06 15:14 lucabe         Distribution              => Debian          
-07-11-06 15:14 lucabe         Kernel Version            => all, up to 2.6.18-rc1
-07-13-06 11:46 lucabe         Note Added: 0010991                          
-07-13-06 14:40 lucabe         Note Added: 0010992                          
-07-14-06 19:43 Clemens LadischNote Added: 0011001                          
+07-12-06 07:50 veli           New Issue                                    
+07-13-06 16:29 Raymond        Note Added: 0010994                          
+07-13-06 20:25 veli           Note Added: 0010995                          
+07-14-06 16:28 Raymond        Note Added: 0011000                          
+07-14-06 19:59 veli           Note Added: 0011002                          
+07-14-06 19:59 veli           Note Added: 0011003                          
 ======================================================================
 
 
