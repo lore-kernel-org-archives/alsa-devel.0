@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002277]: sound available only after
 	moving the volume slides in the sound mixers
-Date: Fri, 14 Jul 2006 19:59:34 +0200
-Message-ID: <6947ddd14ba6a4e738be3762d349b1ac@bugtrack.alsa-project.org>
+Date: Fri, 14 Jul 2006 19:59:19 +0200
+Message-ID: <345c9f5d1b46b955722bf352b8664331@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B386913D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26F4C13D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 19:59:34 +0200 (MEST)
+	Fri, 14 Jul 2006 19:59:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -102,71 +102,16 @@ PRO133x] (rev c4)
 ======================================================================
 
 ----------------------------------------------------------------------
+ Raymond - 07-14-06 16:28 
+----------------------------------------------------------------------
+Post output of 'lspci -vn' of Multimedia audio controller
+
+Is it an onboard sound or pci sound card ?
+
+----------------------------------------------------------------------
  veli - 07-14-06 19:59 
 ----------------------------------------------------------------------
 The sound card in onboard.
-
-veliko@veliko-desktop:~$ lspci -vn
-0000:00:00.0 0600: 1106:0691 (rev c4)
-        Flags: bus master, medium devsel, latency 8
-        Memory at ec000000 (32-bit, prefetchable) [size=64M]
-        Capabilities: <available only to root>
-
-0000:00:01.0 0604: 1106:8598
-        Flags: bus master, 66MHz, medium devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Memory behind bridge: feb00000-febfffff
-        Prefetchable memory behind bridge: f0000000-fe9fffff
-        Capabilities: <available only to root>
-
-0000:00:02.0 0601: 1106:0596 (rev 12)
-        Flags: bus master, stepping, medium devsel, latency 0
-
-0000:00:02.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
-        Flags: bus master, stepping, medium devsel, latency 32
-        I/O ports at fff0 [size=16]
-
-0000:00:02.2 0c03: 1106:3038 (rev 08)
-        Subsystem: 0925:1234
-        Flags: bus master, medium devsel, latency 22, IRQ 10
-        I/O ports at fce0 [size=32]
-
-0000:00:02.3 0600: 1106:3050 (rev 20)
-        Flags: medium devsel
-
-0000:00:0e.0 0780: 11c1:048c (rev 02)
-        Subsystem: 11c1:044c
-        Flags: bus master, medium devsel, latency 208, IRQ 9
-        Memory at feaffe00 (32-bit, non-prefetchable) [size=256]
-        I/O ports at 6c78 [size=8]
-        I/O ports at 7000 [size=256]
-        Capabilities: <available only to root>
-
-0000:00:10.0 0200: 1106:3106 (rev 8b)
-        Subsystem: 1186:1403
-        Flags: bus master, stepping, medium devsel, latency 24, IRQ 10
-        I/O ports at 7400 [size=256]
-        Memory at feafff00 (32-bit, non-prefetchable) [size=256]
-        Capabilities: <available only to root>
-
-0000:00:12.0 0401: 125d:1988 (rev 10)
-        Subsystem: 1014:017b
-        Flags: bus master, medium devsel, latency 16, IRQ 9
-        I/O ports at 7800 [size=256]
-        Capabilities: <available only to root>
-
-0000:01:00.0 0300: 5333:8a22 (rev 03)
-        Subsystem: 105d:05af
-        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 11
-        Memory at feb80000 (32-bit, non-prefetchable) [size=512K]
-        Memory at f0000000 (32-bit, prefetchable) [size=128M]
-        Expansion ROM at f8000000 [disabled] [size=64K]
-        Capabilities: <available only to root>
-
-----------------------------------------------------------------------
- veli - 07-14-06 19:59 
-----------------------------------------------------------------------
-The sound card is onboard.
 
 veliko@veliko-desktop:~$ lspci -vn
 0000:00:00.0 0600: 1106:0691 (rev c4)
@@ -233,7 +178,6 @@ Date Modified  Username       Field                    Change
 07-13-06 20:25 veli           Note Added: 0010995                          
 07-14-06 16:28 Raymond        Note Added: 0011000                          
 07-14-06 19:59 veli           Note Added: 0011002                          
-07-14-06 19:59 veli           Note Added: 0011003                          
 ======================================================================
 
 
