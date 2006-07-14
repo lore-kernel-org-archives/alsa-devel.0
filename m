@@ -1,15 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002281]: No sound with Realtek ALC880
-Date: Fri, 14 Jul 2006 18:17:08 +0200
-Message-ID: <12399a7fb00e3ff435c50468a5208d1e@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: question about sampling rate
+Date: Fri, 14 Jul 2006 19:31:02 +0200
+Message-ID: <20060714173102.GA13816@turing.informatik.uni-halle.de>
+References: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
+	<54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
+	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
+	<20060712093749.GA22449@turing.informatik.uni-halle.de>
+	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEFA6100
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de
+	[141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 706BB177
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 18:17:08 +0200 (MEST)
+	Fri, 14 Jul 2006 19:31:35 +0200 (MEST)
+In-reply-to: <7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
+Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,50 +27,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Grace Baldonasa <gbaldona@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Grace Baldonasa wrote:
+> After computing the rate, value could be of decimal format,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2281> 
-======================================================================
-Reported By:                andy_w
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2281
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               no special distribution - Linux From Scratch (but
-also tested with Mandrake)
-Kernel Version:             2.6.16.20
-======================================================================
-Date Submitted:             07-14-2006 18:17 CEST
-Last Modified:              07-14-2006 18:17 CEST
-======================================================================
-Summary:                    No sound with Realtek ALC880
-Description: 
-Got a notebook with Intel 945GM + ICH7-M and Realtek HDA. The driver
-snd-hda-intel from alsa-driver-1.0.12rc1 can be loaded without errors.
-Everything look's good but there is no sound output. Mixer and various
-sound-apps work ok they can access /dev/dsp, ... volumes are set to 100%
-but there is no hearable sound.
-======================================================================
+In the computer, all values are binary.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-14-06 18:17 andy_w         New Issue                                    
-07-14-06 18:17 andy_w         Distribution              => no special
-distribution - Linux From Scratch (but also tested with Mandrake)
-07-14-06 18:17 andy_w         Kernel Version            => 2.6.16.20       
-======================================================================
+> is it rounded off to either equal or greater than the whole number
+> itself?
+
+There is no whole number, it is interpreted as a number with 16 binary
+fractional digits.
+
+> subs->freqmax = subs->freqn + (subs->freqn >> 2);
+> Q: why is subs->freqn shifted by 2
+
+It's just subs->freqn plus 25 percent, and that is just some random
+value that should be safe enough for any real sample clock.
+
+> subs->phase = 0;
+> /* calculate the max. size of packet */
+> maxsize = ((subs->freqmax + 0xffff) * (frame_bits >> 3)) >> 16;
+> 
+> Q: why subs->freqmax is added with 0xffff, then frame_bits is shifted by 3
+> then the whole thing shifted by 16.
+
+It's shifted by 16 to throw away the fractional digits; we calculate
+whole bytes.
+"frame_bits/8" is the number of bytes per frame.
+Adding 0xffff ensures that despite the truncation by the final shift,
+the value is rounded up.
 
 
+HTH
+Clemens
 
 
 -------------------------------------------------------------------------
