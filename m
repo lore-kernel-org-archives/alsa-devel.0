@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001869]: Playing surround sound
 	produces 100% CPU load
-Date: Fri, 14 Jul 2006 20:57:02 +0200
-Message-ID: <a29ecddfc751b54bdcf2c5df6d05604b@bugtrack.alsa-project.org>
+Date: Fri, 14 Jul 2006 20:59:37 +0200
+Message-ID: <d49aa2561b37abf84272e18dcbc6b461@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7200197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E910197
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 20:57:02 +0200 (MEST)
+	Fri, 14 Jul 2006 20:59:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
 2006 i686 athlon i386 GNU/Linux
 ======================================================================
 Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-14-2006 20:57 CEST
+Last Modified:              07-14-2006 20:59 CEST
 ======================================================================
 Summary:                    Playing surround sound produces 100% CPU load
 Description: 
@@ -63,11 +63,6 @@ Information" box.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-11-06 05:58 
-----------------------------------------------------------------------
-remove .asoundrc , center_lfe is device 3
-
-----------------------------------------------------------------------
  bitmage2 - 07-14-06 20:57 
 ----------------------------------------------------------------------
 I have removed ~/.asoundrc , but the result is the same (100% CPU load with
@@ -75,6 +70,39 @@ I have removed ~/.asoundrc , but the result is the same (100% CPU load with
 
 @Raymond: What am I supposed do with the information "center_lfe is device
 3" ?!?
+
+----------------------------------------------------------------------
+ bitmage2 - 07-14-06 20:59 
+----------------------------------------------------------------------
+For your information: *After* removing  ~/.asoudrc , the output looks like
+this:
+
+chris@bjork:~> speaker-test -Dplug:surround51 --channels 6
+
+speaker-test 0.0.8
+
+Playback device is plug:surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 16384
+Period size range from 8 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 16384
+To choose period_size = 4096
+was set period_size = 512
+was set buffer_size = 16384
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 5 - LFE
+Time per period = 17,710859
+
+
+It says "3 - Rear Right", and it actually plays sound at "rear right".
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +115,7 @@ Date Modified  Username       Field                    Change
 02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
 07-11-06 05:58 Raymond        Note Added: 0010964                          
 07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
 ======================================================================
 
 
