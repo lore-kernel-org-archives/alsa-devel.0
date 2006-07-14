@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Fri, 14 Jul 2006 21:25:13 +0200
-Message-ID: <228f1792c32f20c0ce3637173a8df565@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001822]: Can't record with Hercules
+	Fortissimo II
+Date: Fri, 14 Jul 2006 22:28:52 +0200
+Message-ID: <aa5489103caac9a6060a24bc0cf76e94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C921154
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7ED9B197
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 21:25:13 +0200 (MEST)
+	Fri, 14 Jul 2006 22:28:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,97 +26,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
 ======================================================================
-Reported By:                bitmage2
+Reported By:                atler
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   1822
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Distribution:               PLD
+Kernel Version:             2.6.14.7
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-14-2006 21:25 CEST
+Date Submitted:             02-05-2006 16:16 CET
+Last Modified:              07-14-2006 22:28 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Can't record with Hercules Fortissimo II
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
-
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
-
-
-
+I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
+produces 19K-32K file with no sound. What is weird is that I can record
+through alsa oss emulation in programs that use /dev/dsp.
+Similar problems already appeard here, but none of the solutions worked
+for me.
 ======================================================================
 
 ----------------------------------------------------------------------
- bitmage2 - 07-14-06 20:59 
+ Raymond - 07-11-06 16:28 
 ----------------------------------------------------------------------
-For your information: *After* removing  ~/.asoudrc , the output looks like
-this:
+Refer to cs46xx_lib.c
 
-chris@bjork:~> speaker-test -Dplug:surround51 --channels 6
+#ifdef CONFIG_SND_CS46XX_NEW_DSP
 
-speaker-test 0.0.8
+static unsigned int period_sizes[] = { 32, 64, 128, 256, 512, 1024, 2048
+};
 
-Playback device is plug:surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 16384
-Period size range from 8 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 16384
-To choose period_size = 4096
-was set period_size = 512
-was set buffer_size = 16384
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 17,710859
+ static struct snd_pcm_hw_constraint_list hw_constraints_period_sizes = {
+ .count = ARRAY_SIZE(period_sizes),
+ .list = period_sizes,
+ .mask = 0
+ }; 
+
+#endif
+
+Try the above period size if your cs46xx is using
+CONFIG_SND_CS46XX_NEW_DSP
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/examples.html
+
+Can you run the alsa-lib example
+
+pcm.c and pcm_min.c
 
 
-It says "3 - Rear Right", and it actually plays sound at "rear right".
 
 ----------------------------------------------------------------------
- rlrevell - 07-14-06 21:25 
+ atler - 07-14-06 22:28 
 ----------------------------------------------------------------------
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b
+Changing period size does nothing, even in verbose output the period_size
+is constantly 512 (with -Dhw:0,0 switch however, it changes until value of
+512, with 1024 and 2048 it's still 512).
 
-Have you tried a newer ALSA version like 1.0.12-rc1?  1.0.9b is too old to
-debug.
+Example codes you mentioned run fine, but I don't know what should I
+expect or what to look at.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
+02-05-06 16:16 atler          New Issue                                    
+02-05-06 16:16 atler          File Added: asound.state                     
+02-05-06 16:16 atler          Distribution              => PLD             
+02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
+02-05-06 16:19 atler          Note Added: 0007937                          
+02-07-06 16:30 perex          Note Added: 0007959                          
+02-11-06 20:47 atler          Note Added: 0008021                          
+07-11-06 16:24 Raymond        Note Added: 0010974                          
+07-11-06 16:28 Raymond        Note Edited: 0010974                         
+07-14-06 22:28 atler          Note Added: 0011007                          
 ======================================================================
 
 
