@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002277]: sound available only after
-	moving the volume slides in the sound mixers
-Date: Fri, 14 Jul 2006 16:28:34 +0200
-Message-ID: <5c85330cee385e2a6e3aff11ac63d66a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002281]: No sound with Realtek ALC880
+Date: Fri, 14 Jul 2006 18:17:08 +0200
+Message-ID: <12399a7fb00e3ff435c50468a5208d1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5D6517C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEFA6100
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 16:28:34 +0200 (MEST)
+	Fri, 14 Jul 2006 18:17:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,102 +23,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2281> 
 ======================================================================
-Reported By:                veli
+Reported By:                andy_w
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2277
-Category:                   PCI - maestro3
+Issue ID:                   2281
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               no special distribution - Linux From Scratch (but
+also tested with Mandrake)
+Kernel Version:             2.6.16.20
 ======================================================================
-Date Submitted:             07-12-2006 07:50 CEST
-Last Modified:              07-14-2006 16:28 CEST
+Date Submitted:             07-14-2006 18:17 CEST
+Last Modified:              07-14-2006 18:17 CEST
 ======================================================================
-Summary:                    sound available only after moving the volume slides
-in the sound mixers
+Summary:                    No sound with Realtek ALC880
 Description: 
- 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
-
-Loaded Modules --------------------------------------------
-snd_maestro3           27780  4
-snd_ac97_codec        100224  1 snd_maestro3
-snd_ac97_bus            2400  1 snd_ac97_codec
-snd_pcm_oss            56448  0
-snd_mixer_oss          20544  1 snd_pcm_oss
-snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
-snd_timer              26884  1 snd_pcm
-snd_page_alloc         11304  1 snd_pcm
-snd                    60004  12
-snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-
-Modprobe Conf ---------------------------------------------
-Warning: module config file does not exist
-This means any kernel modules will not be auto loaded
-See your linux distro docs on how to create this file
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-0 [PCI            ]: Allegro - ESS Allegro PCI
-                     ESS Allegro PCI at 0x7800, irq 9
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: Allegro : Allegro : playback 2 : capture 1
-cat: /proc/asound/seq/clients: No such file or directory
-
-Dev Snd ---------------------------------------------------
-controlC0  pcmC0D0c  pcmC0D0p  timer
-
-CPU -------------------------------------------------------
-model name      : Pentium III (Coppermine)
-cpu MHz         : 662.353
-
-RAM -------------------------------------------------------
-MemTotal:       255520 kB
-SwapTotal:      522072 kB
-
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
-PRO133x] (rev c4)
-0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
-(rev 20)
-0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
-(rev 10)
-
-
+Got a notebook with Intel 945GM + ICH7-M and Realtek HDA. The driver
+snd-hda-intel from alsa-driver-1.0.12rc1 can be loaded without errors.
+Everything look's good but there is no sound output. Mixer and various
+sound-apps work ok they can access /dev/dsp, ... volumes are set to 100%
+but there is no hearable sound.
 ======================================================================
-
-----------------------------------------------------------------------
- veli - 07-13-06 20:25 
-----------------------------------------------------------------------
-Not at all!
-
-----------------------------------------------------------------------
- Raymond - 07-14-06 16:28 
-----------------------------------------------------------------------
-Post output of 'lspci -vn' of Multimedia audio controller
-
-Is it an onboard sound or pci sound card ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-06 07:50 veli           New Issue                                    
-07-13-06 16:29 Raymond        Note Added: 0010994                          
-07-13-06 20:25 veli           Note Added: 0010995                          
-07-14-06 16:28 Raymond        Note Added: 0011000                          
+07-14-06 18:17 andy_w         New Issue                                    
+07-14-06 18:17 andy_w         Distribution              => no special
+distribution - Linux From Scratch (but also tested with Mandrake)
+07-14-06 18:17 andy_w         Kernel Version            => 2.6.16.20       
 ======================================================================
 
 
