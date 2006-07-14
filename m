@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Sat, 15 Jul 2006 01:45:22 +0200
-Message-ID: <9526333eb2a1171fc1ccf35b9982cf47@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001044]: Heavily distorted audio
+Date: Sat, 15 Jul 2006 01:58:48 +0200
+Message-ID: <b8b8134431d080f83d048649a964b0aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69A7F197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3378321E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 01:45:22 +0200 (MEST)
+	Sat, 15 Jul 2006 01:58:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,96 +23,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
 ======================================================================
-Reported By:                bitmage2
+Reported By:                jefferai
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   1044
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.15
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-15-2006 01:45 CEST
+Date Submitted:             04-11-2005 17:41 CEST
+Last Modified:              07-15-2006 01:58 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Heavily distorted audio
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+I have a laptop that is fine by itself, but when plugged into my docking
+station I get heavily distorted audio when something plays either
+directly to hw0:0 or through the OSS emulation. The problem seems to be
+with sample rate conversion -- if I create my own dmix-based device that
+resamples audio to 48KHz and then plays it to hw0:0, and I have an
+ALSA-aware app that lets me define which device to use and set it to
+that device, the audio is beautiful both on and off of the docking
+station.  Unfortunately, not all apps allow these settings, so things such
+as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
+station, which is most of the time.
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+I've seen this same problem through three Linux distributions now
+(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
+ALSA issue (or configuration issue) and not distribution-specific.
 
+I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
+but this
+doesn't help, and my clock is detected as being 48000Hz anyways.  I
+don't know what to do.  Some people have said to point OSS apps to
+/dev/adsp but apps complain it's not a valid device, and anyways pointing
+to anything but /dev/dsp doesn't seem to be an option for all apps. 
+Besides, I'd still have the ALSA issues for apps that don't let you define
+which device to use.
 
+Following are relevant snippets of files.  I'm on up-to-date Gentoo
+linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
+and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
+(I added the extra device with a .asoundrc).
 
+TIA,
+Jeff
 ======================================================================
 
 ----------------------------------------------------------------------
- bitmage2 - 07-15-06 01:28 
+ rlrevell - 03-01-06 01:34 
 ----------------------------------------------------------------------
-Info: I can confirm that the bug is there in ALSA 1.0.10rc3 , Linux kernel
-2.6.15-23-386 (just downloaded Kubuntu 6.06 just for checking this).
-
-My check against "1.0.12-rc1" will take plenty of time, because it means
-to find a spare HD/filesystem, install a Linux distribution, get ALSA
-compiling (it is more than a year since my last compile/install of ALSA).
-If I find a current live CD, it might speed up the process.
-
-   Chris
-
-PS: I am still somewhat astonished, that a driver/library/whatsoever being
-younger than a year cannot be fixed. Actually, if installing drivers
-wouldn't be so complicated and time-wating on Linux, I wouldn't care so
-much. :-|
+Hmm, with alsa-lib 1.0.9b or later, dmix should be used by default with
+this device - can you double check that disabling the .asoundrc and using
+the "default" device (aplay file.wav) does not work?
 
 ----------------------------------------------------------------------
- rlrevell - 07-15-06 01:45 
+ rlrevell - 03-01-06 01:35 
 ----------------------------------------------------------------------
-Well, you could just install over your current drivers, then if it does not
-work, reinstall the version that your distro supplies.
+Also what's the exact model of the laptop?
 
-"PS: I am still somewhat astonished, that a driver/library/whatsoever
-being younger than a year cannot be fixed. Actually, if installing drivers
-wouldn't be so complicated and time-wating on Linux, I wouldn't care so
-much. :-|"
-
-Sorry, that's just how Linux works.  There is very limited manpower to
-support an insane amount of hardware and we don't have the resources to go
-back and fix 50 old versions every time a bug is found.  If you want
-support for the latest and greatest hardware you need to run a recent
-version.  A year is a LONG time in the Linux world.
+This might be hard to fix (lack of documentation)...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
+04-11-05 17:41 jefferai       New Issue                                    
+04-11-05 17:41 jefferai       Distribution              => Gentoo          
+04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
+04-12-05 16:32 tiwai          Note Added: 0004448                          
+04-12-05 18:13 jefferai       Note Added: 0004457                          
+04-12-05 18:39 tiwai          Note Added: 0004458                          
+12-30-05 04:42 rlrevell       Note Added: 0007219                          
+03-01-06 01:02 rlrevell       Status                   new => closed       
+03-01-06 01:29 jefferai       Kernel Version           2.6.11-ck3 => 2.6.15
+03-01-06 01:29 jefferai       Status                   closed => feedback  
+03-01-06 01:29 jefferai       Resolution               open => reopened    
+03-01-06 01:29 jefferai       Note Added: 0008258                          
+03-01-06 01:34 rlrevell       Note Added: 0008260                          
+03-01-06 01:35 rlrevell       Note Added: 0008261                          
+04-14-06 03:31 Ensnared       Issue Monitored: Ensnared                    
+07-15-06 01:58 Adrian Bunk    Status                   feedback => closed  
+07-15-06 01:58 Adrian Bunk    Resolution               reopened => unable to
+duplicate
 ======================================================================
 
 
