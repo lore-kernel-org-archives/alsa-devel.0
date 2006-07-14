@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000949]: Randomly,
-	left and right tracks are swaped
-Date: Fri, 14 Jul 2006 21:01:14 +0200
-Message-ID: <f4bddb7b3e6d94d1d657417ba0a3060b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000130]: Realtek ALC202 rev 0: hanging
+	playback on plughw:0, 4
+Date: Fri, 14 Jul 2006 21:01:56 +0200
+Message-ID: <fa38b8b14d4d3b178adb3a44a15951fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA882197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55485197
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 21:01:14 +0200 (MEST)
+	Fri, 14 Jul 2006 21:01:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +26,80 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=949> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=130> 
 ======================================================================
-Reported By:                NorbertB
+Reported By:                Csan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   949
+Issue ID:                   130
 Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   major
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:              2.4.21-20.ELsmp
+Distribution:               Debian GNU/Linux sid
+Kernel Version:             2.6.3-1-686
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-28-2005 00:08 CET
+Date Submitted:             03-13-2004 07:32 CET
 Last Modified:              07-14-2006 21:01 CEST
 ======================================================================
-Summary:                    Randomly, left and right tracks are swaped
+Summary:                    Realtek ALC202 rev 0: hanging playback on plughw:0,4
 Description: 
-I'm running ALSA 1.0.8 on an APro 6224 (AMD8111, ac97' chipset Realtek
-ALC655).
-alsamixer is on, I can hear my audio OK but sometimes, randomly, left and
-right channels are swapped.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000059 On au8820 left and right channels are s...
-has duplicate       0000403 intel8x0 driver swaps channels
+while 'aplay -D plughw:0,0 test.wav' works, when I try to use the other
+playback device playback hangs
+
 ======================================================================
 
 ----------------------------------------------------------------------
- phox - 03-23-05 02:30 
+ Csan - 07-01-04 17:00 
 ----------------------------------------------------------------------
-I should mention that I (the reporter of bug 0000403 mentioned above) am
-also using an AMD8111-based board, the Tyan Thunder K8W (S2885ANRF), and
-of course using the integrated Analog Devices 1981B chip.
+Yes it does work:
+
+# aplay -Dspdif foo.wav
+Playing WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+
+as also does:
+
+# aplay -D plughw:0,0 test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+
+but plughw:0,4 hangs (also in xmms - xmms doesn't list 'spdif'):
+
+# aplay -D plughw:0,4 test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+Aborted by signal Interrupt...
+
+# cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.5a.
+Compiled on Jun 22 2004 for kernel 2.6.6-2-686.
+csanote:~# alsactl --version
+alsactl version 1.0.5
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:50 
+ rlrevell - 12-30-05 03:52 
 ----------------------------------------------------------------------
-NorbertB, phox: Any improvement in 1.0.10?
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 00:08 NorbertB       New Issue                                    
-02-28-05 00:08 NorbertB       Kernel Version            =>  2.4.21-20.ELsmp
-03-22-05 22:30 jdthood        Relationship added       has duplicate 0000403
-03-22-05 22:33 jdthood        Relationship added       related to 0000059  
-03-23-05 02:30 phox           Note Added: 0004149                          
-12-13-05 12:50 jdthood        Note Added: 0007004                          
+03-13-04 07:32 Csan           New Issue                                    
+03-13-04 07:32 Csan           Distribution              => Debian GNU/Linux sid
+03-13-04 07:32 Csan           Kernel Version            => 2.6.3-1-686     
+03-13-04 07:43 Csan           Note Added: 0000590                          
+03-13-04 07:48 Csan           Note Added: 0000591                          
+03-13-04 17:47 perex          Severity                 major => feature    
+03-13-04 17:49 perex          Note Added: 0000595                          
+05-18-04 16:47 Csan           Note Added: 0001142                          
+05-25-04 15:09 tiwai          Note Added: 0001214                          
+07-01-04 17:00 Csan           Note Added: 0001372                          
+12-30-05 03:52 rlrevell       Note Added: 0007191                          
 07-14-06 21:01 Adrian Bunk    Status                   new => resolved     
 07-14-06 21:01 Adrian Bunk    Resolution               open => unable to
 duplicate
