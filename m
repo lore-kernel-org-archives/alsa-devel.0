@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
-	volume (both in and out)
-Date: Sat, 15 Jul 2006 00:26:57 +0200
-Message-ID: <7df35f7971337f733a16a6737187c48c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002193]: kernel module fails to load
+	for AD1986A chipset on ASUS A8N-VM
+Date: Sat, 15 Jul 2006 00:32:31 +0200
+Message-ID: <67e2ede16b69f7070127c5cddf30333e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4666821D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C36EF21D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 00:26:57 +0200 (MEST)
+	Sat, 15 Jul 2006 00:32:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,116 +26,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2193> 
 ======================================================================
-Reported By:                garden
-Assigned To:                jcdutton
+Reported By:                rbenech
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   2193
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     assigned
+Distribution:               OpenSuSE
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              07-15-2006 00:26 CEST
+Date Submitted:             06-08-2006 03:09 CEST
+Last Modified:              07-15-2006 00:32 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    kernel module fails to load for AD1986A chipset on
+ASUS A8N-VM
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+With alsa-1.0.11-32, SuSE 10.1 Yast Hardware Sound detects hardware as
+"MCP51 High Definition Audio" but cannot complete setup.  With SuSE10
+(<alsa-1.0.11rc3), yast would not detect any card.
+
+Similar to fixed issue #0001793. Dupe of issue #0001632, but
+miscategorized/flamed.
+
+Tried all 'model=' and 'position_fix=' options I could find in other
+issues. Nothing allowed kernel module to load.
+
+I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- killrbuckeye - 07-13-06 23:17 
+ rlrevell - 06-10-06 19:03 
 ----------------------------------------------------------------------
-jcdutton, forgive me, but I am very new to Linux.  Could you walk me
-through the process of applying this patch?  I appreciate the effort you
-put into making this available.  Now if only I could figure out how to use
-it... :D
+You should not need to know the driver, your distro should detect it.
+
+If it's failing try "snd-hda-intel"
 
 ----------------------------------------------------------------------
- snover - 07-15-06 00:26 
+ rbenech - 07-15-06 00:32 
 ----------------------------------------------------------------------
-jcdutton,
-
-This patch fails to compile on my box.
-Linux 2.6.15-25-amd64-k8 (Ubuntu Dapper 6.06)
-
-$ patch emu10k1_main.c capture-fix.diff
-patching file emu10k1_main.c
-Hunk #1 succeeded at 778 with fuzz 2 (offset -132 lines).
-
-$ make -C /usr/src/linux-headers-`uname -r` SUBDIRS=$PWD modules
-make: Entering directory `/usr/src/linux-headers-2.6.15-25-amd64-k8'
-  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_synth.o
-  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_callback.o
-  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_patch.o
-  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1.o
-  CC [M]  /home/colin/software/kernel/emu10k1/emu10k1_main.o
-/home/colin/software/kernel/emu10k1/emu10k1_main.c:781: error: unknown
-field &#8216;adc_1361t&#8217; specified in initializer
-make[1]: *** [/home/colin/software/kernel/emu10k1/emu10k1_main.o] Error 1
-make: *** [_module_/home/colin/software/kernel/emu10k1] Error 2
-make: Leaving directory `/usr/src/linux-headers-2.6.15-25-amd64-k8'
-
-Also this patch is applied only for Audigy 1 ES [SB0160] (rev.4,
-serial:0x00521102); my card is the Audigy 2 ZS [2001] (rev.4,
-serial:0x20011102).
+I finally got it working after re-installing the stock kernel package with
+SuSE's YaST.  Technically, I installed the single processor kernel, then
+re-installed the SMP kernel. Rebooted the machine, and used Yast to
+configure the card (it was detected).  Everything that I tried so far
+works! You may close this issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
-08-31-05 14:01 pzad           Note Added: 0005988                          
-08-31-05 18:54 rlrevell       Note Added: 0005990                          
-01-26-06 21:52 pzad           Note Added: 0007789                          
-01-26-06 21:55 rlrevell       Note Added: 0007790                          
-01-26-06 22:03 pzad           Note Added: 0007791                          
-01-28-06 23:11 andred         Issue Monitored: andred                      
-06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
-06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
-06-21-06 23:18 snover         Note Added: 0010409                          
-06-21-06 23:19 snover         Issue Monitored: snover                      
-06-21-06 23:19 snover         Note Edited: 0010409                         
-06-30-06 16:32 killrbuckeye   Note Added: 0010739                          
-06-30-06 16:34 pzad           Assigned To              pzad =>             
-06-30-06 18:22 jcdutton       Note Added: 0010750                          
-06-30-06 18:23 jcdutton       Assigned To               => jcdutton        
-07-06-06 07:39 L0cKd0wN       Note Added: 0010855                          
-07-06-06 07:40 L0cKd0wN       Note Edited: 0010855                         
-07-06-06 07:40 L0cKd0wN       Issue Monitored: L0cKd0wN                    
-07-09-06 17:38 jcdutton       File Added: capture-fix.diff                    
-07-09-06 17:39 jcdutton       Note Added: 0010953                          
-07-09-06 17:42 jcdutton       Note Added: 0010954                          
-07-09-06 17:42 jcdutton       Status                   assigned => feedback
-07-13-06 23:17 killrbuckeye   Note Added: 0010996                          
-07-15-06 00:26 snover         Note Added: 0011010                          
+06-08-06 03:09 rbenech        New Issue                                    
+06-08-06 03:09 rbenech        Distribution              => OpenSuSE        
+06-08-06 03:09 rbenech        Kernel Version            => 2.6.16.13-4-smp 
+06-08-06 03:53 rlrevell       Note Added: 0010106                          
+06-09-06 02:34 rbenech        Note Added: 0010120                          
+06-09-06 02:41 rlrevell       Note Added: 0010121                          
+06-09-06 02:51 rbenech        Note Added: 0010122                          
+06-09-06 02:57 rlrevell       Note Added: 0010123                          
+06-09-06 03:25 rbenech        Note Added: 0010124                          
+06-09-06 03:43 rbenech        Note Added: 0010127                          
+06-09-06 03:50 rbenech        File Added: README.SuSE                      
+06-09-06 03:51 rbenech        Note Added: 0010128                          
+06-09-06 04:06 rlrevell       Note Added: 0010129                          
+06-10-06 01:42 heavytull      Note Added: 0010143                          
+06-10-06 19:03 rlrevell       Note Added: 0010148                          
+07-15-06 00:32 rbenech        Note Added: 0011011                          
 ======================================================================
 
 
