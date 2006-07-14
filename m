@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001869]: Playing surround sound
 	produces 100% CPU load
-Date: Fri, 14 Jul 2006 22:40:16 +0200
-Message-ID: <0e3dccbd2d53f938099c95804e5f9fa1@bugtrack.alsa-project.org>
+Date: Fri, 14 Jul 2006 22:57:19 +0200
+Message-ID: <43ed377be89a0d5946604ee1d5ca9f8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 261BA19F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75CE819F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 22:40:18 +0200 (MEST)
+	Fri, 14 Jul 2006 22:57:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
 2006 i686 athlon i386 GNU/Linux
 ======================================================================
 Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-14-2006 22:40 CEST
+Last Modified:              07-14-2006 22:57 CEST
 ======================================================================
 Summary:                    Playing surround sound produces 100% CPU load
 Description: 
@@ -63,15 +63,6 @@ Information" box.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-14-06 21:25 
-----------------------------------------------------------------------
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b
-
-Have you tried a newer ALSA version like 1.0.12-rc1?  1.0.9b is too old to
-debug.
-
-----------------------------------------------------------------------
  bitmage2 - 07-14-06 22:40 
 ----------------------------------------------------------------------
 Haven't tried. 1.0.12-rc1 is just too new too install. Even most current
@@ -84,6 +75,16 @@ this setup isn't supported and/or chances are slim that installing
 Would it be easier to debug when I install 1.0.12-rc1? rlrevell's comment
 indicates this, but I don't see currentlx how. Do I need to build a debug
 version of ALSA?
+
+----------------------------------------------------------------------
+ rlrevell - 07-14-06 22:57 
+----------------------------------------------------------------------
+By "too old to debug" I mean that even if the bug is found, a year old ALSA
+version can't be fixed - the answer will be to just upgrade.  1.0.12-rc1
+will work with 2.6.13.
+
+We need to determine whether the bug is present in the latest version, so
+you'll have to try 1.0.12-rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +100,7 @@ Date Modified  Username       Field                    Change
 07-14-06 20:59 bitmage2       Note Added: 0011005                          
 07-14-06 21:25 rlrevell       Note Added: 0011006                          
 07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
 ======================================================================
 
 
