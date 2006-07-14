@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000998]: access to second playback
-	hangs
-Date: Fri, 14 Jul 2006 15:54:37 +0200
-Message-ID: <3ed977c24de5a01439299fe89c22c932@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002277]: sound available only after
+	moving the volume slides in the sound mixers
+Date: Fri, 14 Jul 2006 16:28:34 +0200
+Message-ID: <5c85330cee385e2a6e3aff11ac63d66a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B969F13D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5D6517C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Jul 2006 15:54:37 +0200 (MEST)
+	Fri, 14 Jul 2006 16:28:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,58 +26,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
 ======================================================================
-Reported By:                allefant
-Assigned To:                
+Reported By:                veli
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   998
-Category:                   PCI - es1938
+Issue ID:                   2277
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-6
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-19-2005 00:16 CET
-Last Modified:              07-14-2006 15:54 CEST
+Date Submitted:             07-12-2006 07:50 CEST
+Last Modified:              07-14-2006 16:28 CEST
 ======================================================================
-Summary:                    access to second playback hangs
+Summary:                    sound available only after moving the volume slides
+in the sound mixers
 Description: 
-This is haunting my since about half a year, since I got this card. Every
-time the second playback device is accessed, there's a complete hardware
-freeze. Disabling the second playback device makes it work. I know, this
-isn't the best report, since I didn't compile the latest version and did
-not much testing (no fun getting constant HW freezes) - but anyway, I
-thought I report it here, maybe my workaround can help someone who googles
-for this problems at least (or, maybe someone can give me even a hint how
-to fix it).
+ 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
+
+Loaded Modules --------------------------------------------
+snd_maestro3           27780  4
+snd_ac97_codec        100224  1 snd_maestro3
+snd_ac97_bus            2400  1 snd_ac97_codec
+snd_pcm_oss            56448  0
+snd_mixer_oss          20544  1 snd_pcm_oss
+snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
+snd_timer              26884  1 snd_pcm
+snd_page_alloc         11304  1 snd_pcm
+snd                    60004  12
+snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+
+Modprobe Conf ---------------------------------------------
+Warning: module config file does not exist
+This means any kernel modules will not be auto loaded
+See your linux distro docs on how to create this file
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+0 [PCI            ]: Allegro - ESS Allegro PCI
+                     ESS Allegro PCI at 0x7800, irq 9
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-00: Allegro : Allegro : playback 2 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
+
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0c  pcmC0D0p  timer
+
+CPU -------------------------------------------------------
+model name      : Pentium III (Coppermine)
+cpu MHz         : 662.353
+
+RAM -------------------------------------------------------
+MemTotal:       255520 kB
+SwapTotal:      522072 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
+PRO133x] (rev c4)
+0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
+(rev 20)
+0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
+(rev 10)
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- allefant - 04-06-05 12:49 
+ veli - 07-13-06 20:25 
 ----------------------------------------------------------------------
-Hm, should I re-submit it as bug for 1.0.9rc2? I can't figure out how to
-change the version field..
+Not at all!
 
 ----------------------------------------------------------------------
- Raymond - 07-14-06 15:54 
+ Raymond - 07-14-06 16:28 
 ----------------------------------------------------------------------
-The driver only allow either playback on second subdevice or capture but
-not both together.
+Post output of 'lspci -vn' of Multimedia audio controller
+
+Is it an onboard sound or pci sound card ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-05 00:16 allefant       New Issue                                    
-03-19-05 00:16 allefant       Distribution              => Debian sid      
-03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
-04-06-05 00:30 allefant       Note Added: 0004344                          
-04-06-05 12:34 allefant       Note Added: 0004345                          
-04-06-05 12:49 allefant       Note Added: 0004346                          
-07-14-06 15:54 Raymond        Note Added: 0010999                          
+07-12-06 07:50 veli           New Issue                                    
+07-13-06 16:29 Raymond        Note Added: 0010994                          
+07-13-06 20:25 veli           Note Added: 0010995                          
+07-14-06 16:28 Raymond        Note Added: 0011000                          
 ======================================================================
 
 
