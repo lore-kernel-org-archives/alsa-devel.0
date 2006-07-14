@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001869]: Playing surround sound
 	produces 100% CPU load
-Date: Sat, 15 Jul 2006 01:28:42 +0200
-Message-ID: <bba14eb8bd29a5d2531f59827c32d800@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 01:45:22 +0200
+Message-ID: <9526333eb2a1171fc1ccf35b9982cf47@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78E4F183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69A7F197
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 01:28:42 +0200 (MEST)
+	Sat, 15 Jul 2006 01:45:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
 2006 i686 athlon i386 GNU/Linux
 ======================================================================
 Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-15-2006 01:28 CEST
+Last Modified:              07-15-2006 01:45 CEST
 ======================================================================
 Summary:                    Playing surround sound produces 100% CPU load
 Description: 
@@ -63,16 +63,6 @@ Information" box.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-14-06 22:57 
-----------------------------------------------------------------------
-By "too old to debug" I mean that even if the bug is found, a year old ALSA
-version can't be fixed - the answer will be to just upgrade.  1.0.12-rc1
-will work with 2.6.13.
-
-We need to determine whether the bug is present in the latest version, so
-you'll have to try 1.0.12-rc1.
-
-----------------------------------------------------------------------
  bitmage2 - 07-15-06 01:28 
 ----------------------------------------------------------------------
 Info: I can confirm that the bug is there in ALSA 1.0.10rc3 , Linux kernel
@@ -90,6 +80,23 @@ younger than a year cannot be fixed. Actually, if installing drivers
 wouldn't be so complicated and time-wating on Linux, I wouldn't care so
 much. :-|
 
+----------------------------------------------------------------------
+ rlrevell - 07-15-06 01:45 
+----------------------------------------------------------------------
+Well, you could just install over your current drivers, then if it does not
+work, reinstall the version that your distro supplies.
+
+"PS: I am still somewhat astonished, that a driver/library/whatsoever
+being younger than a year cannot be fixed. Actually, if installing drivers
+wouldn't be so complicated and time-wating on Linux, I wouldn't care so
+much. :-|"
+
+Sorry, that's just how Linux works.  There is very limited manpower to
+support an insane amount of hardware and we don't have the resources to go
+back and fix 50 old versions every time a bug is found.  If you want
+support for the latest and greatest hardware you need to run a recent
+version.  A year is a LONG time in the Linux world.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -106,6 +113,7 @@ Date Modified  Username       Field                    Change
 07-14-06 22:40 bitmage2       Note Added: 0011008                          
 07-14-06 22:57 rlrevell       Note Added: 0011009                          
 07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
 ======================================================================
 
 
