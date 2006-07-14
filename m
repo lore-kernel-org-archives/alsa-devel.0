@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002193]: kernel module fails to load
 	for AD1986A chipset on ASUS A8N-VM
-Date: Sat, 15 Jul 2006 00:32:31 +0200
-Message-ID: <67e2ede16b69f7070127c5cddf30333e@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 00:43:17 +0200
+Message-ID: <3cce131d29259212385c1bcc1da50095@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C36EF21D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E00E7159
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 00:32:31 +0200 (MEST)
+	Sat, 15 Jul 2006 00:43:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2193> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               OpenSuSE
 Kernel Version:             2.6.16.13-4-smp
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-08-2006 03:09 CEST
-Last Modified:              07-15-2006 00:32 CEST
+Last Modified:              07-15-2006 00:43 CEST
 ======================================================================
 Summary:                    kernel module fails to load for AD1986A chipset on
 ASUS A8N-VM
@@ -61,13 +63,6 @@ I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-10-06 19:03 
-----------------------------------------------------------------------
-You should not need to know the driver, your distro should detect it.
-
-If it's failing try "snd-hda-intel"
-
-----------------------------------------------------------------------
  rbenech - 07-15-06 00:32 
 ----------------------------------------------------------------------
 I finally got it working after re-installing the stock kernel package with
@@ -75,6 +70,11 @@ SuSE's YaST.  Technically, I installed the single processor kernel, then
 re-installed the SMP kernel. Rebooted the machine, and used Yast to
 configure the card (it was detected).  Everything that I tried so far
 works! You may close this issue.
+
+----------------------------------------------------------------------
+ rlrevell - 07-15-06 00:43 
+----------------------------------------------------------------------
+Local issue (YAST bug?)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +95,8 @@ Date Modified  Username       Field                    Change
 06-10-06 01:42 heavytull      Note Added: 0010143                          
 06-10-06 19:03 rlrevell       Note Added: 0010148                          
 07-15-06 00:32 rbenech        Note Added: 0011011                          
+07-15-06 00:43 rlrevell       Status                   assigned => closed  
+07-15-06 00:43 rlrevell       Note Added: 0011012                          
 ======================================================================
 
 
