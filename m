@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound,
-	just craking in headphones
-Date: Sat, 15 Jul 2006 02:03:26 +0200
-Message-ID: <c35da2f5b8e79c33021d1ea554217774@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002277]: sound available only after
+	moving the volume slides in the sound mixers
+Date: Sat, 15 Jul 2006 02:40:19 +0200
+Message-ID: <8655325d220cdcaa751f2239cdebd6ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3163821E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A390F159
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 02:03:26 +0200 (MEST)
+	Sat, 15 Jul 2006 02:40:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,73 +24,169 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
 ======================================================================
-Reported By:                jobo
+Reported By:                veli
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
+Issue ID:                   2277
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              07-15-2006 02:03 CEST
+Date Submitted:             07-12-2006 07:50 CEST
+Last Modified:              07-15-2006 02:40 CEST
 ======================================================================
-Summary:                    no sound, just craking in headphones
+Summary:                    sound available only after moving the volume slides
+in the sound mixers
 Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
+ 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
+
+Loaded Modules --------------------------------------------
+snd_maestro3           27780  4
+snd_ac97_codec        100224  1 snd_maestro3
+snd_ac97_bus            2400  1 snd_ac97_codec
+snd_pcm_oss            56448  0
+snd_mixer_oss          20544  1 snd_pcm_oss
+snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
+snd_timer              26884  1 snd_pcm
+snd_page_alloc         11304  1 snd_pcm
+snd                    60004  12
+snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+
+Modprobe Conf ---------------------------------------------
+Warning: module config file does not exist
+This means any kernel modules will not be auto loaded
+See your linux distro docs on how to create this file
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+0 [PCI            ]: Allegro - ESS Allegro PCI
+                     ESS Allegro PCI at 0x7800, irq 9
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-00: Allegro : Allegro : playback 2 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
+
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0c  pcmC0D0p  timer
+
+CPU -------------------------------------------------------
+model name      : Pentium III (Coppermine)
+cpu MHz         : 662.353
+
+RAM -------------------------------------------------------
+MemTotal:       255520 kB
+SwapTotal:      522072 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
+PRO133x] (rev c4)
+0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
+(rev 20)
+0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
+(rev 10)
 
 
-Joe
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-18-06 00:34 
+ veli - 07-14-06 20:15 
 ----------------------------------------------------------------------
-Yes, the bug is fixed in the latest development tree but not in any
-released version.  You can wait for the next release, or check the list
-archive - an "Alsa HG howto" was posted recently.
+The sound card is onboard.
+
+veliko@veliko-desktop:~$ lspci -vn
+0000:00:00.0 0600: 1106:0691 (rev c4)
+        Flags: bus master, medium devsel, latency 8
+        Memory at ec000000 (32-bit, prefetchable) [size=64M]
+        Capabilities: <available only to root>
+
+0000:00:01.0 0604: 1106:8598
+        Flags: bus master, 66MHz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Memory behind bridge: feb00000-febfffff
+        Prefetchable memory behind bridge: f0000000-fe9fffff
+        Capabilities: <available only to root>
+
+0000:00:02.0 0601: 1106:0596 (rev 12)
+        Flags: bus master, stepping, medium devsel, latency 0
+
+0000:00:02.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
+        Flags: bus master, stepping, medium devsel, latency 32
+        I/O ports at fff0 [size=16]
+
+0000:00:02.2 0c03: 1106:3038 (rev 08)
+        Subsystem: 0925:1234
+        Flags: bus master, medium devsel, latency 22, IRQ 10
+        I/O ports at fce0 [size=32]
+
+0000:00:02.3 0600: 1106:3050 (rev 20)
+        Flags: medium devsel
+
+0000:00:0e.0 0780: 11c1:048c (rev 02)
+        Subsystem: 11c1:044c
+        Flags: bus master, medium devsel, latency 208, IRQ 9
+        Memory at feaffe00 (32-bit, non-prefetchable) [size=256]
+        I/O ports at 6c78 [size=8]
+        I/O ports at 7000 [size=256]
+        Capabilities: <available only to root>
+
+0000:00:10.0 0200: 1106:3106 (rev 8b)
+        Subsystem: 1186:1403
+        Flags: bus master, stepping, medium devsel, latency 24, IRQ 10
+        I/O ports at 7400 [size=256]
+        Memory at feafff00 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <available only to root>
+
+0000:00:12.0 0401: 125d:1988 (rev 10)
+        Subsystem: 1014:017b
+        Flags: bus master, medium devsel, latency 16, IRQ 9
+        I/O ports at 7800 [size=256]
+        Capabilities: <available only to root>
+
+0000:01:00.0 0300: 5333:8a22 (rev 03)
+        Subsystem: 105d:05af
+        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 11
+        Memory at feb80000 (32-bit, non-prefetchable) [size=512K]
+        Memory at f0000000 (32-bit, prefetchable) [size=128M]
+        Expansion ROM at f8000000 [disabled] [size=64K]
+        Capabilities: <available only to root>
+
+
 
 ----------------------------------------------------------------------
- jobo - 05-18-06 02:59 
+ Raymond - 07-15-06 02:40 
 ----------------------------------------------------------------------
-awesome so the next release will fix the no sound?   thats great, i really
-appreciate your help, does anyone know when the next release will come
-out? 
+The driver has a hardware volume quirk list for the hardware volume button
+of the notebook
 
-thanks guys
+What it the model of your notebook ?
+
+http://hg-mirror.alsa-project.org/alsa-kernel?f=380dccde45cf;file=pci/maestro3.c;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
-05-17-06 16:56 jobo           Note Added: 0009851                          
-05-17-06 17:27 tiwai          Status                   new => resolved     
-05-17-06 17:27 tiwai          Resolution               open => fixed       
-05-17-06 17:27 tiwai          Assigned To               => tiwai           
-05-17-06 17:27 tiwai          Note Added: 0009854                          
-05-17-06 23:31 jobo           Status                   resolved => feedback
-05-17-06 23:31 jobo           Resolution               fixed => reopened   
-05-17-06 23:31 jobo           Note Added: 0009859                          
-05-18-06 00:34 rlrevell       Note Added: 0009860                          
-05-18-06 02:59 jobo           Note Added: 0009861                          
-07-15-06 02:03 Adrian Bunk    Status                   feedback => resolved
-07-15-06 02:03 Adrian Bunk    Resolution               reopened => fixed   
+07-12-06 07:50 veli           New Issue                                    
+07-13-06 16:29 Raymond        Note Added: 0010994                          
+07-13-06 20:25 veli           Note Added: 0010995                          
+07-14-06 16:28 Raymond        Note Added: 0011000                          
+07-14-06 19:59 veli           Note Added: 0011002                          
+07-14-06 19:59 veli           Note Added: 0011003                          
+07-14-06 20:15 veli           Note Deleted: 0011003                        
+07-14-06 20:15 veli           Note Edited: 0011002                         
+07-15-06 02:40 Raymond        Note Added: 0011015                          
 ======================================================================
 
 
