@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002277]: sound available only after
-	moving the volume slides in the sound mixers
-Date: Sat, 15 Jul 2006 03:38:50 +0200
-Message-ID: <2d628121b770737a87706005611ad331@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Sat, 15 Jul 2006 05:09:25 +0200
+Message-ID: <902705f6489716aa100c27b7adf7ebc8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA5C6226
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EB8A16F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 03:38:50 +0200 (MEST)
+	Sat, 15 Jul 2006 05:09:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,109 +26,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2277> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                veli
-Assigned To:                tiwai
+Reported By:                bitmage2
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2277
-Category:                   PCI - maestro3
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             07-12-2006 07:50 CEST
-Last Modified:              07-15-2006 03:38 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-15-2006 05:09 CEST
 ======================================================================
-Summary:                    sound available only after moving the volume slides
-in the sound mixers
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
- 2.6.15-26-686 #1 SMP PREEMPT Fri Jul 7 19:48:22 UTC 2006 i686 GNU/Linux
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-Loaded Modules --------------------------------------------
-snd_maestro3           27780  4
-snd_ac97_codec        100224  1 snd_maestro3
-snd_ac97_bus            2400  1 snd_ac97_codec
-snd_pcm_oss            56448  0
-snd_mixer_oss          20544  1 snd_pcm_oss
-snd_pcm                96708  5 snd_maestro3,snd_ac97_codec,snd_pcm_oss
-snd_timer              26884  1 snd_pcm
-snd_page_alloc         11304  1 snd_pcm
-snd                    60004  12
-snd_maestro3,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
-Modprobe Conf ---------------------------------------------
-Warning: module config file does not exist
-This means any kernel modules will not be auto loaded
-See your linux distro docs on how to create this file
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-0 [PCI            ]: Allegro - ESS Allegro PCI
-                     ESS Allegro PCI at 0x7800, irq 9
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: Allegro : Allegro : playback 2 : capture 1
-cat: /proc/asound/seq/clients: No such file or directory
-
-Dev Snd ---------------------------------------------------
-controlC0  pcmC0D0c  pcmC0D0p  timer
-
-CPU -------------------------------------------------------
-model name      : Pentium III (Coppermine)
-cpu MHz         : 662.353
-
-RAM -------------------------------------------------------
-MemTotal:       255520 kB
-SwapTotal:      522072 kB
-
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
-PRO133x] (rev c4)
-0000:00:02.3 Host bridge: VIA Technologies, Inc. VT82C596 Power Management
-(rev 20)
-0000:00:12.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
-(rev 10)
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-15-06 02:40 
+ rlrevell - 07-15-06 01:45 
 ----------------------------------------------------------------------
-The driver has a hardware volume quirk list for the hardware volume button
-of the notebook
+Well, you could just install over your current drivers, then if it does not
+work, reinstall the version that your distro supplies.
 
-What it the model of your notebook ?
+"PS: I am still somewhat astonished, that a driver/library/whatsoever
+being younger than a year cannot be fixed. Actually, if installing drivers
+wouldn't be so complicated and time-wating on Linux, I wouldn't care so
+much. :-|"
 
-http://hg-mirror.alsa-project.org/alsa-kernel?f=380dccde45cf;file=pci/maestro3.c;style=gitweb
+Sorry, that's just how Linux works.  There is very limited manpower to
+support an insane amount of hardware and we don't have the resources to go
+back and fix 50 old versions every time a bug is found.  If you want
+support for the latest and greatest hardware you need to run a recent
+version.  A year is a LONG time in the Linux world.
 
 ----------------------------------------------------------------------
- veli - 07-15-06 03:38 
+ Raymond - 07-15-06 05:09 
 ----------------------------------------------------------------------
-Hi Raymond, this is a desktop machine, IBM 300PL.
+Please post output of
+
+cat /proc/asound/pcm
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-06 07:50 veli           New Issue                                    
-07-13-06 16:29 Raymond        Note Added: 0010994                          
-07-13-06 20:25 veli           Note Added: 0010995                          
-07-14-06 16:28 Raymond        Note Added: 0011000                          
-07-14-06 19:59 veli           Note Added: 0011002                          
-07-14-06 19:59 veli           Note Added: 0011003                          
-07-14-06 20:15 veli           Note Deleted: 0011003                        
-07-14-06 20:15 veli           Note Edited: 0011002                         
-07-15-06 02:40 Raymond        Note Added: 0011015                          
-07-15-06 03:38 veli           Note Added: 0011016                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
 ======================================================================
 
 
