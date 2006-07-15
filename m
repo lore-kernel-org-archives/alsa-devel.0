@@ -1,14 +1,16 @@
-From: Wiebe Cazemier <halfgaar@gmx.net>
-Subject: Re: Inverted front speakers on sb live
-Date: Sat, 15 Jul 2006 12:09:35 +0200
-Message-ID: <e9aesv$luo$1@sea.gmane.org>
-References: <e8ihr6$jq$1@sea.gmane.org> <s5hodvwxw2o.wl%tiwai@suse.de>
-	<e8vvnn$5qv$1@sea.gmane.org> <e901j8$bjj$1@sea.gmane.org>
-	<s5hbqrw756o.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001286]: SB PCI 512: Rear channels are
+	inverted
+Date: Sat, 15 Jul 2006 12:12:27 +0200
+Message-ID: <e52008135e2e12d292d20b8e7d79ce3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9F49169
+	for <alsa-devel@alsa-project.org>;
+	Sat, 15 Jul 2006 12:12:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,62 +20,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 11 July 2006 13:26, Takashi Iwai wrote:
 
-> At Tue, 11 Jul 2006 13:21:12 +0200,
-> Wiebe Cazemier wrote:
->> 
->> On Tuesday 11 July 2006 12:49, Wiebe Cazemier wrote:
->> 
->> > I don't have ld10k1.
->> > 
->> > These are all the files in /usr/bin that alsa-tools provide:
->> > 
->> > /usr/bin/ac3dec
->> > /usr/bin/as10k1
->> > /usr/bin/cspctl
->> > /usr/bin/echomixer
->> > /usr/bin/envy24control
->> > /usr/bin/extract_ac3
->> > /usr/bin/hdsploader
->> > /usr/bin/mixartloader
->> > /usr/bin/rmedigicontrol
->> > /usr/bin/sbiload
->> > /usr/bin/sscape_ctl
->> > /usr/bin/us428control
->> > /usr/bin/usx2yloader
->> > /usr/bin/vxloader
->> > 
->> > Hmm, this is strange. Alsa-tools 1.0.11 I installed in Gentoo doesn't have
->> > ld10k1, but the tar file of 1.0.10 does have it. I wonder why it's not
->> > installed in Gentoo. At least I have something to go on now. Thanks.
->> 
->> OK, this is proving to be difficult. When you start the patch server
->> (ld10k1), the DSP is cleared (at least mostly) and whatever initialisations
->> alsa did, like setting up the mixer, are gone. There is an init_live script
->> in the alsa-tools package, but I'm not sure if that sets it up like the
->> driver itself does. What's also curious, is that the effects contained in
->> the alsa-tools package are almost the same as the OSS EMU driver, except for
->> inv.asm, which solves the inversion problem.
->> 
->> Because the driver does it's own initialisation (DSP configuration and
->> routing and such), shouldn't it also take care of the inversion problem?
->> It's kind of strange that this problem is not addressed anymore in Alsa,
->> whereas it was in the OSS driver.
-> 
-> Yes, it'd be better to include it in the driver code, IMO.
-> Which chip model is affected by this problem?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1286> 
+======================================================================
+Reported By:                roothorick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1286
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-28-2005 04:27 CEST
+Last Modified:              07-15-2006 12:12 CEST
+======================================================================
+Summary:                    SB PCI 512: Rear channels are inverted
+Description: 
+On my SoundBlaster PCI 512 (essentially a cheap SB Live!) the rear channels
+are always inverted, even when using real 4-channel and 6-channel apps
+such as Unreal Tournament 2004 with custom OpenAL. This causes my speaker
+system's subwoofer to not respond correctly when using the front and rear
+channels together in any kind of configuration, unless I manually invert
+the channels before sending them to the soundcard (impossible for ALSA
+apps, as I STILL can't get the LADSPA plug to work and there's no other
+way to simply invert the signal).
 
-Can I assume that by the questions you've asked, this issue is being addressed?
-Is there an issue I can monitor on the issue tracker? I did find an old one:
+I also have an nForce 2 onboard chip for which this doesn't happen unless
+I enable the "Duplicate Front" switch. For apps with 4 or more real
+channels, this chip produces an appropriate signal and I get good bass
+from my speaker system (Cambridge SoundWorks FPS1800).
+======================================================================
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1286
+----------------------------------------------------------------------
+ roothorick - 07-28-05 04:28 
+----------------------------------------------------------------------
+forgot lspci -v stuffs.
 
-But I believe it's description is wrong as in it states the rears are inverted.
-The OSS EMU docs said the fronts were.
+0000:01:08.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4790 SoundBlaster PCI512
+        Flags: bus master, medium devsel, latency 32, IRQ 17
+        I/O ports at d000 [size=32]
+        Capabilities: [dc] Power Management version 1
+
+0000:01:08.1 Input device controller: Creative Labs SB Live! MIDI/Game
+Port (rev 08)
+        Subsystem: Creative Labs Gameport Joystick
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at d400 [size=8]
+        Capabilities: [dc] Power Management version 1
+
+----------------------------------------------------------------------
+ halfgaar - 07-15-06 12:12 
+----------------------------------------------------------------------
+My SBLive has the same behaviour. My SBlive is:
+
+01:07.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+08)
+        Subsystem: Creative Labs CT4832 SBLive! Value
+        Flags: bus master, medium devsel, latency 32, IRQ 20
+        I/O ports at cc00 [size=32]
+        Capabilities: [dc] Power Management version 1
+
+But, the original OSS EMU10k1 docs said that it was the fronts which were
+inverted, not the rear. When you have only 4 channels, it doesn't matter
+much which one you invert back. But when you've got more (I don't know if
+there are emu10k1's who have), the channels are still out of phase.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-28-05 04:27 roothorick     New Issue                                    
+07-28-05 04:28 roothorick     Note Added: 0005576                          
+07-15-06 12:05 halfgaar       Issue Monitored: halfgaar                    
+07-15-06 12:12 halfgaar       Note Added: 0011020                          
+======================================================================
+
 
 
 
