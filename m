@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002282]: configure file misinterprets
-	with-sequencer option
-Date: Sat, 15 Jul 2006 07:21:26 +0200
-Message-ID: <1f73b47838e4ccc38f9346bed32b8e72@bugtrack.alsa-project.org>
+From: John Pham <jvp256@yahoo.com>
+Subject: alsa driver installation doc out of date (intel8x0)
+Date: Fri, 14 Jul 2006 22:35:44 -0700
+Message-ID: <1152941744.14912.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27D9C13F
-	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 07:21:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,53 +15,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi, these docs are not up to date with the latest install scripts:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2282> 
-======================================================================
-Reported By:                jvp256
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2282
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               ubuntu
-Kernel Version:             Linux buldeo 2.6.15-26-386 #1 PREEMPT Fri Jul 7
-19:27:00 UTC 2006 i686 GNU/Linux
-======================================================================
-Date Submitted:             07-15-2006 07:21 CEST
-Last Modified:              07-15-2006 07:21 CEST
-======================================================================
-Summary:                    configure file misinterprets with-sequencer option
-Description: 
-HTML documentation on the intel8x0 driver 
-advises to use the configuration option:
---with-sequencer=yes
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Intel&card=ICH+southbridge+AC97+modem.&chip=440MX%2C+i810%2C+i810E%2C+i820%2C+ICH4%2C+ICH5%2C+ICH6&module=intel8x0
 
-However, the sequencer is built by default. 
-In fact specifying this option does the 
-exact opposite of what one would expect. 
-It seems to EXCLUDE the sequencer from 
-the build!
-======================================================================
+In particular, as a Linux newbie, I was baffled by the following issues:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-15-06 07:21 jvp256         New Issue                                    
-07-15-06 07:21 jvp256         Distribution              => ubuntu          
-07-15-06 07:21 jvp256         Kernel Version            => Linux buldeo
-2.6.15-26-386 #1 PREEMPT Fri Jul 7 19:27:00 UTC 2006 i686 GNU/Linux
-======================================================================
+(1) alsa driver configuration parameters broken in configure script. The
+HTML doc 
+recommends the following command line to include the sequencer in the
+build. 
+In fact the option EXCLUDES the sequencer! (filed as bug 2282)
 
+        cd alsa-driver-xxx
+        ./configure --with-cards=intel8x0 --with-sequencer=yes;make;make install
+
+(2) The snddevices script is only recommended for pre-0.9.4 drivers. But I found 
+that I needed to run this script for alsa driver version 1.0.11
+
+        NB. If you are using drivers before 0.9.4 then you need to run
+ 	./snddevices
+
+(3) The INSTALL files describe very helpful utilities which are not mentioned 
+in the HTML documentation. I would have found it helpful if the HTML 
+documentation recommended "read the INSTALL file" for version > xxx for older 
+versions you can follow this guide. (Although the introductory issues such 
+as soundcore, downloading files, and also installing alsa-lib/alsa-util are still useful.)
+
+Regards,
+John Pham
 
 
 
