@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000347]: Driver works with xmms,
-	but not with kino or dvgrab
-Date: Sat, 15 Jul 2006 22:06:49 +0200
-Message-ID: <19a78f8f7d25ab06447545c9e8050bb7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001189]: Aureon 7.1 Universe needs
+	manual rate in .asoundrc when changing internal clock
+Date: Sat, 15 Jul 2006 22:08:03 +0200
+Message-ID: <e0015d566db1668f6aa98b564e67ce2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40B1D11E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93100164
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 22:06:50 +0200 (MEST)
+	Sat, 15 Jul 2006 22:08:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,63 +26,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=347> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1189> 
 ======================================================================
-Reported By:                winjer
+Reported By:                BrianMeidell
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   347
+Issue ID:                   1189
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.7
-Resolution:                 unable to duplicate
+Distribution:               Gentoo
+Kernel Version:             2.6.11-gentoo-r3
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-26-2004 14:44 CEST
-Last Modified:              07-15-2006 22:06 CEST
+Date Submitted:             06-13-2005 22:33 CEST
+Last Modified:              07-15-2006 22:08 CEST
 ======================================================================
-Summary:                    Driver works with xmms, but not with kino or dvgrab
+Summary:                    Aureon 7.1 Universe needs manual rate in .asoundrc
+when changing internal clock
 Description: 
-I get fine sound playing with xmms, but when I try to grab dv via firewire
-from my camcorder the sound is badly out of sync with the pictures and is
-much slower.
-
-When I switch to my second soundcard, an es1371, grabbing dv works
-perfectly.
+When changing the master internal clock rate on my aureon 7.1 universe, I
+also need to manually set the rate in .asoundrc for the device and match
+it to the alsamixer setting, otherwise it defaults to what sounds like
+44.1 KHz.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 21:01 
+ tiwai - 06-15-05 14:39 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue?
-Do you have the necessary device files in /dev/snd/?
-Are you using udev, devfs or static device files?
-
-----------------------------------------------------------------------
- winjer - 04-22-05 14:07 
-----------------------------------------------------------------------
-This motherboard blew up a few weeks ago, so now I'm unable to test
-unfortunately.
+Turn off "Multi Track Rate Locking" switch if it's on?  Otherwise the
+hardware won't follow the sample rate the app sets.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-04 14:44 winjer         New Issue                                    
-06-26-04 14:44 winjer         Distribution              => Debian GNU/Linux
-06-26-04 14:44 winjer         Kernel Version            => 2.6.7           
-06-30-04 16:36 tiwai          Note Added: 0001358                          
-07-04-04 16:21 winjer         Note Added: 0001380                          
-04-07-05 21:01 jdthood        Note Added: 0004367                          
-04-22-05 14:07 winjer         Note Added: 0004554                          
-07-15-06 22:06 Adrian Bunk    Status                   new => closed       
-07-15-06 22:06 Adrian Bunk    Resolution               open => unable to
-duplicate
-07-15-06 22:06 Adrian Bunk    Description Updated                          
+06-13-05 22:33 BrianMeidell   New Issue                                    
+06-13-05 22:33 BrianMeidell   Distribution              => Gentoo          
+06-13-05 22:33 BrianMeidell   Kernel Version            => 2.6.11-gentoo-r3
+06-13-05 22:35 BrianMeidell   Issue Monitored: BrianMeidell                    
+06-15-05 14:39 tiwai          Note Added: 0005025                          
+07-15-06 22:08 Adrian Bunk    Status                   new => closed       
+07-15-06 22:08 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
