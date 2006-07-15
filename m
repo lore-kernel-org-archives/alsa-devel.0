@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002284]: Bad detected soundcard (ATI)
 	and Mic problems
-Date: Sat, 15 Jul 2006 18:51:54 +0200
-Message-ID: <a2e868577c71e0de8b3c4d0e2624b7d9@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 19:10:43 +0200
+Message-ID: <024f98958343b9c998bf68e5a65899b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E726517E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47127197
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 18:51:54 +0200 (MEST)
+	Sat, 15 Jul 2006 19:10:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2284> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Ubuntu Dapper Drake
 Kernel Version:             2.6.17.3
 ======================================================================
 Date Submitted:             07-15-2006 18:51 CEST
-Last Modified:              07-15-2006 18:51 CEST
+Last Modified:              07-15-2006 19:10 CEST
 ======================================================================
 Summary:                    Bad detected soundcard (ATI) and Mic problems
 Description: 
@@ -62,12 +62,18 @@ If you want more informations about my soundcard, I'm here :)
 PS : Works fine on Windows of course, ...
 ======================================================================
 
+----------------------------------------------------------------------
+ stgraber - 07-15-06 19:10 
+----------------------------------------------------------------------
+Ofc, I mean HG not NG
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-15-06 18:51 stgraber       New Issue                                    
 07-15-06 18:51 stgraber       Distribution              => Ubuntu Dapper Drake
 07-15-06 18:51 stgraber       Kernel Version            => 2.6.17.3        
+07-15-06 19:10 stgraber       Note Added: 0011025                          
 ======================================================================
 
 
