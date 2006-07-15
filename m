@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Sat, 15 Jul 2006 15:32:02 +0200
-Message-ID: <990bccbd491445e1a612fbb0d7c68322@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 15:33:08 +0200
+Message-ID: <9e5ea7d29bc24ce6b24d35a46c4b15f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F419F183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 795C2197
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 15:32:02 +0200 (MEST)
+	Sat, 15 Jul 2006 15:33:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
 ======================================================================
@@ -41,7 +41,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             04-11-2005 17:41 CEST
-Last Modified:              07-15-2006 15:32 CEST
+Last Modified:              07-15-2006 15:33 CEST
 ======================================================================
 Summary:                    Heavily distorted audio
 Description: 
@@ -77,13 +77,6 @@ and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
 TIA,
 Jeff
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 01:35 
-----------------------------------------------------------------------
-Also what's the exact model of the laptop?
-
-This might be hard to fix (lack of documentation)...
 
 ----------------------------------------------------------------------
  jefferai - 07-15-06 15:32 
@@ -156,6 +149,12 @@ pcm.dsp0 {
         }
 }
 
+----------------------------------------------------------------------
+ jefferai - 07-15-06 15:33 
+----------------------------------------------------------------------
+Oh, also, I'm now using ALSA 1.0.11 built as a module with with kernel
+2.6.16.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -182,6 +181,7 @@ duplicate
 07-15-06 15:32 jefferai       Resolution               unable to duplicate =>
 reopened
 07-15-06 15:32 jefferai       Note Added: 0011023                          
+07-15-06 15:33 jefferai       Note Added: 0011024                          
 ======================================================================
 
 
