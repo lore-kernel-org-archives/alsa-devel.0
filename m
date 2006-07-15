@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000900]: many xruns
-Date: Sat, 15 Jul 2006 02:00:07 +0200
-Message-ID: <a8ff20de13bc90c031155ab9f7022710@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002121]: No Sound, No error message,
+Date: Sat, 15 Jul 2006 02:02:35 +0200
+Message-ID: <ebd9c13056f0883522a358501da8151a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9AE821E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E692321E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 02:00:07 +0200 (MEST)
+	Sat, 15 Jul 2006 02:02:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,52 +25,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=900> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2121> 
 ======================================================================
-Reported By:                mozai
+Reported By:                bringha
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   900
+Issue ID:                   2121
 Category:                   PCI - intel8x0
-Reproducibility:            sometimes
-Severity:                   minor
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               LFS 6.1
-Kernel Version:             2.6.10
-Resolution:                 unable to duplicate
+Distribution:               Suse 9.1. (modified)
+Kernel Version:             2.6.16.9
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-11-2005 19:29 CET
-Last Modified:              07-15-2006 02:00 CEST
+Date Submitted:             05-13-2006 16:11 CEST
+Last Modified:              07-15-2006 02:02 CEST
 ======================================================================
-Summary:                    many xruns
+Summary:                    No Sound, No error message,
 Description: 
-audio playback skips often
+Installed new Kernel 2.6.16.9 and put ALSA 1.0.11 (compiled from source) on
+it. Made alsalib and alsautils to the same version 1.0.11. No error
+messages, no error in alsaconf, all rulers in alsamixer on full, but no
+sound. Even cat <something> > /dev/sound/pcm... causes no noise (otherwise
+I would assume that something is wrong with my KDE artsd). Sound HW OK
+because it is perfectly running under Windows and Solaris on the same
+machine. See attached aadebug output.
+
+Question: How to analyse further
+
+Thanks for ur support 
 ======================================================================
 
 ----------------------------------------------------------------------
- mozai - 02-11-05 19:34 
+ thubble - 05-14-06 06:57 
 ----------------------------------------------------------------------
-ok so oss emulation mode and xmms skip a lot as well :)
+I have the exact same problem. Occurs on 2.6.17-rc3 with -mm1 patch, but
+not with 2.6.16. aadebug output attached with name "aadebug-output"
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:45 
+ thubble - 05-14-06 19:56 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+Actually, on further investigation, it turns out I was forgetting to unmute
+the PCM. I was just turning the volume up to 100, and didn't realize that
+it was still muted. I unmuted the PCM and it works fine now.
+
+To the original reporter, try this:
+# amixer set PCM 100 unmute
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-05 19:29 mozai          New Issue                                    
-02-11-05 19:29 mozai          Distribution              => LFS 6.1         
-02-11-05 19:29 mozai          Kernel Version            => 2.6.10          
-02-11-05 19:34 mozai          Note Added: 0003566                          
-03-22-06 03:45 rlrevell       Note Added: 0008835                          
-07-15-06 02:00 Adrian Bunk    Status                   new => closed       
-07-15-06 02:00 Adrian Bunk    Resolution               open => unable to
-duplicate
+05-13-06 16:11 bringha        New Issue                                    
+05-13-06 16:11 bringha        File Added: xxx                              
+05-13-06 16:11 bringha        Distribution              => Suse 9.1. (modified)
+05-13-06 16:11 bringha        Kernel Version            => 2.6.16.9        
+05-14-06 06:56 thubble        File Added: aadebug-output                    
+05-14-06 06:57 thubble        Note Added: 0009807                          
+05-14-06 19:56 thubble        Note Added: 0009810                          
+05-24-06 14:01 fuman          Issue Monitored: fuman                       
+07-15-06 02:02 Adrian Bunk    Status                   new => closed       
+07-15-06 02:02 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
