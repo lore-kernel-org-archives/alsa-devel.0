@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002277]: sound available only after
 	moving the volume slides in the sound mixers
-Date: Sat, 15 Jul 2006 02:40:19 +0200
-Message-ID: <8655325d220cdcaa751f2239cdebd6ca@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 03:38:50 +0200
+Message-ID: <2d628121b770737a87706005611ad331@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A390F159
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA5C6226
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 02:40:19 +0200 (MEST)
+	Sat, 15 Jul 2006 03:38:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-12-2006 07:50 CEST
-Last Modified:              07-15-2006 02:40 CEST
+Last Modified:              07-15-2006 03:38 CEST
 ======================================================================
 Summary:                    sound available only after moving the volume slides
 in the sound mixers
@@ -102,70 +102,6 @@ PRO133x] (rev c4)
 ======================================================================
 
 ----------------------------------------------------------------------
- veli - 07-14-06 20:15 
-----------------------------------------------------------------------
-The sound card is onboard.
-
-veliko@veliko-desktop:~$ lspci -vn
-0000:00:00.0 0600: 1106:0691 (rev c4)
-        Flags: bus master, medium devsel, latency 8
-        Memory at ec000000 (32-bit, prefetchable) [size=64M]
-        Capabilities: <available only to root>
-
-0000:00:01.0 0604: 1106:8598
-        Flags: bus master, 66MHz, medium devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Memory behind bridge: feb00000-febfffff
-        Prefetchable memory behind bridge: f0000000-fe9fffff
-        Capabilities: <available only to root>
-
-0000:00:02.0 0601: 1106:0596 (rev 12)
-        Flags: bus master, stepping, medium devsel, latency 0
-
-0000:00:02.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
-        Flags: bus master, stepping, medium devsel, latency 32
-        I/O ports at fff0 [size=16]
-
-0000:00:02.2 0c03: 1106:3038 (rev 08)
-        Subsystem: 0925:1234
-        Flags: bus master, medium devsel, latency 22, IRQ 10
-        I/O ports at fce0 [size=32]
-
-0000:00:02.3 0600: 1106:3050 (rev 20)
-        Flags: medium devsel
-
-0000:00:0e.0 0780: 11c1:048c (rev 02)
-        Subsystem: 11c1:044c
-        Flags: bus master, medium devsel, latency 208, IRQ 9
-        Memory at feaffe00 (32-bit, non-prefetchable) [size=256]
-        I/O ports at 6c78 [size=8]
-        I/O ports at 7000 [size=256]
-        Capabilities: <available only to root>
-
-0000:00:10.0 0200: 1106:3106 (rev 8b)
-        Subsystem: 1186:1403
-        Flags: bus master, stepping, medium devsel, latency 24, IRQ 10
-        I/O ports at 7400 [size=256]
-        Memory at feafff00 (32-bit, non-prefetchable) [size=256]
-        Capabilities: <available only to root>
-
-0000:00:12.0 0401: 125d:1988 (rev 10)
-        Subsystem: 1014:017b
-        Flags: bus master, medium devsel, latency 16, IRQ 9
-        I/O ports at 7800 [size=256]
-        Capabilities: <available only to root>
-
-0000:01:00.0 0300: 5333:8a22 (rev 03)
-        Subsystem: 105d:05af
-        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 11
-        Memory at feb80000 (32-bit, non-prefetchable) [size=512K]
-        Memory at f0000000 (32-bit, prefetchable) [size=128M]
-        Expansion ROM at f8000000 [disabled] [size=64K]
-        Capabilities: <available only to root>
-
-
-
-----------------------------------------------------------------------
  Raymond - 07-15-06 02:40 
 ----------------------------------------------------------------------
 The driver has a hardware volume quirk list for the hardware volume button
@@ -174,6 +110,11 @@ of the notebook
 What it the model of your notebook ?
 
 http://hg-mirror.alsa-project.org/alsa-kernel?f=380dccde45cf;file=pci/maestro3.c;style=gitweb
+
+----------------------------------------------------------------------
+ veli - 07-15-06 03:38 
+----------------------------------------------------------------------
+Hi Raymond, this is a desktop machine, IBM 300PL.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -187,6 +128,7 @@ Date Modified  Username       Field                    Change
 07-14-06 20:15 veli           Note Deleted: 0011003                        
 07-14-06 20:15 veli           Note Edited: 0011002                         
 07-15-06 02:40 Raymond        Note Added: 0011015                          
+07-15-06 03:38 veli           Note Added: 0011016                          
 ======================================================================
 
 
