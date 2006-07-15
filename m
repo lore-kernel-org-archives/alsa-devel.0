@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002284]: Bad detected soundcard (ATI)
-	and Mic problems
-Date: Sat, 15 Jul 2006 19:10:43 +0200
-Message-ID: <024f98958343b9c998bf68e5a65899b9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002283]: no sound (hda-intel ALC883)
+Date: Sat, 15 Jul 2006 20:35:00 +0200
+Message-ID: <83dd325d8a97a9cf93b7c0bfa03941cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47127197
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4FCD21D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 19:10:43 +0200 (MEST)
+	Sat, 15 Jul 2006 20:35:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,54 +25,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2284> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2283> 
 ======================================================================
-Reported By:                stgraber
+Reported By:                alpozkul
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2284
+Issue ID:                   2283
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper Drake
-Kernel Version:             2.6.17.3
+Distribution:               Debian - testing (also tried on other distros)
+Kernel Version:              2.6.15-1-686-smp
 ======================================================================
-Date Submitted:             07-15-2006 18:51 CEST
-Last Modified:              07-15-2006 19:10 CEST
+Date Submitted:             07-15-2006 12:36 CEST
+Last Modified:              07-15-2006 20:34 CEST
 ======================================================================
-Summary:                    Bad detected soundcard (ATI) and Mic problems
+Summary:                    no sound (hda-intel ALC883)
 Description: 
-I have an ATI soundcard on my laptop.
-lspci : 0403: ATI Technologies Inc: Unknown device 437b (rev 01)
-lspci : 0000:00:14.2 0403: 1002:437b (rev 01)
+I have no sound on my Acer Aspire 5602 WLMi notebook. Everything and mixer
+settings seem alright. I tried with alsa 1.0.10, 1.0.11, and 1.0.12rc.
 
-I compiled the latest alsa-driver from NG with --with-cards=hda-intel,
-when loading I got this :
-hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
-
-And I can try with any model=, 3stack give me input control in alsamixer,
-but I have an awful background noise on my MIC and also sometimes echos.
-
-If you want more informations about my soundcard, I'm here :)
-
-PS : Works fine on Windows of course, ...
 ======================================================================
 
 ----------------------------------------------------------------------
- stgraber - 07-15-06 19:10 
+ arpac - 07-15-06 20:34 
 ----------------------------------------------------------------------
-Ofc, I mean HG not NG
+please, don't make 36000 posts for ALC883, go to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261
+:)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-06 18:51 stgraber       New Issue                                    
-07-15-06 18:51 stgraber       Distribution              => Ubuntu Dapper Drake
-07-15-06 18:51 stgraber       Kernel Version            => 2.6.17.3        
-07-15-06 19:10 stgraber       Note Added: 0011025                          
+07-15-06 12:36 alpozkul       New Issue                                    
+07-15-06 12:36 alpozkul       Distribution              => Debian - testing
+(also tried on other distros)
+07-15-06 12:36 alpozkul       Kernel Version            =>  2.6.15-1-686-smp
+07-15-06 20:34 arpac          Note Added: 0011026                          
 ======================================================================
 
 
