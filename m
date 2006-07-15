@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001189]: Aureon 7.1 Universe needs
-	manual rate in .asoundrc when changing internal clock
-Date: Sat, 15 Jul 2006 22:08:03 +0200
-Message-ID: <e0015d566db1668f6aa98b564e67ce2b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001357]: Add a Capture setting
+Date: Sat, 15 Jul 2006 22:38:11 +0200
+Message-ID: <59fab87b1c5f2dd8c92c4943bf549c54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93100164
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F098160
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 22:08:03 +0200 (MEST)
+	Sat, 15 Jul 2006 22:38:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,51 +25,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1189> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1357> 
 ======================================================================
-Reported By:                BrianMeidell
+Reported By:                Electro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1189
+Issue ID:                   1357
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               Gentoo
-Kernel Version:             2.6.11-gentoo-r3
+Kernel Version:             2.6.12-gentoo-r6
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-13-2005 22:33 CEST
-Last Modified:              07-15-2006 22:08 CEST
+Date Submitted:             08-22-2005 09:37 CEST
+Last Modified:              07-15-2006 22:38 CEST
 ======================================================================
-Summary:                    Aureon 7.1 Universe needs manual rate in .asoundrc
-when changing internal clock
+Summary:                    Add a Capture setting
 Description: 
-When changing the master internal clock rate on my aureon 7.1 universe, I
-also need to manually set the rate in .asoundrc for the device and match
-it to the alsamixer setting, otherwise it defaults to what sounds like
-44.1 KHz.
+In order to record with an Audiotrak Prodigy 7.1 (snd-1724), I have to
+first set the IGAIN setting using aumix. Also I have to use aumix to set
+what input I want to capture from. Then I can record with any program. I
+would like to a way to set what input to be use for capture and a setting
+for the capture level accessible through alsamixer, so it can be changed,
+stored, restored. I could use aumix to load the save settings but
+sometimes it screws up and only the left channel is recorded.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 14:39 
+ tiwai - 08-23-05 16:53 
 ----------------------------------------------------------------------
-Turn off "Multi Track Rate Locking" switch if it's on?  Otherwise the
-hardware won't follow the sample rate the app sets.
+Everything you can do through OSS mixer can be done via alsamixer, too.
+You must have missed something in alsamixer (e.g. didn't change the view
+mode).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-05 22:33 BrianMeidell   New Issue                                    
-06-13-05 22:33 BrianMeidell   Distribution              => Gentoo          
-06-13-05 22:33 BrianMeidell   Kernel Version            => 2.6.11-gentoo-r3
-06-13-05 22:35 BrianMeidell   Issue Monitored: BrianMeidell                    
-06-15-05 14:39 tiwai          Note Added: 0005025                          
-07-15-06 22:08 Adrian Bunk    Status                   new => closed       
-07-15-06 22:08 Adrian Bunk    Resolution               open => not an issue
+08-22-05 09:37 Electro        New Issue                                    
+08-22-05 09:37 Electro        Distribution              => Gentoo          
+08-22-05 09:37 Electro        Kernel Version            => 2.6.12-gentoo-r6
+08-23-05 16:53 tiwai          Note Added: 0005911                          
+07-15-06 22:38 Adrian Bunk    Status                   new => closed       
+07-15-06 22:38 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
