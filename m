@@ -1,15 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002283]: no sound (hda-intel ALC883)
-Date: Sat, 15 Jul 2006 12:36:49 +0200
-Message-ID: <51dfaf98306bfe537ccf8f1a4882b863@bugtrack.alsa-project.org>
+From: Peter Zubaj <pzubaj@gaya.sk>
+Subject: Re: Sending emu10k1 CD analog input to rear output.
+Date: Sat, 15 Jul 2006 13:18:33 +0200
+Message-ID: <1152962313.2394.3.camel@localhost.localdomain>
+References: <20060715062142.56633.qmail@web61222.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47E7B16F
+Received: from arkady.gaya.sk (arkady.gaya.sk [62.168.75.2])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2115814E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 12:36:49 +0200 (MEST)
+	Sat, 15 Jul 2006 13:10:58 +0200 (MEST)
+In-Reply-To: <20060715062142.56633.qmail@web61222.mail.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,51 +21,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: a b <videbimusne@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2283> 
-======================================================================
-Reported By:                alpozkul
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2283
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian - testing (also tried on other distros)
-Kernel Version:              2.6.15-1-686-smp
-======================================================================
-Date Submitted:             07-15-2006 12:36 CEST
-Last Modified:              07-15-2006 12:36 CEST
-======================================================================
-Summary:                    no sound (hda-intel ALC883)
-Description: 
-I have no sound on my Acer Aspire 5602 WLMi notebook. Everything and mixer
-settings seem alright. I tried with alsa 1.0.10, 1.0.11, and 1.0.12rc.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-15-06 12:36 alpozkul       New Issue                                    
-07-15-06 12:36 alpozkul       Distribution              => Debian - testing
-(also tried on other distros)
-07-15-06 12:36 alpozkul       Kernel Version            =>  2.6.15-1-686-smp
-======================================================================
-
-
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+SGksCgpDRCBpbnB1dCBpcyBoYWRsZWQgYnkgQUM5NywgYnV0IHlvdSBuZWVkIHRvIHNldCBjYXB0
+dXJlIG9uICJDYXB0dXJlIiBhbmQKIkNEIiAodGhpcyB3aWxsIHJvdXRlIGNkIHRvIEFDOTcgRFNQ
+IGlucHV0KSBhbmQgbXV0ZSAiQ0QiICh0aGlzIHdpbGwKZGlzYWJsZSByb3V0ZSB3aGljaCBieXBh
+c3MgRFNQKS4KClBldGVyIFp1YmFqCgpPbiBGcmksIDIwMDYtMDctMTQgYXQgMjM6MjEgLTA3MDAs
+IGEgYiB3cm90ZToKPiBIZWxsbzoKPiAgICAgSSdtIHRyeWluZyBmaXggdGhlIHByb2JsZW0gd2l0
+aCB0aGUgZW11MTBrMSBkcml2ZXIgd2hlcmUgdGhlIENECj4gYW5hbG9nIGlucHV0IGlzIG9ubHkg
+c2VudCB0byB0aGUgZnJvbnQgb3V0cHV0LiBJJ3ZlIHRyaWVkIHRoZSBvYnZpb3VzCj4gLSBkdXBs
+aWNhdGluZyB0aGUgQUM5NyBpbnB1dHMgaW4gZW11ZnguYyAtYnV0IHRoYXQgZGlkbid0IGNoYW5n
+ZQo+IGFueXRoaW5nLiBJIGFsc28gdHJpZWQgc3dpdGNoaW5nIHRoZSBmcm9udCBhbmQgcmVhciBv
+dXRwdXRzLiBEb2VzCj4gYW55Ym9keSBrbm93IHdoZXJlIHRoZSBDRCBpbnB1dCBpcyBoYW5kbGVk
+PyBJIHRob3VnaHQgaXQgc2hvdWxkIGJlIGluCj4gdGhlIGVtdTEwazEgYnl0ZWNvZGUsIGJ1dCBJ
+IGNhbid0IHNlZW0gdG8gZmluZCB3aGVyZS4KPiAKPiBUaGFua3MsCj4gICAgIEJyaWFuCj4gCj4g
+Cj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+IFRhbGsgaXMgY2hlYXAuIFVzZSBZYWhvbyEgTWVzc2VuZ2Vy
+IHRvIG1ha2UgUEMtdG8tUGhvbmUgY2FsbHMuIEdyZWF0Cj4gcmF0ZXMgc3RhcnRpbmcgYXQgMcKi
+L21pbi4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVXNpbmcgVG9tY2F0IGJ1dCBuZWVkIHRvIGRvIG1v
+cmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNlY3VyaXR5Pwo+IEdldCBzdHVmZiBk
+b25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0ZWNobm9sb2d5IHRvIG1ha2UgeW91ciBq
+b2IgZWFzaWVyCj4gRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4x
+LjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KPiBodHRwOi8vc2VsLmFzLXVzLmZhbGthZy5u
+ZXQvc2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3JmRhdD0xMjE2NDIKPiAKPiAKPiBJ
+bmZvcm1hY2lhIG9kIE5PRDMyCj4gVGF0byBzcHJhdmEgYm9sYSBza29udHJvbG92YW5hIGFudGl2
+aXJvdnltIHN5c3RlbW9tIE5PRDMyLgo+IFsgUHJvamVrdCBnYXlhIHwgd3d3LmdheWEuc2sgXQo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiAK
+PiAKPiBJbmZvcm1hY2lhIG9kIE5PRDMyCj4gVGF0byBzcHJhdmEgYm9sYSBza29udHJvbG92YW5h
+IGFudGl2aXJvdnltIHN5c3RlbW9tIE5PRDMyLgo+IFsgUHJvamVrdCBnYXlhIHwgd3d3LmdheWEu
+c2sgXQoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3Jl
+PyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUg
+cXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBl
+YXNpZXIKRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBi
+YXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9j
+bWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
