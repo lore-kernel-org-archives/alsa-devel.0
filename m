@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001822]: Can't record with Hercules
 	Fortissimo II
-Date: Sat, 15 Jul 2006 13:22:08 +0200
-Message-ID: <8f18d1f9933d4200b437ddd49f39b280@bugtrack.alsa-project.org>
+Date: Sat, 15 Jul 2006 13:50:40 +0200
+Message-ID: <7e2e6c5fe8570393956cf393d6d713c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D2B417E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B6C111E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 13:22:09 +0200 (MEST)
+	Sat, 15 Jul 2006 13:50:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               PLD
 Kernel Version:             2.6.14.7
 ======================================================================
 Date Submitted:             02-05-2006 16:16 CET
-Last Modified:              07-15-2006 13:22 CEST
+Last Modified:              07-15-2006 13:50 CEST
 ======================================================================
 Summary:                    Can't record with Hercules Fortissimo II
 Description: 
@@ -52,22 +52,6 @@ through alsa oss emulation in programs that use /dev/dsp.
 Similar problems already appeard here, but none of the solutions worked
 for me.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-15-06 09:13 
-----------------------------------------------------------------------
-The old cs46xx driver support stereo playback and the new cs46xx driver
-support multi-channels playback and hardware mixing.
-
-cat /proc/asound/pcm
-
-Does the example latency.c work ? (playback/capture)
-
-Remove .asoundrc
-
-Post the complete output of 
-
-arecord -v -f cd -d 10 test.wav
 
 ----------------------------------------------------------------------
  atler - 07-15-06 13:22 
@@ -180,6 +164,22 @@ Maximum read latency: 5804.989us, 5.804989ms (172.2656Hz)
 Playback time = 1152962110.306942, Record time = 1152962110.306937, diff =
 5
 
+----------------------------------------------------------------------
+ Raymond - 07-15-06 13:50 
+----------------------------------------------------------------------
+Post the complete output of 
+
+arecord -v -Dhw:0,0 -d 10 test.wav
+
+or
+
+arecord -v -Dplughw:0,0 -d 10 test.wav
+
+
+Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=259#1090
+
+If dmix does not work, this means dsnoop may also not work
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -195,6 +195,7 @@ Date Modified  Username       Field                    Change
 07-14-06 22:28 atler          Note Added: 0011007                          
 07-15-06 09:13 Raymond        Note Added: 0011019                          
 07-15-06 13:22 atler          Note Added: 0011021                          
+07-15-06 13:50 Raymond        Note Added: 0011022                          
 ======================================================================
 
 
