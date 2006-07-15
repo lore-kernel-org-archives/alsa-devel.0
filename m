@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001822]: Can't record with Hercules
-	Fortissimo II
-Date: Sat, 15 Jul 2006 09:13:53 +0200
-Message-ID: <8ff124447878a4447fa5cfe2ecfeb72a@bugtrack.alsa-project.org>
+From: Florian Winter <fw@motama.com>
+Subject: Volume Control in ALSA
+Date: Sat, 15 Jul 2006 10:44:09 +0200
+Message-ID: <44B8AAD9.6080302@motama.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62864226
-	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Jul 2006 09:13:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,81 +15,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
-======================================================================
-Reported By:                atler
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1822
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               PLD
-Kernel Version:             2.6.14.7
-======================================================================
-Date Submitted:             02-05-2006 16:16 CET
-Last Modified:              07-15-2006 09:13 CEST
-======================================================================
-Summary:                    Can't record with Hercules Fortissimo II
-Description: 
-I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
-produces 19K-32K file with no sound. What is weird is that I can record
-through alsa oss emulation in programs that use /dev/dsp.
-Similar problems already appeard here, but none of the solutions worked
-for me.
-======================================================================
+I am trying to implement simple volume control using the ALSA library, 
+and I must say I am totally confused about the many different mixer 
+interfaces that exist in the ALSA library and of which none seems to be 
+properly documented. The only functions I found that seem to be supposed 
+to do what I want are
 
-----------------------------------------------------------------------
- atler - 07-14-06 22:28 
-----------------------------------------------------------------------
-Changing period size does nothing, even in verbose output the period_size
-is constantly 512 (with -Dhw:0,0 switch however, it changes until value of
-512, with 1024 and 2048 it's still 512).
+    snd_mixer_selem_set_playback_volume_all
+    snd_mixer_selem_set_playback_dB_all
 
-Example codes you mentioned run fine, but I don't know what should I
-expect or what to look at.
+I have successfully opened the mixer interface and found a suitable 
+mixer element. I am even able to set the output volume using 
+snd_mixer_selem_set_playback_volume_all. unfortunately, the behaviour of 
+this function seems to be non-linear, and the documentation says nothing 
+about the meaning of the "value" I pass to the function:
 
-----------------------------------------------------------------------
- Raymond - 07-15-06 09:13 
-----------------------------------------------------------------------
-The old cs46xx driver support stereo playback and the new cs46xx driver
-support multi-channels playback and hardware mixing.
+> *Parameters:*
+>
+>     	/elem/  	Mixer simple element handle
+>
+>     	/value/  	control value
+>
+(from 
+http://www.alsa-project.org/alsa-doc/alsa-lib/mixer_2simple_8c.html#a21)
 
-cat /proc/asound/pcm
+If I control the volume in alsamixer or kmix, the slider also seems to 
+behave non-linear. If I set it to 50% of the maximum position, I can 
+hardly hear any sound. Also, if I turn the value on my output device to 
+50%, the result is much louder than what I get by setting the value to 
+"50%" in ALSA.
 
-Does the example latency.c work ? (playback/capture)
+It is a requirement in my application that the behaviour of the volume 
+control is well-defined. I want both linear volume control and 
+logarithmic volume vontrol in decibels. So I tried to use the 
+snd_mixer_selem_set_playback_dB_all function. Unfortunately, this 
+function doesn't seem to be defined in the ALSA headers. Instead I found 
+a function with a similar name which is not documented, but whose name 
+and signature suggests that it is what I need:
 
-Remove .asoundrc
+int snd_mixer_selem_set_playback_volume_dB(snd_mixer_elem_t *elem, long 
+value, int dir);
 
-Post the complete output of 
+However, if I use this function, I get an undefined symbol error at 
+link-time.
+(i.e. the function is not even defined in the ALSA library?!)
 
-arecord -v -f cd -d 10 test.wav
+I also tried to install the newest ALSA headers and libraries from 
+source (version 1.0.12rc1). My application compiled and linked fine, but 
+setting the volume using snd_mixer_selem_set_playback_dB_all failed with 
+snd_strerror returning "No such device or address", probably because the 
+driver doesn't support the new interface
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 16:16 atler          New Issue                                    
-02-05-06 16:16 atler          File Added: asound.state                     
-02-05-06 16:16 atler          Distribution              => PLD             
-02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
-02-05-06 16:19 atler          Note Added: 0007937                          
-02-07-06 16:30 perex          Note Added: 0007959                          
-02-11-06 20:47 atler          Note Added: 0008021                          
-07-11-06 16:24 Raymond        Note Added: 0010974                          
-07-11-06 16:28 Raymond        Note Edited: 0010974                         
-07-14-06 22:28 atler          Note Added: 0011007                          
-07-15-06 09:13 Raymond        Note Added: 0011019                          
-======================================================================
+fw@magmell:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9 (Sun May 29 
+07:31:02 2005 UTC).
 
+So my question is:
+
+Is there a function to set the playback volume of a mixer element in a 
+well-defined way using version 1.0.9 of the ALSA library?
+By well-defined, I mean: The behaviour of the volume control must be the 
+same on all cards. I must be able to set the volume to, say, "50% of the 
+maximum volume" or "-6 dB". Whether the interface accepts linear values 
+or decibels doesn't matter. Accuracy also is not an issue. But the scale 
+and units should be documented and unified (i.e. independent of the 
+hardware and driver).
+
+Is there such a function in ALSA 1.0.9? What is the name of this 
+function and where is it documented? Otherwise, are there functions that 
+I can use to determine what kind of values 
+snd_mixer_selem_set_playback_volume_all accepts? (i.e. 
+logarithmic/linear, minimum and maximum value, scale?)
+
+Thanks in advance.
+
+-- 
+Florian Winter
+Software developer
+Motama GmbH
+http://www.motama.com
 
 
 
