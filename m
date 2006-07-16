@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002286]: SB Audigy LS - no sound from
-	line-in
-Date: Sun, 16 Jul 2006 12:31:34 +0200
-Message-ID: <436cc601226962e2fd775fd385d97a93@bugtrack.alsa-project.org>
+From: Rene Rebe <rene@exactcode.de>
+Subject: Re: ALSA Intel HDA MacBook
+Date: Sun, 16 Jul 2006 17:37:42 +0200
+Message-ID: <200607161737.43160.rene@exactcode.de>
+References: <200607081323.17265.rene@exactcode.de> <44B24168.10405@boichat.ch>
+	<s5hk66k76sh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEDC311E
-	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Jul 2006 12:31:34 +0200 (MEST)
+In-Reply-To: <s5hk66k76sh.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,57 +19,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net, Nicolas Boichat <nicolas@boichat.ch>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2286> 
-======================================================================
-Reported By:                brazso
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2286
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.17-r2
-======================================================================
-Date Submitted:             07-16-2006 12:31 CEST
-Last Modified:              07-16-2006 12:31 CEST
-======================================================================
-Summary:                    SB Audigy LS - no sound from line-in
-Description: 
-Last time when I used the line-in connector of my SB Audigy LS card a half
-year ago, there was no problem with it. By now I wanted to digitalise some
-stuff, but my line-in is dumb. Since I often update my gentoo portage tree
-included the alsa-drivers, I'm sure that with alsa-driver-1.0.11rc1 dated
-on 12/13/05 it still worked. Unfortunately I cannot say more when it went
-wrong precisely, because all of my attempts to restore an earlier alsa
-version than 1.0.11 were failed. With kernel 2.6.17-r2 alsa 1.0.10,
-1.0.11rc1 and 1.0.11rc2 cannot be compiled, and although I could install
-alsa 1.0.11rc3, but the mixer did not include my line-in for unknown
-reason.
+as usually i was a bit busy the last days but gave this patch
+(ported to 2.6.17) a try:
 
-======================================================================
+On Tuesday 11 July 2006 12:52, Takashi Iwai wrote:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-06 12:31 brazso         New Issue                                    
-07-16-06 12:31 brazso         Kernel Version            => 2.6.17-r2       
-======================================================================
+> diff --git a/sound/pci/hda/patch_sigmatel.c
+> b/sound/pci/hda/patch_sigmatel.c index fb4bed0..ea99083 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -351,6 +351,7 @@ static unsigned int *stac922x_brd_tbl[ST
+>  	[STAC_REF] =3D	ref922x_pin_configs,
+>  	[STAC_D945GTP3] =3D d945gtp3_pin_configs,
+>  	[STAC_D945GTP5] =3D d945gtp5_pin_configs,
+> +	[STAC_MACMINI] =3D d945gtp5_pin_configs,
+>  	[STAC_D965_2112] =3D d965_2112_pin_configs,
+>  };
 
+Well, this results in quite a different mixer configuration, that might be
+a bit more logical - but still a bit cumbersome to use:
 
+- I have no headphone mixer, plugging the headphone in mutes the
+  speakers and only drives the headphone, good
+
+- the line in as Line In as Output switch enables the stereo side speakers
+
+- the side speakers are controlled by a Side mixer element
+
+- the center keyboard speaker is controlled by the Front mixer,
+  this element also controls the headphone when plugged in
+
+So far so good, however slightly annoying is that I need to manually
+move to slider around to control the speaker ambient sound. Maybe
+we ca do something about that?
+
+-- =
+
+Ren=E9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
+            http://exactcode.de | http://t2-project.org | http://rebe.name
+            +49 (0)30 / 255 897 45
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
