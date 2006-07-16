@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002285]: Alsa-lib needs to be updated to
-	be compiled under kernel 2.6.17-1.2157
-Date: Sun, 16 Jul 2006 07:52:26 +0200
-Message-ID: <2bcb67ac014373820ecbe7cef71049c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002286]: SB Audigy LS - no sound from
+	line-in
+Date: Sun, 16 Jul 2006 12:31:34 +0200
+Message-ID: <436cc601226962e2fd775fd385d97a93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B70714B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEDC311E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Jul 2006 07:52:26 +0200 (MEST)
+	Sun, 16 Jul 2006 12:31:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,35 +26,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2285> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2286> 
 ======================================================================
-Reported By:                thesource
-Assigned To:                
+Reported By:                brazso
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2285
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2286
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.17-r2
 ======================================================================
-Date Submitted:             07-16-2006 07:52 CEST
-Last Modified:              07-16-2006 07:52 CEST
+Date Submitted:             07-16-2006 12:31 CEST
+Last Modified:              07-16-2006 12:31 CEST
 ======================================================================
-Summary:                    Alsa-lib needs to be updated to be compiled under
-kernel 2.6.17-1.2157
+Summary:                    SB Audigy LS - no sound from line-in
 Description: 
-It is neccessary due to some header file changes in new kernel. At this
-moment alsa-lib 1.0.12rc1 can not be compiled - sys/types.h and
-asm/types.h must not be included simultaniously or this will cause type
-name conflict error.
+Last time when I used the line-in connector of my SB Audigy LS card a half
+year ago, there was no problem with it. By now I wanted to digitalise some
+stuff, but my line-in is dumb. Since I often update my gentoo portage tree
+included the alsa-drivers, I'm sure that with alsa-driver-1.0.11rc1 dated
+on 12/13/05 it still worked. Unfortunately I cannot say more when it went
+wrong precisely, because all of my attempts to restore an earlier alsa
+version than 1.0.11 were failed. With kernel 2.6.17-r2 alsa 1.0.10,
+1.0.11rc1 and 1.0.11rc2 cannot be compiled, and although I could install
+alsa 1.0.11rc3, but the mixer did not include my line-in for unknown
+reason.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 07:52 thesource      New Issue                                    
+07-16-06 12:31 brazso         New Issue                                    
+07-16-06 12:31 brazso         Kernel Version            => 2.6.17-r2       
 ======================================================================
 
 
