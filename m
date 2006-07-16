@@ -1,10 +1,16 @@
-From: "Hesse, Christian" <mail@earthworm.de>
-Subject: Device ID Intel HDA
-Date: Sun, 16 Jul 2006 02:30:39 +0200
-Message-ID: <200607160230.43928.mail@earthworm.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002282]: configure file misinterprets
+	with-sequencer option
+Date: Sun, 16 Jul 2006 04:42:38 +0200
+Message-ID: <c6b84793eefb0d32204dc15675a48e59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0071172492=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 046A021C
+	for <alsa-devel@alsa-project.org>;
+	Sun, 16 Jul 2006 04:42:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,101 +20,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0071172492==
-Content-Type: multipart/signed; boundary="nextPart1576118.7E5h4cjUKg";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
 
---nextPart1576118.7E5h4cjUKg
-Content-Type: multipart/mixed;
-  boundary="Boundary-01=_viYuEv4KoBJj679"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2282> 
+======================================================================
+Reported By:                jvp256
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2282
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               ubuntu
+Kernel Version:             Linux buldeo 2.6.15-26-386 #1 PREEMPT Fri Jul 7
+19:27:00 UTC 2006 i686 GNU/Linux
+======================================================================
+Date Submitted:             07-15-2006 07:21 CEST
+Last Modified:              07-16-2006 04:42 CEST
+======================================================================
+Summary:                    configure file misinterprets with-sequencer option
+Description: 
+HTML documentation on the intel8x0 driver 
+advises to use the configuration option:
+--with-sequencer=yes
 
---Boundary-01=_viYuEv4KoBJj679
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+However, the sequencer is built by default. 
+In fact specifying this option does the 
+exact opposite of what one would expect. 
+It seems to EXCLUDE the sequencer from 
+the build!
+======================================================================
 
-Hi everybody!
+----------------------------------------------------------------------
+ Raymond - 07-16-06 04:42 
+----------------------------------------------------------------------
+intel8x0 does not support mpu401, the mpu401 interface (snd-mpu401) is
+provided by a superio chip on the motherboard.
 
-I need the attached patch to get a working sound setup with my Samsung X11=
-=20
-T2300 Culesa. If you have any comments please cc me as I'm not subscribed t=
-o=20
-the list.
+The sequencer is built by default, but it does not loaded automatically if
+you only loaded snd-intel8x0 since there is no dependency between
+snd-intel8x0 and sequencer modules
 
-The only thing that does not work is the S/P-DIF output. Comments on that a=
-re=20
-welcome as well. ;)
-=2D-=20
-Regards,
-Christian
+If you want to play midi using softsynth which use alsa sequencer api, you
+may need to loaded snd-seq-dummy or snd-virmidi, ... which automatically
+load the sequencer module
 
---Boundary-01=_viYuEv4KoBJj679
-Content-Type: text/x-diff; charset="us-ascii";
-	name="alsa_hda_samsung-x11.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="alsa_hda_samsung-x11.patch"
-
-=2D-- vanilla-2.6.17/sound/pci/hda/patch_analog.c	2006-06-18 03:49:35.00000=
-0000 +0200
-+++ linux/sound/pci/hda/patch_analog.c	2006-07-15 21:20:44.220434504 +0200
-@@ -809,6 +809,8 @@
- 	  .config =3D AD1986A_LAPTOP_EAPD }, /* ASUS Z62F */
- 	{ .pci_subvendor =3D 0x103c, .pci_subdevice =3D 0x30af,
- 	  .config =3D AD1986A_LAPTOP_EAPD }, /* HP Compaq Presario B2800 */
-+	{ .pci_subvendor =3D 0x144d, .pci_subdevice =3D 0xc026,
-+	  .config =3D AD1986A_LAPTOP_EAPD }, /* Samsung X10 T2300 Culesa */
- 	{}
- };
-=20
-
---Boundary-01=_viYuEv4KoBJj679
-Content-Type: text/plain;
-  charset="us-ascii";
-  name="lspci"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="lspci"
-
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-	Subsystem: Samsung Electronics Co Ltd Unknown device c026
-	Flags: bus master, fast devsel, latency 0, IRQ 22
-	Memory at d0240000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-	Capabilities: [70] Express Unknown type IRQ 0
-	Capabilities: [100] Virtual Channel
-	Capabilities: [130] Unknown (5)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-06 07:21 jvp256         New Issue                                    
+07-15-06 07:21 jvp256         Distribution              => ubuntu          
+07-15-06 07:21 jvp256         Kernel Version            => Linux buldeo
+2.6.15-26-386 #1 PREEMPT Fri Jul 7 19:27:00 UTC 2006 i686 GNU/Linux
+07-16-06 04:42 Raymond        Note Added: 0011027                          
+======================================================================
 
 
---Boundary-01=_viYuEv4KoBJj679--
-
---nextPart1576118.7E5h4cjUKg
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-
-iD8DBQBEuYizlZfG2c8gdSURAqDKAKD3RNQQhlUVi8uL4n4u/FhZ4CC5qwCg8keJ
-f41vyO2W8VMz5tnV5dUswO8=
-=xF9R
------END PGP SIGNATURE-----
-
---nextPart1576118.7E5h4cjUKg--
-
-
---===============0071172492==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
 -------------------------------------------------------------------------
@@ -116,16 +90,3 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============0071172492==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0071172492==--
