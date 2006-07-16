@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002286]: SB Audigy LS - no sound from
 	line-in
-Date: Sun, 16 Jul 2006 22:18:41 +0200
-Message-ID: <45f1bde5f7109cab6a73d580110faf56@bugtrack.alsa-project.org>
+Date: Sun, 16 Jul 2006 23:01:26 +0200
+Message-ID: <1fa907efa3ad6f94a6d80eda5287cf5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7BD417C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 502D1222
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Jul 2006 22:18:41 +0200 (MEST)
+	Sun, 16 Jul 2006 23:01:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2286> 
 ======================================================================
@@ -37,12 +37,12 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
 Kernel Version:             2.6.17-r2
 ======================================================================
 Date Submitted:             07-16-2006 12:31 CEST
-Last Modified:              07-16-2006 22:18 CEST
+Last Modified:              07-16-2006 23:01 CEST
 ======================================================================
 Summary:                    SB Audigy LS - no sound from line-in
 Description: 
@@ -69,12 +69,21 @@ sliders (line in, mic, phone, aux, CAPTURE, AC97 AUX, AC97 LINE, AC97 MIX
 the mixer, but none of them produces sound from the line in of my audigy
 ls card.
 
+----------------------------------------------------------------------
+ jcdutton - 07-16-06 23:01 
+----------------------------------------------------------------------
+Please attach the output of:
+amixer scontents
+
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-16-06 12:31 brazso         New Issue                                    
 07-16-06 12:31 brazso         Kernel Version            => 2.6.17-r2       
 07-16-06 22:18 brazso         Note Added: 0011030                          
+07-16-06 23:01 jcdutton       Note Added: 0011031                          
+07-16-06 23:01 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
