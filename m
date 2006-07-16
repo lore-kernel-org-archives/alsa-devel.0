@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002286]: SB Audigy LS - no sound from
-	line-in
-Date: Sun, 16 Jul 2006 23:01:26 +0200
-Message-ID: <1fa907efa3ad6f94a6d80eda5287cf5a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002288]: Wierd spikes (high frequency
+	glitches) in alsa output from SI7012 (intel8x0)
+Date: Mon, 17 Jul 2006 01:47:57 +0200
+Message-ID: <e01bb5ffbe23ce68d927753e78c99c4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 502D1222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83711222
 	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Jul 2006 23:01:26 +0200 (MEST)
+	Mon, 17 Jul 2006 01:47:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,66 +24,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2286> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2288> 
 ======================================================================
-Reported By:                brazso
-Assigned To:                jcdutton
+Reported By:                jaime
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2286
-Category:                   PCI - ca0106
+Issue ID:                   2288
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.6.17-r2
+Status:                     new
+Distribution:               Slax
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             07-16-2006 12:31 CEST
-Last Modified:              07-16-2006 23:01 CEST
+Date Submitted:             07-17-2006 01:47 CEST
+Last Modified:              07-17-2006 01:47 CEST
 ======================================================================
-Summary:                    SB Audigy LS - no sound from line-in
+Summary:                    Wierd spikes (high frequency glitches) in alsa
+output from SI7012 (intel8x0)
 Description: 
-Last time when I used the line-in connector of my SB Audigy LS card a half
-year ago, there was no problem with it. By now I wanted to digitalise some
-stuff, but my line-in is dumb. Since I often update my gentoo portage tree
-included the alsa-drivers, I'm sure that with alsa-driver-1.0.11rc1 dated
-on 12/13/05 it still worked. Unfortunately I cannot say more when it went
-wrong precisely, because all of my attempts to restore an earlier alsa
-version than 1.0.11 were failed. With kernel 2.6.17-r2 alsa 1.0.10,
-1.0.11rc1 and 1.0.11rc2 cannot be compiled, and although I could install
-alsa 1.0.11rc3, but the mixer did not include my line-in for unknown
-reason.
+Hi,
+
+This is kind of related to alsa bug report 2006
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2006).
+
+I've created a low volume sine-wave file, and then recorded the output of
+playing that wave file back through both Windows 2000 and Alsa 1.0.11
+(from Slax Live). The waveform from Windows shows just low volume
+interference, while the waveform from Alsa shows both the same low volume
+interference AND repetetive spikes which occur at the same frequency as
+the original sine-wave. I've put up the wave files and graphical
+screen-shots of the wave files on the web so that you can easily see what
+I'm talking about:
+
+Original wave file:
+http://www.carbon.eclipse.co.uk/orig2.wav
+Screenshot of the waveform:
+http://www.carbon.eclipse.co.uk/orig2.gif
+
+Recording of succesful playback under win2k:
+http://www.carbon.eclipse.co.uk/win2k2.wav
+Screenshot of the waveform:
+http://www.carbon.eclipse.co.uk/win2k2.gif
+
+Recording of problematic playback under alsa:
+http://www.carbon.eclipse.co.uk/alsa2.wav
+Screenshot of the waveform:
+http://www.carbon.eclipse.co.uk/alsa2.gif
 
 ======================================================================
-
-----------------------------------------------------------------------
- brazso - 07-16-06 22:18 
-----------------------------------------------------------------------
-I could restore alsa 1.0.10 with kernel 2.6.15-r8 and with this
-configuration the ac97 line (in) works. With alsa 1.0.11 there are more
-sliders (line in, mic, phone, aux, CAPTURE, AC97 AUX, AC97 LINE, AC97 MIX
-- ones with lowercase exist only in alsa 1.0.11) in the output section of
-the mixer, but none of them produces sound from the line in of my audigy
-ls card.
-
-----------------------------------------------------------------------
- jcdutton - 07-16-06 23:01 
-----------------------------------------------------------------------
-Please attach the output of:
-amixer scontents
-
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 12:31 brazso         New Issue                                    
-07-16-06 12:31 brazso         Kernel Version            => 2.6.17-r2       
-07-16-06 22:18 brazso         Note Added: 0011030                          
-07-16-06 23:01 jcdutton       Note Added: 0011031                          
-07-16-06 23:01 jcdutton       Status                   assigned => feedback
+07-17-06 01:47 jaime          New Issue                                    
+07-17-06 01:47 jaime          Distribution              => Slax            
+07-17-06 01:47 jaime          Kernel Version            => 2.6.16          
 ======================================================================
 
 
