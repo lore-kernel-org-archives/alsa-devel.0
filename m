@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Mon, 17 Jul 2006 07:31:28 +0200
-Message-ID: <7b3069e2c9ee3252a3bc3af5c11ddcc9@bugtrack.alsa-project.org>
+Date: Mon, 17 Jul 2006 08:23:05 +0200
+Message-ID: <d0d7c88d7b75ed05f2c4c4a055647ed4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35AFB15A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18A30219
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 07:31:29 +0200 (MEST)
+	Mon, 17 Jul 2006 08:23:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 07:31 CEST
+Last Modified:              07-17-2006 08:23 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -66,15 +66,6 @@ My question is,
 Is there a bug in this function?
 Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-
-----------------------------------------------------------------------
- cruiseoveride - 07-17-06 05:46 
-----------------------------------------------------------------------
-I changed the format, still segfaults at the same place.
-
-even with the plughw:2
-
-
 
 ----------------------------------------------------------------------
  Raymond - 07-17-06 07:31 
@@ -107,6 +98,19 @@ ice1712/ice1724 driver code
 
 http://hg-mirror.alsa-project.org/alsa-kernel?mf=a7ac5a5c1e51;path=/pci/ice1712/;style=gitweb
 
+----------------------------------------------------------------------
+ Raymond - 07-17-06 08:23 
+----------------------------------------------------------------------
+Even the most common format(S16_LE, 2 channels) may fail on some specific
+sound card when using 'hw'.
+
+Make sure that there is no error when calling snd_pcm_hw_params_set_xxx()
+
+snd_pcm_hw_params_set_access()
+snd_pcm_hw_params_set_format();
+snd_pcm_hw_params_set_channels();
+snd_pcm_hw_params_set_rate_near();
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -119,6 +123,7 @@ Date Modified  Username       Field                    Change
 07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
 07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
 07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
 ======================================================================
 
 
