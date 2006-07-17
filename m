@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Mon, 17 Jul 2006 17:34:49 +0200
-Message-ID: <f51dae0a0e3339fb230b6cfc9a010753@bugtrack.alsa-project.org>
+Date: Mon, 17 Jul 2006 17:56:58 +0200
+Message-ID: <54f9b00aee192a0a670177a2b6d4351e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBF1D17E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EC4A10D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 17:34:49 +0200 (MEST)
+	Mon, 17 Jul 2006 17:56:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 17:34 CEST
+Last Modified:              07-17-2006 17:56 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,16 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-17-06 17:13 
-----------------------------------------------------------------------
-by the way.
-Is there a way for me to simulate this sound card on my office PC.
-So i can work on the code in the office.
-something like a dummy device but with an attached kernel module
-
-Is it possible?
-
-----------------------------------------------------------------------
  Raymond - 07-17-06 17:34 
 ----------------------------------------------------------------------
 I don't have any ice17xx card
@@ -94,6 +84,51 @@ alsactl store test.state
 
 The difficult part is to know the difference between different sound cards
 using ice1724.
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-17-06 17:56 
+----------------------------------------------------------------------
+ok cool.
+the level meters function looks like this on the envy24control
+(levelmeters.c)
+
+void level_meters_init(void)
+{
+        snd_ctl_elem_value_malloc(&peaks);
+        snd_ctl_elem_value_set_interface(peaks,
+SND_CTL_ELEM_IFACE_MIXER);
+        snd_ctl_elem_value_set_name(peaks, "Multi Track Peak");
+}
+
+and the get levels looks like this
+
+static void get_levels(int idx, int *l1, int *l2)
+{
+        *l1 = *l2 = 0;
+
+        if (idx == 0) {
+                *l1 = snd_ctl_elem_value_get_integer(peaks, 20);
+                *l2 = snd_ctl_elem_value_get_integer(peaks, 21);
+        } else {
+                *l1 = *l2 = snd_ctl_elem_value_get_integer(peaks, idx -
+1);
+        }
+}
+
+the 20, and 21 are indexes ? are they the same as numids that amixer
+ouputs if so than these refer to
+
+numid=20,iface=MIXER,name='DAC Volume'
+numid=21,iface=MIXER,name='DAC Volume',index=1
+[from:ice1712]
+
+how do u seperate the multi track peak, or do i have to parse it.
+
+[vikky@server ~]$ amixer -c 2 cget numid=5
+numid=5,iface=MIXER,name='Multi Track Peak'
+  ; type=INTEGER,access=r----,values=22,min=0,max=255,step=0
+  : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[from:ice1724]
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -116,6 +151,7 @@ Date Modified  Username       Field                    Change
 07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
 07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
 07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
 ======================================================================
 
 
