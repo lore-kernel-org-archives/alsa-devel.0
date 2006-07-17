@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Mon, 17 Jul 2006 17:56:58 +0200
-Message-ID: <54f9b00aee192a0a670177a2b6d4351e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002251]: Speaker sound is fine,
+	but headphones not recognized, so no sound
+Date: Mon, 17 Jul 2006 18:28:28 +0200
+Message-ID: <965131f539e4caf76eef4202271d333d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EC4A10D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5303E226
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 17:56:58 +0200 (MEST)
+	Mon, 17 Jul 2006 18:28:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,131 +26,134 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2251> 
 ======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
+Reported By:                moret
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2251
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.17.2
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 17:56 CEST
+Date Submitted:             07-02-2006 06:27 CEST
+Last Modified:              07-17-2006 18:28 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Speaker sound is fine, but headphones not
+recognized, so no sound
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+Sound comes through fine on built-in speakers.  Plugging in headphones
+silences the built-in speakers, but nothing comes through on the
+headphones
+jack.
+The machine is a Panasonic CF-Y5 (Japanese market) with L2300 Core Duo
+processor, 82801G (ICH7) chipset, and the following audio device (from
+lspci -vv), with device ID 27d8, identified by ALSA as a SigmaTel STAC
+9200:
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
-
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Matsushita Electric Industrial Co., Ltd. Unknown device
+8338
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 185
+        Region 0: Memory at d0340000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+As hinted at by the lspci listing, the alsamixer list only one output
+device
+(the built-in speakers).
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-17-06 17:34 
+ moret - 07-06-06 23:40 
 ----------------------------------------------------------------------
-I don't have any ice17xx card
+OK, I downloaded ALSA HG, compiled the driver, and compared
+/proc/asound/cardo/codec#0 with and without headphones plugged in.
+The results are identical (I saved each and gave them to diff).
 
-iec958 playback control is well defined but iec958 capture control is not
-...
-
-alsa-lib/include/asoundef.h
-
-Refer to ice1724.c, 'Multi Track Peak' is a kcontrol with 22 values (min=0
-and max=255) as same as ice1712.c in alsa-driver-1.0.12rc1
-
-alsactl store test.state
-
-The difficult part is to know the difference between different sound cards
-using ice1724.
+When the module is inserted, a few lines are saved to /var/log/syslog:
+here they are
+ul  6 23:17:18 localhost kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
+GSI 22 (level, low) -> IRQ 185
+Jul  6 23:17:18 localhost kernel: PCI: Setting latency timer of device
+0000:00:1b.0 to 64
+Jul  6 23:17:18 localhost kernel: codec_mask = 0x1
+Jul  6 23:17:18 localhost kernel: hda_codec: Unknown model for STAC9200,
+using BIOS defaults
+Jul  6 23:17:18 localhost kernel: autoconfig: line_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+Jul  6 23:17:18 localhost kernel:    speaker_outs=1 (0xe/0x0/0x0/0x0/0x0)
+Jul  6 23:17:18 localhost kernel:    hp=0xd, dig_out=0x0, din_in=0x0
+Jul  6 23:17:18 localhost kernel:    inputs: mic=0x10, fmic=0x0, line=0x0,
+fline=0x0, cd=0x0, aux=0x0
+Jul  6 23:17:18 localhost kernel: hda_intel: azx_get_response timeout,
+switching to single_cmd mode...
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-17-06 17:56 
+ moret - 07-17-06 18:28 
 ----------------------------------------------------------------------
-ok cool.
-the level meters function looks like this on the envy24control
-(levelmeters.c)
+Partial resolution:
+I just added a new stanza to pci/hda/patch_sigmatel.c,
+copying lines 267-270 to create the extra stanza
+        { .modelname = "CFY5",
+          .pci_subvendor = PCI_VENDOR_ID_INTEL,
+          .pci_subdevice = 0x27d8, /* /sys/class/sound/audio/device/device
+*/
+          .config = STAC_REF }, /* seems to work */
+This avoids having the routine
+   static int patch_stac9200(struct hda_codec *codec)
+fail to obtain a valid spec->board_config; the original patch_sigmatel.c
+would result in the error message
+   hda_codec: Unknown model for STAC9200, using BIOS defaults
+but this no longer happens with the extra stanza.
+What matters is that headphones now work ;-)
 
-void level_meters_init(void)
-{
-        snd_ctl_elem_value_malloc(&peaks);
-        snd_ctl_elem_value_set_interface(peaks,
-SND_CTL_ELEM_IFACE_MIXER);
-        snd_ctl_elem_value_set_name(peaks, "Multi Track Peak");
-}
-
-and the get levels looks like this
-
-static void get_levels(int idx, int *l1, int *l2)
-{
-        *l1 = *l2 = 0;
-
-        if (idx == 0) {
-                *l1 = snd_ctl_elem_value_get_integer(peaks, 20);
-                *l2 = snd_ctl_elem_value_get_integer(peaks, 21);
-        } else {
-                *l1 = *l2 = snd_ctl_elem_value_get_integer(peaks, idx -
-1);
-        }
-}
-
-the 20, and 21 are indexes ? are they the same as numids that amixer
-ouputs if so than these refer to
-
-numid=20,iface=MIXER,name='DAC Volume'
-numid=21,iface=MIXER,name='DAC Volume',index=1
-[from:ice1712]
-
-how do u seperate the multi track peak, or do i have to parse it.
-
-[vikky@server ~]$ amixer -c 2 cget numid=5
-numid=5,iface=MIXER,name='Multi Track Peak'
-  ; type=INTEGER,access=r----,values=22,min=0,max=255,step=0
-  : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-[from:ice1724]
+On the other hand, this is only a partial resolution: neither alsa nor
+xmix provides a mixer entry for the headphones, so sound volume has
+to be controlled through speaker volume.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-02-06 06:27 moret          New Issue                                    
+07-02-06 06:27 moret          Distribution              => Debian          
+07-02-06 06:27 moret          Kernel Version            => 2.6.17.2        
+07-02-06 16:17 moret          Note Added: 0010792                          
+07-03-06 14:48 moret          Note Added: 0010799                          
+07-06-06 20:03 tiwai          Note Added: 0010876                          
+07-06-06 23:40 moret          Note Added: 0010886                          
+07-17-06 18:28 moret          Note Added: 0011048                          
 ======================================================================
 
 
