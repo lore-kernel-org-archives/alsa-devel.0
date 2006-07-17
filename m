@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002288]: Wierd spikes (high frequency
-	glitches) in alsa output from SI7012 (intel8x0)
-Date: Mon, 17 Jul 2006 01:47:57 +0200
-Message-ID: <e01bb5ffbe23ce68d927753e78c99c4f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Mon, 17 Jul 2006 02:44:37 +0200
+Message-ID: <ccaa2c2058ea7dbe27957e57417044d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83711222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B12721A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 01:47:57 +0200 (MEST)
+	Mon, 17 Jul 2006 02:44:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,66 +25,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2288> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                jaime
+Reported By:                cruiseoveride
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2288
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Slax
-Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             07-17-2006 01:47 CEST
-Last Modified:              07-17-2006 01:47 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-17-2006 02:44 CEST
 ======================================================================
-Summary:                    Wierd spikes (high frequency glitches) in alsa
-output from SI7012 (intel8x0)
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-Hi,
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-This is kind of related to alsa bug report 2006
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2006).
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-I've created a low volume sine-wave file, and then recorded the output of
-playing that wave file back through both Windows 2000 and Alsa 1.0.11
-(from Slax Live). The waveform from Windows shows just low volume
-interference, while the waveform from Alsa shows both the same low volume
-interference AND repetetive spikes which occur at the same frequency as
-the original sine-wave. I've put up the wave files and graphical
-screen-shots of the wave files on the web so that you can easily see what
-I'm talking about:
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-Original wave file:
-http://www.carbon.eclipse.co.uk/orig2.wav
-Screenshot of the waveform:
-http://www.carbon.eclipse.co.uk/orig2.gif
+If you slash out line 104, it resolves the issue.
 
-Recording of succesful playback under win2k:
-http://www.carbon.eclipse.co.uk/win2k2.wav
-Screenshot of the waveform:
-http://www.carbon.eclipse.co.uk/win2k2.gif
+My question is,
 
-Recording of problematic playback under alsa:
-http://www.carbon.eclipse.co.uk/alsa2.wav
-Screenshot of the waveform:
-http://www.carbon.eclipse.co.uk/alsa2.gif
-
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-17-06 02:44 
+----------------------------------------------------------------------
+The iec1724 driver seem only support .formats = SNDRV_PCM_FMTBIT_S32_LE, 
+
+You need to check the error code return by snd_pcm_hw_params_set_format()
+
+Use 'plughw' or 'default' instead of 'hw'
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-17-06 01:47 jaime          New Issue                                    
-07-17-06 01:47 jaime          Distribution              => Slax            
-07-17-06 01:47 jaime          Kernel Version            => 2.6.16          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
 ======================================================================
 
 
