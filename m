@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Mon, 17 Jul 2006 17:13:09 +0200
-Message-ID: <857f602c23716222f2e7002629b56bbb@bugtrack.alsa-project.org>
+Date: Mon, 17 Jul 2006 17:34:49 +0200
+Message-ID: <f51dae0a0e3339fb230b6cfc9a010753@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09C4D155
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBF1D17E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 17:13:09 +0200 (MEST)
+	Mon, 17 Jul 2006 17:34:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 17:13 CEST
+Last Modified:              07-17-2006 17:34 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,16 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-17-06 16:40 
-----------------------------------------------------------------------
-my gtk knowledge is fairly descent.
-I understand his interface fairly well.
-The only obstactle at the moment for me is getting the monitor levels.
-
-do u know wat does "?" mean for the values of numids 10,9,11 from my
-previous post?
-
-----------------------------------------------------------------------
  cruiseoveride - 07-17-06 17:13 
 ----------------------------------------------------------------------
 by the way.
@@ -86,6 +76,24 @@ So i can work on the code in the office.
 something like a dummy device but with an attached kernel module
 
 Is it possible?
+
+----------------------------------------------------------------------
+ Raymond - 07-17-06 17:34 
+----------------------------------------------------------------------
+I don't have any ice17xx card
+
+iec958 playback control is well defined but iec958 capture control is not
+...
+
+alsa-lib/include/asoundef.h
+
+Refer to ice1724.c, 'Multi Track Peak' is a kcontrol with 22 values (min=0
+and max=255) as same as ice1712.c in alsa-driver-1.0.12rc1
+
+alsactl store test.state
+
+The difficult part is to know the difference between different sound cards
+using ice1724.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +115,7 @@ Date Modified  Username       Field                    Change
 07-17-06 16:31 Raymond        Note Edited: 0011042                         
 07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
 07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
 ======================================================================
 
 
