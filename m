@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Mon, 17 Jul 2006 02:44:37 +0200
-Message-ID: <ccaa2c2058ea7dbe27957e57417044d7@bugtrack.alsa-project.org>
+Date: Mon, 17 Jul 2006 05:45:32 +0200
+Message-ID: <0f99d5b66ce73d89d76d647c5dc0b903@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B12721A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1ECD4155
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 02:44:37 +0200 (MEST)
+	Mon, 17 Jul 2006 05:45:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 02:44 CEST
+Last Modified:              07-17-2006 05:45 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,13 +68,27 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-17-06 02:44 
+ Raymond - 07-17-06 03:18 
 ----------------------------------------------------------------------
-The iec1724 driver seem only support .formats = SNDRV_PCM_FMTBIT_S32_LE, 
+cat /proc/asound/cards
+
+The ice1724 driver seem only support .formats = SNDRV_PCM_FMTBIT_S32_LE, 
 
 You need to check the error code return by snd_pcm_hw_params_set_format()
 
 Use 'plughw' or 'default' instead of 'hw'
+
+If you want to port envy24control for card with ice1724, you only need to
+learn alsa-lib control interface api. The best examples are in alsa-tools
+and you may need to study the ice1712/ice1724 driver code in order to
+implement the hardware specific features.
+
+
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-17-06 05:45 
+----------------------------------------------------------------------
+I changed the format, still segfaults at the same place.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +97,9 @@ Date Modified  Username       Field                    Change
 07-16-06 18:03 cruiseoveride  File Added: test.c                           
 07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
 07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
 ======================================================================
 
 
