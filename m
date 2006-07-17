@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0
-	analog subsections not ready: no sound
-Date: Mon, 17 Jul 2006 16:01:14 +0200
-Message-ID: <415023d11fd4feae70260165448a8254@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Mon, 17 Jul 2006 16:07:15 +0200
+Message-ID: <a4910ca05655696ebab324fcbe8d554f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CCBA120
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81C98169
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 16:01:15 +0200 (MEST)
+	Mon, 17 Jul 2006 16:07:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,160 +27,164 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                shensche
+Reported By:                cruiseoveride
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1213
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
-Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
 ======================================================================
-Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              07-17-2006 16:01 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-17-2006 16:07 CEST
 ======================================================================
-Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
-ready: no sound
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-i am working on a machine with an EPIA-M mainboard and the ICEensemble
-VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
-any sound from it. it is always the same: the mixer settings seem ok,
-the applications play happily the files, but i cannot hear a thing. the
-speakers are ok, too.
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-the system is running kernel 2.6.11 with the kernel patches from Con
-Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
-i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
-=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
-since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
-and utils. during that upgrade, the mixer lost the possibility to change
-the DXS-settings. has this to do with the whitelist, introduced
-recently?
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-i played around with lots of combinations of the options ac97_quirk and
-dxs_support when loading the kernel module.
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-on the hardware side i disabled the front panel sockets for line-out and
-mic-in, just to be sure. and i often tried all three sockets for=20
-line-out, line-in and mic-in in the back to hear the output.
+If you slash out line 104, it resolves the issue.
 
-the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
-but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
-USB and sound share interrupt 5) in the BIOS. the BIOS was told that
-there was a/no PlugNPlay OS and the MC97 modem is disabled.
-the machine does not seem to have an APIC.
+My question is,
 
-i muted some IEC 958 settings in the mixer as read somewhere in the net,
-but that did not help either. and one of these settings always
-reenables itself as soon as i try to play a wav with aplay.
-
-i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
-when "0 analog subsections are ready" (weird message, btw) before line
-1960. another try was to increase the end_time in line 1953 by factor
-10. both did not yield a successful result, both being a shot in the
-blue.
-
-
-i attached /etc/asound.state (after saving with alsactl store) and the
-output of dmesg. do not mind the oops from cowloop, i guess it is not
-important, because all the other kernels do not work as well.
-
-i read=20
-http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
-=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
-alsa-kernel/Documentation/ALSA-Configuration.txt
-and many other forum entries
-
-but still something is going wrong. why are 0 analog subdevices ready?
-how to make them ready? where to wait? what to initialise?
-
-i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
-to fit   it onto 1 GB)
-
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- picobyte - 06-03-06 15:50 
+ cruiseoveride - 07-17-06 14:59 
 ----------------------------------------------------------------------
-I have a via 8235 also, not working. It used to work and somewhere in
-kernel upgrades and/or alsa upgrades it stopped working. I succesfully had
-it once in alsa 1.0.9b with an early 2.6 kernel (I am not sure which one
-exactly since I did a kernel upgrade quite often, but I think it worked
-from 2.6.0-2.6.10).
+by the way, thanks ray for the links, even though ALSA API is as colourful
+(descriptive)  as bleach.
+You guys really need to put up some small code snippets with each
+function, to show how its used. Like with the Gtk API
+http://www.gtk.org/api/2.6/gtk/GtkFileChooser.html
+
+Otherwise god only knows wat the hell a HCTL is.
+Function prototypes alone are too cryptic to understand what they are
+doing. Give us some examples please and not 100+ linex, just a little
+snippet.
+
+ok anyways, back to topic.
+the output of 
+[vikky@server ~]$ amixer  -c2 contents
+numid=1,iface=CARD,name='ICE1724 EEPROM'
+  ; type=BYTES,access=r----,values=52
+  :
+values=0x36,0x32,0x14,0x12,0x13,0x02,0x68,0x80,0xf8,0xc3,0xba,0xff,0x7f,0x45
+,0x00,0x00,0xb5,0x00,0x40,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x45,0x00,0x00,0x00,0xb5,0x00
+,0x40,0x00,0xba,0xff,0x7f,0x00
+numid=6,iface=MIXER,name='IEC958 Playback Route'
+  ; type=ENUMERATED,access=rw---,values=1,items=5
+  ; Item #0 'PCM Out'
+  ; Item #1 'H/W In 0'
+  ; Item #2 'H/W In 1'
+  ; Item #3 'IEC958 In L'
+  ; Item #4 'IEC958 In R'
+  : values=0
+numid=7,iface=MIXER,name='IEC958 Playback Route',index=1
+  ; type=ENUMERATED,access=rw---,values=1,items=5
+  ; Item #0 'PCM Out'
+  ; Item #1 'H/W In 0'
+  ; Item #2 'H/W In 1'
+  ; Item #3 'IEC958 In L'
+  ; Item #4 'IEC958 In R'
+  : values=2
+numid=8,iface=MIXER,name='IEC958 Output Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+numid=2,iface=MIXER,name='Multi Track Internal Clock'
+  ; type=ENUMERATED,access=rw---,values=1,items=16
+  ; Item #0 '8000'
+  ; Item #1 '9600'
+  ; Item #2 '11025'
+  ; Item #3 '12000'
+  ; Item #4 '16000'
+  ; Item #5 '22050'
+  ; Item #6 '24000'
+  ; Item #7 '32000'
+  ; Item #8 '44100'
+  ; Item #9 '48000'
+  ; Item #10 '64000'
+  ; Item #11 '88200'
+  ; Item #12 '96000'
+  ; Item #13 '176400'
+  ; Item #14 '192000'
+  ; Item #15 'IEC958 Input'
+  : values=13
+numid=5,iface=MIXER,name='Multi Track Peak'
+  ; type=INTEGER,access=r----,values=22,min=0,max=255,step=0
+  : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+numid=3,iface=MIXER,name='Multi Track Rate Locking'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+numid=4,iface=MIXER,name='Multi Track Rate Reset'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+numid=10,iface=PCM,name='IEC958 Playback Con Mask',device=1
+  ; type=IEC958,access=r----,values=1
+  : values=?
+numid=9,iface=PCM,name='IEC958 Playback Default',device=1
+  ; type=IEC958,access=rw---,values=1
+  : values=?
+numid=11,iface=PCM,name='IEC958 Playback Pro Mask',device=1
+  ; type=IEC958,access=r----,values=1
+  : values=?
+[vikky@server ~]$
+
+wat does "?" mean for the values of numids 10,9,11
+
+My methodology for porting envy24control was to first hack amixer to get
+familar with how to set parameters on the card and then brute force attack
+envy24control into ice24control.
+
+I have tried to email  Jaroslav Kysela <perex@suse.cz> but with no
+response. Do you have any ideas on which file to break first, i was
+thinking evy24control.c?
 
 ----------------------------------------------------------------------
- wouter - 07-17-06 16:01 
+ Raymond - 07-17-06 16:07 
 ----------------------------------------------------------------------
-Kernel 2.6.17.5 on VIA Epia M10000 (Nehemiah), still no sound whatsoever.
+The functions snd_ctl_*() in alsa-lib/src/control/control.c is much easier
+to use than snd_hctl_*() alsa-lib/src/control/hcontrol.c
 
-dmesg output:
-
-ALSA sound/pci/ac97/ac97_codec.c:1972: AC'97 0 analog subsections not
-ready
-ALSA sound/usb/usbaudio.c:2689: 2:2:1: add audio endpoint 0x83
-ALSA sound/usb/usbmixer.c:945: [2] FU [Mic Capture Switch] ch = 1, val =
-0/1/1
-ALSA sound/usb/usbmixer.c:388: cannot set ctl value: req = 0x4, wValue =
-0x200, wIndex = 0x201, type = 4, data = 0x80/0x0
-ALSA sound/usb/usbmixer.c:945: [2] FU [Mic Capture Volume] ch = 1, val =
--14080/0/256
-ALSA sound/usb/usbmixer.c:945: [2] FU [Auto Gain Control] ch = 1, val =
-0/1/1
-usbcore: registered new driver snd-usb-audio
-ALSA device list:
-  #0: VIA 8235 with VT1616i at 0xe400, irq 10
-  #1: Camera at usb-0000:00:10.0-2, full speed
-
-The only way you can get any indication that the headphones are working,
-is to toggle the "External Amplifier" switch -- you hear a very vague
-click. Anything else, be it playing mp3s or wavs, toggling switches, using
-different mixer settings or trying any physical audio in- and output,
-doesn't lead anywhere.
-
-This board is effectively mute.
+If you know gtk2 well, it is much easier to hack envy24control.c instead
+of study amixer.c or alsamixer.c
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 12:22 shensche       New Issue                                    
-06-27-05 12:22 shensche       File Added: asound.conf                      
-06-27-05 12:22 shensche       Distribution              => Debian (derived
-Knoppix->Morphix->Kunnafonix)
-06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
-many other 2.4 and 2.6 kernels
-06-27-05 12:23 shensche       File Added: asound.state                     
-06-27-05 12:27 shensche       File Added: dmesg.full                       
-06-27-05 12:27 shensche       File Added: dmesg.oss                        
-06-27-05 12:28 shensche       File Added: lspci                            
-06-27-05 12:29 shensche       Issue Monitored: shensche                    
-06-27-05 12:36 shensche       Issue End Monitor: shensche                    
-06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
-                
-06-28-05 11:32 shensche       File Added:
-proc_asound_card0_codec97#_ac97#0-0+regs                    
-06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
-      
-06-28-05 11:32 shensche       File Added: proc_asound_cards                    
-06-28-05 11:33 shensche       File Added: proc_asound_version                   
-
-06-28-05 12:02 shensche       Note Added: 0005296                          
-06-28-05 20:19 shensche       Note Added: 0005300                          
-06-29-05 20:16 tiwai          Note Added: 0005310                          
-07-01-05 12:07 shensche       Note Added: 0005329                          
-07-01-05 12:11 shensche       Note Added: 0005330                          
-07-07-05 19:07 shensche       Note Added: 0005401                          
-07-08-05 11:46 tiwai          Note Added: 0005408                          
-07-08-05 12:34 shensche       Note Added: 0005419                          
-07-21-05 17:29 shensche       Note Added: 0005539                          
-06-02-06 09:52 wouter         Note Added: 0010046                          
-06-03-06 15:50 picobyte       Note Added: 0010061                          
-07-17-06 16:01 wouter         Note Added: 0011041                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
 ======================================================================
 
 
