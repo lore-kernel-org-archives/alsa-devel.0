@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Mon, 17 Jul 2006 16:40:46 +0200
-Message-ID: <09f7dfb9af4ea1bc5e977699bc97c1ad@bugtrack.alsa-project.org>
+Date: Mon, 17 Jul 2006 17:13:09 +0200
+Message-ID: <857f602c23716222f2e7002629b56bbb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 377E811E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09C4D155
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Jul 2006 16:40:47 +0200 (MEST)
+	Mon, 17 Jul 2006 17:13:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-17-2006 16:40 CEST
+Last Modified:              07-17-2006 17:13 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,19 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-17-06 16:31 
-----------------------------------------------------------------------
-The functions snd_ctl_*() in alsa-lib/src/control/control.c is much easier
-to use than snd_hctl_*() alsa-lib/src/control/hcontrol.c
-
-If you know gtk2 well, it is much easier to patch envy24control.c instead
-of study amixer.c or alsamixer.c
-
-You need to study the difference between ice1712 and ice1724.
-
-
-
-----------------------------------------------------------------------
  cruiseoveride - 07-17-06 16:40 
 ----------------------------------------------------------------------
 my gtk knowledge is fairly descent.
@@ -89,6 +76,16 @@ The only obstactle at the moment for me is getting the monitor levels.
 
 do u know wat does "?" mean for the values of numids 10,9,11 from my
 previous post?
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-17-06 17:13 
+----------------------------------------------------------------------
+by the way.
+Is there a way for me to simulate this sound card on my office PC.
+So i can work on the code in the office.
+something like a dummy device but with an attached kernel module
+
+Is it possible?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +106,7 @@ Date Modified  Username       Field                    Change
 07-17-06 16:07 Raymond        Note Added: 0011042                          
 07-17-06 16:31 Raymond        Note Edited: 0011042                         
 07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
 ======================================================================
 
 
