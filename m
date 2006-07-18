@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002220]: emu10k1 crash on PCI hotplug
-Date: Tue, 18 Jul 2006 17:17:29 +0200
-Message-ID: <0b9e34b1dfd91ca58daeddb8f3a2bbea@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002026]: random swapping of channels
+	when running speaker-test
+Date: Tue, 18 Jul 2006 17:24:13 +0200
+Message-ID: <360785d906b1a098567933eea89a125b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D6AF10D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92006142
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 17:17:30 +0200 (MEST)
+	Tue, 18 Jul 2006 17:24:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,126 +26,482 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2220> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026> 
 ======================================================================
-Reported By:                fizban
+Reported By:                Raymond
 Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2220
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   2026
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             
+Status:                     assigned
 ======================================================================
-Date Submitted:             06-19-2006 02:03 CEST
-Last Modified:              07-18-2006 17:17 CEST
+Date Submitted:             04-17-2006 07:26 CEST
+Last Modified:              07-18-2006 17:24 CEST
 ======================================================================
-Summary:                    emu10k1 crash on PCI hotplug
+Summary:                    random swapping of channels when running
+speaker-test
 Description: 
-With the new docking support in 2.6.17, my laptop's docking station is now
-hotplugabble, and thus so is the SB 512 PCI in it. However, while
-undocking the system seems to work correctly, docking it again causes the
-following Oops:
 
-EIP is at snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1]
-eax: 00000000   ebx: c8194000   ecx: 00000000   edx: 00000019
-esi: 00000019   edi: 00000000   ebp: 00000000   esp: cfae1c50
-ds: 007b   es: 007b   ss: 0068
-Process kacpid_notify (pid: 11271, threadinfo=cfae1000 task=cfbd6540)
-Stack: d087b7b4 c8194000 00000000 00000000 00000000 d14f05b0 0000ff00
-cf6e3c00 
-       c8194000 d150a31e 00000286 cf6e3c00 00000286 cee77400 cf2f4800
-d150b30c 
-       cf6e3c00 00000286 d150a06e cee77494 cdef8000 d14f0120 d14f0c2a
-cf6e3c00 
-Call Trace:
- <d14f05b0> free_voice+0x23/0x83 [snd_emu10k1_synth]  <d150a31e>
-snd_emux_terminate_all+0x3b/0x6c [snd_emux_synth]
- <d150b30c> snd_emux_detach_seq+0xf/0x3b [snd_emux_synth]  <d150a06e>
-snd_emux_free+0x42/0x74 [snd_emux_synth]
- <d14f0120> snd_emu10k1_synth_new_device+0xf3/0x127 [snd_emu10k1_synth] 
-<d112e0e9> init_device+0x4d/0x82 [snd_seq_device]
- <d112e28e> find_driver+0xe9/0xf1 [snd_seq_device]  <d112e3a3>
-snd_seq_device_dev_register+0x29/0x35 [snd_seq_device]
- <d113cbc0> snd_device_register_all+0x20/0x42 [snd]  <d113979f>
-snd_card_register+0xe/0x21b [snd]
- <d087a5ed> snd_hwdep_new+0xa3/0xb1 [snd_hwdep]  <d150bdef>
-snd_emux_init_hwdep+0x8f/0x9e [snd_emux_synth]
- <d150a161> snd_emux_register+0xc1/0x10a [snd_emux_synth]  <d150a000>
-sf_sample_new+0x0/0x1e [snd_emux_synth]
- <d150a01e> sf_sample_free+0x0/0x8 [snd_emux_synth]  <d14f0113>
-snd_emu10k1_synth_new_device+0xe6/0x127 [snd_emu10k1_synth]
- <d112e0e9> init_device+0x4d/0x82 [snd_seq_device]  <d112e28e>
-find_driver+0xe9/0xf1 [snd_seq_device]
- <d112e3a3> snd_seq_device_dev_register+0x29/0x35 [snd_seq_device] 
-<d113cbc0> snd_device_register_all+0x20/0x42 [snd]
- <d113979f> snd_card_register+0xe/0x21b [snd]  <d11723a4>
-snd_card_emu10k1_probe+0x2fd/0x324 [snd_emu10k1]
- <c01dba41> pci_device_probe+0x36/0x57  <c02281f1>
-driver_probe_device+0x45/0x9a
- <c02abc70> klist_next+0x2d/0x36  <c0228246> __device_attach+0x0/0x5
- <c0227c1a> bus_for_each_drv+0x32/0x58  <c0228296>
-device_attach+0x4b/0x5b
- <c0228246> __device_attach+0x0/0x5  <c0227b42> bus_add_device+0x27/0xcd
- <c02270ef> device_add+0xcc/0x12d  <c01d8a32> pci_bus_add_device+0xb/0x30
- <c01d8a6c> pci_bus_add_devices+0x15/0x93  <c01d8aba>
-pci_bus_add_devices+0x63/0x93
- <c01dfdfd> acpiphp_enable_slot+0x2f1/0x3d0  <c02061e0>
-acpi_ut_update_ref_count+0x4b/0xa0
- <c01dfffd> handle_hotplug_event_func+0x6f/0x12f  <c01fc1b5>
-acpi_ex_exit_interpreter+0xa/0x2f
- <c01f0b54> acpi_evaluate_integer+0x98/0xa2  <c01dff8e>
-handle_hotplug_event_func+0x0/0x12f
- <c0209e73> hotplug_dock_devices+0x21/0x79  <c01f0359>
-acpi_os_execute_thread+0x0/0x1a
- <c0209f7b> dock_notify+0x7b/0x15d  <c0207fc8> acpi_bus_notify+0x17/0x46
- <c01f574a> acpi_ev_notify_dispatch+0x49/0x52  <c01f0365>
-acpi_os_execute_thread+0xc/0x1a
- <c0124166> kthread+0x91/0xbd  <c01240d5> kthread+0x0/0xbd
- <c0101005> kernel_thread_helper+0x5/0xb 
-Code: e0 21 c2 d3 ea eb 11 9c 59 fa 8b 57 04 89 d8 ef 83 c2 04 ed 89 c2 51
-9d 59 89 d0 5b 5e 5f 5d c3 55 89 c5 57 56 89 d6 53 83 ec 04 <83> 78 10 01
-8b 7c 24 18 19 c0 83 e1 3f 25 00 00 00 f8 05 00 00 
-EIP: [<d1177739>] snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1] SS:ESP
-0068:cfae1c50
+values return by read_wav seem strange at end of loop in write_loop.
 
+
+speaker-test -c 4 -t wav -D hw:0,0
+ 
+speaker-test 1.0.11rc5
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Using max buffer size 8192
+Periods = 4
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
+read_wav n=3072 err=1024
+read_wav n=4096 err=1024
+read_wav n=5120 err=1024
+read_wav n=6144 err=1024
+read_wav n=7168 err=1024
+read_wav n=8192 err=1024
+read_wav n=9216 err=1024
+read_wav n=10240 err=1024
+read_wav n=11264 err=1024
+read_wav n=12288 err=1024
+read_wav n=13312 err=1024
+read_wav n=14336 err=1024
+read_wav n=15360 err=1024
+read_wav n=16384 err=1024
+read_wav n=17408 err=1024
+read_wav n=18432 err=1024
+read_wav n=19456 err=1024
+read_wav n=20480 err=1024
+read_wav n=21504 err=1024
+read_wav n=22528 err=1024
+read_wav n=23552 err=1024
+read_wav n=24576 err=1024
+read_wav n=25600 err=1024
+read_wav n=26624 err=1024
+read_wav n=27648 err=1024
+read_wav n=28672 err=1024
+read_wav n=29696 err=1024
+read_wav n=30720 err=1024
+read_wav n=31744 err=1024
+read_wav n=32768 err=1024
+read_wav n=33792 err=1024
+read_wav n=34816 err=1024
+read_wav n=35840 err=1024
+read_wav n=36864 err=1024
+read_wav n=37888 err=1024
+read_wav n=38912 err=1024
+read_wav n=39936 err=1024
+read_wav n=40960 err=1024
+read_wav n=41984 err=1024
+read_wav n=43008 err=1024
+read_wav n=44032 err=1024
+read_wav n=45056 err=1024
+read_wav n=46080 err=1024
+read_wav n=47104 err=1024
+read_wav n=48128 err=1024
+read_wav n=49152 err=1024
+read_wav n=50176 err=1024
+read_wav n=51200 err=1024
+read_wav n=52224 err=1024
+read_wav n=53248 err=1024
+read_wav n=54272 err=1024
+read_wav n=55296 err=1024
+read_wav n=56320 err=1024
+read_wav n=57344 err=1024
+read_wav n=58368 err=1024
+read_wav n=59392 err=1024
+read_wav n=60416 err=1024
+read_wav n=61440 err=1024
+read_wav n=62464 err=1024
+read_wav n=63488 err=1024
+read_wav n=64512 err=1024
+read_wav n=65536 err=1024
+read_wav n=66560 err=1024
+read_wav n=67584 err=1024
+read_wav n=68608 err=1024
+read_wav n=69632 err=1024
+read_wav n=70656 err=1024
+read_wav n=71680 err=1024
+read_wav n=72704 err=1024
+read_wav n=73728 err=1024
+read_wav n=74752 err=1024
+read_wav n=75776 err=1024
+read_wav n=76800 err=1024
+read_wav n=77824 err=1024
+read_wav n=78848 err=1024
+read_wav n=79872 err=1024
+read_wav n=80896 err=1024
+read_wav n=81920 err=1024
+read_wav n=82944 err=1024
+read_wav n=83968 err=1024
+read_wav n=84992 err=1024
+read_wav n=86016 err=1024
+read_wav n=87040 err=1024
+read_wav n=88064 err=1024
+read_wav n=89088 err=1024
+read_wav n=90112 err=1024
+read_wav n=91136 err=1024
+read_wav n=92160 err=1024
+read_wav n=93184 err=1024
+read_wav n=94208 err=1024
+read_wav n=95232 err=1024
+read_wav n=96256 err=1024
+read_wav n=97280 err=1024
+read_wav n=98304 err=1024
+read_wav n=99328 err=1024
+read_wav n=100352 err=1024
+read_wav n=101376 err=1024
+read_wav n=102400 err=1024
+read_wav n=103424 err=1024
+read_wav n=104448 err=1024
+read_wav n=105472 err=1024
+read_wav n=106496 err=1024
+read_wav n=107520 err=1024
+read_wav n=108544 err=1024
+read_wav n=109568 err=1024
+read_wav n=110592 err=1024
+read_wav n=111616 err=1024
+read_wav n=112640 err=1024
+read_wav n=113664 err=1024
+read_wav n=114688 err=1024
+read_wav n=115712 err=1024
+read_wav n=116736 err=1024
+read_wav n=117760 err=1024
+read_wav n=118784 err=1024
+read_wav n=119808 err=1024
+read_wav n=120832 err=1024
+read_wav n=121856 err=1024
+read_wav n=122880 err=1024
+read_wav n=123904 err=1024
+read_wav n=124928 err=1024
+read_wav n=125952 err=1024
+read_wav n=126976 err=1024
+read_wav n=128000 err=1024
+read_wav n=129024 err=1024
+read_wav n=130048 err=1024
+read_wav n=131072 err=1024
+read_wav n=132096 err=1024
+read_wav n=133120 err=1024
+read_wav n=134144 err=1024
+read_wav n=135168 err=1024
+read_wav n=136192 err=1024
+read_wav n=137216 err=1024
+read_wav n=138240 err=1024
+read_wav n=139202 err=962
+read_wav n=139922 err=720
+read_wav n=140462 err=540
+read_wav n=140868 err=406
+read_wav n=141172 err=304
+read_wav n=141400 err=228
+read_wav n=141572 err=172
+read_wav n=141700 err=128
+read_wav n=141796 err=96
+read_wav n=141868 err=72
+read_wav n=141922 err=54
+read_wav n=141962 err=40
+read_wav n=141992 err=30
+read_wav n=142016 err=24
+read_wav n=142034 err=18
+read_wav n=142046 err=12
+read_wav n=142056 err=10
+read_wav n=142064 err=8
+read_wav n=142070 err=6
+read_wav n=142074 err=4
+read_wav n=142076 err=2
+read_wav n=142078 err=2
+read_wav n=142080 err=2
+read_wav n=142082 err=2
+ 1 - Front Right
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
+read_wav n=3072 err=1024
+read_wav n=4096 err=1024
+read_wav n=5120 err=1024
+read_wav n=6144 err=1024
+read_wav n=7168 err=1024
+read_wav n=8192 err=1024
+read_wav n=9216 err=1024
+read_wav n=10240 err=1024
+read_wav n=11264 err=1024
+read_wav n=12288 err=1024
+read_wav n=13312 err=1024
+read_wav n=14336 err=1024
+read_wav n=15360 err=1024
+read_wav n=16384 err=1024
+read_wav n=17408 err=1024
+read_wav n=18432 err=1024
+read_wav n=19456 err=1024
+read_wav n=20480 err=1024
+read_wav n=21504 err=1024
+read_wav n=22528 err=1024
+read_wav n=23552 err=1024
+read_wav n=24576 err=1024
+read_wav n=25600 err=1024
+read_wav n=26624 err=1024
+read_wav n=27648 err=1024
+read_wav n=28672 err=1024
+read_wav n=29696 err=1024
+read_wav n=30720 err=1024
+read_wav n=31744 err=1024
+read_wav n=32768 err=1024
+read_wav n=33792 err=1024
+read_wav n=34816 err=1024
+read_wav n=35840 err=1024
+read_wav n=36864 err=1024
+read_wav n=37888 err=1024
+read_wav n=38912 err=1024
+read_wav n=39936 err=1024
+read_wav n=40960 err=1024
+read_wav n=41984 err=1024
+read_wav n=43008 err=1024
+read_wav n=44032 err=1024
+read_wav n=45056 err=1024
+read_wav n=46080 err=1024
+read_wav n=47104 err=1024
+read_wav n=48128 err=1024
+read_wav n=49152 err=1024
+read_wav n=50176 err=1024
+read_wav n=51200 err=1024
+read_wav n=52224 err=1024
+read_wav n=53248 err=1024
+read_wav n=54272 err=1024
+read_wav n=55296 err=1024
+read_wav n=56320 err=1024
+read_wav n=57344 err=1024
+read_wav n=58368 err=1024
+read_wav n=59392 err=1024
+read_wav n=60416 err=1024
+read_wav n=61440 err=1024
+read_wav n=62464 err=1024
+read_wav n=63488 err=1024
+read_wav n=64512 err=1024
+read_wav n=65536 err=1024
+read_wav n=66560 err=1024
+read_wav n=67584 err=1024
+read_wav n=68608 err=1024
+read_wav n=69632 err=1024
+read_wav n=70656 err=1024
+read_wav n=71680 err=1024
+read_wav n=72704 err=1024
+read_wav n=73728 err=1024
+read_wav n=74752 err=1024
+read_wav n=75776 err=1024
+read_wav n=76800 err=1024
+read_wav n=77824 err=1024
+read_wav n=78848 err=1024
+read_wav n=79872 err=1024
+read_wav n=80896 err=1024
+read_wav n=81920 err=1024
+read_wav n=82944 err=1024
+read_wav n=83968 err=1024
+read_wav n=84992 err=1024
+read_wav n=86016 err=1024
+read_wav n=87040 err=1024
+read_wav n=88064 err=1024
+read_wav n=89088 err=1024
+read_wav n=90112 err=1024
+read_wav n=91136 err=1024
+read_wav n=92160 err=1024
+read_wav n=93184 err=1024
+read_wav n=94208 err=1024
+read_wav n=95232 err=1024
+read_wav n=96256 err=1024
+read_wav n=97280 err=1024
+read_wav n=98304 err=1024
+read_wav n=99328 err=1024
+read_wav n=100352 err=1024
+read_wav n=101376 err=1024
+read_wav n=102400 err=1024
+read_wav n=103424 err=1024
+read_wav n=104448 err=1024
+read_wav n=105472 err=1024
+read_wav n=106496 err=1024
+read_wav n=107520 err=1024
+read_wav n=108544 err=1024
+read_wav n=109568 err=1024
+read_wav n=110592 err=1024
+read_wav n=111616 err=1024
+read_wav n=112640 err=1024
+read_wav n=113664 err=1024
+read_wav n=114688 err=1024
+read_wav n=115712 err=1024
+read_wav n=116736 err=1024
+read_wav n=117760 err=1024
+read_wav n=118784 err=1024
+read_wav n=119808 err=1024
+read_wav n=120832 err=1024
+read_wav n=121856 err=1024
+read_wav n=122880 err=1024
+read_wav n=123904 err=1024
+read_wav n=124928 err=1024
+read_wav n=125952 err=1024
+read_wav n=126976 err=1024
+read_wav n=128000 err=1024
+read_wav n=129024 err=1024
+read_wav n=130048 err=1024
+read_wav n=131072 err=1024
+read_wav n=132096 err=1024
+read_wav n=133120 err=1024
+read_wav n=134144 err=1024
+read_wav n=135168 err=1024
+read_wav n=136192 err=1024
+read_wav n=137216 err=1024
+read_wav n=138240 err=1024
+read_wav n=139264 err=1024
+read_wav n=140288 err=1024
+read_wav n=141312 err=1024
+read_wav n=142336 err=1024
+read_wav n=143360 err=1024
+read_wav n=144256 err=896
+read_wav n=144928 err=672
+read_wav n=145432 err=504
+read_wav n=145810 err=378
+read_wav n=146094 err=284
+read_wav n=146308 err=214
+read_wav n=146468 err=160
+read_wav n=146588 err=120
+read_wav n=146678 err=90
+read_wav n=146746 err=68
+read_wav n=146796 err=50
+read_wav n=146834 err=38
+read_wav n=146862 err=28
+read_wav n=146884 err=22
+read_wav n=146900 err=16
+read_wav n=146912 err=12
+read_wav n=146920 err=8
+read_wav n=146926 err=6
+read_wav n=146932 err=6
+read_wav n=146936 err=4
+read_wav n=146938 err=2
+read_wav n=146940 err=2
+read_wav n=146942 err=2
+read_wav n=146944 err=2
+ 3 - Rear Right
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-18-06 14:15 
+ Raymond - 06-03-06 03:02 
 ----------------------------------------------------------------------
-Can you please provide more information regarding the Oops. There should be
-some more lines above the part you posted.
+This strange behaviour of read_wav() also occur when using 2 channels
 
+speaker-test -c2 -t wav -Dhw:1,0
+ 
+speaker-test 1.0.11
+ 
+Playback device is hw:1,0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 8 to 16384
+Period size range from 8 to 16384
+Using max buffer size 16384
+Periods = 4
+was set period_size = 4096
+was set buffer_size = 16384
+ 0 - Front Left
+n=8192 err=8192
+n=16384 err=8192
+n=24576 err=8192
+n=32768 err=8192
+n=40960 err=8192
+n=49152 err=8192
+n=57344 err=8192
+n=65536 err=8192
+n=73728 err=8192
+n=81920 err=8192
+n=90112 err=8192
+n=98304 err=8192
+n=106496 err=8192
+n=114688 err=8192
+n=122880 err=8192
+n=131072 err=8192
+n=136578 err=5506
+n=139332 err=2754
+n=140708 err=1376
+n=141396 err=688
+n=141740 err=344
+n=141912 err=172
+n=141998 err=86
+n=142042 err=44
+n=142064 err=22
+n=142074 err=10
+n=142080 err=6
+n=142082 err=2
+n=142084 err=2
+ 1 - Front Right
+n=8192 err=8192
+n=16384 err=8192
+n=24576 err=8192
+n=32768 err=8192
+n=40960 err=8192
+n=49152 err=8192
+n=57344 err=8192
+n=65536 err=8192
+n=73728 err=8192
+n=81920 err=8192
+n=90112 err=8192
+n=98304 err=8192
+n=106496 err=8192
+n=114688 err=8192
+n=122880 err=8192
+n=131072 err=8192
+n=139010 err=7938
+n=142978 err=3968
+n=144962 err=1984
+n=145954 err=992
+n=146450 err=496
+n=146698 err=248
+n=146822 err=124
+n=146884 err=62
+n=146916 err=32
+n=146932 err=16
+n=146940 err=8
+n=146944 err=4
+n=146946 err=2
+Time per period = 2.790380
+ 0 - Front Left
 
 ----------------------------------------------------------------------
- fizban - 07-18-06 17:17 
+ Raymond - 07-18-06 17:24 
 ----------------------------------------------------------------------
-Ok, I've attached a full dmesg with the oops, and lspci -vv traces from
-before and after the oops.
+Using max buffer size 8192
+Periods = 4
+was set period_size = 512
+was set buffer_size = 8192
+
+Why period_size * periods not equal to buffer_size when channels = 4 ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:03 fizban         New Issue                                    
-06-29-06 18:21 tiwai          Note Added: 0010685                          
-07-16-06 04:40 fizban         File Added: emu10k1-not-a-real-fix.diff           
-        
-07-16-06 04:46 fizban         Note Added: 0011028                          
-07-18-06 14:13 jcdutton       Status                   new => assigned     
-07-18-06 14:13 jcdutton       Assigned To               => jcdutton        
-07-18-06 14:15 jcdutton       Note Added: 0011055                          
-07-18-06 14:15 jcdutton       Status                   assigned => feedback
-07-18-06 17:16 fizban         File Added: dmesg-alsa-oops.txt                   
-
-07-18-06 17:16 fizban         File Added: lspci-pre-oops.txt                    
-07-18-06 17:16 fizban         File Added: lspci-post-oops.txt                   
-
-07-18-06 17:17 fizban         Note Added: 0011065                          
+04-17-06 07:26 Raymond        New Issue                                    
+04-18-06 14:33 Raymond        Note Added: 0009334                          
+04-28-06 06:16 Raymond        Issue Monitored: jcdutton                    
+04-28-06 06:16 Raymond        Note Added: 0009539                          
+04-29-06 13:16 Raymond        Note Added: 0009542                          
+05-31-06 15:23 Raymond        Issue Monitored: tiwai                       
+05-31-06 15:23 Raymond        Note Added: 0010022                          
+06-03-06 03:02 Raymond        Note Added: 0010059                          
+07-18-06 14:30 jcdutton       Status                   new => assigned     
+07-18-06 14:30 jcdutton       Assigned To               => jcdutton        
+07-18-06 17:24 Raymond        Note Added: 0011066                          
 ======================================================================
 
 
