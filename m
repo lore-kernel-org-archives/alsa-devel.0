@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001551]: No mute switch to mixer
-	channel
-Date: Tue, 18 Jul 2006 14:36:26 +0200
-Message-ID: <9b88bdf04f17c6d11f765258551975e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002077]: emu10k1 will not use S24_LE
+Date: Tue, 18 Jul 2006 14:38:37 +0200
+Message-ID: <faaa88240a14cc02a764aa07cac2a0ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B264150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8250A176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:36:26 +0200 (MEST)
+	Tue, 18 Jul 2006 14:38:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,62 +25,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1551> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2077> 
 ======================================================================
-Reported By:                Shogun
+Reported By:                braininajar
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1551
+Issue ID:                   2077
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.13-gentoo-r3
+Distribution:               gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             11-13-2005 13:16 CET
-Last Modified:              07-18-2006 14:36 CEST
+Date Submitted:             04-26-2006 21:51 CEST
+Last Modified:              07-18-2006 14:38 CEST
 ======================================================================
-Summary:                    No mute switch to mixer channel
+Summary:                    emu10k1 will not use S24_LE
 Description: 
-I have a SoundBlaster Audigy 2 ZS (without LiveDrive)...
-When I load the modules the sound works perfectly, but in the mixer (both
-alsa-mixer and kmix) I can't see any mute switch for the mixer
-channel...The only channel which has the switch is the Headphone...
-
-I don't know if previous version worked...
+The Audigy2 is a 24-bit, 96k card. It will handle 24 bit, 96k samples. For
+some reason or other, the emu10k1 driver will not let it
 ======================================================================
 
 ----------------------------------------------------------------------
- Shogun - 11-13-05 14:05 
+ pzad - 04-26-06 22:07 
 ----------------------------------------------------------------------
-I forgot to mention that this issue is also present in 1.0.8 and in
-1.0.10rc3...
+Audigy 2 are two soundcards in one chip (old Audigy 1 and SB live 24 bit).
+In linux Audigy 1 part is used by default (it has more features but only
+48 kHz 16 bi). If you want use 24 bit 96 kHz you have to use device hw:0,4
+(I think it is 4 - I am not sure). Alsa doesn't use it as default device,
+because it has less features as Audigy 1 part (only advantage is 24/96
+sound - disadvantage - no hw mixing no dsp).
 
 ----------------------------------------------------------------------
- Shogun - 05-06-06 01:22 
+ jcdutton - 04-26-06 22:20 
 ----------------------------------------------------------------------
-Still here with kernel 2.6.16 and ALSA 1.0.11...
-What's wrong guys? Why doesn't the mixer works?
+Please provide output from:
+cat /proc/asound/cards
+cat /proc/asound/version
 
-As I read in source code, the master mute has no effect on the card...so I
-think it's not supported...but is there any way to accomplish a standard
-behaviour?
+24bit is not supported on all Audigy cards in linux yet.
+The 24bit is a special mode that bypassed the DSP.
+Unfortunately, the bypass method is different one almost every Audigy
+card, so until all the different methods are supported, it will not work
+on all Audigy cards.
 
-Thanks...
+Also 24bit capture on a PC sound card is next to pointless due to computer
+noise introduced and low quality codecs and front end components. You
+might get 18bits of real quality, but I doubt even that.
+
+There are exceptions to that in the really expensive professional sound
+capture devices that also have a PC interface, but very few of them work
+with Linux. E.g. the EMU1212m.
+
+James
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 13:16 Shogun         New Issue                                    
-11-13-05 13:16 Shogun         Distribution              => Gentoo Linux 2005.1
-11-13-05 13:16 Shogun         Kernel Version            => 2.6.13-gentoo-r3
-11-13-05 14:05 Shogun         Note Added: 0006691                          
-05-06-06 01:22 Shogun         Note Added: 0009634                          
-07-18-06 14:36 jcdutton       Status                   new => assigned     
-07-18-06 14:36 jcdutton       Assigned To               => jcdutton        
+04-26-06 21:51 braininajar    New Issue                                    
+04-26-06 21:51 braininajar    Distribution              => gentoo          
+04-26-06 21:51 braininajar    Kernel Version            => 2.6.16          
+04-26-06 22:07 pzad           Note Added: 0009524                          
+04-26-06 22:20 jcdutton       Note Added: 0009525                          
+07-18-06 14:38 jcdutton       Status                   new => assigned     
+07-18-06 14:38 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
