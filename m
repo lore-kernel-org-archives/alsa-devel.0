@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002003]: i can not ear anything and
-	all setting of the ALSAMIXER are not working
-Date: Tue, 18 Jul 2006 11:52:24 +0200
-Message-ID: <0a0eb1ff942673631f62caf2b236c1be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002109]: SPDIF output of Prodigy 7.1LT
+	doesn't working
+Date: Tue, 18 Jul 2006 11:56:43 +0200
+Message-ID: <3a5b1c3e92330cadf60be6b6e43b988d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F072176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9AD9219
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 11:52:25 +0200 (MEST)
+	Tue, 18 Jul 2006 11:56:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,51 +24,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2003> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2109> 
 ======================================================================
-Reported By:                pierre hubert
+Reported By:                Rivian
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2003
+Issue ID:                   2109
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     closed
-Distribution:               mandriva 10,2
-Kernel Version:             2,6,11-6mdk
-Resolution:                 not an issue
+Status:                     resolved
+Distribution:               Debian 3.1 Sarge
+Kernel Version:             2.6.8
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-05-2006 13:47 CEST
-Last Modified:              07-18-2006 11:52 CEST
+Date Submitted:             05-09-2006 02:59 CEST
+Last Modified:              07-18-2006 11:56 CEST
 ======================================================================
-Summary:                    i can not ear anything and all setting of the
-ALSAMIXER are not working
+Summary:                    SPDIF output of Prodigy 7.1LT doesn't working
 Description: 
-I have recently bought a sound card MAUDIO-Revolution 5.1
-the driver SND-ICE-1724 has installed itself without any problem
-But when i use it i can not ear anything and all settings of the Alsamixer
-are not working.
+Hi.
+I'm using Audiotrak Prodigy 7.1LT soundcard so i'm glad to support for it.
+I've upgraded the driver immediately, well, headphone output(jack number
+7) is working good. But SPDIF doesn't output any signal. I'm using DR.DAC
+multi amplifier also, connected to Prodigy's SPDIF output, but it
+receiving NO signal. Of course, it is working perfectly in Windows XP.
+I've tried several .asoundrc setting but nothing worked. Does anybody
+using SPDIF with Prodigy 7.1LT?
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:22 
+ Demosthenes - 05-09-06 12:57 
 ----------------------------------------------------------------------
-Too old version.  Update to the latest one, 1.0.11rc4.
+I have not tried using SPDIF with this card but I would encourage you to
+try the patch from this thread
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744 since this
+fixes a number of issues for me (such as getting sound out of the front
+channel).  You may be lucky and this patch will also fix SPDIF out.
+
+Either way I think that the patch should be added to CVS, since it is a
+definate improvement.
+
+----------------------------------------------------------------------
+ Rivian - 05-09-06 14:08 
+----------------------------------------------------------------------
+Wow, it works! Thank you very much, Demosthenes. There's some problems in
+volume control, but anyway it works! :D
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-06 13:47 pierre hubert  New Issue                                    
-04-05-06 13:47 pierre hubert  Distribution              => mandriva 10,2   
-04-05-06 13:47 pierre hubert  Kernel Version            => 2,6,11-6mdk     
-04-07-06 19:22 tiwai          Note Added: 0009146                          
-07-18-06 11:52 Adrian Bunk    Status                   new => closed       
-07-18-06 11:52 Adrian Bunk    Resolution               open => not an issue
+05-09-06 02:59 Rivian         New Issue                                    
+05-09-06 02:59 Rivian         Distribution              => Debian 3.1 Sarge
+05-09-06 02:59 Rivian         Kernel Version            => 2.6.8           
+05-09-06 12:57 Demosthenes    Note Added: 0009653                          
+05-09-06 12:57 Demosthenes    Issue Monitored: Demosthenes                    
+05-09-06 14:08 Rivian         Note Added: 0009656                          
+07-18-06 11:56 Adrian Bunk    Status                   new => resolved     
+07-18-06 11:56 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
