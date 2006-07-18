@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002190]: System crash on unplugging
-	Audigy 2 ZS Notebook CardBus card
-Date: Tue, 18 Jul 2006 14:34:14 +0200
-Message-ID: <8e7fc2bc3f8be50be65a913575e21b2a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002176]: No sound At all
+Date: Tue, 18 Jul 2006 14:34:46 +0200
+Message-ID: <b7605e867da7622e928e170a38d2e359@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68AF8150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAE28150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:34:14 +0200 (MEST)
+	Tue, 18 Jul 2006 14:34:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,49 +25,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2176> 
 ======================================================================
-Reported By:                tsmithe
+Reported By:                basstrombone
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2190
+Issue ID:                   2176
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper 6.06
-Kernel Version:             2.6.15
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-07-2006 19:47 CEST
+Date Submitted:             05-31-2006 21:58 CEST
 Last Modified:              07-18-2006 14:34 CEST
 ======================================================================
-Summary:                    System crash on unplugging Audigy 2 ZS Notebook
-CardBus card
+Summary:                    No sound At all
 Description: 
- System crash on unplugging Audigy 2 ZS Notebook CardBus card
-I am running Ubuntu Dapper 6.06, with the 2.6.15 kernel
-(including this driver). The driver works pretty well
-with my Audigy 2 ZS Notebook card, except that it
-doesn't seem to support hotplug. When I plug it in, the
-module is installed, and the card functions. However,
-the module continues to access the card when it is
-unplugged (nor does the module unload), and the kernel
-cannot handle this. The system falls over as it cannot
-run with a non-functioning kernel. All of my other
-devices that use hotplug work fine (CardBus, USB,
-whatever), so I can only deduce that this situation is
-a result of poor driver support.
+The sound card above mentioned is recognized by jack but no sound comes out
+of the card.  Also Jack tells me that 24bit is not supported and when I
+set up jack with more than 2 I/O jack does not start
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 19:47 tsmithe        New Issue                                    
-06-07-06 19:47 tsmithe        Distribution              => Ubuntu Dapper 6.06
-06-07-06 19:47 tsmithe        Kernel Version            => 2.6.15          
-06-10-06 22:08 tsmithe        Issue Monitored: tsmithe                     
+05-31-06 21:58 basstrombone   New Issue                                    
 07-18-06 14:34 jcdutton       Status                   new => assigned     
 07-18-06 14:34 jcdutton       Assigned To               => jcdutton        
 ======================================================================
