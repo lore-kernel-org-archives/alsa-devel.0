@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000394]: Master/PCM don't control
-	optical-spdif out
-Date: Tue, 18 Jul 2006 20:28:47 +0200
-Message-ID: <e75b1a873f257ac22ea93d3c71572fe2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000655]: E-MU 1010 (1212m/1820m)
+Date: Tue, 18 Jul 2006 20:32:38 +0200
+Message-ID: <aee582ac20179cee8e074d0600cbd79a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E15D6242
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24608242
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 20:28:47 +0200 (MEST)
+	Tue, 18 Jul 2006 20:32:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,87 +23,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=394> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=655> 
 ======================================================================
-Reported By:                msc
+Reported By:                gaburici
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   394
+Issue ID:                   655
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian/unstable
-Kernel Version:             2.6.7
+Status:                     feedback
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-16-2004 16:12 CEST
-Last Modified:              07-18-2006 20:28 CEST
+Date Submitted:             11-19-2004 00:45 CET
+Last Modified:              07-18-2006 20:32 CEST
 ======================================================================
-Summary:                    Master/PCM don't control optical-spdif out
+Summary:                    E-MU 1010 (1212m/1820m)
 Description: 
-I can't control volume/mute with master/pcm mixer controls for spdif
-out.(analog out works fine)
-Only Wave Playback change volume.
+It would be nice if the E-MU systems based on the 1010 PCI card (1212m and
+1820m) could work with alsa. I have the 1212m, which is a 1010 with an
+add-on card (0202) for two analog stero channels. The add-on is not a real
+PCI card, it connects to the 1010 with a floppy cable.
+
+The 1010 card gets detected as the (older) E-MU APS, but no sound comes
+out of the 0202, even with the volume at max.
+I haven't tried the ADAT or SPDIF outputs of the 1010.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-30-04 17:41 
+ rlrevell - 05-04-05 00:24 
 ----------------------------------------------------------------------
-Master and PCM are the volume controls for AC97 codec, so they
-are really independent from SPDIF.
+Please try the attached patch.  The 1010 appears to be emu10k2 (Audigy)
+based, while the APS was emu10k1 (SBLive!) based.
 
 ----------------------------------------------------------------------
- pzad - 08-02-04 09:56 
+ jcdutton - 07-18-06 20:32 
 ----------------------------------------------------------------------
-Problem is, that there isn't any control on SB Live which control spdif
-volume.
-If I have this card ....
+Is this still a problem.
+I have been working on emu1212m support recently.
+Combining the current alsa-driver,alsa-kernel,alsa-firmware code from the
+hg repository, together with the latest patch from
+http://alsa-project.org/~james/alsa-driver/emu1212m/emu1212m-7.diff
+(the 7 might be a higher number.)
 
-----------------------------------------------------------------------
- msc - 08-02-04 10:39 
-----------------------------------------------------------------------
-perhaps i can help you with this problem?
-i'm a programmer too and if it's possible we can try to find together this
-problem.
+Please test, and tell me how it looks.
 
-i think the routing to/from the dsp should be the problem?
-i'm not really familiar with soundcard programming, but perhaps you can
-explain the minimal neccessary stuff to use/tweak some test code.
+James
 
-can you make a small code snipplet for testing some (dsp?) code which
-change routing to/from dsp (loopback to ac97 or something like this)?
-
-----------------------------------------------------------------------
- pzad - 08-06-04 14:51 
-----------------------------------------------------------------------
-I hope, new week I will release new version of ld10k1 and there will be GUI
-part too. Still limited (there is not save and load of whole DSP config),
-but you will by able to setup your own mixer (which can contain volume
-control for spdif out too) and than save DSP dump to file and load this
-dump at any time (for example at boot).
-
-Then only problem will by master volume, because you need control analog
-volume and digital volume at same time. This will be solved later.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-04 16:12 msc            New Issue                                    
-07-16-04 16:12 msc            Distribution              => debian/unstable 
-07-16-04 16:12 msc            Kernel Version            => 2.6.7           
-07-16-04 16:13 msc            Issue Monitored: msc                         
-07-30-04 17:41 tiwai          Note Added: 0001503                          
-08-02-04 09:56 pzad           Note Added: 0001518                          
-08-02-04 10:39 msc            Note Added: 0001519                          
-08-06-04 14:51 pzad           Note Added: 0001539                          
-01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
+11-19-04 00:45 gaburici       New Issue                                    
+12-27-04 12:36 morriscet      Issue Monitored: morriscet                    
+12-27-04 12:36 morriscet      Issue End Monitor: morriscet                    
+05-04-05 00:23 rlrevell       File Added: emu-1212m.patch                    
+05-04-05 00:24 rlrevell       Note Added: 0004586                          
 07-18-06 20:22 pzad           Assigned To              pzad =>             
-07-18-06 20:28 jcdutton       Assigned To               => jcdutton        
+07-18-06 20:27 jcdutton       Assigned To               => jcdutton        
+07-18-06 20:32 jcdutton       Note Added: 0011071                          
+07-18-06 20:32 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
