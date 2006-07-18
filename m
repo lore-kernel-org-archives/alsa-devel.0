@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000441]: Master volume not doing
-	anything
-Date: Tue, 18 Jul 2006 14:41:59 +0200
-Message-ID: <415dec0ff4afd01e5b34321517b1b879@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001693]: Alsaconf (iguration) failed :
+	snd_ctl_open error: Invalid argument
+Date: Tue, 18 Jul 2006 14:43:03 +0200
+Message-ID: <20cca5ef7806b1ae549089571f0e1395@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 027C6176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D6C8176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:41:59 +0200 (MEST)
+	Tue, 18 Jul 2006 14:43:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,69 +26,80 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=441> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1693> 
 ======================================================================
-Reported By:                Simon
+Reported By:                Smat
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   441
+Issue ID:                   1693
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.
+Distribution:               Debian sarge
+Kernel Version:             2.6.8-11-amd64-k8
 ======================================================================
-Date Submitted:             08-14-2004 20:49 CEST
-Last Modified:              07-18-2006 14:41 CEST
+Date Submitted:             12-29-2005 16:20 CET
+Last Modified:              07-18-2006 14:43 CEST
 ======================================================================
-Summary:                    Master volume not doing anything
+Summary:                    Alsaconf (iguration) failed : snd_ctl_open error:
+Invalid argument
 Description: 
-I have sound, everything works, but the master volume control doesn't have
-any effect on the actual volume output.
+I have a Soundblaster live!
+alsa-base and alsa-utils installed
+1)launchin alsaconf:
+Unloading ALSA sound driver modules: snd-emu10k1 snd-rawmidi snd-pcm-oss
+snd-mixer-oss snd-pcm snd-timer snd-seq-device snd-ac97-codec
+snd-page-alloc snd-util-mem snd-hwdep.
+Building card database...
 
-Running Soundblaster Live! 5.1 dolby surround system
+2)i chooose my soundcard emu10k1 Creative Labs SB Live! EMU10k1 (rev 08)
+3)Configuring snd-emu10k1 Do you want to modify /etc/modprobe.d/sound (and
+                  
+  /etc/modprobe.conf if present)?  yes
+
+
+4)
+Running update-modules...
+Architecture-specific modutils configuration not found, using defaults
+Loading driver...
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: get_controls:492: snd_ctl_open error: Invalid argument
+
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!  (but no fun for me!)
+
+no sound reproduced
+I have no solutions
+This happened for the first time after i tried to compile
+alsa-driver-1.0.9rc4a
+ (./configure --with-cards=usb-audio --with-sequencer=yes) for my new 
+(not supported i think) edirol PCR-A30 (usb audio interface and midi
+keyboard)
+
+thanks and sorry for bad english
+Matteo
+
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 07-16-05 17:14 
-----------------------------------------------------------------------
-Submitter: Is there any improvement in more recent ALSA releases?
-
-----------------------------------------------------------------------
- Simon - 07-16-05 21:20 
-----------------------------------------------------------------------
-It works now for only the subwoofer and the left front and rear... it's an
-improvement
-
-Current kernel version running:
-2.6.8-24.16 or 2.6.11.9
-
-Latest ALSA driver
-
-
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 04:05 
-----------------------------------------------------------------------
-Do you consider the bug fixed?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 20:49 Simon          New Issue                                    
-08-14-04 20:49 Simon          Distribution              => Slackware       
-08-14-04 20:49 Simon          Kernel Version            => 2.              
-07-16-05 17:14 jdthood        Note Added: 0005499                          
-07-16-05 21:19 Simon          Note Added: 0005502                          
-07-16-05 21:20 Simon          Note Edited: 0005502                         
-08-03-05 12:24 perex          Category                 CORE - control => PCI -
-emu10k1
-12-31-05 04:05 rlrevell       Note Added: 0007336                          
-07-18-06 14:41 jcdutton       Status                   new => assigned     
-07-18-06 14:41 jcdutton       Assigned To               => jcdutton        
+12-29-05 16:20 Smat           New Issue                                    
+12-29-05 16:20 Smat           Distribution              => Debian sarge    
+12-29-05 16:20 Smat           Kernel Version            => 2.6.8-11-amd64-k8
+12-30-05 14:25 Smat           Issue Monitored: Smat                        
+12-30-05 14:25 Smat           Issue End Monitor: Smat                      
+07-18-06 14:43 jcdutton       Status                   new => assigned     
+07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
