@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002290]: Bad support for intel-hda
-	mixer. Only get options for master and pcm. volume doesn't
-	get that loud. card special features lost
-Date: Tue, 18 Jul 2006 06:59:04 +0200
-Message-ID: <db5544043b66131fafb8a8c82f0346b2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002291]: AD1986A produces a high
+	fequency noise
+Date: Tue, 18 Jul 2006 07:12:20 +0200
+Message-ID: <526378f299b0cf394d8fc424104a8de3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3195422F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 068AF22F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 06:59:05 +0200 (MEST)
+	Tue, 18 Jul 2006 07:12:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,42 +26,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2290> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2291> 
 ======================================================================
-Reported By:                linux2
-Assigned To:                tiwai
+Reported By:                michaeleekk
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2290
-Category:                   PCI - hda-intel
+Issue ID:                   2291
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.17-1.2145_FC5
 ======================================================================
-Date Submitted:             07-18-2006 06:59 CEST
-Last Modified:              07-18-2006 06:59 CEST
+Date Submitted:             07-18-2006 07:12 CEST
+Last Modified:              07-18-2006 07:12 CEST
 ======================================================================
-Summary:                    Bad support for intel-hda mixer. Only get options
-for master and pcm. volume doesn't get that loud. card special features lost
+Summary:                    AD1986A produces a high fequency noise
 Description: 
-Now just to make a comparison. In windows this laptop gets very loud even
-at a low volume. this is done through other mixer options not availible
-yet in ALSA. Also previous versions of ALSA do not have support for this
-card in my laptop (its an hpdv5000t). I believe that the sound on all hp
-laptops is run through some sort of software to communicate with hardware
-switches since in linux the hotkeys for muting do work but the lights do
-not respond accordingly (in windows there is a short delay before they
-change). The sound in windows does also sound much better because of all
-the mixer options and the boosted volume.
+Some noise, just like "weeeeee", produced when playing a sound files or
+music files.
+No exception. It always produced.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-06 06:59 linux2         New Issue                                    
+07-18-06 07:12 michaeleekk    New Issue                                    
+07-18-06 07:12 michaeleekk    Kernel Version            => 2.6.17-1.2145_FC5
 ======================================================================
 
 
