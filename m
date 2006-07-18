@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000578]: No soundcard detected on
-	Chaintech 9CJS
-Date: Tue, 18 Jul 2006 11:58:52 +0200
-Message-ID: <fca679665c878cbe30a26696ba63ba2f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001357]: Add a Capture setting
+Date: Tue, 18 Jul 2006 11:59:53 +0200
+Message-ID: <0004a4183d5b6d20355e3d934cf058ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85E86219
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A682F21A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 11:58:52 +0200 (MEST)
+	Tue, 18 Jul 2006 11:59:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,75 +23,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1357> 
 ======================================================================
-Reported By:                tarsi
+Reported By:                Electro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   578
+Issue ID:                   1357
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               mandrake linux 10.1
-Kernel Version:             2.6.8.1-10mdksmp
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.12-gentoo-r6
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-11-2004 12:58 CEST
-Last Modified:              07-18-2006 11:58 CEST
+Date Submitted:             08-22-2005 09:37 CEST
+Last Modified:              07-18-2006 11:59 CEST
 ======================================================================
-Summary:                     No soundcard detected on Chaintech 9CJS
+Summary:                    Add a Capture setting
 Description: 
- cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
-
-/etc/init.d/alsaconf found ice1724 card, but exiting gives:
-.... 
-
-/usr/sbin/alsactl: save_state:1066: No soundcards found...
-
+In order to record with an Audiotrak Prodigy 7.1 (snd-1724), I have to
+first set the IGAIN setting using aumix. Also I have to use aumix to set
+what input I want to capture from. Then I can record with any program. I
+would like to a way to set what input to be use for capture and a setting
+for the capture level accessible through alsamixer, so it can be changed,
+stored, restored. I could use aumix to load the save settings but
+sometimes it screws up and only the left channel is recorded.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 18:15 
+ tiwai - 08-23-05 16:53 
 ----------------------------------------------------------------------
-The noise problem might have been fixed recently.  Try 1.0.9rc2.
-
-The latest ice1724 driver already has an entry for Chaintech 9CJS.  So,
-please make sure that the driver does _NOT_ work with the latest ALSA.
-
-If the model=k8x800 works, it's simple to fix.  Please show the output of
-lspci -nv.
-
-----------------------------------------------------------------------
- tiwai - 06-15-05 15:30 
-----------------------------------------------------------------------
-Ping.  Any answer?
+Everything you can do through OSS mixer can be done via alsamixer, too.
+You must have missed something in alsamixer (e.g. didn't change the view
+mode).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-11-04 12:58 tarsi          New Issue                                    
-10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
-    
-10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
-10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
-10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
-10-11-04 15:59 tiwai          Note Added: 0002081                          
-04-09-05 16:09 jdthood        Note Added: 0004407                          
-04-14-05 12:53 tarsi          Note Added: 0004491                          
-04-14-05 22:00 jdthood        Note Added: 0004496                          
-04-14-05 22:00 jdthood        Severity                 block => major      
-04-14-05 22:00 jdthood        Status                   new => acknowledged 
-04-14-05 22:00 jdthood        Additional Information Updated                    
-04-19-05 18:15 tiwai          Note Added: 0004533                          
-06-15-05 15:30 tiwai          Note Added: 0005034                          
-07-18-06 11:58 Adrian Bunk    Status                   acknowledged => resolved
-07-18-06 11:58 Adrian Bunk    Resolution               open => fixed       
+08-22-05 09:37 Electro        New Issue                                    
+08-22-05 09:37 Electro        Distribution              => Gentoo          
+08-22-05 09:37 Electro        Kernel Version            => 2.6.12-gentoo-r6
+08-23-05 16:53 tiwai          Note Added: 0005911                          
+07-18-06 11:59 Adrian Bunk    Status                   new => closed       
+07-18-06 11:59 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
