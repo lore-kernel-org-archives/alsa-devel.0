@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Tue, 18 Jul 2006 03:23:12 +0200
-Message-ID: <a9345b98f1ae3d1c314522177789dcad@bugtrack.alsa-project.org>
+Date: Tue, 18 Jul 2006 05:54:40 +0200
+Message-ID: <8fab2eeb29c67bd6c8bcf17266af4725@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 865601A7
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 529F2132
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 03:23:12 +0200 (MEST)
+	Tue, 18 Jul 2006 05:54:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-18-2006 03:23 CEST
+Last Modified:              07-18-2006 05:54 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,19 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 07-17-06 20:49 
-----------------------------------------------------------------------
-Ok I'm back ;)
-
-Uhm probably a stupid question but how do I integrate alsa manually?
-I need the libs (libasound2 and the kernel stuff) for testing this,
-right?
-But how do I remove the alsa stuff already in the vanialla kernel? Is
-there any step by step guide how to use alsa sources from cvs?
-
-Thx ;)
-
-----------------------------------------------------------------------
  calestyo - 07-18-06 03:23 
 ----------------------------------------------------------------------
 Ok,. I think I managed it to compile the whole stuff from cvs....
@@ -181,6 +168,23 @@ autotools problems as far as I can see with po/Makefile.in.in ...
 
 Any other things that I could help you with?
 
+----------------------------------------------------------------------
+ Raymond - 07-18-06 05:54 
+----------------------------------------------------------------------
+1.0.11 is too old, you need to use HG repo instead of CVS
+
+aplay: device_list:231: control open (0): No such file or directory
+
+alsa-lib cannot find Aureon71Univ.conf, why the error message does not
+show the filename ?
+
+Change 'Aureon71Universe cards.Aureon71' to 'Aureon71Univ cards.Aureon71'
+to instruct alsa-lib to use Aureon71.conf
+
+
+The hardware does not support S16_LE, you need to use 'plug:surround??'
+instead of 'surround??'
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -213,6 +217,8 @@ Date Modified  Username       Field                    Change
 07-03-06 19:37 rlrevell       Note Added: 0010804                          
 07-17-06 20:49 calestyo       Note Added: 0011049                          
 07-18-06 03:23 calestyo       Note Added: 0011051                          
+07-18-06 03:23 calestyo       Note Deleted: 0011049                        
+07-18-06 05:54 Raymond        Note Added: 0011052                          
 ======================================================================
 
 
