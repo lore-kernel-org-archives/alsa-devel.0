@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002197]: Kernel Oops playing on
-	M-Audio Revolution 5.1
-Date: Tue, 18 Jul 2006 13:59:48 +0200
-Message-ID: <e9f5ed91b6ffbe49d9929a190b5db084@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002220]: emu10k1 crash on PCI hotplug
+Date: Tue, 18 Jul 2006 14:13:46 +0200
+Message-ID: <df4022942eb95ed18a2cc369ed505864@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A159224
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7D7465
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 13:59:48 +0200 (MEST)
+	Tue, 18 Jul 2006 14:13:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,94 +23,128 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2220> 
 ======================================================================
-Reported By:                admeralthrawn
-Assigned To:                
+Reported By:                fizban
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2197
-Category:                   PCI - ice1724
+Issue ID:                   2220
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.16 with gentoo patchset (r9)
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2006 04:43 CEST
-Last Modified:              07-18-2006 13:59 CEST
+Date Submitted:             06-19-2006 02:03 CEST
+Last Modified:              07-18-2006 14:13 CEST
 ======================================================================
-Summary:                    Kernel Oops playing on M-Audio Revolution 5.1
+Summary:                    emu10k1 crash on PCI hotplug
 Description: 
-First time I play sound I get a kernel oops.  dmesg output:
+With the new docking support in 2.6.17, my laptop's docking station is now
+hotplugabble, and thus so is the SB 512 PCI in it. However, while
+undocking the system seems to work correctly, docking it again causes the
+following Oops:
 
-Unable to handle kernel NULL pointer dereference at 00000000000000b0 RIP:
-<ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29}
-PGD 793cf067 PUD 793ce067 PMD 0
-Oops: 0002 [1] SMP
-CPU 1
-Modules linked in: nvidia smbfs snd_seq snd_pcm_oss snd_mixer_oss
-snd_ice1724 snd_ice17xx_ak4xxx snd_ac97_codec snd_ac97_bus snd_ak4114
-snd_pcm snd_timer snd_page_alloc snd_ak4xxx_adda snd_mpu401_uart
-snd_rawmidi snd_seq_device snd soundcore ntfs i2c_nforce2 i2c_core
-Pid: 5502, comm: aplay Tainted: P      2.6.16-gentoo-r9 #4
-RIP: 0010:[<ffffffff880a0c6d>]
-<ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29}
-RSP: 0018:ffff81007854fd68  EFLAGS: 00010246
-RAX: ffffffff880ae940 RBX: ffff81007e69c400 RCX: 0000000000000003
-RDX: 0000000000000000 RSI: ffff8100793c6390 RDI: ffff81007e69c400
-RBP: ffff810079b0f400 R08: 00000000000f4240 R09: 0000000000000011
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff81007e69c600 R14: ffff81007c7b8980 R15: 0000000000000000
-FS:  00002b1f2882b1c0(0000) GS:ffff810002f65b40(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000b0 CR3: 0000000079b1a000 CR4: 00000000000006e0
-Process aplay (pid: 5502, threadinfo ffff81007854e000, task
-ffff81007fe982c0)
-Stack: 0000000000000000 ffff81007a0feae0 ffff81007e69c788
-ffffffff8806a8e1
-       ffff81007e69c7a8 ffff81007e69c400 ffff810000000000
-ffff81007fe982c0
-       ffffffff80128c20 ffff81007e69c7b0
-Call Trace: <ffffffff8806a8e1>{:snd_pcm:snd_pcm_open+353}
-       <ffffffff80128c20>{default_wake_function+0}
-<ffffffff8803c1eb>{:snd:snd_open+283}
-       <ffffffff80180259>{chrdev_open+393}
-<ffffffff801800d0>{chrdev_open+0}
-       <ffffffff801763dc>{__dentry_open+236}
-<ffffffff80176522>{nameidata_to_filp+34}
-       <ffffffff8017656a>{do_filp_open+42}
-<ffffffff8017670e>{get_unused_fd+110}
-       <ffffffff8017691a>{do_sys_open+90}
-<ffffffff8010ad86>{system_call+126}
+EIP is at snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1]
+eax: 00000000   ebx: c8194000   ecx: 00000000   edx: 00000019
+esi: 00000019   edi: 00000000   ebp: 00000000   esp: cfae1c50
+ds: 007b   es: 007b   ss: 0068
+Process kacpid_notify (pid: 11271, threadinfo=cfae1000 task=cfbd6540)
+Stack: d087b7b4 c8194000 00000000 00000000 00000000 d14f05b0 0000ff00
+cf6e3c00 
+       c8194000 d150a31e 00000286 cf6e3c00 00000286 cee77400 cf2f4800
+d150b30c 
+       cf6e3c00 00000286 d150a06e cee77494 cdef8000 d14f0120 d14f0c2a
+cf6e3c00 
+Call Trace:
+ <d14f05b0> free_voice+0x23/0x83 [snd_emu10k1_synth]  <d150a31e>
+snd_emux_terminate_all+0x3b/0x6c [snd_emux_synth]
+ <d150b30c> snd_emux_detach_seq+0xf/0x3b [snd_emux_synth]  <d150a06e>
+snd_emux_free+0x42/0x74 [snd_emux_synth]
+ <d14f0120> snd_emu10k1_synth_new_device+0xf3/0x127 [snd_emu10k1_synth] 
+<d112e0e9> init_device+0x4d/0x82 [snd_seq_device]
+ <d112e28e> find_driver+0xe9/0xf1 [snd_seq_device]  <d112e3a3>
+snd_seq_device_dev_register+0x29/0x35 [snd_seq_device]
+ <d113cbc0> snd_device_register_all+0x20/0x42 [snd]  <d113979f>
+snd_card_register+0xe/0x21b [snd]
+ <d087a5ed> snd_hwdep_new+0xa3/0xb1 [snd_hwdep]  <d150bdef>
+snd_emux_init_hwdep+0x8f/0x9e [snd_emux_synth]
+ <d150a161> snd_emux_register+0xc1/0x10a [snd_emux_synth]  <d150a000>
+sf_sample_new+0x0/0x1e [snd_emux_synth]
+ <d150a01e> sf_sample_free+0x0/0x8 [snd_emux_synth]  <d14f0113>
+snd_emu10k1_synth_new_device+0xe6/0x127 [snd_emu10k1_synth]
+ <d112e0e9> init_device+0x4d/0x82 [snd_seq_device]  <d112e28e>
+find_driver+0xe9/0xf1 [snd_seq_device]
+ <d112e3a3> snd_seq_device_dev_register+0x29/0x35 [snd_seq_device] 
+<d113cbc0> snd_device_register_all+0x20/0x42 [snd]
+ <d113979f> snd_card_register+0xe/0x21b [snd]  <d11723a4>
+snd_card_emu10k1_probe+0x2fd/0x324 [snd_emu10k1]
+ <c01dba41> pci_device_probe+0x36/0x57  <c02281f1>
+driver_probe_device+0x45/0x9a
+ <c02abc70> klist_next+0x2d/0x36  <c0228246> __device_attach+0x0/0x5
+ <c0227c1a> bus_for_each_drv+0x32/0x58  <c0228296>
+device_attach+0x4b/0x5b
+ <c0228246> __device_attach+0x0/0x5  <c0227b42> bus_add_device+0x27/0xcd
+ <c02270ef> device_add+0xcc/0x12d  <c01d8a32> pci_bus_add_device+0xb/0x30
+ <c01d8a6c> pci_bus_add_devices+0x15/0x93  <c01d8aba>
+pci_bus_add_devices+0x63/0x93
+ <c01dfdfd> acpiphp_enable_slot+0x2f1/0x3d0  <c02061e0>
+acpi_ut_update_ref_count+0x4b/0xa0
+ <c01dfffd> handle_hotplug_event_func+0x6f/0x12f  <c01fc1b5>
+acpi_ex_exit_interpreter+0xa/0x2f
+ <c01f0b54> acpi_evaluate_integer+0x98/0xa2  <c01dff8e>
+handle_hotplug_event_func+0x0/0x12f
+ <c0209e73> hotplug_dock_devices+0x21/0x79  <c01f0359>
+acpi_os_execute_thread+0x0/0x1a
+ <c0209f7b> dock_notify+0x7b/0x15d  <c0207fc8> acpi_bus_notify+0x17/0x46
+ <c01f574a> acpi_ev_notify_dispatch+0x49/0x52  <c01f0365>
+acpi_os_execute_thread+0xc/0x1a
+ <c0124166> kthread+0x91/0xbd  <c01240d5> kthread+0x0/0xbd
+ <c0101005> kernel_thread_helper+0x5/0xb 
+Code: e0 21 c2 d3 ea eb 11 9c 59 fa 8b 57 04 89 d8 ef 83 c2 04 ed 89 c2 51
+9d 59 89 d0 5b 5e 5f 5d c3 55 89 c5 57 56 89 d6 53 83 ec 04 <83> 78 10 01
+8b 7c 24 18 19 c0 83 e1 3f 25 00 00 00 f8 05 00 00 
+EIP: [<d1177739>] snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1] SS:ESP
+0068:cfae1c50
 
-Code: 49 89 bc 24 b0 00 00 00 48 8b 05 44 dd 00 00 48 89 85 68 01
-RIP <ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29} RSP
-<ffff81007854fd68>
-CR2: 00000000000000b0 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-09-06 05:17 
+ tiwai - 06-29-06 18:21 
 ----------------------------------------------------------------------
-Please reproduce with an untainted kernel (aka without nvidia loaded)
+This is hard to fix.  The driver accesses io to turn off the voices
+properly at removing while there is no real hardware to access.
+If it's USB, we have disconnect callback.  But for PCI, there is no
+difference from remove and disconnect.
+
+----------------------------------------------------------------------
+ fizban - 07-16-06 04:46 
+----------------------------------------------------------------------
+I don't think that's the problem: the attached patch keeps it from crashing
+(and the crash is on _redocking_, anyways, not the inital removal). But
+this patch isn't a real fix, since it unregisters the snd-emu10k1-synth
+driver entirely, forcing an un/reload cycle of snd-emu10k1-synth.ko to get
+back MIDI. Nonetheless, I think this demonstrates that the problem is
+simply that somehow the synth is not being fully deleted in the PCI
+->remove() callback. I simply lack the ALSA-foo to trace through all the
+windy code paths that are supposed to end up deleting the seqencer parts
+along with the card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 04:43 admeralthrawn  New Issue                                    
-06-09-06 04:43 admeralthrawn  Distribution              => Gentoo          
-06-09-06 04:43 admeralthrawn  Kernel Version            => 2.6.16 with gentoo
-patchset (r9)
-06-09-06 05:17 rlrevell       Note Added: 0010131                          
-07-18-06 13:59 Adrian Bunk    Status                   new => closed       
-07-18-06 13:59 Adrian Bunk    Resolution               open => not an issue
+06-19-06 02:03 fizban         New Issue                                    
+06-29-06 18:21 tiwai          Note Added: 0010685                          
+07-16-06 04:40 fizban         File Added: emu10k1-not-a-real-fix.diff           
+        
+07-16-06 04:46 fizban         Note Added: 0011028                          
+07-18-06 14:13 jcdutton       Status                   new => assigned     
+07-18-06 14:13 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
