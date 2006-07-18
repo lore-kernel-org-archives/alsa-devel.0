@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000394]: Master/PCM don't control
-	optical-spdif out
-Date: Tue, 18 Jul 2006 20:23:00 +0200
-Message-ID: <bab2d9b603a7929d07b42ae7e2202fa4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000402]: No Wavetable-MIDI with
+	snd-emu10k1 compiled static in kernel
+Date: Tue, 18 Jul 2006 20:25:52 +0200
+Message-ID: <9c1fcefe7287ef530dea79228a43a541@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49BAB199
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89AB71A7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 20:23:00 +0200 (MEST)
+	Tue, 18 Jul 2006 20:25:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,84 +26,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=394> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=402> 
 ======================================================================
-Reported By:                msc
-Assigned To:                
+Reported By:                frankpoole
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   394
+Issue ID:                   402
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               debian/unstable
+Distribution:               
 Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-16-2004 16:12 CEST
-Last Modified:              07-18-2006 20:22 CEST
+Date Submitted:             07-21-2004 21:13 CEST
+Last Modified:              07-18-2006 20:25 CEST
 ======================================================================
-Summary:                    Master/PCM don't control optical-spdif out
+Summary:                    No Wavetable-MIDI with snd-emu10k1 compiled static
+in kernel
 Description: 
-I can't control volume/mute with master/pcm mixer controls for spdif
-out.(analog out works fine)
-Only Wave Playback change volume.
-
+ALSA does not detect the Wavetable capabilities of the card (tested on SB
+Live 5.1 and Audigy2) when loading snd-emu10k1-synth with snd-emu10k1
+built inside the kernel. I'm forced to build everything as modules to get
+it working.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-30-04 17:41 
-----------------------------------------------------------------------
-Master and PCM are the volume controls for AC97 codec, so they
-are really independent from SPDIF.
-
-----------------------------------------------------------------------
- pzad - 08-02-04 09:56 
-----------------------------------------------------------------------
-Problem is, that there isn't any control on SB Live which control spdif
-volume.
-If I have this card ....
-
-----------------------------------------------------------------------
- msc - 08-02-04 10:39 
-----------------------------------------------------------------------
-perhaps i can help you with this problem?
-i'm a programmer too and if it's possible we can try to find together this
-problem.
-
-i think the routing to/from the dsp should be the problem?
-i'm not really familiar with soundcard programming, but perhaps you can
-explain the minimal neccessary stuff to use/tweak some test code.
-
-can you make a small code snipplet for testing some (dsp?) code which
-change routing to/from dsp (loopback to ac97 or something like this)?
-
-----------------------------------------------------------------------
- pzad - 08-06-04 14:51 
-----------------------------------------------------------------------
-I hope, new week I will release new version of ld10k1 and there will be GUI
-part too. Still limited (there is not save and load of whole DSP config),
-but you will by able to setup your own mixer (which can contain volume
-control for spdif out too) and than save DSP dump to file and load this
-dump at any time (for example at boot).
-
-Then only problem will by master volume, because you need control analog
-volume and digital volume at same time. This will be solved later.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-04 16:12 msc            New Issue                                    
-07-16-04 16:12 msc            Distribution              => debian/unstable 
-07-16-04 16:12 msc            Kernel Version            => 2.6.7           
-07-16-04 16:13 msc            Issue Monitored: msc                         
-07-30-04 17:41 tiwai          Note Added: 0001503                          
-08-02-04 09:56 pzad           Note Added: 0001518                          
-08-02-04 10:39 msc            Note Added: 0001519                          
-08-06-04 14:51 pzad           Note Added: 0001539                          
-01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
-07-18-06 20:22 pzad           Assigned To              pzad =>             
+07-21-04 21:13 frankpoole     New Issue                                    
+07-21-04 21:13 frankpoole     Kernel Version            => 2.6.7           
+07-21-04 21:17 frankpoole     Note Added: 0001464                          
+07-21-04 21:18 frankpoole     Note Deleted: 0001464                        
+07-21-04 21:19 frankpoole     Issue Monitored: frankpoole                    
+03-29-06 17:40 perex          Note Added: 0008993                          
+03-29-06 17:40 perex          Note Deleted: 0008993                        
+07-18-06 20:20 pzad           Assigned To              pzad =>             
+07-18-06 20:25 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
