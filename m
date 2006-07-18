@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002289]: Wrong channel description for
-	Macbook Pro soundcard
-Date: Tue, 18 Jul 2006 06:19:32 +0200
-Message-ID: <a486aa6567a5864525fb4d647f876097@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002290]: Bad support for intel-hda
+	mixer. Only get options for master and pcm. volume doesn't
+	get that loud. card special features lost
+Date: Tue, 18 Jul 2006 06:59:04 +0200
+Message-ID: <db5544043b66131fafb8a8c82f0346b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3335B22F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3195422F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 06:19:33 +0200 (MEST)
+	Tue, 18 Jul 2006 06:59:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,55 +27,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2289> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2290> 
 ======================================================================
-Reported By:                rbultje
+Reported By:                linux2
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2289
+Issue ID:                   2290
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper 6.06
-Kernel Version:             2.6.15
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-18-2006 06:19 CEST
-Last Modified:              07-18-2006 06:19 CEST
+Date Submitted:             07-18-2006 06:59 CEST
+Last Modified:              07-18-2006 06:59 CEST
 ======================================================================
-Summary:                    Wrong channel description for Macbook Pro soundcard
+Summary:                    Bad support for intel-hda mixer. Only get options
+for master and pcm. volume doesn't get that loud. card special features lost
 Description: 
-Hi,
-
-some of the mixer channels in gnom-volume-control are:
-* surround
-* lfe
-* center
-* front
-
-The first one controls the volume of the speakers, and the rest appears
-dysfunctional (there is no connection on the laptop to do anything with
-any of it). I'm assuming those chip controls are unconnected. Either way,
-the channel name is confusing and may lead people to believe that their
-laptop is broken, whereas really, just an unsuspected channel is muted.
-
-Would it be possible to (for spec->board_config = STAC_MACMINI):
-- omit lfe, front and center
-- rename surround to speakers?
-
-I tried making a patch myself but it had odd effects (no sound at all,
-sound coming out of the mic jack) so I probably did something wrong or
-misunderstand the code.
+Now just to make a comparison. In windows this laptop gets very loud even
+at a low volume. this is done through other mixer options not availible
+yet in ALSA. Also previous versions of ALSA do not have support for this
+card in my laptop (its an hpdv5000t). I believe that the sound on all hp
+laptops is run through some sort of software to communicate with hardware
+switches since in linux the hotkeys for muting do work but the lights do
+not respond accordingly (in windows there is a short delay before they
+change). The sound in windows does also sound much better because of all
+the mixer options and the boosted volume.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-06 06:19 rbultje        New Issue                                    
-07-18-06 06:19 rbultje        Distribution              => Ubuntu Dapper 6.06
-07-18-06 06:19 rbultje        Kernel Version            => 2.6.15          
+07-18-06 06:59 linux2         New Issue                                    
 ======================================================================
 
 
