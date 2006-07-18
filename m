@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Tue, 18 Jul 2006 17:35:53 +0200
-Message-ID: <686f3b7c5b56d3e5265e3843eec5ab8c@bugtrack.alsa-project.org>
+Date: Tue, 18 Jul 2006 18:03:53 +0200
+Message-ID: <640cbfee91d5269874d219b0e67406c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74E7C18C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16D41236
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 17:35:53 +0200 (MEST)
+	Tue, 18 Jul 2006 18:03:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-18-2006 17:35 CEST
+Last Modified:              07-18-2006 18:03 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,31 +108,35 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 07-18-06 14:34 
-----------------------------------------------------------------------
-All of these result in the same error:
-
-
-$ speaker-test -Dplughw:0,2,2 -c 2 -t wav
-
-speaker-test 1.0.11
-
-Playback device is plughw:0,2,2
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-ALSA lib pcm.c:2143:(snd_pcm_open_noupdate) Unknown PCM plughw:0,2,2
-Playback open error: -2,No such file or directory
-ALSA lib pcm.c:2143:(snd_pcm_open_noupdate) Unknown PCM plughw:0,2,2
-Playback open error: -2,No such file or directory
-
-----------------------------------------------------------------------
- Raymond - 07-18-06 17:35 
+ Raymond - 07-18-06 17:39 
 ----------------------------------------------------------------------
 Post the output again
 
 cat /proc/asound/cards
 
 cat /proc/asound/pcm
+
+
+Do you have any customised .asoundrc ?
+
+
+
+----------------------------------------------------------------------
+ calestyo - 07-18-06 18:03 
+----------------------------------------------------------------------
+I don't have any .asoundrc or /etc/asound.conf.
+
+# cat /proc/asound/cards
+ 0 [T71Universe    ]: Aureon71Univ - Terratec Aureon 7.1-Universe
+                      Terratec Aureon 7.1-Universe at 0x3880, irq 74
+
+# cat /proc/asound/pcm
+00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
+00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1 : capture 1
+00-00: ICE1724 : ICE1724 : playback 1 : capture 1
+
+(I compiled without drivers for my other soundcards, but that shouldn't
+matter...)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,6 +178,8 @@ Date Modified  Username       Field                    Change
 07-18-06 14:25 Raymond        Note Edited: 0011058                         
 07-18-06 14:34 calestyo       Note Added: 0011059                          
 07-18-06 17:35 Raymond        Note Added: 0011067                          
+07-18-06 17:39 Raymond        Note Edited: 0011067                         
+07-18-06 18:03 calestyo       Note Added: 0011068                          
 ======================================================================
 
 
