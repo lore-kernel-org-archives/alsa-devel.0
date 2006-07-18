@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2
-	ZS: No capture control
-Date: Tue, 18 Jul 2006 14:43:42 +0200
-Message-ID: <a50c38338be317cc97cd3f9543482376@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on
+	SBLive! 5.1
+Date: Tue, 18 Jul 2006 14:44:01 +0200
+Message-ID: <c7fb07826d00ef3ad22260f256bd89bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39298176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 904AD176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:43:42 +0200 (MEST)
+	Tue, 18 Jul 2006 14:44:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,102 +26,88 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
 ======================================================================
-Reported By:                phineas
+Reported By:                ripps818
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1365
+Issue ID:                   1504
 Category:                   PCI - emu10k1
-Reproducibility:            always
+Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian testing (etch)
-Kernel Version:             2.6.12.4 vanilla
+Distribution:               
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             08-24-2005 09:22 CEST
+Date Submitted:             10-25-2005 23:58 CEST
 Last Modified:              07-18-2006 14:43 CEST
 ======================================================================
-Summary:                    Dell/Creative Labs Audigy 2 ZS: No capture control
+Summary:                    Swap Front/Rear Output on SBLive! 5.1
 Description: 
-Unless this is a user overlooking a step...
-
-There is no mute control on the "Master" item (or most other items for
-that matter).
-More importantly, the capture items do not have a capture control; they
-have level adjustments, but one cannot actually select an item for
-capturing.
-It appears that this Dell-supplied device (with Audigy subsytem 1003) is
-generally unknown to the drivers -- but it does work well for sound
-playback.
-
+I want to know if it's possible to make my rear output my primary master
+output for my soundcard. I use KxDriver in Windows and I want to be able
+to keep my setup working in linux as well. I don't too much about
+programming and the driver's archetecture, but it seems like it wouldn't
+be too complicated to fix.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-25-05 17:11 
+ mikma - 10-31-05 01:27 
 ----------------------------------------------------------------------
-All controls implemented in DSP don't have mute. No one implemented them.
+It's easy to swap the front and rear pcm channels, but Line-in, CD etc will
+still be routed to the front output, unless you change the DSP programming
+by modifing the emu10k1 driver or using ld10k1.
 
-Capture problem is related to your card not detected correctly.
-You can try add this to CVS version of alsa to file
-alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
-emu_chip_details[]
+Add the following to your ~/.asoundrc :
+#Swap front<->rear pcm channels
+pcm.!front {
+	type plug
+	slave.pcm "cards.pcm.rear"
+}
 
-{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
-	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 .ca0151_chip = 1,
-	 .spk71 = 1,
-	 .spdif_bug = 1,
-	 .ac97_chip = 1}
+pcm.!rear {
+	type plug
+	slave.pcm "cards.pcm.front"
+}
 
-Then if your card is detected correctly look at
-http://alsa.opensrc.org/emu10k1
-7. How to record on Audigy and Audigy 2
+/Mikael
 
-----------------------------------------------------------------------
- phineas - 08-26-05 22:04 
-----------------------------------------------------------------------
-Okay, I was unable to compile alsa from cvs, so I applied the patch
-(without the .id field) to the alsa sources included with vanilla kernel
-2.6.12.4.  Everything seems to work now.  Do you need me to try it again
-with cvs for admission in a future release?
+
 
 ----------------------------------------------------------------------
- phineas - 12-14-05 23:03 
+ ripps818 - 10-31-05 04:45 
 ----------------------------------------------------------------------
-The code segment posted by pzad works as provided with alsa included with
-debian kernel 2.6.14.
+will that allow "Master" to control my sound now?
 
-Could someone apply the definition posted by pzad as a patch to CVS?
+----------------------------------------------------------------------
+ rlrevell - 10-31-05 07:56 
+----------------------------------------------------------------------
+No, why would it?  Master controls the front speakers.  That's a completely
+separate issue.
+
+----------------------------------------------------------------------
+ ripps818 - 10-31-05 21:10 
+----------------------------------------------------------------------
+How about ld10k1 that mikma mentioned. Is there anywhere where I can get
+some more information on it? I've looked, and I haven't found alot of
+helpful information on it.
 
 
-$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
-08:13:09 2005 UTC).
-
-$ cat /proc/asound/cards   
-0 [Audigy2        ]: Audigy2 - Audigy 2 ZS [SB0353]
-                     Audigy 2 ZS [SB0353] (rev.4, serial:0x10031102) at
-0xccc0, irq 17
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 09:22 phineas        New Issue                                    
-08-24-05 09:22 phineas        File Added: vegan.state                      
-08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
-08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
-08-24-05 20:58 phineas        Issue Monitored: phineas                     
-08-25-05 17:11 pzad           Note Added: 0005941                          
-08-26-05 22:04 phineas        Note Added: 0005958                          
-09-17-05 18:54 jdthood        Summary                  Dell/Creative Labs Audigy
-2 ZS mixer controls => Dell/Creative Labs Audigy 2 ZS: No capture control
-12-14-05 23:03 phineas        Note Added: 0007043                          
+10-25-05 23:58 ripps818       New Issue                                    
+10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
+10-25-05 23:58 ripps818       Issue Monitored: ripps818                    
+10-31-05 01:26 mikma          Note Added: 0006579                          
+10-31-05 01:27 mikma          Note Edited: 0006579                         
+10-31-05 04:45 ripps818       Note Added: 0006581                          
+10-31-05 07:56 rlrevell       Note Added: 0006585                          
+10-31-05 21:09 ripps818       Note Added: 0006590                          
+10-31-05 21:10 ripps818       Note Edited: 0006590                         
 07-18-06 14:43 jcdutton       Status                   new => assigned     
 07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
 ======================================================================
