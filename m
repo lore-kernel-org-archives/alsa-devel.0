@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001693]: Alsaconf (iguration) failed :
-	snd_ctl_open error: Invalid argument
-Date: Tue, 18 Jul 2006 14:43:03 +0200
-Message-ID: <20cca5ef7806b1ae549089571f0e1395@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001661]: alsaconf gets everything
+	working but mic input doesn't work after a reboot
+Date: Tue, 18 Jul 2006 14:43:20 +0200
+Message-ID: <2bf21f401089577446722cc5f1f79ac0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D6C8176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CC26176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:43:03 +0200 (MEST)
+	Tue, 18 Jul 2006 14:43:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,78 +26,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1693> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
 ======================================================================
-Reported By:                Smat
+Reported By:                amarsh04
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1693
+Issue ID:                   1661
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.8-11-amd64-k8
+Distribution:               Debian
+Kernel Version:             2.6.14.2-686
 ======================================================================
-Date Submitted:             12-29-2005 16:20 CET
+Date Submitted:             12-20-2005 03:16 CET
 Last Modified:              07-18-2006 14:43 CEST
 ======================================================================
-Summary:                    Alsaconf (iguration) failed : snd_ctl_open error:
-Invalid argument
+Summary:                    alsaconf gets everything working but mic input
+doesn't work after a reboot
 Description: 
-I have a Soundblaster live!
-alsa-base and alsa-utils installed
-1)launchin alsaconf:
-Unloading ALSA sound driver modules: snd-emu10k1 snd-rawmidi snd-pcm-oss
-snd-mixer-oss snd-pcm snd-timer snd-seq-device snd-ac97-codec
-snd-page-alloc snd-util-mem snd-hwdep.
-Building card database...
-
-2)i chooose my soundcard emu10k1 Creative Labs SB Live! EMU10k1 (rev 08)
-3)Configuring snd-emu10k1 Do you want to modify /etc/modprobe.d/sound (and
-                  
-  /etc/modprobe.conf if present)?  yes
-
-
-4)
-Running update-modules...
-Architecture-specific modutils configuration not found, using defaults
-Loading driver...
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: get_controls:492: snd_ctl_open error: Invalid argument
-
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!  (but no fun for me!)
-
-no sound reproduced
-I have no solutions
-This happened for the first time after i tried to compile
-alsa-driver-1.0.9rc4a
- (./configure --with-cards=usb-audio --with-sequencer=yes) for my new 
-(not supported i think) edirol PCR-A30 (usb audio interface and midi
-keyboard)
-
-thanks and sorry for bad english
-Matteo
-
+I've finally obtained a SB Live! card that works and alsaconf made
+everything work. However, after a reboot, output still works but not
+microphone input. krecord shows zero input level. Re-running alsaconf
+restores microphone input to a working state.
 ======================================================================
+
+----------------------------------------------------------------------
+ amarsh04 - 12-20-05 12:44 
+----------------------------------------------------------------------
+Some further information: The card has "SoundBlaster Live! 5.1 Digital" and
+"Model SB0220" on it. asfxload doesn't work until alsaconf has been re-run
+after a reboot.
+
+----------------------------------------------------------------------
+ rlrevell - 12-20-05 20:58 
+----------------------------------------------------------------------
+It sounds like a mixer settings problem.  Please provide the output of
+"amixer" for the working and non-working setups.
+
+----------------------------------------------------------------------
+ amarsh04 - 12-21-05 22:23 
+----------------------------------------------------------------------
+I have attached the output of amixer for both the working and the
+non-working cases, and will also attach the output of lsmod for both the
+working and non-working cases.
+
+----------------------------------------------------------------------
+ amarsh04 - 12-26-05 07:49 
+----------------------------------------------------------------------
+After removing ld10k1, and writing a startup script to run asfxload, the SB
+Live! card works fully after reboot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-05 16:20 Smat           New Issue                                    
-12-29-05 16:20 Smat           Distribution              => Debian sarge    
-12-29-05 16:20 Smat           Kernel Version            => 2.6.8-11-amd64-k8
-12-30-05 14:25 Smat           Issue Monitored: Smat                        
-12-30-05 14:25 Smat           Issue End Monitor: Smat                      
+12-20-05 03:16 amarsh04       New Issue                                    
+12-20-05 03:16 amarsh04       Distribution              => Debian          
+12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
+12-20-05 12:44 amarsh04       Note Added: 0007104                          
+12-20-05 20:58 rlrevell       Note Added: 0007105                          
+12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
+12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
+ 
+12-21-05 22:23 amarsh04       Note Added: 0007112                          
+12-21-05 22:24 amarsh04       File Added: lsmodworking.txt                    
+12-21-05 22:25 amarsh04       File Added: lsmodnotworking.txt                   
+
+12-26-05 07:49 amarsh04       Note Added: 0007148                          
 07-18-06 14:43 jcdutton       Status                   new => assigned     
 07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
 ======================================================================
