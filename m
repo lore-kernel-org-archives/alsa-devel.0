@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002220]: emu10k1 crash on PCI hotplug
-Date: Tue, 18 Jul 2006 14:13:46 +0200
-Message-ID: <df4022942eb95ed18a2cc369ed505864@bugtrack.alsa-project.org>
+Date: Tue, 18 Jul 2006 14:15:16 +0200
+Message-ID: <ba4ac3dd0ca7557bfbe17376468de95f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7D7465
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49458162
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:13:46 +0200 (MEST)
+	Tue, 18 Jul 2006 14:15:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2220> 
 ======================================================================
@@ -36,12 +36,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-19-2006 02:03 CEST
-Last Modified:              07-18-2006 14:13 CEST
+Last Modified:              07-18-2006 14:15 CEST
 ======================================================================
 Summary:                    emu10k1 crash on PCI hotplug
 Description: 
@@ -115,14 +115,6 @@ EIP: [<d1177739>] snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1] SS:ESP
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-06 18:21 
-----------------------------------------------------------------------
-This is hard to fix.  The driver accesses io to turn off the voices
-properly at removing while there is no real hardware to access.
-If it's USB, we have disconnect callback.  But for PCI, there is no
-difference from remove and disconnect.
-
-----------------------------------------------------------------------
  fizban - 07-16-06 04:46 
 ----------------------------------------------------------------------
 I don't think that's the problem: the attached patch keeps it from crashing
@@ -135,6 +127,13 @@ simply that somehow the synth is not being fully deleted in the PCI
 windy code paths that are supposed to end up deleting the seqencer parts
 along with the card.
 
+----------------------------------------------------------------------
+ jcdutton - 07-18-06 14:15 
+----------------------------------------------------------------------
+Can you please provide more information regarding the Oops. There should be
+some more lines above the part you posted.
+
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -145,6 +144,8 @@ Date Modified  Username       Field                    Change
 07-16-06 04:46 fizban         Note Added: 0011028                          
 07-18-06 14:13 jcdutton       Status                   new => assigned     
 07-18-06 14:13 jcdutton       Assigned To               => jcdutton        
+07-18-06 14:15 jcdutton       Note Added: 0011055                          
+07-18-06 14:15 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
