@@ -1,16 +1,27 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything
-	working but mic input doesn't work after a reboot
-Date: Tue, 18 Jul 2006 16:17:12 +0200
-Message-ID: <c66e36bc536705657de9ab36a1233fe7@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: question about sampling rate
+Date: Tue, 18 Jul 2006 16:34:23 +0200
+Message-ID: <20060718143423.GB15467@turing.informatik.uni-halle.de>
+References: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
+	<54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
+	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
+	<20060712093749.GA22449@turing.informatik.uni-halle.de>
+	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
+	<20060714173102.GA13816@turing.informatik.uni-halle.de>
+	<7034e7b50607172213mbde1845occ78b95b17914563@mail.gmail.com>
+	<20060718071150.GA11917@turing.informatik.uni-halle.de>
+	<7034e7b50607180021u5605f818v9c5e55edb1023903@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43BC3198
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de
+	[141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1893D19A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 16:17:13 +0200 (MEST)
+	Tue, 18 Jul 2006 16:34:56 +0200 (MEST)
+In-reply-to: <7034e7b50607180021u5605f818v9c5e55edb1023903@mail.gmail.com>
+Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,78 +31,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Grace Baldonasa <gbaldona@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Grace Baldonasa wrote:
+> I am not yet handling the fractional part of frame size, would it be cause
+> of the distorted sound?
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
-======================================================================
-Reported By:                amarsh04
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              07-18-2006 16:17 CEST
-======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
-Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
-======================================================================
+There shouldn't be too much noise in this case.
 
-----------------------------------------------------------------------
- amarsh04 - 07-18-06 15:53 
-----------------------------------------------------------------------
-I am now running ALSA 1.0.11 including compiling source and using those
-modules in kernel 2.6.17 (up-to-date with Debian Unstable) and have not
-noticed this problem in several months.
+> The endpoint says, adaptive synchrnonization,
 
-----------------------------------------------------------------------
- jcdutton - 07-18-06 16:17 
-----------------------------------------------------------------------
-User reports problem solved.
+Then it should be able to handle a frequency that is 0.25% off.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
-12-20-05 12:44 amarsh04       Note Added: 0007104                          
-12-20-05 20:58 rlrevell       Note Added: 0007105                          
-12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
-12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
- 
-12-21-05 22:23 amarsh04       Note Added: 0007112                          
-12-21-05 22:24 amarsh04       File Added: lsmodworking.txt                    
-12-21-05 22:25 amarsh04       File Added: lsmodnotworking.txt                   
+> >How did you set the sample format?  Are there endpoint-specific
+> >controls?
+> 
+> no endpoint specific control is set. sample format is based on the max
+> sampling frequency from the format descriptor.
 
-12-26-05 07:49 amarsh04       Note Added: 0007148                          
-07-18-06 14:43 jcdutton       Status                   new => assigned     
-07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
-07-18-06 15:53 amarsh04       Note Added: 0011062                          
-07-18-06 15:53 amarsh04       Issue Monitored: amarsh04                    
-07-18-06 16:17 jcdutton       Status                   assigned => closed  
-07-18-06 16:17 jcdutton       Note Added: 0011064                          
-======================================================================
+Did you set the altsetting, or how does the device know about the
+current sample format?
 
 
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
