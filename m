@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001286]: SB PCI 512: Rear channels are
-	inverted
-Date: Tue, 18 Jul 2006 14:21:39 +0200
-Message-ID: <c6eab82edba82c19dd4ae6825f941c37@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
+	sound
+Date: Tue, 18 Jul 2006 14:23:44 +0200
+Message-ID: <f46515f4977e18e639901bb0b15aef0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E88F199
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D4B319A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:21:39 +0200 (MEST)
+	Tue, 18 Jul 2006 14:23:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,86 +26,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1286> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
 ======================================================================
-Reported By:                roothorick
+Reported By:                peter_scott
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1286
+Issue ID:                   2107
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111
 ======================================================================
-Date Submitted:             07-28-2005 04:27 CEST
-Last Modified:              07-18-2006 14:21 CEST
+Date Submitted:             05-08-2006 23:36 CEST
+Last Modified:              07-18-2006 14:23 CEST
 ======================================================================
-Summary:                    SB PCI 512: Rear channels are inverted
+Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
-On my SoundBlaster PCI 512 (essentially a cheap SB Live!) the rear channels
-are always inverted, even when using real 4-channel and 6-channel apps
-such as Unreal Tournament 2004 with custom OpenAL. This causes my speaker
-system's subwoofer to not respond correctly when using the front and rear
-channels together in any kind of configuration, unless I manually invert
-the channels before sending them to the soundcard (impossible for ALSA
-apps, as I STILL can't get the LADSPA plug to work and there's no other
-way to simply invert the signal).
+I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
+installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
 
-I also have an nForce 2 onboard chip for which this doesn't happen unless
-I enable the "Duplicate Front" switch. For apps with 4 or more real
-channels, this chip produces an appropriate signal and I get good bass
-from my speaker system (Cambridge SoundWorks FPS1800).
+The already-existing-in-the-kernel emu10k1 sound module provides no sound
+for me (should it?), so I tried downloading and building emu10k1 in the
+alsa-driver and installing it according to the instructions in the
+"INSTALL" file in the source directory.
+
+But (of course?) it did not work.  Well, after all, the emu10k1 is already
+in the FC5 kernel.  Is there any way to get this sound card to work?
+
+I try "system-config-soundcard" (alsaconf is not included in alsa-utils
+for FC5) to test the card.
+
+I was led to believe that Audigy 2 ZS cards generally will work on linux
+systems, but I've also since read others write that not all Audigy 2 ZS
+cards run the same hardware.  It's a PCI card.  I am a little suspicious
+of the "CA0102-ICT" text on the chip.
+
+Any thoughts or predictions would be most welcome.  Maybe it should have a
+"ca0102" driver?
 ======================================================================
 
 ----------------------------------------------------------------------
- roothorick - 07-28-05 04:28 
+ L0cKd0wN - 07-06-06 07:35 
 ----------------------------------------------------------------------
-forgot lspci -v stuffs.
+Im not sure if this is relevant or not, but im using FC5 kernel
+2.6.17-1.2145_FC5 i686 and have lost sound from my Creative Labs Audigy 2
+ZS Platinum card as well.  In earlier kernel builds (the version that was
+shipped on the FC5 dvd) I had sound, but with my recent update, I have
+lost it.
 
-0000:01:08.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
-(rev 08)
-        Subsystem: Creative Labs CT4790 SoundBlaster PCI512
-        Flags: bus master, medium devsel, latency 32, IRQ 17
-        I/O ports at d000 [size=32]
-        Capabilities: [dc] Power Management version 1
 
-0000:01:08.1 Input device controller: Creative Labs SB Live! MIDI/Game
-Port (rev 08)
-        Subsystem: Creative Labs Gameport Joystick
-        Flags: bus master, medium devsel, latency 32
-        I/O ports at d400 [size=8]
-        Capabilities: [dc] Power Management version 1
-
-----------------------------------------------------------------------
- halfgaar - 07-15-06 12:12 
-----------------------------------------------------------------------
-My SBLive has the same behaviour. My SBlive is:
-
-01:07.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-08)
-        Subsystem: Creative Labs CT4832 SBLive! Value
-        Flags: bus master, medium devsel, latency 32, IRQ 20
-        I/O ports at cc00 [size=32]
-        Capabilities: [dc] Power Management version 1
-
-But, the original OSS EMU10k1 docs said that it was the fronts which were
-inverted, not the rear. When you have only 4 channels, it doesn't matter
-much which one you invert back. But when you've got more (I don't know if
-there are emu10k1's who have), the channels are still out of phase.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-28-05 04:27 roothorick     New Issue                                    
-07-28-05 04:28 roothorick     Note Added: 0005576                          
-07-15-06 12:05 halfgaar       Issue Monitored: halfgaar                    
-07-15-06 12:12 halfgaar       Note Added: 0011020                          
-07-18-06 14:21 jcdutton       Status                   new => assigned     
-07-18-06 14:21 jcdutton       Assigned To               => jcdutton        
+05-08-06 23:36 peter_scott    New Issue                                    
+05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
+05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
+07-06-06 07:33 L0cKd0wN       Note Added: 0010854                          
+07-06-06 07:34 L0cKd0wN       Issue Monitored: L0cKd0wN                    
+07-06-06 07:35 L0cKd0wN       Note Edited: 0010854                         
+07-18-06 14:23 jcdutton       Status                   new => assigned     
+07-18-06 14:23 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
