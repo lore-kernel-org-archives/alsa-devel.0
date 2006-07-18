@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001284]: Soundfont notes problem -
-	notes cut off too soon.
-Date: Tue, 18 Jul 2006 14:45:17 +0200
-Message-ID: <a80dfe79b5db02898e770e8965f54953@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001432]: Add switch to use the
+	headphone plug as an independent channel
+Date: Tue, 18 Jul 2006 14:45:04 +0200
+Message-ID: <eee2fd714f0b7594253361f94b243693@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69BBD237
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43A4D1AC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:45:17 +0200 (MEST)
+	Tue, 18 Jul 2006 14:45:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,44 +26,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1284> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1432> 
 ======================================================================
-Reported By:                terminator356
+Reported By:                wraiden
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1284
+Issue ID:                   1432
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.10
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-27-2005 06:36 CEST
+Date Submitted:             09-17-2005 13:17 CEST
 Last Modified:              07-18-2006 14:45 CEST
 ======================================================================
-Summary:                    Soundfont notes problem - notes cut off too soon.
+Summary:                    Add switch to use the headphone plug as an
+independent channel
 Description: 
-Playing a midi keyboard or a file, a note played twice will cut off 
- other notes.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001290 Re: Bug 0001284 + 0001289: Sorry, my fi...
-related to          0001289 I fixed Bug 0001284.  Please reinstate ...
+I request a switch and an extra playback channel for the headphone-plug on
+the emu10k1 driver supported chips.
+It's possible as far as i can see in the source the headphone signal is
+now only an duplicated playback signal.
+I think this wuld be a great feature for any kind of DJ app.
+
+And yes, i plan to write one if nothing other show up in short range.
+
+Thanks in advance.
+
+Marc
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 06:36 terminator356  New Issue                                    
-07-27-05 06:36 terminator356  File Added: drumtrack-test.mid                    
-07-27-05 06:36 terminator356  Distribution              => Mandrake        
-07-27-05 06:36 terminator356  Kernel Version            => 2.6.10          
-08-03-05 11:30 perex          Relationship added       related to 0001290  
-08-03-05 11:31 perex          Relationship added       related to 0001289  
+09-17-05 13:17 wraiden        New Issue                                    
 07-18-06 14:45 jcdutton       Status                   new => assigned     
 07-18-06 14:45 jcdutton       Assigned To               => jcdutton        
 ======================================================================
