@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001855]: no sound with openal
-Date: Tue, 18 Jul 2006 14:39:39 +0200
-Message-ID: <f4604b54f4ed3ed261b130a31df4b320@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001709]: 5.1 doesn't work
+Date: Tue, 18 Jul 2006 14:40:50 +0200
+Message-ID: <69001df1b6ce45984d27a6a91dc3f96e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D2A4176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 243FD176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:39:39 +0200 (MEST)
+	Tue, 18 Jul 2006 14:40:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,102 +25,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1855> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1709> 
 ======================================================================
-Reported By:                eiz
+Reported By:                piezo
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1855
+Issue ID:                   1709
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15.3
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             02-18-2006 20:24 CET
-Last Modified:              07-18-2006 14:39 CEST
+Date Submitted:             01-04-2006 13:50 CET
+Last Modified:              07-18-2006 14:40 CEST
 ======================================================================
-Summary:                    no sound with openal
+Summary:                    5.1 doesn't work
 Description: 
-when forcing ( define devices '(alsa native) ) in .openalrc
-no sound at all and no error 
-tested with openal own demo and ut2004
+I'm new to linux.  I've been googling for a awnser to this problem for a
+week now.  found a few with the same sort of problems but no awnsers.
 
-openal 0.2005080600-2.1 or openal-alsa-emu10k1-1.2
-kernel 2.6.15.3
+I can get sterio sound but not 5.1 surround.  This is very irritating as I
+bought a Audity2 soundcard for the purpose of using it's 5.1 sound
+capability.
 
-cat ~/.asoundrc
-pcm.emu10k1 {
-           type hw
-           card 0
-}
-ctl.emu10k1 {
-           type hw
-           card 0
-}
-
-NOTES : 
-- maybe useful tip : I noticed mmap call seems broken on amd64
-- my surround51 device through spdiff is working very well with 
-  aplay -c 6 -D surround51
-
+initially xine kept telling me that another process was using the PCM
+device.  found how to fix this.  using
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-18-06 20:30 
+ piezo - 01-05-06 00:23 
 ----------------------------------------------------------------------
-should be fixed in 2.6.15.4
+"Sound Blaster Audigy 2 value" pci card
+followed the Alsa setup instructions.
+detected correctly (SB0400)
+
+can only seem to use it in sterio or (with fixes) fake 5.1 (which is
+really sterio duplicated).
 
 ----------------------------------------------------------------------
- eiz - 02-19-06 12:25 
+ rlrevell - 01-05-06 22:02 
 ----------------------------------------------------------------------
-Tested with kernel 2.6.15.4 : this is not fixed yet.
-
-tested with :
- openal 0.2005080600-2.1
- openal 0.0.8
-
-----------------------------------------------------------------------
- pzad - 02-19-06 12:34 
-----------------------------------------------------------------------
-Don't use .asoundrc. Your card doesn't need it and it can cause problems.
-I think openal-alsa-emu10k1-1.2 will not work with newer alsa (needs one
-simple change).
-
-----------------------------------------------------------------------
- Raymond - 03-01-06 08:00 
-----------------------------------------------------------------------
-The iface of the kcontrols had been changed from MIXER to PCM
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=7849852&forum_id=33141
-
-----------------------------------------------------------------------
- Raymond - 03-04-06 10:06 
-----------------------------------------------------------------------
-Does vol_ctl really work without set device ? (Only set
-Interface,name,index)
-
-snd_ctl_elem_value_set_device(src->vol_ctl,
-snd_pcm_info_get_device(info));
+2.6.11 is way too old for such a new device.  Try a newer kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-06 20:24 eiz            New Issue                                    
-02-18-06 20:24 eiz            File Added: openal-demo-strace.txt.gz             
-      
-02-18-06 20:24 eiz            Distribution              => Debian          
-02-18-06 20:24 eiz            Kernel Version            => 2.6.15.3        
-02-18-06 20:30 rlrevell       Note Added: 0008123                          
-02-19-06 12:25 eiz            Note Added: 0008132                          
-02-19-06 12:34 pzad           Note Added: 0008133                          
-03-01-06 08:00 Raymond        Note Added: 0008275                          
-03-04-06 10:06 Raymond        Note Added: 0008346                          
-07-18-06 14:39 jcdutton       Status                   new => assigned     
-07-18-06 14:39 jcdutton       Assigned To               => jcdutton        
+01-04-06 13:50 piezo          New Issue                                    
+01-04-06 13:50 piezo          Distribution              => Fedora Core 4   
+01-04-06 13:50 piezo          Kernel Version            => 2.6.11-1.1369   
+01-05-06 00:23 piezo          Note Added: 0007461                          
+01-05-06 22:02 rlrevell       Note Added: 0007483                          
+07-18-06 14:40 jcdutton       Status                   new => assigned     
+07-18-06 14:40 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
