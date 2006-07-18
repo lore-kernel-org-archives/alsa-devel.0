@@ -1,23 +1,17 @@
-From: "Grace Baldonasa" <gbaldona@gmail.com>
-Subject: Re: question about sampling rate
-Date: Tue, 18 Jul 2006 13:13:23 +0800
-Message-ID: <7034e7b50607172213mbde1845occ78b95b17914563@mail.gmail.com>
-References: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
-	<54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
-	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
-	<20060712093749.GA22449@turing.informatik.uni-halle.de>
-	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
-	<20060714173102.GA13816@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Tue, 18 Jul 2006 07:44:39 +0200
+Message-ID: <a5e0ad182cc0d03b6cb56f193b4b1752@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1364981380=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.178])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7DB522F
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7D541A7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 07:13:24 +0200 (MEST)
-Received: by py-out-1112.google.com with SMTP id c59so1801076pyc
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2006 22:13:23 -0700 (PDT)
-In-Reply-To: <20060714173102.GA13816@turing.informatik.uni-halle.de>
+	Tue, 18 Jul 2006 07:44:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,140 +21,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1364981380==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_25422_25312525.1153199603285"
 
-------=_Part_25422_25312525.1153199603285
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+======================================================================
+Reported By:                cruiseoveride
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-18-2006 07:44 CEST
+======================================================================
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-Hi Clemens,
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-Really appreciate your time answering my question. I have already started my
-streaming and is facing another problem now.
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-Fs = 11025 Hz
-Channel  = 2
-Bit resolution = 8
+If you slash out line 104, it resolves the issue.
 
-so I tried sending my data at (11025/1000) * 2 / ms, I could hear some music
-played but with some noise.
+My question is,
 
-I am using Philips Speaker with MaxPackSize = 56, channel = 2, sampling bits
-=16, so I decided to change my framesize:
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
 
-11025 /1000 * 2 * 16/8 / ms -> 44, this time, I cant understand the music
-out. The endpoint should still be able to handle it since data rate is
-lesser than maxpacksize.
+----------------------------------------------------------------------
+ cruiseoveride - 07-17-06 17:56 
+----------------------------------------------------------------------
+ok cool.
+the level meters function looks like this on the envy24control
+(levelmeters.c)
 
-Do you know what went wrong here? hope to receive your advise.
-thank...
+void level_meters_init(void)
+{
+        snd_ctl_elem_value_malloc(&peaks);
+        snd_ctl_elem_value_set_interface(peaks,
+SND_CTL_ELEM_IFACE_MIXER);
+        snd_ctl_elem_value_set_name(peaks, "Multi Track Peak");
+}
 
-grace
+and the get levels looks like this
 
+static void get_levels(int idx, int *l1, int *l2)
+{
+        *l1 = *l2 = 0;
 
+        if (idx == 0) {
+                *l1 = snd_ctl_elem_value_get_integer(peaks, 20);
+                *l2 = snd_ctl_elem_value_get_integer(peaks, 21);
+        } else {
+                *l1 = *l2 = snd_ctl_elem_value_get_integer(peaks, idx -
+1);
+        }
+}
 
+the 20, and 21 are indexes ? are they the same as numids that amixer
+ouputs if so than these refer to
 
-On 7/15/06, Clemens Ladisch <clemens@ladisch.de> wrote:
->
-> Grace Baldonasa wrote:
-> > After computing the rate, value could be of decimal format,
->
-> In the computer, all values are binary.
->
-> > is it rounded off to either equal or greater than the whole number
-> > itself?
->
-> There is no whole number, it is interpreted as a number with 16 binary
-> fractional digits.
->
-> > subs->freqmax = subs->freqn + (subs->freqn >> 2);
-> > Q: why is subs->freqn shifted by 2
->
-> It's just subs->freqn plus 25 percent, and that is just some random
-> value that should be safe enough for any real sample clock.
->
-> > subs->phase = 0;
-> > /* calculate the max. size of packet */
-> > maxsize = ((subs->freqmax + 0xffff) * (frame_bits >> 3)) >> 16;
-> >
-> > Q: why subs->freqmax is added with 0xffff, then frame_bits is shifted by
-> 3
-> > then the whole thing shifted by 16.
->
-> It's shifted by 16 to throw away the fractional digits; we calculate
-> whole bytes.
-> "frame_bits/8" is the number of bytes per frame.
-> Adding 0xffff ensures that despite the truncation by the final shift,
-> the value is rounded up.
->
->
-> HTH
-> Clemens
->
+numid=20,iface=MIXER,name='DAC Volume'
+numid=21,iface=MIXER,name='DAC Volume',index=1
+[from:ice1712]
 
-------=_Part_25422_25312525.1153199603285
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+how do u seperate the multi track peak, or do i have to parse it.
 
-<div>Hi Clemens,</div>
-<div>&nbsp;</div>
-<div>Really appreciate your time answering my question. I have already started my streaming and is facing another problem now. </div>
-<div>&nbsp;</div>
-<div>Fs = 11025 Hz</div>
-<div>Channel&nbsp; = 2</div>
-<div>Bit resolution = 8</div>
-<div>&nbsp;</div>
-<div>so I tried&nbsp;sending my data at (11025/1000) * 2 / ms, I could hear some music played but with some noise. </div>
-<div>&nbsp;</div>
-<div>I am using Philips Speaker&nbsp;with MaxPackSize = 56, channel = 2, sampling bits =16, so I decided to change my framesize:</div>
-<div>&nbsp;</div>
-<div>11025 /1000 * 2 * 16/8 / ms -&gt; 44, this time, I cant understand the music out. The endpoint should still be able to handle it since data rate is lesser than maxpacksize.</div>
-<div>&nbsp;</div>
-<div>Do you know what went wrong here? hope to receive your advise.</div>
-<div>thank...</div>
-<div>&nbsp;</div>
-<div>grace</div>
-<div>&nbsp;</div>
-<div><br><br>&nbsp;</div>
-<div><span class="gmail_quote">On 7/15/06, <b class="gmail_sendername">Clemens Ladisch</b> &lt;<a href="mailto:clemens@ladisch.de">clemens@ladisch.de</a>&gt; wrote:</span>
-<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">Grace Baldonasa wrote:<br>&gt; After computing the rate, value could be of decimal format,<br><br>In the computer, all values are binary.
-<br><br>&gt; is it rounded off to either equal or greater than the whole number<br>&gt; itself?<br><br>There is no whole number, it is interpreted as a number with 16 binary<br>fractional digits.<br><br>&gt; subs-&gt;freqmax = subs-&gt;freqn + (subs-&gt;freqn &gt;&gt; 2);
-<br>&gt; Q: why is subs-&gt;freqn shifted by 2<br><br>It's just subs-&gt;freqn plus 25 percent, and that is just some random<br>value that should be safe enough for any real sample clock.<br><br>&gt; subs-&gt;phase = 0;<br>
-&gt; /* calculate the max. size of packet */<br>&gt; maxsize = ((subs-&gt;freqmax + 0xffff) * (frame_bits &gt;&gt; 3)) &gt;&gt; 16;<br>&gt;<br>&gt; Q: why subs-&gt;freqmax is added with 0xffff, then frame_bits is shifted by 3
-<br>&gt; then the whole thing shifted by 16.<br><br>It's shifted by 16 to throw away the fractional digits; we calculate<br>whole bytes.<br>&quot;frame_bits/8&quot; is the number of bytes per frame.<br>Adding 0xffff ensures that despite the truncation by the final shift,
-<br>the value is rounded up.<br><br><br>HTH<br>Clemens<br></blockquote></div><br>
+[vikky@server ~]$ amixer -c 2 cget numid=5
+numid=5,iface=MIXER,name='Multi Track Peak'
+  ; type=INTEGER,access=r----,values=22,min=0,max=255,step=0
+  : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+[from:ice1724]
 
-------=_Part_25422_25312525.1153199603285--
+----------------------------------------------------------------------
+ Raymond - 07-18-06 07:44 
+----------------------------------------------------------------------
+The functions list of alsa-lib control interface is hidden in
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___control.html
+
+snd_ctl_elem_value_get_integer(peaks, x) return the value of item 'x' of
+the kcontrol 'peak'
+
+Modify the hardware specific check for 'ICE1712' may let you run the
+envy24control
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+======================================================================
 
 
---===============1364981380==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1364981380==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1364981380==--
