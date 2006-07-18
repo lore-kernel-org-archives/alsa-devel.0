@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001767]: midi port (64:32 'Audigy
-	MPU-401 #2') will not read/record
-Date: Tue, 18 Jul 2006 14:40:25 +0200
-Message-ID: <7c91facf11e44d5fe4eee24a9ba7f1f0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001868]: Audigy4 lacks line-in
+Date: Tue, 18 Jul 2006 14:39:56 +0200
+Message-ID: <d0176ee40ab51d114c0a8bbde07b7fe5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 178CB176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B8DF176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:40:26 +0200 (MEST)
+	Tue, 18 Jul 2006 14:39:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,53 +25,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1767> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1868> 
 ======================================================================
-Reported By:                bscipioni
+Reported By:                wwp
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1767
+Issue ID:                   1868
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Redhat
-Kernel Version:             2.6.12-smp
+Distribution:               Debian unstable
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             01-22-2006 03:23 CET
-Last Modified:              07-18-2006 14:40 CEST
+Date Submitted:             02-22-2006 19:12 CET
+Last Modified:              07-18-2006 14:39 CEST
 ======================================================================
-Summary:                    midi port (64:32 'Audigy MPU-401 #2') will not
-read/record
+Summary:                    Audigy4 lacks line-in
 Description: 
-I have Audigy 2 Platinum.  The Audgiy "drive" midi input is not working. 
-Previously I had been able to both play my midi keyboard and record from
-it using Rosegarden, earlier versions of alsa and RedHat 9.  Now I can
-only play
-the keyboard (midi out 64:32) - record doesn't work.  Taking Rosegarden
-out of the equation, I used both JACK and aconnect to connect 64:32
-directly to 65:0 and I get nothing playing the keyboard.  Soundfonts are
-loaded and working  
-works just fine. So it seems just the 64:32 read port is not working
+I'm not able to get line-in support (un-mute is OK), but PCM out is fine.
+Is that because the emu10k1 sources don't include the card IDs for my
+model?
+Don't know if this would be enough or even right, but here's a patch
+proposal for this card's chip detail (attached to this report)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-22-06 04:44 
+ wwp - 02-22-06 20:26 
 ----------------------------------------------------------------------
-Please use ALSA CVS to do a binary search by date and identify the change
-that broke it.
+Ahum, sorry it's kernel 2.6.15.
+
+----------------------------------------------------------------------
+ pzad - 02-22-06 20:30 
+----------------------------------------------------------------------
+Make sure, you have set "Analog Mix", "Line In", "Front", "Master" volume.
+
+----------------------------------------------------------------------
+ wwp - 02-26-06 12:06 
+----------------------------------------------------------------------
+Okay, line-in is working fine now (issue is [FIXED]).. sorry about that,
+the cable was faulty.
+
+For the record, here is what `cat /proc/asound/cards` shows:
+
+0 [Audigy2        ]: Audigy2 - Audigy 2 Value [Unknown]
+                     Audigy 2 Value [Unknown] (rev.0, serial:0x10211102)
+at 0xd400, irq 12
+1 [UART           ]: MPU-401 UART - MPU-401 UART
+                     MPU-401 UART at 0x330, irq 5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-22-06 03:23 bscipioni      New Issue                                    
-01-22-06 03:23 bscipioni      Distribution              => Redhat          
-01-22-06 03:23 bscipioni      Kernel Version            => 2.6.12-smp      
-01-22-06 04:44 rlrevell       Note Added: 0007743                          
-07-18-06 14:40 jcdutton       Status                   new => assigned     
-07-18-06 14:40 jcdutton       Assigned To               => jcdutton        
+02-22-06 19:12 wwp            New Issue                                    
+02-22-06 19:12 wwp            File Added:
+alsa-driver-1.0.11rc3-audigy4-sb0400.diff                    
+02-22-06 19:12 wwp            Distribution              => Debian unstable 
+02-22-06 19:12 wwp            Kernel Version            => 2.6.5           
+02-22-06 19:21 wwp            Issue Monitored: wwp                         
+02-22-06 20:26 wwp            Note Added: 0008162                          
+02-22-06 20:30 pzad           Note Added: 0008163                          
+02-26-06 12:06 wwp            Note Added: 0008199                          
+07-18-06 14:39 jcdutton       Status                   new => assigned     
+07-18-06 14:39 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
