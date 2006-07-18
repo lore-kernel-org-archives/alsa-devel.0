@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000904]: PCM volume sliders are
-	Left-Right switched for all 3 analog outputs on Audigy2
-	Platinum Pro ZS
-Date: Tue, 18 Jul 2006 14:48:38 +0200
-Message-ID: <fb3649ba2c0c464709ef48d964651dbc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001908]: Stereo channels swapped using
+	Midiman Audiophile 24/96
+Date: Tue, 18 Jul 2006 14:55:39 +0200
+Message-ID: <d54acb3d24c77f33de08b14133ff027d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9A54189
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8625E196
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:48:38 +0200 (MEST)
+	Tue, 18 Jul 2006 14:55:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,68 +24,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=904> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1908> 
 ======================================================================
-Reported By:                riwright
-Assigned To:                jcdutton
+Reported By:                sebastian_ml
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   904
-Category:                   PCI - emu10k1
+Issue ID:                   1908
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:              2.6.10-1.741
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.15.6
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-12-2005 20:26 CET
-Last Modified:              07-18-2006 14:48 CEST
+Date Submitted:             03-11-2006 09:34 CET
+Last Modified:              07-18-2006 14:55 CEST
 ======================================================================
-Summary:                    PCM volume sliders are Left-Right switched for all 3
-analog outputs on Audigy2 Platinum Pro ZS
+Summary:                    Stereo channels swapped using Midiman Audiophile
+24/96
 Description: 
-Using either the stereo PCM device (hw:0,0) or Lee Revell's multichannel
-patch PCM device (hw:0,3), the volume control sliders
-(gnome-volume-control) incorrectly control the L & R channels of the
-soundcard's analog outputs (i.e. they are backward).
+Hi all,
 
-For example for the multichannel case (think 5.1 speaker setup), the PCM
-Front LEFT slider controls the Stereo Output #1 RIGHT channel and vice
-versa.  The PCM Surround LEFT slider controls the Stereo Output #2 RIGHT
-channel and vice versa.  Finally, the PCM Center slider controls the
-Stereo Output #3 RIGHT channel and the PCM LFE slider controls the Stereo
-Output #3 LEFT channel....this is backwards too, the Center should be Left
-and LFE Right.
+the stereo channels (L/R) are swapped. Say you patch PCM0 to HW Out 0 and
+do the same with PCM1 and HW Out 1 then the channel order is wrong.
+For now I use the Digital Mixer to make it right.
 
-Using the 2 channel stereo PCM (hw:0,0) the Front Left slider controls the
-Stereo Output #1 RIGHT channel and vice versa.  The card's Stereo Output's
-#2 & #3 are not available.
+I discovered this by accident when I had both my mp3 player and my 2496
+connected to the same amp playing the same song. They sounded different. I
+swapped L/R and all was fine.
+
+When booting Windows the L/R order is accurate.
+
+I'll upload some pictures of envy24control in a few.
+
+Thanks
+
+Sebastian
 ======================================================================
 
 ----------------------------------------------------------------------
- riwright - 02-12-05 22:55 
+ sebastian_ml - 04-20-06 20:56 
 ----------------------------------------------------------------------
-The 3 analog outputs mentioned in the summary are all stereo outputs (L/R
-pairs) for a total of 6 analog output channels.
+Sorry, my fault. It wasn't the driver, it was a wrongly marked cable (red
+and white were swapped.
 
-Also, I appologize for the numerical hyperlinks appearing in the bug
-description.  I used the "pound" symbol and I guess this creates the
-links.  Each of the numeric links should just imply the specific number of
-the stereo analog output.
+Mea culpa :D
+
+Sebastian
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 20:26 riwright       New Issue                                    
-02-12-05 20:26 riwright       Distribution              => Fedora Core 3   
-02-12-05 20:26 riwright       Kernel Version            =>  2.6.10-1.741   
-02-12-05 20:27 riwright       Issue Monitored: riwright                    
-02-12-05 22:55 riwright       Note Added: 0003573                          
-07-18-06 14:48 jcdutton       Status                   new => assigned     
-07-18-06 14:48 jcdutton       Assigned To               => jcdutton        
+03-11-06 09:34 sebastian_ml   New Issue                                    
+03-11-06 09:34 sebastian_ml   Distribution              => Gentoo          
+03-11-06 09:34 sebastian_ml   Kernel Version            => 2.6.15.6        
+03-11-06 10:17 sebastian_ml   File Added: patchbay-pcm.png                    
+03-11-06 10:24 sebastian_ml   Note Added: 0008415                          
+03-11-06 10:24 sebastian_ml   File Added: monitor-reversed.png                  
+ 
+03-11-06 10:25 sebastian_ml   File Added: monitor-accurate.png                  
+ 
+04-20-06 20:56 sebastian_ml   Note Added: 0009399                          
+04-20-06 20:59 sebastian_ml   Note Deleted: 0008415                        
+07-18-06 14:55 Adrian Bunk    Status                   new => closed       
+07-18-06 14:55 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
