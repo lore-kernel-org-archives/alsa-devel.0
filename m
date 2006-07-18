@@ -1,18 +1,16 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 1/5] aoa: feature gpio layer: fix IRQ access
-Date: Tue, 18 Jul 2006 14:45:28 -0400
-Message-ID: <1153248328.5905.67.camel@localhost.localdomain>
-References: <20060718172841.046446000@sipsolutions.net> >
-	<20060718173012.532719000@sipsolutions.net>>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000185]: Audigy2 SPDIF CDROM data
+	noise after stop
+Date: Tue, 18 Jul 2006 21:08:37 +0200
+Message-ID: <ff5b67c3e8f706085ae4b01c2f23e205@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C82B3242
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D88F236
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 20:45:30 +0200 (MEST)
-In-Reply-To: <20060718173012.532719000@sipsolutions.net>>
+	Tue, 18 Jul 2006 21:08:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,47 +20,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-07-18 at 19:28 +0200, Johannes Berg wrote:
-> plain text document attachment (aoa-get-irq-fix.patch)
-> The IRQ rework caused some hiccups here, in some cases we call
-> get_irq without a device node. This patch makes it catch that
-> case and return NO_IRQ when it happens, along with changing the
-> place where the irq is checked to check for NO_IRQ instead of -1.
-> 
-> Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
 
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=185> 
+======================================================================
+Reported By:                pavouk
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   185
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake 10.0
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             04-04-2004 21:07 CEST
+Last Modified:              07-18-2006 21:08 CEST
+======================================================================
+Summary:                    Audigy2 SPDIF CDROM data noise after stop
+Description: 
+My DVDROM DV-5700B is connected through digital SPDIF input to Audigy2 PCI
+card. When I play AudioCD, that after STOP or end of CD is heard from
+speakers loud purl or something like data noise. Same hardware with
+Soundblaster Live! card works great.
+This problem was visible with older kernel and Alsa versions too.
+======================================================================
 
-> 
-> --- linux-2.6-fetch.orig/sound/aoa/core/snd-aoa-gpio-feature.c	2006-07-16 22:10:02.467630929 +0200
-> +++ linux-2.6-fetch/sound/aoa/core/snd-aoa-gpio-feature.c	2006-07-16 22:13:41.891630929 +0200
-> @@ -112,7 +112,10 @@ static struct device_node *get_gpio(char
->  
->  static void get_irq(struct device_node * np, int *irqptr)
->  {
-> -	*irqptr = irq_of_parse_and_map(np, 0);
-> +	if (np)
-> +		*irqptr = irq_of_parse_and_map(np, 0);
-> +	else
-> +		*irqptr = NO_IRQ;
->  }
->  
->  /* 0x4 is outenable, 0x1 is out, thus 4 or 5 */
-> @@ -322,7 +325,7 @@ static int ftr_set_notify(struct gpio_ru
->  		return -EINVAL;
->  	}
->  
-> -	if (irq == -1)
-> +	if (irq == NO_IRQ)
->  		return -ENODEV;
->  
->  	mutex_lock(&notif->mutex);
-> 
-> --
+----------------------------------------------------------------------
+ pavouk - 04-09-05 20:55 
+----------------------------------------------------------------------
+I have now another PC VIA C3 1GHz with kernel 2.6.11.6, Mandrake10.1 but
+same DVD Rom and Audigy2 card. Problem is still here, but maybe not too
+often. When I made few stop/play actions, that sometimes after stop is
+audio silent (which is good), but sometimes is heared constant low
+frequency buzzing and strange sounds if DVDROM works with medium.
+Situation was changed, but not definitely solved.
+
+----------------------------------------------------------------------
+ pavouk - 07-18-06 21:08 
+----------------------------------------------------------------------
+It works now for me with vanilla kernel 2.6.17.3. AUTOMUTE function
+probably works now correctly.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-04-04 21:07 pavouk         New Issue                                    
+04-04-04 21:07 pavouk         Distribution              => Mandrake 10.0   
+04-04-04 21:07 pavouk         Kernel Version            => 2.6.5           
+09-03-04 23:19 pavouk         Note Added: 0001698                          
+04-09-05 04:38 jdthood        Note Added: 0004387                          
+04-09-05 20:55 pavouk         Note Added: 0004428                          
+04-09-05 22:00 jdthood        Status                   new => acknowledged 
+07-18-06 14:46 jcdutton       Status                   acknowledged => assigned
+07-18-06 14:46 jcdutton       Assigned To               => jcdutton        
+07-18-06 21:08 pavouk         Note Added: 0011072                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
