@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002109]: SPDIF output of Prodigy 7.1LT
-	doesn't working
-Date: Tue, 18 Jul 2006 11:56:43 +0200
-Message-ID: <3a5b1c3e92330cadf60be6b6e43b988d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000578]: No soundcard detected on
+	Chaintech 9CJS
+Date: Tue, 18 Jul 2006 11:58:52 +0200
+Message-ID: <fca679665c878cbe30a26696ba63ba2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9AD9219
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85E86219
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 11:56:43 +0200 (MEST)
+	Tue, 18 Jul 2006 11:58:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +26,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2109> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
 ======================================================================
-Reported By:                Rivian
+Reported By:                tarsi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2109
+Issue ID:                   578
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian 3.1 Sarge
-Kernel Version:             2.6.8
+Distribution:               mandrake linux 10.1
+Kernel Version:             2.6.8.1-10mdksmp
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-09-2006 02:59 CEST
-Last Modified:              07-18-2006 11:56 CEST
+Date Submitted:             10-11-2004 12:58 CEST
+Last Modified:              07-18-2006 11:58 CEST
 ======================================================================
-Summary:                    SPDIF output of Prodigy 7.1LT doesn't working
+Summary:                     No soundcard detected on Chaintech 9CJS
 Description: 
-Hi.
-I'm using Audiotrak Prodigy 7.1LT soundcard so i'm glad to support for it.
-I've upgraded the driver immediately, well, headphone output(jack number
-7) is working good. But SPDIF doesn't output any signal. I'm using DR.DAC
-multi amplifier also, connected to Prodigy's SPDIF output, but it
-receiving NO signal. Of course, it is working perfectly in Windows XP.
-I've tried several .asoundrc setting but nothing worked. Does anybody
-using SPDIF with Prodigy 7.1LT?
+ cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
+
+/etc/init.d/alsaconf found ice1724 card, but exiting gives:
+.... 
+
+/usr/sbin/alsactl: save_state:1066: No soundcards found...
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-09-06 12:57 
+ tiwai - 04-19-05 18:15 
 ----------------------------------------------------------------------
-I have not tried using SPDIF with this card but I would encourage you to
-try the patch from this thread
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744 since this
-fixes a number of issues for me (such as getting sound out of the front
-channel).  You may be lucky and this patch will also fix SPDIF out.
+The noise problem might have been fixed recently.  Try 1.0.9rc2.
 
-Either way I think that the patch should be added to CVS, since it is a
-definate improvement.
+The latest ice1724 driver already has an entry for Chaintech 9CJS.  So,
+please make sure that the driver does _NOT_ work with the latest ALSA.
+
+If the model=k8x800 works, it's simple to fix.  Please show the output of
+lspci -nv.
 
 ----------------------------------------------------------------------
- Rivian - 05-09-06 14:08 
+ tiwai - 06-15-05 15:30 
 ----------------------------------------------------------------------
-Wow, it works! Thank you very much, Demosthenes. There's some problems in
-volume control, but anyway it works! :D
+Ping.  Any answer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 02:59 Rivian         New Issue                                    
-05-09-06 02:59 Rivian         Distribution              => Debian 3.1 Sarge
-05-09-06 02:59 Rivian         Kernel Version            => 2.6.8           
-05-09-06 12:57 Demosthenes    Note Added: 0009653                          
-05-09-06 12:57 Demosthenes    Issue Monitored: Demosthenes                    
-05-09-06 14:08 Rivian         Note Added: 0009656                          
-07-18-06 11:56 Adrian Bunk    Status                   new => resolved     
-07-18-06 11:56 Adrian Bunk    Resolution               open => fixed       
+10-11-04 12:58 tarsi          New Issue                                    
+10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
+    
+10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
+10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
+10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
+10-11-04 15:59 tiwai          Note Added: 0002081                          
+04-09-05 16:09 jdthood        Note Added: 0004407                          
+04-14-05 12:53 tarsi          Note Added: 0004491                          
+04-14-05 22:00 jdthood        Note Added: 0004496                          
+04-14-05 22:00 jdthood        Severity                 block => major      
+04-14-05 22:00 jdthood        Status                   new => acknowledged 
+04-14-05 22:00 jdthood        Additional Information Updated                    
+04-19-05 18:15 tiwai          Note Added: 0004533                          
+06-15-05 15:30 tiwai          Note Added: 0005034                          
+07-18-06 11:58 Adrian Bunk    Status                   acknowledged => resolved
+07-18-06 11:58 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
