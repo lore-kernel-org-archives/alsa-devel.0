@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002102]: Audigy 2 with 6.1 Speakers
-Date: Tue, 18 Jul 2006 14:36:04 +0200
-Message-ID: <5004a3c9a63516b7c307976b0b3b811f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001551]: No mute switch to mixer
+	channel
+Date: Tue, 18 Jul 2006 14:36:26 +0200
+Message-ID: <9b88bdf04f17c6d11f765258551975e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC98D150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B264150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:36:04 +0200 (MEST)
+	Tue, 18 Jul 2006 14:36:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,39 +26,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2102> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1551> 
 ======================================================================
-Reported By:                minisori
+Reported By:                Shogun
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2102
+Issue ID:                   1551
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.13-gentoo-r3
 ======================================================================
-Date Submitted:             05-07-2006 23:25 CEST
+Date Submitted:             11-13-2005 13:16 CET
 Last Modified:              07-18-2006 14:36 CEST
 ======================================================================
-Summary:                    Audigy 2 with 6.1 Speakers
+Summary:                    No mute switch to mixer channel
 Description: 
-Hi, I wonder if it could be posible to make the 6.1 speakers to
-work/implemented under alsa.
+I have a SoundBlaster Audigy 2 ZS (without LiveDrive)...
+When I load the modules the sound works perfectly, but in the mixer (both
+alsa-mixer and kmix) I can't see any mute switch for the mixer
+channel...The only channel which has the switch is the Headphone...
 
-6.1 speakeres are similar to 5.1 speakers, with the only difference that
-6.1 has another rear speaker in the center.
-
-The only speaker i can't get to work is the rear center one.
+I don't know if previous version worked...
 ======================================================================
+
+----------------------------------------------------------------------
+ Shogun - 11-13-05 14:05 
+----------------------------------------------------------------------
+I forgot to mention that this issue is also present in 1.0.8 and in
+1.0.10rc3...
+
+----------------------------------------------------------------------
+ Shogun - 05-06-06 01:22 
+----------------------------------------------------------------------
+Still here with kernel 2.6.16 and ALSA 1.0.11...
+What's wrong guys? Why doesn't the mixer works?
+
+As I read in source code, the master mute has no effect on the card...so I
+think it's not supported...but is there any way to accomplish a standard
+behaviour?
+
+Thanks...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-06 23:25 minisori       New Issue                                    
+11-13-05 13:16 Shogun         New Issue                                    
+11-13-05 13:16 Shogun         Distribution              => Gentoo Linux 2005.1
+11-13-05 13:16 Shogun         Kernel Version            => 2.6.13-gentoo-r3
+11-13-05 14:05 Shogun         Note Added: 0006691                          
+05-06-06 01:22 Shogun         Note Added: 0009634                          
 07-18-06 14:36 jcdutton       Status                   new => assigned     
 07-18-06 14:36 jcdutton       Assigned To               => jcdutton        
 ======================================================================
