@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Tue, 18 Jul 2006 18:03:53 +0200
-Message-ID: <640cbfee91d5269874d219b0e67406c6@bugtrack.alsa-project.org>
+Date: Tue, 18 Jul 2006 18:12:43 +0200
+Message-ID: <2e4c5bacd66bd5185b00d5469f92f26a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16D41236
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DAEE15D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 18:03:53 +0200 (MEST)
+	Tue, 18 Jul 2006 18:12:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-18-2006 18:03 CEST
+Last Modified:              07-18-2006 18:12 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,20 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-18-06 17:39 
-----------------------------------------------------------------------
-Post the output again
-
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
-
-
-Do you have any customised .asoundrc ?
-
-
-
-----------------------------------------------------------------------
  calestyo - 07-18-06 18:03 
 ----------------------------------------------------------------------
 I don't have any .asoundrc or /etc/asound.conf.
@@ -137,6 +123,13 @@ I don't have any .asoundrc or /etc/asound.conf.
 
 (I compiled without drivers for my other soundcards, but that shouldn't
 matter...)
+
+----------------------------------------------------------------------
+ Raymond - 07-18-06 18:12 
+----------------------------------------------------------------------
+How about
+
+speaker-test -v -Dplughw:0 -t wav -c 8
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -180,6 +173,7 @@ Date Modified  Username       Field                    Change
 07-18-06 17:35 Raymond        Note Added: 0011067                          
 07-18-06 17:39 Raymond        Note Edited: 0011067                         
 07-18-06 18:03 calestyo       Note Added: 0011068                          
+07-18-06 18:12 Raymond        Note Added: 0011069                          
 ======================================================================
 
 
