@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002077]: emu10k1 will not use S24_LE
-Date: Tue, 18 Jul 2006 14:38:37 +0200
-Message-ID: <faaa88240a14cc02a764aa07cac2a0ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002058]: Audigy 2 ZS Notebook lacks
+	record capability
+Date: Tue, 18 Jul 2006 14:38:49 +0200
+Message-ID: <6ec3bafbeb7ba302ece31e5d75d0c764@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8250A176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D951176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:38:37 +0200 (MEST)
+	Tue, 18 Jul 2006 14:38:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,71 +26,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2077> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2058> 
 ======================================================================
-Reported By:                braininajar
+Reported By:                artdent
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2077
+Issue ID:                   2058
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.16
+Distribution:               Debian unstable
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-26-2006 21:51 CEST
+Date Submitted:             04-22-2006 21:11 CEST
 Last Modified:              07-18-2006 14:38 CEST
 ======================================================================
-Summary:                    emu10k1 will not use S24_LE
+Summary:                    Audigy 2 ZS Notebook lacks record capability
 Description: 
-The Audigy2 is a 24-bit, 96k card. It will handle 24 bit, 96k samples. For
-some reason or other, the emu10k1 driver will not let it
+According to bug #927, the emu10k1 driver now works with the Audigy 2 ZS
+PCMCIA card for playback, but not capture. The most current is "untested,
+might already work". Are there any plans to figure out recording with this
+card? It would be greatly appreciated.
+
+Even with an untested patch to enable recording, I would be willing to
+test it to see if it works.
+
+Thanks,
+Jacob Lee
+
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 04-26-06 22:07 
-----------------------------------------------------------------------
-Audigy 2 are two soundcards in one chip (old Audigy 1 and SB live 24 bit).
-In linux Audigy 1 part is used by default (it has more features but only
-48 kHz 16 bi). If you want use 24 bit 96 kHz you have to use device hw:0,4
-(I think it is 4 - I am not sure). Alsa doesn't use it as default device,
-because it has less features as Audigy 1 part (only advantage is 24/96
-sound - disadvantage - no hw mixing no dsp).
-
-----------------------------------------------------------------------
- jcdutton - 04-26-06 22:20 
-----------------------------------------------------------------------
-Please provide output from:
-cat /proc/asound/cards
-cat /proc/asound/version
-
-24bit is not supported on all Audigy cards in linux yet.
-The 24bit is a special mode that bypassed the DSP.
-Unfortunately, the bypass method is different one almost every Audigy
-card, so until all the different methods are supported, it will not work
-on all Audigy cards.
-
-Also 24bit capture on a PC sound card is next to pointless due to computer
-noise introduced and low quality codecs and front end components. You
-might get 18bits of real quality, but I doubt even that.
-
-There are exceptions to that in the really expensive professional sound
-capture devices that also have a PC interface, but very few of them work
-with Linux. E.g. the EMU1212m.
-
-James
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-06 21:51 braininajar    New Issue                                    
-04-26-06 21:51 braininajar    Distribution              => gentoo          
-04-26-06 21:51 braininajar    Kernel Version            => 2.6.16          
-04-26-06 22:07 pzad           Note Added: 0009524                          
-04-26-06 22:20 jcdutton       Note Added: 0009525                          
+04-22-06 21:11 artdent        New Issue                                    
+04-22-06 21:11 artdent        Distribution              => Debian unstable 
+04-22-06 21:11 artdent        Kernel Version            => 2.6.15          
+04-24-06 16:48 lwelyn         Issue Monitored: lwelyn                      
 07-18-06 14:38 jcdutton       Status                   new => assigned     
 07-18-06 14:38 jcdutton       Assigned To               => jcdutton        
 ======================================================================
