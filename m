@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001681]: (MIXER,
-	'Front Playback Volume', 0, 0, 0) appears twice or more
-Date: Tue, 18 Jul 2006 14:20:50 +0200
-Message-ID: <c363dd6907886fc6cde7f42f36340a4a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Tue, 18 Jul 2006 14:21:09 +0200
+Message-ID: <06e582a998dc69d18a8320c6d43147b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8526B162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88AD9162
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:20:50 +0200 (MEST)
+	Tue, 18 Jul 2006 14:21:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,160 +25,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                jcdutton
-Assigned To:                tiwai
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1681
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-26-2005 17:13 CET
-Last Modified:              07-18-2006 14:20 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-18-2006 14:21 CEST
 ======================================================================
-Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
-or more
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-Reported in "mashaun".
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-0 [Live           ]: EMU10K1 - SB Live [Unknown]
-                     SB Live [Unknown] (rev.10, serial:0x80661102) at
-0xc800, irq 5
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-the emu10k1 gives the following error when one tries to run alsamixer
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,0,0) appears twice or more
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-amixer controls                                       
-numid=43,iface=MIXER,name='Master Playback Switch'
-numid=44,iface=MIXER,name='Master Playback Volume'
-numid=91,iface=MIXER,name='Headphone +3dB Boost'
-numid=89,iface=MIXER,name='Headphone Amp'
-numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
-numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
-numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
-numid=35,iface=MIXER,name='Tone Control - Bass'
-numid=37,iface=MIXER,name='Tone Control - Switch'
-numid=36,iface=MIXER,name='Tone Control - Treble'
-numid=76,iface=MIXER,name='3D Control - Switch'
-numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
-numid=70,iface=MIXER,name='PCM Playback Switch'
-numid=71,iface=MIXER,name='PCM Playback Volume'
-numid=66,iface=MIXER,name='Surround Mix Playback Switch'
-numid=67,iface=MIXER,name='Surround Mix Playback Volume'
-numid=10,iface=MIXER,name='Surround Playback Volume'
-numid=12,iface=MIXER,name='Surround Capture Switch'
-numid=11,iface=MIXER,name='Surround Capture Volume'
-numid=86,iface=MIXER,name='Center/LFE Jack'
-numid=13,iface=MIXER,name='Center Playback Volume'
-numid=14,iface=MIXER,name='LFE Playback Volume'
-numid=7,iface=MIXER,name='Synth Playback Volume'
-numid=9,iface=MIXER,name='Synth Capture Switch'
-numid=8,iface=MIXER,name='Synth Capture Volume'
-numid=3,iface=MIXER,name='Wave Center Playback Volume'
-numid=4,iface=MIXER,name='Wave LFE Playback Volume'
-numid=2,iface=MIXER,name='Wave Surround Playback Volume'
-numid=1,iface=MIXER,name='Wave Playback Volume'
-numid=6,iface=MIXER,name='Wave Capture Switch'
-numid=5,iface=MIXER,name='Wave Capture Volume'
-numid=88,iface=MIXER,name='Line Input Source'
-numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
-numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
-numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
-numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
-numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
-numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
-numid=83,iface=MIXER,name='LineIn Jack'
-numid=62,iface=MIXER,name='Line Playback Switch'
-numid=63,iface=MIXER,name='Line Playback Volume'
-numid=64,iface=MIXER,name='CD Playback Switch'
-numid=65,iface=MIXER,name='CD Playback Volume'
-numid=61,iface=MIXER,name='Mic Boost (+20dB)'
-numid=87,iface=MIXER,name='Mic Input Source'
-numid=78,iface=MIXER,name='Mic Select'
-numid=82,iface=MIXER,name='Mic1 Jack'
-numid=59,iface=MIXER,name='Mic Playback Switch'
-numid=60,iface=MIXER,name='Mic Playback Volume'
-numid=57,iface=MIXER,name='Phone Playback Switch'
-numid=58,iface=MIXER,name='Phone Playback Volume'
-numid=55,iface=MIXER,name='PC Speaker Playback Switch'
-numid=56,iface=MIXER,name='PC Speaker Playback Volume'
-numid=68,iface=MIXER,name='Aux Playback Switch'
-numid=69,iface=MIXER,name='Aux Playback Volume'
-numid=72,iface=MIXER,name='Capture Source'
-numid=73,iface=MIXER,name='Capture Switch'
-numid=74,iface=MIXER,name='Capture Volume'
-numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
-numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
-numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
-numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
-numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
-numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
-numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
-numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
-numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
-numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
-numid=19,iface=MIXER,name='AC97 Capture Volume'
-numid=18,iface=MIXER,name='AC97 Playback Volume'
-numid=90,iface=MIXER,name='Exchange Center/LFE'
-numid=92,iface=MIXER,name='External Amplifier'
-numid=17,iface=MIXER,name='Front Capture Switch'
-numid=16,iface=MIXER,name='Front Capture Volume'
-numid=84,iface=MIXER,name='Front Jack'
-numid=51,iface=MIXER,name='Front Playback Switch'
-numid=15,iface=MIXER,name='Front Playback Volume'
-numid=52,iface=MIXER,name='Front Playback Volume'
-numid=85,iface=MIXER,name='Rear Jack'
-numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
-numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
-numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
-numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
-numid=241,iface=PCM,name='IEC958 Playback Default',device=2
-numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
-numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
-numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
-numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
-numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
-numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
-numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
+If you slash out line 104, it resolves the issue.
 
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-05-06 19:41 
+ Raymond - 07-18-06 07:44 
 ----------------------------------------------------------------------
-Fixed on CVS.  Thanks.
+The functions list of alsa-lib control interface is hidden in
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___control.html
+
+snd_ctl_elem_value_get_integer(peaks, x) return the value of item 'x' of
+the kcontrol 'peak'
+
+Modify the hardware specific check for 'ICE1712' may let you run the
+envy24control
 
 ----------------------------------------------------------------------
- jcdutton - 07-18-06 14:20 
+ cruiseoveride - 07-18-06 14:21 
 ----------------------------------------------------------------------
-Issue resolved
+ive got it runnig!!!
+But...
+I can only seem to monitor the Main RCA OUT Line.
+Its not able to detect the number of Input Channels properly nor the
+Output Channels...
+
+Ok i understood the peak thing.
+
+how to i put sample data inro the capture of the card to see which peak
+control is  for which line? at the moment i just 
+
+cat junk > /dev/dsp1
+
+for sample data to monitor output levels
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 17:13 jcdutton       New Issue                                    
-01-04-06 22:03 alien999999999 Note Added: 0007454                          
-01-05-06 10:27 dalth          Note Added: 0007466                          
-01-05-06 14:16 pzad           Note Added: 0007468                          
-01-05-06 19:41 tiwai          Status                   new => resolved     
-01-05-06 19:41 tiwai          Resolution               open => fixed       
-01-05-06 19:41 tiwai          Assigned To               => tiwai           
-01-05-06 19:41 tiwai          Note Added: 0007474                          
-01-31-06 08:34 tollimees      Issue Monitored: tollimees                    
-07-18-06 14:20 jcdutton       Status                   resolved => closed  
-07-18-06 14:20 jcdutton       Note Added: 0011056                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
 ======================================================================
 
 
