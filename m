@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000335]: No support for Soundfont 2.1
-	modulators
-Date: Tue, 18 Jul 2006 14:46:51 +0200
-Message-ID: <5689f06547c9c2efbc9f27b48f19ece8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000319]: Cannot control main volume
+	independently for left and right channels
+Date: Tue, 18 Jul 2006 14:48:14 +0200
+Message-ID: <7074ddf7221adf05de525d567ac7b1da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC2AFCA
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99F3E12C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:46:51 +0200 (MEST)
+	Tue, 18 Jul 2006 14:48:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,45 +26,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=335> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=319> 
 ======================================================================
-Reported By:                meneerdik
+Reported By:                walrus121
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   335
+Issue ID:                   319
 Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
 ======================================================================
-Date Submitted:             06-15-2004 12:57 CEST
-Last Modified:              07-18-2006 14:46 CEST
+Date Submitted:             05-31-2004 17:46 CEST
+Last Modified:              07-18-2006 14:48 CEST
 ======================================================================
-Summary:                    No support for Soundfont 2.1 modulators
+Summary:                    Cannot control main volume independently for left
+and right channels
 Description: 
-Most of my soundfonts are unusable on Linux because the modulator
-definitions in the fonts are not used by the driver. For example, when the
-soundfont contains a modulator definition that routes the Expression
-controller to the cutoff frequency of a particular instument zone, ALSA
-ignores it completely. 
+I have tried with numerous volume control programs, and I get the same
+result.  If I try to adjust one channel, the values of the two channels
+are averaged in some strange way and are rebalanced to the center.  I know
+that this must be a driver-specific issue because I can control the two
+channels independently for my Sound Blaster AWE 64 Value card, also in my
+computer, and because it doesn't seem to matter which mixer I use.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 20:55 
+ rlrevell - 11-17-04 19:22 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue?
+Can you verify the bug with the latest ALSA version. 1.0.7?
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 15:28 
+----------------------------------------------------------------------
+Submitter: Can you verify the bug still exists in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-04 12:57 meneerdik      New Issue                                    
-04-07-05 20:55 jdthood        Note Added: 0004364                          
-07-18-06 14:46 jcdutton       Status                   new => assigned     
-07-18-06 14:46 jcdutton       Assigned To               => jcdutton        
+05-31-04 17:46 walrus121      New Issue                                    
+05-31-04 17:46 walrus121      File Added: modules.conf                     
+05-31-04 17:46 walrus121      Distribution              => Fedora Core 1   
+05-31-04 17:46 walrus121      Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
+11-17-04 19:22 rlrevell       Note Added: 0002441                          
+03-23-05 15:28 jdthood        Note Added: 0004160                          
+07-18-06 14:48 jcdutton       Status                   new => assigned     
+07-18-06 14:48 jcdutton       Assigned To               => jcdutton        
 ======================================================================
 
 
