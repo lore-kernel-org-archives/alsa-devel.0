@@ -1,12 +1,16 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH] echoaudio, fw_writer
-Date: Tue, 18 Jul 2006 23:26:02 +0200
-Message-ID: <1153257962.2497.56.camel@johannes.berg>
-References: <20060718231935.63c255ea.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000862]: emu10k1 always has random
+	clicks in wavetable MIDI synth playback but never in PCM playback
+Date: Wed, 19 Jul 2006 01:30:08 +0200
+Message-ID: <95639a7700e5230efb7682cdb922ae6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1725535731=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060718231935.63c255ea.pochini@shiny.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B85F2229
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Jul 2006 01:30:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,83 +20,163 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1725535731==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-UTpWWfPpzCGzzgdjvKO3"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=862> 
+======================================================================
+Reported By:                Will
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   862
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-30-2005 15:24 CET
+Last Modified:              07-19-2006 01:30 CEST
+======================================================================
+Summary:                    emu10k1 always has random clicks in wavetable MIDI
+synth playback but never in PCM playback
+Description: 
+An Audigy 2 LS 5.1 PCI soundcard with emu10k1 chipset (the PCI id is
+1102:0004 (rev 04)) always has random clicks in wavetable MIDI synth
+playback but never in PCM playback using any version of alsa-driver. I
+think this clicking is probably an emu10k1 driver bug.
 
+It makes no difference which driver or kernel is used; the problem exists
+with alsa-driver-CVS, alsa-driver-1.0.8, and all previous versions since
+before alsa-driver-0.9.7 and with all mainline kernel versions of Linux
+2.4.x and Linux 2.6.x including 2.6.10. 
 
---=-UTpWWfPpzCGzzgdjvKO3
+It makes no difference which kernel is used (2.4.x or 2.6.x). I recently
+started using CONFIG_ACPI_* with CONFIG_PCI_[GO]BIOS in 2.6.10 but it
+makes no difference. I use the default PCI latencies.
+
+It makes no difference whether or not the emu10k1 IRQ is shared and the
+clicking is exactly the same regardless of which other device shares the
+IRQ, e.g. "IRQ 17: 78129 IO-APIC-level  libata, EMU10K1" or "IRQ 16: 9554 
+IO-APIC-level  eth0, EMU10K1".
+
+From: Lee Revell <rlrevell AT ...>
+Subject: Re: [Alsa-devel] [PATCH] emu10k1 multichannel support
+Date: Sat, 29 Jan 2005 16:28:47 -0500
+To: William <walsac3 AT ...>
+Message-Id: <1107034127.24676.55.camel@krustophenia.net>
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2006-07-18 at 23:19 +0200, Giuliano Pochini wrote:
-> After a talk with Richard Stallman, who said it is not correct to link a
-> binary image into a GPL program even if is just dumped onto disk, here yo=
-u
-> are this patch that makes fw_writer to load and parse the C sources
-> containing the images instead of including them at compile time. It suppo=
-rts
-> both the "sources" that are already part of alsa-firmware and the origina=
-l
-> files downloadable from the Echoaudio web site.
+(sorry for the late reply)
 
-I dunno where the fw_writer.c comes from, but relicensing it if possible
-seems like a saner option ;)
+On Wed, 2005-01-19 at 19:16 +0000, William wrote:
+>
+> I'll mention the following in case you might be interested to look at
+it.
+> An issue that's been around since the very beginning of the emu10k1
+driver
+> is that playing a MIDI file on the wavetable often produces a
+> rapid but irregular sequence of very noticeable clicks at a
+> rate of 2 or 3 per second continuing for up to about 10 seconds.
+> The clicking starts happening once every minute or so but without any
+> clear pattern - it doesn't seem to be depend much on the contents of the
+MIDI
+> files.
+>
+> Interestingly I never hear any clicks when using the PCM and
+> a soft synth like fluidsynth or timidity as an alternative method
+> of MIDI playback, which is why I think it might be a bug (haven't
+checked
+> whether something similar has already been logged on the bugtracker).
+> I had a brief look into it, but didn't find anything conclusive in the
+code.
+> One possibly interesting feature was I notice that I could trigger lots
+of
+> clicks if I tried doing real-time variable attenuation of already
+playing
+> notes via update_voice(vp, SNDRV_EMUX_UPDATE_VOLUME) in
+emu10k1_callback.c
 
-johannes
+I would actually be interested in looking at this.  I have noticed some
+areas in the code where things are commented out for odd reasons.
+Specifically the samples cache is not cleared like it is for PCM voices.
+If you have time please file an ALSA bug report (you can just copy and
+paste this message).
 
---=-UTpWWfPpzCGzzgdjvKO3
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+> By the way, do you know the original purpose of
+snd_emu10k1_sum_vol_attn()
+> in emu10k1/io.c which has just been removed in alsa-driver-1.0.8?
+> The cumulative volume conversion algorithm in that function
+> seems like it would probably have been based on the original emu10k1
+chipset
+> documentation provided by Creative during its open-source era.
+> It seems like a useful function to keep around for future extensions of
+> the emu10k1 driver.  Maybe it should be re-instated.
+>
+> >From the 1.0.8 announcement:
+>
+>     - Summary: ALSA PCI drivers: misc cleanups
+>       The patch below does the following cleanups under sound/pci/ :
+>       - remove the following unused global functions:
+>         - emu10k1/io.c: snd_emu10k1_sum_vol_attn
+>
 
------BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (powerbook)
+Yes, I asked Takashi about this and he said it just does some simple
+calculation.  Check the alsa-devel archive.  But, maybe there's
+something to it.  It could be related to your clicking problem.
 
-iQIVAwUARL1R6KVg1VMiehFYAQIyyA//Srq5/B8pwSRbwdNMrb+VNST/XdvDB+bD
-LUmiDjN3PAwSn3+amNZRWTW6wI1cvhzME/HK+nvAMSzxybOMkN1VHio6p9xo1f3f
-BkiNql+pr6oiIsJ51slqa1/lHErlFxYeTvQ/bqPpiMyAffXcy73JOFbOSn7TzRDf
-4Ogs2KvOhWS7soJbUFfHBO6dRyFzRyMUaV44feRfzQdLpYflzsYovkId/jXaRdEg
-LGYTTVlgH/hOuWxlQSlquR7ML5kSkOrKdvggSql01IFQkJyyAPELZHvzess2Ohzv
-J6qpLQ9u5qlPbiCe7E1gtrj9Nf61zVECGBeZ3j7d1yORuMQzykD//OHPB3tW5XlF
-4oVc4ajPD1d60zbAFAiBEexKPsxE7zSK+dPS6quV+ByadHy0XUt9+VYGp52AUBHR
-zFirE9KTCJPu7npCG+IGHs03vWHUpddXAvBwexm+mb7EET+f3yJeSVI0MDMAzy4V
-/t3wslCCxhDtxzrTAmwxvs3a44OIllVMumZhmsugCLpIqsro7bI0Wy5F7BOBETnF
-h9HnTcg52ufyk9k+FxwiZSMJ9y3IihPK/8zwHJsv8UM2Ov/RxE77rUIPYzX/mU/E
-U6RlX3AGBVIrK1A6LrS1bhEvqzjIvz88ByQefRvzWqQWCjJJUyaBTxxqiIU/ya7z
-P6o/gQ4rsG4=
-=/QIs
------END PGP SIGNATURE-----
+I have heard something similar when using PCM at really low latencies.
 
---=-UTpWWfPpzCGzzgdjvKO3--
+Lee
+
+======================================================================
+
+----------------------------------------------------------------------
+ Will - 03-16-06 11:56 
+----------------------------------------------------------------------
+It seems the problem may still exist. I'll need to do more detailed tests
+to confirm this, but will not have access in the next month or so.
+
+----------------------------------------------------------------------
+ agoode - 07-19-06 01:30 
+----------------------------------------------------------------------
+I no longer have the problem with this configuration:
+
+FC5 x86_64 2.6.17-1.2157_FC5
+Creative Labs SB Audigy (rev 04)
+
+This is the same hardware as in my previous comment.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-30-05 15:24 Will           New Issue                                    
+01-30-05 15:24 Will           Kernel Version            => 2.6.10          
+04-13-05 22:01 jdthood        Note Added: 0004480                          
+04-13-05 22:26 rlrevell       Note Added: 0004484                          
+04-14-05 15:20 Will           Note Added: 0004493                          
+04-14-05 22:01 jdthood        Status                   new => acknowledged 
+08-08-05 15:11 agoode         Issue Monitored: agoode                      
+08-08-05 15:20 agoode         Note Added: 0005709                          
+08-08-05 15:21 agoode         File Added: asfxload.trace                    
+08-08-05 17:32 Will           Note Added: 0005710                          
+12-31-05 03:30 rlrevell       Note Added: 0007329                          
+03-16-06 11:56 Will           Note Added: 0008601                          
+07-18-06 14:39 jcdutton       Status                   acknowledged => assigned
+07-18-06 14:39 jcdutton       Assigned To               => jcdutton        
+07-19-06 01:30 agoode         Note Added: 0011073                          
+======================================================================
 
 
-
---===============1725535731==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1725535731==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1725535731==--
