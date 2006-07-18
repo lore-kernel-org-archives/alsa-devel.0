@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001709]: 5.1 doesn't work
-Date: Tue, 18 Jul 2006 14:40:50 +0200
-Message-ID: <69001df1b6ce45984d27a6a91dc3f96e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001767]: midi port (64:32 'Audigy
+	MPU-401 #2') will not read/record
+Date: Tue, 18 Jul 2006 14:40:25 +0200
+Message-ID: <7c91facf11e44d5fe4eee24a9ba7f1f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 243FD176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 178CB176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:40:51 +0200 (MEST)
+	Tue, 18 Jul 2006 14:40:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,60 +26,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1767> 
 ======================================================================
-Reported By:                piezo
+Reported By:                bscipioni
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1709
+Issue ID:                   1767
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369
+Distribution:               Redhat
+Kernel Version:             2.6.12-smp
 ======================================================================
-Date Submitted:             01-04-2006 13:50 CET
+Date Submitted:             01-22-2006 03:23 CET
 Last Modified:              07-18-2006 14:40 CEST
 ======================================================================
-Summary:                    5.1 doesn't work
+Summary:                    midi port (64:32 'Audigy MPU-401 #2') will not
+read/record
 Description: 
-I'm new to linux.  I've been googling for a awnser to this problem for a
-week now.  found a few with the same sort of problems but no awnsers.
-
-I can get sterio sound but not 5.1 surround.  This is very irritating as I
-bought a Audity2 soundcard for the purpose of using it's 5.1 sound
-capability.
-
-initially xine kept telling me that another process was using the PCM
-device.  found how to fix this.  using
+I have Audigy 2 Platinum.  The Audgiy "drive" midi input is not working. 
+Previously I had been able to both play my midi keyboard and record from
+it using Rosegarden, earlier versions of alsa and RedHat 9.  Now I can
+only play
+the keyboard (midi out 64:32) - record doesn't work.  Taking Rosegarden
+out of the equation, I used both JACK and aconnect to connect 64:32
+directly to 65:0 and I get nothing playing the keyboard.  Soundfonts are
+loaded and working  
+works just fine. So it seems just the 64:32 read port is not working
 ======================================================================
 
 ----------------------------------------------------------------------
- piezo - 01-05-06 00:23 
+ rlrevell - 01-22-06 04:44 
 ----------------------------------------------------------------------
-"Sound Blaster Audigy 2 value" pci card
-followed the Alsa setup instructions.
-detected correctly (SB0400)
-
-can only seem to use it in sterio or (with fixes) fake 5.1 (which is
-really sterio duplicated).
-
-----------------------------------------------------------------------
- rlrevell - 01-05-06 22:02 
-----------------------------------------------------------------------
-2.6.11 is way too old for such a new device.  Try a newer kernel.
+Please use ALSA CVS to do a binary search by date and identify the change
+that broke it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 13:50 piezo          New Issue                                    
-01-04-06 13:50 piezo          Distribution              => Fedora Core 4   
-01-04-06 13:50 piezo          Kernel Version            => 2.6.11-1.1369   
-01-05-06 00:23 piezo          Note Added: 0007461                          
-01-05-06 22:02 rlrevell       Note Added: 0007483                          
+01-22-06 03:23 bscipioni      New Issue                                    
+01-22-06 03:23 bscipioni      Distribution              => Redhat          
+01-22-06 03:23 bscipioni      Kernel Version            => 2.6.12-smp      
+01-22-06 04:44 rlrevell       Note Added: 0007743                          
 07-18-06 14:40 jcdutton       Status                   new => assigned     
 07-18-06 14:40 jcdutton       Assigned To               => jcdutton        
 ======================================================================
