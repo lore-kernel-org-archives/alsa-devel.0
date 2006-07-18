@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000185]: Audigy2 SPDIF CDROM data
-	noise after stop
-Date: Tue, 18 Jul 2006 21:08:37 +0200
-Message-ID: <ff5b67c3e8f706085ae4b01c2f23e205@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002292]: volume suspend/resume no longer
+	works.
+Date: Tue, 18 Jul 2006 22:27:53 +0200
+Message-ID: <35336b4d4a3a5b352d332bda272ac8bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D88F236
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 387B0220
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 21:08:38 +0200 (MEST)
+	Tue, 18 Jul 2006 22:27:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=185> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2292> 
 ======================================================================
-Reported By:                pavouk
-Assigned To:                jcdutton
+Reported By:                cartman
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   185
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   2292
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.0
-Kernel Version:             2.6.5
+Status:                     new
 ======================================================================
-Date Submitted:             04-04-2004 21:07 CEST
-Last Modified:              07-18-2006 21:08 CEST
+Date Submitted:             07-18-2006 22:27 CEST
+Last Modified:              07-18-2006 22:27 CEST
 ======================================================================
-Summary:                    Audigy2 SPDIF CDROM data noise after stop
+Summary:                    volume  suspend/resume no longer works.
 Description: 
-My DVDROM DV-5700B is connected through digital SPDIF input to Audigy2 PCI
-card. When I play AudioCD, that after STOP or end of CD is heard from
-speakers loud purl or something like data noise. Same hardware with
-Soundblaster Live! card works great.
-This problem was visible with older kernel and Alsa versions too.
+I was using 2.6.18 latest git tree fine so far but when I updated alsa-lib
+and other userspace tools to 1.1.12rc1 mplayer gives this error when
+suspending/resuming volume :
+
+alsa-pause: pcm pause error: Input/output error
+alsa-resume: pcm resume error: Input/output error
+
+Corresponding source code is :
+
+[...]
+if ((err = snd_pcm_pause(alsa_handler, 1)) < 0)
+        {
+            mp_msg(MSGT_AO,MSGL_ERR,"alsa-pause: pcm pause error: %s\n",
+snd_strerror(err));
+            return;
+        }
+[...]
+
+and similar for resume.
 ======================================================================
-
-----------------------------------------------------------------------
- pavouk - 04-09-05 20:55 
-----------------------------------------------------------------------
-I have now another PC VIA C3 1GHz with kernel 2.6.11.6, Mandrake10.1 but
-same DVD Rom and Audigy2 card. Problem is still here, but maybe not too
-often. When I made few stop/play actions, that sometimes after stop is
-audio silent (which is good), but sometimes is heared constant low
-frequency buzzing and strange sounds if DVDROM works with medium.
-Situation was changed, but not definitely solved.
-
-----------------------------------------------------------------------
- pavouk - 07-18-06 21:08 
-----------------------------------------------------------------------
-It works now for me with vanilla kernel 2.6.17.3. AUTOMUTE function
-probably works now correctly.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-04-04 21:07 pavouk         New Issue                                    
-04-04-04 21:07 pavouk         Distribution              => Mandrake 10.0   
-04-04-04 21:07 pavouk         Kernel Version            => 2.6.5           
-09-03-04 23:19 pavouk         Note Added: 0001698                          
-04-09-05 04:38 jdthood        Note Added: 0004387                          
-04-09-05 20:55 pavouk         Note Added: 0004428                          
-04-09-05 22:00 jdthood        Status                   new => acknowledged 
-07-18-06 14:46 jcdutton       Status                   acknowledged => assigned
-07-18-06 14:46 jcdutton       Assigned To               => jcdutton        
-07-18-06 21:08 pavouk         Note Added: 0011072                          
+07-18-06 22:27 cartman        New Issue                                    
 ======================================================================
 
 
