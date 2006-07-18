@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000979]: Feature Request : Bass
-	redirection on emu10k1 cards
-Date: Tue, 18 Jul 2006 14:48:23 +0200
-Message-ID: <e370fea470f69eca967c33a46f970d36@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000904]: PCM volume sliders are
+	Left-Right switched for all 3 analog outputs on Audigy2
+	Platinum Pro ZS
+Date: Tue, 18 Jul 2006 14:48:38 +0200
+Message-ID: <fb3649ba2c0c464709ef48d964651dbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3075613B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9A54189
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:48:23 +0200 (MEST)
+	Tue, 18 Jul 2006 14:48:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,47 +27,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=979> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=904> 
 ======================================================================
-Reported By:                Casper
+Reported By:                riwright
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   979
+Issue ID:                   904
 Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.10-gentoo-r4
+Distribution:               Fedora Core 3
+Kernel Version:              2.6.10-1.741
 ======================================================================
-Date Submitted:             03-10-2005 19:40 CET
+Date Submitted:             02-12-2005 20:26 CET
 Last Modified:              07-18-2006 14:48 CEST
 ======================================================================
-Summary:                    Feature Request : Bass redirection on emu10k1 cards
+Summary:                    PCM volume sliders are Left-Right switched for all 3
+analog outputs on Audigy2 Platinum Pro ZS
 Description: 
-The goal of this feature is to generate a LFE channel from a stereo source
-by removing low frequencies of this source and sending them to the LFE
-output. I think this can be made by the DSP.
+Using either the stereo PCM device (hw:0,0) or Lee Revell's multichannel
+patch PCM device (hw:0,3), the volume control sliders
+(gnome-volume-control) incorrectly control the L & R channels of the
+soundcard's analog outputs (i.e. they are backward).
 
-I own a Creative SB Audigy, and a home-made 5.1 sound system with only
-amplifiers and no filters. So when I listen to music, all my speakers
-works fine with channel mirroring, but the LFE output is not filtered and
-the sound is awful. And when I use mplayer to play music with the option
-"-af sub" which generates a LFE channel, the low frequencies are already
-present on the others speakers and then bass are too loud.
+For example for the multichannel case (think 5.1 speaker setup), the PCM
+Front LEFT slider controls the Stereo Output #1 RIGHT channel and vice
+versa.  The PCM Surround LEFT slider controls the Stereo Output #2 RIGHT
+channel and vice versa.  Finally, the PCM Center slider controls the
+Stereo Output #3 RIGHT channel and the PCM LFE slider controls the Stereo
+Output #3 LEFT channel....this is backwards too, the Center should be Left
+and LFE Right.
 
-Is this possible to add this feature ?
+Using the 2 channel stereo PCM (hw:0,0) the Front Left slider controls the
+Stereo Output #1 RIGHT channel and vice versa.  The card's Stereo Output's
+#2 & #3 are not available.
 ======================================================================
+
+----------------------------------------------------------------------
+ riwright - 02-12-05 22:55 
+----------------------------------------------------------------------
+The 3 analog outputs mentioned in the summary are all stereo outputs (L/R
+pairs) for a total of 6 analog output channels.
+
+Also, I appologize for the numerical hyperlinks appearing in the bug
+description.  I used the "pound" symbol and I guess this creates the
+links.  Each of the numeric links should just imply the specific number of
+the stereo analog output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-05 19:40 Casper         New Issue                                    
-03-10-05 19:40 Casper         Distribution              => Gentoo          
-03-10-05 19:40 Casper         Kernel Version            => 2.6.10-gentoo-r4
-03-19-05 14:23 Casper         Issue Monitored: Casper                      
+02-12-05 20:26 riwright       New Issue                                    
+02-12-05 20:26 riwright       Distribution              => Fedora Core 3   
+02-12-05 20:26 riwright       Kernel Version            =>  2.6.10-1.741   
+02-12-05 20:27 riwright       Issue Monitored: riwright                    
+02-12-05 22:55 riwright       Note Added: 0003573                          
 07-18-06 14:48 jcdutton       Status                   new => assigned     
 07-18-06 14:48 jcdutton       Assigned To               => jcdutton        
 ======================================================================
