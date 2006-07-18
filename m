@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002137]: No mute controls for Audigy
-	or Audigy 2ZS
-Date: Tue, 18 Jul 2006 14:35:11 +0200
-Message-ID: <f53b86f2b374ee33d08e96cae45200a9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Tue, 18 Jul 2006 14:35:31 +0200
+Message-ID: <dab316acff2e4b1782d051ebd001c4ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9D4A150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28792150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:35:11 +0200 (MEST)
+	Tue, 18 Jul 2006 14:35:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,158 +25,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                stdpikachu
-Assigned To:                jcdutton
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2137
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15, 2.6.16
+Status:                     new
 ======================================================================
-Date Submitted:             05-20-2006 15:23 CEST
+Date Submitted:             07-16-2006 18:03 CEST
 Last Modified:              07-18-2006 14:35 CEST
 ======================================================================
-Summary:                    No mute controls for Audigy or Audigy 2ZS
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-The problem has been around for while, but have only just got around to
-reporting it (incidentally, where do I search for previously file bug
-reports?).
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-I have three computers, all with various flavours of Audigy cards, all
-using the latest emu10k1 alsa driver. The problem also exists with the
-in-kernel audigy driver. Googling for other people with the same problem
-suggests the problem crept it quite a while ago.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-No matter what UI is used, I can't mute most channels provided by the
-audigy driver. For instance, in alsamixer I can only mute Headphones,
-Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
-toggles.
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-The upshot of this is that mute controls in almost all alsa apps doesn't
-work and the only way to mute the channel is to manually set master or PCM
-volume to zero.
+If you slash out line 104, it resolves the issue.
 
-I read of a bug with one of the intel sound drivers that lost most of the
-mute controls, maybe this is the same sort of thing.
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 05-20-06 16:09 
+ cruiseoveride - 07-18-06 14:21 
 ----------------------------------------------------------------------
-AFAIK Audigy alsa driver never had mute switches (sb live had). Only analog
-mixer part has mute switches.
+ive got it runnig!!!
+But...
+I can only seem to monitor the Main RCA OUT Line.
+Its not able to detect the number of Input Channels properly nor the
+Output Channels...
+
+Ok i understood the peak thing.
+
+how to i put sample data inro the capture of the card to see which peak
+control is  for which line? at the moment i just 
+
+cat junk > /dev/dsp1
+
+for sample data to monitor output levels
 
 ----------------------------------------------------------------------
- stdpikachu - 05-20-06 16:47 
+ Raymond - 07-18-06 14:35 
 ----------------------------------------------------------------------
-What does that mean in terms of giving emu10k1 mute functionality? It isn't
-possible?
+cat /proc/asound/cards
 
-----------------------------------------------------------------------
- jcdutton - 05-20-06 17:02 
-----------------------------------------------------------------------
-Of course it is possible. It is just that time is spent on other things
-instead.
+cat /proc/asound/pcm
 
-
-----------------------------------------------------------------------
- rlrevell - 05-20-06 17:22 
-----------------------------------------------------------------------
-Wasn't it a deliberate design decision not to waste GPRs on mute controls,
-as this can be implemented by the mixer app?
-
-----------------------------------------------------------------------
- jcdutton - 05-20-06 17:27 
-----------------------------------------------------------------------
-One does not have to use GPRs to implement it.
-One can just use local state variables instead.
-
-----------------------------------------------------------------------
- pzad - 05-20-06 17:32 
-----------------------------------------------------------------------
-Simpler is waste GPRs. Audigy has plenty of GPRs to waste :-). Mute on
-every controls needs 54 GPRs - there will be more then 256 GPRs free after
-implementing them.
-
-----------------------------------------------------------------------
- pzad - 05-20-06 19:57 
-----------------------------------------------------------------------
-Could you try this audigy_mute.patch ?
-Not very much tested, but for me it works.
-Need some work to support cards with 1361T chip (I don't have such card -
-someone else have to finish it.
-
-----------------------------------------------------------------------
- rlrevell - 05-20-06 21:17 
-----------------------------------------------------------------------
-pzad, did you forget to upload the patch?
-
-----------------------------------------------------------------------
- pzad - 05-21-06 11:41 
-----------------------------------------------------------------------
-Sorry. It is there now.
-
-
-
-----------------------------------------------------------------------
- stdpikachu - 05-24-06 21:45 
-----------------------------------------------------------------------
-Apols for the numpty reply, but what are the instructions for patching the
-driver source? I've not done much kernel haXx0ring myself. I tried patch
--p0 against emufx.c, but when that fails I'm a little bit lost...!
-
-Thanks for devoting the time and effort into all of this :)
-
-P.S. Is the 1361T chip the one inside the Audigy LS?
-
-----------------------------------------------------------------------
- pzad - 05-24-06 22:33 
-----------------------------------------------------------------------
-I think 1361T is in Audigy 4.
-
-The simplest way is:
-Get alsa-driver package - from www.alsa-project.org.
-extract it somewhere
-change dir to alsa-kernel dir in (should be in "somewhere" dir)
-patch -p1 < path_to_patch
-configure
-make
-make install
-restart alsa (/etc/init.d/alsasound restart)
+lspci -vn
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-06 15:23 stdpikachu     New Issue                                    
-05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
-05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
-05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
-05-20-06 16:09 pzad           Note Added: 0009884                          
-05-20-06 16:47 stdpikachu     Note Added: 0009885                          
-05-20-06 17:02 jcdutton       Note Added: 0009886                          
-05-20-06 17:02 jcdutton       Status                   new => acknowledged 
-05-20-06 17:22 rlrevell       Note Added: 0009887                          
-05-20-06 17:27 jcdutton       Note Added: 0009888                          
-05-20-06 17:32 pzad           Note Added: 0009889                          
-05-20-06 19:57 pzad           Note Added: 0009891                          
-05-20-06 21:17 rlrevell       Note Added: 0009892                          
-05-20-06 21:18 rlrevell       Note View State: public: 9892                    
-05-21-06 11:32 pzad           File Added: audigy_mute.patch                    
-05-21-06 11:32 pzad           Note Added: 0009897                          
-05-21-06 11:41 pzad           Note Edited: 0009897                         
-05-24-06 21:45 stdpikachu     Note Added: 0009960                          
-05-24-06 22:33 pzad           Note Added: 0009961                          
-07-18-06 14:35 jcdutton       Status                   acknowledged => assigned
-07-18-06 14:35 jcdutton       Assigned To               => jcdutton        
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
 ======================================================================
 
 
