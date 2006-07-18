@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002135]: emu10k1: resume (S3) doesn't
-	work with Audigy 2 ZS Notebook
-Date: Tue, 18 Jul 2006 14:35:29 +0200
-Message-ID: <e5fa6317ea9fb346c214584229fd6699@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002075]: sound blaster audigy ZS PCI
+	input doesn't work
+Date: Tue, 18 Jul 2006 14:35:45 +0200
+Message-ID: <d39cb707f0d66166ab63135843c03391@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 508AC150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AD08150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:35:29 +0200 (MEST)
+	Tue, 18 Jul 2006 14:35:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,48 +26,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2135> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2075> 
 ======================================================================
-Reported By:                cathectic
+Reported By:                felipelerena
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2135
+Issue ID:                   2075
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slamd64
-Kernel Version:             2.6.17-rc4
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-19-2006 01:33 CEST
+Date Submitted:             04-26-2006 04:20 CEST
 Last Modified:              07-18-2006 14:35 CEST
 ======================================================================
-Summary:                    emu10k1: resume (S3) doesn't work with Audigy 2 ZS
-Notebook
+Summary:                    sound blaster audigy ZS PCI input doesn't work
 Description: 
-System: Acer Aspire 5021
-Sound Card: Creative Audigy 2 ZS Notebook
-Kernel: 2.6.17-rc4 (also tested on 2.6.16.16)
-Append lines: "noapic" and "noapic acpi_irq_balance" (needed for suspend
-to work)
-
-When the Audigy 2 ZS Notebook is inserted, and the snd-emu10k1 module is
-loaded, after suspending (S3) the laptop, it will not resume.
-
-If the card is removed first; or the snd-emu10k1 module is unloaded before
-standby (or the card can be physically ejected while on standby); resume
-works fine (the module can then be reloaded afterwards manually and the
-card will start working again).
+it just doesnt have input.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 16:35 
+----------------------------------------------------------------------
+This bug report is absolutely useless.  Please provide some more
+information like amixer output and what you are doing to test it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-06 01:33 cathectic      New Issue                                    
-05-19-06 01:33 cathectic      Distribution              => Slamd64         
-05-19-06 01:33 cathectic      Kernel Version            => 2.6.17-rc4      
+04-26-06 04:20 felipelerena   New Issue                                    
+05-09-06 16:35 rlrevell       Note Added: 0009660                          
 07-18-06 14:35 jcdutton       Status                   new => assigned     
 07-18-06 14:35 jcdutton       Assigned To               => jcdutton        
 ======================================================================
