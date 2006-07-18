@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002220]: emu10k1 crash on PCI hotplug
-Date: Tue, 18 Jul 2006 14:15:16 +0200
-Message-ID: <ba4ac3dd0ca7557bfbe17376468de95f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001681]: (MIXER,
+	'Front Playback Volume', 0, 0, 0) appears twice or more
+Date: Tue, 18 Jul 2006 14:20:50 +0200
+Message-ID: <c363dd6907886fc6cde7f42f36340a4a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49458162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8526B162
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jul 2006 14:15:16 +0200 (MEST)
+	Tue, 18 Jul 2006 14:20:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,129 +24,160 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2220> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
 ======================================================================
-Reported By:                fizban
-Assigned To:                jcdutton
+Reported By:                jcdutton
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2220
+Issue ID:                   1681
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-19-2006 02:03 CEST
-Last Modified:              07-18-2006 14:15 CEST
+Date Submitted:             12-26-2005 17:13 CET
+Last Modified:              07-18-2006 14:20 CEST
 ======================================================================
-Summary:                    emu10k1 crash on PCI hotplug
+Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
+or more
 Description: 
-With the new docking support in 2.6.17, my laptop's docking station is now
-hotplugabble, and thus so is the SB 512 PCI in it. However, while
-undocking the system seems to work correctly, docking it again causes the
-following Oops:
+Reported in "mashaun".
 
-EIP is at snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1]
-eax: 00000000   ebx: c8194000   ecx: 00000000   edx: 00000019
-esi: 00000019   edi: 00000000   ebp: 00000000   esp: cfae1c50
-ds: 007b   es: 007b   ss: 0068
-Process kacpid_notify (pid: 11271, threadinfo=cfae1000 task=cfbd6540)
-Stack: d087b7b4 c8194000 00000000 00000000 00000000 d14f05b0 0000ff00
-cf6e3c00 
-       c8194000 d150a31e 00000286 cf6e3c00 00000286 cee77400 cf2f4800
-d150b30c 
-       cf6e3c00 00000286 d150a06e cee77494 cdef8000 d14f0120 d14f0c2a
-cf6e3c00 
-Call Trace:
- <d14f05b0> free_voice+0x23/0x83 [snd_emu10k1_synth]  <d150a31e>
-snd_emux_terminate_all+0x3b/0x6c [snd_emux_synth]
- <d150b30c> snd_emux_detach_seq+0xf/0x3b [snd_emux_synth]  <d150a06e>
-snd_emux_free+0x42/0x74 [snd_emux_synth]
- <d14f0120> snd_emu10k1_synth_new_device+0xf3/0x127 [snd_emu10k1_synth] 
-<d112e0e9> init_device+0x4d/0x82 [snd_seq_device]
- <d112e28e> find_driver+0xe9/0xf1 [snd_seq_device]  <d112e3a3>
-snd_seq_device_dev_register+0x29/0x35 [snd_seq_device]
- <d113cbc0> snd_device_register_all+0x20/0x42 [snd]  <d113979f>
-snd_card_register+0xe/0x21b [snd]
- <d087a5ed> snd_hwdep_new+0xa3/0xb1 [snd_hwdep]  <d150bdef>
-snd_emux_init_hwdep+0x8f/0x9e [snd_emux_synth]
- <d150a161> snd_emux_register+0xc1/0x10a [snd_emux_synth]  <d150a000>
-sf_sample_new+0x0/0x1e [snd_emux_synth]
- <d150a01e> sf_sample_free+0x0/0x8 [snd_emux_synth]  <d14f0113>
-snd_emu10k1_synth_new_device+0xe6/0x127 [snd_emu10k1_synth]
- <d112e0e9> init_device+0x4d/0x82 [snd_seq_device]  <d112e28e>
-find_driver+0xe9/0xf1 [snd_seq_device]
- <d112e3a3> snd_seq_device_dev_register+0x29/0x35 [snd_seq_device] 
-<d113cbc0> snd_device_register_all+0x20/0x42 [snd]
- <d113979f> snd_card_register+0xe/0x21b [snd]  <d11723a4>
-snd_card_emu10k1_probe+0x2fd/0x324 [snd_emu10k1]
- <c01dba41> pci_device_probe+0x36/0x57  <c02281f1>
-driver_probe_device+0x45/0x9a
- <c02abc70> klist_next+0x2d/0x36  <c0228246> __device_attach+0x0/0x5
- <c0227c1a> bus_for_each_drv+0x32/0x58  <c0228296>
-device_attach+0x4b/0x5b
- <c0228246> __device_attach+0x0/0x5  <c0227b42> bus_add_device+0x27/0xcd
- <c02270ef> device_add+0xcc/0x12d  <c01d8a32> pci_bus_add_device+0xb/0x30
- <c01d8a6c> pci_bus_add_devices+0x15/0x93  <c01d8aba>
-pci_bus_add_devices+0x63/0x93
- <c01dfdfd> acpiphp_enable_slot+0x2f1/0x3d0  <c02061e0>
-acpi_ut_update_ref_count+0x4b/0xa0
- <c01dfffd> handle_hotplug_event_func+0x6f/0x12f  <c01fc1b5>
-acpi_ex_exit_interpreter+0xa/0x2f
- <c01f0b54> acpi_evaluate_integer+0x98/0xa2  <c01dff8e>
-handle_hotplug_event_func+0x0/0x12f
- <c0209e73> hotplug_dock_devices+0x21/0x79  <c01f0359>
-acpi_os_execute_thread+0x0/0x1a
- <c0209f7b> dock_notify+0x7b/0x15d  <c0207fc8> acpi_bus_notify+0x17/0x46
- <c01f574a> acpi_ev_notify_dispatch+0x49/0x52  <c01f0365>
-acpi_os_execute_thread+0xc/0x1a
- <c0124166> kthread+0x91/0xbd  <c01240d5> kthread+0x0/0xbd
- <c0101005> kernel_thread_helper+0x5/0xb 
-Code: e0 21 c2 d3 ea eb 11 9c 59 fa 8b 57 04 89 d8 ef 83 c2 04 ed 89 c2 51
-9d 59 89 d0 5b 5e 5f 5d c3 55 89 c5 57 56 89 d6 53 83 ec 04 <83> 78 10 01
-8b 7c 24 18 19 c0 83 e1 3f 25 00 00 00 f8 05 00 00 
-EIP: [<d1177739>] snd_emu10k1_ptr_write+0xb/0x89 [snd_emu10k1] SS:ESP
-0068:cfae1c50
+0 [Live           ]: EMU10K1 - SB Live [Unknown]
+                     SB Live [Unknown] (rev.10, serial:0x80661102) at
+0xc800, irq 5
+
+the emu10k1 gives the following error when one tries to run alsamixer
+ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
+
+amixer controls                                       
+numid=43,iface=MIXER,name='Master Playback Switch'
+numid=44,iface=MIXER,name='Master Playback Volume'
+numid=91,iface=MIXER,name='Headphone +3dB Boost'
+numid=89,iface=MIXER,name='Headphone Amp'
+numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
+numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
+numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
+numid=35,iface=MIXER,name='Tone Control - Bass'
+numid=37,iface=MIXER,name='Tone Control - Switch'
+numid=36,iface=MIXER,name='Tone Control - Treble'
+numid=76,iface=MIXER,name='3D Control - Switch'
+numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
+numid=70,iface=MIXER,name='PCM Playback Switch'
+numid=71,iface=MIXER,name='PCM Playback Volume'
+numid=66,iface=MIXER,name='Surround Mix Playback Switch'
+numid=67,iface=MIXER,name='Surround Mix Playback Volume'
+numid=10,iface=MIXER,name='Surround Playback Volume'
+numid=12,iface=MIXER,name='Surround Capture Switch'
+numid=11,iface=MIXER,name='Surround Capture Volume'
+numid=86,iface=MIXER,name='Center/LFE Jack'
+numid=13,iface=MIXER,name='Center Playback Volume'
+numid=14,iface=MIXER,name='LFE Playback Volume'
+numid=7,iface=MIXER,name='Synth Playback Volume'
+numid=9,iface=MIXER,name='Synth Capture Switch'
+numid=8,iface=MIXER,name='Synth Capture Volume'
+numid=3,iface=MIXER,name='Wave Center Playback Volume'
+numid=4,iface=MIXER,name='Wave LFE Playback Volume'
+numid=2,iface=MIXER,name='Wave Surround Playback Volume'
+numid=1,iface=MIXER,name='Wave Playback Volume'
+numid=6,iface=MIXER,name='Wave Capture Switch'
+numid=5,iface=MIXER,name='Wave Capture Volume'
+numid=88,iface=MIXER,name='Line Input Source'
+numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
+numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
+numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
+numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
+numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
+numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
+numid=83,iface=MIXER,name='LineIn Jack'
+numid=62,iface=MIXER,name='Line Playback Switch'
+numid=63,iface=MIXER,name='Line Playback Volume'
+numid=64,iface=MIXER,name='CD Playback Switch'
+numid=65,iface=MIXER,name='CD Playback Volume'
+numid=61,iface=MIXER,name='Mic Boost (+20dB)'
+numid=87,iface=MIXER,name='Mic Input Source'
+numid=78,iface=MIXER,name='Mic Select'
+numid=82,iface=MIXER,name='Mic1 Jack'
+numid=59,iface=MIXER,name='Mic Playback Switch'
+numid=60,iface=MIXER,name='Mic Playback Volume'
+numid=57,iface=MIXER,name='Phone Playback Switch'
+numid=58,iface=MIXER,name='Phone Playback Volume'
+numid=55,iface=MIXER,name='PC Speaker Playback Switch'
+numid=56,iface=MIXER,name='PC Speaker Playback Volume'
+numid=68,iface=MIXER,name='Aux Playback Switch'
+numid=69,iface=MIXER,name='Aux Playback Volume'
+numid=72,iface=MIXER,name='Capture Source'
+numid=73,iface=MIXER,name='Capture Switch'
+numid=74,iface=MIXER,name='Capture Volume'
+numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
+numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
+numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
+numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
+numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
+numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
+numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
+numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
+numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
+numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
+numid=19,iface=MIXER,name='AC97 Capture Volume'
+numid=18,iface=MIXER,name='AC97 Playback Volume'
+numid=90,iface=MIXER,name='Exchange Center/LFE'
+numid=92,iface=MIXER,name='External Amplifier'
+numid=17,iface=MIXER,name='Front Capture Switch'
+numid=16,iface=MIXER,name='Front Capture Volume'
+numid=84,iface=MIXER,name='Front Jack'
+numid=51,iface=MIXER,name='Front Playback Switch'
+numid=15,iface=MIXER,name='Front Playback Volume'
+numid=52,iface=MIXER,name='Front Playback Volume'
+numid=85,iface=MIXER,name='Rear Jack'
+numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
+numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
+numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
+numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
+numid=241,iface=PCM,name='IEC958 Playback Default',device=2
+numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
+numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
+numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
+numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
+numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
+numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
+numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
 
 ======================================================================
 
 ----------------------------------------------------------------------
- fizban - 07-16-06 04:46 
+ tiwai - 01-05-06 19:41 
 ----------------------------------------------------------------------
-I don't think that's the problem: the attached patch keeps it from crashing
-(and the crash is on _redocking_, anyways, not the inital removal). But
-this patch isn't a real fix, since it unregisters the snd-emu10k1-synth
-driver entirely, forcing an un/reload cycle of snd-emu10k1-synth.ko to get
-back MIDI. Nonetheless, I think this demonstrates that the problem is
-simply that somehow the synth is not being fully deleted in the PCI
-->remove() callback. I simply lack the ALSA-foo to trace through all the
-windy code paths that are supposed to end up deleting the seqencer parts
-along with the card.
+Fixed on CVS.  Thanks.
 
 ----------------------------------------------------------------------
- jcdutton - 07-18-06 14:15 
+ jcdutton - 07-18-06 14:20 
 ----------------------------------------------------------------------
-Can you please provide more information regarding the Oops. There should be
-some more lines above the part you posted.
-
+Issue resolved
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:03 fizban         New Issue                                    
-06-29-06 18:21 tiwai          Note Added: 0010685                          
-07-16-06 04:40 fizban         File Added: emu10k1-not-a-real-fix.diff           
-        
-07-16-06 04:46 fizban         Note Added: 0011028                          
-07-18-06 14:13 jcdutton       Status                   new => assigned     
-07-18-06 14:13 jcdutton       Assigned To               => jcdutton        
-07-18-06 14:15 jcdutton       Note Added: 0011055                          
-07-18-06 14:15 jcdutton       Status                   assigned => feedback
+12-26-05 17:13 jcdutton       New Issue                                    
+01-04-06 22:03 alien999999999 Note Added: 0007454                          
+01-05-06 10:27 dalth          Note Added: 0007466                          
+01-05-06 14:16 pzad           Note Added: 0007468                          
+01-05-06 19:41 tiwai          Status                   new => resolved     
+01-05-06 19:41 tiwai          Resolution               open => fixed       
+01-05-06 19:41 tiwai          Assigned To               => tiwai           
+01-05-06 19:41 tiwai          Note Added: 0007474                          
+01-31-06 08:34 tollimees      Issue Monitored: tollimees                    
+07-18-06 14:20 jcdutton       Status                   resolved => closed  
+07-18-06 14:20 jcdutton       Note Added: 0011056                          
 ======================================================================
 
 
