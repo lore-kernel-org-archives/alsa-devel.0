@@ -1,17 +1,27 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Wed, 19 Jul 2006 03:27:12 +0200
-Message-ID: <b18586f5dd3b7b5d3846778ce5bcc925@bugtrack.alsa-project.org>
+From: "Grace Baldonasa" <gbaldona@gmail.com>
+Subject: Re: question about sampling rate
+Date: Wed, 19 Jul 2006 09:27:34 +0800
+Message-ID: <7034e7b50607181827u6ddc9cb5s8585978e80a7af9b@mail.gmail.com>
+References: <7034e7b50607120105s67644513ned098c960d9ac22b@mail.gmail.com>
+	<54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
+	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
+	<20060712093749.GA22449@turing.informatik.uni-halle.de>
+	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
+	<20060714173102.GA13816@turing.informatik.uni-halle.de>
+	<7034e7b50607172213mbde1845occ78b95b17914563@mail.gmail.com>
+	<20060718071150.GA11917@turing.informatik.uni-halle.de>
+	<7034e7b50607180021u5605f818v9c5e55edb1023903@mail.gmail.com>
+	<20060718143423.GB15467@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1093940113=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCEB8242
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26FD4242
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 03:27:12 +0200 (MEST)
+	Wed, 19 Jul 2006 03:27:35 +0200 (MEST)
+Received: by py-out-1112.google.com with SMTP id c63so73071pyc
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2006 18:27:34 -0700 (PDT)
+In-Reply-To: <20060718143423.GB15467@turing.informatik.uni-halle.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,149 +31,113 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============1093940113==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_48983_21341185.1153272454070"
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
-======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-19-2006 03:27 CEST
-======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
-Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+------=_Part_48983_21341185.1153272454070
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+Hi Clemens,
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+yes, i did set the alternate setting. The currrent endpoint should be able
+to handle the stream data since the maxpacketsize is 56, the max sampling
+rate it support is 55kHz, but as I mentioned in my previous email, it's only
+noise that I can hear from the speaker.
 
-If you slash out line 104, it resolves the issue.
+I used a converted raw data in hex format, I am not really sure what is the
+sampling bit, sampling rate or number of channels used when conversion was
+made to the raw data, I am in doubt the sampling bit / channels does  not
+fit with my experimentations.
 
-My question is,
+Can you recommend some application that will allow me to convert small wav
+to hex as array of characters that I could use to stream.
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
-======================================================================
+Thank you very much once again,
 
-----------------------------------------------------------------------
- cruiseoveride - 07-19-06 02:52 
-----------------------------------------------------------------------
-its great that ur helping me ray,
-but eash post i ask u at least 3 different things, u only seem to see the
-last one in each case...
-
-[vikky@server asound]$ cat cards
- 0 [ALS4000        ]: ALS4000 - Avance Logic ALS4000
-                      Avance Logic ALS4000 at 0x7000, irq 82
- 1 [ICE1724        ]: ICE1724 - ICEnsemble ICE1724
-                      ICEnsemble ICE1724 at 0x7400, irq 66
- 2 [CK804          ]: NFORCE - NVidia CK804
-                      NVidia CK804 with ALC850 at 0xd5003000, irq 233
-[vikky@server asound]$ cat pcm
-00-00: ALS4000 DSP :  : playback 1 : capture 1
-01-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1 : capture 1
-01-00: ICE1724 : ICE1724 : playback 1 : capture 1
-02-02: Intel ICH - IEC958 : NVidia CK804 - IEC958 : playback 1
-02-01: Intel ICH - MIC ADC : NVidia CK804 - MIC ADC : capture 1
-02-00: Intel ICH : NVidia CK804 : playback 1 : capture 1
-[vikky@server asound]$
-
-The card physically has 3 outs
-S/P DIF 
-Main Out - (1/4' TRS) seperate left and right
-Monitor Out - (1/4' TRS) seperate left and right
-
-it has 2 ins
-S/PDIR in
-In - (1/4' TRS) both left and right
-
-Question 1
----------------
-Please could u answer  this question.
-from
-amixer -c 2 cget numid=5
-numid=5,iface=MIXER,name='Multi Track Peak'
-  ; type=INTEGER,access=r----,values=22,min=0,max=255,step=0
-  : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-which value is what?
-when i play something , the first two (1,2) start jumping up and down and
-peaking at 255. wat do the others do? As they dont change at all.
+grace
 
 
-Question 2
----------------
-How to push noise into the capture interfaces to check monitor levels?
+On 7/18/06, Clemens Ladisch <clemens@ladisch.de> wrote:
+>
+> Grace Baldonasa wrote:
+> > I am not yet handling the fractional part of frame size, would it be
+> cause
+> > of the distorted sound?
+>
+> There shouldn't be too much noise in this case.
+>
+> > The endpoint says, adaptive synchrnonization,
+>
+> Then it should be able to handle a frequency that is 0.25% off.
+>
+> > >How did you set the sample format?  Are there endpoint-specific
+> > >controls?
+> >
+> > no endpoint specific control is set. sample format is based on the max
+> > sampling frequency from the format descriptor.
+>
+> Did you set the altsetting, or how does the device know about the
+> current sample format?
+>
+>
+> Regards,
+> Clemens
+>
 
-----------------------------------------------------------------------
- Raymond - 07-19-06 03:27 
-----------------------------------------------------------------------
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=62e077ee4855;file=pci/ice1712/ice1724.c;style=gitweb
+------=_Part_48983_21341185.1153272454070
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-http://alsa.opensrc.org/ice1724
+<div>Hi Clemens,</div>
+<div>&nbsp;</div>
+<div>yes, i did set the alternate setting. The currrent endpoint should be able to handle the stream data since the maxpacketsize is 56, the max sampling rate it support is 55kHz, but as I mentioned in my previous email, it's only noise that I can hear from the speaker.
+</div>
+<div>&nbsp;</div>
+<div>I used a converted raw data in hex format, I am not really sure what is the sampling bit, sampling rate or number of channels used when conversion was made to the raw data, I am in doubt the sampling bit / channels does&nbsp; not fit with my experimentations. 
+</div>
+<div>&nbsp;</div>
+<div>Can you recommend some application that will allow me to convert&nbsp;small wav to hex as array of characters that I could use to stream.</div>
+<div>&nbsp;</div>
+<div>Thank you very much once again,</div>
+<div>&nbsp;</div>
+<div>grace<br><br>&nbsp;</div>
+<div><span class="gmail_quote">On 7/18/06, <b class="gmail_sendername">Clemens Ladisch</b> &lt;<a href="mailto:clemens@ladisch.de">clemens@ladisch.de</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">Grace Baldonasa wrote:<br>&gt; I am not yet handling the fractional part of frame size, would it be cause<br>
+&gt; of the distorted sound?<br><br>There shouldn't be too much noise in this case.<br><br>&gt; The endpoint says, adaptive synchrnonization,<br><br>Then it should be able to handle a frequency that is 0.25% off.<br><br>&gt; &gt;How did you set the sample format?&nbsp;&nbsp;Are there endpoint-specific
+<br>&gt; &gt;controls?<br>&gt;<br>&gt; no endpoint specific control is set. sample format is based on the max<br>&gt; sampling frequency from the format descriptor.<br><br>Did you set the altsetting, or how does the device know about the
+<br>current sample format?<br><br><br>Regards,<br>Clemens<br></blockquote></div><br>
 
-http://alsa.opensrc.org/index.php?page=Envy24Control
-
-It seem that Audiophile Delta 192 is not supported
-
-You will need to open bug reports for
-1) Audiophile Delta 192
-2) envy24control for ice1724
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-======================================================================
+------=_Part_48983_21341185.1153272454070--
 
 
+--===============1093940113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1093940113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1093940113==--
