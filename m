@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002294]: Mvox speakerphone fails to
 	attach
-Date: Wed, 19 Jul 2006 06:46:31 +0200
-Message-ID: <c15587ed0e34817dcd83bbf0908233ab@bugtrack.alsa-project.org>
+Date: Wed, 19 Jul 2006 06:49:19 +0200
+Message-ID: <ac346f0dff542bfa4e3a8fbc390a1368@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB164242
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2DA5242
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 06:46:31 +0200 (MEST)
+	Wed, 19 Jul 2006 06:49:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2294> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-19-2006 06:46 CEST
-Last Modified:              07-19-2006 06:46 CEST
+Last Modified:              07-19-2006 06:49 CEST
 ======================================================================
 Summary:                    Mvox speakerphone fails to attach
 Description: 
@@ -61,10 +61,20 @@ Is there any chance that we can figure out what this device is doing that
 is weird so it can be made to work?
 ======================================================================
 
+----------------------------------------------------------------------
+ malexmedia - 07-19-06 06:49 
+----------------------------------------------------------------------
+I am also pretty good at debugging/patching/rebuilding the kernel, so I am
+willing to participate in testing, etc.
+
+Thanks again, and sorry if I'm misusing the bugtracking system. :-\
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-19-06 06:46 malexmedia     New Issue                                    
+07-19-06 06:47 malexmedia     Issue Monitored: malexmedia                    
+07-19-06 06:49 malexmedia     Note Added: 0011081                          
 ======================================================================
 
 
