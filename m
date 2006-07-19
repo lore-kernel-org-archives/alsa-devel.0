@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002285]: Alsa-lib needs to be updated to
-	be compiled under kernel 2.6.17-1.2157
-Date: Wed, 19 Jul 2006 20:20:41 +0200
-Message-ID: <daeccb13f499fe8cc72422492c246219@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002292]: volume suspend/resume no longer
+	works.
+Date: Wed, 19 Jul 2006 20:24:26 +0200
+Message-ID: <73ea8522c0e3a2042b0721ce8dcefd06@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2722818F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9917322A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:20:42 +0200 (MEST)
+	Wed, 19 Jul 2006 20:24:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +26,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2285> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2292> 
 ======================================================================
-Reported By:                thesource
+Reported By:                cartman
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   2285
-Category:                   0_general
+Issue ID:                   2292
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-16-2006 07:52 CEST
-Last Modified:              07-19-2006 20:20 CEST
+Date Submitted:             07-18-2006 22:27 CEST
+Last Modified:              07-19-2006 20:24 CEST
 ======================================================================
-Summary:                    Alsa-lib needs to be updated to be compiled under
-kernel 2.6.17-1.2157
+Summary:                    volume  suspend/resume no longer works.
 Description: 
-It is neccessary due to some header file changes in new kernel. At this
-moment alsa-lib 1.0.12rc1 can not be compiled - sys/types.h and
-asm/types.h must not be included simultaniously or this will cause type
-name conflict error.
+I was using 2.6.18 latest git tree fine so far but when I updated alsa-lib
+and other userspace tools to 1.1.12rc1 mplayer gives this error when
+suspending/resuming volume :
+
+alsa-pause: pcm pause error: Input/output error
+alsa-resume: pcm resume error: Input/output error
+
+Corresponding source code is :
+
+[...]
+if ((err = snd_pcm_pause(alsa_handler, 1)) < 0)
+        {
+            mp_msg(MSGT_AO,MSGL_ERR,"alsa-pause: pcm pause error: %s\n",
+snd_strerror(err));
+            return;
+        }
+[...]
+
+and similar for resume.
 ======================================================================
 
 ----------------------------------------------------------------------
- thesource - 07-17-06 16:17 
+ tiwai - 07-19-06 20:14 
 ----------------------------------------------------------------------
-Sorry forgot to say: I use kernel source rpm. I compiled my kernel from
-source (because I want to use nvidia agp and fedora guys stupidly compiled
-agpgart into kernel). Try scr.rpm for this kernel and check directory
-structure to see what I mean.
+Try the uploaded patch.
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:20 
+ cartman - 07-19-06 20:24 
 ----------------------------------------------------------------------
-alsa-lib has nothing to do with the kernel tree headers.  The ALSA kernel
-API is defined in its private headers (alsa-lib/include/sound/*).
-
-If you got compile errors, it's the distro-specific glibc (header)
-problem.
+Tried patch and sadly it didn't make any difference, thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 07:52 thesource      New Issue                                    
-07-16-06 18:06 cruiseoveride  Note Added: 0011029                          
-07-16-06 18:08 cruiseoveride  File Added: make_info.txt                    
-07-17-06 06:30 thesource      Note Added: 0011034                          
-07-17-06 14:41 cruiseoveride  Note Added: 0011038                          
-07-17-06 14:43 cruiseoveride  File Added: kernel-devel_filelist.txt             
-      
-07-17-06 16:17 thesource      Note Added: 0011043                          
-07-19-06 20:20 tiwai          Note Added: 0011096                          
+07-18-06 22:27 cartman        New Issue                                    
+07-19-06 20:14 tiwai          Note Added: 0011094                          
+07-19-06 20:14 tiwai          File Added: dmix-pause-disable.diff               
+    
+07-19-06 20:24 cartman        Note Added: 0011097                          
 ======================================================================
 
 
