@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002292]: volume suspend/resume no longer
-	works.
-Date: Wed, 19 Jul 2006 20:24:26 +0200
-Message-ID: <73ea8522c0e3a2042b0721ce8dcefd06@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002280]: nforce 570 with AD1988A no
+	sound
+Date: Wed, 19 Jul 2006 20:33:34 +0200
+Message-ID: <73f06ca56e7a3a78d6674f464e688210@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9917322A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E7CA102
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:24:26 +0200 (MEST)
+	Wed, 19 Jul 2006 20:33:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,63 +26,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2292> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2280> 
 ======================================================================
-Reported By:                cartman
-Assigned To:                
+Reported By:                Tobias Diedrich
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2292
-Category:                   2_mixer
+Project:                    ALSA - driver
+Issue ID:                   2280
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian/GNU Linux testing
+Kernel Version:             2.6.18-rc1
 ======================================================================
-Date Submitted:             07-18-2006 22:27 CEST
-Last Modified:              07-19-2006 20:24 CEST
+Date Submitted:             07-14-2006 14:40 CEST
+Last Modified:              07-19-2006 20:33 CEST
 ======================================================================
-Summary:                    volume  suspend/resume no longer works.
+Summary:                    nforce 570 with AD1988A no sound
 Description: 
-I was using 2.6.18 latest git tree fine so far but when I updated alsa-lib
-and other userspace tools to 1.1.12rc1 mplayer gives this error when
-suspending/resuming volume :
-
-alsa-pause: pcm pause error: Input/output error
-alsa-resume: pcm resume error: Input/output error
-
-Corresponding source code is :
-
-[...]
-if ((err = snd_pcm_pause(alsa_handler, 1)) < 0)
-        {
-            mp_msg(MSGT_AO,MSGL_ERR,"alsa-pause: pcm pause error: %s\n",
-snd_strerror(err));
-            return;
-        }
-[...]
-
-and similar for resume.
+I just bought a new mainboard, an Asus M2N with nforce 570 chipset (mcp55)
+and snd-hda-intel loads fine, but complains about an unknown chip version
+and tries to get some configuration values from the BIOS. Apparently this
+does not work, since while it loads fine I have so far been unable to get
+any sound from it.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:14 
+ tiwai - 07-19-06 20:33 
 ----------------------------------------------------------------------
-Try the uploaded patch.
-
-----------------------------------------------------------------------
- cartman - 07-19-06 20:24 
-----------------------------------------------------------------------
-Tried patch and sadly it didn't make any difference, thanks.
+Try the latest HG version.  The codec might be AD1988B, not AD1988A.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-06 22:27 cartman        New Issue                                    
-07-19-06 20:14 tiwai          Note Added: 0011094                          
-07-19-06 20:14 tiwai          File Added: dmix-pause-disable.diff               
-    
-07-19-06 20:24 cartman        Note Added: 0011097                          
+07-14-06 14:40 Tobias DiedrichNew Issue                                    
+07-14-06 14:40 Tobias DiedrichDistribution              => Debian/GNU Linux
+testing
+07-14-06 14:40 Tobias DiedrichKernel Version            => 2.6.18-rc1      
+07-19-06 20:33 tiwai          Note Added: 0011098                          
 ======================================================================
 
 
