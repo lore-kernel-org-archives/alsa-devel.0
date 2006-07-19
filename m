@@ -1,27 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: question about sampling rate
-Date: Wed, 19 Jul 2006 14:29:05 +0200
-Message-ID: <20060719122905.GB24800@turing.informatik.uni-halle.de>
-References: <54799.217.150.108.178.1152694606.squirrel@newgolddream.dyndns.info>
-	<7034e7b50607120217g2eaace56k5f31054c93839d9f@mail.gmail.com>
-	<20060712093749.GA22449@turing.informatik.uni-halle.de>
-	<7034e7b50607120300k7cb93e2ak5cf635375d91942c@mail.gmail.com>
-	<20060714173102.GA13816@turing.informatik.uni-halle.de>
-	<7034e7b50607172213mbde1845occ78b95b17914563@mail.gmail.com>
-	<20060718071150.GA11917@turing.informatik.uni-halle.de>
-	<7034e7b50607180021u5605f818v9c5e55edb1023903@mail.gmail.com>
-	<20060718143423.GB15467@turing.informatik.uni-halle.de>
-	<7034e7b50607181827u6ddc9cb5s8585978e80a7af9b@mail.gmail.com>
+Subject: Re: default device setting doesn't work
+Date: Wed, 19 Jul 2006 14:43:25 +0200
+Message-ID: <20060719124325.GC24800@turing.informatik.uni-halle.de>
+References: <715d90900607172251q7a94ac0bj752ae562da3f354d@mail.gmail.com>
+	<20060718071405.GB11917@turing.informatik.uni-halle.de>
+	<715d90900607180020g3bf04664g8d48308ec93183c4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de
-	[141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EEBA226
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 14:35:44 +0200 (MEST)
-In-reply-to: <7034e7b50607181827u6ddc9cb5s8585978e80a7af9b@mail.gmail.com>
+In-reply-to: <715d90900607180020g3bf04664g8d48308ec93183c4@mail.gmail.com>
 Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -32,38 +20,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Grace Baldonasa <gbaldona@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: boku <boku0712@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Grace Baldonasa wrote:
-> yes, i did set the alternate setting. The currrent endpoint should be able
-> to handle the stream data since the maxpacketsize is 56, the max sampling
-> rate it support is 55kHz, but as I mentioned in my previous email, it's only
-> noise that I can hear from the speaker.
-
-What is the output of "lsusb -v" for this device?
-
-> I used a converted raw data in hex format, I am not really sure what is the
-> sampling bit, sampling rate or number of channels used when conversion was
-> made to the raw data, I am in doubt the sampling bit / channels does  not
-> fit with my experimentations.
+boku wrote:
+> On 7/18/06, Clemens Ladisch <clemens@ladisch.de> wrote:
+> >boku wrote:
+> >>     I met a problem that it doesn't work while I use the defaults
+> >> device such as
+> >>          aplay test.wav
+> >
+> >What do you mean with "doesn't work"?  No sound?  Noise?  Some error
+> >message?  A crash?  Green demons coming out of your speakers?
+> >
+> >What is the output of "aplay -v test.wav"?
 > 
-> Can you recommend some application that will allow me to convert small wav
-> to hex as array of characters that I could use to stream.
+> Hi, it reports errors from alsa-lib's snd_pcm_open_noupdate() in pcm.c.
 
-Some Python script like this:
+Thank you for your detailed error description.
 
-f = open("something.wav", "rb")
-while 1:
-	c = f.read(1)
-	if not c:
-		break
-	print "0x%02x," % ord(c)
-f.close()
+My crystal ball tells me that the error output by "aplay -v" is
+"Error: snd_pcm_open_noupdate(): Green demons detected".
+
+This means that you forgot to sacrifice a virgin chicken over your
+keyboard.
+
+(In case my crystal ball was wrong, I cannot help you unless you show me
+the error message.  And you might tell what sound card you use; some
+devices aren't chicken compatible.)
 
 
-HTH
+SCNR
 Clemens
 
 -------------------------------------------------------------------------
