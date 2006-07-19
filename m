@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002258]: nForce4 + intel8x0 + Dolby
-	Digital 5.1 + S/PDIF = crackle at start of playback
-Date: Wed, 19 Jul 2006 20:42:47 +0200
-Message-ID: <b35981db7bb3f169efd0195447ac16d6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
+	in incorrect order when doing a speaker-test
+Date: Wed, 19 Jul 2006 21:30:52 +0200
+Message-ID: <e608bd740faf2ebd4be841772405510f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C20022A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0CA418A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:42:47 +0200 (MEST)
+	Wed, 19 Jul 2006 21:30:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,90 +26,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2258> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
 ======================================================================
-Reported By:                Human
+Reported By:                calestyo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2258
-Category:                   PCI - intel8x0
+Issue ID:                   2244
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               KnoppMyth
-Kernel Version:             2.6.17-chw-2
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             07-05-2006 22:12 CEST
-Last Modified:              07-19-2006 20:42 CEST
+Date Submitted:             06-29-2006 01:35 CEST
+Last Modified:              07-19-2006 21:30 CEST
 ======================================================================
-Summary:                    nForce4 + intel8x0 + Dolby Digital 5.1 + S/PDIF =
-crackle at start of playback
+Summary:                    Aureon 7.1 Universe speakers in incorrect order when
+doing a speaker-test
 Description: 
-Playing stereo audio never causes a crackle.  However, playback of 5.1
-Dobly Digital content (standalone audio or audio embedded in video) causes
-a quick but very loud sub-second audio crackle before playback continues,
-when the previous playback was _not_ also multi-channel content.  The
-problem always happens when the card is being asked to _switch_ to
-multichannel audio _from_ either stereo or a non-initialized state.  The
-crackle happens on both coaxial and optical S/PDIF connections to the
-nForce4 (CK804) onboard soundcard.
+I use my Aureon 7.1 Universe with a TerraTec HomeAreon TXR 884 7.1 speaker
+set.
 
-The same receiver has not had a problem with S/PDIF with a different card
-(Chaintech AV-710 / ice1724).
+I've connected the outputs of the soundard to those of the subwoofer
+which
+itself connects the small speakers the following way:
+
+Soundcard -------------- Subwoofer --- Small Speakers
+Out Front <---------+--> In FL <-----> Front Left Speaker
+                    \--> In FR <-----> Font Right Speaker
+Out Rear <----------+--> In SL <-----> Side Left Speaker
+                    \--> In SR <-----> Side Right Speaker
+Out Center/Subwoofer <-> In C <------> Center Speaker
+                      \> In Subwoofer
+Out Back Surround <----> In BL <-----> Back Left Speaker
+                    \--> In BR <-----> Back Right Speaker
+
+You might have a look at soundcard manual page 8
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=574)
+and speaker manual page 12
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=724)
+My speakers are placed in my room in a configuration as the 7.1 shown on
+page 12
+in the speaker manual.
+
+As you note the connection from rear to side is a little bit strange (at
+least I
+thought so,...) but this seems to be correct, because when I use the
+windows
+mixer supplied by TerraTec itself, there is a surround test included which
+shows
+the position of the 8 speakers and let me put the indiviually on and off
+and
+this leads always to the correct position.
+
+The problem now: I tried the same as under Windows unter Linux with the
+speaker-test tool.
+I called it via speaker-test -t wav -c 8 and the following came out:
+What wav file was played ----- in which speaker position the wav file was
+played
+"Front Left" ----------------- Front Left Speaker  (correct)
+"Front Center" --------------- Center Speaker      (correct)
+"Front Right" ---------------- Front Right Speaker (correct)
+"Side Right" ----------------- Back Right Speaker  (probably wrong!)
+"Rear Right" ----------------- Side Right Speaker  (probably wrong!)
+"Rear Left" ------------------ Side Left Speaker  (probably wrong!)
+"Side Left" ------------------ Back Left Speaker  (probably wrong!)
+"LFE" ------------------------ Subwoofer (correct)
+
+No one could think that I should just switch the speaker cables but that
+can't
+be a proper solution (not only because this would break settings in the
+original
+Windows driver (which I only use for Upgrading my Plextor drive firmware
+;) ).
+I think the configuration of the surround for the Aureon 7.1 Universe has
+here
+some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Human - 07-11-06 18:54 
+ tiwai - 07-19-06 20:01 
 ----------------------------------------------------------------------
-Hi, tiwai.  I don't understand the cause fully, but maybe I can still help.
- Is a workaround possible?  Half a second of silence would be far better
-than half a second of static.  Perhaps muting the line, then using the
-buggy procedure, then unmuting?  Or is the problem that the receiver is
-being asked to switch to multichannel mode in such a way that the receiver
-interprets part of the switch request as audible noise, so muting the
-source would not help?  Is any workaround possible?
-
-As for a real fix, has nVidia refused to provide the necessary datasheet
-for the nForce4 chipset when asked?  If you tell me what specifically
-would help fix the problem, I will do what I can to provide it.  I don't
-exactly have an "in" with nVidia, but as a vendor who sells nVidia
-products, they have assigned Linux troubleshooting techs to my requests in
-the past.
-
-Finally, if you point me to the relevant code in which the S/PDIF status
-bit is set, couldn't I iterate through all possible settings and
-eventually find the right one?  If the solution space is small enough, it
-may be feasible.  Are we talking a 4-bit value or a 16-bit value?
-
-If it's not appropriate to keep conversing back and forth in this bug
-report, we can switch to email.
+It's a breakage of the recent autoconf.
+Pass --libdir and --datadir configure options with proper directories.
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:42 
+ calestyo - 07-19-06 21:30 
 ----------------------------------------------------------------------
-No, no workaround is known.  That you got a half second silence is purely a
-luck, depending on the receiver.  Most people don't get any SPDIF
-non-audio output from nforce.
-
-Actually, nVidia never released datasheet on their chipsets.  The current
-support is somehow a backport from their modified i810_audio.c driver, and
-from some trial-and-error.  I guess nforce chip has a dedicated register
-for SPDIF status bits, but it's just a wild guess.
+Ahh ok,.. now aplay -l and -L are working again,.. however... playing files
+(with both speaker test and aplay,.. diffenert options for -D and or
+without -D at all) are leading to this error:
+$ aplay /usr/share/sounds/alsa/Noise.wav
+Playing WAVE '/usr/share/sounds/alsa/Noise.wav' : Signed 16 bit Little
+Endian, Rate 48000 Hz, Mono
+aplay: relocation error: aplay: symbol snd_pcm_hw_params_set_rate_near,
+version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link time
+reference
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-05-06 22:12 Human          New Issue                                    
-07-05-06 22:12 Human          File Added: asound.conf                      
-07-05-06 22:12 Human          Distribution              => KnoppMyth       
-07-05-06 22:12 Human          Kernel Version            => 2.6.17-chw-2    
-07-05-06 22:13 Human          Issue Monitored: Human                       
-07-11-06 18:34 Human          Note Added: 0010977                          
-07-11-06 18:38 tiwai          Note Added: 0010978                          
-07-11-06 18:54 Human          Note Added: 0010979                          
-07-19-06 20:42 tiwai          Note Added: 0011101                          
+06-29-06 01:35 calestyo       New Issue                                    
+06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
+06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:36 calestyo       Note Added: 0010634                          
+06-29-06 01:36 calestyo       Issue Monitored: calestyo                    
+06-29-06 15:29 Raymond        Note Added: 0010647                          
+06-29-06 15:36 calestyo       Note Added: 0010648                          
+06-29-06 15:37 calestyo       Note Added: 0010649                          
+06-29-06 15:40 Raymond        Note Added: 0010650                          
+06-29-06 15:45 calestyo       Note Added: 0010651                          
+06-29-06 15:52 Raymond        Note Added: 0010652                          
+06-29-06 15:54 Raymond        Note Edited: 0010652                         
+06-29-06 15:56 calestyo       Note Added: 0010653                          
+06-29-06 15:58 Raymond        Note Added: 0010654                          
+06-29-06 16:01 calestyo       Note Added: 0010655                          
+06-29-06 16:04 Raymond        Note Added: 0010656                          
+06-29-06 16:07 calestyo       Note Added: 0010657                          
+06-29-06 16:08 Raymond        Note Edited: 0010656                         
+06-29-06 16:12 Raymond        Note Added: 0010658                          
+06-29-06 16:19 calestyo       Note Added: 0010659                          
+06-29-06 17:50 tiwai          Note Added: 0010677                          
+06-29-06 19:05 calestyo       Note Added: 0010695                          
+06-30-06 02:02 Raymond        Note Added: 0010709                          
+06-30-06 02:14 rlrevell       Note Added: 0010711                          
+06-30-06 05:13 Raymond        Note Edited: 0010709                         
+07-03-06 19:28 calestyo       Note Added: 0010803                          
+07-03-06 19:37 rlrevell       Note Added: 0010804                          
+07-17-06 20:49 calestyo       Note Added: 0011049                          
+07-18-06 03:23 calestyo       Note Added: 0011051                          
+07-18-06 03:23 calestyo       Note Deleted: 0011049                        
+07-18-06 05:54 Raymond        Note Added: 0011052                          
+07-18-06 05:58 Raymond        Note Edited: 0011052                         
+07-18-06 13:37 calestyo       Note Added: 0011054                          
+07-18-06 14:24 Raymond        Note Added: 0011058                          
+07-18-06 14:25 Raymond        Note Edited: 0011058                         
+07-18-06 14:34 calestyo       Note Added: 0011059                          
+07-18-06 17:35 Raymond        Note Added: 0011067                          
+07-18-06 17:39 Raymond        Note Edited: 0011067                         
+07-18-06 18:03 calestyo       Note Added: 0011068                          
+07-18-06 18:12 Raymond        Note Added: 0011069                          
+07-18-06 18:30 calestyo       Note Added: 0011070                          
+07-19-06 03:36 Raymond        Note Added: 0011077                          
+07-19-06 05:50 Raymond        Note Edited: 0011077                         
+07-19-06 11:50 calestyo       Note Added: 0011084                          
+07-19-06 12:03 Raymond        Note Added: 0011085                          
+07-19-06 12:06 Raymond        Note Edited: 0011085                         
+07-19-06 12:11 calestyo       Note Added: 0011086                          
+07-19-06 16:46 Raymond        Note Added: 0011087                          
+07-19-06 18:21 calestyo       Note Added: 0011091                          
+07-19-06 18:22 calestyo       Note Added: 0011092                          
+07-19-06 20:01 tiwai          Note Added: 0011093                          
+07-19-06 21:30 calestyo       Note Added: 0011102                          
 ======================================================================
 
 
