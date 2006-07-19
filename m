@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Wed, 19 Jul 2006 11:50:20 +0200
-Message-ID: <fdac2af2c404eef7119ad37dc357dd08@bugtrack.alsa-project.org>
+Date: Wed, 19 Jul 2006 12:03:20 +0200
+Message-ID: <b8f4bf8c5954a1f89284cfa169d05315@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D03B193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCF731AA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 11:50:21 +0200 (MEST)
+	Wed, 19 Jul 2006 12:03:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-19-2006 11:50 CEST
+Last Modified:              07-19-2006 12:03 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,20 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-19-06 05:50 
-----------------------------------------------------------------------
-I don't have any ice17xx card
-
-It seem that you are the first Aureon 7.1 Universe user to test this
-driver
-
-You have to find out the label of those AK4xxx ADC/DAC on your cards 
-
-http://hg-mirror.alsa-project.org/alsa-kernel?f=d9808d13fa5f;file=pci/ice1712/ak4xxx.c;style=gitweb
-
-
-
-----------------------------------------------------------------------
  calestyo - 07-19-06 11:50 
 ----------------------------------------------------------------------
 >It seem that you are the first Aureon 7.1 Universe user to test this
@@ -148,6 +134,12 @@ so...
 I've made a kernel with only soundcore support,.. booted it,
 ./configure&&make&&make install'ed alsa-driver modprobed snd-ice1724 and
 ./configure&&make&&make install'ed alsa-lib
+
+----------------------------------------------------------------------
+ Raymond - 07-19-06 12:03 
+----------------------------------------------------------------------
+If you are using HG repo, you need to use ./hgcompile instead of
+./configure for alsa-driver, alsa-lib , alsa-utils, ......
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -196,6 +188,7 @@ Date Modified  Username       Field                    Change
 07-19-06 03:36 Raymond        Note Added: 0011077                          
 07-19-06 05:50 Raymond        Note Edited: 0011077                         
 07-19-06 11:50 calestyo       Note Added: 0011084                          
+07-19-06 12:03 Raymond        Note Added: 0011085                          
 ======================================================================
 
 
