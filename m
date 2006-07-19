@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Wed, 19 Jul 2006 18:21:19 +0200
-Message-ID: <88b3b5ea7e14edb8271a8862202c2319@bugtrack.alsa-project.org>
+Date: Wed, 19 Jul 2006 18:22:22 +0200
+Message-ID: <e2e2dc1b026b47658f910bf2405e8b68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C47162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 195F3162
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 18:21:19 +0200 (MEST)
+	Wed, 19 Jul 2006 18:22:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-19-2006 18:21 CEST
+Last Modified:              07-19-2006 18:22 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,13 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-19-06 16:46 
-----------------------------------------------------------------------
-Seem alsa-lib cannot find some conf file
-
-strace aplay stereo.wav
-
-----------------------------------------------------------------------
  calestyo - 07-19-06 18:21 
 ----------------------------------------------------------------------
 >Seem alsa-lib cannot find some conf file
@@ -129,6 +122,178 @@ plug:side or plug:rear works just fine...
 Without the "plug:" it doesn't work however.
 So the most recent problems may be unrelated to ice1724...
 Anyway,... the order of the boxes still seems to be wrong ;)
+
+----------------------------------------------------------------------
+ calestyo - 07-19-06 18:22 
+----------------------------------------------------------------------
+$ strace aplay /usr/share/sounds/alsa/Noise.wav
+execve("/usr/bin/aplay", ["aplay", "/usr/share/sounds/alsa/Noise.wav"...],
+[/* 31 vars */]) = 0
+uname({sys="Linux", node="euler", ...}) = 0
+brk(0)                                  = 0x50c000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e835e000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=73267, ...}) = 0
+mmap(NULL, 73267, PROT_READ, MAP_PRIVATE, 3, 0) = 0x2ae8e8360000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+open("/usr/lib/libasound.so.2", O_RDONLY) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260\356"..., 640)
+= 640
+fstat(3, {st_mode=S_IFREG|0755, st_size=3296456, ...}) = 0
+mmap(NULL, 1930632, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x2ae8e845f000
+mprotect(0x2ae8e852f000, 1078664, PROT_NONE) = 0
+mmap(0x2ae8e862f000, 32768, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xd0000) = 0x2ae8e862f000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+open("/lib/libm.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320=\0\0"..., 640)
+= 640
+fstat(3, {st_mode=S_IFREG|0644, st_size=548016, ...}) = 0
+mmap(NULL, 1593800, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x2ae8e8637000
+mprotect(0x2ae8e86bc000, 1049032, PROT_NONE) = 0
+mmap(0x2ae8e87bb000, 8192, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x84000) = 0x2ae8e87bb000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+open("/lib/libdl.so.2", O_RDONLY)       = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0\20\0\0"..., 640)
+= 640
+fstat(3, {st_mode=S_IFREG|0644, st_size=10392, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e87bd000
+mmap(NULL, 1057000, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x2ae8e87be000
+mprotect(0x2ae8e87c0000, 1048808, PROT_NONE) = 0
+mmap(0x2ae8e88bf000, 8192, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1000) = 0x2ae8e88bf000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+open("/lib/libpthread.so.0", O_RDONLY)  = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0PV\0\0\0"..., 640)
+= 640
+fstat(3, {st_mode=S_IFREG|0644, st_size=97401, ...}) = 0
+mmap(NULL, 1131368, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x2ae8e88c1000
+mprotect(0x2ae8e88d1000, 1065832, PROT_NONE) = 0
+mmap(0x2ae8e89d0000, 8192, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xf000) = 0x2ae8e89d0000
+mmap(0x2ae8e89d2000, 13160, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x2ae8e89d2000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or
+directory)
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\200\305"..., 640)
+= 640
+lseek(3, 624, SEEK_SET)                 = 624
+read(3, "\4\0\0\0\20\0\0\0\1\0\0\0GNU\0\0\0\0\0\2\0\0\0\6\0\0\0"..., 32) =
+32
+fstat(3, {st_mode=S_IFREG|0755, st_size=1295640, ...}) = 0
+mmap(NULL, 2354344, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x2ae8e89d6000
+mprotect(0x2ae8e8afa000, 1158312, PROT_NONE) = 0
+mmap(0x2ae8e8bf9000, 98304, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x123000) = 0x2ae8e8bf9000
+mmap(0x2ae8e8c11000, 15528, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x2ae8e8c11000
+close(3)                                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e8c15000
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e8c16000
+mprotect(0x2ae8e8bf9000, 86016, PROT_READ) = 0
+arch_prctl(ARCH_SET_FS, 0x2ae8e8c161c0) = 0
+munmap(0x2ae8e8360000, 73267)           = 0
+set_tid_address(0x2ae8e8c16250)         = 11689
+rt_sigaction(SIGRTMIN, {0x2ae8e88c61e0, [], SA_RESTORER|SA_SIGINFO,
+0x2ae8e88cd7a0}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0x2ae8e88c6260, [],
+SA_RESTORER|SA_RESTART|SA_SIGINFO, 0x2ae8e88cd7a0}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) = 0
+_sysctl({{CTL_KERN, KERN_VERSION}, 2, 0x7fffc275fb80, 44, (nil), 0}) = 0
+brk(0)                                  = 0x50c000
+brk(0x52d000)                           = 0x52d000
+open("/usr/lib/locale/locale-archive", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=1179088, ...}) = 0
+mmap(NULL, 1179088, PROT_READ, MAP_PRIVATE, 3, 0) = 0x2ae8e8c17000
+close(3)                                = 0
+stat("/root/test/alsa/hgrepos/alsa-lib//share/alsa/alsa.conf",
+0x7fffc275fba0) = -1 EACCES (Permission denied)
+write(2, "ALSA lib pcm.c:2143:(snd_pcm_ope"..., 44ALSA lib
+pcm.c:2143:(snd_pcm_open_noupdate) ) = 44
+write(2, "Unknown PCM default", 19Unknown PCM default)     = 19
+write(2, "\n", 1
+)                       = 1
+write(2, "aplay: main:547: ", 17aplay: main:547: )       = 17
+open("/usr/share/locale/locale.alias", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=2582, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e8d37000
+read(3, "# Locale name alias data base.\n#"..., 4096) = 2582
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x2ae8e8d37000, 4096)            = 0
+open("/usr/share/locale/en_DE/LC_MESSAGES/libc.mo", O_RDONLY) = -1 ENOENT
+(No such file or directory)
+open("/usr/share/locale/en/LC_MESSAGES/libc.mo", O_RDONLY) = -1 ENOENT (No
+such file or directory)
+open("/usr/share/locale/en_US/LC_MESSAGES/libc.mo", O_RDONLY) = -1 ENOENT
+(No such file or directory)
+open("/usr/share/locale/en_GB/LC_MESSAGES/libc.mo", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=1474, ...}) = 0
+mmap(NULL, 1474, PROT_READ, MAP_PRIVATE, 3, 0) = 0x2ae8e8d37000
+close(3)                                = 0
+open("/usr/lib/gconv/gconv-modules.cache", O_RDONLY) = -1 ENOENT (No such
+file or directory)
+open("/usr/lib/gconv/gconv-modules", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=45660, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x2ae8e8d38000
+read(3, "# GNU libc iconv configuration.\n"..., 4096) = 4096
+read(3, "lias\tJS//\t\t\tJUS_I.B1.002//\nalias"..., 4096) = 4096
+read(3, "ule\tINTERNAL\t\tISO-8859-3//\t\tISO8"..., 4096) = 4096
+read(3, "lias\tISO-IR-199//\t\tISO-8859-14//"..., 4096) = 4096
+read(3, "\t\tto\t\t\tmodule\t\tcost\nalias\tCSEBCD"..., 4096) = 4096
+read(3, "ule\t\tcost\nalias\tCP284//\t\t\tIBM284"..., 4096) = 4096
+read(3, "lias\tCP864//\t\t\tIBM864//\nalias\t86"..., 4096) = 4096
+read(3, "module\tIBM937//\t\tINTERNAL\t\tIBM93"..., 4096) = 4096
+read(3, "\tEUC-JP//\nalias\tUJIS//\t\t\tEUC-JP/"..., 4096) = 4096
+read(3, "module\t\tcost\nalias\tISO-IR-143//\t"..., 4096) = 4096
+read(3, "-BOX//\nmodule\tISO_10367-BOX//\t\tI"..., 4096) = 4096
+read(3, "module\tINTERNAL\t\tEUC-JISX0213//\t"..., 4096) = 604
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x2ae8e8d38000, 4096)            = 0
+futex(0x2ae8e8c10bb0, FUTEX_WAKE, 2147483647) = 0
+brk(0x54e000)                           = 0x54e000
+open("/usr/share/locale/en_DE/LC_MESSAGES/alsa-utils.mo", O_RDONLY) = -1
+ENOENT (No such file or directory)
+open("/usr/share/locale/en/LC_MESSAGES/alsa-utils.mo", O_RDONLY) = -1
+ENOENT (No such file or directory)
+open("/usr/share/locale/en_US/LC_MESSAGES/alsa-utils.mo", O_RDONLY) = -1
+ENOENT (No such file or directory)
+open("/usr/share/locale/en_GB/LC_MESSAGES/alsa-utils.mo", O_RDONLY) = -1
+ENOENT (No such file or directory)
+write(2, "audio open error: No such file o"..., 43audio open error: No
+such file or directory) = 43
+write(2, "\n", 1
+)                       = 1
+exit_group(1)                           = ?
+Process 11689 detached
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -182,6 +347,7 @@ Date Modified  Username       Field                    Change
 07-19-06 12:11 calestyo       Note Added: 0011086                          
 07-19-06 16:46 Raymond        Note Added: 0011087                          
 07-19-06 18:21 calestyo       Note Added: 0011091                          
+07-19-06 18:22 calestyo       Note Added: 0011092                          
 ======================================================================
 
 
