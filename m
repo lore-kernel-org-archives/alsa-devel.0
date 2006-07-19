@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002280]: nforce 570 with AD1988A no
-	sound
-Date: Wed, 19 Jul 2006 20:33:34 +0200
-Message-ID: <73f06ca56e7a3a78d6674f464e688210@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002279]: Surround outputs not working,
+	or touching mixer controls kills all outputs
+Date: Wed, 19 Jul 2006 20:36:09 +0200
+Message-ID: <fe913578a9f5fe32aecd3889728cfd4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E7CA102
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B317102
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:33:34 +0200 (MEST)
+	Wed, 19 Jul 2006 20:36:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,46 +26,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2280> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2279> 
 ======================================================================
-Reported By:                Tobias Diedrich
+Reported By:                laurie
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2280
+Issue ID:                   2279
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian/GNU Linux testing
-Kernel Version:             2.6.18-rc1
+Distribution:               Ubuntu Dapper 6.06
+Kernel Version:             2.6.15-26-amd64-k8
 ======================================================================
-Date Submitted:             07-14-2006 14:40 CEST
-Last Modified:              07-19-2006 20:33 CEST
+Date Submitted:             07-12-2006 22:45 CEST
+Last Modified:              07-19-2006 20:36 CEST
 ======================================================================
-Summary:                    nforce 570 with AD1988A no sound
+Summary:                    Surround outputs not working, or touching mixer
+controls kills all outputs
 Description: 
-I just bought a new mainboard, an Asus M2N with nforce 570 chipset (mcp55)
-and snd-hda-intel loads fine, but complains about an unknown chip version
-and tries to get some configuration values from the BIOS. Apparently this
-does not work, since while it loads fine I have so far been unable to get
-any sound from it.
+I have an Asus A8V-VM with onboard AD1986A, that I can get to output front
+audio with a working mixer by passing model=3stack with alsa-driver
+versions 1.0.10 (with ubuntu patches), 1.0.11, 1.0.12rc1, and cvs20060712,
+but no output on rear, center or lfe. By passing model=6stack (or pretty
+much anything other than 3stack - position_fix=1 is also needed for
+earlier versions), I get surround, but touching a mixer control kills the
+audio until the module is reloaded.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:33 
+ tiwai - 07-19-06 20:36 
 ----------------------------------------------------------------------
-Try the latest HG version.  The codec might be AD1988B, not AD1988A.
+How did you test surround outputs exactly?  Via speaker-test?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-14-06 14:40 Tobias DiedrichNew Issue                                    
-07-14-06 14:40 Tobias DiedrichDistribution              => Debian/GNU Linux
-testing
-07-14-06 14:40 Tobias DiedrichKernel Version            => 2.6.18-rc1      
-07-19-06 20:33 tiwai          Note Added: 0011098                          
+07-12-06 22:45 laurie         New Issue                                    
+07-12-06 22:45 laurie         Distribution              => Ubuntu Dapper 6.06
+07-12-06 22:45 laurie         Kernel Version            => 2.6.15-26-amd64-k8
+07-12-06 22:46 laurie         Issue Monitored: laurie                      
+07-19-06 20:36 tiwai          Note Added: 0011099                          
 ======================================================================
 
 
