@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Wed, 19 Jul 2006 12:03:20 +0200
-Message-ID: <b8f4bf8c5954a1f89284cfa169d05315@bugtrack.alsa-project.org>
+Date: Wed, 19 Jul 2006 12:11:14 +0200
+Message-ID: <ea079e02d2741e55f7a2765fddd1179e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCF731AA
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAF95F9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 12:03:20 +0200 (MEST)
+	Wed, 19 Jul 2006 12:11:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-19-2006 12:03 CEST
+Last Modified:              07-19-2006 12:11 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,38 +108,22 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 07-19-06 11:50 
-----------------------------------------------------------------------
->It seem that you are the first Aureon 7.1 Universe user to test this
-driver
-There must be some other users,.. because there have been already
-bugreports (I experience most of those issues, too) for the Universe by
-some other users.
-
->You have to find out the label of those AK4xxx ADC/DAC on your cards
-Ok,.. I'll do that as soon as possible,... in the meantime,.. if I could
-do anything else that would help you, don't hesitate to ask me :)
-
-btw: The strange thing is, that with alsa-libs from hgrepository,.. the
-sound don't work at all. So perhaps something has changed there... I
-always get the
-ALSA lib pcm.c:2143:(snd_pcm_open_noupdate) Unknown PCM default
-aplay: main:547: audio open error: No such file or directory
-even with plain aplay some.wav .
-I don't think that the reason there for is in the kernel-code, as the
-hgrepos alsa-driver/alsa-kernel stuff works when I use it with Debian sid
-libasound2.
-Maybe I do something wrong with the hg alsa-lib,.. but I don't think
-so...
-I've made a kernel with only soundcore support,.. booted it,
-./configure&&make&&make install'ed alsa-driver modprobed snd-ice1724 and
-./configure&&make&&make install'ed alsa-lib
-
-----------------------------------------------------------------------
- Raymond - 07-19-06 12:03 
+ Raymond - 07-19-06 12:06 
 ----------------------------------------------------------------------
 If you are using HG repo, you need to use ./hgcompile instead of
 ./configure for alsa-driver, alsa-lib , alsa-utils, ......
+
+
+For alsa-lib, ./hgcompile --help or ./configure --help for a list of
+configurable  options
+
+
+
+----------------------------------------------------------------------
+ calestyo - 07-19-06 12:11 
+----------------------------------------------------------------------
+Oh,. right,.. I did that,.. because after checkout there wasn't even a
+./configure there ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -189,6 +173,8 @@ Date Modified  Username       Field                    Change
 07-19-06 05:50 Raymond        Note Edited: 0011077                         
 07-19-06 11:50 calestyo       Note Added: 0011084                          
 07-19-06 12:03 Raymond        Note Added: 0011085                          
+07-19-06 12:06 Raymond        Note Edited: 0011085                         
+07-19-06 12:11 calestyo       Note Added: 0011086                          
 ======================================================================
 
 
