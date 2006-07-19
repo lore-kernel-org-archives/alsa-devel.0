@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002026]: random swapping of channels
-	when running speaker-test
-Date: Wed, 19 Jul 2006 04:11:09 +0200
-Message-ID: <86573b4a45b85b741aeaac08cbb1721a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Wed, 19 Jul 2006 06:21:43 +0200
+Message-ID: <11de5745ade6975690bcec648e4d4e2c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D85BB1A3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0AF76169
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 04:11:09 +0200 (MEST)
+	Wed, 19 Jul 2006 06:21:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,409 +27,116 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                jcdutton
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2026
-Category:                   speakertest
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 ======================================================================
-Date Submitted:             04-17-2006 07:26 CEST
-Last Modified:              07-19-2006 04:11 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-19-2006 06:21 CEST
 ======================================================================
-Summary:                    random swapping of channels when running
-speaker-test
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-values return by read_wav seem strange at end of loop in write_loop.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-speaker-test -c 4 -t wav -D hw:0,0
- 
-speaker-test 1.0.11rc5
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Using max buffer size 8192
-Periods = 4
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
-write_loop - channel=4 periods=281 period_size=512 bufsize=4096
-read_wav n=1024 err=1024
-read_wav n=2048 err=1024
-read_wav n=3072 err=1024
-read_wav n=4096 err=1024
-read_wav n=5120 err=1024
-read_wav n=6144 err=1024
-read_wav n=7168 err=1024
-read_wav n=8192 err=1024
-read_wav n=9216 err=1024
-read_wav n=10240 err=1024
-read_wav n=11264 err=1024
-read_wav n=12288 err=1024
-read_wav n=13312 err=1024
-read_wav n=14336 err=1024
-read_wav n=15360 err=1024
-read_wav n=16384 err=1024
-read_wav n=17408 err=1024
-read_wav n=18432 err=1024
-read_wav n=19456 err=1024
-read_wav n=20480 err=1024
-read_wav n=21504 err=1024
-read_wav n=22528 err=1024
-read_wav n=23552 err=1024
-read_wav n=24576 err=1024
-read_wav n=25600 err=1024
-read_wav n=26624 err=1024
-read_wav n=27648 err=1024
-read_wav n=28672 err=1024
-read_wav n=29696 err=1024
-read_wav n=30720 err=1024
-read_wav n=31744 err=1024
-read_wav n=32768 err=1024
-read_wav n=33792 err=1024
-read_wav n=34816 err=1024
-read_wav n=35840 err=1024
-read_wav n=36864 err=1024
-read_wav n=37888 err=1024
-read_wav n=38912 err=1024
-read_wav n=39936 err=1024
-read_wav n=40960 err=1024
-read_wav n=41984 err=1024
-read_wav n=43008 err=1024
-read_wav n=44032 err=1024
-read_wav n=45056 err=1024
-read_wav n=46080 err=1024
-read_wav n=47104 err=1024
-read_wav n=48128 err=1024
-read_wav n=49152 err=1024
-read_wav n=50176 err=1024
-read_wav n=51200 err=1024
-read_wav n=52224 err=1024
-read_wav n=53248 err=1024
-read_wav n=54272 err=1024
-read_wav n=55296 err=1024
-read_wav n=56320 err=1024
-read_wav n=57344 err=1024
-read_wav n=58368 err=1024
-read_wav n=59392 err=1024
-read_wav n=60416 err=1024
-read_wav n=61440 err=1024
-read_wav n=62464 err=1024
-read_wav n=63488 err=1024
-read_wav n=64512 err=1024
-read_wav n=65536 err=1024
-read_wav n=66560 err=1024
-read_wav n=67584 err=1024
-read_wav n=68608 err=1024
-read_wav n=69632 err=1024
-read_wav n=70656 err=1024
-read_wav n=71680 err=1024
-read_wav n=72704 err=1024
-read_wav n=73728 err=1024
-read_wav n=74752 err=1024
-read_wav n=75776 err=1024
-read_wav n=76800 err=1024
-read_wav n=77824 err=1024
-read_wav n=78848 err=1024
-read_wav n=79872 err=1024
-read_wav n=80896 err=1024
-read_wav n=81920 err=1024
-read_wav n=82944 err=1024
-read_wav n=83968 err=1024
-read_wav n=84992 err=1024
-read_wav n=86016 err=1024
-read_wav n=87040 err=1024
-read_wav n=88064 err=1024
-read_wav n=89088 err=1024
-read_wav n=90112 err=1024
-read_wav n=91136 err=1024
-read_wav n=92160 err=1024
-read_wav n=93184 err=1024
-read_wav n=94208 err=1024
-read_wav n=95232 err=1024
-read_wav n=96256 err=1024
-read_wav n=97280 err=1024
-read_wav n=98304 err=1024
-read_wav n=99328 err=1024
-read_wav n=100352 err=1024
-read_wav n=101376 err=1024
-read_wav n=102400 err=1024
-read_wav n=103424 err=1024
-read_wav n=104448 err=1024
-read_wav n=105472 err=1024
-read_wav n=106496 err=1024
-read_wav n=107520 err=1024
-read_wav n=108544 err=1024
-read_wav n=109568 err=1024
-read_wav n=110592 err=1024
-read_wav n=111616 err=1024
-read_wav n=112640 err=1024
-read_wav n=113664 err=1024
-read_wav n=114688 err=1024
-read_wav n=115712 err=1024
-read_wav n=116736 err=1024
-read_wav n=117760 err=1024
-read_wav n=118784 err=1024
-read_wav n=119808 err=1024
-read_wav n=120832 err=1024
-read_wav n=121856 err=1024
-read_wav n=122880 err=1024
-read_wav n=123904 err=1024
-read_wav n=124928 err=1024
-read_wav n=125952 err=1024
-read_wav n=126976 err=1024
-read_wav n=128000 err=1024
-read_wav n=129024 err=1024
-read_wav n=130048 err=1024
-read_wav n=131072 err=1024
-read_wav n=132096 err=1024
-read_wav n=133120 err=1024
-read_wav n=134144 err=1024
-read_wav n=135168 err=1024
-read_wav n=136192 err=1024
-read_wav n=137216 err=1024
-read_wav n=138240 err=1024
-read_wav n=139202 err=962
-read_wav n=139922 err=720
-read_wav n=140462 err=540
-read_wav n=140868 err=406
-read_wav n=141172 err=304
-read_wav n=141400 err=228
-read_wav n=141572 err=172
-read_wav n=141700 err=128
-read_wav n=141796 err=96
-read_wav n=141868 err=72
-read_wav n=141922 err=54
-read_wav n=141962 err=40
-read_wav n=141992 err=30
-read_wav n=142016 err=24
-read_wav n=142034 err=18
-read_wav n=142046 err=12
-read_wav n=142056 err=10
-read_wav n=142064 err=8
-read_wav n=142070 err=6
-read_wav n=142074 err=4
-read_wav n=142076 err=2
-read_wav n=142078 err=2
-read_wav n=142080 err=2
-read_wav n=142082 err=2
- 1 - Front Right
-write_loop - channel=4 periods=281 period_size=512 bufsize=4096
-read_wav n=1024 err=1024
-read_wav n=2048 err=1024
-read_wav n=3072 err=1024
-read_wav n=4096 err=1024
-read_wav n=5120 err=1024
-read_wav n=6144 err=1024
-read_wav n=7168 err=1024
-read_wav n=8192 err=1024
-read_wav n=9216 err=1024
-read_wav n=10240 err=1024
-read_wav n=11264 err=1024
-read_wav n=12288 err=1024
-read_wav n=13312 err=1024
-read_wav n=14336 err=1024
-read_wav n=15360 err=1024
-read_wav n=16384 err=1024
-read_wav n=17408 err=1024
-read_wav n=18432 err=1024
-read_wav n=19456 err=1024
-read_wav n=20480 err=1024
-read_wav n=21504 err=1024
-read_wav n=22528 err=1024
-read_wav n=23552 err=1024
-read_wav n=24576 err=1024
-read_wav n=25600 err=1024
-read_wav n=26624 err=1024
-read_wav n=27648 err=1024
-read_wav n=28672 err=1024
-read_wav n=29696 err=1024
-read_wav n=30720 err=1024
-read_wav n=31744 err=1024
-read_wav n=32768 err=1024
-read_wav n=33792 err=1024
-read_wav n=34816 err=1024
-read_wav n=35840 err=1024
-read_wav n=36864 err=1024
-read_wav n=37888 err=1024
-read_wav n=38912 err=1024
-read_wav n=39936 err=1024
-read_wav n=40960 err=1024
-read_wav n=41984 err=1024
-read_wav n=43008 err=1024
-read_wav n=44032 err=1024
-read_wav n=45056 err=1024
-read_wav n=46080 err=1024
-read_wav n=47104 err=1024
-read_wav n=48128 err=1024
-read_wav n=49152 err=1024
-read_wav n=50176 err=1024
-read_wav n=51200 err=1024
-read_wav n=52224 err=1024
-read_wav n=53248 err=1024
-read_wav n=54272 err=1024
-read_wav n=55296 err=1024
-read_wav n=56320 err=1024
-read_wav n=57344 err=1024
-read_wav n=58368 err=1024
-read_wav n=59392 err=1024
-read_wav n=60416 err=1024
-read_wav n=61440 err=1024
-read_wav n=62464 err=1024
-read_wav n=63488 err=1024
-read_wav n=64512 err=1024
-read_wav n=65536 err=1024
-read_wav n=66560 err=1024
-read_wav n=67584 err=1024
-read_wav n=68608 err=1024
-read_wav n=69632 err=1024
-read_wav n=70656 err=1024
-read_wav n=71680 err=1024
-read_wav n=72704 err=1024
-read_wav n=73728 err=1024
-read_wav n=74752 err=1024
-read_wav n=75776 err=1024
-read_wav n=76800 err=1024
-read_wav n=77824 err=1024
-read_wav n=78848 err=1024
-read_wav n=79872 err=1024
-read_wav n=80896 err=1024
-read_wav n=81920 err=1024
-read_wav n=82944 err=1024
-read_wav n=83968 err=1024
-read_wav n=84992 err=1024
-read_wav n=86016 err=1024
-read_wav n=87040 err=1024
-read_wav n=88064 err=1024
-read_wav n=89088 err=1024
-read_wav n=90112 err=1024
-read_wav n=91136 err=1024
-read_wav n=92160 err=1024
-read_wav n=93184 err=1024
-read_wav n=94208 err=1024
-read_wav n=95232 err=1024
-read_wav n=96256 err=1024
-read_wav n=97280 err=1024
-read_wav n=98304 err=1024
-read_wav n=99328 err=1024
-read_wav n=100352 err=1024
-read_wav n=101376 err=1024
-read_wav n=102400 err=1024
-read_wav n=103424 err=1024
-read_wav n=104448 err=1024
-read_wav n=105472 err=1024
-read_wav n=106496 err=1024
-read_wav n=107520 err=1024
-read_wav n=108544 err=1024
-read_wav n=109568 err=1024
-read_wav n=110592 err=1024
-read_wav n=111616 err=1024
-read_wav n=112640 err=1024
-read_wav n=113664 err=1024
-read_wav n=114688 err=1024
-read_wav n=115712 err=1024
-read_wav n=116736 err=1024
-read_wav n=117760 err=1024
-read_wav n=118784 err=1024
-read_wav n=119808 err=1024
-read_wav n=120832 err=1024
-read_wav n=121856 err=1024
-read_wav n=122880 err=1024
-read_wav n=123904 err=1024
-read_wav n=124928 err=1024
-read_wav n=125952 err=1024
-read_wav n=126976 err=1024
-read_wav n=128000 err=1024
-read_wav n=129024 err=1024
-read_wav n=130048 err=1024
-read_wav n=131072 err=1024
-read_wav n=132096 err=1024
-read_wav n=133120 err=1024
-read_wav n=134144 err=1024
-read_wav n=135168 err=1024
-read_wav n=136192 err=1024
-read_wav n=137216 err=1024
-read_wav n=138240 err=1024
-read_wav n=139264 err=1024
-read_wav n=140288 err=1024
-read_wav n=141312 err=1024
-read_wav n=142336 err=1024
-read_wav n=143360 err=1024
-read_wav n=144256 err=896
-read_wav n=144928 err=672
-read_wav n=145432 err=504
-read_wav n=145810 err=378
-read_wav n=146094 err=284
-read_wav n=146308 err=214
-read_wav n=146468 err=160
-read_wav n=146588 err=120
-read_wav n=146678 err=90
-read_wav n=146746 err=68
-read_wav n=146796 err=50
-read_wav n=146834 err=38
-read_wav n=146862 err=28
-read_wav n=146884 err=22
-read_wav n=146900 err=16
-read_wav n=146912 err=12
-read_wav n=146920 err=8
-read_wav n=146926 err=6
-read_wav n=146932 err=6
-read_wav n=146936 err=4
-read_wav n=146938 err=2
-read_wav n=146940 err=2
-read_wav n=146942 err=2
-read_wav n=146944 err=2
- 3 - Rear Right
-write_loop - channel=4 periods=281 period_size=512 bufsize=4096
-read_wav n=1024 err=1024
-read_wav n=2048 err=1024
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-18-06 17:24 
+ Raymond - 07-19-06 03:27 
 ----------------------------------------------------------------------
-Using max buffer size 8192
-Periods = 4
-was set period_size = 512
-was set buffer_size = 8192
+http://hg-mirror.alsa-project.org/alsa-kernel?fl=62e077ee4855;file=pci/ice1712/ice1724.c;style=gitweb
 
-Why period_size * periods not equal to buffer_size when channels = 4 ?
+http://alsa.opensrc.org/ice1724
+
+http://alsa.opensrc.org/index.php?page=Envy24Control
+
+It seem that Audiophile Delta 192 is not supported
+
+You will need to open bug reports for
+1) Audiophile Delta 192
+2) envy24control for ice1724
 
 ----------------------------------------------------------------------
- Raymond - 07-19-06 04:11 
+ Raymond - 07-19-06 06:21 
 ----------------------------------------------------------------------
-Is there any difference in calulating the period_size * periods =
-buffer_size  between a single pcm device support 2, 4, 6, 8 channels and 
-surround40, surround51 surround71 created by 'multi' plugin with multiple
-slaves pcm stereo devices ?
+Audiophile Delta 192 seem not supported
+
+Can you playback/capture any stereo sound ?
+
+You have to idenify the sound chip 
+
+http://www.via.com.tw/en/products/audio/controllers/
+
+and those AK4xxx ADC/DAC on your card
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=file;file=pci/ice1712/ak4xxx.c;filenode=d9808d13fa5fa018617ba56852cdc6473a7a35af;style=raw
+
+Find out the specification of your card and compare the specification of
+other ice1724 cards.
+
+Find out the specification of those ADC/DAC on your card.
+
+Study those ice1724 driver code (e.g. aureon.c, ... ) and see whether you
+can find any cards have similar features/architecture (e.g. same ADC/DAC,
+...) with your card.
+
+It is impossible to write a new driver by using the control 'multi track
+peak' which is only an abstract control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 07:26 Raymond        New Issue                                    
-04-18-06 14:33 Raymond        Note Added: 0009334                          
-04-28-06 06:16 Raymond        Issue Monitored: jcdutton                    
-04-28-06 06:16 Raymond        Note Added: 0009539                          
-04-29-06 13:16 Raymond        Note Added: 0009542                          
-05-31-06 15:23 Raymond        Issue Monitored: tiwai                       
-05-31-06 15:23 Raymond        Note Added: 0010022                          
-06-03-06 03:02 Raymond        Note Added: 0010059                          
-07-18-06 14:30 jcdutton       Status                   new => assigned     
-07-18-06 14:30 jcdutton       Assigned To               => jcdutton        
-07-18-06 17:24 Raymond        Note Added: 0011066                          
-07-19-06 04:11 Raymond        Note Added: 0011078                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
 ======================================================================
 
 
