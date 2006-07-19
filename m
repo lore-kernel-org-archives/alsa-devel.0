@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002183]: Silence on riptide card
-Date: Wed, 19 Jul 2006 17:06:25 +0200
-Message-ID: <a1c3461fc43f1260b4125401d87736b3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002189]: No sound on speakers,
+	low volume on the headphones, Packard bell V7900
+Date: Wed, 19 Jul 2006 17:29:41 +0200
+Message-ID: <4ed6e327803642cf072c6d0a22095509@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5E0521F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8617E16C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 17:06:25 +0200 (MEST)
+	Wed, 19 Jul 2006 17:29:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,274 +26,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
 ======================================================================
-Reported By:                Hawk777
-Assigned To:                
+Reported By:                bettored
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2183
-Category:                   PCI - riptide
+Issue ID:                   2189
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             Linux hp 2.6.16-gentoo-r7 #8 Thu Jun 1 22:10:53 PDT
-2006 i686 Celeron (Mendocino) GNU/Linux
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15-23-386
 ======================================================================
-Date Submitted:             06-02-2006 21:03 CEST
-Last Modified:              07-19-2006 17:06 CEST
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              07-19-2006 17:29 CEST
 ======================================================================
-Summary:                    Silence on riptide card
+Summary:                    No sound on speakers, low volume on the headphones,
+Packard bell V7900
 Description: 
-The summary says it all: everything works perfectly, except that no matter
-what I do, no sound ever comes out. I've tried the CVS version from
-SourceForge as well as 1.0.11: same result.
+Hi,
+I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
+hda-intel, with problems.
+I have no sound on speakers and very low on the headphones.
+In the alsamixer all is on.
+Recently i actualized to Alsa 1.0.11 but with same problem.
 
-I have some programming skill (though little experience in drivers); I can
-work with you to debug this.
+In the Volumen Control, i have two:
+1. HDA intel (alsa mixer)
+2. Realtek ALC260 (oss mixer)
+And it is correct.
+
+Here leave same test:
+
+
+janek@janek-laptop:~$ lsmod | grep snd
+snd_hda_intel          19348  2
+snd_hda_codec         143152  1 snd_hda_intel
+snd_pcm_oss            43936  0
+snd_mixer_oss          18944  2 snd_pcm_oss
+snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25348  1 snd_pcm
+snd                    55396  8
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
+soundcore              10208  2 snd
+snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
+
+--------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ lspci
+0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
+(rev 03)
+0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
+Port (rev 03)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 1 (rev 02)
+0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 2 (rev 02)
+0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 3 (rev 02)
+0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 4 (rev 02)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 02)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 02)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 02)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 02)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 02)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
+e2)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 02)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 02)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
+device 71c5
+0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
+(rev 02)
+0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
+(rev 02)
+0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
+0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
+(rev 01)
+0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
+(rev 02)
+
+
+-------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ modinfo soundcore
+filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
+depends:
+srcversion:     DD426F1CCA2CC5F060F6F92
+
+
+---------------------------------------------------------------------------
+
+
+Thanks for your time 
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Hawk777 - 07-11-06 08:38 
+ bonobo - 07-01-06 13:46 
 ----------------------------------------------------------------------
-Nothing playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
+I tried the test model with alsa 1.12rc1.
+I can get things to happen by connecting different pins to different
+outputs or inputs in the options tab in gnome mixer but I can get sound in
+the line out only, never in the laptop speakers. Mics seem to work
+allright.
 
-Device ID: 0x4320
-Received IRQs: (0)5022
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00003f3f 14: 00000000 18: 00000001 1c: 00000001
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 6926 6926
- 1: 6926 6926
- 2: 6926 6926
- 3: 6926 6926
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 978 failed: 1 time: 2107 max: 7 min: 0
-Open streams 0:
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d b->0
-
-
-
-One 44100Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (196)19817
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 000c3fcc 18: 00000001 1c: 000c3fcd
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 6926 6926
- 3: 6926 6926
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 1156 failed: 1 time: 2385 max: 7 min: 0
-Open streams 1:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d 8->4 b->0
-
-
-
-Two 44100Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (1464)21187
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 0004400a 18: 00000001 1c: 0004400b
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 1871 failed: 1 time: 3677 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-stream: 1 mixer: 1 source: 1 (9,255)
-rate: 44100
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1f->11 1e->10 29->d 8->4 9->1 b->0
-
-
-
-One 48000Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (3169)23068
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 00034008 18: 00000001 1c: 00034009
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 0 0
- 3: 0 0
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 2891 failed: 1 time: 5576 max: 7 min: 0
-Open streams 1:
-stream: 4 mixer: 0 source: 4 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 29->d 1e->4 b->0
-
-
-
-Two 48000Hz 16bit stereo playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (4180)24186
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 003a000c 18: 00000001 1c: 003a000d
-20: 00000005 24: 00004001 28: 00000006 2c: 00004003
-30: 00000001 34: 00000001 38: 00000000 3c: 00000001
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 3473 failed: 1 time: 6639 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (255,255)
-rate: 0
-stream: 1 mixer: 1 source: 1 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 29->d 1e->4 1f->1 b->0
-
-
-
-One of each playing:
-Riptide at 0x1080, irq 11 mpu 0x330 opl3 0x388
-
-Device ID: 0x4320
-Received IRQs: (5699)25841
-Ports:
-00: 00000004 04: 00004001 08: 00000005 0c: 00004001
-10: 00000000 14: 00048010 18: 00000001 1c: 00048011
-20: 00000004 24: 00004001 28: 00000006 2c: 00004003
-30: 00000000 34: 00000000 38: 00000000 3c: 00000000
-Version: ASIC: 3 CODEC: 2 AUXDSP: 3 PROG: 773
-Digital mixer:
- 0: 32767 32767
- 1: 32767 32767
- 2: 32767 32767
- 3: 32767 32767
- 4: 0 0
- 5: 0 0
- 6: 0 0
- 7: 0 0
- 8: 0 0
- 9: 0 0
- 10: 0 0
- 11: 0 0
-ARM Commands num: 4332 failed: 1 time: 8365 max: 7 min: 0
-Open streams 2:
-stream: 4 mixer: 0 source: 4 (8,255)
-rate: 44100
-stream: 1 mixer: 1 source: 1 (255,255)
-rate: 0
-Paths:
-1b->30 1d->2a 2f->26 27->22 25->13 1e->10 29->d 8->4 1f->1 b->0
-
-
-
-All sounds are little-endian.
+Can someone tell me what is the way to go to find the right combination ?
 
 ----------------------------------------------------------------------
- nokos - 07-19-06 17:06 
+ urdle - 07-19-06 17:29 
 ----------------------------------------------------------------------
-ok that looks exactly as with my riptide ... hmmm.
+I have the same issue with my PB easynote v7907 : No sound at all, except a
+very very weak output (almost inaudible) through S/PDIF when playing an
+audio CD.
 
-if you have a working linuxant driver:
-can you replace
-TRACE(("Src: %d Sink: %d\n", ucSrc, ucSink));
-somewhere in rt_hw.c
-with a printk and report which paths get allocated.
-
-do the mixer controls work as expected? I.e. can you change them with
-alsamixer? And do they have any effect, e.g. for line in or microphone
-sources?
-
-ps: the firmware only gets loaded if there is no working 
-available.
+I use alsa1.11
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-06 21:03 Hawk777        New Issue                                    
-06-02-06 21:03 Hawk777        Distribution              => Gentoo          
-06-02-06 21:03 Hawk777        Kernel Version            => Linux hp
-2.6.16-gentoo-r7 #8 Thu Jun 1 22:10:53 PDT 2006 i686 Celeron (Mendocino)
-GNU/Linux
-06-02-06 21:16 Hawk777        Issue Monitored: Hawk777                     
-06-02-06 21:21 Hawk777        Note Added: 0010055                          
-07-06-06 16:21 nokos          Note Added: 0010867                          
-07-06-06 16:22 nokos          Issue Monitored: nokos                       
-07-11-06 08:38 Hawk777        Note Added: 0010968                          
-07-19-06 17:06 nokos          Note Added: 0011088                          
+06-07-06 19:47 bettored       New Issue                                    
+06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
+06-15-06 20:25 bonobo         Note Added: 0010243                          
+06-15-06 20:32 bonobo         Note Edited: 0010243                         
+06-18-06 23:59 ixM            Note Added: 0010304                          
+06-20-06 19:52 tiwai          Note Added: 0010350                          
+06-21-06 19:02 ixM            Note Added: 0010402                          
+06-21-06 19:16 tiwai          Note Added: 0010403                          
+06-22-06 23:18 urdle          Issue Monitored: urdle                       
+06-25-06 14:02 bonobo         Note Added: 0010507                          
+06-25-06 21:37 bonobo         Note Added: 0010519                          
+07-01-06 13:46 bonobo         Note Added: 0010761                          
+07-19-06 17:29 urdle          Note Added: 0011089                          
 ======================================================================
 
 
