@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002279]: Surround outputs not working,
-	or touching mixer controls kills all outputs
-Date: Wed, 19 Jul 2006 20:36:09 +0200
-Message-ID: <fe913578a9f5fe32aecd3889728cfd4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002249]: intel8x0 doesn't include the
+	PCI ID of my NVidia nForce 570 Sound card (it's the MCP55)
+Date: Wed, 19 Jul 2006 20:37:30 +0200
+Message-ID: <ff8577b4048cf8d7420dd05d3a73944f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B317102
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7AEE102
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:36:09 +0200 (MEST)
+	Wed, 19 Jul 2006 20:37:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,51 +24,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2279> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2249> 
 ======================================================================
-Reported By:                laurie
+Reported By:                cardoe
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2279
-Category:                   PCI - hda-intel
+Issue ID:                   2249
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper 6.06
-Kernel Version:             2.6.15-26-amd64-k8
+Status:                     resolved
+Distribution:               gentoo
+Kernel Version:             2.6.17 w/ external drivers 1.0.12_rc1
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-12-2006 22:45 CEST
-Last Modified:              07-19-2006 20:36 CEST
+Date Submitted:             07-01-2006 10:17 CEST
+Last Modified:              07-19-2006 20:37 CEST
 ======================================================================
-Summary:                    Surround outputs not working, or touching mixer
-controls kills all outputs
+Summary:                    intel8x0 doesn't include the PCI ID of my NVidia
+nForce 570 Sound card (it's the MCP55)
 Description: 
-I have an Asus A8V-VM with onboard AD1986A, that I can get to output front
-audio with a working mixer by passing model=3stack with alsa-driver
-versions 1.0.10 (with ubuntu patches), 1.0.11, 1.0.12rc1, and cvs20060712,
-but no output on rear, center or lfe. By passing model=6stack (or pretty
-much anything other than 3stack - position_fix=1 is also needed for
-earlier versions), I get surround, but touching a mixer control kills the
-audio until the module is reloaded.
+intel8x0 doesn't include the PCI ID of my NVidia nForce 570 Sound card
+(it's the MCP55)
+
+So sound doesn't work and ALSA says I have no cards. 1 line patch makes
+this all happen properly.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:36 
+ rlrevell - 07-13-06 04:42 
 ----------------------------------------------------------------------
-How did you test surround outputs exactly?  Via speaker-test?
+By any chance, did you boot into Windows, then reboot into Linux to get it
+to work?
+
+----------------------------------------------------------------------
+ tiwai - 07-19-06 20:37 
+----------------------------------------------------------------------
+I close this bug since the fix was apparently included.  The driver should
+simply work.
+Reopen if you encounter the same problem again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-06 22:45 laurie         New Issue                                    
-07-12-06 22:45 laurie         Distribution              => Ubuntu Dapper 6.06
-07-12-06 22:45 laurie         Kernel Version            => 2.6.15-26-amd64-k8
-07-12-06 22:46 laurie         Issue Monitored: laurie                      
-07-19-06 20:36 tiwai          Note Added: 0011099                          
+07-01-06 10:17 cardoe         New Issue                                    
+07-01-06 10:17 cardoe         File Added: intel-nforce-mcp55.patch              
+     
+07-01-06 10:17 cardoe         Distribution              => gentoo          
+07-01-06 10:17 cardoe         Kernel Version            => 2.6.17 w/ external
+drivers 1.0.12_rc1
+07-13-06 03:03 cardoe         Note Added: 0010986                          
+07-13-06 04:10 cardoe         Note Added: 0010988                          
+07-13-06 04:10 cardoe         Note Deleted: 0010986                        
+07-13-06 04:42 rlrevell       Note Added: 0010990                          
+07-19-06 20:37 tiwai          Status                   new => resolved     
+07-19-06 20:37 tiwai          Resolution               open => not an issue
+07-19-06 20:37 tiwai          Assigned To               => tiwai           
+07-19-06 20:37 tiwai          Note Added: 0011100                          
 ======================================================================
 
 
