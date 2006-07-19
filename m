@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002291]: AD1986A produces a high
-	fequency noise
-Date: Wed, 19 Jul 2006 20:18:11 +0200
-Message-ID: <b7b64fd51fc773c85ec93d32aa930e9c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002285]: Alsa-lib needs to be updated to
+	be compiled under kernel 2.6.17-1.2157
+Date: Wed, 19 Jul 2006 20:20:41 +0200
+Message-ID: <daeccb13f499fe8cc72422492c246219@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF0DB18F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2722818F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 20:18:11 +0200 (MEST)
+	Wed, 19 Jul 2006 20:20:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,44 +26,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2291> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2285> 
 ======================================================================
-Reported By:                michaeleekk
-Assigned To:                perex
+Reported By:                thesource
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2291
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2285
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.17-1.2145_FC5
+Status:                     new
 ======================================================================
-Date Submitted:             07-18-2006 07:12 CEST
-Last Modified:              07-19-2006 20:18 CEST
+Date Submitted:             07-16-2006 07:52 CEST
+Last Modified:              07-19-2006 20:20 CEST
 ======================================================================
-Summary:                    AD1986A produces a high fequency noise
+Summary:                    Alsa-lib needs to be updated to be compiled under
+kernel 2.6.17-1.2157
 Description: 
-Some noise, just like "weeeeee", produced when playing a sound files or
-music files.
-No exception. It always produced.
+It is neccessary due to some header file changes in new kernel. At this
+moment alsa-lib 1.0.12rc1 can not be compiled - sys/types.h and
+asm/types.h must not be included simultaniously or this will cause type
+name conflict error.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:18 
+ thesource - 07-17-06 16:17 
 ----------------------------------------------------------------------
-Try model=3stack module option.
+Sorry forgot to say: I use kernel source rpm. I compiled my kernel from
+source (because I want to use nvidia agp and fedora guys stupidly compiled
+agpgart into kernel). Try scr.rpm for this kernel and check directory
+structure to see what I mean.
+
+----------------------------------------------------------------------
+ tiwai - 07-19-06 20:20 
+----------------------------------------------------------------------
+alsa-lib has nothing to do with the kernel tree headers.  The ALSA kernel
+API is defined in its private headers (alsa-lib/include/sound/*).
+
+If you got compile errors, it's the distro-specific glibc (header)
+problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-06 07:12 michaeleekk    New Issue                                    
-07-18-06 07:12 michaeleekk    Kernel Version            => 2.6.17-1.2145_FC5
-07-18-06 11:50 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - hda-intel
-07-19-06 20:18 tiwai          Note Added: 0011095                          
+07-16-06 07:52 thesource      New Issue                                    
+07-16-06 18:06 cruiseoveride  Note Added: 0011029                          
+07-16-06 18:08 cruiseoveride  File Added: make_info.txt                    
+07-17-06 06:30 thesource      Note Added: 0011034                          
+07-17-06 14:41 cruiseoveride  Note Added: 0011038                          
+07-17-06 14:43 cruiseoveride  File Added: kernel-devel_filelist.txt             
+      
+07-17-06 16:17 thesource      Note Added: 0011043                          
+07-19-06 20:20 tiwai          Note Added: 0011096                          
 ======================================================================
 
 
