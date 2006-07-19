@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Wed, 19 Jul 2006 02:52:51 +0200
-Message-ID: <c19b347167b634c188d464afcf8b16b3@bugtrack.alsa-project.org>
+Date: Wed, 19 Jul 2006 03:27:12 +0200
+Message-ID: <b18586f5dd3b7b5d3846778ce5bcc925@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B223A242
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCEB8242
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Jul 2006 02:52:51 +0200 (MEST)
+	Wed, 19 Jul 2006 03:27:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-19-2006 02:52 CEST
+Last Modified:              07-19-2006 03:27 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -66,15 +66,6 @@ My question is,
 Is there a bug in this function?
 Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-18-06 14:35 
-----------------------------------------------------------------------
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
-
-lspci -vn
 
 ----------------------------------------------------------------------
  cruiseoveride - 07-19-06 02:52 
@@ -125,6 +116,21 @@ Question 2
 ---------------
 How to push noise into the capture interfaces to check monitor levels?
 
+----------------------------------------------------------------------
+ Raymond - 07-19-06 03:27 
+----------------------------------------------------------------------
+http://hg-mirror.alsa-project.org/alsa-kernel?fl=62e077ee4855;file=pci/ice1712/ice1724.c;style=gitweb
+
+http://alsa.opensrc.org/ice1724
+
+http://alsa.opensrc.org/index.php?page=Envy24Control
+
+It seem that Audiophile Delta 192 is not supported
+
+You will need to open bug reports for
+1) Audiophile Delta 192
+2) envy24control for ice1724
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -151,6 +157,7 @@ Date Modified  Username       Field                    Change
 07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
 07-18-06 14:35 Raymond        Note Added: 0011060                          
 07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
 ======================================================================
 
 
