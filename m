@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Thu, 20 Jul 2006 08:05:49 +0200
-Message-ID: <7a219b9389dffb50bd590f59ae010106@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
+	in incorrect order when doing a speaker-test
+Date: Thu, 20 Jul 2006 08:06:27 +0200
+Message-ID: <9ec75af27d6b9f59e286d0bc64600539@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 673B024E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D01E24E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 08:05:49 +0200 (MEST)
+	Thu, 20 Jul 2006 08:06:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,152 +26,179 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                calestyo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2244
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-20-2006 08:05 CEST
+Date Submitted:             06-29-2006 01:35 CEST
+Last Modified:              07-20-2006 08:06 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Aureon 7.1 Universe speakers in incorrect order when
+doing a speaker-test
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I use my Aureon 7.1 Universe with a TerraTec HomeAreon TXR 884 7.1 speaker
+set.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+I've connected the outputs of the soundard to those of the subwoofer
+which
+itself connects the small speakers the following way:
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+Soundcard -------------- Subwoofer --- Small Speakers
+Out Front <---------+--> In FL <-----> Front Left Speaker
+                    \--> In FR <-----> Font Right Speaker
+Out Rear <----------+--> In SL <-----> Side Left Speaker
+                    \--> In SR <-----> Side Right Speaker
+Out Center/Subwoofer <-> In C <------> Center Speaker
+                      \> In Subwoofer
+Out Back Surround <----> In BL <-----> Back Left Speaker
+                    \--> In BR <-----> Back Right Speaker
 
-If you slash out line 104, it resolves the issue.
+You might have a look at soundcard manual page 8
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=574)
+and speaker manual page 12
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=724)
+My speakers are placed in my room in a configuration as the 7.1 shown on
+page 12
+in the speaker manual.
 
-My question is,
+As you note the connection from rear to side is a little bit strange (at
+least I
+thought so,...) but this seems to be correct, because when I use the
+windows
+mixer supplied by TerraTec itself, there is a surround test included which
+shows
+the position of the 8 speakers and let me put the indiviually on and off
+and
+this leads always to the correct position.
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+The problem now: I tried the same as under Windows unter Linux with the
+speaker-test tool.
+I called it via speaker-test -t wav -c 8 and the following came out:
+What wav file was played ----- in which speaker position the wav file was
+played
+"Front Left" ----------------- Front Left Speaker  (correct)
+"Front Center" --------------- Center Speaker      (correct)
+"Front Right" ---------------- Front Right Speaker (correct)
+"Side Right" ----------------- Back Right Speaker  (probably wrong!)
+"Rear Right" ----------------- Side Right Speaker  (probably wrong!)
+"Rear Left" ------------------ Side Left Speaker  (probably wrong!)
+"Side Left" ------------------ Back Left Speaker  (probably wrong!)
+"LFE" ------------------------ Subwoofer (correct)
+
+No one could think that I should just switch the speaker cables but that
+can't
+be a proper solution (not only because this would break settings in the
+original
+Windows driver (which I only use for Upgrading my Plextor drive firmware
+;) ).
+I think the configuration of the surround for the Aureon 7.1 Universe has
+here
+some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 05:01 
+ Raymond - 07-20-06 04:01 
 ----------------------------------------------------------------------
-You should find out the label of the "envy24xx" on the largest chip, the
-label of 48-pins ac97 chip if the chip use AC-link) or the label of the
-ADC/DAC (black ic) if the chip use I2S link)
+alsa-utils depends on alsa-lib, you need to re-build alsa-util
+(configure,make,make install) 
 
-lspci -vn
+Please also check the configure options of alsa-utils 
 
-Your card should have different PCI Subsystem vendor id and device id 
+alsa-lib need to open a number of conf files (e.g. alsa.conf,
+aliases.conf, Aureon71.conf, ... ) 
 
-You don't need to write from scratch, search the alsa-devel mailing
-archive and find out those topic about 'patch to add support for
-particular iec1724 card'.
-
-alsa-driver
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
+strace -e trace=open aplay -v -Dplughw:0 stereo.wav
 
 
-
-
-
-  Module snd-ice1724
-  ------------------
-
-    Module for Envy24HT (VT/ICE1724), Envy24PT (VT1720) based PCI sound
-cards.
-			* MidiMan M Audio Revolution 5.1
-			* MidiMan M Audio Revolution 7.1
-			* AMP Ltd AUDIO2000
-			* TerraTec Aureon 5.1 Sky
-			* TerraTec Aureon 7.1 Space
-			* TerraTec Aureon 7.1 Universe
-			* TerraTec Phase 22
-			* TerraTec Phase 28
-			* AudioTrak Prodigy 7.1
-			* AudioTrak Prodigy 7.1LT
-			* AudioTrak Prodigy 192
-			* Pontis MS300
-			* Albatron K8X800 Pro II 
-			* Chaintech ZNF3-150
-			* Chaintech ZNF3-250
-			* Chaintech 9CJS
-			* Chaintech AV-710
-			* Shuttle SN25P
-
-    model       - Use the given board model, one of the following:
-		  revo51, revo71, amp2000, prodigy71, prodigy71lt,
-		  prodigy192, aureon51, aureon71, universe,
-		  k8x800, phase22, phase28, ms300, av710
-
-    This module supports multiple cards and autoprobe.
-
-    Note: The supported board is detected by reading EEPROM or PCI
-	  SSID (if EEPROM isn't available).  You can override the
-	  model by passing "model" module option in case that the
-	  driver isn't configured properly or you want to try another
-	  type for testing.
-
-
+If the channels are swapped randomly when running speaker-test , this may
+related to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-20-06 08:05 
+ Raymond - 07-20-06 08:06 
 ----------------------------------------------------------------------
-i have no idea wat ur looking for, ill photograph the card and upload the
-file.
+Refer to Aureon71.conf
 
-u want me to compare this card to existing card's driver?
-wat are these board models?
+'speaker-test -t wav -c 2' require dmix of 2 channels
 
-Bare with me pls,
+'speaker-test -t wav -c 4' require dmix of 4 channels
+
+'speaker-test -t wav -c 6' require dmix of 6 channels
+
+'speaker-test -t wav -c 8' require dmix of 8 channels
+
+'speaker-test -Dplughw:0 -t wav -c 8' require 'plug' and 'hw' support 8
+channels
+
+It seem that 'channels 8' is misssoing in surround71 of Aureon71.conf
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+06-29-06 01:35 calestyo       New Issue                                    
+06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
+06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:36 calestyo       Note Added: 0010634                          
+06-29-06 01:36 calestyo       Issue Monitored: calestyo                    
+06-29-06 15:29 Raymond        Note Added: 0010647                          
+06-29-06 15:36 calestyo       Note Added: 0010648                          
+06-29-06 15:37 calestyo       Note Added: 0010649                          
+06-29-06 15:40 Raymond        Note Added: 0010650                          
+06-29-06 15:45 calestyo       Note Added: 0010651                          
+06-29-06 15:52 Raymond        Note Added: 0010652                          
+06-29-06 15:54 Raymond        Note Edited: 0010652                         
+06-29-06 15:56 calestyo       Note Added: 0010653                          
+06-29-06 15:58 Raymond        Note Added: 0010654                          
+06-29-06 16:01 calestyo       Note Added: 0010655                          
+06-29-06 16:04 Raymond        Note Added: 0010656                          
+06-29-06 16:07 calestyo       Note Added: 0010657                          
+06-29-06 16:08 Raymond        Note Edited: 0010656                         
+06-29-06 16:12 Raymond        Note Added: 0010658                          
+06-29-06 16:19 calestyo       Note Added: 0010659                          
+06-29-06 17:50 tiwai          Note Added: 0010677                          
+06-29-06 19:05 calestyo       Note Added: 0010695                          
+06-30-06 02:02 Raymond        Note Added: 0010709                          
+06-30-06 02:14 rlrevell       Note Added: 0010711                          
+06-30-06 05:13 Raymond        Note Edited: 0010709                         
+07-03-06 19:28 calestyo       Note Added: 0010803                          
+07-03-06 19:37 rlrevell       Note Added: 0010804                          
+07-17-06 20:49 calestyo       Note Added: 0011049                          
+07-18-06 03:23 calestyo       Note Added: 0011051                          
+07-18-06 03:23 calestyo       Note Deleted: 0011049                        
+07-18-06 05:54 Raymond        Note Added: 0011052                          
+07-18-06 05:58 Raymond        Note Edited: 0011052                         
+07-18-06 13:37 calestyo       Note Added: 0011054                          
+07-18-06 14:24 Raymond        Note Added: 0011058                          
+07-18-06 14:25 Raymond        Note Edited: 0011058                         
+07-18-06 14:34 calestyo       Note Added: 0011059                          
+07-18-06 17:35 Raymond        Note Added: 0011067                          
+07-18-06 17:39 Raymond        Note Edited: 0011067                         
+07-18-06 18:03 calestyo       Note Added: 0011068                          
+07-18-06 18:12 Raymond        Note Added: 0011069                          
+07-18-06 18:30 calestyo       Note Added: 0011070                          
+07-19-06 03:36 Raymond        Note Added: 0011077                          
+07-19-06 05:50 Raymond        Note Edited: 0011077                         
+07-19-06 11:50 calestyo       Note Added: 0011084                          
+07-19-06 12:03 Raymond        Note Added: 0011085                          
+07-19-06 12:06 Raymond        Note Edited: 0011085                         
+07-19-06 12:11 calestyo       Note Added: 0011086                          
+07-19-06 16:46 Raymond        Note Added: 0011087                          
+07-19-06 18:21 calestyo       Note Added: 0011091                          
+07-19-06 18:22 calestyo       Note Added: 0011092                          
+07-19-06 20:01 tiwai          Note Added: 0011093                          
+07-19-06 21:30 calestyo       Note Added: 0011102                          
+07-20-06 04:01 Raymond        Note Added: 0011106                          
+07-20-06 08:06 Raymond        Note Added: 0011113                          
 ======================================================================
 
 
