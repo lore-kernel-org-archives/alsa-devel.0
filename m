@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 20 Jul 2006 13:44:37 +0200
-Message-ID: <e361e88c5b7d08bc206d67fcd1a759b9@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 13:57:06 +0200
+Message-ID: <772119ecf34fd4cedb84334134993647@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B5F7121
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 618D818F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 13:44:37 +0200 (MEST)
+	Thu, 20 Jul 2006 13:57:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-20-2006 13:44 CEST
+Last Modified:              07-20-2006 13:57 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,35 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 07-20-06 12:48 
-----------------------------------------------------------------------
-Ok for testing this I had to play around with configure directories
-again,..
-
->Refer to Aureon71.conf
->'speaker-test -t wav -c 2' require dmix of 2 channels
->'speaker-test -t wav -c 4' require dmix of 4 channels
->'speaker-test -t wav -c 6' require dmix of 6 channels
->'speaker-test -t wav -c 8' require dmix of 8 channels
-Ok I don't know what I should check out with the dmix stuff,.. (as you
-might notice I'm everything else than an alsa expert ;) )
-So for now I just tried out those commands...
-The above work, meaning say start and play something BUT they always play
-only front left and front right,.. for the others (depending on which -c
-option) it remains silent and I hear nothing.
-This used to work with older versions of alsa-lib...
-
-
->'speaker-test -Dplughw:0 -t wav -c 8' require 'plug' and 'hw' support 8
-channels
-Ok,.. with this it works, too AND I hear also the others (center, rear,
-side) but,.. rear and side still swapped).
-
-
->It seem that 'channels 8' is misssoing in surround71 of Aureon71.conf
-Uhm,.. anything I should do here?
-
-----------------------------------------------------------------------
  Raymond - 07-20-06 13:44 
 ----------------------------------------------------------------------
 <confdir:pcm/surround71.conf>
@@ -162,6 +133,47 @@ speaker-test -Dplug:side -c 2
 speaker-test -Dplug:surround40 -c 4 -t wav
 speaker-test -Dplug:surround51 -c 6 -t wav
 speaker-test -Dplug:surround71 -c 8 -t wav
+
+----------------------------------------------------------------------
+ calestyo - 07-20-06 13:57 
+----------------------------------------------------------------------
+I added the channels 8 but it seems that this doesn't change anything.
+
+>Does the volume controls works ?
+Yes,.. all of them seems to work.
+
+
+>speaker-test -Dplug:front -c 2
+>speaker-test -Dplug:rear -c 2
+>speaker-test -Dplug:center_lfe -c 2
+>speaker-test -Dplug:side -c 2
+All of them seems to work,.. althoug,.. side and rear are still swapped.
+
+
+>speaker-test -Dplug:surround40 -c 4 -t wav
+Works,.. but rear is played in the side speakers
+
+>speaker-test -Dplug:surround51 -c 6 -t wav
+Doesn't work at all:
+# ./speaker-test -Dplug:surround51 -c 6 -t wav
+
+speaker-test 1.0.12rc1
+
+Playback device is plug:surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 8 to 10920
+Period size range from 4 to 5460
+Using max buffer size 10920
+Periods = 4
+was set period_size = 0
+was set buffer_size = 10920
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+
+>speaker-test -Dplug:surround71 -c 8 -t wav
+Works,.. but rear and right are swapped.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -223,6 +235,7 @@ Date Modified  Username       Field                    Change
 07-20-06 12:38 calestyo       Note Added: 0011117                          
 07-20-06 12:48 calestyo       Note Added: 0011118                          
 07-20-06 13:44 Raymond        Note Added: 0011119                          
+07-20-06 13:57 calestyo       Note Added: 0011120                          
 ======================================================================
 
 
