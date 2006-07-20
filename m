@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Thu, 20 Jul 2006 16:12:16 +0200
-Message-ID: <60847dd3fa60678060c29529c16b244f@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 16:35:40 +0200
+Message-ID: <c9c08fde188543ab5f75e70dc6052700@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0624917B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A68A7127
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 16:12:16 +0200 (MEST)
+	Thu, 20 Jul 2006 16:35:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-20-2006 16:12 CEST
+Last Modified:              07-20-2006 16:35 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,18 +68,25 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 16:09 
-----------------------------------------------------------------------
-"If you slash out line 104, it resolves the issue."
-
-which function is in line 104 ?
-
-----------------------------------------------------------------------
  Raymond - 07-20-06 16:12 
 ----------------------------------------------------------------------
 Do you find the message in system log ?
 
 "ice1724: No matching model found for ID 0x??????"
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-20-06 16:35 
+----------------------------------------------------------------------
+line 104 from the test.c i evem gave the output of this program once line
+104 had been commented
+look at the "Additional Information"
+
+line 104..
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+
+i founf an error in dmesg
+
+ice1724: No matching model found for ID 0x12143236
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +127,7 @@ Date Modified  Username       Field                    Change
 07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
 07-20-06 16:09 Raymond        Note Added: 0011130                          
 07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
 ======================================================================
 
 
