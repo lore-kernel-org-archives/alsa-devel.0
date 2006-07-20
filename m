@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Thu, 20 Jul 2006 15:52:54 +0200
-Message-ID: <c4fb7f259b6325c9a0b657313c24fb95@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001475]: Support for M Audio
+	Audiophile 192
+Date: Thu, 20 Jul 2006 15:56:08 +0200
+Message-ID: <0e234f0c33a79056e40d5e4c0cfbef4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE785193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 716B6193
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 15:52:54 +0200 (MEST)
+	Thu, 20 Jul 2006 15:56:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,93 +26,113 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                Dazed
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
+Project:                    ALSA - driver
+Issue ID:                   1475
+Category:                   PCI - ice1724
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               FC3
+Kernel Version:             2.6.*
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-20-2006 15:52 CEST
+Date Submitted:             10-14-2005 13:41 CEST
+Last Modified:              07-20-2006 15:56 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Support for M Audio Audiophile 192
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
-
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
-
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+Is it possible to add support for the M Audio Audiophile 192 sound card? It
+looks to me like it's based on the ICE1724 chipset. I'd settle for simple
+CD playback for starters. ;-)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 10:49 
+ paule - 03-19-06 18:53 
 ----------------------------------------------------------------------
-Which function is in line 104 ????
+Hello!
+I'm also not able to run my AP192 under Linux (Knoppix,Debian, Fedora). 
+The people from M Audio Support means this Card is based on the Envy24HT
+Chipset. 
+Here my boot kernelmessage (loading snd_ice1724 module)
+
+-->
+ice1724: No matching model found for ID 0x12143236
+<-- 
+
+Here the output from "lspci" on my box:
+
+-->
+0000:02:0c.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+<---
+
+With snd_ice1724 module I only hear "audio sludge" when I play mp3 files.
+
+Here the output from "lsmod". It is a 2.6 Standardkernel from
+backports.org
+
+-->
+Module                  Size  Used by
+shpchp                 43360  0
+pci_hotplug            26940  1 shpchp
+snd_ice1724            62948  1
+snd_ice17xx_ak4xxx      4192  1 snd_ice1724
+snd_ac97_codec         83840  1 snd_ice1724
+snd_ac97_bus            2432  1 snd_ac97_codec
+snd_ak4114              9408  1 snd_ice1724
+snd_pcm_oss            47200  0
+snd_mixer_oss          16768  1 snd_pcm_oss
+snd_pcm                81508  4
+snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss
+snd_timer              23364  1 snd_pcm
+snd_page_alloc         10568  1 snd_pcm
+snd_ak4xxx_adda         6208  2 snd_ice1724,snd_ice17xx_ak4xxx
+snd_mpu401_uart         7520  1 snd_ice1724
+snd_rawmidi            23808  1 snd_mpu401_uart
+snd_seq_device          8524  1 snd_rawmidi
+snd                    52804  13
+snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_ak4xxx_adda,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               9728  1 snd
+~~~
+
+Hope this helps.
+
+klaus
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-20-06 15:52 
+ cruiseoveride - 07-20-06 15:56 
 ----------------------------------------------------------------------
-line 104 of wat?
+I too have the card and would like support, 
+I have put verbose diagnostic info about the card at
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+10-14-05 13:41 Dazed          New Issue                                    
+10-14-05 13:41 Dazed          Distribution              => FC3             
+10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
+10-14-05 13:56 Dazed          Note Added: 0006480                          
+10-14-05 15:05 Dazed          Note Edited: 0006480                         
+11-14-05 23:00 jorx           Note Added: 0006728                          
+11-14-05 23:02 jorx           Issue Monitored: jorx                        
+01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
+03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
+03-19-06 18:53 paule          Note Added: 0008694                          
+03-19-06 18:53 paule          Issue Monitored: paule                       
+06-08-06 16:50 drycellbattery Issue Monitored: drycellbattery                   
+
+07-20-06 15:56 cruiseoveride  Note Added: 0011128                          
 ======================================================================
 
 
