@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 20 Jul 2006 13:57:06 +0200
-Message-ID: <772119ecf34fd4cedb84334134993647@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 14:09:32 +0200
+Message-ID: <3f940b2ae2c8d796ce15062cb3d84dec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 618D818F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B1318F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 13:57:07 +0200 (MEST)
+	Thu, 20 Jul 2006 14:09:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-20-2006 13:57 CEST
+Last Modified:              07-20-2006 14:09 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,33 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 13:44 
-----------------------------------------------------------------------
-<confdir:pcm/surround71.conf>
-
-Aureon71.pcm.surround71.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type hw
-	card $CARD
-+       channels 8
-}
-
-Does the volume controls works ?
-
-speaker-test -Dplug:front -c 2 
-speaker-test -Dplug:rear -c 2 
-speaker-test -Dplug:center_lfe -c 2 
-speaker-test -Dplug:side -c 2 
-
-
-speaker-test -Dplug:surround40 -c 4 -t wav
-speaker-test -Dplug:surround51 -c 6 -t wav
-speaker-test -Dplug:surround71 -c 8 -t wav
-
-----------------------------------------------------------------------
  calestyo - 07-20-06 13:57 
 ----------------------------------------------------------------------
 I added the channels 8 but it seems that this doesn't change anything.
@@ -174,6 +147,22 @@ Setting of swparams failed: Invalid argument
 
 >speaker-test -Dplug:surround71 -c 8 -t wav
 Works,.. but rear and right are swapped.
+
+----------------------------------------------------------------------
+ Raymond - 07-20-06 14:09 
+----------------------------------------------------------------------
+Refer to Aureon51.conf
+
+rear       device 2 subdevice 1
+center_lfe device 2 subdevice 0
+side       device 2 subdevice 2  (it is strange that 5.1 has side)
+
+May be you can change this ?
+
+speaker-test -Dplug:front -c 2
+speaker-test -Dplug:rear -c 2
+speaker-test -Dplug:center_lfe -c 2
+speaker-test -Dplug:side -c 2
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -236,6 +225,7 @@ Date Modified  Username       Field                    Change
 07-20-06 12:48 calestyo       Note Added: 0011118                          
 07-20-06 13:44 Raymond        Note Added: 0011119                          
 07-20-06 13:57 calestyo       Note Added: 0011120                          
+07-20-06 14:09 Raymond        Note Added: 0011121                          
 ======================================================================
 
 
