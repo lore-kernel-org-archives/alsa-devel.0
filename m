@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 20 Jul 2006 12:48:04 +0200
-Message-ID: <6e51ce5925b794d5446204acab3c28ba@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 13:44:37 +0200
+Message-ID: <e361e88c5b7d08bc206d67fcd1a759b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC1A7181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B5F7121
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 12:48:04 +0200 (MEST)
+	Thu, 20 Jul 2006 13:44:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-20-2006 12:48 CEST
+Last Modified:              07-20-2006 13:44 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,36 +108,6 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- calestyo - 07-20-06 12:38 
-----------------------------------------------------------------------
->alsa-utils depends on alsa-lib, you need to re-build alsa-util
->(configure,make,make install)
-Ahh,.. ok,.. now it works
-
-
->Please also check the configure options of alsa-utils
-I suppose the're correct as a test with 
-$ ./aplay  /usr/share/sounds/alsa/Noise.wav worked...
-
-
->If the channels are swapped randomly when running speaker-test , this may
-related to 0002026
-Channels are _not_ swapped randomly,.. they are always exactly swapped
-like I direct to describe via some ASCII art in the initial bugreport.
-
-There are always the rear with the side speakers swapped.
-
-As I also described (with links to the manual of both speakers and
-soundcard) the descriptions on the speaker subwoofer unit is a little bit
-strange... so I might have simply connected them in a wrong manner but,...
-with the original TerraTec Windows driver,.. the order seems to be
-correct.
-Ok it might even be the case that the ALSA order would be correct
-(although I don't think so) and TerraTecs driver has a wrong order,.. but
-the it should still be considered to change the order in ALSA, too,.. for
-the sake of uniformity.
-
-----------------------------------------------------------------------
  calestyo - 07-20-06 12:48 
 ----------------------------------------------------------------------
 Ok for testing this I had to play around with configure directories
@@ -165,6 +135,33 @@ side) but,.. rear and side still swapped).
 
 >It seem that 'channels 8' is misssoing in surround71 of Aureon71.conf
 Uhm,.. anything I should do here?
+
+----------------------------------------------------------------------
+ Raymond - 07-20-06 13:44 
+----------------------------------------------------------------------
+<confdir:pcm/surround71.conf>
+
+Aureon71.pcm.surround71.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
++       channels 8
+}
+
+Does the volume controls works ?
+
+speaker-test -Dplug:front -c 2 
+speaker-test -Dplug:rear -c 2 
+speaker-test -Dplug:center_lfe -c 2 
+speaker-test -Dplug:side -c 2 
+
+
+speaker-test -Dplug:surround40 -c 4 -t wav
+speaker-test -Dplug:surround51 -c 6 -t wav
+speaker-test -Dplug:surround71 -c 8 -t wav
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -225,6 +222,7 @@ Date Modified  Username       Field                    Change
 07-20-06 08:06 Raymond        Note Added: 0011113                          
 07-20-06 12:38 calestyo       Note Added: 0011117                          
 07-20-06 12:48 calestyo       Note Added: 0011118                          
+07-20-06 13:44 Raymond        Note Added: 0011119                          
 ======================================================================
 
 
