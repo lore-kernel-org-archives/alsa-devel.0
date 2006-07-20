@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
-	192 (AP192K) Support
-Date: Thu, 20 Jul 2006 15:56:15 +0200
-Message-ID: <4892d5ceee7d2f4ff32cebcdc2be5d81@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Thu, 20 Jul 2006 16:09:34 +0200
+Message-ID: <84e973916926a35d4605a09aa326638d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C4D3193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344A817B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 15:56:16 +0200 (MEST)
+	Thu, 20 Jul 2006 16:09:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,74 +27,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                bobek
+Reported By:                cruiseoveride
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1646
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             12-13-2005 11:38 CET
-Last Modified:              07-20-2006 15:56 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-20-2006 16:09 CEST
 ======================================================================
-Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-Could you add support for that soundcard? I have discussed this already
-with Jaroslav, he asked for photo of the card.
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
+
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
+
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
+
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001475 Support for M Audio Audiophile 192
-======================================================================
 
 ----------------------------------------------------------------------
- drycellbattery - 06-08-06 17:15 
+ cruiseoveride - 07-20-06 15:52 
 ----------------------------------------------------------------------
-Are bobek's images helpful for the developers? Is there any activity
-happening now? Unfortunately, I cannot contribute to the code but I could
-supplement more photos or make a svg schematic. I tried uploading a pic
-but got a memory related error so I will link them from my website:
-http://www.drycellbattery.tk/images/dsc00396.jpg
-http://www.drycellbattery.tk/images/dsc00397.jpg
-http://www.drycellbattery.tk/images/dsc00400.jpg
-http://www.drycellbattery.tk/images/dsc00401.jpg
-http://www.drycellbattery.tk/images/dsc00402.jpg
-http://www.drycellbattery.tk/images/dsc00403.jpg
-http://www.drycellbattery.tk/images/dsc00412.jpg
-http://www.drycellbattery.tk/images/dsc00413.jpg
-
-they're not very good as my camera and the lighting conditions weren't
-very good. Perhaps I can borrow my friend's digital slr sometime, but he
-lives in another city.
+line 104 of wat?
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-20-06 15:56 
+ Raymond - 07-20-06 16:09 
 ----------------------------------------------------------------------
-I too have the card and would like support. I have uploaded diagnostic info
-about the card at..
+"If you slash out line 104, it resolves the issue."
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293
+which function is in line 104 ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-05 11:38 bobek          New Issue                                    
-12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
-12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
-03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
-03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
-06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
-
-06-08-06 17:15 drycellbattery Note Added: 0010113                          
-07-20-06 15:56 cruiseoveride  Note Added: 0011129                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
 ======================================================================
 
 
