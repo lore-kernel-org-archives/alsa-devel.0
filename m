@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Fri, 21 Jul 2006 01:28:43 +0200
-Message-ID: <5c7721ab8d8830ad4c80d61dd231c19e@bugtrack.alsa-project.org>
+Date: Fri, 21 Jul 2006 01:45:44 +0200
+Message-ID: <f0595363bfb5a9ee45fb96ea573ec319@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39B0D17A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B845D12B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 01:28:44 +0200 (MEST)
+	Fri, 21 Jul 2006 01:45:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-21-2006 01:28 CEST
+Last Modified:              07-21-2006 01:45 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,17 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 01:16 
-----------------------------------------------------------------------
-ok i put the pics of my card here
-
-http://cruise.homeunix.net/temp/
-
-the canera is not great but u can see three AKMs
-
-I am trying to find a matching ESI.
-
-----------------------------------------------------------------------
  cruiseoveride - 07-21-06 01:28 
 ----------------------------------------------------------------------
 The pics might not be too clear soo this is wats on the AKMs
@@ -96,6 +85,27 @@ AK4114VQ
 0522JBK
 
 Hope this helps
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-21-06 01:45 
+----------------------------------------------------------------------
+here are some shots of the Juli
+
+http://presse.ridi.com/esi/julia/julia-1.jpg
+http://presse.ridi.com/esi/julia/julia-2.jpg
+http://presse.ridi.com/esi/julia/julia-3.jpg
+http://www.ixbt.com/multimedia/esi-juli@-en.shtml
+
+but the julis is a VTS1721.
+the maudio 192 is a VTS1724.
+
+heres the info on the AKMs
+http://www.asahi-kasei.co.jp/akm/en/product/ak4358/ak4358.html
+http://www.asahi-kasei.co.jp/akm/en/product/ak4114/ak4114.html
+http://www.asahi-kasei.co.jp/akm/en/product/ak4385/ak4385.html
+
+u guys should have all the info by now.
+If u want me to run any programs on my machine. just let me know
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -145,6 +155,7 @@ Date Modified  Username       Field                    Change
 07-20-06 19:31 Raymond        Note Edited: 0011136                         
 07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
 07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
 ======================================================================
 
 
