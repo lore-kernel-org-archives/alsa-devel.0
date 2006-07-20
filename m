@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Thu, 20 Jul 2006 10:49:16 +0200
-Message-ID: <6fa466d7902ba2b0e0088df7c6de123d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001379]: 1.0.9 produces very low
+	volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
+Date: Thu, 20 Jul 2006 10:50:19 +0200
+Message-ID: <0c643976ad3181868d19ba5a61417c4d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72677226
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A372226
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 10:49:16 +0200 (MEST)
+	Thu, 20 Jul 2006 10:50:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,98 +24,149 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1379> 
 ======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
+Reported By:                kSh
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1379
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               SUSE Linux Professional 9.3
+Kernel Version:             Linux 2.6.11.4-21.8-default
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-20-2006 10:49 CEST
+Date Submitted:             08-30-2005 18:47 CEST
+Last Modified:              07-20-2006 10:50 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    1.0.9 produces very low volume on all volumes set to
+100%; 1.0.10rc1 fails to modprobe
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+Hello.
+I have a problem with my Asus M5A laptop. ALSA drivers 1.0.9 that come
+with SUSE produce very low volume even with all volumes set to 100%. I
+tried removing the driver and compiling my own, the same result. And yes,
+I read the 0001176 bug report that speaks of exactly the same issue. The
+problem is 1.0.9 runs flawlessly but very quiet and although the
+compilation and installation of 1.0.10rc1 went fine, while modprobing I
+get:
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+# /etc/init.d/alsasound start
+Starting sound driver: snd-hda-intel WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/acore/snd-pcm.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-codec.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-intel.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+done
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+The dmesg is as follows:
 
-If you slash out line 104, it resolves the issue.
+# dmesg -c
+snd: module not supported by Novell, setting U taint flag.
+snd_timer: module not supported by Novell, setting U taint flag.
+snd_pcm: module not supported by Novell, setting U taint flag.
+snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
+snd_pcm: Unknown symbol snd_dma_reserve_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_free_pages
+snd_pcm: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_get_reserved_buf
+snd_pcm: Unknown symbol snd_dma_get_reserved_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_alloc_pages
+snd_pcm: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_codec: module not supported by Novell, setting U taint flag.
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_list, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_format_width, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_intel: module not supported by Novell, setting U taint flag.
+snd_hda_intel: Unknown symbol snd_pcm_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all,
+st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_bus_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_build_pcms, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_codec_new, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_free_pages
+snd_hda_intel: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_queue_unsol_event, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_calc_stream_format, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_set_ops, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_suspend, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_suspend_all, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_resume, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer, st_info ==
+0x1
+snd_hda_intel: Unknown symbol snd_hda_build_controls, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_alloc_pages
+snd_hda_intel: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_period_elapsed, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
 
-My question is,
+It seems like the drivers were compiled for another kernel, am I right?
+But the strange thing is the same ./configure, make, make install
+procedure with 1.0.9 works just flawlessly.
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+I'm sorry if the problem comes from my lack of Linux knowledge. I just
+hope we'll get a solution to this one. I'll provide any help you'll need.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 08:22 
+ kSh - 09-07-05 22:15 
 ----------------------------------------------------------------------
-You better join the discussion at
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 or
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475
+Well, there IS one problem, though. One I thought would be solved by
+position_fix=1. I mean the sound is clicky at times, the artifacts sound
+like crushed cellophane or faulty cables when you touch them: these are
+high-pitch clicks and pops. The clicks are heard on high-volume music
+fragments but not on all of them and this effect is not related with
+volume adjustments (100% volume produces as many pops as volumes at 50%..
+below 40% however I can barely hear anything so I can't really tell for
+sure) or LFE (bass-boost) that I have always set to 0%.
 
+position_fix produces the same effects for 0, 1 and 2 values.
 
+What can I do? (this issue is related with 0001380)
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 10:49 
+ avuton - 12-18-05 22:43 
 ----------------------------------------------------------------------
-Which function is in line 104 ????
+Does 1.0.11pre1 fix the 'clicky' sound?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
+08-30-05 18:47 kSh            New Issue                                    
+08-30-05 18:47 kSh            Distribution              => SUSE Linux
+Professional 9.3
+08-30-05 18:47 kSh            Kernel Version            => Linux
+2.6.11.4-21.8-default
+08-30-05 18:49 kSh            Issue Monitored: kSh                         
+08-30-05 19:48 Varanger       Issue Monitored: Varanger                    
+08-30-05 23:19 Varanger       Issue End Monitor: Varanger                    
+09-07-05 19:01 kSh            Note Added: 0006063                          
+09-07-05 19:06 tiwai          Note Added: 0006064                          
+09-07-05 19:57 tiwai          Note Added: 0006065                          
+09-07-05 21:51 kSh            Note Added: 0006067                          
+09-07-05 22:15 kSh            Note Added: 0006068                          
+12-18-05 22:43 avuton         Note Added: 0007074                          
+12-18-05 22:43 avuton         Issue Monitored: avuton                      
+07-20-06 10:50 Adrian Bunk    Status                   assigned => closed  
+07-20-06 10:50 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
