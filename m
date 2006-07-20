@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002291]: AD1986A produces a high
-	fequency noise
-Date: Thu, 20 Jul 2006 06:47:07 +0200
-Message-ID: <67c65d76c0f7f820cb8be33af78930dc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002168]: --enable-shared=no
+	--enable-static=yes fails
+Date: Thu, 20 Jul 2006 06:57:05 +0200
+Message-ID: <c8b2c5d727ed74e167c16c5327c0b26c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 589ABE2
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C373D229
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 06:47:08 +0200 (MEST)
+	Thu, 20 Jul 2006 06:57:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,62 +24,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2291> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2168> 
 ======================================================================
-Reported By:                michaeleekk
-Assigned To:                perex
+Reported By:                pierrelux
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2291
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2168
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.17-1.2145_FC5
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-18-2006 07:12 CEST
-Last Modified:              07-20-2006 06:47 CEST
+Date Submitted:             05-28-2006 19:30 CEST
+Last Modified:              07-20-2006 06:57 CEST
 ======================================================================
-Summary:                    AD1986A produces a high fequency noise
+Summary:                    --enable-shared=no --enable-static=yes fails
 Description: 
-Some noise, just like "weeeeee", produced when playing a sound files or
-music files.
-No exception. It always produced.
+It seems to be impossible to compile alsa-lib 1.0.11 statically. Here's
+where it fails:
+
+make[1]: Entering directory
+`/home/pierre-luc/fLux/alsa-lib-1.0.11/aserver'
+if i486-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-I../src/pcm    -g -O2 -MT aserver.o -MD -MP -MF ".deps/aserver.Tpo" -c -o
+
+then mv -f ".deps/aserver.Tpo" ".deps/aserver.Po"; else rm -f
+".deps/aserver.Tpo"; exit 1; fi
+/bin/sh ../libtool --tag=CC --mode=link i486-linux-gcc  -g -O2   -o
+aserver  aserver.o ../src/libasound.la
+i486-linux-gcc -g -O2 -o aserver aserver.o  ../src/.libs/libasound.a -lm
+-ldl -lpthread
+ ../src/.libs/libasound.a(pcm_symbols.o):(.data+0x60): undefined reference
+to `_snd_module_pcm_extplug'
+ ../src/.libs/libasound.a(pcm_symbols.o):(.data+0x64): undefined reference
+to `_snd_module_pcm_ioplug'
+collect2: ld returned 1 exit status
+make[1]: *** [aserver] Error 1
+make[1]: Leaving directory
+`/home/pierre-luc/fLux/alsa-lib-1.0.11/aserver'
+make: *** [all-recursive] Error 1 
 ======================================================================
 
 ----------------------------------------------------------------------
- michaeleekk - 07-20-06 05:12 
+ Adrian Bunk - 07-09-06 13:54 
 ----------------------------------------------------------------------
-I'm sorry.
+Works for me with 1.0.11 (normal glibc system).
 
-But I found that I set the model to auto.
+Please try with a freshly unpacked 1.0.11 tarball on the glibc system.
 
-After I set model=3stack, everything goes well.
-
-Thank you .
+If it still fails, please attach the complete configure and make logs to
+this bug.
 
 ----------------------------------------------------------------------
- tiwai - 07-20-06 06:47 
+ tiwai - 07-20-06 06:57 
 ----------------------------------------------------------------------
-Good to hear.  Then please inform the name of your machine (product name of
-laptop, mobo or whatever), together with the output of "lspci -nv" (only
-for class 0403) so that the driver will work without extra option.
+This was already fixed in 1.0.12rc1.  (Missing entries in pcm_symbols.c)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-06 07:12 michaeleekk    New Issue                                    
-07-18-06 07:12 michaeleekk    Kernel Version            => 2.6.17-1.2145_FC5
-07-18-06 11:50 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - hda-intel
-07-19-06 20:18 tiwai          Note Added: 0011095                          
-07-20-06 05:07 michaeleekk    Note Added: 0011108                          
-07-20-06 05:12 michaeleekk    Note Added: 0011109                          
-07-20-06 06:47 tiwai          Note Added: 0011110                          
+05-28-06 19:30 pierrelux      New Issue                                    
+07-09-06 13:54 Adrian Bunk    Note Added: 0010947                          
+07-20-06 06:57 tiwai          Status                   new => resolved     
+07-20-06 06:57 tiwai          Resolution               open => fixed       
+07-20-06 06:57 tiwai          Assigned To               => tiwai           
+07-20-06 06:57 tiwai          Note Added: 0011111                          
 ======================================================================
 
 
