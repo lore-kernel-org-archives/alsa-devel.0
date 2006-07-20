@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 20 Jul 2006 14:25:14 +0200
-Message-ID: <b3daf7b733b9b5bd7130ff3511f4721f@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 14:37:49 +0200
+Message-ID: <a6ad57cded8c6ee6c52af9f46a096904@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DEBF19D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D59D168
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 14:25:14 +0200 (MEST)
+	Thu, 20 Jul 2006 14:37:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-20-2006 14:25 CEST
+Last Modified:              07-20-2006 14:37 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -106,22 +106,6 @@ I think the configuration of the surround for the Aureon 7.1 Universe has
 here
 some mistake, hasn't it?
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-20-06 14:09 
-----------------------------------------------------------------------
-Refer to Aureon51.conf
-
-rear       device 2 subdevice 1
-center_lfe device 2 subdevice 0
-side       device 2 subdevice 2  (it is strange that 5.1 has side)
-
-May be you can change this ?
-
-speaker-test -Dplug:front -c 2
-speaker-test -Dplug:rear -c 2
-speaker-test -Dplug:center_lfe -c 2
-speaker-test -Dplug:side -c 2
 
 ----------------------------------------------------------------------
  calestyo - 07-20-06 14:25 
@@ -192,6 +176,15 @@ Setting of swparams failed: Invalid argument
 >speaker-test -Dplug:surround71 -c 8 -t wav
 side and rear _still_ swapped...
 
+----------------------------------------------------------------------
+ Raymond - 07-20-06 14:37 
+----------------------------------------------------------------------
+Does the volume controls change the correct channels ?
+
+Do you have any multi-media player (e.g. xine, mplayer, ... ) and 5.1
+movie to test the surround51 ? speaker-test seem buggy in calculating
+period size
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -255,6 +248,7 @@ Date Modified  Username       Field                    Change
 07-20-06 13:57 calestyo       Note Added: 0011120                          
 07-20-06 14:09 Raymond        Note Added: 0011121                          
 07-20-06 14:25 calestyo       Note Added: 0011122                          
+07-20-06 14:37 Raymond        Note Added: 0011124                          
 ======================================================================
 
 
