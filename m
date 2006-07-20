@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001456]: some Realtek ALC861 hda-intel
-	problems
-Date: Thu, 20 Jul 2006 10:48:21 +0200
-Message-ID: <100bc4c8ba9d4c477b1e914fa871e8cc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Thu, 20 Jul 2006 10:49:16 +0200
+Message-ID: <6fa466d7902ba2b0e0088df7c6de123d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64C0A226
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72677226
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 10:48:21 +0200 (MEST)
+	Thu, 20 Jul 2006 10:49:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,62 +25,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1456> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                kaloian
-Assigned To:                tiwai
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1456
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.13
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-25-2005 12:35 CEST
-Last Modified:              07-20-2006 10:48 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-20-2006 10:49 CEST
 ======================================================================
-Summary:                    some Realtek ALC861 hda-intel problems
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-First I'm not sure that chip 861 is suported?...Alsa rekognize it like
-880....and therfore there are some unusable sliders at mixer control -
-like 3 input controls instead one...and Master volume is missing. Also
-have problem with straching sound reported already here but it's not big
-problem while work fine with OSS. Other big problem for me is that when
-start Linux from system halt alsa dont work at all - alsamixer shows only
-1 or two controls - front or pcm but they dont realy work...even I try
-remove and load module hda-intel but..... To resolve this I need to start
-first windows(XP) and then reboot(not halt) system - now alsa work. I'm
-not sure where to look for problem - alsa or bios. 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-Motherboard is ASUS  P5RD1-V Deluxe with ATI  XPRESS NBridge and Uli 1573
-SBridge with integrated sound - Realtek ALC861. Bios is newest version -
-0802. Kernel 2.6.13, alsa-driver 1.0.9b.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:29 
+ Raymond - 07-20-06 08:22 
 ----------------------------------------------------------------------
-Please try the 1.0.11-rc1 release, we got a patch from Realtek that should
-fix many of these problems.
+You better join the discussion at
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 or
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-20-06 10:49 
+----------------------------------------------------------------------
+Which function is in line 104 ????
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-05 12:35 kaloian        New Issue                                    
-09-25-05 12:35 kaloian        Kernel Version            => 2.6.13          
-12-19-05 02:29 rlrevell       Note Added: 0007084                          
-07-20-06 10:48 Adrian Bunk    Status                   assigned => resolved
-07-20-06 10:48 Adrian Bunk    Resolution               open => fixed       
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
 ======================================================================
 
 
