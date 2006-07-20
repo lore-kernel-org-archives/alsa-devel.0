@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002291]: AD1986A produces a high
 	fequency noise
-Date: Thu, 20 Jul 2006 05:07:29 +0200
-Message-ID: <fde92b30d3413d6b693df7ae411f7424@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 05:12:51 +0200
+Message-ID: <9ef885d6595d39e4678e27d8e5a29a4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A383D13D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65149181
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 05:07:29 +0200 (MEST)
+	Thu, 20 Jul 2006 05:12:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             2.6.17-1.2145_FC5
 ======================================================================
 Date Submitted:             07-18-2006 07:12 CEST
-Last Modified:              07-20-2006 05:07 CEST
+Last Modified:              07-20-2006 05:12 CEST
 ======================================================================
 Summary:                    AD1986A produces a high fequency noise
 Description: 
@@ -50,11 +50,6 @@ Some noise, just like "weeeeee", produced when playing a sound files or
 music files.
 No exception. It always produced.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-19-06 20:18 
-----------------------------------------------------------------------
-Try model=3stack module option.
 
 ----------------------------------------------------------------------
  michaeleekk - 07-20-06 05:07 
@@ -70,6 +65,17 @@ alias sound-slot-0 snd-hda-intel
 But with these settings, I also have the "weeeeeeeeeeee" sound when
 playing the music ...
 
+----------------------------------------------------------------------
+ michaeleekk - 07-20-06 05:12 
+----------------------------------------------------------------------
+I'm sorry.
+
+But I found that I set the model to auto.
+
+After I set model=3stack, everything goes well.
+
+Thank you .
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +85,7 @@ Date Modified  Username       Field                    Change
 => PCI - hda-intel
 07-19-06 20:18 tiwai          Note Added: 0011095                          
 07-20-06 05:07 michaeleekk    Note Added: 0011108                          
+07-20-06 05:12 michaeleekk    Note Added: 0011109                          
 ======================================================================
 
 
