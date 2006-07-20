@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Thu, 20 Jul 2006 17:42:39 +0200
-Message-ID: <1120897bc36a62a18bbb00738520ff17@bugtrack.alsa-project.org>
+Date: Thu, 20 Jul 2006 17:49:45 +0200
+Message-ID: <34b813ebf7858de9804b4ea5b0349bf9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A759C184
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB35218A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 17:42:39 +0200 (MEST)
+	Thu, 20 Jul 2006 17:49:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-20-2006 17:42 CEST
+Last Modified:              07-20-2006 17:49 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,27 +68,19 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-20-06 16:39 
-----------------------------------------------------------------------
-line 104 from the test.c i evem gave the output of this program once line
-104 had been commented
-look at the "Additional Information"
-
-line 104..
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
-
-i found an error in dmesg
-
-ice1724: No matching model found for ID 0x12143236
-
-
-
-----------------------------------------------------------------------
  cruiseoveride - 07-20-06 17:42 
 ----------------------------------------------------------------------
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646
 
 check the second last post, there are a lot of hi-res pics of the pcb
+
+----------------------------------------------------------------------
+ Raymond - 07-20-06 17:49 
+----------------------------------------------------------------------
+This driver also has the three AKM akxxx as
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 but is incomplete
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=24e056c0ce7f;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -132,6 +124,7 @@ Date Modified  Username       Field                    Change
 07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
 07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
 07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
 ======================================================================
 
 
