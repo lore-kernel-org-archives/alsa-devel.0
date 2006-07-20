@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio
-	Audiophile 192
-Date: Thu, 20 Jul 2006 15:56:08 +0200
-Message-ID: <0e234f0c33a79056e40d5e4c0cfbef4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
+	192 (AP192K) Support
+Date: Thu, 20 Jul 2006 15:56:15 +0200
+Message-ID: <4892d5ceee7d2f4ff32cebcdc2be5d81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 716B6193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C4D3193
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 15:56:08 +0200 (MEST)
+	Thu, 20 Jul 2006 15:56:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,113 +26,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
 ======================================================================
-Reported By:                Dazed
+Reported By:                bobek
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1475
+Issue ID:                   1646
 Category:                   PCI - ice1724
-Reproducibility:            N/A
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
+Date Submitted:             12-13-2005 11:38 CET
 Last Modified:              07-20-2006 15:56 CEST
 ======================================================================
-Summary:                    Support for M Audio Audiophile 192
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
+related to          0001475 Support for M Audio Audiophile 192
 ======================================================================
 
 ----------------------------------------------------------------------
- paule - 03-19-06 18:53 
+ drycellbattery - 06-08-06 17:15 
 ----------------------------------------------------------------------
-Hello!
-I'm also not able to run my AP192 under Linux (Knoppix,Debian, Fedora). 
-The people from M Audio Support means this Card is based on the Envy24HT
-Chipset. 
-Here my boot kernelmessage (loading snd_ice1724 module)
+Are bobek's images helpful for the developers? Is there any activity
+happening now? Unfortunately, I cannot contribute to the code but I could
+supplement more photos or make a svg schematic. I tried uploading a pic
+but got a memory related error so I will link them from my website:
+http://www.drycellbattery.tk/images/dsc00396.jpg
+http://www.drycellbattery.tk/images/dsc00397.jpg
+http://www.drycellbattery.tk/images/dsc00400.jpg
+http://www.drycellbattery.tk/images/dsc00401.jpg
+http://www.drycellbattery.tk/images/dsc00402.jpg
+http://www.drycellbattery.tk/images/dsc00403.jpg
+http://www.drycellbattery.tk/images/dsc00412.jpg
+http://www.drycellbattery.tk/images/dsc00413.jpg
 
--->
-ice1724: No matching model found for ID 0x12143236
-<-- 
-
-Here the output from "lspci" on my box:
-
--->
-0000:02:0c.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-<---
-
-With snd_ice1724 module I only hear "audio sludge" when I play mp3 files.
-
-Here the output from "lsmod". It is a 2.6 Standardkernel from
-backports.org
-
--->
-Module                  Size  Used by
-shpchp                 43360  0
-pci_hotplug            26940  1 shpchp
-snd_ice1724            62948  1
-snd_ice17xx_ak4xxx      4192  1 snd_ice1724
-snd_ac97_codec         83840  1 snd_ice1724
-snd_ac97_bus            2432  1 snd_ac97_codec
-snd_ak4114              9408  1 snd_ice1724
-snd_pcm_oss            47200  0
-snd_mixer_oss          16768  1 snd_pcm_oss
-snd_pcm                81508  4
-snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss
-snd_timer              23364  1 snd_pcm
-snd_page_alloc         10568  1 snd_pcm
-snd_ak4xxx_adda         6208  2 snd_ice1724,snd_ice17xx_ak4xxx
-snd_mpu401_uart         7520  1 snd_ice1724
-snd_rawmidi            23808  1 snd_mpu401_uart
-snd_seq_device          8524  1 snd_rawmidi
-snd                    52804  13
-snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_ak4xxx_adda,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               9728  1 snd
-~~~
-
-Hope this helps.
-
-klaus
+they're not very good as my camera and the lighting conditions weren't
+very good. Perhaps I can borrow my friend's digital slr sometime, but he
+lives in another city.
 
 ----------------------------------------------------------------------
  cruiseoveride - 07-20-06 15:56 
 ----------------------------------------------------------------------
-I too have the card and would like support, 
-I have put verbose diagnostic info about the card at
+I too have the card and would like support. I have uploaded diagnostic info
+about the card at..
 
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-11-14-05 23:02 jorx           Issue Monitored: jorx                        
-01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
-03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
-03-19-06 18:53 paule          Note Added: 0008694                          
-03-19-06 18:53 paule          Issue Monitored: paule                       
-06-08-06 16:50 drycellbattery Issue Monitored: drycellbattery                   
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
+03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
+03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
+06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
 
-07-20-06 15:56 cruiseoveride  Note Added: 0011128                          
+06-08-06 17:15 drycellbattery Note Added: 0010113                          
+07-20-06 15:56 cruiseoveride  Note Added: 0011129                          
 ======================================================================
 
 
