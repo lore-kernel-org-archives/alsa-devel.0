@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001379]: 1.0.9 produces very low
-	volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
-Date: Thu, 20 Jul 2006 10:50:19 +0200
-Message-ID: <0c643976ad3181868d19ba5a61417c4d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001415]: No sound after adjustment of
+	volume
+Date: Thu, 20 Jul 2006 10:50:28 +0200
+Message-ID: <409c961e91e7cb1040b6b07a30d6e82b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A372226
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C8BD226
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Jul 2006 10:50:20 +0200 (MEST)
+	Thu, 20 Jul 2006 10:50:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,144 +26,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1379> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1415> 
 ======================================================================
-Reported By:                kSh
+Reported By:                war0060
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1379
+Issue ID:                   1415
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               SUSE Linux Professional 9.3
-Kernel Version:             Linux 2.6.11.4-21.8-default
+Distribution:               Gentoo
+Kernel Version:             2.6.12-r10
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-30-2005 18:47 CEST
+Date Submitted:             09-12-2005 11:49 CEST
 Last Modified:              07-20-2006 10:50 CEST
 ======================================================================
-Summary:                    1.0.9 produces very low volume on all volumes set to
-100%; 1.0.10rc1 fails to modprobe
+Summary:                    No sound after adjustment of volume
 Description: 
-Hello.
-I have a problem with my Asus M5A laptop. ALSA drivers 1.0.9 that come
-with SUSE produce very low volume even with all volumes set to 100%. I
-tried removing the driver and compiling my own, the same result. And yes,
-I read the 0001176 bug report that speaks of exactly the same issue. The
-problem is 1.0.9 runs flawlessly but very quiet and although the
-compilation and installation of 1.0.10rc1 went fine, while modprobing I
-get:
-
-# /etc/init.d/alsasound start
-Starting sound driver: snd-hda-intel WARNING: Error inserting snd_pcm
-(/lib/modules/2.6.11.4-21.8-default/kernel/sound/acore/snd-pcm.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-codec.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-intel.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
-done
-
-The dmesg is as follows:
-
-# dmesg -c
-snd: module not supported by Novell, setting U taint flag.
-snd_timer: module not supported by Novell, setting U taint flag.
-snd_pcm: module not supported by Novell, setting U taint flag.
-snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
-snd_pcm: Unknown symbol snd_dma_reserve_buf, st_info == 0x1
-snd_pcm: disagrees about version of symbol snd_dma_free_pages
-snd_pcm: Unknown symbol snd_dma_free_pages, st_info == 0x1
-snd_pcm: disagrees about version of symbol snd_dma_get_reserved_buf
-snd_pcm: Unknown symbol snd_dma_get_reserved_buf, st_info == 0x1
-snd_pcm: disagrees about version of symbol snd_dma_alloc_pages
-snd_pcm: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
-load_module: err 0xfffffffe (dont worry)
-snd_hda_codec: module not supported by Novell, setting U taint flag.
-snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_list, st_info == 0x1
-snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step, st_info == 0x1
-snd_hda_codec: Unknown symbol snd_pcm_format_width, st_info == 0x1
-load_module: err 0xfffffffe (dont worry)
-snd_hda_intel: module not supported by Novell, setting U taint flag.
-snd_hda_intel: Unknown symbol snd_pcm_new, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all,
-st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_bus_new, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_build_pcms, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_codec_new, st_info == 0x1
-snd_hda_intel: disagrees about version of symbol snd_dma_free_pages
-snd_hda_intel: Unknown symbol snd_dma_free_pages, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_queue_unsol_event, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_calc_stream_format, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_set_ops, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_suspend, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_suspend_all, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_hda_resume, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer, st_info ==
-0x1
-snd_hda_intel: Unknown symbol snd_hda_build_controls, st_info == 0x1
-snd_hda_intel: disagrees about version of symbol snd_dma_alloc_pages
-snd_hda_intel: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
-snd_hda_intel: Unknown symbol snd_pcm_period_elapsed, st_info == 0x1
-load_module: err 0xfffffffe (dont worry)
-
-It seems like the drivers were compiled for another kernel, am I right?
-But the strange thing is the same ./configure, make, make install
-procedure with 1.0.9 works just flawlessly.
-
-I'm sorry if the problem comes from my lack of Linux knowledge. I just
-hope we'll get a solution to this one. I'll provide any help you'll need.
+I'm using the snd-hda-intel driver, everything seems ok, but when I
+adjusted the volume, there will be no sound anymore. After reboot, it
+works again, the main problem is the volume cannot be adjusted.
 ======================================================================
 
 ----------------------------------------------------------------------
- kSh - 09-07-05 22:15 
+ war0060 - 09-20-05 05:19 
 ----------------------------------------------------------------------
-Well, there IS one problem, though. One I thought would be solved by
-position_fix=1. I mean the sound is clicky at times, the artifacts sound
-like crushed cellophane or faulty cables when you touch them: these are
-high-pitch clicks and pops. The clicks are heard on high-volume music
-fragments but not on all of them and this effect is not related with
-volume adjustments (100% volume produces as many pops as volumes at 50%..
-below 40% however I can barely hear anything so I can't really tell for
-sure) or LFE (bass-boost) that I have always set to 0%.
-
-position_fix produces the same effects for 0, 1 and 2 values.
-
-What can I do? (this issue is related with 0001380)
+I've tried 1.010rc1, still have the problem
 
 ----------------------------------------------------------------------
- avuton - 12-18-05 22:43 
+ rlrevell - 12-19-05 02:31 
 ----------------------------------------------------------------------
-Does 1.0.11pre1 fix the 'clicky' sound?
+Try 1.0.11-rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 18:47 kSh            New Issue                                    
-08-30-05 18:47 kSh            Distribution              => SUSE Linux
-Professional 9.3
-08-30-05 18:47 kSh            Kernel Version            => Linux
-2.6.11.4-21.8-default
-08-30-05 18:49 kSh            Issue Monitored: kSh                         
-08-30-05 19:48 Varanger       Issue Monitored: Varanger                    
-08-30-05 23:19 Varanger       Issue End Monitor: Varanger                    
-09-07-05 19:01 kSh            Note Added: 0006063                          
-09-07-05 19:06 tiwai          Note Added: 0006064                          
-09-07-05 19:57 tiwai          Note Added: 0006065                          
-09-07-05 21:51 kSh            Note Added: 0006067                          
-09-07-05 22:15 kSh            Note Added: 0006068                          
-12-18-05 22:43 avuton         Note Added: 0007074                          
-12-18-05 22:43 avuton         Issue Monitored: avuton                      
+09-12-05 11:49 war0060        New Issue                                    
+09-12-05 11:49 war0060        Distribution              => Gentoo          
+09-12-05 11:49 war0060        Kernel Version            => 2.6.12-r10      
+09-12-05 16:24 tiwai          Note Added: 0006145                          
+09-15-05 04:30 war0060        Note Added: 0006191                          
+09-15-05 16:01 tiwai          Note Added: 0006210                          
+09-20-05 05:19 war0060        Note Added: 0006310                          
+12-13-05 21:18 dzi            Issue Monitored: dzi                         
+12-19-05 02:31 rlrevell       Note Added: 0007085                          
+01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
 07-20-06 10:50 Adrian Bunk    Status                   assigned => closed  
 07-20-06 10:50 Adrian Bunk    Resolution               open => unable to
 duplicate
