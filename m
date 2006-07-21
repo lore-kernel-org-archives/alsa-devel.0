@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001897]: Audio Driver crashes
-	immediatly after login, sound is crackling
-Date: Fri, 21 Jul 2006 09:48:18 +0200
-Message-ID: <83e3ec43dae77fb8753bd4d0571cf0fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001342]: SOund is not working
+Date: Fri, 21 Jul 2006 09:49:33 +0200
+Message-ID: <1715f60b52ae83fd331a150e8290e496@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10C8F17A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D054417A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 09:48:18 +0200 (MEST)
+	Fri, 21 Jul 2006 09:49:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,52 +23,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1897> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1342> 
 ======================================================================
-Reported By:                dgopi81
+Reported By:                taya
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1897
+Issue ID:                   1342
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.6
-Resolution:                 unable to duplicate
+Kernel Version:             2.6.10-5-386
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-07-2006 19:04 CET
-Last Modified:              07-21-2006 09:48 CEST
+Date Submitted:             08-16-2005 20:11 CEST
+Last Modified:              07-21-2006 09:49 CEST
 ======================================================================
-Summary:                    Audio Driver crashes immediatly after login, sound
-is crackling
+Summary:                    SOund is not working
 Description: 
-the sound driver crashes immediatly on logging as root and unable to
-restart, but oss drivers works and sound is fine. when logged as normal
-user alsa driver works but sound is choppy and crackling, oss drivers
-works fine and sound quality is good but applications doesn't detect oss
-and no audio playback in oss mode.
+Hi, I have laptop: Asus w500
+It has integrated sound card: Intel high definition audio.
+It seems that alsa driver is working, but it does not.
+Please correct this.
+Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-07-06 19:23 
+ taya - 03-22-06 06:27 
 ----------------------------------------------------------------------
-You don't give NEARLY enough information for this bug report to be useful
+In later alsa drivers, sound works visualy (I mean when I make sound up, or
+down, or mute it shoes visualy, but still, no sound...)
+
+It appears that it's maybe realtek soundcard..
+Anyway, I have this laptop already 1 year, and on Linux sound is not
+working :(
+I have to still use windows for sound.....
+
+The soundcard is: 	
+Built-in Intel High Definition Audio chip, with 3D effect & full duplex
+Built-in speaker and microphone
+
+from:
+http://www.asus.com/products4.aspx?modelmenu=2&model=414&l1=5&l2=75&l3=0
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 06:36 
+----------------------------------------------------------------------
+In the latest ALSA CVS this should be fixed (I believe you have to use
+"model=asus").  Search the bug tracker for asus + hda-intel
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-06 19:04 dgopi81        New Issue                                    
-03-07-06 19:04 dgopi81        Kernel Version            => 2.6             
-03-07-06 19:23 rlrevell       Note Added: 0008373                          
-07-21-06 09:48 Adrian Bunk    Status                   assigned => closed  
-07-21-06 09:48 Adrian Bunk    Resolution               open => unable to
-duplicate
+08-16-05 20:11 taya           New Issue                                    
+08-16-05 20:11 taya           Kernel Version            => 2.6.10-5-386    
+03-22-06 03:03 rlrevell       Note Added: 0008792                          
+03-22-06 06:27 taya           Note Added: 0008846                          
+03-22-06 06:36 rlrevell       Note Added: 0008847                          
+07-21-06 09:49 Adrian Bunk    Status                   assigned => resolved
+07-21-06 09:49 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
