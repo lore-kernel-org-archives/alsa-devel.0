@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Fri, 21 Jul 2006 03:28:01 +0200
-Message-ID: <097afcbe108a718dde6562f100b1d289@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
+	in incorrect order when doing a speaker-test
+Date: Fri, 21 Jul 2006 04:27:25 +0200
+Message-ID: <fe4080ec2a89790ff8f231bce0c24ee0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1C65168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3361811B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 03:28:01 +0200 (MEST)
+	Fri, 21 Jul 2006 04:27:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,126 +26,191 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                calestyo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2244
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-21-2006 03:28 CEST
+Date Submitted:             06-29-2006 01:35 CEST
+Last Modified:              07-21-2006 04:27 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Aureon 7.1 Universe speakers in incorrect order when
+doing a speaker-test
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I use my Aureon 7.1 Universe with a TerraTec HomeAreon TXR 884 7.1 speaker
+set.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+I've connected the outputs of the soundard to those of the subwoofer
+which
+itself connects the small speakers the following way:
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+Soundcard -------------- Subwoofer --- Small Speakers
+Out Front <---------+--> In FL <-----> Front Left Speaker
+                    \--> In FR <-----> Font Right Speaker
+Out Rear <----------+--> In SL <-----> Side Left Speaker
+                    \--> In SR <-----> Side Right Speaker
+Out Center/Subwoofer <-> In C <------> Center Speaker
+                      \> In Subwoofer
+Out Back Surround <----> In BL <-----> Back Left Speaker
+                    \--> In BR <-----> Back Right Speaker
 
-If you slash out line 104, it resolves the issue.
+You might have a look at soundcard manual page 8
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=574)
+and speaker manual page 12
+(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=724)
+My speakers are placed in my room in a configuration as the 7.1 shown on
+page 12
+in the speaker manual.
 
-My question is,
+As you note the connection from rear to side is a little bit strange (at
+least I
+thought so,...) but this seems to be correct, because when I use the
+windows
+mixer supplied by TerraTec itself, there is a surround test included which
+shows
+the position of the 8 speakers and let me put the indiviually on and off
+and
+this leads always to the correct position.
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+The problem now: I tried the same as under Windows unter Linux with the
+speaker-test tool.
+I called it via speaker-test -t wav -c 8 and the following came out:
+What wav file was played ----- in which speaker position the wav file was
+played
+"Front Left" ----------------- Front Left Speaker  (correct)
+"Front Center" --------------- Center Speaker      (correct)
+"Front Right" ---------------- Front Right Speaker (correct)
+"Side Right" ----------------- Back Right Speaker  (probably wrong!)
+"Rear Right" ----------------- Side Right Speaker  (probably wrong!)
+"Rear Left" ------------------ Side Left Speaker  (probably wrong!)
+"Side Left" ------------------ Back Left Speaker  (probably wrong!)
+"LFE" ------------------------ Subwoofer (correct)
+
+No one could think that I should just switch the speaker cables but that
+can't
+be a proper solution (not only because this would break settings in the
+original
+Windows driver (which I only use for Upgrading my Plextor drive firmware
+;) ).
+I think the configuration of the surround for the Aureon 7.1 Universe has
+here
+some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 01:45 
+ calestyo - 07-20-06 14:47 
 ----------------------------------------------------------------------
-here are some shots of the Juli
+>Does the volume controls change the correct channels ?
+No they are also switched.
 
-http://presse.ridi.com/esi/julia/julia-1.jpg
-http://presse.ridi.com/esi/julia/julia-2.jpg
-http://presse.ridi.com/esi/julia/julia-3.jpg
-http://www.ixbt.com/multimedia/esi-juli@-en.shtml
-
-but the julis is a VTS1721.
-the maudio 192 is a VTS1724.
-
-heres the info on the AKMs
-http://www.asahi-kasei.co.jp/akm/en/product/ak4358/ak4358.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4114/ak4114.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4385/ak4385.html
-
-u guys should have all the info by now.
-If u want me to run any programs on my machine. just let me know
+>Do you have any multi-media player (e.g. xine, mplayer, ... ) and 5.1
+movie to test the surround51 ? speaker-test seem buggy in calculating
+period size
+Yes I have,.. but unfortunately I do not have a surround test dvd or so,..
+and with an normal movie it would be very difficult to test if everything
+works correct as background sounds are often very silend and so,..
+So what exactly do you want me to test? :D
 
 ----------------------------------------------------------------------
- Raymond - 07-21-06 03:28 
+ Raymond - 07-21-06 04:27 
 ----------------------------------------------------------------------
-You should post the info to
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 or
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475
+>>If the channels are swapped randomly when running speaker-test , this may
+related to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
+>Channels are _not_ swapped randomly,.. they are always exactly swapped
+like I direct to describe via some ASCII art in the initial bugreport.
 
-The category of this bug report is [ALSA - lib] 0_general
+speaker-test -c 4 -t wav
+
+In my case (device hw:0,0 support 1, 2, 4 channels) , the four channels
+are correct for about 10-20 rounds and the channels are randomly correct
+afterwards. 
+
+I expect alsa application use the same buffer size in snd_pcm_writei
+except the last write.
+
+I don't expect speaker-test split the last few buffers into small
+fragments which some of them are less than the period_size.
+
+I have a fix in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023#9452
+which seem to eliminate the swap on my sound
+card
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
+06-29-06 01:35 calestyo       New Issue                                    
+06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
+06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
+06-29-06 01:36 calestyo       Note Added: 0010634                          
+06-29-06 01:36 calestyo       Issue Monitored: calestyo                    
+06-29-06 15:29 Raymond        Note Added: 0010647                          
+06-29-06 15:36 calestyo       Note Added: 0010648                          
+06-29-06 15:37 calestyo       Note Added: 0010649                          
+06-29-06 15:40 Raymond        Note Added: 0010650                          
+06-29-06 15:45 calestyo       Note Added: 0010651                          
+06-29-06 15:52 Raymond        Note Added: 0010652                          
+06-29-06 15:54 Raymond        Note Edited: 0010652                         
+06-29-06 15:56 calestyo       Note Added: 0010653                          
+06-29-06 15:58 Raymond        Note Added: 0010654                          
+06-29-06 16:01 calestyo       Note Added: 0010655                          
+06-29-06 16:04 Raymond        Note Added: 0010656                          
+06-29-06 16:07 calestyo       Note Added: 0010657                          
+06-29-06 16:08 Raymond        Note Edited: 0010656                         
+06-29-06 16:12 Raymond        Note Added: 0010658                          
+06-29-06 16:19 calestyo       Note Added: 0010659                          
+06-29-06 17:50 tiwai          Note Added: 0010677                          
+06-29-06 19:05 calestyo       Note Added: 0010695                          
+06-30-06 02:02 Raymond        Note Added: 0010709                          
+06-30-06 02:14 rlrevell       Note Added: 0010711                          
+06-30-06 05:13 Raymond        Note Edited: 0010709                         
+07-03-06 19:28 calestyo       Note Added: 0010803                          
+07-03-06 19:37 rlrevell       Note Added: 0010804                          
+07-17-06 20:49 calestyo       Note Added: 0011049                          
+07-18-06 03:23 calestyo       Note Added: 0011051                          
+07-18-06 03:23 calestyo       Note Deleted: 0011049                        
+07-18-06 05:54 Raymond        Note Added: 0011052                          
+07-18-06 05:58 Raymond        Note Edited: 0011052                         
+07-18-06 13:37 calestyo       Note Added: 0011054                          
+07-18-06 14:24 Raymond        Note Added: 0011058                          
+07-18-06 14:25 Raymond        Note Edited: 0011058                         
+07-18-06 14:34 calestyo       Note Added: 0011059                          
+07-18-06 17:35 Raymond        Note Added: 0011067                          
+07-18-06 17:39 Raymond        Note Edited: 0011067                         
+07-18-06 18:03 calestyo       Note Added: 0011068                          
+07-18-06 18:12 Raymond        Note Added: 0011069                          
+07-18-06 18:30 calestyo       Note Added: 0011070                          
+07-19-06 03:36 Raymond        Note Added: 0011077                          
+07-19-06 05:50 Raymond        Note Edited: 0011077                         
+07-19-06 11:50 calestyo       Note Added: 0011084                          
+07-19-06 12:03 Raymond        Note Added: 0011085                          
+07-19-06 12:06 Raymond        Note Edited: 0011085                         
+07-19-06 12:11 calestyo       Note Added: 0011086                          
+07-19-06 16:46 Raymond        Note Added: 0011087                          
+07-19-06 18:21 calestyo       Note Added: 0011091                          
+07-19-06 18:22 calestyo       Note Added: 0011092                          
+07-19-06 20:01 tiwai          Note Added: 0011093                          
+07-19-06 21:30 calestyo       Note Added: 0011102                          
+07-20-06 04:01 Raymond        Note Added: 0011106                          
+07-20-06 08:06 Raymond        Note Added: 0011113                          
+07-20-06 12:38 calestyo       Note Added: 0011117                          
+07-20-06 12:48 calestyo       Note Added: 0011118                          
+07-20-06 13:44 Raymond        Note Added: 0011119                          
+07-20-06 13:57 calestyo       Note Added: 0011120                          
+07-20-06 14:09 Raymond        Note Added: 0011121                          
+07-20-06 14:25 calestyo       Note Added: 0011122                          
+07-20-06 14:37 Raymond        Note Added: 0011124                          
+07-20-06 14:47 calestyo       Note Added: 0011125                          
+07-21-06 04:27 Raymond        Note Added: 0011142                          
 ======================================================================
 
 
