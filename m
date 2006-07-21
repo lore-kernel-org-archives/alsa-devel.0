@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Fri, 21 Jul 2006 01:45:44 +0200
-Message-ID: <f0595363bfb5a9ee45fb96ea573ec319@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001060]: snd-azx rear speakers volume
+	is too low
+Date: Fri, 21 Jul 2006 02:28:14 +0200
+Message-ID: <7ad2e298ca2ededbe648e41d1b4e25af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B845D12B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FC891AC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 01:45:44 +0200 (MEST)
+	Fri, 21 Jul 2006 02:28:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,137 +24,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1060> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                maranik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1060
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Ubuntu Linux
+Kernel Version:             2.6.11.7
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-21-2006 01:45 CEST
+Date Submitted:             04-17-2005 23:56 CEST
+Last Modified:              07-21-2006 02:28 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    snd-azx rear speakers volume is too low
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I have a Azalia sound chip, sound works with snd-azx module, but i can only
+listen to front speakers. Rear speakers are like inesistent. 
+Sound is too low. 
+I set 6ch in alsamixer.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
-
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+TIA.
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 01:28 
+ maranik - 04-19-05 20:56 
 ----------------------------------------------------------------------
-The pics might not be too clear soo this is wats on the AKMs
+I installed 1.0.9rc2 and i loaded snd-hda-intel. The problem persists, and
+the sound quality is worse than before.
+I hope you can help me. 
 
-AKM
-AK5385AVP
-026D0603N
-
-AKM
-AK4358VQ
-0551JBK
-
-AKM
-AK4114VQ
-0522JBK
-
-Hope this helps
+TIA
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 01:45 
+ rlrevell - 12-19-05 05:53 
 ----------------------------------------------------------------------
-here are some shots of the Juli
-
-http://presse.ridi.com/esi/julia/julia-1.jpg
-http://presse.ridi.com/esi/julia/julia-2.jpg
-http://presse.ridi.com/esi/julia/julia-3.jpg
-http://www.ixbt.com/multimedia/esi-juli@-en.shtml
-
-but the julis is a VTS1721.
-the maudio 192 is a VTS1724.
-
-heres the info on the AKMs
-http://www.asahi-kasei.co.jp/akm/en/product/ak4358/ak4358.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4114/ak4114.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4385/ak4385.html
-
-u guys should have all the info by now.
-If u want me to run any programs on my machine. just let me know
+Please try 1.0.11rc1, lots of bugs have been fixed in this driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+04-17-05 23:56 maranik        New Issue                                    
+04-17-05 23:56 maranik        Distribution              => Ubuntu Linux    
+04-17-05 23:56 maranik        Kernel Version            => 2.6.11.7        
+04-19-05 17:41 tiwai          Note Added: 0004525                          
+04-19-05 17:41 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 20:53 maranik        File Added: asound.state                     
+04-19-05 20:53 maranik        File Added: codec#2                          
+04-19-05 20:56 maranik        Note Added: 0004539                          
+12-19-05 05:53 rlrevell       Note Added: 0007089                          
+07-21-06 02:28 Adrian Bunk    Status                   new => closed       
+07-21-06 02:28 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
