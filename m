@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001284]: Soundfont notes problem -
-	notes cut off too soon.
-Date: Fri, 21 Jul 2006 20:35:39 +0200
-Message-ID: <1485eeabd77c5c5b48cde0f6c71cc7e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002296]: AV710 - Only 2 channels on
+	Optical Out
+Date: Fri, 21 Jul 2006 21:53:21 +0200
+Message-ID: <fe9decb29ff9d4e191b1bc1449ec3042@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EBFB183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD0AA188
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 20:35:40 +0200 (MEST)
+	Fri, 21 Jul 2006 21:53:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,69 +24,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1284> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2296> 
 ======================================================================
-Reported By:                terminator356
-Assigned To:                jcdutton
+Reported By:                Mobian
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1284
-Category:                   PCI - emu10k1
+Issue ID:                   2296
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Mandrake
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r7
 ======================================================================
-Date Submitted:             07-27-2005 06:36 CEST
-Last Modified:              07-21-2006 20:35 CEST
+Date Submitted:             07-21-2006 06:35 CEST
+Last Modified:              07-21-2006 21:53 CEST
 ======================================================================
-Summary:                    Soundfont notes problem - notes cut off too soon.
+Summary:                    AV710 - Only 2 channels on Optical Out
 Description: 
-Playing a midi keyboard or a file, a note played twice will cut off 
- other notes.
+Despite having tried every asound.conf file I could find on the Internet
+that is supposed to work with this card, I can only get 2 channels (front
+left and front right) on the optical output of this card.
+
+I tested this with a simple call to speaker-test -c5 in hopes of testing
+5.1 features, but I only hear sound on the front left and front right
+speakers.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001290 Re: Bug 0001284 + 0001289: Sorry, my fi...
-related to          0001289 I fixed Bug 0001284.  Please reinstate ...
-======================================================================
 
 ----------------------------------------------------------------------
- terminator356 - 07-19-06 05:36 
+ tiwai - 07-21-06 20:10 
 ----------------------------------------------------------------------
-I received a notice today that bugs 1284, 1289, and 1290
- have been assigned to you.
-I fixed those bugs months ago, and the fixes are already
- in the tree. If you would like full exact details of 
- what was actually wrong, and fixed, contact 
- Takashi Iwai <tiwai at suse.de>, or me.
-(He accepted my changes).
-Please mark those bugs as fixed.
-Thanks.
+It's correct behavior.  SPDIF is basically for two linear PCM channels.
 
+What you want is AC3 encoding.  You can try a52 plugin included in
+alsa-plugins for real-time 5.1 encoding.
 
+----------------------------------------------------------------------
+ Mobian - 07-21-06 21:53 
+----------------------------------------------------------------------
+Ah, good to know this is the correct behavior.  Can you please point me in
+the right direction on how to configure the a52 plugin?  I searched the
+ALSA Wiki and googled it and am coming up with nothing.  I would really
+appreciate any direction you could provide, this is positively driving me
+mad.... Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 06:36 terminator356  New Issue                                    
-07-27-05 06:36 terminator356  File Added: drumtrack-test.mid                    
-07-27-05 06:36 terminator356  Distribution              => Mandrake        
-07-27-05 06:36 terminator356  Kernel Version            => 2.6.10          
-08-03-05 11:30 perex          Relationship added       related to 0001290  
-08-03-05 11:31 perex          Relationship added       related to 0001289  
-07-18-06 14:45 jcdutton       Status                   new => assigned     
-07-18-06 14:45 jcdutton       Assigned To               => jcdutton        
-07-19-06 05:33 terminator356  Note Added: 0011079                          
-07-19-06 05:36 terminator356  Note Edited: 0011079                         
-07-21-06 20:35 tiwai          Status                   assigned => resolved
-07-21-06 20:35 tiwai          Resolution               open => fixed       
+07-21-06 06:35 Mobian         New Issue                                    
+07-21-06 06:35 Mobian         Distribution              => Gentoo          
+07-21-06 06:35 Mobian         Kernel Version            => 2.6.15-gentoo-r7
+07-21-06 20:10 tiwai          Status                   new => resolved     
+07-21-06 20:10 tiwai          Resolution               open => not an issue
+07-21-06 20:10 tiwai          Assigned To               => tiwai           
+07-21-06 20:10 tiwai          Note Added: 0011153                          
+07-21-06 21:53 Mobian         Status                   resolved => feedback
+07-21-06 21:53 Mobian         Resolution               not an issue => reopened
+07-21-06 21:53 Mobian         Note Added: 0011156                          
 ======================================================================
 
 
