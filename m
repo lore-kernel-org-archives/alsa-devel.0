@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002296]: AV710 - Only 2 channels on
-	Optical Out
-Date: Fri, 21 Jul 2006 20:10:47 +0200
-Message-ID: <0bcbc685807bb7e40854076dec32a05f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Fri, 21 Jul 2006 20:23:00 +0200
+Message-ID: <981b4d5a08dcea9caabad7f7ddf50352@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A104234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66C7E15D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 20:10:48 +0200 (MEST)
+	Fri, 21 Jul 2006 20:23:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,57 +25,116 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2296> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                Mobian
-Assigned To:                tiwai
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2296
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r7
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             07-21-2006 06:35 CEST
-Last Modified:              07-21-2006 20:10 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-21-2006 20:23 CEST
 ======================================================================
-Summary:                    AV710 - Only 2 channels on Optical Out
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-Despite having tried every asound.conf file I could find on the Internet
-that is supposed to work with this card, I can only get 2 channels (front
-left and front right) on the optical output of this card.
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-I tested this with a simple call to speaker-test -c5 in hopes of testing
-5.1 features, but I only hear sound on the front left and front right
-speakers.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
+
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
+
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-21-06 20:10 
+ Raymond - 07-21-06 03:28 
 ----------------------------------------------------------------------
-It's correct behavior.  SPDIF is basically for two linear PCM channels.
+You should post the info to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 or
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475
 
-What you want is AC3 encoding.  You can try a52 plugin included in
-alsa-plugins for real-time 5.1 encoding.
+The category of this bug report is [ALSA - lib] 0_general
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-21-06 20:23 
+----------------------------------------------------------------------
+ok i did that.
+
+WilL ALSA write the new drivers or am i on my own. Can't return the card
+already returned the X-Fi .
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-21-06 06:35 Mobian         New Issue                                    
-07-21-06 06:35 Mobian         Distribution              => Gentoo          
-07-21-06 06:35 Mobian         Kernel Version            => 2.6.15-gentoo-r7
-07-21-06 20:10 tiwai          Status                   new => resolved     
-07-21-06 20:10 tiwai          Resolution               open => not an issue
-07-21-06 20:10 tiwai          Assigned To               => tiwai           
-07-21-06 20:10 tiwai          Note Added: 0011153                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
 ======================================================================
 
 
