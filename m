@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio
-	Audiophile 192
-Date: Fri, 21 Jul 2006 20:12:55 +0200
-Message-ID: <a2d5976fbd6f53a72f6408f1f4534e62@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002296]: AV710 - Only 2 channels on
+	Optical Out
+Date: Fri, 21 Jul 2006 20:10:47 +0200
+Message-ID: <0bcbc685807bb7e40854076dec32a05f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AA8234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A104234
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Jul 2006 20:12:55 +0200 (MEST)
+	Fri, 21 Jul 2006 20:10:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,92 +24,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2296> 
 ======================================================================
-Reported By:                Dazed
-Assigned To:                
+Reported By:                Mobian
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1475
+Issue ID:                   2296
 Category:                   PCI - ice1724
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r7
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              07-21-2006 20:12 CEST
+Date Submitted:             07-21-2006 06:35 CEST
+Last Modified:              07-21-2006 20:10 CEST
 ======================================================================
-Summary:                    Support for M Audio Audiophile 192
+Summary:                    AV710 - Only 2 channels on Optical Out
 Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
+Despite having tried every asound.conf file I could find on the Internet
+that is supposed to work with this card, I can only get 2 channels (front
+left and front right) on the optical output of this card.
+
+I tested this with a simple call to speaker-test -c5 in hopes of testing
+5.1 features, but I only hear sound on the front left and front right
+speakers.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
-======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 05:15 
+ tiwai - 07-21-06 20:10 
 ----------------------------------------------------------------------
-ok i put the pics of my card here
-http://cruise.homeunix.net/temp/
+It's correct behavior.  SPDIF is basically for two linear PCM channels.
 
-the canera is not great but u can see three AKMs
-
-I am trying to find a matching ESI.
- 
-
-The pics might not be too clear soo this is wats on the AKMs
-
-AKM
-AK5385AVP
-026D0603N
-
-AKM
-AK4358VQ
-0551JBK
-
-AKM
-AK4114VQ
-0522JBK
-
-Hope this helps
-
-----------------------------------------------------------------------
- cruiseoveride - 07-21-06 20:12 
-----------------------------------------------------------------------
-Is anyone doing anything about this?
-
-This thread started in October 2005 !!!
+What you want is AC3 encoding.  You can try a52 plugin included in
+alsa-plugins for real-time 5.1 encoding.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-11-14-05 23:02 jorx           Issue Monitored: jorx                        
-01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
-03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
-03-19-06 18:53 paule          Note Added: 0008694                          
-03-19-06 18:53 paule          Issue Monitored: paule                       
-06-08-06 16:50 drycellbattery Issue Monitored: drycellbattery                   
-
-07-20-06 15:56 cruiseoveride  Note Added: 0011128                          
-07-21-06 05:12 cruiseoveride  Note Added: 0011144                          
-07-21-06 05:15 cruiseoveride  Note Added: 0011146                          
-07-21-06 05:18 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-21-06 20:12 cruiseoveride  Note Added: 0011154                          
+07-21-06 06:35 Mobian         New Issue                                    
+07-21-06 06:35 Mobian         Distribution              => Gentoo          
+07-21-06 06:35 Mobian         Kernel Version            => 2.6.15-gentoo-r7
+07-21-06 20:10 tiwai          Status                   new => resolved     
+07-21-06 20:10 tiwai          Resolution               open => not an issue
+07-21-06 20:10 tiwai          Assigned To               => tiwai           
+07-21-06 20:10 tiwai          Note Added: 0011153                          
 ======================================================================
 
 
