@@ -1,11 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: ALSA kernel sequencer client
-Date: Fri, 21 Jul 2006 19:39:57 -0400
-Message-ID: <1153525198.17115.76.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001831]: envy24control does not work
+	with Hercules Fortissimo IV
+Date: Sat, 22 Jul 2006 02:56:53 +0200
+Message-ID: <fee2ad7a0395191795efbb9e9b55bd55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3197BC8
+	for <alsa-devel@alsa-project.org>;
+	Sat, 22 Jul 2006 02:56:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,19 +20,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm developing a driver for a device that's like an MPU output port, but
-some extra hardware registers need to be written to when note on/off
-messages arrive.  Since the MIDI stream must be interpreted and hardware
-needs to be accessed directly I think I need to develop an ALSA
-sequencer kernel client.
 
-I remember seeing some docs for developing this kind of thing, but can't
-find them - can someone point me in the right direction?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+======================================================================
+Reported By:                liiwi
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1831
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-08-2006 20:03 CET
+Last Modified:              07-22-2006 02:56 CEST
+======================================================================
+Summary:                    envy24control does not work with Hercules Fortissimo
+IV
+Description: 
+Previously I did not have any pressing need to try envy24control. However
+recently
+for some odd reason left channel got just about muted. So, I tried
+envy24control:
 
-Lee
+>No ICE1712 cards found
+
+So, now I'm without left channel.
+
+>From dmesg:
+
+ice1724: No matching model found for ID 0x81160100
+ice1724: Invalid EEPROM version 1
+
+Hrm, this might be an driver issue if envy24control asks from driver about
+the card and it does not know what model... 
+
+This happens with all the way to 1.0.11-rc3.
+
+lspci says about the card:
+
+>Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ liiwi - 02-11-06 13:48 
+----------------------------------------------------------------------
+Ok, one problem solved: left channel was missing, because I had screwed up
+bindings in .asoundrc.Color of face today is RED.
+
+However, the thing about envy24control still is there. I'd also like to
+record something, but so far I've only been able to get silence from
+capture channels.
+I'm just guessing that either the driver is not supporting this card
+properly
+or I just need to adjust levels with envy24control.
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-22-06 02:56 
+----------------------------------------------------------------------
+hows ur C, liiwi  ?
+
+i have managed to get the "Main RCA OUT" on the envy24control for the
+ice1724, perhaps u might give it a go, 
+
+let me find my envy24control, zip it and upload it for u.
+
+we can hack on it.
+
+I have put printf statements all over the place , so when u launch it from
+a terminal, u are going to see a lot of verbose output.
+
+The Digital Mixer and the the RCA out works,
+I got the Master clock working too.
+
+if u get anything else working, please upload, and let me know wat u
+changed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-08-06 20:03 liiwi          New Issue                                    
+02-11-06 13:17 liiwi          Note Added: 0008015                          
+02-11-06 13:48 liiwi          Note Added: 0008016                          
+07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
