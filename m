@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002123]: Power Management is broken
-	following changes from 1.0.10 to 1.0.11.x versions
-Date: Sat, 22 Jul 2006 22:49:14 +0200
-Message-ID: <51b175cc3d56b3a90b14f6f4bc4769fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002196]: Trying to build/load ALSA to
+	support the laptop only at this point,
+	no base extender involved at all
+Date: Sat, 22 Jul 2006 22:52:15 +0200
+Message-ID: <82b26a671b29ed05ee1f686ae2b260c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2349824E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E3E24E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:49:15 +0200 (MEST)
+	Sat, 22 Jul 2006 22:52:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,78 +25,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2196> 
 ======================================================================
-Reported By:                jovial
+Reported By:                reconfigures
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2123
+Issue ID:                   2196
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.6.16
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.16-gentoo-r9
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              07-22-2006 22:49 CEST
+Date Submitted:             06-09-2006 03:29 CEST
+Last Modified:              07-22-2006 22:52 CEST
 ======================================================================
-Summary:                    Power Management is broken following changes from
-1.0.10 to 1.0.11.x versions
+Summary:                    Trying to build/load ALSA to support the laptop only
+at this point, no base extender involved at all
 Description: 
-I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
-I could place my laptop on standby while playing music, and onced resumed
-the playback would also continue..... proper functionality and power
-management.
+First action in dmesg:
 
-following an upgrade to kernel 2.6.16 with latest patches (includes alsa
-1.0.11-rc4), the power management does not function correctly.
-basically, i have to restart the alsasound service after resume to have
-any sound again.
+ALSA sound/pci/hda/hda_intel.c:634: codec_mask = 0x3
+ALSA sound/pci/hda/patch_realtek.c:3026: hda_codec: Unknown model for
+ALC260
+ALSA sound/pci/hda/hda_codec.c:2088: autoconfig: line_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA sound/pci/hda/hda_codec.c:2092:    speaker_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA sound/pci/hda/hda_codec.c:2094:    hp=0x10, dig_out=0x18,
+din_in=0x19
+ALSA sound/pci/hda/hda_codec.c:2102:    inputs: mic=0x12, fmic=0x13,
+line=0x14, fline=0x0, cd=0x16, aux=0x15
+
+
+Goes on into net and Reiser stuff but eventually....
+
+snd_page_alloc: exports duplicate symbol snd_dma_alloc_pages (owned by
+kernel)
+soundcore: exports duplicate symbol sound_class (owned by kernel)
+snd: exports duplicate symbol snd_major (owned by kernel)
+snd_timer: exports duplicate symbol snd_timer_open (owned by kernel)
+snd_pcm: exports duplicate symbol snd_pcm_new (owned by kernel)
+snd_hda_codec: exports duplicate symbol snd_hda_codec_read (owned by
+kernel)
+kobject_register failed for snd_hda_intel (-17)
+ [<b0301aeb>] kobject_register+0x6b/0x80
+ [<b0137f3f>] sys_init_module+0x170f/0x186d
+ [<b030d940>] pci_bus_read_config_byte+0x0/0x90
+ [<b012fe70>] autoremove_wake_function+0x0/0x60
+ [<b0157fb5>] vfs_read+0xb5/0x190
+ [<b015848b>] sys_read+0x4b/0x80
+ [<b0102d27>] sysenter_past_esp+0x54/0x75
+
+
+All hell breaks loose after that regarding ALSA so a reboot is not just a
+good idea anymore
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-06 12:11 
+ rlrevell - 06-09-06 03:39 
 ----------------------------------------------------------------------
-ALSA CVS repo is dead and the code there is pretty outdated.
-Use HG repo (better from rsync) instead.
-
-----------------------------------------------------------------------
- jovial - 05-15-06 13:15 
-----------------------------------------------------------------------
-OMG, i have no idea how i got mislead into CVS sources...
-the good news is that the HG sources have resolved my issue...
-I couldn't get the alsa in kernel-2.6.17-rc4 working, but alsa-driver is
-working fine, so i've disabled alsa in kernel.
-
-i'm surprised how much your latest alsa-kernel files differ from the alsa
-files on kernel-2.6.17-rc4 source tree. i guess once your latest
-alsa-kernel files make it into kernel source, the alsa in kernel would be
-fixed too.
+It sounds like you have ALSA built into the kernel and are trying to
+install ALSA modules also.  This cannot work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:37 jovial         New Issue                                    
-05-13-06 17:37 jovial         Distribution              => gentoo          
-05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
-05-13-06 17:41 jovial         Note Added: 0009797                          
-05-13-06 18:27 rlrevell       Note Added: 0009798                          
-05-14-06 00:11 jovial         Note Added: 0009801                          
-05-14-06 00:27 rlrevell       Note Added: 0009802                          
-05-14-06 02:32 jovial         Note Added: 0009804                          
-05-14-06 02:42 rlrevell       Note Added: 0009805                          
-05-14-06 05:16 jovial         Note Added: 0009806                          
-05-15-06 12:11 tiwai          Note Added: 0009819                          
-05-15-06 13:15 jovial         Note Added: 0009821                          
-07-22-06 22:49 Adrian Bunk    Status                   assigned => resolved
-07-22-06 22:49 Adrian Bunk    Resolution               open => fixed       
+06-09-06 03:29 reconfigures   New Issue                                    
+06-09-06 03:29 reconfigures   Distribution              => Gentoo          
+06-09-06 03:29 reconfigures   Kernel Version            => 2.6.16-gentoo-r9
+06-09-06 03:30 reconfigures   Issue Monitored: reconfigures                    
+06-09-06 03:39 rlrevell       Note Added: 0010126                          
+07-22-06 22:52 Adrian Bunk    Status                   assigned => closed  
+07-22-06 22:52 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
