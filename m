@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have
-	capture flags
-Date: Sat, 22 Jul 2006 05:25:11 +0200
-Message-ID: <97faab9507c2fbee258628b594ac1497@bugtrack.alsa-project.org>
+From: "Leonty Raap" <leontyraap@flyingsafely.com>
+Subject: Re: kotuy VlcAGRA
+Date: Fri, 21 Jul 2006 22:09:10 -0700
+Message-ID: <000001c6ad4c$f72a6bb0$0adda8c0@emz32>
+Reply-To: Leonty Raap <leontyraap@flyingsafely.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1577226659=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50CC21AC
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9017E16F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 05:25:11 +0200 (MEST)
+	Sat, 22 Jul 2006 07:09:36 +0200 (MEST)
+Received: from flyingsafely.com (unknown [219.254.50.230])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	D03B2997BD for <alsa-devel@alsa-project.org>;
+	Sat, 22 Jul 2006 07:09:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,154 +26,94 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
-======================================================================
-Reported By:                pzad
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              07-22-2006 05:25 CEST
-======================================================================
-Summary:                    Some elements incorrectly have capture flags
-Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
+--===============1577226659==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6AD12.4ACB93B0"
 
-On VIA8233A + ALC650:
+This is a multi-part message in MIME format.
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
+------=_NextPart_000_0001_01C6AD12.4ACB93B0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
+=20
+VlcAGRA 3 , 30 $
+=20
+http://www.witerkasolins.com
+=20
+
+,
+
+,
+
+,
+
+,
+
+door. I touched my finger to my lips. Floyd and Steengo waited in
+twitching silence while I used the detector, borrowed from Tremearne,
+to sweep the room for bugs. After what we had seen on TV I had a great
 
 
-======================================================================
+------=_NextPart_000_0001_01C6AD12.4ACB93B0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- Raymond - 06-30-06 18:33 
-----------------------------------------------------------------------
-Are there any method to remove those "3D Control" from capture view of
-alsamixer 1.0.12rc1 ?
-
-This bug occur since 1.0.10rc2
-
-"3D Control" is found in alsa-lib/src/mixer/simple_none.c
-
-It's very very hard to understand the logic
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV>VlcAGRA 3 , 30 $</DIV>
+<DIV>&nbsp;</DIV>
+<A =
+href=3D"http://www.witerkasolins.com">http://www.witerkasolins.com</A></H=
+1></DIV>
+<DIV>&nbsp;</DIV>
+<P>,</P>
+<P>,</P>
+<P>,</P>
+<P>,</P>
+<DIV>door.  I  touched  my finger to my lips. Floyd and Steengo  waited  =
+in<BR>
+twitching  silence while I used the detector, borrowed from =
+Tremearne,<BR>
+to sweep the room for bugs. After what we had seen on TV I had a =
+great<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6AD12.4ACB93B0--
 
 
 
-----------------------------------------------------------------------
- Raymond - 07-22-06 05:25 
-----------------------------------------------------------------------
-Some of the controls in snd-dummy driver are also wrong
-
-Simple mixer control 'Master',0
-  Capabilities: volume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: -50 - 100
-  Front Left: 0 [33%] Capture [off]
-  Front Right: 0 [33%] Capture [off]
-Simple mixer control 'Synth',0
-  Capabilities: volume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: -50 - 100
-  Front Left: 0 [33%] Capture [off]
-  Front Right: 0 [33%] Capture [off]
-Simple mixer control 'Line',0
-  Capabilities: volume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: -50 - 100
-  Front Left: 0 [33%] Capture [off]
-  Front Right: 0 [33%] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: volume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: -50 - 100
-  Front Left: 0 [33%] Capture [off]
-  Front Right: 0 [33%] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: volume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: -50 - 100
-  Front Left: 0 [33%] Capture [off]
-  Front Right: 0 [33%] Capture [off]
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-03-30-06 13:29 Raymond        Note Edited: 0009033                         
-03-30-06 13:41 Raymond        Note Edited: 0009033                         
-03-31-06 04:36 Raymond        Note Added: 0009041                          
-03-31-06 04:50 Raymond        Note Edited: 0009041                         
-04-01-06 01:13 Raymond        Note Edited: 0009033                         
-04-03-06 19:08 Raymond        Note Added: 0009103                          
-04-05-06 18:42 Raymond        Note Added: 0009121                          
-04-05-06 18:46 Raymond        Note Edited: 0009121                         
-04-05-06 18:50 Raymond        Note Edited: 0009121                         
-04-06-06 09:11 Raymond        Note Deleted: 0009103                        
-04-06-06 09:44 Raymond        Note Added: 0009124                          
-04-06-06 09:45 Raymond        Note Edited: 0009124                         
-04-07-06 12:05 Raymond        Note Added: 0009136                          
-04-13-06 11:32 Raymond        Note Added: 0009256                          
-04-13-06 20:26 pzad           Note Added: 0009268                          
-04-14-06 06:21 Raymond        Note Added: 0009282                          
-04-14-06 09:55 Raymond        Note Edited: 0009282                         
-06-30-06 18:20 Raymond        Note Added: 0010749                          
-06-30-06 18:22 Raymond        Note Edited: 0010749                         
-06-30-06 18:33 Raymond        Note Edited: 0010749                         
-07-22-06 05:25 Raymond        Note Added: 0011166                          
-======================================================================
 
 
+--===============1577226659==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1577226659==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1577226659==--
