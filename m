@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sat, 22 Jul 2006 02:13:50 +0200
-Message-ID: <326c93479a737fa785bab8108fe8b34b@bugtrack.alsa-project.org>
+Date: Sat, 22 Jul 2006 03:00:05 +0200
+Message-ID: <2048a0f2bdb4f49e8c092d7f653b4bbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA57E184
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AE68181
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 02:13:50 +0200 (MEST)
+	Sat, 22 Jul 2006 03:00:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-22-2006 02:13 CEST
+Last Modified:              07-22-2006 03:00 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,15 +68,7 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 20:23 
-----------------------------------------------------------------------
-ok i did that.
-
-WilL ALSA write the new drivers or am i on my own. Can't return the card
-already returned the X-Fi .
-
-----------------------------------------------------------------------
- Raymond - 07-22-06 02:13 
+ Raymond - 07-22-06 02:53 
 ----------------------------------------------------------------------
 I am only an ALSA user with Vortex 2 au8830 sound card. 
 
@@ -85,19 +77,35 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=275
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136
 
-During the communication with the other ice17xx users, this may allow you
+During the communication with the other ice17xx users , this may allow you
 to learn 
 1) difference between 1712 and 1724
 2) difference between vt1721 and vt1724
 3) difference between juli@ and Audiophile 192
 
+by asking them to post
+a) cat /proc/asound/cards
+b) cat /proc/asound/pcm
+c) cat /proc/asound/card0/ice1724
+d) the content of test.state obtained by 'alsactl store test.state'
+
 If you can hack envy24control to monitor the Main RCA OUT Line, this means
-some registers are common to 1712 and 1724.
+some registers are common to 1712 and 1724. (e.g. EEPROM )
 
 Modify envy24control.c to identify driver is 1712 and 1724 , 
 
 Read 1724 EEPROM and identify different 1724 cards, different features on
 juli@ and Audiophile 192
+
+
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-22-06 03:00 
+----------------------------------------------------------------------
+Thanks Ray for all ur input, 
+Too bad the ALSA people arent has good as u.
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +159,9 @@ Date Modified  Username       Field                    Change
 07-21-06 03:28 Raymond        Note Added: 0011141                          
 07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
 07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
 ======================================================================
 
 
