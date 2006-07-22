@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001831]: envy24control does not work
-	with Hercules Fortissimo IV
-Date: Sat, 22 Jul 2006 22:58:16 +0200
-Message-ID: <5cf4de5cdd586807d4cda931e18083a5@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001971]: Some elements incorrectly have
+	capture flags
+Date: Sat, 22 Jul 2006 23:01:09 +0200
+Message-ID: <4506a059005500cf492e69946efd448e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9379E174
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 597A7140
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:58:16 +0200 (MEST)
+	Sat, 22 Jul 2006 23:01:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,117 +24,141 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001646.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
 ======================================================================
-Reported By:                liiwi
+Reported By:                pzad
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1831
-Category:                   envy24control
+Project:                    ALSA - lib
+Issue ID:                   1971
+Category:                   simple mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-08-2006 20:03 CET
-Last Modified:              07-22-2006 02:57 CEST
+Date Submitted:             03-28-2006 12:16 CEST
+Last Modified:              07-22-2006 23:01 CEST
 ======================================================================
-Summary:                    envy24control does not work with Hercules Fortissimo
-IV
+Summary:                    Some elements incorrectly have capture flags
 Description: 
-Previously I did not have any pressing need to try envy24control. However
-recently
-for some odd reason left channel got just about muted. So, I tried
-envy24control:
+Some elemnts have capture flags even they have nothing to do with capture.
+This will duplicate control in alsamixer - view ALL.
 
->No ICE1712 cards found
+On VIA8233A + ALC650:
 
-So, now I'm without left channel.
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 1 [7%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
 
->From dmesg:
-
-ice1724: No matching model found for ID 0x81160100
-ice1724: Invalid EEPROM version 1
-
-Hrm, this might be an driver issue if envy24control asks from driver about
-the card and it does not know what model... 
-
-This happens with all the way to 1.0.11-rc3.
-
-lspci says about the card:
-
->Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
+On Audigy 1:
+Simple mixer control 'Bass',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 23 [58%]
+  Front Right: 23 [58%]
+Simple mixer control 'Treble',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 27 [68%]
+  Front Right: 27 [68%]
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0002136 ice1724gt support for Envy24Control
-related to          0002293 M-Audio Delta 192 - Missing controls
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
-======================================================================
 
 ----------------------------------------------------------------------
- liiwi - 02-11-06 13:17 
+ Raymond - 07-22-06 05:25 
 ----------------------------------------------------------------------
-Hrm, after playing with envy24control sources, mainly replacing "ICE1712"
-with "ICE1724", it looks like reading from card eeprom does not give
-what's expected.
-Just a guess, though. So, this might be driver issue.
+Some of the controls in snd-dummy driver are also wrong
 
-As ICE1712 requirement is hardcoded into envy24control, are there any
-plans to add  real ICE1724 support?
+Simple mixer control 'Master',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Synth',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Line',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
 
 ----------------------------------------------------------------------
- liiwi - 02-11-06 13:48 
+ rlrevell - 07-22-06 23:01 
 ----------------------------------------------------------------------
-Ok, one problem solved: left channel was missing, because I had screwed up
-bindings in .asoundrc.Color of face today is RED.
-
-However, the thing about envy24control still is there. I'd also like to
-record something, but so far I've only been able to get silence from
-capture channels.
-I'm just guessing that either the driver is not supporting this card
-properly
-or I just need to adjust levels with envy24control.
-
-----------------------------------------------------------------------
- cruiseoveride - 07-22-06 02:56 
-----------------------------------------------------------------------
-hows ur C, liiwi  ?
-
-i have managed to get the "Main RCA OUT" on the envy24control for the
-ice1724, perhaps u might give it a go, 
-
-let me find my envy24control, zip it and upload it for u.
-
-we can hack on it.
-
-I have put printf statements all over the place , so when u launch it from
-a terminal, u are going to see a lot of verbose output.
-
-The Digital Mixer and the the RCA out works,
-I got the Master clock working too.
-
-if u get anything else working, please upload, and let me know wat u
-changed.
+What's wrong with the dummy driver controls?  Suppose the hardware mixes
+together all sources where capture enabled.  Each mixer element would have
+a playback and a capture component.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 20:03 liiwi          New Issue                                    
-02-11-06 13:17 liiwi          Note Added: 0008015                          
-02-11-06 13:48 liiwi          Note Added: 0008016                          
-07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
-07-22-06 02:57 cruiseoveride  File Added: cruise24control.tar.bz2               
-    
-07-22-06 22:56 rlrevell       Relationship added       related to 0002136  
-07-22-06 22:57 rlrevell       Relationship added       related to 0002293  
-07-22-06 22:58 rlrevell       Relationship added       related to 0001646  
+03-28-06 12:16 pzad           New Issue                                    
+03-30-06 11:01 Raymond        Note Added: 0009028                          
+03-30-06 12:50 pzad           Note Added: 0009031                          
+03-30-06 13:13 pzad           Note Added: 0009032                          
+03-30-06 13:22 Raymond        Note Added: 0009033                          
+03-30-06 13:29 Raymond        Note Edited: 0009033                         
+03-30-06 13:41 Raymond        Note Edited: 0009033                         
+03-31-06 04:36 Raymond        Note Added: 0009041                          
+03-31-06 04:50 Raymond        Note Edited: 0009041                         
+04-01-06 01:13 Raymond        Note Edited: 0009033                         
+04-03-06 19:08 Raymond        Note Added: 0009103                          
+04-05-06 18:42 Raymond        Note Added: 0009121                          
+04-05-06 18:46 Raymond        Note Edited: 0009121                         
+04-05-06 18:50 Raymond        Note Edited: 0009121                         
+04-06-06 09:11 Raymond        Note Deleted: 0009103                        
+04-06-06 09:44 Raymond        Note Added: 0009124                          
+04-06-06 09:45 Raymond        Note Edited: 0009124                         
+04-07-06 12:05 Raymond        Note Added: 0009136                          
+04-13-06 11:32 Raymond        Note Added: 0009256                          
+04-13-06 20:26 pzad           Note Added: 0009268                          
+04-14-06 06:21 Raymond        Note Added: 0009282                          
+04-14-06 09:55 Raymond        Note Edited: 0009282                         
+06-30-06 18:20 Raymond        Note Added: 0010749                          
+06-30-06 18:22 Raymond        Note Edited: 0010749                         
+06-30-06 18:33 Raymond        Note Edited: 0010749                         
+07-22-06 05:25 Raymond        Note Added: 0011166                          
+07-22-06 23:01 rlrevell       Note Added: 0011173                          
 ======================================================================
 
 
