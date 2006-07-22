@@ -1,16 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002291]: AD1986A produces a high
-	fequency noise
-Date: Sat, 22 Jul 2006 08:54:26 +0200
-Message-ID: <7e08723d872a604227d6178031694f58@bugtrack.alsa-project.org>
+From: "Ander Pipes" <pipes@easttexasrealty.com>
+Subject: Re: vetih VlcAGRA
+Date: Sat, 22 Jul 2006 01:07:22 -0700
+Message-ID: <000001c6ad65$dbf44a00$d41ea8c0@twa51>
+Reply-To: Ander Pipes <pipes@easttexasrealty.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2090966584=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7E7611F
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40CF3237
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 08:54:26 +0200 (MEST)
+	Sat, 22 Jul 2006 10:07:45 +0200 (MEST)
+Received: from freedsbakery.org (deu95-1-82-229-72-97.fbx.proxad.net
+	[82.229.72.97])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	BDDE3997E3 for <alsa-devel@alsa-project.org>;
+	Sat, 22 Jul 2006 10:07:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,75 +27,94 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2291> 
-======================================================================
-Reported By:                michaeleekk
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2291
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.17-1.2145_FC5
-======================================================================
-Date Submitted:             07-18-2006 07:12 CEST
-Last Modified:              07-22-2006 08:54 CEST
-======================================================================
-Summary:                    AD1986A produces a high fequency noise
-Description: 
-Some noise, just like "weeeeee", produced when playing a sound files or
-music files.
-No exception. It always produced.
-======================================================================
+--===============2090966584==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6AD2B.2F957200"
 
-----------------------------------------------------------------------
- tiwai - 07-20-06 06:47 
-----------------------------------------------------------------------
-Good to hear.  Then please inform the name of your machine (product name of
-laptop, mobo or whatever), together with the output of "lspci -nv" (only
-for class 0403) so that the driver will work without extra option.
+This is a multi-part message in MIME format.
 
-----------------------------------------------------------------------
- michaeleekk - 07-22-06 08:54 
-----------------------------------------------------------------------
-My machine ... I'm using a PC, You mean my motherboard?
-My motherboard is ASUS M2NPV-VM, NVIDIA 430 Chipset.
+------=_NextPart_000_0001_01C6AD2B.2F957200
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-After run the lspci -nv:
-00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 1043:81cb
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 217
-        Memory at fe024000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [6c] HyperTransport: MSI Mapping
+=20
+VlcAGRA 3 , 30 $
+=20
+http://www.hirecarit.com
+=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-18-06 07:12 michaeleekk    New Issue                                    
-07-18-06 07:12 michaeleekk    Kernel Version            => 2.6.17-1.2145_FC5
-07-18-06 11:50 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - hda-intel
-07-19-06 20:18 tiwai          Note Added: 0011095                          
-07-20-06 05:07 michaeleekk    Note Added: 0011108                          
-07-20-06 05:12 michaeleekk    Note Added: 0011109                          
-07-20-06 06:47 tiwai          Note Added: 0011110                          
-07-22-06 08:54 michaeleekk    Note Added: 0011168                          
-======================================================================
+,
+
+,
+
+,
+
+,
+
+through time. It seems that you or your associates not only lost
+control of the device but actually lost it in time and space. This is
+very worrying because you are forbidden to reveal your operations to
 
 
+------=_NextPart_000_0001_01C6AD2B.2F957200
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV>VlcAGRA 3 , 30 $</DIV>
+<DIV>&nbsp;</DIV>
+<A =
+href=3D"http://www.hirecarit.com">http://www.hirecarit.com</A></H1></DIV>=
+
+<DIV>&nbsp;</DIV>
+<P>,</P>
+<P>,</P>
+<P>,</P>
+<P>,</P>
+<DIV>through  time.  It  seems that you or your associates  not  only  =
+lost<BR>
+control of the device but actually lost it in time and space. This  =
+is<BR>
+very  worrying because you are forbidden to reveal your operations  =
+to<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6AD2B.2F957200--
+
+
+
+
+
+--===============2090966584==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============2090966584==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2090966584==--
