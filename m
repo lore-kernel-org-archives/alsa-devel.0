@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001842]: high frequency whisteling in
-	one channel
-Date: Sat, 22 Jul 2006 22:44:22 +0200
-Message-ID: <85cf7080ea2d21e7bedc53d7468f9603@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002110]: idAudioHardwareALSA::Write:
+	4096 frames overflowed and dropped
+Date: Sat, 22 Jul 2006 22:47:02 +0200
+Message-ID: <5ffd5a301d07960edee3fae6ae8536a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 107A6167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54675167
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:44:22 +0200 (MEST)
+	Sat, 22 Jul 2006 22:47:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,80 +26,81 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1842> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2110> 
 ======================================================================
-Reported By:                Tolot
+Reported By:                kratz00
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1842
+Issue ID:                   2110
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.16
-Resolution:                 unable to duplicate
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-11-2006 23:17 CET
-Last Modified:              07-22-2006 22:44 CEST
+Date Submitted:             05-09-2006 21:48 CEST
+Last Modified:              07-22-2006 22:47 CEST
 ======================================================================
-Summary:                    high frequency whisteling in one channel
+Summary:                    idAudioHardwareALSA::Write: 4096 frames overflowed
+and dropped
 Description: 
-compilation and loading of module snd-intel-hda works without problem. Also
-alsaconf. But when I start xmms or mplayer I can hear something but one
-channel has a very high frequency whisteling. I tried it with Windows too
-to be sure that there is no hardware error.
-lspci gives the information: 
-Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
-Audio Controller (rev 03)
-tried it with differnet kernels and also with alsa 1.0.9
-also tried the kernel modul
+Id's Quake IV and Doom III have Alsa support.
+But the music sounds horrible and I see a lot of following message in the
+console:
+
+snd_pcm_writei short write: 3760 out of 4096
+snd_pcm_writei short write: 3760 out of 4096
+snd_pcm_writei short write: 3760 out of 4096
+snd_pcm_writei short write: 3760 out of 4096
+snd_pcm_writei short write: 1880 out of 2048
+snd_pcm_writei short write: 940 out of 1024
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
+
+The sound initalization output is:
+
+------ Alsa Sound Initialization -----
+dlopen(libasound.so.2)
+asoundlib version: 1.0.11
+opened Alsa PCM device default for playback
+device buffer size: 5644 frames ( 22576 bytes )
+allocated a mix buffer of 16384 bytes
+--------------------------------------
+
+if i pass '+set s_driver oss' to the startscript the client uses OSS
+emulation and the sound is like expected
+
+so whats wrong using alsa directly instead of the oss emu
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001596 No sound or High pitched noise, dissape...
-======================================================================
 
 ----------------------------------------------------------------------
- Tolot - 02-12-06 14:17 
+ kratz00 - 05-09-06 22:28 
 ----------------------------------------------------------------------
-additional information to the problem:
-when I start kde i hear the starting sound together with the very high
-frequency whisteling on one channel. The music stops, but whisteling goes
-on. when i then change the pcm volume the whisteling stops. I then can use
-for example xmms. but i cannot hear anything even when i use alsaconf or
-alsamixer and reload the module.
-
-Maybe it has something to do with the pci-express ?
+i just wonder why it works with oss emulation and on my other computer with
+a emu10k1 chip
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 15:27 
+ rlrevell - 05-09-06 22:37 
 ----------------------------------------------------------------------
-Try CVS version, and provide the information requested in #1596 if it works
-with a proper model option.
+Maybe they didn't test their code on a wide range of hardware?  It's hard
+to say.  Unless you can reproduce it with an open source app it's
+impossible to debug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-06 23:17 Tolot          New Issue                                    
-02-11-06 23:17 Tolot          Kernel Version            => 2.6.15.4        
-02-12-06 14:17 Tolot          Note Added: 0008027                          
-02-12-06 14:19 Tolot          Issue Monitored: Tolot                       
-03-15-06 15:27 tiwai          Relationship added       duplicate of 0001596
-03-15-06 15:27 tiwai          Duplicate ID             0 => 1596           
-03-15-06 15:27 tiwai          Status                   assigned => resolved
-03-15-06 15:27 tiwai          Resolution               open => duplicate   
-03-15-06 15:27 tiwai          Note Added: 0008549                          
-03-27-06 23:37 Tolot          Distribution              => Gentoo          
-03-27-06 23:37 Tolot          Kernel Version           2.6.15.4 => 2.6.16  
-03-27-06 23:37 Tolot          Status                   resolved => feedback
-03-27-06 23:37 Tolot          Resolution               duplicate => reopened
-07-22-06 22:44 Adrian Bunk    Status                   feedback => closed  
-07-22-06 22:44 Adrian Bunk    Resolution               reopened => unable to
-duplicate
+05-09-06 21:48 kratz00        New Issue                                    
+05-09-06 21:48 kratz00        File Added: codec#0                          
+05-09-06 22:22 rlrevell       Note Added: 0009692                          
+05-09-06 22:28 kratz00        Note Added: 0009693                          
+05-09-06 22:37 rlrevell       Note Added: 0009694                          
+07-22-06 22:47 Adrian Bunk    Status                   assigned => closed  
+07-22-06 22:47 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
