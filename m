@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration
-	problem - buffer_size constraint
-Date: Sat, 22 Jul 2006 02:34:03 +0200
-Message-ID: <8b299260870d0138865fe956a32f4cd2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002293]: M-Audio Delta 192 - Missing
+	controls
+Date: Sat, 22 Jul 2006 03:00:50 +0200
+Message-ID: <75ba256476937299817e5a3dc129a397@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5490C19D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D642181
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 02:34:03 +0200 (MEST)
+	Sat, 22 Jul 2006 03:00:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,157 +26,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Issue ID:                   2293
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              07-22-2006 02:34 CEST
+Date Submitted:             07-19-2006 03:44 CEST
+Last Modified:              07-22-2006 03:00 CEST
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    M-Audio Delta 192 - Missing controls
 Description: 
-/cvs/alsa-lib/test/pcm_min
+The driver (ice1724) has buggy support for the the M-Audio Delta Audiophile
+192.
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+The first noticeable thing i found was with the "Multi Track Peak" . Only
+the first two values have any use (they represent RCA Main Out) the rest
+do jack sh*t.
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
+Please see attached files.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-20-06 09:29 
+ cruiseoveride - 07-22-06 03:00 
 ----------------------------------------------------------------------
-Refer to
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#ga64
-
-latency 	required overall latency in us (0 = optimum latency for players)
-
-
-What is the meaning of optimum latency ?
-
-Do it means no xrun ?
-
-----------------------------------------------------------------------
- Raymond - 07-22-06 02:34 
-----------------------------------------------------------------------
-I modified the dummy driver to emulate au8830 for those who does not have
-the hardware to test snd_pcm_set_params() , alsa-lib/test/pcm.c and
-alsa-lib/test/pcm_min.c or
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-16-06 04:01 Raymond        Note Added: 0008083                          
-02-19-06 06:31 Raymond        Note Added: 0008130                          
-02-19-06 06:39 Raymond        Note Edited: 0008130                         
-03-07-06 11:08 Raymond        Note Added: 0008362                          
-03-07-06 14:18 Raymond        Note Edited: 0007844                         
-03-24-06 10:51 Raymond        File Added: snd_pcm_set_params.patch              
-     
-03-30-06 18:35 Raymond        Note Added: 0009036                          
-05-22-06 15:11 Raymond        Note Deleted: 0008055                        
-05-22-06 15:12 Raymond        Note Deleted: 0008362                        
-05-22-06 15:13 Raymond        Note Deleted: 0008130                        
-05-22-06 15:14 Raymond        Note Deleted: 0008083                        
-05-22-06 15:15 Raymond        Note Deleted: 0009036                        
-05-22-06 15:16 Raymond        Note Deleted: 0007860                        
-05-22-06 15:17 Raymond        Note Deleted: 0007848                        
-05-22-06 15:20 Raymond        Note Deleted: 0007940                        
-05-22-06 15:24 Raymond        Note Deleted: 0007954                        
-05-22-06 15:48 Raymond        Note Added: 0009912                          
-05-30-06 09:36 Raymond        Note Added: 0010017                          
-05-30-06 09:38 Raymond        Note Edited: 0010017                         
-05-30-06 18:31 rlrevell       Note Added: 0010020                          
-06-30-06 13:49 Raymond        File Added: test.c                           
-06-30-06 13:53 Raymond        Note Added: 0010734                          
-06-30-06 13:55 Raymond        Note Edited: 0010734                         
-07-01-06 04:20 Raymond        Note Added: 0010756                          
-07-01-06 04:21 Raymond        Note Edited: 0010756                         
-07-01-06 04:22 Raymond        Note Edited: 0010756                         
-07-02-06 09:24 Raymond        Note Added: 0010773                          
-07-04-06 13:37 Raymond        Note Added: 0010820                          
-07-04-06 15:17 Raymond        Note Edited: 0010820                         
-07-04-06 15:19 Raymond        Note Edited: 0010820                         
-07-05-06 08:52 Raymond        Note Added: 0010832                          
-07-05-06 08:54 Raymond        Note Edited: 0010832                         
-07-06-06 09:41 Raymond        Note Added: 0010857                          
-07-06-06 09:42 Raymond        Note Edited: 0010857                         
-07-06-06 09:43 Raymond        Note Edited: 0010857                         
-07-06-06 17:00 Raymond        Note Added: 0010868                          
-07-08-06 05:08 Raymond        Issue Monitored: gineera                     
-07-09-06 05:51 Raymond        Note Deleted: 0010868                        
-07-13-06 04:27 Raymond        Note Added: 0010989                          
-07-14-06 03:07 Raymond        Note Added: 0010997                          
-07-20-06 09:29 Raymond        Note Added: 0011115                          
-07-22-06 02:30 Raymond        File Added: dummy.c                          
-07-22-06 02:34 Raymond        Note Added: 0011158                          
+07-19-06 03:44 cruiseoveride  New Issue                                    
+07-19-06 03:44 cruiseoveride  File Added: amixer_contents.txt                   
+
+07-19-06 03:44 cruiseoveride  Kernel Version            => 2.6.17          
+07-19-06 03:44 cruiseoveride  File Added: lspci_vn.txt                     
+07-19-06 03:44 cruiseoveride  File Added: proc_asound_cards.txt                 
+  
+07-19-06 03:45 cruiseoveride  File Added: proc_asound_ice1724.txt               
+    
+07-19-06 03:45 cruiseoveride  File Added: proc_asound_pcm.txt                   
+
+07-19-06 03:51 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-22-06 03:00 cruiseoveride  Note Added: 0011162                          
 ======================================================================
 
 
