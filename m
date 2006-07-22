@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002110]: idAudioHardwareALSA::Write:
-	4096 frames overflowed and dropped
-Date: Sat, 22 Jul 2006 22:47:02 +0200
-Message-ID: <5ffd5a301d07960edee3fae6ae8536a4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002123]: Power Management is broken
+	following changes from 1.0.10 to 1.0.11.x versions
+Date: Sat, 22 Jul 2006 22:49:14 +0200
+Message-ID: <51b175cc3d56b3a90b14f6f4bc4769fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54675167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2349824E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:47:02 +0200 (MEST)
+	Sat, 22 Jul 2006 22:49:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,83 +24,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2110> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                jovial
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2110
+Issue ID:                   2123
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Status:                     resolved
+Distribution:               gentoo
+Kernel Version:             2.6.16
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-09-2006 21:48 CEST
-Last Modified:              07-22-2006 22:47 CEST
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              07-22-2006 22:49 CEST
 ======================================================================
-Summary:                    idAudioHardwareALSA::Write: 4096 frames overflowed
-and dropped
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
 Description: 
-Id's Quake IV and Doom III have Alsa support.
-But the music sounds horrible and I see a lot of following message in the
-console:
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
-snd_pcm_writei short write: 3760 out of 4096
-snd_pcm_writei short write: 3760 out of 4096
-snd_pcm_writei short write: 3760 out of 4096
-snd_pcm_writei short write: 3760 out of 4096
-snd_pcm_writei short write: 1880 out of 2048
-snd_pcm_writei short write: 940 out of 1024
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-The sound initalization output is:
-
------- Alsa Sound Initialization -----
-dlopen(libasound.so.2)
-asoundlib version: 1.0.11
-opened Alsa PCM device default for playback
-device buffer size: 5644 frames ( 22576 bytes )
-allocated a mix buffer of 16384 bytes
---------------------------------------
-
-if i pass '+set s_driver oss' to the startscript the client uses OSS
-emulation and the sound is like expected
-
-so whats wrong using alsa directly instead of the oss emu
-
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
 ======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 05-09-06 22:28 
+ tiwai - 05-15-06 12:11 
 ----------------------------------------------------------------------
-i just wonder why it works with oss emulation and on my other computer with
-a emu10k1 chip
+ALSA CVS repo is dead and the code there is pretty outdated.
+Use HG repo (better from rsync) instead.
 
 ----------------------------------------------------------------------
- rlrevell - 05-09-06 22:37 
+ jovial - 05-15-06 13:15 
 ----------------------------------------------------------------------
-Maybe they didn't test their code on a wide range of hardware?  It's hard
-to say.  Unless you can reproduce it with an open source app it's
-impossible to debug.
+OMG, i have no idea how i got mislead into CVS sources...
+the good news is that the HG sources have resolved my issue...
+I couldn't get the alsa in kernel-2.6.17-rc4 working, but alsa-driver is
+working fine, so i've disabled alsa in kernel.
+
+i'm surprised how much your latest alsa-kernel files differ from the alsa
+files on kernel-2.6.17-rc4 source tree. i guess once your latest
+alsa-kernel files make it into kernel source, the alsa in kernel would be
+fixed too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 21:48 kratz00        New Issue                                    
-05-09-06 21:48 kratz00        File Added: codec#0                          
-05-09-06 22:22 rlrevell       Note Added: 0009692                          
-05-09-06 22:28 kratz00        Note Added: 0009693                          
-05-09-06 22:37 rlrevell       Note Added: 0009694                          
-07-22-06 22:47 Adrian Bunk    Status                   assigned => closed  
-07-22-06 22:47 Adrian Bunk    Resolution               open => not an issue
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
+05-14-06 00:11 jovial         Note Added: 0009801                          
+05-14-06 00:27 rlrevell       Note Added: 0009802                          
+05-14-06 02:32 jovial         Note Added: 0009804                          
+05-14-06 02:42 rlrevell       Note Added: 0009805                          
+05-14-06 05:16 jovial         Note Added: 0009806                          
+05-15-06 12:11 tiwai          Note Added: 0009819                          
+05-15-06 13:15 jovial         Note Added: 0009821                          
+07-22-06 22:49 Adrian Bunk    Status                   assigned => resolved
+07-22-06 22:49 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
