@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0002136]: ice1724gt support for
-	Envy24Control
-Date: Sat, 22 Jul 2006 22:56:38 +0200
-Message-ID: <3d79aa050cd540131f56ba54dd6aeaff@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001831]: envy24control does not work
+	with Hercules Fortissimo IV
+Date: Sat, 22 Jul 2006 22:57:19 +0200
+Message-ID: <a7108f4ff261e4352ac71fe210a7cc9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13E3624E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47EB2158
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:56:39 +0200 (MEST)
+	Sat, 22 Jul 2006 22:57:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,110 +24,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001831.
+The following issue has been set as RELATED TO issue 0002293.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
 ======================================================================
-Reported By:                hlabs
+Reported By:                liiwi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - tools
-Issue ID:                   2136
+Issue ID:                   1831
 Category:                   envy24control
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-19-2006 21:21 CEST
-Last Modified:              07-22-2006 22:56 CEST
+Date Submitted:             02-08-2006 20:03 CET
+Last Modified:              07-22-2006 02:57 CEST
 ======================================================================
-Summary:                    ice1724gt support for Envy24Control
+Summary:                    envy24control does not work with Hercules Fortissimo
+IV
 Description: 
-What about ice1724gt support for Envy24Control util ?
-My card is M-Audio Revolution 5.1
-Envy24Control says : no Ice1712 found.
+Previously I did not have any pressing need to try envy24control. However
+recently
+for some odd reason left channel got just about muted. So, I tried
+envy24control:
 
-All modules loads fine but no sound at all :(
-Vanilla kernel 2.6.16 with ALSA 1.0.11 .
-Trial OSS works fine .
+>No ICE1712 cards found
+
+So, now I'm without left channel.
+
+>From dmesg:
+
+ice1724: No matching model found for ID 0x81160100
+ice1724: Invalid EEPROM version 1
+
+Hrm, this might be an driver issue if envy24control asks from driver about
+the card and it does not know what model... 
+
+This happens with all the way to 1.0.11-rc3.
+
+lspci says about the card:
+
+>Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
+
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001831 envy24control does not work with Hercul...
+related to          0002136 ice1724gt support for Envy24Control
+related to          0002293 M-Audio Delta 192 - Missing controls
 ======================================================================
 
 ----------------------------------------------------------------------
- gineera - 05-19-06 23:56 
+ liiwi - 02-11-06 13:17 
 ----------------------------------------------------------------------
-Envy24control just provides a convenient way to access the Alsa controls. 
-If sound is not working, use alsamixer (from a terminal window) and you
-should have all the controls available.  Channels are usually muted and at
-zero level by default.  If it doesn't work using alsamixer, the underlying
-driver may be at fault.
+Hrm, after playing with envy24control sources, mainly replacing "ICE1712"
+with "ICE1724", it looks like reading from card eeprom does not give
+what's expected.
+Just a guess, though. So, this might be driver issue.
 
-Envy24control does not add any more controls although it gives signal
-meters and is easier to use, and is quite separate from the sound driver. 
-It is quite possible that it doesn't support 1724 chips (yet?).
-
-
+As ICE1712 requirement is hardcoded into envy24control, are there any
+plans to add  real ICE1724 support?
 
 ----------------------------------------------------------------------
- rlrevell - 05-20-06 00:00 
+ liiwi - 02-11-06 13:48 
 ----------------------------------------------------------------------
-Yes, it's a known issue that envy24 control does not support ICE1724. 
-However this is interesting, it sounds like it could be trivial to fix.
+Ok, one problem solved: left channel was missing, because I had screwed up
+bindings in .asoundrc.Color of face today is RED.
+
+However, the thing about envy24control still is there. I'd also like to
+record something, but so far I've only been able to get silence from
+capture channels.
+I'm just guessing that either the driver is not supporting this card
+properly
+or I just need to adjust levels with envy24control.
 
 ----------------------------------------------------------------------
- hlabs - 05-20-06 18:55 
+ cruiseoveride - 07-22-06 02:56 
 ----------------------------------------------------------------------
-It doesn't work using alsamixer.
-All controls unmuted and routed to PCM out.
-Still no sound :( Even via oss emulation.
+hows ur C, liiwi  ?
 
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Revolution51 [M Audio Revolution-5.1], device 0: ICE1724
-[ICE1724]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Revolution51 [M Audio Revolution-5.1], device 1: IEC1724 IEC958
-[IEC1724 IEC958]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Revolution51 [M Audio Revolution-5.1], device 2: ICE1724 Surrounds
-[ICE1724 Surround PCM]
-  Subdevices: 2/2
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
+i have managed to get the "Main RCA OUT" on the envy24control for the
+ice1724, perhaps u might give it a go, 
 
-----------------------------------------------------------------------
- hlabs - 05-24-06 15:09 
-----------------------------------------------------------------------
-After some tweaks in .asoundrc file i got front out working but not
-others.
-I think this is ice1724 driver issue...
+let me find my envy24control, zip it and upload it for u.
 
-----------------------------------------------------------------------
- cruiseoveride - 07-22-06 02:58 
-----------------------------------------------------------------------
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
+we can hack on it.
+
+I have put printf statements all over the place , so when u launch it from
+a terminal, u are going to see a lot of verbose output.
+
+The Digital Mixer and the the RCA out works,
+I got the Master clock working too.
+
+if u get anything else working, please upload, and let me know wat u
+changed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-06 21:21 hlabs          New Issue                                    
-05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
-05-19-06 23:55 gineera        Note Added: 0009880                          
-05-19-06 23:56 gineera        Note Edited: 0009880                         
-05-20-06 00:00 rlrevell       Note Added: 0009881                          
-05-20-06 18:55 hlabs          Note Added: 0009890                          
-05-24-06 15:09 hlabs          Note Added: 0009957                          
-06-08-06 16:48 drycellbattery Issue Monitored: drycellbattery                   
-
-07-22-06 02:58 cruiseoveride  Note Added: 0011160                          
-07-22-06 22:56 rlrevell       Relationship added       related to 0001831  
+02-08-06 20:03 liiwi          New Issue                                    
+02-11-06 13:17 liiwi          Note Added: 0008015                          
+02-11-06 13:48 liiwi          Note Added: 0008016                          
+07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
+07-22-06 02:57 cruiseoveride  File Added: cruise24control.tar.bz2               
+    
+07-22-06 22:56 rlrevell       Relationship added       related to 0002136  
+07-22-06 22:57 rlrevell       Relationship added       related to 0002293  
 ======================================================================
 
 
