@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Sat, 22 Jul 2006 03:00:05 +0200
-Message-ID: <2048a0f2bdb4f49e8c092d7f653b4bbc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration
+	problem - buffer_size constraint
+Date: Sat, 22 Jul 2006 02:34:03 +0200
+Message-ID: <8b299260870d0138865fe956a32f4cd2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AE68181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5490C19D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 03:00:05 +0200 (MEST)
+	Sat, 22 Jul 2006 02:34:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,141 +26,157 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1724
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-22-2006 03:00 CEST
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              07-22-2006 02:34 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+/cvs/alsa-lib/test/pcm_min
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-22-06 02:53 
+ Raymond - 07-20-06 09:29 
 ----------------------------------------------------------------------
-I am only an ALSA user with Vortex 2 au8830 sound card. 
+Refer to
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#ga64
 
-Why don't you help other to port envy24control ?
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=275
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136
-
-During the communication with the other ice17xx users , this may allow you
-to learn 
-1) difference between 1712 and 1724
-2) difference between vt1721 and vt1724
-3) difference between juli@ and Audiophile 192
-
-by asking them to post
-a) cat /proc/asound/cards
-b) cat /proc/asound/pcm
-c) cat /proc/asound/card0/ice1724
-d) the content of test.state obtained by 'alsactl store test.state'
-
-If you can hack envy24control to monitor the Main RCA OUT Line, this means
-some registers are common to 1712 and 1724. (e.g. EEPROM )
-
-Modify envy24control.c to identify driver is 1712 and 1724 , 
-
-Read 1724 EEPROM and identify different 1724 cards, different features on
-juli@ and Audiophile 192
+latency 	required overall latency in us (0 = optimum latency for players)
 
 
+What is the meaning of optimum latency ?
+
+Do it means no xrun ?
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-22-06 03:00 
+ Raymond - 07-22-06 02:34 
 ----------------------------------------------------------------------
-Thanks Ray for all ur input, 
-Too bad the ALSA people arent has good as u.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
+I modified the dummy driver to emulate au8830 for those who does not have
+the hardware to test snd_pcm_set_params() , alsa-lib/test/pcm.c and
+alsa-lib/test/pcm_min.c or
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+02-01-06 10:32 Raymond        Note Added: 0007858                          
+02-01-06 10:37 Raymond        Note Edited: 0007848                         
+02-01-06 17:15 Raymond        Note Edited: 0007844                         
+02-01-06 17:20 Raymond        Note Added: 0007860                          
+02-02-06 10:23 Raymond        Note Added: 0007874                          
+02-02-06 11:10 Raymond        Note Edited: 0007874                         
+02-02-06 15:48 Raymond        Note Edited: 0007874                         
+02-03-06 14:26 Raymond        Note Added: 0007897                          
+02-04-06 02:46 Raymond        Note Edited: 0007874                         
+02-04-06 02:52 Raymond        Note Edited: 0007858                         
+02-04-06 02:56 Raymond        Note Edited: 0007858                         
+02-05-06 16:39 Raymond        Note Added: 0007939                          
+02-05-06 16:48 Raymond        Note Added: 0007940                          
+02-06-06 04:40 Raymond        Note Deleted: 0007939                        
+02-06-06 06:15 Raymond        Note Edited: 0007940                         
+02-07-06 07:35 Raymond        Note Added: 0007954                          
+02-13-06 03:11 Raymond        Note Added: 0008036                          
+02-13-06 08:52 mjander        Note Added: 0008039                          
+02-13-06 16:57 Raymond        Note Added: 0008055                          
+02-13-06 17:02 Raymond        Note Edited: 0008055                         
+02-13-06 17:02 Raymond        Note Edited: 0008055                         
+02-16-06 04:01 Raymond        Note Added: 0008083                          
+02-19-06 06:31 Raymond        Note Added: 0008130                          
+02-19-06 06:39 Raymond        Note Edited: 0008130                         
+03-07-06 11:08 Raymond        Note Added: 0008362                          
+03-07-06 14:18 Raymond        Note Edited: 0007844                         
+03-24-06 10:51 Raymond        File Added: snd_pcm_set_params.patch              
+     
+03-30-06 18:35 Raymond        Note Added: 0009036                          
+05-22-06 15:11 Raymond        Note Deleted: 0008055                        
+05-22-06 15:12 Raymond        Note Deleted: 0008362                        
+05-22-06 15:13 Raymond        Note Deleted: 0008130                        
+05-22-06 15:14 Raymond        Note Deleted: 0008083                        
+05-22-06 15:15 Raymond        Note Deleted: 0009036                        
+05-22-06 15:16 Raymond        Note Deleted: 0007860                        
+05-22-06 15:17 Raymond        Note Deleted: 0007848                        
+05-22-06 15:20 Raymond        Note Deleted: 0007940                        
+05-22-06 15:24 Raymond        Note Deleted: 0007954                        
+05-22-06 15:48 Raymond        Note Added: 0009912                          
+05-30-06 09:36 Raymond        Note Added: 0010017                          
+05-30-06 09:38 Raymond        Note Edited: 0010017                         
+05-30-06 18:31 rlrevell       Note Added: 0010020                          
+06-30-06 13:49 Raymond        File Added: test.c                           
+06-30-06 13:53 Raymond        Note Added: 0010734                          
+06-30-06 13:55 Raymond        Note Edited: 0010734                         
+07-01-06 04:20 Raymond        Note Added: 0010756                          
+07-01-06 04:21 Raymond        Note Edited: 0010756                         
+07-01-06 04:22 Raymond        Note Edited: 0010756                         
+07-02-06 09:24 Raymond        Note Added: 0010773                          
+07-04-06 13:37 Raymond        Note Added: 0010820                          
+07-04-06 15:17 Raymond        Note Edited: 0010820                         
+07-04-06 15:19 Raymond        Note Edited: 0010820                         
+07-05-06 08:52 Raymond        Note Added: 0010832                          
+07-05-06 08:54 Raymond        Note Edited: 0010832                         
+07-06-06 09:41 Raymond        Note Added: 0010857                          
+07-06-06 09:42 Raymond        Note Edited: 0010857                         
+07-06-06 09:43 Raymond        Note Edited: 0010857                         
+07-06-06 17:00 Raymond        Note Added: 0010868                          
+07-08-06 05:08 Raymond        Issue Monitored: gineera                     
+07-09-06 05:51 Raymond        Note Deleted: 0010868                        
+07-13-06 04:27 Raymond        Note Added: 0010989                          
+07-14-06 03:07 Raymond        Note Added: 0010997                          
+07-20-06 09:29 Raymond        Note Added: 0011115                          
+07-22-06 02:30 Raymond        File Added: dummy.c                          
+07-22-06 02:34 Raymond        Note Added: 0011158                          
 ======================================================================
 
 
