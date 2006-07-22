@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001831]: envy24control does not work
-	with Hercules Fortissimo IV
-Date: Sat, 22 Jul 2006 02:56:53 +0200
-Message-ID: <fee2ad7a0395191795efbb9e9b55bd55@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0002136]: ice1724gt support for
+	Envy24Control
+Date: Sat, 22 Jul 2006 02:58:38 +0200
+Message-ID: <7ac111e298f5ddce754c91c0da203ef4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3197BC8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C474174
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 02:56:54 +0200 (MEST)
+	Sat, 22 Jul 2006 02:58:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,93 +26,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
 ======================================================================
-Reported By:                liiwi
+Reported By:                hlabs
 Assigned To:                
 ======================================================================
 Project:                    ALSA - tools
-Issue ID:                   1831
+Issue ID:                   2136
 Category:                   envy24control
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-08-2006 20:03 CET
-Last Modified:              07-22-2006 02:56 CEST
+Date Submitted:             05-19-2006 21:21 CEST
+Last Modified:              07-22-2006 02:58 CEST
 ======================================================================
-Summary:                    envy24control does not work with Hercules Fortissimo
-IV
+Summary:                    ice1724gt support for Envy24Control
 Description: 
-Previously I did not have any pressing need to try envy24control. However
-recently
-for some odd reason left channel got just about muted. So, I tried
-envy24control:
+What about ice1724gt support for Envy24Control util ?
+My card is M-Audio Revolution 5.1
+Envy24Control says : no Ice1712 found.
 
->No ICE1712 cards found
-
-So, now I'm without left channel.
-
->From dmesg:
-
-ice1724: No matching model found for ID 0x81160100
-ice1724: Invalid EEPROM version 1
-
-Hrm, this might be an driver issue if envy24control asks from driver about
-the card and it does not know what model... 
-
-This happens with all the way to 1.0.11-rc3.
-
-lspci says about the card:
-
->Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
-
+All modules loads fine but no sound at all :(
+Vanilla kernel 2.6.16 with ALSA 1.0.11 .
+Trial OSS works fine .
 
 ======================================================================
 
 ----------------------------------------------------------------------
- liiwi - 02-11-06 13:48 
+ hlabs - 05-24-06 15:09 
 ----------------------------------------------------------------------
-Ok, one problem solved: left channel was missing, because I had screwed up
-bindings in .asoundrc.Color of face today is RED.
-
-However, the thing about envy24control still is there. I'd also like to
-record something, but so far I've only been able to get silence from
-capture channels.
-I'm just guessing that either the driver is not supporting this card
-properly
-or I just need to adjust levels with envy24control.
+After some tweaks in .asoundrc file i got front out working but not
+others.
+I think this is ice1724 driver issue...
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-22-06 02:56 
+ cruiseoveride - 07-22-06 02:58 
 ----------------------------------------------------------------------
-hows ur C, liiwi  ?
-
-i have managed to get the "Main RCA OUT" on the envy24control for the
-ice1724, perhaps u might give it a go, 
-
-let me find my envy24control, zip it and upload it for u.
-
-we can hack on it.
-
-I have put printf statements all over the place , so when u launch it from
-a terminal, u are going to see a lot of verbose output.
-
-The Digital Mixer and the the RCA out works,
-I got the Master clock working too.
-
-if u get anything else working, please upload, and let me know wat u
-changed.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 20:03 liiwi          New Issue                                    
-02-11-06 13:17 liiwi          Note Added: 0008015                          
-02-11-06 13:48 liiwi          Note Added: 0008016                          
-07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
+05-19-06 21:21 hlabs          New Issue                                    
+05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
+05-19-06 23:55 gineera        Note Added: 0009880                          
+05-19-06 23:56 gineera        Note Edited: 0009880                         
+05-20-06 00:00 rlrevell       Note Added: 0009881                          
+05-20-06 18:55 hlabs          Note Added: 0009890                          
+05-24-06 15:09 hlabs          Note Added: 0009957                          
+06-08-06 16:48 drycellbattery Issue Monitored: drycellbattery                   
+
+07-22-06 02:58 cruiseoveride  Note Added: 0011160                          
 ======================================================================
 
 
