@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Sat, 22 Jul 2006 04:12:56 +0200
-Message-ID: <691e5956f1e0735272a8e8f098960282@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001827]: cannot set rate to 44100 Hz
+	with full duplex
+Date: Sat, 22 Jul 2006 05:20:15 +0200
+Message-ID: <0bbbcc84e4f90dc0a5d4603fa8049b86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3A4F19C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1F051AC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 04:12:56 +0200 (MEST)
+	Sat, 22 Jul 2006 05:20:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,125 +26,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1827> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                mdeboer
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1827
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-22-2006 04:12 CEST
+Date Submitted:             02-07-2006 11:12 CET
+Last Modified:              07-22-2006 05:20 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    cannot set rate to 44100 Hz with full duplex
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I try to run the alsa-lib/test/latency.c test, and it exits with
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+  Rate doesn't match (requested 44100Hz, get 0Hz)
+  Unable to set parameters for playback stream: Invalid argument
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+If I force the application to continue at this point (commenting the
+return -EINVAL; line), it seems to work ok. But what I find strange is
+that the exact rates for I/O are not identical:
 
-If you slash out line 104, it resolves the issue.
+  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
+  Its setup is:
+    stream       : PLAYBACK
+    ...
+    exact rate   : 44101 (1445100000/32768)
+    ...
+  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
+  Its setup is:
+    stream       : CAPTURE
+    ...
+    exact rate   : 44099.8 (1572864000/35666)
+    ...
 
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-22-06 03:01 
+ Raymond - 07-22-06 05:20 
 ----------------------------------------------------------------------
-Thanks Ray for all ur input, 
-Too bad the ALSA people arent as good as u.
+It seem that supported rates are not integer, just fraction
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-22-06 04:12 
-----------------------------------------------------------------------
-You already have all datasheets and a reference driver (iec1724.c and
-juli.c)
-
-ftp://ftp.alsa-project.org/pub/datasheets/
-
-It's no hard to write a driver for Audiophile 192
-
-Just choose a short name 'auto..." for your new driver and start
+static struct snd_ratnum es1371_adc_clock = {
+	.num = 48000 << 15,
+	.den_min = 32768, 
+	.den_max = 393216,
+	.den_step = 1,
+};
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
+02-07-06 11:12 mdeboer        New Issue                                    
+07-22-06 05:20 Raymond        Note Added: 0011165                          
 ======================================================================
 
 
