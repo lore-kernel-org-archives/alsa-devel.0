@@ -1,10 +1,16 @@
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Sat, 22 Jul 2006 21:08:05 +0200 (MEST)
-Message-ID: <20060722190805.E2608222@alsa.jcu.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001842]: high frequency whisteling in
+	one channel
+Date: Sat, 22 Jul 2006 22:44:22 +0200
+Message-ID: <85cf7080ea2d21e7bedc53d7468f9603@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2103503635=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 107A6167
+	for <alsa-devel@alsa-project.org>;
+	Sat, 22 Jul 2006 22:44:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,161 +23,89 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
 
---===============2103503635==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="C9AE519C.1153595285/alsa.jcu.cz"
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1842> 
+======================================================================
+Reported By:                Tolot
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1842
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.16
+Resolution:                 unable to duplicate
+Fixed in Version:           
+======================================================================
+Date Submitted:             02-11-2006 23:17 CET
+Last Modified:              07-22-2006 22:44 CEST
+======================================================================
+Summary:                    high frequency whisteling in one channel
+Description: 
+compilation and loading of module snd-intel-hda works without problem. Also
+alsaconf. But when I start xmms or mplayer I can hear something but one
+channel has a very high frequency whisteling. I tried it with Windows too
+to be sure that there is no hardware error.
+lspci gives the information: 
+Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
+Audio Controller (rev 03)
+tried it with differnet kernels and also with alsa 1.0.9
+also tried the kernel modul
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001596 No sound or High pitched noise, dissape...
+======================================================================
 
-This is a MIME-encapsulated message.
+----------------------------------------------------------------------
+ Tolot - 02-12-06 14:17 
+----------------------------------------------------------------------
+additional information to the problem:
+when I start kde i hear the starting sound together with the very high
+frequency whisteling on one channel. The music stops, but whisteling goes
+on. when i then change the pcm volume the whisteling stops. I then can use
+for example xmms. but i cannot hear anything even when i use alsaconf or
+alsamixer and reload the module.
 
---C9AE519C.1153595285/alsa.jcu.cz
-Content-Description: Notification
-Content-Type: text/plain
+Maybe it has something to do with the pci-express ?
 
-This is the ALSA's E-mail Delivery System program at host alsa.jcu.cz.
+----------------------------------------------------------------------
+ tiwai - 03-15-06 15:27 
+----------------------------------------------------------------------
+Try CVS version, and provide the information requested in #1596 if it works
+with a proper model option.
 
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
-
-For further assistance, please send mail to <postmaster>
-
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
-
-			The ALSA's E-mail Delivery System program
-
-<alsa-devel@lists.sourceforge.net> (expanded from
-    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550-SPAM: This message appears to be spam (5.8 points). 550-- 550-If
-    you believe this message was classified as spam in error, 550-please open a
-    Support Request at the URL below. 550-(Please include this message in any
-    Support Request). 550-- 550-- 550-Spam Filtering performed by
-    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
-    550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0 HTML_MESSAGE
-    BODY: HTML included in message 550-1.5 MPART_ALT_DIFF         BODY: HTML
-    and text parts are different 550-0.3 HTML_10_20             BODY: Message
-    is 10% to 20% HTML 550-2.0 MIME_HTML_ONLY         BODY: Message only has
-    text/html MIME parts 550-2.0 URIBL_OB_SURBL         Contains an URL listed
-    in the OB SURBL 550-blocklist 550-[URIs: coghlanbio.com] 550 0.0
-    MIME_HTML_ONLY_MULTI   Multipart message only has text/html MIME parts (in
-    reply to end of DATA command)
-
---C9AE519C.1153595285/alsa.jcu.cz
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: C9AE519C
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Sat, 22 Jul 2006 21:07:59 +0200 (MEST)
-
-Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
-Original-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-	mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message
-	appears to
-	be spam (5.8 points). 550-- 550-If you believe this message was
-	classified
-	as spam in error, 550-please open a Support Request at the URL below.
-	550-(Please include this message in any Support Request). 550-- 550--
-	550-Spam Filtering performed by sourceforge.net. 550-See
-	http://spamassassin.org/tag/ for more details. 550-Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0
-	HTML_MESSAGE
-	BODY: HTML included in message 550-1.5 MPART_ALT_DIFF BODY: HTML
-	and text parts are different 550-0.3 HTML_10_20 BODY: Message
-	is 10% to 20% HTML 550-2.0 MIME_HTML_ONLY BODY: Message only has
-	text/html MIME parts 550-2.0 URIBL_OB_SURBL Contains an URL listed
-	in the OB SURBL 550-blocklist 550-[URIs: coghlanbio.com] 550 0.0
-	MIME_HTML_ONLY_MULTI Multipart message only has text/html MIME parts
-	(in reply to end of DATA command)
-
---C9AE519C.1153595285/alsa.jcu.cz
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-
-Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id C9AE519C; Sat, 22 Jul 2006 21:07:59 +0200 (MEST)
-Delivered-To: alsa-devel@alsa-project.org
-Received: from pool-71-124-149-94.bstnma.east.verizon.net
-	(pool-71-124-149-94.bstnma.east.verizon.net [71.124.149.94])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 741BF1A1
-	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 21:07:57 +0200 (MEST)
-Received: from localhost.fabulous.com (localhost.fabulous.com [127.0.0.1])
-	by pool-71-124-149-94.bstnma.east.verizon.net (Qmailv1) with ESMTP id
-	J88T216UHAD
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jul 2006 15:07:20 -0500
-Received: from c-67-160-7-102.hsd1.wa.comcast.net ([67.160.7.102]:14482 "EHLO
-	[67.160.7.102]"
-	smtp-auth: "jqowbr" TLS-CIPHER: <none> TLS-PEER-CN1: <none>)
-	by localhost.fabulous.com with ESMTP id sA7pW-LXU4O1rlb-OOD (ORCPT
-	<rfc822;jqowbr@telesisit.com>); Sat, 22 Jul 2006 14:07:10 -0500
-Date: Sat, 22 Jul 2006 14:07:10 -0500
-From: "john bourne" <jqowbr@telesisit.com>
-X-Mailer: The Bat! (v2.12.00) Personal
-X-Priority: 3
-Message-ID: <680633471.2006072232558@telesisit.com>
-To: alsa-devel@alsa-project.org
-Subject: Control in your approaching
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="----------C55CNEGE4W112I7H36G1R"
-
-------------C55CNEGE4W112I7H36G1R
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-Are you in need of an Erectus Solution ?<br>
-<br>
-You will get all of it at our court<br>
-<br>
-<a href="http://wdetitx.coghlanbio.com">Start Purchaasing Noow</a><br>
-<br>
-Crazy ending...<br>
-<br>
-Six transport helicopters are also loud those Ã©migrÃ© in the most need<br>
-such as importunate medical cover and family -- the approximately 100 loads<br>
-(160 kilometers) from the U.S. Embassy in Beirut to Cyprus.<br>
-The fighting between Israel and Hezbollah freedom fighter has left hundreds of people dead.<br>
-Hezbollah, currently locked in battle with Israel, is a Lebanon-based knot<br>
-related to the 1983 bombing of a U.S. Marine barracks<br>
-in Beirut that killed 241 servicemen.
-</body>
-</html>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-11-06 23:17 Tolot          New Issue                                    
+02-11-06 23:17 Tolot          Kernel Version            => 2.6.15.4        
+02-12-06 14:17 Tolot          Note Added: 0008027                          
+02-12-06 14:19 Tolot          Issue Monitored: Tolot                       
+03-15-06 15:27 tiwai          Relationship added       duplicate of 0001596
+03-15-06 15:27 tiwai          Duplicate ID             0 => 1596           
+03-15-06 15:27 tiwai          Status                   assigned => resolved
+03-15-06 15:27 tiwai          Resolution               open => duplicate   
+03-15-06 15:27 tiwai          Note Added: 0008549                          
+03-27-06 23:37 Tolot          Distribution              => Gentoo          
+03-27-06 23:37 Tolot          Kernel Version           2.6.15.4 => 2.6.16  
+03-27-06 23:37 Tolot          Status                   resolved => feedback
+03-27-06 23:37 Tolot          Resolution               duplicate => reopened
+07-22-06 22:44 Adrian Bunk    Status                   feedback => closed  
+07-22-06 22:44 Adrian Bunk    Resolution               reopened => unable to
+duplicate
+======================================================================
 
 
-------------C55CNEGE4W112I7H36G1R--
-
-
---C9AE519C.1153595285/alsa.jcu.cz--
-
-
---===============2103503635==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2103503635==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============2103503635==--
