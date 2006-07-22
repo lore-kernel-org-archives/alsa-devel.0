@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002293]: M-Audio Delta 192 - Missing
-	controls
-Date: Sat, 22 Jul 2006 03:00:50 +0200
-Message-ID: <75ba256476937299817e5a3dc129a397@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
+	192 (AP192K) Support
+Date: Sat, 22 Jul 2006 03:03:24 +0200
+Message-ID: <785e15ee6cec99f45404ae427dc1d41c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D642181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6670921C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 03:00:50 +0200 (MEST)
+	Sat, 22 Jul 2006 03:03:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,58 +26,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                bobek
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2293
+Issue ID:                   1646
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.17
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-19-2006 03:44 CEST
-Last Modified:              07-22-2006 03:00 CEST
+Date Submitted:             12-13-2005 11:38 CET
+Last Modified:              07-22-2006 03:03 CEST
 ======================================================================
-Summary:                    M-Audio Delta 192 - Missing controls
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
-The driver (ice1724) has buggy support for the the M-Audio Delta Audiophile
-192.
-
-The first noticeable thing i found was with the "Multi Track Peak" . Only
-the first two values have any use (they represent RCA Main Out) the rest
-do jack sh*t.
-
-Please see attached files.
-
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001475 Support for M Audio Audiophile 192
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-22-06 03:00 
+ cruiseoveride - 07-21-06 05:15 
+----------------------------------------------------------------------
+ok i put the pics of my card here
+http://cruise.homeunix.net/temp/
+
+the canera is not great but u can see three AKMs
+
+I am trying to find a matching ESI.
+ 
+
+The pics might not be too clear soo this is wats on the AKMs
+
+AKM
+AK5385AVP
+026D0603N
+
+AKM
+AK4358VQ
+0551JBK
+
+AKM
+AK4114VQ
+0522JBK
+
+Hope this helps
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-22-06 03:03 
 ----------------------------------------------------------------------
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-19-06 03:44 cruiseoveride  New Issue                                    
-07-19-06 03:44 cruiseoveride  File Added: amixer_contents.txt                   
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
+03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
+03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
+06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
 
-07-19-06 03:44 cruiseoveride  Kernel Version            => 2.6.17          
-07-19-06 03:44 cruiseoveride  File Added: lspci_vn.txt                     
-07-19-06 03:44 cruiseoveride  File Added: proc_asound_cards.txt                 
-  
-07-19-06 03:45 cruiseoveride  File Added: proc_asound_ice1724.txt               
-    
-07-19-06 03:45 cruiseoveride  File Added: proc_asound_pcm.txt                   
-
-07-19-06 03:51 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-22-06 03:00 cruiseoveride  Note Added: 0011162                          
+06-08-06 17:15 drycellbattery Note Added: 0010113                          
+07-20-06 15:56 cruiseoveride  Note Added: 0011129                          
+07-21-06 05:12 cruiseoveride  Note Added: 0011143                          
+07-21-06 05:15 cruiseoveride  Note Added: 0011145                          
+07-21-06 05:16 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-22-06 03:03 cruiseoveride  Note Added: 0011163                          
 ======================================================================
 
 
