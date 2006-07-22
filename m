@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001475]: Support for M Audio
 	Audiophile 192
-Date: Sun, 23 Jul 2006 00:46:17 +0200
-Message-ID: <6a1d56d259aecd67d106ec7886fcb047@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 00:52:08 +0200
+Message-ID: <6d79f64878ce5c42f305236432d7d4a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B64A1154
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6ED64161
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 00:46:17 +0200 (MEST)
+	Sun, 23 Jul 2006 00:52:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC3
 Kernel Version:             2.6.*
 ======================================================================
 Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              07-23-2006 00:46 CEST
+Last Modified:              07-23-2006 00:52 CEST
 ======================================================================
 Summary:                    Support for M Audio Audiophile 192
 Description: 
@@ -54,12 +54,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-22-06 22:55 
-----------------------------------------------------------------------
-It seems that no one is working on it.  Probably no ALSA developers have
-this hardware.  It would be great to get some help from the vendor.
 
 ----------------------------------------------------------------------
  cruiseoveride - 07-23-06 00:46 
@@ -100,6 +94,16 @@ Show us how to write a dummy driver with the code and Makefile or the
 command to compile it with. How can the community help if they have no
 idea wat is going on in this project.
 
+----------------------------------------------------------------------
+ rlrevell - 07-23-06 00:52 
+----------------------------------------------------------------------
+There is documentation for developing an ALSA driver:
+
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
+
+The "documentation" referred to in your quote is documentation for the
+hardware.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -123,6 +127,7 @@ Date Modified  Username       Field                    Change
 07-21-06 20:12 cruiseoveride  Note Added: 0011154                          
 07-22-06 22:55 rlrevell       Note Added: 0011172                          
 07-23-06 00:46 cruiseoveride  Note Added: 0011176                          
+07-23-06 00:52 rlrevell       Note Added: 0011177                          
 ======================================================================
 
 
