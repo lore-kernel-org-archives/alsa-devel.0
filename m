@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001827]: cannot set rate to 44100 Hz
-	with full duplex
-Date: Sat, 22 Jul 2006 05:20:15 +0200
-Message-ID: <0bbbcc84e4f90dc0a5d4603fa8049b86@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001971]: Some elements incorrectly have
+	capture flags
+Date: Sat, 22 Jul 2006 05:25:11 +0200
+Message-ID: <97faab9507c2fbee258628b594ac1497@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1F051AC
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50CC21AC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 05:20:15 +0200 (MEST)
+	Sat, 22 Jul 2006 05:25:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,67 +26,145 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1827> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
 ======================================================================
-Reported By:                mdeboer
+Reported By:                pzad
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1827
-Category:                   PCI - ens1371
+Project:                    ALSA - lib
+Issue ID:                   1971
+Category:                   simple mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             02-07-2006 11:12 CET
-Last Modified:              07-22-2006 05:20 CEST
+Date Submitted:             03-28-2006 12:16 CEST
+Last Modified:              07-22-2006 05:25 CEST
 ======================================================================
-Summary:                    cannot set rate to 44100 Hz with full duplex
+Summary:                    Some elements incorrectly have capture flags
 Description: 
-I try to run the alsa-lib/test/latency.c test, and it exits with
+Some elemnts have capture flags even they have nothing to do with capture.
+This will duplicate control in alsamixer - view ALL.
 
-  Rate doesn't match (requested 44100Hz, get 0Hz)
-  Unable to set parameters for playback stream: Invalid argument
+On VIA8233A + ALC650:
 
-If I force the application to continue at this point (commenting the
-return -EINVAL; line), it seems to work ok. But what I find strange is
-that the exact rates for I/O are not identical:
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 1 [7%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
 
-  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
-  Its setup is:
-    stream       : PLAYBACK
-    ...
-    exact rate   : 44101 (1445100000/32768)
-    ...
-  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
-  Its setup is:
-    stream       : CAPTURE
-    ...
-    exact rate   : 44099.8 (1572864000/35666)
-    ...
+On Audigy 1:
+Simple mixer control 'Bass',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 23 [58%]
+  Front Right: 23 [58%]
+Simple mixer control 'Treble',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 27 [68%]
+  Front Right: 27 [68%]
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-22-06 05:20 
+ Raymond - 06-30-06 18:33 
 ----------------------------------------------------------------------
-It seem that supported rates are not integer, just fraction
+Are there any method to remove those "3D Control" from capture view of
+alsamixer 1.0.12rc1 ?
 
-static struct snd_ratnum es1371_adc_clock = {
-	.num = 48000 << 15,
-	.den_min = 32768, 
-	.den_max = 393216,
-	.den_step = 1,
-};
+This bug occur since 1.0.10rc2
+
+"3D Control" is found in alsa-lib/src/mixer/simple_none.c
+
+It's very very hard to understand the logic
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-22-06 05:25 
+----------------------------------------------------------------------
+Some of the controls in snd-dummy driver are also wrong
+
+Simple mixer control 'Master',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Synth',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Line',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: volume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: -50 - 100
+  Front Left: 0 [33%] Capture [off]
+  Front Right: 0 [33%] Capture [off]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-07-06 11:12 mdeboer        New Issue                                    
-07-22-06 05:20 Raymond        Note Added: 0011165                          
+03-28-06 12:16 pzad           New Issue                                    
+03-30-06 11:01 Raymond        Note Added: 0009028                          
+03-30-06 12:50 pzad           Note Added: 0009031                          
+03-30-06 13:13 pzad           Note Added: 0009032                          
+03-30-06 13:22 Raymond        Note Added: 0009033                          
+03-30-06 13:29 Raymond        Note Edited: 0009033                         
+03-30-06 13:41 Raymond        Note Edited: 0009033                         
+03-31-06 04:36 Raymond        Note Added: 0009041                          
+03-31-06 04:50 Raymond        Note Edited: 0009041                         
+04-01-06 01:13 Raymond        Note Edited: 0009033                         
+04-03-06 19:08 Raymond        Note Added: 0009103                          
+04-05-06 18:42 Raymond        Note Added: 0009121                          
+04-05-06 18:46 Raymond        Note Edited: 0009121                         
+04-05-06 18:50 Raymond        Note Edited: 0009121                         
+04-06-06 09:11 Raymond        Note Deleted: 0009103                        
+04-06-06 09:44 Raymond        Note Added: 0009124                          
+04-06-06 09:45 Raymond        Note Edited: 0009124                         
+04-07-06 12:05 Raymond        Note Added: 0009136                          
+04-13-06 11:32 Raymond        Note Added: 0009256                          
+04-13-06 20:26 pzad           Note Added: 0009268                          
+04-14-06 06:21 Raymond        Note Added: 0009282                          
+04-14-06 09:55 Raymond        Note Edited: 0009282                         
+06-30-06 18:20 Raymond        Note Added: 0010749                          
+06-30-06 18:22 Raymond        Note Edited: 0010749                         
+06-30-06 18:33 Raymond        Note Edited: 0010749                         
+07-22-06 05:25 Raymond        Note Added: 0011166                          
 ======================================================================
 
 
