@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002285]: Alsa-lib needs to be updated to
-	be compiled under kernel 2.6.17-1.2157
-Date: Sun, 23 Jul 2006 00:03:35 +0200
-Message-ID: <65e5861d3f3c7e3959e17b876ce91d0d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
+	192 (AP192K) Support
+Date: Sun, 23 Jul 2006 00:10:42 +0200
+Message-ID: <39e456de547d1ca2dbeea6f75af871d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7082A120
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C999134
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 00:03:35 +0200 (MEST)
+	Sun, 23 Jul 2006 00:10:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,64 +26,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2285> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
 ======================================================================
-Reported By:                thesource
+Reported By:                bobek
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2285
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1646
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-16-2006 07:52 CEST
-Last Modified:              07-23-2006 00:03 CEST
+Date Submitted:             12-13-2005 11:38 CET
+Last Modified:              07-23-2006 00:10 CEST
 ======================================================================
-Summary:                    Alsa-lib needs to be updated to be compiled under
-kernel 2.6.17-1.2157
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
-It is neccessary due to some header file changes in new kernel. At this
-moment alsa-lib 1.0.12rc1 can not be compiled - sys/types.h and
-asm/types.h must not be included simultaniously or this will cause type
-name conflict error.
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001475 Support for M Audio Audiophile 192
+related to          0001831 envy24control does not work with Hercul...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-22-06 22:26 
+ cruiseoveride - 07-22-06 03:03 
 ----------------------------------------------------------------------
-I think this was related to a bug report I posted to alsa-devel about a
-month ago.  When cross compiling alsa-lib for PPC440, building this file
-would fail unless I made the kernel headers available.
-
-Is this fix in Hg yet?
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 ----------------------------------------------------------------------
- tiwai - 07-23-06 00:03 
+ cruiseoveride - 07-23-06 00:10 
 ----------------------------------------------------------------------
-Not yet.  I'll commit it after I back to home.
+This card is well supported undex OSS.
+
+I have full capture and playback working with this card under OSS
+
+I have also uploaded a file with diagnostic information taken from ossmix
+and ossinfo.
+
+Is there a way of hacking the OSS driver, would be easier than trying to
+hack the windows driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 07:52 thesource      New Issue                                    
-07-16-06 18:06 cruiseoveride  Note Added: 0011029                          
-07-16-06 18:08 cruiseoveride  File Added: make_info.txt                    
-07-17-06 06:30 thesource      Note Added: 0011034                          
-07-17-06 14:41 cruiseoveride  Note Added: 0011038                          
-07-17-06 14:43 cruiseoveride  File Added: kernel-devel_filelist.txt             
-      
-07-17-06 16:17 thesource      Note Added: 0011043                          
-07-19-06 20:20 tiwai          Note Added: 0011096                          
-07-21-06 07:59 thesource      Note Added: 0011147                          
-07-21-06 16:32 tiwai          Note Added: 0011150                          
-07-21-06 16:33 tiwai          File Added: alsa-lib-include-fix.diff             
-      
-07-21-06 18:41 thesource      Note Added: 0011151                          
-07-22-06 22:26 rlrevell       Note Added: 0011171                          
-07-23-06 00:03 tiwai          Note Added: 0011174                          
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
+03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
+03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
+06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
+
+06-08-06 17:15 drycellbattery Note Added: 0010113                          
+07-20-06 15:56 cruiseoveride  Note Added: 0011129                          
+07-21-06 05:12 cruiseoveride  Note Added: 0011143                          
+07-21-06 05:15 cruiseoveride  Note Added: 0011145                          
+07-21-06 05:16 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-22-06 03:03 cruiseoveride  Note Added: 0011163                          
+07-22-06 22:58 rlrevell       Relationship added       related to 0001831  
+07-23-06 00:10 cruiseoveride  Note Added: 0011175                          
 ======================================================================
 
 
