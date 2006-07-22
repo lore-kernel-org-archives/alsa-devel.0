@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001831]: envy24control does not work
-	with Hercules Fortissimo IV
-Date: Sat, 22 Jul 2006 22:57:19 +0200
-Message-ID: <a7108f4ff261e4352ac71fe210a7cc9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002293]: M-Audio Delta 192 - Missing
+	controls
+Date: Sat, 22 Jul 2006 22:57:18 +0200
+Message-ID: <1220bcd64694d421ecc3f6417a71c142@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47EB2158
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4328C140
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:57:19 +0200 (MEST)
+	Sat, 22 Jul 2006 22:57:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,115 +24,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0002293.
+The following issue has been set as RELATED TO issue 0001831.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293> 
 ======================================================================
-Reported By:                liiwi
+Reported By:                cruiseoveride
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1831
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   2293
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             02-08-2006 20:03 CET
-Last Modified:              07-22-2006 02:57 CEST
+Date Submitted:             07-19-2006 03:44 CEST
+Last Modified:              07-22-2006 22:57 CEST
 ======================================================================
-Summary:                    envy24control does not work with Hercules Fortissimo
-IV
+Summary:                    M-Audio Delta 192 - Missing controls
 Description: 
-Previously I did not have any pressing need to try envy24control. However
-recently
-for some odd reason left channel got just about muted. So, I tried
-envy24control:
+The driver (ice1724) has buggy support for the the M-Audio Delta Audiophile
+192.
 
->No ICE1712 cards found
+The first noticeable thing i found was with the "Multi Track Peak" . Only
+the first two values have any use (they represent RCA Main Out) the rest
+do jack sh*t.
 
-So, now I'm without left channel.
-
->From dmesg:
-
-ice1724: No matching model found for ID 0x81160100
-ice1724: Invalid EEPROM version 1
-
-Hrm, this might be an driver issue if envy24control asks from driver about
-the card and it does not know what model... 
-
-This happens with all the way to 1.0.11-rc3.
-
-lspci says about the card:
-
->Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
-
+Please see attached files.
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0002136 ice1724gt support for Envy24Control
-related to          0002293 M-Audio Delta 192 - Missing controls
+related to          0001831 envy24control does not work with Hercul...
 ======================================================================
 
 ----------------------------------------------------------------------
- liiwi - 02-11-06 13:17 
+ cruiseoveride - 07-22-06 03:00 
 ----------------------------------------------------------------------
-Hrm, after playing with envy24control sources, mainly replacing "ICE1712"
-with "ICE1724", it looks like reading from card eeprom does not give
-what's expected.
-Just a guess, though. So, this might be driver issue.
-
-As ICE1712 requirement is hardcoded into envy24control, are there any
-plans to add  real ICE1724 support?
-
-----------------------------------------------------------------------
- liiwi - 02-11-06 13:48 
-----------------------------------------------------------------------
-Ok, one problem solved: left channel was missing, because I had screwed up
-bindings in .asoundrc.Color of face today is RED.
-
-However, the thing about envy24control still is there. I'd also like to
-record something, but so far I've only been able to get silence from
-capture channels.
-I'm just guessing that either the driver is not supporting this card
-properly
-or I just need to adjust levels with envy24control.
-
-----------------------------------------------------------------------
- cruiseoveride - 07-22-06 02:56 
-----------------------------------------------------------------------
-hows ur C, liiwi  ?
-
-i have managed to get the "Main RCA OUT" on the envy24control for the
-ice1724, perhaps u might give it a go, 
-
-let me find my envy24control, zip it and upload it for u.
-
-we can hack on it.
-
-I have put printf statements all over the place , so when u launch it from
-a terminal, u are going to see a lot of verbose output.
-
-The Digital Mixer and the the RCA out works,
-I got the Master clock working too.
-
-if u get anything else working, please upload, and let me know wat u
-changed.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 20:03 liiwi          New Issue                                    
-02-11-06 13:17 liiwi          Note Added: 0008015                          
-02-11-06 13:48 liiwi          Note Added: 0008016                          
-07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
-07-22-06 02:57 cruiseoveride  File Added: cruise24control.tar.bz2               
+07-19-06 03:44 cruiseoveride  New Issue                                    
+07-19-06 03:44 cruiseoveride  File Added: amixer_contents.txt                   
+
+07-19-06 03:44 cruiseoveride  Kernel Version            => 2.6.17          
+07-19-06 03:44 cruiseoveride  File Added: lspci_vn.txt                     
+07-19-06 03:44 cruiseoveride  File Added: proc_asound_cards.txt                 
+  
+07-19-06 03:45 cruiseoveride  File Added: proc_asound_ice1724.txt               
     
-07-22-06 22:56 rlrevell       Relationship added       related to 0002136  
-07-22-06 22:57 rlrevell       Relationship added       related to 0002293  
+07-19-06 03:45 cruiseoveride  File Added: proc_asound_pcm.txt                   
+
+07-19-06 03:51 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-22-06 03:00 cruiseoveride  Note Added: 0011162                          
+07-22-06 22:57 rlrevell       Relationship added       related to 0001831  
 ======================================================================
 
 
