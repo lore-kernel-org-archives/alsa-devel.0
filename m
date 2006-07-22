@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
-	192 (AP192K) Support
-Date: Sat, 22 Jul 2006 22:58:13 +0200
-Message-ID: <0f8b314761de2c95c424612395539c84@bugtrack.alsa-project.org>
+From: "Romina Funderburg" <romina@insertkey.com>
+Subject: to qiiyj
+Date: Sat, 22 Jul 2006 13:15:14 -0700
+Message-ID: <000001c6adcb$8afab3d0$a446a8c0@sco40>
+Reply-To: Romina Funderburg <romina@insertkey.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1663355374=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF5D7140
-	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:58:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,145 +15,226 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been set as RELATED TO issue 0001831.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
-======================================================================
-Reported By:                bobek
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1646
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-13-2005 11:38 CET
-Last Modified:              07-22-2006 22:58 CEST
-======================================================================
-Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
-Description: 
-Could you add support for that soundcard? I have discussed this already
-with Jaroslav, he asked for photo of the card.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001475 Support for M Audio Audiophile 192
-related to          0001831 envy24control does not work with Hercul...
-======================================================================
+--===============1663355374==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6AD90.DE9BDBD0"
 
-----------------------------------------------------------------------
- drycellbattery - 06-08-06 17:15 
-----------------------------------------------------------------------
-Are bobek's images helpful for the developers? Is there any activity
-happening now? Unfortunately, I cannot contribute to the code but I could
-supplement more photos or make a svg schematic. I tried uploading a pic
-but got a memory related error so I will link them from my website:
-http://www.drycellbattery.tk/images/dsc00396.jpg
-http://www.drycellbattery.tk/images/dsc00397.jpg
-http://www.drycellbattery.tk/images/dsc00400.jpg
-http://www.drycellbattery.tk/images/dsc00401.jpg
-http://www.drycellbattery.tk/images/dsc00402.jpg
-http://www.drycellbattery.tk/images/dsc00403.jpg
-http://www.drycellbattery.tk/images/dsc00412.jpg
-http://www.drycellbattery.tk/images/dsc00413.jpg
+This is a multi-part message in MIME format.
 
-they're not very good as my camera and the lighting conditions weren't
-very good. Perhaps I can borrow my friend's digital slr sometime, but he
-lives in another city.
+------=_NextPart_000_0001_01C6AD90.DE9BDBD0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- cruiseoveride - 07-20-06 15:56 
-----------------------------------------------------------------------
-I too have the card and would like support. I have uploaded diagnostic info
-about the card at..
+Bes d t S r el u li w ng W o atc i he o s
+=20
+R b OLE i X
+CA q RTIE m R
+B k REI q TLI t NG
+BV f LGAR r I
+OM k EG j A
+P h ATE x K P s hil g ippe and m k any othe h r
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2293
+Han r dbag h s & Pu h rs m es, TI n FF l ANY & CO J g ewer t ly
 
-----------------------------------------------------------------------
- cruiseoveride - 07-21-06 05:12 
-----------------------------------------------------------------------
-here are some shots of the Juli
+O l rde z r T m ODA p Y and sav e e 2 i 5 % http://newduhplexformrx.com
 
-http://presse.ridi.com/esi/julia/julia-1.jpg
-http://presse.ridi.com/esi/julia/julia-2.jpg
-http://presse.ridi.com/esi/julia/julia-3.jpg
-http://www.ixbt.com/multimedia/esi-juli@-en.shtml
+=20
 
-but the julis is a VTS1721.
-the maudio 192 is a VTS1724.
+=20
 
-heres the info on the AKMs
-http://www.asahi-kasei.co.jp/akm/en/product/ak4358/ak4358.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4114/ak4114.html
-http://www.asahi-kasei.co.jp/akm/en/product/ak4385/ak4385.html
+=20
 
-u guys should have all the info by now.
-If u want me to run any programs on my machine. just let me know
-
-----------------------------------------------------------------------
- cruiseoveride - 07-21-06 05:15 
-----------------------------------------------------------------------
-ok i put the pics of my card here
-http://cruise.homeunix.net/temp/
-
-the canera is not great but u can see three AKMs
-
-I am trying to find a matching ESI.
- 
-
-The pics might not be too clear soo this is wats on the AKMs
-
-AKM
-AK5385AVP
-026D0603N
-
-AKM
-AK4358VQ
-0551JBK
-
-AKM
-AK4114VQ
-0522JBK
-
-Hope this helps
-
-----------------------------------------------------------------------
- cruiseoveride - 07-22-06 03:03 
-----------------------------------------------------------------------
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-13-05 11:38 bobek          New Issue                                    
-12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
-12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
-03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
-03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
-06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
-
-06-08-06 17:15 drycellbattery Note Added: 0010113                          
-07-20-06 15:56 cruiseoveride  Note Added: 0011129                          
-07-21-06 05:12 cruiseoveride  Note Added: 0011143                          
-07-21-06 05:15 cruiseoveride  Note Added: 0011145                          
-07-21-06 05:16 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-22-06 03:03 cruiseoveride  Note Added: 0011163                          
-07-22-06 22:58 rlrevell       Relationship added       related to 0001831  
-======================================================================
+forest-river rushed into the Long Lake. There it had a wide mouth with
+stony clifflike gates at either side whose feet were piled with
+shingles. The Long Lake! Bilbo had never imagined that any water that
+was not the sea could look so big. It was so wide that the opposite
+shores looked small and far, but it was so long that its northerly end,
+which pointed towards the Mountain, could not be seen at all. Only from
 
 
+------=_NextPart_000_0001_01C6AD90.DE9BDBD0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Bes<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > d </SPAN>t S<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > r </SPAN>el<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > u </SPAN>li<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > w </SPAN>ng W<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > o </SPAN>atc<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > i </SPAN>he<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > o </SPAN>s</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>R<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > b </SPAN>OLE<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > i </SPAN>X</DIV>
+<DIV>CA<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > q </SPAN>RTIE<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > m </SPAN>R</DIV>
+<DIV>B<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > k </SPAN>REI<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > q </SPAN>TLI<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > t </SPAN>NG</DIV>
+<DIV>BV<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > f </SPAN>LGAR<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > r </SPAN>I</DIV>
+<DIV>OM<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > k </SPAN>EG<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > j </SPAN>A</DIV>
+<DIV>P<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > h </SPAN>ATE<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > x </SPAN>K P<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > s </SPAN>hil<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > g </SPAN>ippe and m<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > k </SPAN>any othe<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > h </SPAN>r</DIV>
+<P>Han<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > r </SPAN>dbag<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > h </SPAN>s & Pu<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > h </SPAN>rs<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > m </SPAN>es, TI<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > n </SPAN>FF<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > l </SPAN>ANY & CO J<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > g </SPAN>ewer<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > t </SPAN>ly</P>
+<P>O<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > l </SPAN>rde<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > z </SPAN>r T<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > m </SPAN>ODA<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > p </SPAN>Y and sav<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > e </SPAN>e 2<SPAN id=3D"miaok77"style =3D "
+FLOAT:
+
+right " > i </SPAN>5 % <A =
+href=3D"http://newduhplexformrx.com">http://newduhplexformrx.com</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<DIV>forest-river rushed into the Long Lake. There it had a wide mouth =
+with<BR>
+stony clifflike gates at either side whose feet were piled with<BR>
+shingles. The Long Lake! Bilbo had never imagined that any water =
+that<BR>
+was not the sea could look so big. It was so wide that the opposite<BR>
+shores looked small and far, but it was so long that its northerly =
+end,<BR>
+which pointed towards the Mountain, could not be seen at all. Only =
+from<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6AD90.DE9BDBD0--
+
+
+
+
+
+--===============1663355374==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1663355374==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1663355374==--
