@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002297]: THe driver doesn't detect
 	well the model of the soundcard included my motherboard
-Date: Sat, 22 Jul 2006 12:19:58 +0200
-Message-ID: <cf40255a405e8c18226c3e96c155d9d5@bugtrack.alsa-project.org>
+Date: Sat, 22 Jul 2006 12:30:10 +0200
+Message-ID: <20931b16bc41a18da1f5c3b2074ccd56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86BC216A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9639617A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 12:19:58 +0200 (MEST)
+	Sat, 22 Jul 2006 12:30:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2297> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             07-22-2006 12:19 CEST
-Last Modified:              07-22-2006 12:19 CEST
+Last Modified:              07-22-2006 12:30 CEST
 ======================================================================
 Summary:                    THe driver doesn't detect well the model of the
 soundcard included my motherboard
@@ -56,12 +56,21 @@ the output for rear speaker (gray) outputs in one ear only...
 - 6stack-dig wasn't tested (no SPDIF input) but should work...
 ======================================================================
 
+----------------------------------------------------------------------
+ lephilousophe - 07-22-06 12:30 
+----------------------------------------------------------------------
+Just found how to get the alsa version :
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.11rc4 (Wed Mar 22
+10:27:24 2006 UTC).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-22-06 12:19 lephilousophe  New Issue                                    
 07-22-06 12:19 lephilousophe  Distribution              => Fedora Core 5   
 07-22-06 12:19 lephilousophe  Kernel Version            => 2.6.17          
+07-22-06 12:30 lephilousophe  Note Added: 0011170                          
 ======================================================================
 
 
