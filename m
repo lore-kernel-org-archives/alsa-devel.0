@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio
-	Audiophile 192
-Date: Sat, 22 Jul 2006 22:55:52 +0200
-Message-ID: <ef4066277a92d3ac8b5ddc3188e6b5a2@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001831]: envy24control does not work
+	with Hercules Fortissimo IV
+Date: Sat, 22 Jul 2006 22:56:41 +0200
+Message-ID: <22d6546e47fe6daa2224ad2ec72291dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8ECD24E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70B59250
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 22:55:52 +0200 (MEST)
+	Sat, 22 Jul 2006 22:56:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,72 +24,113 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as RELATED TO issue 0002136.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
 ======================================================================
-Reported By:                Dazed
+Reported By:                liiwi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1475
-Category:                   PCI - ice1724
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - tools
+Issue ID:                   1831
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
 ======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              07-22-2006 22:55 CEST
+Date Submitted:             02-08-2006 20:03 CET
+Last Modified:              07-22-2006 02:57 CEST
 ======================================================================
-Summary:                    Support for M Audio Audiophile 192
+Summary:                    envy24control does not work with Hercules Fortissimo
+IV
 Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
+Previously I did not have any pressing need to try envy24control. However
+recently
+for some odd reason left channel got just about muted. So, I tried
+envy24control:
+
+>No ICE1712 cards found
+
+So, now I'm without left channel.
+
+>From dmesg:
+
+ice1724: No matching model found for ID 0x81160100
+ice1724: Invalid EEPROM version 1
+
+Hrm, this might be an driver issue if envy24control asks from driver about
+the card and it does not know what model... 
+
+This happens with all the way to 1.0.11-rc3.
+
+lspci says about the card:
+
+>Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
+related to          0002136 ice1724gt support for Envy24Control
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-21-06 20:12 
+ liiwi - 02-11-06 13:17 
 ----------------------------------------------------------------------
-Is anyone doing anything about this?
+Hrm, after playing with envy24control sources, mainly replacing "ICE1712"
+with "ICE1724", it looks like reading from card eeprom does not give
+what's expected.
+Just a guess, though. So, this might be driver issue.
 
-This thread started in October 2005 !!!
+As ICE1712 requirement is hardcoded into envy24control, are there any
+plans to add  real ICE1724 support?
 
 ----------------------------------------------------------------------
- rlrevell - 07-22-06 22:55 
+ liiwi - 02-11-06 13:48 
 ----------------------------------------------------------------------
-It seems that no one is working on it.  Probably no ALSA developers have
-this hardware.  It would be great to get some help from the vendor.
+Ok, one problem solved: left channel was missing, because I had screwed up
+bindings in .asoundrc.Color of face today is RED.
+
+However, the thing about envy24control still is there. I'd also like to
+record something, but so far I've only been able to get silence from
+capture channels.
+I'm just guessing that either the driver is not supporting this card
+properly
+or I just need to adjust levels with envy24control.
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-22-06 02:56 
+----------------------------------------------------------------------
+hows ur C, liiwi  ?
+
+i have managed to get the "Main RCA OUT" on the envy24control for the
+ice1724, perhaps u might give it a go, 
+
+let me find my envy24control, zip it and upload it for u.
+
+we can hack on it.
+
+I have put printf statements all over the place , so when u launch it from
+a terminal, u are going to see a lot of verbose output.
+
+The Digital Mixer and the the RCA out works,
+I got the Master clock working too.
+
+if u get anything else working, please upload, and let me know wat u
+changed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-11-14-05 23:02 jorx           Issue Monitored: jorx                        
-01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
-03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
-03-19-06 18:53 paule          Note Added: 0008694                          
-03-19-06 18:53 paule          Issue Monitored: paule                       
-06-08-06 16:50 drycellbattery Issue Monitored: drycellbattery                   
-
-07-20-06 15:56 cruiseoveride  Note Added: 0011128                          
-07-21-06 05:12 cruiseoveride  Note Added: 0011144                          
-07-21-06 05:15 cruiseoveride  Note Added: 0011146                          
-07-21-06 05:18 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-21-06 20:12 cruiseoveride  Note Added: 0011154                          
-07-22-06 22:55 rlrevell       Note Added: 0011172                          
+02-08-06 20:03 liiwi          New Issue                                    
+02-11-06 13:17 liiwi          Note Added: 0008015                          
+02-11-06 13:48 liiwi          Note Added: 0008016                          
+07-22-06 02:56 cruiseoveride  Note Added: 0011159                          
+07-22-06 02:57 cruiseoveride  File Added: cruise24control.tar.bz2               
+    
+07-22-06 22:56 rlrevell       Relationship added       related to 0002136  
 ======================================================================
 
 
