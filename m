@@ -1,20 +1,15 @@
-From: "Ander Pipes" <pipes@easttexasrealty.com>
-Subject: Re: vetih VlcAGRA
-Date: Sat, 22 Jul 2006 01:07:22 -0700
-Message-ID: <000001c6ad65$dbf44a00$d41ea8c0@twa51>
-Reply-To: Ander Pipes <pipes@easttexasrealty.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002152]: Hercule fw16/12
+Date: Sat, 22 Jul 2006 11:41:02 +0200
+Message-ID: <db804be6dba371bb1a07f5694b40728a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2090966584=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40CF3237
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B6D119D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 10:07:45 +0200 (MEST)
-Received: from freedsbakery.org (deu95-1-82-229-72-97.fbx.proxad.net
-	[82.229.72.97])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	BDDE3997E3 for <alsa-devel@alsa-project.org>;
-	Sat, 22 Jul 2006 10:07:44 +0200 (MEST)
+	Sat, 22 Jul 2006 11:41:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,94 +22,66 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============2090966584==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6AD2B.2F957200"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2152> 
+======================================================================
+Reported By:                u9t4u
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2152
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora core 5
+Kernel Version:             
+======================================================================
+Date Submitted:             05-23-2006 18:48 CEST
+Last Modified:              07-22-2006 11:41 CEST
+======================================================================
+Summary:                    Hercule fw16/12
+Description: 
+Hi,
+I just look here if someone is allready involve in the driver'building for
+this great card. I send a mail to the support website of HERCULES, but I
+have no answer concerning the development of any drivers for the 16/12.
+This card looks really good for me and it's not really expensive for the
+moment so, I really afraid about a non migration to linux for this one.
+Really hope your answer and congratulation for all your work
 
-This is a multi-part message in MIME format.
+======================================================================
 
-------=_NextPart_000_0001_01C6AD2B.2F957200
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ rlrevell - 05-23-06 19:22 
+----------------------------------------------------------------------
+It sounds like a Firewire device?  Unless it is listed as supported on the
+Freebob project website, it's not usable with Linux.
 
-=20
-VlcAGRA 3 , 30 $
-=20
-http://www.hirecarit.com
-=20
+----------------------------------------------------------------------
+ u9t4u - 07-22-06 11:41 
+----------------------------------------------------------------------
+thanks for your answer rirevell, I didn't know this website, I will looking
+for it on this one.
+Have a great day
+Pascal
 
-,
-
-,
-
-,
-
-,
-
-through time. It seems that you or your associates not only lost
-control of the device but actually lost it in time and space. This is
-very worrying because you are forbidden to reveal your operations to
-
-
-------=_NextPart_000_0001_01C6AD2B.2F957200
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV>VlcAGRA 3 , 30 $</DIV>
-<DIV>&nbsp;</DIV>
-<A =
-href=3D"http://www.hirecarit.com">http://www.hirecarit.com</A></H1></DIV>=
-
-<DIV>&nbsp;</DIV>
-<P>,</P>
-<P>,</P>
-<P>,</P>
-<P>,</P>
-<DIV>through  time.  It  seems that you or your associates  not  only  =
-lost<BR>
-control of the device but actually lost it in time and space. This  =
-is<BR>
-very  worrying because you are forbidden to reveal your operations  =
-to<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6AD2B.2F957200--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 18:48 u9t4u          New Issue                                    
+05-23-06 18:48 u9t4u          Distribution              => Fedora core 5   
+05-23-06 19:22 rlrevell       Note Added: 0009948                          
+07-22-06 11:41 u9t4u          Note Added: 0011169                          
+======================================================================
 
 
-
-
-
---===============2090966584==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2090966584==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============2090966584==--
