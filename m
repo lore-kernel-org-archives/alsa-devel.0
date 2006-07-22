@@ -1,11 +1,16 @@
-From: "Romina Funderburg" <romina@insertkey.com>
-Subject: to qiiyj
-Date: Sat, 22 Jul 2006 13:15:14 -0700
-Message-ID: <000001c6adcb$8afab3d0$a446a8c0@sco40>
-Reply-To: Romina Funderburg <romina@insertkey.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002285]: Alsa-lib needs to be updated to
+	be compiled under kernel 2.6.17-1.2157
+Date: Sun, 23 Jul 2006 00:03:35 +0200
+Message-ID: <65e5861d3f3c7e3959e17b876ce91d0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1663355374=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7082A120
+	for <alsa-devel@alsa-project.org>;
+	Sun, 23 Jul 2006 00:03:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,226 +20,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============1663355374==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6AD90.DE9BDBD0"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2285> 
+======================================================================
+Reported By:                thesource
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2285
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-16-2006 07:52 CEST
+Last Modified:              07-23-2006 00:03 CEST
+======================================================================
+Summary:                    Alsa-lib needs to be updated to be compiled under
+kernel 2.6.17-1.2157
+Description: 
+It is neccessary due to some header file changes in new kernel. At this
+moment alsa-lib 1.0.12rc1 can not be compiled - sys/types.h and
+asm/types.h must not be included simultaniously or this will cause type
+name conflict error.
+======================================================================
 
-This is a multi-part message in MIME format.
+----------------------------------------------------------------------
+ rlrevell - 07-22-06 22:26 
+----------------------------------------------------------------------
+I think this was related to a bug report I posted to alsa-devel about a
+month ago.  When cross compiling alsa-lib for PPC440, building this file
+would fail unless I made the kernel headers available.
 
-------=_NextPart_000_0001_01C6AD90.DE9BDBD0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Is this fix in Hg yet?
 
-Bes d t S r el u li w ng W o atc i he o s
-=20
-R b OLE i X
-CA q RTIE m R
-B k REI q TLI t NG
-BV f LGAR r I
-OM k EG j A
-P h ATE x K P s hil g ippe and m k any othe h r
+----------------------------------------------------------------------
+ tiwai - 07-23-06 00:03 
+----------------------------------------------------------------------
+Not yet.  I'll commit it after I back to home.
 
-Han r dbag h s & Pu h rs m es, TI n FF l ANY & CO J g ewer t ly
-
-O l rde z r T m ODA p Y and sav e e 2 i 5 % http://newduhplexformrx.com
-
-=20
-
-=20
-
-=20
-
-forest-river rushed into the Long Lake. There it had a wide mouth with
-stony clifflike gates at either side whose feet were piled with
-shingles. The Long Lake! Bilbo had never imagined that any water that
-was not the sea could look so big. It was so wide that the opposite
-shores looked small and far, but it was so long that its northerly end,
-which pointed towards the Mountain, could not be seen at all. Only from
-
-
-------=_NextPart_000_0001_01C6AD90.DE9BDBD0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Bes<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > d </SPAN>t S<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > r </SPAN>el<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > u </SPAN>li<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > w </SPAN>ng W<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > o </SPAN>atc<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > i </SPAN>he<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > o </SPAN>s</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>R<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > b </SPAN>OLE<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > i </SPAN>X</DIV>
-<DIV>CA<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > q </SPAN>RTIE<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > m </SPAN>R</DIV>
-<DIV>B<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > k </SPAN>REI<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > q </SPAN>TLI<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > t </SPAN>NG</DIV>
-<DIV>BV<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > f </SPAN>LGAR<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > r </SPAN>I</DIV>
-<DIV>OM<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > k </SPAN>EG<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > j </SPAN>A</DIV>
-<DIV>P<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > h </SPAN>ATE<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > x </SPAN>K P<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > s </SPAN>hil<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > g </SPAN>ippe and m<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > k </SPAN>any othe<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > h </SPAN>r</DIV>
-<P>Han<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > r </SPAN>dbag<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > h </SPAN>s & Pu<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > h </SPAN>rs<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > m </SPAN>es, TI<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > n </SPAN>FF<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > l </SPAN>ANY & CO J<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > g </SPAN>ewer<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > t </SPAN>ly</P>
-<P>O<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > l </SPAN>rde<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > z </SPAN>r T<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > m </SPAN>ODA<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > p </SPAN>Y and sav<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > e </SPAN>e 2<SPAN id=3D"miaok77"style =3D "
-FLOAT:
-
-right " > i </SPAN>5 % <A =
-href=3D"http://newduhplexformrx.com">http://newduhplexformrx.com</A></P>
-<P>&nbsp;</P>
-<P>&nbsp;</P>
-<P>&nbsp;</P>
-<DIV>forest-river rushed into the Long Lake. There it had a wide mouth =
-with<BR>
-stony clifflike gates at either side whose feet were piled with<BR>
-shingles. The Long Lake! Bilbo had never imagined that any water =
-that<BR>
-was not the sea could look so big. It was so wide that the opposite<BR>
-shores looked small and far, but it was so long that its northerly =
-end,<BR>
-which pointed towards the Mountain, could not be seen at all. Only =
-from<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6AD90.DE9BDBD0--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 07:52 thesource      New Issue                                    
+07-16-06 18:06 cruiseoveride  Note Added: 0011029                          
+07-16-06 18:08 cruiseoveride  File Added: make_info.txt                    
+07-17-06 06:30 thesource      Note Added: 0011034                          
+07-17-06 14:41 cruiseoveride  Note Added: 0011038                          
+07-17-06 14:43 cruiseoveride  File Added: kernel-devel_filelist.txt             
+      
+07-17-06 16:17 thesource      Note Added: 0011043                          
+07-19-06 20:20 tiwai          Note Added: 0011096                          
+07-21-06 07:59 thesource      Note Added: 0011147                          
+07-21-06 16:32 tiwai          Note Added: 0011150                          
+07-21-06 16:33 tiwai          File Added: alsa-lib-include-fix.diff             
+      
+07-21-06 18:41 thesource      Note Added: 0011151                          
+07-22-06 22:26 rlrevell       Note Added: 0011171                          
+07-23-06 00:03 tiwai          Note Added: 0011174                          
+======================================================================
 
 
-
-
-
---===============1663355374==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1663355374==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1663355374==--
