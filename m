@@ -1,17 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Sun, 23 Jul 2006 14:16:26 +0200
-Message-ID: <f0ce7d0ef8308b3006403680c690b9cb@bugtrack.alsa-project.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: ESS ES1869 integrated in notebook - PnP not working
+Date: Sun, 23 Jul 2006 14:21:12 +0200
+Message-ID: <200607231421.12286.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB9D7147
+Received: from mailhub3.nextra.sk (smtp3.nextra.sk [195.168.1.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5BD616A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 14:16:26 +0200 (MEST)
+	Sun, 23 Jul 2006 14:21:19 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,209 +23,23 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
+I have DTK notebook with integrated ESS ES1869 sound. The problem is that PnP 
+does not work with ALSA driver and I have to use isaspnp=0 parameter.
+The card probably does not have its own EEPROM and its 3 IDs are inserted into 
+system BIOS (as it's not found by ISA PNP but found by PNP BIOS). lspnp 
+shows:
+[...]
+00:18 ESS0006 (unknown)
+00:19 ESS001 (unknown)
+00:1a ESS1869 (unknown)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
-======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 14:16 CEST
-======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
-Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I think that the problem is caused by es18xx.c which uses 
+pnp_register_card_driver() and other pnp_card things which probably do not 
+work when the PnP device does not look like ISA card but like 3 PnP devices.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
-
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-23-06 13:23 
-----------------------------------------------------------------------
-Assume that you understand diff (differnce between old source and new
-source)
-
-Just follow HG repo URL in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11135 to insert a
-new driver into
-alsa-kernel tree (You need to select a shortname for audiophile 192 and
-made changes corresponding to envy24ht)
-
-alsa-kernel/pci/ice1712/ap192.h
-
-#define AP192_DEVICE_DESC		"{M-Audio,AP192},"
-
-#define VT1724_SUBDEVICE_AP192 0x12143236    /* Audiophile 192 */
-
-extern struct snd_ice1712_card_info  snd_vt1724_ap192_cards[];
-
-
-
-
-alsa-kernel/pci/ice1712/ap192.c
-
-#include <sound/driver.h>
-#include <asm/io.h>
-#include <linux/delay.h>
-#include <linux/interrupt.h>
-#include <linux/init.h>
-#include <linux/slab.h>
-#include <sound/core.h>
-
-#include "ice1712.h"
-#include "envy24ht.h"
-#include "ap192.h"
-
-/*
-
-You have to read the datasheet and implement the card specific low level
-routine
-
-*/
-
-/* entry point */
-struct snd_ice1712_card_info snd_vt1724_ap192_cards[] __devinitdata = {
-	{
-		.subvendor = VT1724_SUBDEVICE_AP192,
-		.name = "M Audio AP192",
-		.model = "ap192",
-		.chip_init = ap192_init,
-		.build_controls = ap192_add_controls,
-		.eeprom_size = sizeof(ap192_eeprom),
-		.eeprom_data = ap192_eeprom,
-	},
-	{ } /* terminator */
-};
-
-
-
-alsa-driver/pci/ice1712/ap192.c
-
-#define __NO_VERSION__
-#include "../../alsa-kernel/pci/ice1712/ap192.c"
-
-
-The above is the simplest way.
-
-The standard way is for a new driver with new chip (not applicable in your
-case)
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1647.htm
-
-
-What is missing in this post is EEPROM of your audiophile 192 ?
-
-cat /proc/asound/card0/ice1724
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-23-06 14:16 
-----------------------------------------------------------------------
-You will need alsa-driver alsa-kernel alsa-lib alsa-utils alsa-tools
-
-http://thread.gmane.org/gmane.linux.alsa.devel/35763
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-======================================================================
-
-
+-- 
+Ondrej Zary
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
