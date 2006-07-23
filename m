@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001692]: sound doesn't work
-Date: Sun, 23 Jul 2006 19:10:32 +0200
-Message-ID: <d453fcaf112e79e815e8c6264556b25c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001376]: ens1370 gameport module
+	stupidity
+Date: Sun, 23 Jul 2006 19:36:03 +0200
+Message-ID: <577b5ee1540e88acea76a8bc5b6810dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6197C24E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E19A5172
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 19:10:32 +0200 (MEST)
+	Sun, 23 Jul 2006 19:36:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,69 +24,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1692> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1376> 
 ======================================================================
-Reported By:                jra2003
-Assigned To:                jcdutton
+Reported By:                Hetfield
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1692
-Category:                   PCI - ca0106
+Issue ID:                   1376
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-29-2005 04:50 CET
-Last Modified:              07-23-2006 19:10 CEST
+Date Submitted:             08-29-2005 11:59 CEST
+Last Modified:              07-23-2006 19:36 CEST
 ======================================================================
-Summary:                    sound doesn't work
+Summary:                    ens1370 gameport module stupidity
 Description: 
-After folling the instructions to the letter, I restart the computer and it
-finds the sound card and I let it configure it.  Once logged into root
-with KDE I goto KMenu > system settings > soundcard detection and I click
-'play test'  It might works once or twice with a sound being played then a
-question asking if it worked.  When it doesn't work it doesn't ask if I
-heard anything until a few seconds pass.  So the command to play the sound
-went through, but the final result is that the sound went to the wrong
-place and not to me sndcard and to my speakers.
+hi.
 
-BTW: I did check the mixer levels and if it was muted or not and no
-problems there.
+situation:
+i have ens1370 built-in kernel and gameport too.
+i have the lilo cmd line snd_ens1370.joystick=1 to enable gameport.
+works perfectly.
+
+the problem is if i add gameport as module.
+the gameport command fails, and i can't use gameport.
+this can be even normal..but the problem is i can't no more enable
+gameport on audio card.
+
+i checked the /sys and /proc fs to check a settable value. no luck
+this forces gameport to be a module, only if snd is module (i can pass
+values via modprobe)
+and forces to be built-in if snd is built-in.
+
+can be gameport init added via proc/sys or a specific alsa tool?
+
+Thanks
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jra2003 - 12-29-05 05:34 
+ Adrian Bunk - 07-23-06 19:36 
 ----------------------------------------------------------------------
-Here is more info on my snd card
+This can't be easily done.
 
-written in pci card:
-
-Sound Blaster Live! 24-bit
-Main chip:  CA0106-DAT
-
-Also, when occasionally detected, FC2 see's the card as a 'SB Audigy LS'
-
-----------------------------------------------------------------------
- jcdutton - 07-23-06 19:10 
-----------------------------------------------------------------------
-Is the problem still present?
-Have you tried using more up to date alsa drivers?
+The solution is to simply build the gameport support statically into the
+kernel if this driver is compiled statically.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-05 04:50 jra2003        New Issue                                    
-12-29-05 04:50 jra2003        Distribution              => Fedora Core 2   
-12-29-05 04:50 jra2003        Kernel Version            => 2.6.5           
-12-29-05 04:50 jra2003        Issue Monitored: jra2003                     
-12-29-05 05:34 jra2003        Note Added: 0007187                          
-07-23-06 19:10 jcdutton       Note Added: 0011202                          
-07-23-06 19:10 jcdutton       Status                   assigned => feedback
+08-29-05 11:59 Hetfield       New Issue                                    
+07-23-06 19:36 Adrian Bunk    Note Added: 0011203                          
+07-23-06 19:36 Adrian Bunk    Status                   new => resolved     
+07-23-06 19:36 Adrian Bunk    Resolution               open => won't fix   
 ======================================================================
 
 
