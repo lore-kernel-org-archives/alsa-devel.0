@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 23 Jul 2006 17:49:49 +0200
-Message-ID: <dac02f158da59fc45e54871e5130a797@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 17:57:39 +0200
+Message-ID: <b2a8758ee769cbac6f4bc82f92a79ee4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AC9D22C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B914816F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 17:49:49 +0200 (MEST)
+	Sun, 23 Jul 2006 17:57:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 17:49 CEST
+Last Modified:              07-23-2006 17:57 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,23 +68,32 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-23-06 17:42 
-----------------------------------------------------------------------
-http://hg-mirror.alsa-project.org/alsa-driver?cmd=file;file=INSTALL;filenode=8f61a3714ff87380097fa5ea4e613b5510c884ea;style=raw
-
-The link "The latest INSTALL file" in
-http://www.alsa-project.org/documentation.php is broken
-
-
-./hgcompile --with-cards=ice1724 --with-sequencer=yes
-
-
-
-----------------------------------------------------------------------
  cruiseoveride - 07-23-06 17:49 
 ----------------------------------------------------------------------
 rlrevell, that howto, is what im trying to say with the "printf" statement,
 completely useless unless you have a driver writing background.
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-23-06 17:57 
+----------------------------------------------------------------------
+i tried to download via cvs from the hg repo, but i get "no route to host"
+http://alsa.opensrc.org/index.php?page=AlsaCVS
+
+but otherwise, im going to start with the 1.0.11rc2
+
+thanks ray for ur help, let me open gedit and start typeing.
+
+And by the way csan i...
+"
+5) Run 'make install' as root.
+   If you have already a system with ALSA init script, you should install
+   just only modules via 'make install-modules' so that the existing init
+   script won't be replaced.
+"
+do just make install-modules and then rmmod the old one and insmod the new
+one without rebooting?
+
+And wat is a gpio?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -162,6 +171,7 @@ Date Modified  Username       Field                    Change
 07-23-06 17:39 Raymond        Note Added: 0011191                          
 07-23-06 17:42 Raymond        Note Edited: 0011191                         
 07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
 ======================================================================
 
 
