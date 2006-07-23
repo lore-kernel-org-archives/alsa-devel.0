@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002190]: System crash on unplugging
-	Audigy 2 ZS Notebook CardBus card
-Date: Sun, 23 Jul 2006 14:56:55 +0200
-Message-ID: <86016a7eacbc9d70f55141d4b9221ba2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Sun, 23 Jul 2006 15:04:56 +0200
+Message-ID: <489ea5ddafe886146aae6fcb7cca2aca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CA83227
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E22E155
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 14:56:55 +0200 (MEST)
+	Sun, 23 Jul 2006 15:04:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,64 +24,128 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                tsmithe
-Assigned To:                jcdutton
+Reported By:                bitmage2
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2190
-Category:                   PCI - emu10k1
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Ubuntu Dapper 6.06
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              07-23-2006 14:56 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-23-2006 15:04 CEST
 ======================================================================
-Summary:                    System crash on unplugging Audigy 2 ZS Notebook
-CardBus card
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
- System crash on unplugging Audigy 2 ZS Notebook CardBus card
-I am running Ubuntu Dapper 6.06, with the 2.6.15 kernel
-(including this driver). The driver works pretty well
-with my Audigy 2 ZS Notebook card, except that it
-doesn't seem to support hotplug. When I plug it in, the
-module is installed, and the card functions. However,
-the module continues to access the card when it is
-unplugged (nor does the module unload), and the kernel
-cannot handle this. The system falls over as it cannot
-run with a non-functioning kernel. All of my other
-devices that use hotplug work fine (CardBus, USB,
-whatever), so I can only deduce that this situation is
-a result of poor driver support.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
+
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 14:56 
+ Raymond - 07-23-06 13:49 
 ----------------------------------------------------------------------
-Can you please test the patch:  hotplug-fix.diff
+Please update alsa-utils to the same version of alsa-lib
 
-This should fix this problem.
+speaker-test -c 2 -t wav
 
+speaker-test -c 4 -Dsurround40 -t wav
+
+speaker-test -c 6 -Dsurround51 -t wav
+
+----------------------------------------------------------------------
+ bitmage2 - 07-23-06 15:04 
+----------------------------------------------------------------------
+The installed RPM package  "alsa" is 1.0.9-23.2 (includes alsa-lib ,
+alsa-utils , alsa-conf and libasound. This means alsa-lib and alsa-utils
+should be the same version.
+
+If it helps, I can install alsa 1.0.12rc1 now on a clean Linux
+installtion. Should I do so?
+
+About the test cases:
+
+speaker-test -c 2 -t wav    # Does not produce high load
+speaker-test -c 4 -Dsurround40 -t wav # Produces high load
+speaker-test -c 6 -Dsurround51 -t wav # Produces high load
+
+While playing around I made an interesting observation: The two
+probleamtic cases do not produce high load, if the machine is otherwise
+*completely* idle (means: don't move the mouse). If I start some activity
+(for example starting Firefox, use a file manager or execute something
+like "cat /boot/vmlinuz"), speaker-test immediately goes to 100% CPU time.
+In this case often a "Broken pipe" can be observed (see below).
+"speaker-test -c 2 -t wav" always works, no matter how hard I stress the
+machine.
+
+chris@bjork:~> speaker-test -c 6 -Dsurround51 -t wav
+
+speaker-test 0.0.8
+
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 16384
+Period size range from 8 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 16384
+To choose period_size = 4096
+was set period_size = 512
+was set buffer_size = 16384
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+Write error: -32,Broken pipe
+ 2 - Rear Left
+ 5 - LFE
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 19:47 tsmithe        New Issue                                    
-06-07-06 19:47 tsmithe        Distribution              => Ubuntu Dapper 6.06
-06-07-06 19:47 tsmithe        Kernel Version            => 2.6.15          
-06-10-06 22:08 tsmithe        Issue Monitored: tsmithe                     
-07-18-06 14:34 jcdutton       Status                   new => assigned     
-07-18-06 14:34 jcdutton       Assigned To               => jcdutton        
-07-23-06 14:55 jcdutton       File Added: hotplug-fix.diff                    
-07-23-06 14:56 jcdutton       Note Added: 0011188                          
-07-23-06 14:56 jcdutton       Status                   assigned => feedback
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
 ======================================================================
 
 
