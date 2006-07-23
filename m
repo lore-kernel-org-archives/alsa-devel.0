@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001706]: Audigy 2 Value [SB0400] AC3
-	pass-through does not work
-Date: Sun, 23 Jul 2006 18:46:45 +0200
-Message-ID: <63b80a8c66a0b98a9092c10d83d56082@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002135]: emu10k1: resume (S3) doesn't
+	work with Audigy 2 ZS Notebook
+Date: Sun, 23 Jul 2006 18:49:04 +0200
+Message-ID: <e689d51828b316f1d12bf0dbb859769c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AB4222E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C09841A0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 18:46:45 +0200 (MEST)
+	Sun, 23 Jul 2006 18:49:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,56 +26,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1706> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2135> 
 ======================================================================
-Reported By:                simokivimaki
+Reported By:                cathectic
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1706
+Issue ID:                   2135
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     acknowledged
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r5
+Distribution:               Slamd64
+Kernel Version:             2.6.17-rc4
 ======================================================================
-Date Submitted:             01-03-2006 22:39 CET
-Last Modified:              07-23-2006 18:46 CEST
+Date Submitted:             05-19-2006 01:33 CEST
+Last Modified:              07-23-2006 18:49 CEST
 ======================================================================
-Summary:                    Audigy 2 Value [SB0400] AC3 pass-through does not
-work
+Summary:                    emu10k1: resume (S3) doesn't work with Audigy 2 ZS
+Notebook
 Description: 
-With Audigy 2 Value [SB0400] AC3 pass-through does not work with current
-emu10k1 alsa-driver.
+System: Acer Aspire 5021
+Sound Card: Creative Audigy 2 ZS Notebook
+Kernel: 2.6.17-rc4 (also tested on 2.6.16.16)
+Append lines: "noapic" and "noapic acpi_irq_balance" (needed for suspend
+to work)
 
-I noticed that this is also documented to the emu10k1_main.c:
-/* Audigy 2 Value AC3 out does not work yet. Need to find out how to turn
-off interpolators.*/
+When the Audigy 2 ZS Notebook is inserted, and the snd-emu10k1 module is
+loaded, after suspending (S3) the laptop, it will not resume.
 
-Is there coming a fix for the problem? Please, ask for more information if
-needed.
+If the card is removed first; or the snd-emu10k1 module is unloaded before
+standby (or the card can be physically ejected while on standby); resume
+works fine (the module can then be reloaded afterwards manually and the
+card will start working again).
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 18:46 
+ jcdutton - 07-23-06 18:49 
 ----------------------------------------------------------------------
-Known problem. No timescale set to fix this.
-
+Known problem. Power management not supported yet.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-06 22:39 simokivimaki   New Issue                                    
-01-03-06 22:39 simokivimaki   Distribution              => Gentoo          
-01-03-06 22:39 simokivimaki   Kernel Version            => 2.6.14-gentoo-r5
-01-04-06 00:15 scoobydu       Issue Monitored: scoobydu                    
-01-04-06 13:03 simokivimaki   Issue Monitored: simokivimaki                    
-07-18-06 14:41 jcdutton       Status                   new => assigned     
-07-18-06 14:41 jcdutton       Assigned To               => jcdutton        
-07-23-06 18:46 jcdutton       Note Added: 0011198                          
-07-23-06 18:46 jcdutton       Status                   assigned => acknowledged
+05-19-06 01:33 cathectic      New Issue                                    
+05-19-06 01:33 cathectic      Distribution              => Slamd64         
+05-19-06 01:33 cathectic      Kernel Version            => 2.6.17-rc4      
+07-18-06 14:35 jcdutton       Status                   new => assigned     
+07-18-06 14:35 jcdutton       Assigned To               => jcdutton        
+07-23-06 18:49 jcdutton       Note Added: 0011199                          
+07-23-06 18:49 jcdutton       Status                   assigned => acknowledged
 ======================================================================
 
 
