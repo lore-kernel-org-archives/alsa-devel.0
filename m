@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001651]: ac3 passthrough not really
 	work with ac3dec
-Date: Sun, 23 Jul 2006 18:44:48 +0200
-Message-ID: <270ffc9bee238fce0b0096162c742be5@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 18:45:21 +0200
+Message-ID: <8623e8eff210ef2ce08c8a538d00df3c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA8F617E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D99E521D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 18:44:48 +0200 (MEST)
+	Sun, 23 Jul 2006 18:45:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1651> 
 ======================================================================
@@ -37,12 +37,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
 Kernel Version:             2.4.31
 ======================================================================
 Date Submitted:             12-14-2005 09:44 CET
-Last Modified:              07-23-2006 18:44 CEST
+Last Modified:              07-23-2006 18:45 CEST
 ======================================================================
 Summary:                    ac3 passthrough not really work with ac3dec
 Description: 
@@ -78,22 +78,17 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-14-05 10:53 
-----------------------------------------------------------------------
-IEC958 Optical Raw - this is just multiplexer switch.
-If there is MM - this means spdif output comes from DSP and from normal
-playback device.
-If there is OO - spdif output comes from iec958 (or spdif) device.
-
-Please do, what I suggest you in previous note.
-Your problem is "Audigy Analog/Digital Output Jack" control.
-
-----------------------------------------------------------------------
  jcdutton - 07-23-06 18:44 
 ----------------------------------------------------------------------
 Which sound card are you using?
 cat /proc/asound/cards
 cat /proc/asound/version
+
+----------------------------------------------------------------------
+ jcdutton - 07-23-06 18:45 
+----------------------------------------------------------------------
+Please provide the requested feedback.
+
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +104,8 @@ Date Modified  Username       Field                    Change
 07-18-06 14:43 jcdutton       Status                   new => assigned     
 07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
 07-23-06 18:44 jcdutton       Note Added: 0011196                          
+07-23-06 18:45 jcdutton       Note Added: 0011197                          
+07-23-06 18:45 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
