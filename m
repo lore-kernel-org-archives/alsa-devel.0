@@ -1,14 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH v2] echoaudio, fw_writer
-Date: Sun, 23 Jul 2006 17:39:37 +0200
-Message-ID: <20060723173937.6dc581b1.pochini@shiny.it>
-References: <XFMail.20060719103126.pochini@shiny.it>
-	<200607201126.29627.linux@blennerhassett.gen.nz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Sun, 23 Jul 2006 17:49:49 +0200
+Message-ID: <dac02f158da59fc45e54871e5130a797@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200607201126.29627.linux@blennerhassett.gen.nz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AC9D22C
+	for <alsa-devel@alsa-project.org>;
+	Sun, 23 Jul 2006 17:49:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,255 +21,153 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Jul 2006 11:26:29 +1200
-Eliot Blennerhassett <linux@blennerhassett.gen.nz> wrote:
 
-> Now you don't have to include each C file, you could make fw_loader.c int=
-o =
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+======================================================================
+Reported By:                cruiseoveride
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-23-2006 17:49 CEST
+======================================================================
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-> universal c to fw converter by getting the parameters for
->
-> +=A0=A0=A0=A0=A0=A0=A0write_fw("loader_dsp.fw", "DSP/LoaderDSP.c");
->
-> from the commandline?
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-Here you are. This patch is against the current HG version.
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
+
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-23-06 17:42 
+----------------------------------------------------------------------
+http://hg-mirror.alsa-project.org/alsa-driver?cmd=file;file=INSTALL;filenode=8f61a3714ff87380097fa5ea4e613b5510c884ea;style=raw
+
+The link "The latest INSTALL file" in
+http://www.alsa-project.org/documentation.php is broken
 
 
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
-Change the fw_writer utility so it does not #include the binary images
-anymore. It loads them from disk instead.
-
---- alsa-firmware/echoaudio/Makefile.am__orig	2006-07-23 17:03:56.000000000=
- +0200
-+++ alsa-firmware/echoaudio/Makefile.am	2006-07-23 17:13:21.000000000 +0200
-@@ -70,4 +70,29 @@ hotplugfw_DATA =3D =
-
- endif
- =
-
- $(firmware_files): fw_writer
--	./fw_writer
-+	./fw_writer DSP/Darla20DSP.c darla20_dsp.fw
-+	./fw_writer DSP/Gina20DSP.c gina20_dsp.fw
-+	./fw_writer DSP/Layla20DSP.c layla20_dsp.fw
-+	./fw_writer ASIC/LaylaASIC.c layla20_asic.fw
-+	./fw_writer DSP/Darla24DSP.c darla24_dsp.fw
-+	./fw_writer DSP/Gina24DSP.c gina24_301_dsp.fw
-+	./fw_writer ASIC/Gina24ASIC.c gina24_301_asic.fw
-+	./fw_writer DSP/Gina24_361DSP.c gina24_361_dsp.fw
-+	./fw_writer ASIC/Gina24ASIC_361.c gina24_361_asic.fw
-+	./fw_writer DSP/Layla24DSP.c layla24_dsp.fw
-+	./fw_writer ASIC/Layla24_1ASIC.c layla24_1_asic.fw
-+	./fw_writer ASIC/Layla24_2A_ASIC.c layla24_2A_asic.fw
-+	./fw_writer ASIC/Layla24_2S_ASIC.c layla24_2S_asic.fw
-+	./fw_writer DSP/MonaDSP.c mona_301_dsp.fw
-+	./fw_writer ASIC/Mona1ASIC48.c mona_301_1_asic_48.fw
-+	./fw_writer ASIC/Mona1ASIC96.c mona_301_1_asic_96.fw
-+	./fw_writer DSP/Mona361DSP.c mona_361_dsp.fw
-+	./fw_writer ASIC/Mona1ASIC48_361.c mona_361_1_asic_48.fw
-+	./fw_writer ASIC/Mona1ASIC96_361.c mona_361_1_asic_96.fw
-+	./fw_writer ASIC/Mona2ASIC.c mona_2_asic.fw
-+	./fw_writer DSP/MiaDSP.c mia_dsp.fw
-+	./fw_writer DSP/Echo3gDSP.c echo3g_dsp.fw
-+	./fw_writer ASIC/3G_ASIC.c 3g_asic.fw
-+	./fw_writer DSP/IndigoDSP.c indigo_dsp.fw
-+	./fw_writer DSP/IndigoIODSP.c indigo_io_dsp.fw
-+	./fw_writer DSP/IndigoDJDSP.c indigo_dj_dsp.fw
---- alsa-firmware/echoaudio/fw_writer.c__orig	2006-07-17 22:41:39.000000000=
- +0200
-+++ alsa-firmware/echoaudio/fw_writer.c	2006-07-23 17:17:05.000000000 +0200
-@@ -17,6 +17,7 @@
-  */
- =
-
- #include <stdio.h>
-+#include <sys/stat.h>
- #include <stdint.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -24,87 +25,85 @@
- #include <string.h>
- #include <errno.h>
- =
-
--typedef uint8_t u8;
--typedef uint16_t u16;
- =
-
--#include "DSP/LoaderDSP.c"
--#include "DSP/Darla20DSP.c"
--#include "DSP/Gina20DSP.c"
--#include "DSP/Layla20DSP.c"
--#include "ASIC/LaylaASIC.c"
--#include "DSP/Darla24DSP.c"
--#include "ASIC/Gina24ASIC.c"
--#include "ASIC/Gina24ASIC_361.c"
--#include "DSP/Gina24DSP.c"
--#include "DSP/Gina24_361DSP.c"
--#include "DSP/Layla24DSP.c"
--#include "ASIC/Layla24_1ASIC.c"
--#include "ASIC/Layla24_2A_ASIC.c"
--#include "ASIC/Layla24_2S_ASIC.c"
--#include "DSP/MonaDSP.c"
--#include "DSP/Mona361DSP.c"
--#include "ASIC/Mona1ASIC48.c"
--#include "ASIC/Mona1ASIC96.c"
--#include "ASIC/Mona1ASIC48_361.c"
--#include "ASIC/Mona1ASIC96_361.c"
--#include "ASIC/Mona2ASIC.c"
--#include "DSP/MiaDSP.c"
--#include "DSP/Echo3gDSP.c"
--#include "ASIC/3G_ASIC.c"
--#include "DSP/IndigoDSP.c"
--#include "DSP/IndigoIODSP.c"
--#include "DSP/IndigoDJDSP.c"
-+char *next_number(char *c)
-+{
-+	while (1) {
-+		c++;
-+		if (*c=3D=3D0 || *c =3D=3D '}')
-+			return NULL;
-+		if (c[0]=3D=3D'0' && c[1]=3D=3D'x')
-+			return c;
-+	}
-+}
- =
-
- =
-
--int write_fw(const char *name, void *fw, ssize_t size)
-+
-+int write_fw(const char *dest, const char *src)
- {
--	int fd, n;
-+	uint16_t d16;
-+	uint8_t d8;
-+	int fd;
-+	struct stat stbuf;
-+	char *buf, *c;
- =
-
--	if ((fd =3D open(name, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0) {
--		printf("Open error: %s\n", strerror(fd));
--		return fd;
-+	if ((fd =3D open(src, O_RDONLY)) < 0) {
-+		printf("%s: %s\n", src, strerror(errno));
-+		exit(errno);
- 	}
--	n =3D write(fd, fw, size);
--	if (n < 0)
--		printf("Error writing %s: %s\n", name, strerror(fd));
--	else if (n < size)
--		printf("Error writing %s: file is incomplete (%s)\n", name, strerror(fd)=
-);
-+	if (fstat(fd, &stbuf) < 0) {
-+		printf("%s: %s\n", src, strerror(errno));
-+		exit(errno);
-+	}
-+	if (!(buf =3D malloc(stbuf.st_size + 1))) {
-+		puts("Out of memory.");
-+		exit(ENOMEM);
-+	}
-+	if (read(fd, buf, stbuf.st_size) < stbuf.st_size) {
-+		puts("Read error.");
-+		exit(EIO);
-+	}
-+	close(fd);
-+	buf[stbuf.st_size] =3D 0;
- =
-
-+	if ((fd =3D open(dest, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0) {
-+		printf("%s: %s\n", dest, strerror(errno));
-+		exit(errno);
-+	}
-+	if ((c =3D strstr(buf, "u8 ")) || (c =3D strstr(buf, "BYTE ")) || (c =3D =
-strstr(buf, "char "))) {
-+		while (c =3D next_number(c)) {
-+			d8 =3D strtol(c, NULL, 16);
-+			if (write(fd, &d8, 1) < 1) {
-+				printf("Error writing %s\n", dest);
-+				exit(EIO);
-+			}
-+		}
-+	} else if ((c =3D strstr(buf, "u16 ")) || (c =3D strstr(buf, "WORD "))) {
-+		while (c =3D next_number(c)) {
-+			d16 =3D strtol(c, NULL, 16);
-+			if (write(fd, &d16, 2) < 2) {
-+				printf("Error writing %s\n", dest);
-+				exit(EIO);
-+			}
-+		}
-+	} else {
-+		printf("%s currupted ?\n", src);
-+		exit(EINVAL);
-+	}
- 	close(fd);
-+	free(buf);
-+
- 	return 0;
- }
- =
-
- =
-
- =
-
--int main(void)
-+int main(int argc, char *argv[])
- {
--	write_fw("loader_dsp.fw", LoaderDSP, sizeof(LoaderDSP));
--	write_fw("darla20_dsp.fw", Darla20DSP, sizeof(Darla20DSP));
--	write_fw("gina20_dsp.fw", Gina20DSP, sizeof(Gina20DSP));
--	write_fw("layla20_dsp.fw", Layla20DSP, sizeof(Layla20DSP));
--	write_fw("layla20_asic.fw", LaylaASIC, sizeof(LaylaASIC));
--	write_fw("darla24_dsp.fw", Darla24DSP, sizeof(Darla24DSP));
--	write_fw("gina24_301_dsp.fw", Gina24DSP, sizeof(Gina24DSP));
--	write_fw("gina24_301_asic.fw", Gina24ASIC, sizeof(Gina24ASIC));
--	write_fw("gina24_361_dsp.fw", Gina24_361DSP, sizeof(Gina24_361DSP));
--	write_fw("gina24_361_asic.fw", Gina24ASIC_361, sizeof(Gina24ASIC_361));
--	write_fw("layla24_dsp.fw", Layla24DSP, sizeof(Layla24DSP));
--	write_fw("layla24_1_asic.fw", Layla24_1ASIC, sizeof(Layla24_1ASIC));
--	write_fw("layla24_2A_asic.fw", Layla24_2A_ASIC, sizeof(Layla24_2A_ASIC));
--	write_fw("layla24_2S_asic.fw", Layla24_2S_ASIC, sizeof(Layla24_2S_ASIC));
--	write_fw("mona_301_dsp.fw", MonaDSP, sizeof(MonaDSP));
--	write_fw("mona_301_1_asic_48.fw", Mona1ASIC48, sizeof(Mona1ASIC48));
--	write_fw("mona_301_1_asic_96.fw", Mona1ASIC96, sizeof(Mona1ASIC96));
--	write_fw("mona_361_dsp.fw", Mona361DSP, sizeof(Mona361DSP));
--	write_fw("mona_361_1_asic_48.fw", Mona1ASIC48_361, sizeof(Mona1ASIC48_361=
-));
--	write_fw("mona_361_1_asic_96.fw", Mona1ASIC96_361, sizeof(Mona1ASIC96_361=
-));
--	write_fw("mona_2_asic.fw", Mona2ASIC, sizeof(Mona2ASIC));
--	write_fw("mia_dsp.fw", MiaDSP, sizeof(MiaDSP));
--	write_fw("echo3g_dsp.fw", Echo3gDSP, sizeof(Echo3gDSP));
--	write_fw("3g_asic.fw", echo3g_asic, sizeof(echo3g_asic));
--	write_fw("indigo_dsp.fw", IndigoDSP, sizeof(IndigoDSP));
--	write_fw("indigo_io_dsp.fw", IndigoioDSP, sizeof(IndigoioDSP));
--	write_fw("indigo_dj_dsp.fw", IndigodjDSP, sizeof(IndigodjDSP));
-+	if (argc !=3D 3) {
-+		printf("Syntax: %s <source> <destination>\n", argv[0]);
-+		exit(0);
-+	}
-+	write_fw(argv[2], argv[1]);
- 	return 0;
- }
--
+./hgcompile --with-cards=ice1724 --with-sequencer=yes
 
 
 
---
-Giuliano.
+----------------------------------------------------------------------
+ cruiseoveride - 07-23-06 17:49 
+----------------------------------------------------------------------
+rlrevell, that howto, is what im trying to say with the "printf" statement,
+completely useless unless you have a driver writing background.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+07-23-06 17:39 Raymond        Note Added: 0011191                          
+07-23-06 17:42 Raymond        Note Edited: 0011191                         
+07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
