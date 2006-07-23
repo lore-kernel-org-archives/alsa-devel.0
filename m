@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002058]: Audigy 2 ZS Notebook lacks
-	record capability
-Date: Sun, 23 Jul 2006 19:02:17 +0200
-Message-ID: <1adb9c6f304edbdc4ea37d37df08d9ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001404]: (Apparently) no microphone
+	support
+Date: Sun, 23 Jul 2006 19:08:22 +0200
+Message-ID: <d06ad0a95f10bf62a9ef1801997d7445@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F36A8187
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8B5424C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 19:02:17 +0200 (MEST)
+	Sun, 23 Jul 2006 19:08:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,58 +24,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
 ======================================================================
-Reported By:                artdent
+Reported By:                Twey
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2058
-Category:                   PCI - emu10k1
+Issue ID:                   1404
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Debian unstable
-Kernel Version:             2.6.15
+Status:                     closed
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13-homegrown
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-22-2006 21:11 CEST
-Last Modified:              07-23-2006 19:02 CEST
+Date Submitted:             09-08-2005 18:40 CEST
+Last Modified:              07-23-2006 19:08 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS Notebook lacks record capability
+Summary:                    (Apparently) no microphone support
 Description: 
-According to bug #927, the emu10k1 driver now works with the Audigy 2 ZS
-PCMCIA card for playback, but not capture. The most current is "untested,
-might already work". Are there any plans to figure out recording with this
-card? It would be greatly appreciated.
-
-Even with an untested patch to enable recording, I would be willing to
-test it to see if it works.
-
-Thanks,
-Jacob Lee
-
+My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
+(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
+microphones.
+Audacity shows very small (pixel-size) distortions in the recording graph
+at times.  I presume this means that the input is being received, but is
+too miniscule to make a difference.  I can't do anything about this; there
+are no appropriate sliders or "mic boost" in any mixer application.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 19:02 
+ rlrevell - 01-02-06 20:45 
 ----------------------------------------------------------------------
-Not currently implemented.
-No timescale set for fix due to not enough developer time available.
+Any improvement with the 1.0.11-rc2 release?
+
+----------------------------------------------------------------------
+ jcdutton - 07-23-06 19:08 
+----------------------------------------------------------------------
+No feedback for over 3 months so closing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-22-06 21:11 artdent        New Issue                                    
-04-22-06 21:11 artdent        Distribution              => Debian unstable 
-04-22-06 21:11 artdent        Kernel Version            => 2.6.15          
-04-24-06 16:48 lwelyn         Issue Monitored: lwelyn                      
-07-18-06 14:38 jcdutton       Status                   new => assigned     
-07-18-06 14:38 jcdutton       Assigned To               => jcdutton        
-07-23-06 19:02 jcdutton       Note Added: 0011200                          
-07-23-06 19:02 jcdutton       Status                   assigned => acknowledged
+09-08-05 18:40 Twey           New Issue                                    
+09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
+09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
+09-08-05 18:43 Twey           Issue Monitored: Twey                        
+09-08-05 18:46 rlrevell       Note Added: 0006074                          
+09-08-05 18:55 Twey           Note Added: 0006075                          
+09-08-05 19:11 Twey           Note Added: 0006079                          
+09-10-05 10:41 jcdutton       Note Added: 0006110                          
+09-10-05 10:41 jcdutton       Status                   assigned => feedback
+09-10-05 10:46 Twey           Note Added: 0006112                          
+12-07-05 20:58 Twey           Note Added: 0006947                          
+12-08-05 10:59 Twey           Note Edited: 0006947                         
+01-02-06 20:45 rlrevell       Note Added: 0007389                          
+07-23-06 19:08 jcdutton       Status                   feedback => closed  
+07-23-06 19:08 jcdutton       Note Added: 0011201                          
 ======================================================================
 
 
