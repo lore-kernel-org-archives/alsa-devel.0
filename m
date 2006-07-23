@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Sun, 23 Jul 2006 04:05:26 +0200
-Message-ID: <0768325cdf01d3711c00b94d92565f12@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001971]: Some elements incorrectly have
+	capture flags
+Date: Sun, 23 Jul 2006 04:19:22 +0200
+Message-ID: <71161eb14f10bc86ca6ddd8fa958c456@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE2B419C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CBAB167
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 04:05:26 +0200 (MEST)
+	Sun, 23 Jul 2006 04:19:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,145 +26,116 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                pzad
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Issue ID:                   1971
+Category:                   simple mixer
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 04:05 CEST
+Date Submitted:             03-28-2006 12:16 CEST
+Last Modified:              07-23-2006 04:19 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Some elements incorrectly have capture flags
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+Some elemnts have capture flags even they have nothing to do with capture.
+This will duplicate control in alsamixer - view ALL.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+On VIA8233A + ALC650:
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 1 [7%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
 
-If you slash out line 104, it resolves the issue.
+On Audigy 1:
+Simple mixer control 'Bass',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 23 [58%]
+  Front Right: 23 [58%]
+Simple mixer control 'Treble',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 27 [68%]
+  Front Right: 27 [68%]
 
-My question is,
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-22-06 04:15 
+ rlrevell - 07-22-06 23:01 
 ----------------------------------------------------------------------
-You already have all datasheets and a reference driver (iec1724.c and
-juli.c)
-
-ftp://ftp.alsa-project.org/pub/datasheets/
-
-It's no hard to write a driver for Audiophile 192
-
-Just choose a short name for your new driver and start
-
-
+What's wrong with the dummy driver controls?  Suppose the hardware mixes
+together all sources where capture enabled.  Each mixer element would have
+a playback and a capture component.
 
 ----------------------------------------------------------------------
- Raymond - 07-23-06 04:05 
+ Raymond - 07-23-06 04:19 
 ----------------------------------------------------------------------
-> Why isnt ALSA API documented properly. I would write the driver myself
-otherwise.
+There is no documentation of the simple mixer api
 
-> Show us how to write a dummy driver with the code and Makefile or the
-command to compile it with.
+According the current implementation, it is quite confusing that the
+multi-channels are grouped into one simple mixer control or several
+controls.
 
-Have you read all the datasheets ?
-
-You may need to trace the cirucit on your sound card to find out how the
-GPIO are used
-
-Although there is an example for PCI sound card, you have to follow
-ice1724.c
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x133.htm#AEN137
-
-The URLs in this post should have enough info for you to add your new
-driver into alsa-kernel tree 
-
-You can modify alsa-kernel/drivers/dummy.c to emulate ice1712 (add ice1712
-specific controls) in order to make envy24control work for both ice1712
-and ice1724.
+ Capabilities: volume
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
+Front Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? -
+? - ? - ? - ? - ? - ? - ? - ?
+  Capture channels: Front Left - Front Right - Rear Left - Rear Right -
+Front Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? -
+? - ? - ? - ? - ? - ? - ? - ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
+03-28-06 12:16 pzad           New Issue                                    
+03-30-06 11:01 Raymond        Note Added: 0009028                          
+03-30-06 12:50 pzad           Note Added: 0009031                          
+03-30-06 13:13 pzad           Note Added: 0009032                          
+03-30-06 13:22 Raymond        Note Added: 0009033                          
+03-30-06 13:29 Raymond        Note Edited: 0009033                         
+03-30-06 13:41 Raymond        Note Edited: 0009033                         
+03-31-06 04:36 Raymond        Note Added: 0009041                          
+03-31-06 04:50 Raymond        Note Edited: 0009041                         
+04-01-06 01:13 Raymond        Note Edited: 0009033                         
+04-03-06 19:08 Raymond        Note Added: 0009103                          
+04-05-06 18:42 Raymond        Note Added: 0009121                          
+04-05-06 18:46 Raymond        Note Edited: 0009121                         
+04-05-06 18:50 Raymond        Note Edited: 0009121                         
+04-06-06 09:11 Raymond        Note Deleted: 0009103                        
+04-06-06 09:44 Raymond        Note Added: 0009124                          
+04-06-06 09:45 Raymond        Note Edited: 0009124                         
+04-07-06 12:05 Raymond        Note Added: 0009136                          
+04-13-06 11:32 Raymond        Note Added: 0009256                          
+04-13-06 20:26 pzad           Note Added: 0009268                          
+04-14-06 06:21 Raymond        Note Added: 0009282                          
+04-14-06 09:55 Raymond        Note Edited: 0009282                         
+06-30-06 18:20 Raymond        Note Added: 0010749                          
+06-30-06 18:22 Raymond        Note Edited: 0010749                         
+06-30-06 18:33 Raymond        Note Edited: 0010749                         
+07-22-06 05:25 Raymond        Note Added: 0011166                          
+07-22-06 23:01 rlrevell       Note Added: 0011173                          
+07-23-06 04:19 Raymond        Note Added: 0011180                          
 ======================================================================
 
 
