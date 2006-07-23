@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001183]: Details about known bug
-	"Capture doesn't work"
-Date: Sun, 23 Jul 2006 11:39:49 +0200
-Message-ID: <a0555546099a460f93f90e0df79afcb2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002298]: "Invalid argument" error with
+	USB audio device
+Date: Sun, 23 Jul 2006 12:52:44 +0200
+Message-ID: <44107cde2df3e6b9f2398da30cdae135@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E426187
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54A9D147
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 11:39:49 +0200 (MEST)
+	Sun, 23 Jul 2006 12:52:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,76 +24,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2298> 
 ======================================================================
-Reported By:                Jochen
-Assigned To:                tiwai
+Reported By:                lukeross
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1183
-Category:                   PCI - es1968
+Issue ID:                   2298
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core Linux 4
+Kernel Version:             2.6.14-1.1653_FC4
 ======================================================================
-Date Submitted:             06-11-2005 20:34 CEST
-Last Modified:              07-23-2006 11:39 CEST
+Date Submitted:             07-22-2006 13:34 CEST
+Last Modified:              07-23-2006 12:52 CEST
 ======================================================================
-Summary:                    Details about known bug "Capture doesn't work"
+Summary:                    "Invalid argument" error with USB audio device
 Description: 
-I'm experiencing the problem with es1968 not supporting capture described
-in various places. This bug keeps me from using skype: the second it tries
-to read from the OSS compatibility device it receives and EINVAL
+Plugged in a USB audio device which is recognised as follows:
 
-using the old OSS maestro driver works thou.
+T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
+D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+P:  Vendor=0e6a ProdID=0310 Rev= 1.11
+S:  Product=USB Audio Device
+C:* #Ifs= 3 Cfg#= 1 Atr=80 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=16ms
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00
+Driver=snd-usb-audio
+I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00
+Driver=snd-usb-audio
+I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00
+Driver=snd-usb-audio
+E:  Ad=02(O) Atr=09(Isoc) MxPS= 192 Ivl=1ms
 
-apparently this is the known bug "capture doesn't work"
+Whenever I try to play on this device I get the following error:
 
-I'd like to ask for a little more information on this bug, and whether
-it's possible to contribute here.
+Setting of hwparams failed: Invalid argument
+Broken configuration for playback: no configurations available: Invalid
+argument
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000895 Es1968 driver seems not to support &quo...
-======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 00:35 
+ lukeross - 07-23-06 12:52 
 ----------------------------------------------------------------------
-Was this fixed in later ALSA versions?
+After a lot of googling, I turned up the following link to someone with the
+same chipset:
 
-----------------------------------------------------------------------
- Raymond - 07-07-06 06:36 
-----------------------------------------------------------------------
-Post output of
+http://sourceforge.net/mailarchive/forum.php?thread_id=9969515&forum_id=1752
 
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
+This patch works for me, and with respect to the second message in the
+thread the sound plays normally, suggesting (if I understand the problem
+correctly) that the chipset is giving out incorrect information about
+supported rates.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 20:34 Jochen         New Issue                                    
-06-13-05 13:07 tiwai          Note Added: 0005007                          
-06-13-05 15:53 Jochen         Note Added: 0005011                          
-06-15-05 14:42 tiwai          Note Added: 0005028                          
-09-26-05 10:04 LawrenceG      Issue Monitored: LawrenceG                    
-09-26-05 10:20 LawrenceG      Note Added: 0006390                          
-09-26-05 10:43 LawrenceG      Note Added: 0006391                          
-03-22-06 00:35 rlrevell       Note Added: 0008763                          
-03-22-06 00:37 rlrevell       Relationship added       related to 0000895  
-07-07-06 06:36 Raymond        Note Added: 0010894                          
-07-23-06 11:39 Adrian Bunk    Status                   assigned => closed  
-07-23-06 11:39 Adrian Bunk    Resolution               open => unable to
-duplicate
+07-22-06 13:34 lukeross       New Issue                                    
+07-22-06 13:34 lukeross       Distribution              => Fedora Core Linux 4
+07-22-06 13:34 lukeross       Kernel Version            => 2.6.14-1.1653_FC4
+07-23-06 12:52 lukeross       Note Added: 0011184                          
 ======================================================================
 
 
