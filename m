@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Sun, 23 Jul 2006 15:04:56 +0200
-Message-ID: <489ea5ddafe886146aae6fcb7cca2aca@bugtrack.alsa-project.org>
+From: Nicolas Boichat <nicolas@boichat.ch>
+Subject: Re: ALSA Intel HDA MacBook
+Date: Sun, 23 Jul 2006 16:31:17 +0200
+Message-ID: <44C38835.6010200@boichat.ch>
+References: <200607081323.17265.rene@exactcode.de>	<200607082120.02137.rene@exactcode.de>	<s5hk66lda2l.wl%tiwai@suse.de>	<200607101344.13837.rene@exactcode.de>	<44B24168.10405@boichat.ch>
+	<s5hk66k76sh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E22E155
-	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 15:04:57 +0200 (MEST)
+In-Reply-To: <s5hk66k76sh.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,134 +18,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net, Rene Rebe <rene@exactcode.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
-======================================================================
-Reported By:                bitmage2
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
-======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-23-2006 15:04 CEST
-======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
-Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+Takashi Iwai wrote:
+>
+> OK then it's somewhat another black magic :)
+>
+> Linus made a patch to make MacMini to work.  The patch is below (and
+> it's already merged to ALSA HG tree, too).
+> Could you check whether it works for other Intel Mac models?
+> At least, we need to check that it doesn't break something...
+>   
+I finally found the time to test this patch on my Macbook Pro (I'm
+running 2.6.18-rc2, which includes this patch).
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+I have the following results:
+- "Side" controls internal speakers, if no headphone is plugged
+- "Front" controls headphones
+- Line-in is always set as output ("Line In as output" has no effect),
+"Center" controls line-"out" left channel, "LFE" the right channel.
+- "Surround" has no effect.
 
+However, the internal mic doesn't work anymore (whatever value I put in
+"Capture", "Input Source" and "Mux")...
 
+Best regards,
 
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-23-06 13:49 
-----------------------------------------------------------------------
-Please update alsa-utils to the same version of alsa-lib
-
-speaker-test -c 2 -t wav
-
-speaker-test -c 4 -Dsurround40 -t wav
-
-speaker-test -c 6 -Dsurround51 -t wav
-
-----------------------------------------------------------------------
- bitmage2 - 07-23-06 15:04 
-----------------------------------------------------------------------
-The installed RPM package  "alsa" is 1.0.9-23.2 (includes alsa-lib ,
-alsa-utils , alsa-conf and libasound. This means alsa-lib and alsa-utils
-should be the same version.
-
-If it helps, I can install alsa 1.0.12rc1 now on a clean Linux
-installtion. Should I do so?
-
-About the test cases:
-
-speaker-test -c 2 -t wav    # Does not produce high load
-speaker-test -c 4 -Dsurround40 -t wav # Produces high load
-speaker-test -c 6 -Dsurround51 -t wav # Produces high load
-
-While playing around I made an interesting observation: The two
-probleamtic cases do not produce high load, if the machine is otherwise
-*completely* idle (means: don't move the mouse). If I start some activity
-(for example starting Firefox, use a file manager or execute something
-like "cat /boot/vmlinuz"), speaker-test immediately goes to 100% CPU time.
-In this case often a "Broken pipe" can be observed (see below).
-"speaker-test -c 2 -t wav" always works, no matter how hard I stress the
-machine.
-
-chris@bjork:~> speaker-test -c 6 -Dsurround51 -t wav
-
-speaker-test 0.0.8
-
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 16384
-Period size range from 8 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 16384
-To choose period_size = 4096
-was set period_size = 512
-was set buffer_size = 16384
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
-Write error: -32,Broken pipe
- 2 - Rear Left
- 5 - LFE
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
-07-15-06 05:09 Raymond        Note Added: 0011017                          
-07-15-06 07:17 Raymond        Note Edited: 0011017                         
-07-23-06 11:34 bitmage2       Note Added: 0011183                          
-07-23-06 13:49 Raymond        Note Added: 0011185                          
-07-23-06 14:14 Raymond        Note Added: 0011186                          
-07-23-06 14:16 Raymond        Note Deleted: 0011186                        
-07-23-06 15:04 bitmage2       Note Added: 0011189                          
-======================================================================
-
+Nicolas
+>
+> Subject: x86 MacMini: make built-in speaker sound actually work
+>
+> The MacMini board table seems to largely look like any bog-standard
+> Intel 945 board.
+>
+> Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+>
+> ---
+> commit 7c3dec0679c66ce177726802adbe2f403942fc27
+> tree 62d286f0b477a62d6996b6ba2cacdc3cdd4579a9
+> parent c80dc60b03d633047c7f96be87fd59cdcdbb929f
+> author Linus Torvalds <torvalds@macmini.osdl.org> Mon, 10 Jul 2006 22:21:43 -0700
+> committer Linus Torvalds <torvalds@macmini.osdl.org> Mon, 10 Jul 2006 22:21:43 -0700
+>
+>  sound/pci/hda/patch_sigmatel.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+> index fb4bed0..ea99083 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -351,6 +351,7 @@ static unsigned int *stac922x_brd_tbl[ST
+>  	[STAC_REF] =	ref922x_pin_configs,
+>  	[STAC_D945GTP3] = d945gtp3_pin_configs,
+>  	[STAC_D945GTP5] = d945gtp5_pin_configs,
+> +	[STAC_MACMINI] = d945gtp5_pin_configs,
+>  	[STAC_D965_2112] = d965_2112_pin_configs,
+>  };
+>  
+>   
 
 
 -------------------------------------------------------------------------
