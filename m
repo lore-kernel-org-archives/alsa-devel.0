@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio
-	Audiophile 192
-Date: Sun, 23 Jul 2006 00:52:08 +0200
-Message-ID: <6d79f64878ce5c42f305236432d7d4a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Sun, 23 Jul 2006 02:25:57 +0200
+Message-ID: <d539f47b36f9285dbe4066f1c8f67c3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6ED64161
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFF8C24A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 00:52:08 +0200 (MEST)
+	Sun, 23 Jul 2006 02:25:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,108 +26,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                Dazed
+Reported By:                tjallen
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1475
-Category:                   PCI - ice1724
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              07-23-2006 00:52 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              07-23-2006 02:25 CEST
 ======================================================================
-Summary:                    Support for M Audio Audiophile 192
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-23-06 00:46 
+ tjallen - 07-02-06 03:19 
 ----------------------------------------------------------------------
-oss has full support for the card.
-i downloaded oss and everything is working.
-
-can i use oss to get info for u guys. i have done soo much for this card.
-i have done everything but actually write the bl**dy driver.
-
-1. I have photogtaphed the card
-2. I have found a similicar card (ESI Juli@
-   it has all the same AKM chips. only difference it is vts1721
-3. I have provided links to the data-sheets of every AKM chip on the
-M-Audio 192
-4. I have uploaded as much information as possible taken from ALSA, /proc,
-OSS
-
->From the ALSA website I found the following
-#########################################################################3
-What we need to write good drivers
-
-ALSA developers need several things to write good drivers. We need:
-
-    * good documentation
-    * necessary firmware
-    * a way to get additional information if needed
-    * example source code is helpful
-######################################################################
-
-
-What else do u want?
-
-Why isnt ALSA API documented properly. I would write the driver myself
-otherwise.
-
-Show us how to write a dummy driver with the code and Makefile or the
-command to compile it with. How can the community help if they have no
-idea wat is going on in this project.
+I compiled the module and uploaded (all?) the relevant lines from dmesg.
+If you'd like me to, I can do the same for other Soundscape cards besides
+the Elite.  I think I have at least one of the VIVOs somewhere.
 
 ----------------------------------------------------------------------
- rlrevell - 07-23-06 00:52 
+ rankincj - 07-23-06 02:25 
 ----------------------------------------------------------------------
-There is documentation for developing an ALSA driver:
+I have added preliminary support for detecting non-PnP SoundScape cards to
+the ALSA driver. (All copied from the OSS driver, of course ;-).) I have
+checked that the module compiles under Linux 2.6.17.6 with gcc 4.1.1, but
+that's all. In fact, I can't even check whether I've broken the PnP
+support at the moment.
 
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
-
-The "documentation" referred to in your quote is documentation for the
-hardware.
+Would anyone with the relevant hardware care to test-drive this module,
+please?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-11-14-05 23:02 jorx           Issue Monitored: jorx                        
-01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
-03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
-03-19-06 18:53 paule          Note Added: 0008694                          
-03-19-06 18:53 paule          Issue Monitored: paule                       
-06-08-06 16:50 drycellbattery Issue Monitored: drycellbattery                   
-
-07-20-06 15:56 cruiseoveride  Note Added: 0011128                          
-07-21-06 05:12 cruiseoveride  Note Added: 0011144                          
-07-21-06 05:15 cruiseoveride  Note Added: 0011146                          
-07-21-06 05:18 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-21-06 20:12 cruiseoveride  Note Added: 0011154                          
-07-22-06 22:55 rlrevell       Note Added: 0011172                          
-07-23-06 00:46 cruiseoveride  Note Added: 0011176                          
-07-23-06 00:52 rlrevell       Note Added: 0011177                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-30-06 22:38 rankincj       Note Added: 0010752                          
+06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
+07-02-06 01:39 rankincj       File Added: sscape.c                         
+07-02-06 01:41 rankincj       Note Added: 0010767                          
+07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
+07-02-06 03:19 tjallen        Note Added: 0010768                          
+07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
+07-23-06 02:25 rankincj       Note Added: 0011178                          
 ======================================================================
 
 
