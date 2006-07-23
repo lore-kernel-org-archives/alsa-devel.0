@@ -1,14 +1,17 @@
-From: Nicolas Boichat <nicolas@boichat.ch>
-Subject: Re: ALSA Intel HDA MacBook
-Date: Sun, 23 Jul 2006 16:31:17 +0200
-Message-ID: <44C38835.6010200@boichat.ch>
-References: <200607081323.17265.rene@exactcode.de>	<200607082120.02137.rene@exactcode.de>	<s5hk66lda2l.wl%tiwai@suse.de>	<200607101344.13837.rene@exactcode.de>	<44B24168.10405@boichat.ch>
-	<s5hk66k76sh.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Sun, 23 Jul 2006 17:23:22 +0200
+Message-ID: <ef538b01a0f30676ec80a9cce3e9f909@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk66k76sh.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAC8B21D
+	for <alsa-devel@alsa-project.org>;
+	Sun, 23 Jul 2006 17:23:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,68 +21,149 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Matt Porter <mporter@embeddedalley.com>, alsa-devel@lists.sourceforge.net, Rene Rebe <rene@exactcode.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Takashi Iwai wrote:
->
-> OK then it's somewhat another black magic :)
->
-> Linus made a patch to make MacMini to work.  The patch is below (and
-> it's already merged to ALSA HG tree, too).
-> Could you check whether it works for other Intel Mac models?
-> At least, we need to check that it doesn't break something...
->   
-I finally found the time to test this patch on my Macbook Pro (I'm
-running 2.6.18-rc2, which includes this patch).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+======================================================================
+Reported By:                cruiseoveride
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-23-2006 17:23 CEST
+======================================================================
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-I have the following results:
-- "Side" controls internal speakers, if no headphone is plugged
-- "Front" controls headphones
-- Line-in is always set as output ("Line In as output" has no effect),
-"Center" controls line-"out" left channel, "LFE" the right channel.
-- "Surround" has no effect.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-However, the internal mic doesn't work anymore (whatever value I put in
-"Capture", "Input Source" and "Mux")...
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-Best regards,
+If you slash out line 104, it resolves the issue.
 
-Nicolas
->
-> Subject: x86 MacMini: make built-in speaker sound actually work
->
-> The MacMini board table seems to largely look like any bog-standard
-> Intel 945 board.
->
-> Signed-off-by: Linus Torvalds <torvalds@osdl.org>
->
-> ---
-> commit 7c3dec0679c66ce177726802adbe2f403942fc27
-> tree 62d286f0b477a62d6996b6ba2cacdc3cdd4579a9
-> parent c80dc60b03d633047c7f96be87fd59cdcdbb929f
-> author Linus Torvalds <torvalds@macmini.osdl.org> Mon, 10 Jul 2006 22:21:43 -0700
-> committer Linus Torvalds <torvalds@macmini.osdl.org> Mon, 10 Jul 2006 22:21:43 -0700
->
->  sound/pci/hda/patch_sigmatel.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-> index fb4bed0..ea99083 100644
-> --- a/sound/pci/hda/patch_sigmatel.c
-> +++ b/sound/pci/hda/patch_sigmatel.c
-> @@ -351,6 +351,7 @@ static unsigned int *stac922x_brd_tbl[ST
->  	[STAC_REF] =	ref922x_pin_configs,
->  	[STAC_D945GTP3] = d945gtp3_pin_configs,
->  	[STAC_D945GTP5] = d945gtp5_pin_configs,
-> +	[STAC_MACMINI] = d945gtp5_pin_configs,
->  	[STAC_D965_2112] = d965_2112_pin_configs,
->  };
->  
->   
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-23-06 15:24 
+----------------------------------------------------------------------
+You will need alsa-driver alsa-kernel alsa-lib alsa-utils alsa-tools from
+HG repo
+
+There is a tool to toggle gpio in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 07-23-06 17:23 
+----------------------------------------------------------------------
+"There is not 1 example on how to step, by step, write, compile and use an
+ALSA driver on the entire ALSA website. I looked man, i really freakin
+looked. if u know how please tell me how."
+
+You did not look very hard:
+
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
