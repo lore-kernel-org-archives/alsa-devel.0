@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002190]: System crash on unplugging
 	Audigy 2 ZS Notebook CardBus card
-Date: Sun, 23 Jul 2006 19:53:20 +0200
-Message-ID: <4ae4eb3fb88e5c9e4c6630ade1239f61@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 23:25:45 +0200
+Message-ID: <342f003cbc8dca2935ff4876abc941fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 663E6155
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E7D813C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 19:53:20 +0200 (MEST)
+	Sun, 23 Jul 2006 23:25:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2190> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     feedback
+Status:                     closed
 Distribution:               Ubuntu Dapper 6.06
 Kernel Version:             2.6.15
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              07-23-2006 19:53 CEST
+Last Modified:              07-23-2006 23:25 CEST
 ======================================================================
 Summary:                    System crash on unplugging Audigy 2 ZS Notebook
 CardBus card
@@ -63,18 +65,18 @@ a result of poor driver support.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 14:56 
-----------------------------------------------------------------------
-Can you please test the patch:  hotplug-fix.diff
-
-This should fix this problem.
-
-
-----------------------------------------------------------------------
  cathectic - 07-23-06 19:53 
 ----------------------------------------------------------------------
 With this patch on 2.6.17.3, I can remove the card, but with snd-emu10k1
 built into the kernel, the driver is not reloaded on re-insertion.
+
+----------------------------------------------------------------------
+ jcdutton - 07-23-06 23:25 
+----------------------------------------------------------------------
+User reports that the patch fixes the problem. I.e. The system does not
+crash any more.
+Patch has been commited into hg alsa repository.
+Any new different problems should be entered as a new bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +91,8 @@ Date Modified  Username       Field                    Change
 07-23-06 14:56 jcdutton       Note Added: 0011188                          
 07-23-06 14:56 jcdutton       Status                   assigned => feedback
 07-23-06 19:53 cathectic      Note Added: 0011204                          
+07-23-06 23:25 jcdutton       Status                   feedback => closed  
+07-23-06 23:25 jcdutton       Note Added: 0011205                          
 ======================================================================
 
 
