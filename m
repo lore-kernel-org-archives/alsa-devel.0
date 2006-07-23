@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001376]: ens1370 gameport module
-	stupidity
-Date: Sun, 23 Jul 2006 19:36:03 +0200
-Message-ID: <577b5ee1540e88acea76a8bc5b6810dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002190]: System crash on unplugging
+	Audigy 2 ZS Notebook CardBus card
+Date: Sun, 23 Jul 2006 19:53:20 +0200
+Message-ID: <4ae4eb3fb88e5c9e4c6630ade1239f61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E19A5172
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 663E6155
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 19:36:03 +0200 (MEST)
+	Sun, 23 Jul 2006 19:53:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,71 +24,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1376> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2190> 
 ======================================================================
-Reported By:                Hetfield
-Assigned To:                
+Reported By:                tsmithe
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1376
-Category:                   PCI - ens1370
+Issue ID:                   2190
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Ubuntu Dapper 6.06
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             08-29-2005 11:59 CEST
-Last Modified:              07-23-2006 19:36 CEST
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              07-23-2006 19:53 CEST
 ======================================================================
-Summary:                    ens1370 gameport module stupidity
+Summary:                    System crash on unplugging Audigy 2 ZS Notebook
+CardBus card
 Description: 
-hi.
-
-situation:
-i have ens1370 built-in kernel and gameport too.
-i have the lilo cmd line snd_ens1370.joystick=1 to enable gameport.
-works perfectly.
-
-the problem is if i add gameport as module.
-the gameport command fails, and i can't use gameport.
-this can be even normal..but the problem is i can't no more enable
-gameport on audio card.
-
-i checked the /sys and /proc fs to check a settable value. no luck
-this forces gameport to be a module, only if snd is module (i can pass
-values via modprobe)
-and forces to be built-in if snd is built-in.
-
-can be gameport init added via proc/sys or a specific alsa tool?
-
-Thanks
-
-
-
-
+ System crash on unplugging Audigy 2 ZS Notebook CardBus card
+I am running Ubuntu Dapper 6.06, with the 2.6.15 kernel
+(including this driver). The driver works pretty well
+with my Audigy 2 ZS Notebook card, except that it
+doesn't seem to support hotplug. When I plug it in, the
+module is installed, and the card functions. However,
+the module continues to access the card when it is
+unplugged (nor does the module unload), and the kernel
+cannot handle this. The system falls over as it cannot
+run with a non-functioning kernel. All of my other
+devices that use hotplug work fine (CardBus, USB,
+whatever), so I can only deduce that this situation is
+a result of poor driver support.
 ======================================================================
 
 ----------------------------------------------------------------------
- Adrian Bunk - 07-23-06 19:36 
+ jcdutton - 07-23-06 14:56 
 ----------------------------------------------------------------------
-This can't be easily done.
+Can you please test the patch:  hotplug-fix.diff
 
-The solution is to simply build the gameport support statically into the
-kernel if this driver is compiled statically.
+This should fix this problem.
+
+
+----------------------------------------------------------------------
+ cathectic - 07-23-06 19:53 
+----------------------------------------------------------------------
+With this patch on 2.6.17.3, I can remove the card, but with snd-emu10k1
+built into the kernel, the driver is not reloaded on re-insertion.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-05 11:59 Hetfield       New Issue                                    
-07-23-06 19:36 Adrian Bunk    Note Added: 0011203                          
-07-23-06 19:36 Adrian Bunk    Status                   new => resolved     
-07-23-06 19:36 Adrian Bunk    Resolution               open => won't fix   
+06-07-06 19:47 tsmithe        New Issue                                    
+06-07-06 19:47 tsmithe        Distribution              => Ubuntu Dapper 6.06
+06-07-06 19:47 tsmithe        Kernel Version            => 2.6.15          
+06-10-06 22:08 tsmithe        Issue Monitored: tsmithe                     
+07-18-06 14:34 jcdutton       Status                   new => assigned     
+07-18-06 14:34 jcdutton       Assigned To               => jcdutton        
+07-23-06 14:55 jcdutton       File Added: hotplug-fix.diff                    
+07-23-06 14:56 jcdutton       Note Added: 0011188                          
+07-23-06 14:56 jcdutton       Status                   assigned => feedback
+07-23-06 19:53 cathectic      Note Added: 0011204                          
 ======================================================================
 
 
