@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Sun, 23 Jul 2006 06:41:05 +0200
-Message-ID: <0ae01f45940ebbc1774676c0dd461981@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Sun, 23 Jul 2006 11:34:29 +0200
+Message-ID: <4108b638e8ad62a15156f4d90ec8994b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C72A16A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 882AA16A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 06:41:05 +0200 (MEST)
+	Sun, 23 Jul 2006 11:34:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,153 +26,208 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 06:41 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-23-2006 11:34 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
 
-If you slash out line 104, it resolves the issue.
 
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-23-06 06:26 
+ Raymond - 07-15-06 07:17 
 ----------------------------------------------------------------------
-Ray, if i could do wat u said, dont u think i would have done it by now? 
-I dont know anything about circuits. And all those snippets of code and
-that too ALSA 0.9! from the ALSA homepage i have no idea how to compile
-it, i can read and understand it but thats about it,
+Please post output of
 
-if u know how, why dont u tell me how to compile a driver. Say ive written
-the thing with a similar structure to the ice1712, 
-and ive called it icey1724.c Now how do i compile it, where do i compile
-etc??? could u give me the command to compile it? which files to i put in
-the library or header includes? i have no clue.
+cat /proc/asound/pcm
 
-There is not 1 example on how to step, by step, write, compile and use an
-ALSA driver on the entire ALSA website. I looked man, i really freakin
-looked. if u know how please tell me how.
+lspci -vn
 
-let me give u an example on how confusing the ALSA docs are... 
 
-Say u dont know anything about C programming. And you want to display the
-word "hello" on ur screen, so u come to "my" C programming website
-(hypothetically) and all the example says is...
-
-printf("%s","hello\n");
-
-Now wat the hell do u do with that? Wat is that? where do u put it? how do
-u compile it etc, etc???
-
-Do u (not u ray, we're buddies) understand wat im trying to say,
 
 ----------------------------------------------------------------------
- Raymond - 07-23-06 06:41 
+ bitmage2 - 07-23-06 11:34 
 ----------------------------------------------------------------------
-Assume that you understand diff (differnce between old source and new
-source)
+chris@bjork:~> cat /proc/asound/pcm
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+01-00: Intel ICH : NVidia nForce2 : playback 1 : capture 1
+01-01: Intel ICH - MIC ADC : NVidia nForce2 - MIC ADC : capture 1
+01-02: Intel ICH - IEC958 : NVidia nForce2 - IEC958 : playback 1
 
-Just follow HG repo URL in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11135 to insert a
-new driver into
-alsa-kernel tree (You need to select a shortname for audiophile 192 and
-made changes corresponding to envy24ht)
+bjork:~ # lspci -vn
+00:00.0 Class 0600: 10de:01e0 (rev a2)
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Memory at e8000000 (32-bit, prefetchable) [size=32M]
+        Capabilities: [40] AGP version 3.0
+        Capabilities: [60] HyperTransport: Host or Secondary Interface
 
-audiophile.c
-audiophine.h
+00:00.1 Class 0500: 10de:01eb (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel
+
+00:00.2 Class 0500: 10de:01ee (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel
+
+00:00.3 Class 0500: 10de:01ed (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel
+
+00:00.4 Class 0500: 10de:01ec (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel
+
+00:00.5 Class 0500: 10de:01ef (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel
+
+00:01.0 Class 0601: 10de:0060 (rev a3)
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: [48] HyperTransport: Slave or Primary Interface
+
+00:01.1 Class 0c05: 10de:0064 (rev a2)
+        Subsystem: 1695:1000
+        Flags: 66MHz, fast devsel, IRQ 255
+        I/O ports at e400 [size=32]
+        Capabilities: [44] Power Management version 2
+
+00:02.0 Class 0c03: 10de:0067 (rev a3) (prog-if 10)
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 11
+        Memory at ed003000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
+
+00:02.1 Class 0c03: 10de:0067 (rev a3) (prog-if 10)
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 4
+        Memory at ed004000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
+
+00:02.2 Class 0c03: 10de:0068 (rev a3) (prog-if 20)
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 3
+        Memory at ed005000 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [44] Debug port
+        Capabilities: [80] Power Management version 2
+
+00:06.0 Class 0401: 10de:006a (rev a1)
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 7
+        I/O ports at d400 [size=256]
+        I/O ports at d800 [size=128]
+        Memory at ed001000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
+
+00:08.0 Class 0604: 10de:006c (rev a3)
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+        I/O behind bridge: 0000c000-0000cfff
+        Memory behind bridge: ec000000-ecffffff
+        Prefetchable memory behind bridge: 40000000-400fffff
+
+00:09.0 Class 0101: 10de:0065 (rev a2) (prog-if 8a [Master SecP PriP])
+        Subsystem: 1695:1000
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        I/O ports at f000 [size=16]
+        Capabilities: [44] Power Management version 2
+
+00:1e.0 Class 0604: 10de:01e8 (rev a2)
+        Flags: bus master, 66MHz, medium devsel, latency 32
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=32
+        Memory behind bridge: ea000000-ebffffff
+        Prefetchable memory behind bridge: e0000000-e7ffffff
+
+01:06.0 Class 0200: 10ec:8139 (rev 10)
+        Subsystem: 10ec:8139
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at c000 [size=256]
+        Memory at ec112000 (32-bit, non-prefetchable) [size=256]
+        [virtual] Expansion ROM at 40000000 [disabled] [size=64K]
+        Capabilities: [50] Power Management version 2
+
+01:07.0 Class 0200: 10ec:8029
+        Flags: medium devsel, IRQ 11
+        I/O ports at c400 [size=32]
+        [virtual] Expansion ROM at 40010000 [disabled] [size=32K]
+
+01:08.0 Class 0280: 1050:6692 (rev 01)
+        Subsystem: 1234:5678
+        Flags: medium devsel, IRQ 12
+        Memory at ec110000 (32-bit, non-prefetchable) [size=4K]
+        I/O ports at c800 [size=256]
+
+01:09.0 Class 0401: 1013:6003 (rev 01)
+        Subsystem: 1681:0051
+        Flags: bus master, slow devsel, latency 32, IRQ 5
+        Memory at ec111000 (32-bit, non-prefetchable) [size=4K]
+        Memory at ec000000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: [40] Power Management version 2
+
+01:0a.0 Class 0000: 1000:0001 (rev 01)
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at cc00 [size=256]
+        Memory at ec113000 (32-bit, non-prefetchable) [size=256]
+
+02:00.0 Class 0300: 10de:0281 (rev a1)
+        Flags: bus master, 66MHz, medium devsel, latency 32, IRQ 11
+        Memory at ea000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at e0000000 (32-bit, prefetchable) [size=128M]
+        [virtual] Expansion ROM at eb000000 [disabled] [size=128K]
+        Capabilities: [60] Power Management version 2
+        Capabilities: [44] AGP version 3.0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
 ======================================================================
 
 
