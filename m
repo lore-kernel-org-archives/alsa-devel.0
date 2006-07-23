@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 23 Jul 2006 17:57:39 +0200
-Message-ID: <b2a8758ee769cbac6f4bc82f92a79ee4@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 18:03:41 +0200
+Message-ID: <f2663ee0854e868b97087e779e718df8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B914816F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42644221
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 17:57:39 +0200 (MEST)
+	Sun, 23 Jul 2006 18:03:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 17:57 CEST
+Last Modified:              07-23-2006 18:03 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,12 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-23-06 17:49 
-----------------------------------------------------------------------
-rlrevell, that howto, is what im trying to say with the "printf" statement,
-completely useless unless you have a driver writing background.
-
-----------------------------------------------------------------------
  cruiseoveride - 07-23-06 17:57 
 ----------------------------------------------------------------------
 i tried to download via cvs from the hg repo, but i get "no route to host"
@@ -94,6 +88,18 @@ do just make install-modules and then rmmod the old one and insmod the new
 one without rebooting?
 
 And wat is a gpio?
+
+----------------------------------------------------------------------
+ rlrevell - 07-23-06 18:03 
+----------------------------------------------------------------------
+Yes, the ALSA driver development guide assumes that the reader is familiar
+with the basics of driver development and kernel programming.  Otherwise
+it would have to be book-length.
+
+General Linux driver development is covered by Linux Device Drivers, 3rd
+edition:
+
+http://lwn.net/Kernel/LDD3/
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -172,6 +178,7 @@ Date Modified  Username       Field                    Change
 07-23-06 17:42 Raymond        Note Edited: 0011191                         
 07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
 07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
+07-23-06 18:03 rlrevell       Note Added: 0011194                          
 ======================================================================
 
 
