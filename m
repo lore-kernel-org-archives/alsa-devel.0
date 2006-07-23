@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 23 Jul 2006 06:26:28 +0200
-Message-ID: <789559ee43051a7c2b31c76e2383c0a3@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 06:41:05 +0200
+Message-ID: <0ae01f45940ebbc1774676c0dd461981@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD43B153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C72A16A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 06:26:28 +0200 (MEST)
+	Sun, 23 Jul 2006 06:41:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 06:26 CEST
+Last Modified:              07-23-2006 06:41 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -66,32 +66,6 @@ My question is,
 Is there a bug in this function?
 Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-23-06 04:05 
-----------------------------------------------------------------------
-> Why isnt ALSA API documented properly. I would write the driver myself
-otherwise.
-
-> Show us how to write a dummy driver with the code and Makefile or the
-command to compile it with.
-
-Have you read all the datasheets ?
-
-You may need to trace the cirucit on your sound card to find out how the
-GPIO are used
-
-Although there is an example for PCI sound card, you have to follow
-ice1724.c
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x133.htm#AEN137
-
-The URLs in this post should have enough info for you to add your new
-driver into alsa-kernel tree 
-
-You can modify alsa-kernel/drivers/dummy.c to emulate ice1712 (add ice1712
-specific controls) in order to make envy24control work for both ice1712
-and ice1724.
 
 ----------------------------------------------------------------------
  cruiseoveride - 07-23-06 06:26 
@@ -123,6 +97,21 @@ Now wat the hell do u do with that? Wat is that? where do u put it? how do
 u compile it etc, etc???
 
 Do u (not u ray, we're buddies) understand wat im trying to say,
+
+----------------------------------------------------------------------
+ Raymond - 07-23-06 06:41 
+----------------------------------------------------------------------
+Assume that you understand diff (differnce between old source and new
+source)
+
+Just follow HG repo URL in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11135 to insert a
+new driver into
+alsa-kernel tree (You need to select a shortname for audiophile 192 and
+made changes corresponding to envy24ht)
+
+audiophile.c
+audiophine.h
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -184,6 +173,7 @@ Date Modified  Username       Field                    Change
 07-22-06 04:15 Raymond        Note Edited: 0011164                         
 07-23-06 04:05 Raymond        Note Added: 0011179                          
 07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
 ======================================================================
 
 
