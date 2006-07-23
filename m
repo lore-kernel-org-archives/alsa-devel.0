@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002135]: emu10k1: resume (S3) doesn't
-	work with Audigy 2 ZS Notebook
-Date: Sun, 23 Jul 2006 18:49:04 +0200
-Message-ID: <e689d51828b316f1d12bf0dbb859769c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002058]: Audigy 2 ZS Notebook lacks
+	record capability
+Date: Sun, 23 Jul 2006 19:02:17 +0200
+Message-ID: <1adb9c6f304edbdc4ea37d37df08d9ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C09841A0
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F36A8187
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 18:49:04 +0200 (MEST)
+	Sun, 23 Jul 2006 19:02:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,57 +26,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2135> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2058> 
 ======================================================================
-Reported By:                cathectic
+Reported By:                artdent
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2135
+Issue ID:                   2058
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     acknowledged
-Distribution:               Slamd64
-Kernel Version:             2.6.17-rc4
+Distribution:               Debian unstable
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-19-2006 01:33 CEST
-Last Modified:              07-23-2006 18:49 CEST
+Date Submitted:             04-22-2006 21:11 CEST
+Last Modified:              07-23-2006 19:02 CEST
 ======================================================================
-Summary:                    emu10k1: resume (S3) doesn't work with Audigy 2 ZS
-Notebook
+Summary:                    Audigy 2 ZS Notebook lacks record capability
 Description: 
-System: Acer Aspire 5021
-Sound Card: Creative Audigy 2 ZS Notebook
-Kernel: 2.6.17-rc4 (also tested on 2.6.16.16)
-Append lines: "noapic" and "noapic acpi_irq_balance" (needed for suspend
-to work)
+According to bug #927, the emu10k1 driver now works with the Audigy 2 ZS
+PCMCIA card for playback, but not capture. The most current is "untested,
+might already work". Are there any plans to figure out recording with this
+card? It would be greatly appreciated.
 
-When the Audigy 2 ZS Notebook is inserted, and the snd-emu10k1 module is
-loaded, after suspending (S3) the laptop, it will not resume.
+Even with an untested patch to enable recording, I would be willing to
+test it to see if it works.
 
-If the card is removed first; or the snd-emu10k1 module is unloaded before
-standby (or the card can be physically ejected while on standby); resume
-works fine (the module can then be reloaded afterwards manually and the
-card will start working again).
+Thanks,
+Jacob Lee
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 18:49 
+ jcdutton - 07-23-06 19:02 
 ----------------------------------------------------------------------
-Known problem. Power management not supported yet.
+Not currently implemented.
+No timescale set for fix due to not enough developer time available.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-06 01:33 cathectic      New Issue                                    
-05-19-06 01:33 cathectic      Distribution              => Slamd64         
-05-19-06 01:33 cathectic      Kernel Version            => 2.6.17-rc4      
-07-18-06 14:35 jcdutton       Status                   new => assigned     
-07-18-06 14:35 jcdutton       Assigned To               => jcdutton        
-07-23-06 18:49 jcdutton       Note Added: 0011199                          
-07-23-06 18:49 jcdutton       Status                   assigned => acknowledged
+04-22-06 21:11 artdent        New Issue                                    
+04-22-06 21:11 artdent        Distribution              => Debian unstable 
+04-22-06 21:11 artdent        Kernel Version            => 2.6.15          
+04-24-06 16:48 lwelyn         Issue Monitored: lwelyn                      
+07-18-06 14:38 jcdutton       Status                   new => assigned     
+07-18-06 14:38 jcdutton       Assigned To               => jcdutton        
+07-23-06 19:02 jcdutton       Note Added: 0011200                          
+07-23-06 19:02 jcdutton       Status                   assigned => acknowledged
 ======================================================================
 
 
