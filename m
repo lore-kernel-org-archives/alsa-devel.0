@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 23 Jul 2006 18:03:41 +0200
-Message-ID: <f2663ee0854e868b97087e779e718df8@bugtrack.alsa-project.org>
+Date: Sun, 23 Jul 2006 18:27:35 +0200
+Message-ID: <6e67e8bedfc78d8f4316b1ce920340d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42644221
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9ED913F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Jul 2006 18:03:41 +0200 (MEST)
+	Sun, 23 Jul 2006 18:27:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-23-2006 18:03 CEST
+Last Modified:              07-23-2006 18:27 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,28 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-23-06 17:57 
-----------------------------------------------------------------------
-i tried to download via cvs from the hg repo, but i get "no route to host"
-http://alsa.opensrc.org/index.php?page=AlsaCVS
-
-but otherwise, im going to start with the 1.0.11rc2
-
-thanks ray for ur help, let me open gedit and start typeing.
-
-And by the way csan i...
-"
-5) Run 'make install' as root.
-   If you have already a system with ALSA init script, you should install
-   just only modules via 'make install-modules' so that the existing init
-   script won't be replaced.
-"
-do just make install-modules and then rmmod the old one and insmod the new
-one without rebooting?
-
-And wat is a gpio?
-
-----------------------------------------------------------------------
  rlrevell - 07-23-06 18:03 
 ----------------------------------------------------------------------
 Yes, the ALSA driver development guide assumes that the reader is familiar
@@ -100,6 +78,21 @@ General Linux driver development is covered by Linux Device Drivers, 3rd
 edition:
 
 http://lwn.net/Kernel/LDD3/
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-23-06 18:27 
+----------------------------------------------------------------------
+ok i started off by copying the ice1724.c as ap192k.c
+then followed
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x1658.htm
+
+but i still get a "No Rule to Make Target" during a compile.
+
+How do i properly add the driver to alsa-driver
+
+i have 2 files 
+/usr/src/alsa/alsa-driver-1.0.12rc1/alsa-kernel/pci/ice1712/ap192k.c
+/usr/src/alsa/alsa-driver-1.0.12rc1/alsa-kernel/pci/ice1712/ap192k.h
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -179,6 +172,7 @@ Date Modified  Username       Field                    Change
 07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
 07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
 07-23-06 18:03 rlrevell       Note Added: 0011194                          
+07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
 ======================================================================
 
 
