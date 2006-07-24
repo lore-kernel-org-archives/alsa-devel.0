@@ -1,7 +1,7 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: Starting the device manually
-Date: Mon, 24 Jul 2006 16:35:44 +0100
-Message-ID: <44C4E8D0.5020104@superbug.co.uk>
+Date: Mon, 24 Jul 2006 16:37:13 +0100
+Message-ID: <44C4E929.3030602@superbug.co.uk>
 References: <44C494F4.6050301@graphics.cs.uni-sb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
