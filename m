@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Tue, 25 Jul 2006 01:03:05 +0200
-Message-ID: <1cd667e60115eda9be2710008c87d7aa@bugtrack.alsa-project.org>
+Date: Tue, 25 Jul 2006 01:13:27 +0200
+Message-ID: <5b133edb1a36d29c4d05c126eaffc07c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 408D423C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 089C523F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 01:03:05 +0200 (MEST)
+	Tue, 25 Jul 2006 01:13:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Kubuntu Dapper
 Kernel Version:             2.6.15-25
 ======================================================================
 Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-25-2006 01:03 CEST
+Last Modified:              07-25-2006 01:13 CEST
 ======================================================================
 Summary:                    No sound with hda-intel ALC883
 Description: 
@@ -62,19 +62,20 @@ appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- arpac - 07-20-06 17:28 
-----------------------------------------------------------------------
-I've found someone who have an Intel Corporation 82801G with ALC883, on an
-acer laptop. sound is working for him with last alsa tarball ..
-**lucky one ^^**
-
-----------------------------------------------------------------------
  lodp2 - 07-25-06 01:03 
 ----------------------------------------------------------------------
 i don't want to seem impatient, but -- is this issue being worked on in
 some way or the other? i read about fixes having been committed for ALC883
 in the comments to some other issue, but having installed the latest hg
 version, it still isn't working for me.
+
+----------------------------------------------------------------------
+ rlrevell - 07-25-06 01:13 
+----------------------------------------------------------------------
+Obviously it is being worked on, as you mentioned some ALC883 changes were
+recently committed.
+
+Lack of access to hardware and documentation from vendors are big issues.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +91,7 @@ Date Modified  Username       Field                    Change
 07-10-06 15:04 arpac          Note Edited: 0010961                         
 07-20-06 17:28 arpac          Note Added: 0011133                          
 07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
 ======================================================================
 
 
