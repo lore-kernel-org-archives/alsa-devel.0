@@ -1,14 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: ALSA kernel sequencer client
-Date: Mon, 24 Jul 2006 12:48:48 -0400
-Message-ID: <1153759729.25859.67.camel@mindpipe>
-References: <1153525198.17115.76.camel@mindpipe>
-	<20060724111803.GB12899@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001692]: sound doesn't work
+Date: Mon, 24 Jul 2006 18:54:55 +0200
+Message-ID: <d616ef9fd59c604d857d27da3e2ee3f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060724111803.GB12899@turing.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39E10175
+	for <alsa-devel@alsa-project.org>;
+	Mon, 24 Jul 2006 18:54:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,42 +19,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-07-24 at 13:18 +0200, Clemens Ladisch wrote:
-> Lee Revell wrote:
-> > I'm developing a driver for a device that's like an MPU output port, but
-> > some extra hardware registers need to be written to when note on/off
-> > messages arrive.  Since the MIDI stream must be interpreted and hardware
-> > needs to be accessed directly I think I need to develop an ALSA
-> > sequencer kernel client.
-> 
-> Currently, a sequencer client is only used for devices where all MIDI
-> messages must be interpreted by the driver and where the device doesn't
-> ever see them.  The USB MIDI and serial MIDI drivers do their own
-> parsing.
-> 
-> This doesn't mean that you shouldn't use a sequencer client.
-> 
 
-I think I'm going to use a rawmidi device and snoop the MIDI stream for
-note on/note off.  It does not look too hard, and unlike the sequencer
-is documented.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1692> 
+======================================================================
+Reported By:                jra2003
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1692
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             12-29-2005 04:50 CET
+Last Modified:              07-24-2006 18:54 CEST
+======================================================================
+Summary:                    sound doesn't work
+Description: 
+After folling the instructions to the letter, I restart the computer and it
+finds the sound card and I let it configure it.  Once logged into root
+with KDE I goto KMenu > system settings > soundcard detection and I click
+'play test'  It might works once or twice with a sound being played then a
+question asking if it worked.  When it doesn't work it doesn't ask if I
+heard anything until a few seconds pass.  So the command to play the sound
+went through, but the final result is that the sound went to the wrong
+place and not to me sndcard and to my speakers.
 
-> > I remember seeing some docs for developing this kind of thing,
-> 
-> I'm sure there never were such docs.
-> 
-> > but can't find them - can someone point me in the right direction?
-> 
-> Use the Source, Luke^H^H^Hee: the USB MIDI driver was a sequencer client
-> before October 2002.
+BTW: I did check the mixer levels and if it was muted or not and no
+problems there.
+======================================================================
 
-Thanks for the info.
+----------------------------------------------------------------------
+ jcdutton - 07-23-06 19:10 
+----------------------------------------------------------------------
+Is the problem still present?
+Have you tried using more up to date alsa drivers?
 
-Lee
+----------------------------------------------------------------------
+ jra2003 - 07-24-06 18:54 
+----------------------------------------------------------------------
+sry, but I have not kept up with Linux, although I still have it on a
+seperate HD ready to boot, I am now using windows most of the time.
+
+If I remember correctly though, I think download a beta driver(at the
+time) worked.  That beta driver is probably a regular driver now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-29-05 04:50 jra2003        New Issue                                    
+12-29-05 04:50 jra2003        Distribution              => Fedora Core 2   
+12-29-05 04:50 jra2003        Kernel Version            => 2.6.5           
+12-29-05 04:50 jra2003        Issue Monitored: jra2003                     
+12-29-05 05:34 jra2003        Note Added: 0007187                          
+07-23-06 19:10 jcdutton       Note Added: 0011202                          
+07-23-06 19:10 jcdutton       Status                   assigned => feedback
+07-24-06 18:54 jra2003        Note Added: 0011212                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
