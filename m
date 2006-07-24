@@ -1,14 +1,16 @@
-From: Eric Peters <epeters@graphics.cs.uni-sb.de>
-Subject: Re: Starting the device manually
-Date: Mon, 24 Jul 2006 13:40:41 +0200
-Message-ID: <44C4B1B9.6060705@graphics.cs.uni-sb.de>
-References: <44C494F4.6050301@graphics.cs.uni-sb.de>
-	<20060724110516.GA12899@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002300]: No sound with module
+	snd-hda-intel but alsa mixer works
+Date: Mon, 24 Jul 2006 15:04:59 +0200
+Message-ID: <78a6e047e6713d412c74b014592376c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060724110516.GA12899@turing.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B3D41A0
+	for <alsa-devel@alsa-project.org>;
+	Mon, 24 Jul 2006 15:04:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,79 +20,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Eric Peters wrote:
->>I'm a bit confused by the alsa documentation. I want to fill up a buffer
->>of a alsa device with snd_pcm_writei and then if the buffer is full, I
->>want to be able to start the playback manually. By looking to the
->>documentation, I found the method snd_pcm_sw_params_set_start_threshold.
->>In some other messages on this list there was the hint to set this
->>threshhold larger than the max_buffer_size and then the device shouldn't
->>start automatically. So I've done. But unfortunately the playback starts
->>again automatically.
-> 
-> What are the contents of /proc/asound/card?/pcm0p/sub0/sw_params during
-> playback?
 
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 1
-xfer_align: 4096
-start_threshold: 2703204728
-stop_threshold: 16384
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2300> 
+======================================================================
+Reported By:                jredrejo
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2300
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             07-24-2006 15:04 CEST
+Last Modified:              07-24-2006 15:04 CEST
+======================================================================
+Summary:                    No sound with module snd-hda-intel but alsa mixer
+works
+Description: 
+I have last alsa stable release and tried also with 1.0.12rc1 with the same
+results: The sound seems to be configured but I get no sound output.
+These are some of my data:
+# cat /sys/module/snd_hda_intel/parameters/model
+<NULL>
+ lspci -nvd 8086:2668
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1025:007b
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
-Can you explain me these values and what they're for? I think, I know 
-the sense of start and stop threshold. But the other values...
+linex-bcMnHH:/opt/zend# lspci -vd 8086:2668
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Acer Incorporated [ALI]: Unknown device 007b
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
-> 
->>/* calculating the number of frames of a buffer and a period */
->>buffer_frames = buffer_time * sample_rate;
->>period_frames = period_time * sample_rate;
-> 
-> Is this correct?  Aren't the xxx_time variables in microseconds?
+======================================================================
 
-I don't know. ;-)
-How is a frame defined?
-
-> 
->>snd_pcm_sw_params_set_start_threshold(..., 2*buffer_frames)
-> 
-> This is OK, but it is common to use just the boundary value instead of
-> some explicitly calculated value.
-
-The boundary value in the output above? How can I determine this value 
-in my application?
-
-> 
->>- I think, if I don't call snd_pcm_start there should be no output if
->>the start threshold is larger than the max_buffer_size. Is this correct?
-> 
-> ... if the start threshold is larger than the current buffer size, in
-> frames.  Yes.
-> 
->>- Is it possible that the starting behaviour depends on the hardware I'm
->>using?
-> 
-> No, the software parameters are hardware independent.
-> 
-> 
-> Regards,
-> Clemens
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-06 15:04 jredrejo       New Issue                                    
+07-24-06 15:04 jredrejo       Kernel Version            => 2.6.16          
+======================================================================
 
 
-Thanks Clemens for your fast answer.
-
-Best regards,
-
-Eric
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
