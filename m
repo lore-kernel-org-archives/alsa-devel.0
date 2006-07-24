@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Mon, 24 Jul 2006 20:38:41 +0200
-Message-ID: <9cdf7184ee36c1d5142f2ef6d9c8c536@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 24 Jul 2006 21:21:43 +0200
+Message-ID: <50c0947aa6e9ce42d603ece6b9341e46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B44CA17E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53E97158
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Jul 2006 20:38:41 +0200 (MEST)
+	Mon, 24 Jul 2006 21:21:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,49 +25,35 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                bitmage2
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-24-2006 20:38 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-24-2006 21:21 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    surround40 memory leak
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
-
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
-
-
-
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-24-06 05:04 
+ Raymond - 07-11-06 13:28 
 ----------------------------------------------------------------------
-It seem that the lock in CS46xx.pcm.rear may has side effect since the rear
-device of CS46xx support hardware mixing ( multiple subdevice )
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823
-
 hooks.0 {
    type ctl_elems
    hook_args [
@@ -80,88 +65,42 @@ hooks.0 {
          optional true
       }
     ]
- }
+ } 
+The lock means that the control is locked during this pcm is opened, and
+cannot be changed by others
 
-Are there any difference in calulating the period_size, period and
-buffer_size surround40 , surround51 for cs46xx (multi plugin with front,
-rear and center_lfe) and ice1724 ( single device support 2,4,6,8 channels
-) ? https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244
-
-
+This prevent you to play multiple surround40 even cs46xx support hardware
+mixing  on rear device
 
 ----------------------------------------------------------------------
- bitmage2 - 07-24-06 20:38 
+ bitmage2 - 07-24-06 21:21 
 ----------------------------------------------------------------------
-I just validated, that the problem is still there in 1.0.12rc1 . I did
-install that version on a clean linux installation.
-
-I also did a "strace speaker-test ...". While everything works fine, it
-looks like this:
-
-...
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-...
-
-
-When the problem shows up, the strace output is this (not calling poll()
-anymore):
-
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-...
+I can confirm, that the problem happens with the rear channels on CS46xx.
+It does not happen for me with front channels or Center/LFE channels (I
+ran 'speaker-test -c 2 -Dplug:pcm.center_lfe -t wav' to check the latter).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
-07-15-06 05:09 Raymond        Note Added: 0011017                          
-07-15-06 07:17 Raymond        Note Edited: 0011017                         
-07-23-06 11:34 bitmage2       Note Added: 0011183                          
-07-23-06 13:49 Raymond        Note Added: 0011185                          
-07-23-06 14:14 Raymond        Note Added: 0011186                          
-07-23-06 14:16 Raymond        Note Deleted: 0011186                        
-07-23-06 15:04 bitmage2       Note Added: 0011189                          
-07-24-06 04:19 Raymond        Note Added: 0011209                          
-07-24-06 05:04 Raymond        Note Edited: 0011209                         
-07-24-06 20:38 bitmage2       Note Added: 0011214                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
 ======================================================================
 
 
