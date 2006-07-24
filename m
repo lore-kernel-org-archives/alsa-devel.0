@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001151]: Audigy sampling rate seems off
-Date: Tue, 25 Jul 2006 00:46:27 +0200
-Message-ID: <8d54e83dc01e4bd0e59a705f2b87f4f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001868]: Audigy4 lacks line-in
+Date: Tue, 25 Jul 2006 00:51:12 +0200
+Message-ID: <4e9e75b86e5f69cdb728b28c33ef72b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8AA3166
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36BDA234
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 00:46:27 +0200 (MEST)
+	Tue, 25 Jul 2006 00:51:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,86 +23,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1151> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1868> 
 ======================================================================
-Reported By:                felix
+Reported By:                wwp
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1151
+Issue ID:                   1868
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Suse 9.1
-Kernel Version:             2.6.5-7.147-default
+Status:                     closed
+Distribution:               Debian unstable
+Kernel Version:             2.6.5
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-02-2005 23:07 CEST
-Last Modified:              07-25-2006 00:46 CEST
+Date Submitted:             02-22-2006 19:12 CET
+Last Modified:              07-25-2006 00:51 CEST
 ======================================================================
-Summary:                    Audigy sampling rate seems off
+Summary:                    Audigy4 lacks line-in
 Description: 
-I'm doing an experiment that involves generating a tone, sending it out
-the
-sound card and into a (passive) circuit, and recording from the circuit
-back
-into line in at the same time.
-
-When I play a sample: mono, 8kHz sample rate, containing a synthetic 1kHz
-sin signal, the recording I get is of a signal 1000.12Hz. If I send 100Hz,
-I get back 100.012Hz. I use 'snd' to do a 256K-point FFT across a 10
-second sample just to be sure. I've also verified this using FFTW and
-correlation-based programs of my own.
-
-I've also verified that the reference 1kHz and 100Hz signals are exact.
-
-As a sanity check, I tried the same experiment on the built-in sound card
-on that same PC. The signals come back correct.
-
-Note the seeming coincidence that the frequency of the signal coming back
-is 1/8000 higher than the signal output.
-
-I've never seen anything like it. Not that I've been looking before...
+I'm not able to get line-in support (un-mute is OK), but PCM out is fine.
+Is that because the emu10k1 sources don't include the card IDs for my
+model?
+Don't know if this would be enough or even right, but here's a patch
+proposal for this card's chip detail (attached to this report)
 ======================================================================
 
 ----------------------------------------------------------------------
- felix - 06-04-05 03:58 
+ wwp - 02-26-06 12:06 
 ----------------------------------------------------------------------
-Two more exciting data, to see whether it is possible to isolate the
-problem to playback or recording:
+Okay, line-in is working fine now (issue is [FIXED]).. sorry about that,
+the cable was faulty.
 
-1. synthesize and aplay a 1kHz tone at 8kHz sampling rate,
-   simultaneously record at 12kHz sampling rate
-   => Recorded tone is shifted up by ~ 1/8k
+For the record, here is what `cat /proc/asound/cards` shows:
 
-2. synthesize and aplay a 1kHz tone at 12kHz sampling rate,
-   simultaneously record at 8kHz sampling rate
-   => recorded tone is EXACTLY 1000Hz
+0 [Audigy2        ]: Audigy2 - Audigy 2 Value [Unknown]
+                     Audigy 2 Value [Unknown] (rev.0, serial:0x10211102)
+at 0xd400, irq 12
+1 [UART           ]: MPU-401 UART - MPU-401 UART
+                     MPU-401 UART at 0x330, irq 5
 
 ----------------------------------------------------------------------
- jcdutton - 07-25-06 00:46 
+ jcdutton - 07-25-06 00:51 
 ----------------------------------------------------------------------
-Is this still a problem with the latest alsa driver?
+User reports the problem has been fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-05 23:07 felix          New Issue                                    
-06-02-05 23:07 felix          Distribution              => Suse 9.1        
-06-02-05 23:07 felix          Kernel Version            => 2.6.5-7.147-default
-06-03-05 00:29 sst4           Note Added: 0004879                          
-06-03-05 10:59 perex          Note Added: 0004883                          
-06-03-05 17:44 felix          Note Added: 0004884                          
-06-03-05 17:45 felix          Note Edited: 0004884                         
-06-04-05 03:42 felix          Note Added: 0004885                          
-06-04-05 03:58 felix          Note Added: 0004886                          
-07-18-06 14:45 jcdutton       Status                   new => assigned     
-07-18-06 14:45 jcdutton       Assigned To               => jcdutton        
-07-25-06 00:46 jcdutton       Note Added: 0011217                          
-07-25-06 00:46 jcdutton       Status                   assigned => feedback
+02-22-06 19:12 wwp            New Issue                                    
+02-22-06 19:12 wwp            File Added:
+alsa-driver-1.0.11rc3-audigy4-sb0400.diff                    
+02-22-06 19:12 wwp            Distribution              => Debian unstable 
+02-22-06 19:12 wwp            Kernel Version            => 2.6.5           
+02-22-06 19:21 wwp            Issue Monitored: wwp                         
+02-22-06 20:26 wwp            Note Added: 0008162                          
+02-22-06 20:30 pzad           Note Added: 0008163                          
+02-26-06 12:06 wwp            Note Added: 0008199                          
+07-18-06 14:39 jcdutton       Status                   new => assigned     
+07-18-06 14:39 jcdutton       Assigned To               => jcdutton        
+07-25-06 00:51 jcdutton       Status                   assigned => closed  
+07-25-06 00:51 jcdutton       Note Added: 0011218                          
 ======================================================================
 
 
