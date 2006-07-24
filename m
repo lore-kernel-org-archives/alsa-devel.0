@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002302]: Unsupported intel
-Date: Tue, 25 Jul 2006 00:33:09 +0200
-Message-ID: <8d067f4a052cce2b6eeec4a66594858a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001151]: Audigy sampling rate seems off
+Date: Tue, 25 Jul 2006 00:46:27 +0200
+Message-ID: <8d54e83dc01e4bd0e59a705f2b87f4f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 364F7233
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8AA3166
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 00:33:10 +0200 (MEST)
+	Tue, 25 Jul 2006 00:46:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,122 +23,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2302> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1151> 
 ======================================================================
-Reported By:                pinaraf
-Assigned To:                
+Reported By:                felix
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2302
-Category:                   1_OTHERS
+Issue ID:                   1151
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               kUbuntu edgy
-Kernel Version:             2.6.17-5-686
+Status:                     feedback
+Distribution:               Suse 9.1
+Kernel Version:             2.6.5-7.147-default
 ======================================================================
-Date Submitted:             07-25-2006 00:33 CEST
-Last Modified:              07-25-2006 00:33 CEST
+Date Submitted:             06-02-2005 23:07 CEST
+Last Modified:              07-25-2006 00:46 CEST
 ======================================================================
-Summary:                    Unsupported intel
+Summary:                    Audigy sampling rate seems off
 Description: 
-Hello
+I'm doing an experiment that involves generating a tone, sending it out
+the
+sound card and into a (passive) circuit, and recording from the circuit
+back
+into line in at the same time.
 
-One of my friends bought a laptop, and surprisingly, the sound card isn't
-supported. I didn't see that happening since years, thanks to your great
-work I suppose. 
-His laptop is new, it's a Toshiba Satellite P100-197
-Here are the results of various commands, I hope they're usable :
-lspci :
-00:00.0 Host bridge: Intel Corporation Mobile 945GM/PM/GMS/940GML and
-945GT Express Memory Controller Hub (rev 03)
-00:01.0 PCI bridge: Intel Corporation Mobile 945GM/PM/GMS/940GML and 945GT
-Express PCI Express Root Port (rev 03)
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 1 (rev 02)
-00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 2 (rev 02)
-00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 3 (rev 02)
-00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
-(rev 02)
-00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
-(rev 02)
-00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
-(rev 02)
-00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
-(rev 02)
-00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
-Controller (rev 02)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
-00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
-Bridge (rev 02)
-00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
-ATA Storage Controller IDE (rev 02)
-00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
-(rev 02)
-01:00.0 VGA compatible controller: nVidia Corporation Unknown device 0398
-(rev a1)
-02:00.0 Ethernet controller: Intel Corporation 82573L Gigabit Ethernet
-Controller
-03:00.0 Network controller: Intel Corporation PRO/Wireless 3945ABG Network
-Connection (rev 02)
-0a:04.0 CardBus bridge: Texas Instruments Unknown device 8039
-0a:04.1 FireWire (IEEE 1394): Texas Instruments Unknown device 803a
-0a:04.2 Mass storage controller: Texas Instruments Unknown device 803b
-0a:04.3 Class 0805: Texas Instruments Unknown device 803c
+When I play a sample: mono, 8kHz sample rate, containing a synthetic 1kHz
+sin signal, the recording I get is of a signal 1000.12Hz. If I send 100Hz,
+I get back 100.012Hz. I use 'snd' to do a 256K-point FFT across a 10
+second sample just to be sure. I've also verified this using FFTW and
+correlation-based programs of my own.
 
-lspci -nv (only sound card) :
-00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 1179:ff31
-        Flags: bus master, fast devsel, latency 0, IRQ 66
-        Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+I've also verified that the reference 1kHz and 100Hz signals are exact.
 
-lshw (only sound card) :
-        *-multimedia UNCLAIMED
-             description: Audio device
-             product: 82801G (ICH7 Family) High Definition Audio
-Controller
-             vendor: Intel Corporation
-             physical id: 1b
-             bus info: pci@00:1b.0
-             version: 02
-             width: 64 bits
-             clock: 33MHz
-             capabilities: bus_master cap_list
-             resources: iomemory:b0000000-b0003fff irq:11
+As a sanity check, I tried the same experiment on the built-in sound card
+on that same PC. The signals come back correct.
 
+Note the seeming coincidence that the frequency of the signal coming back
+is 1/8000 higher than the signal output.
 
-Currently, the driver snd-hda-intel is loaded.
-Content of /proc/asound/timers :
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-
-We tried every model= setting possible for this driver, none gave any
-other PCM playback device.
-
-
-Thanks
+I've never seen anything like it. Not that I've been looking before...
 ======================================================================
+
+----------------------------------------------------------------------
+ felix - 06-04-05 03:58 
+----------------------------------------------------------------------
+Two more exciting data, to see whether it is possible to isolate the
+problem to playback or recording:
+
+1. synthesize and aplay a 1kHz tone at 8kHz sampling rate,
+   simultaneously record at 12kHz sampling rate
+   => Recorded tone is shifted up by ~ 1/8k
+
+2. synthesize and aplay a 1kHz tone at 12kHz sampling rate,
+   simultaneously record at 8kHz sampling rate
+   => recorded tone is EXACTLY 1000Hz
+
+----------------------------------------------------------------------
+ jcdutton - 07-25-06 00:46 
+----------------------------------------------------------------------
+Is this still a problem with the latest alsa driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-25-06 00:33 pinaraf        New Issue                                    
-07-25-06 00:33 pinaraf        Distribution              => kUbuntu edgy    
-07-25-06 00:33 pinaraf        Kernel Version            => 2.6.17-5-686    
+06-02-05 23:07 felix          New Issue                                    
+06-02-05 23:07 felix          Distribution              => Suse 9.1        
+06-02-05 23:07 felix          Kernel Version            => 2.6.5-7.147-default
+06-03-05 00:29 sst4           Note Added: 0004879                          
+06-03-05 10:59 perex          Note Added: 0004883                          
+06-03-05 17:44 felix          Note Added: 0004884                          
+06-03-05 17:45 felix          Note Edited: 0004884                         
+06-04-05 03:42 felix          Note Added: 0004885                          
+06-04-05 03:58 felix          Note Added: 0004886                          
+07-18-06 14:45 jcdutton       Status                   new => assigned     
+07-18-06 14:45 jcdutton       Assigned To               => jcdutton        
+07-25-06 00:46 jcdutton       Note Added: 0011217                          
+07-25-06 00:46 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
