@@ -1,13 +1,13 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Starting the device manually
-Date: Mon, 24 Jul 2006 13:05:16 +0200
-Message-ID: <20060724110516.GA12899@turing.informatik.uni-halle.de>
-References: <44C494F4.6050301@graphics.cs.uni-sb.de>
+Subject: Re: ALSA kernel sequencer client
+Date: Mon, 24 Jul 2006 13:18:03 +0200
+Message-ID: <20060724111803.GB12899@turing.informatik.uni-halle.de>
+References: <1153525198.17115.76.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <44C494F4.6050301@graphics.cs.uni-sb.de>
+In-reply-to: <1153525198.17115.76.camel@mindpipe>
 Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +18,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Eric Peters <epeters@graphics.cs.uni-sb.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Eric Peters wrote:
-> I'm a bit confused by the alsa documentation. I want to fill up a buffer
-> of a alsa device with snd_pcm_writei and then if the buffer is full, I
-> want to be able to start the playback manually. By looking to the
-> documentation, I found the method snd_pcm_sw_params_set_start_threshold.
-> In some other messages on this list there was the hint to set this
-> threshhold larger than the max_buffer_size and then the device shouldn't
-> start automatically. So I've done. But unfortunately the playback starts
-> again automatically.
+Lee Revell wrote:
+> I'm developing a driver for a device that's like an MPU output port, but
+> some extra hardware registers need to be written to when note on/off
+> messages arrive.  Since the MIDI stream must be interpreted and hardware
+> needs to be accessed directly I think I need to develop an ALSA
+> sequencer kernel client.
 
-What are the contents of /proc/asound/card?/pcm0p/sub0/sw_params during
-playback?
+Currently, a sequencer client is only used for devices where all MIDI
+messages must be interpreted by the driver and where the device doesn't
+ever see them.  The USB MIDI and serial MIDI drivers do their own
+parsing.
 
-> /* calculating the number of frames of a buffer and a period */
-> buffer_frames = buffer_time * sample_rate;
-> period_frames = period_time * sample_rate;
+This doesn't mean that you shouldn't use a sequencer client.
 
-Is this correct?  Aren't the xxx_time variables in microseconds?
+> I remember seeing some docs for developing this kind of thing,
 
-> snd_pcm_sw_params_set_start_threshold(..., 2*buffer_frames)
+I'm sure there never were such docs.
 
-This is OK, but it is common to use just the boundary value instead of
-some explicitly calculated value.
+> but can't find them - can someone point me in the right direction?
 
-> - I think, if I don't call snd_pcm_start there should be no output if
-> the start threshold is larger than the max_buffer_size. Is this correct?
-
-... if the start threshold is larger than the current buffer size, in
-frames.  Yes.
-
-> - Is it possible that the starting behaviour depends on the hardware I'm
-> using?
-
-No, the software parameters are hardware independent.
+Use the Source, Luke^H^H^Hee: the USB MIDI driver was a sequencer client
+before October 2002.
 
 
-Regards,
+HTH
 Clemens
 
 -------------------------------------------------------------------------
