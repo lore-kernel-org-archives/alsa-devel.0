@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001868]: Audigy4 lacks line-in
-Date: Tue, 25 Jul 2006 00:51:12 +0200
-Message-ID: <4e9e75b86e5f69cdb728b28c33ef72b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Tue, 25 Jul 2006 01:03:05 +0200
+Message-ID: <1cd667e60115eda9be2710008c87d7aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36BDA234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 408D423C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 00:51:13 +0200 (MEST)
+	Tue, 25 Jul 2006 01:03:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,72 +23,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1868> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
 ======================================================================
-Reported By:                wwp
-Assigned To:                jcdutton
+Reported By:                lodp2
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1868
-Category:                   PCI - emu10k1
+Issue ID:                   2261
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             2.6.5
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             02-22-2006 19:12 CET
-Last Modified:              07-25-2006 00:51 CEST
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              07-25-2006 01:03 CEST
 ======================================================================
-Summary:                    Audigy4 lacks line-in
+Summary:                    No sound with hda-intel ALC883
 Description: 
-I'm not able to get line-in support (un-mute is OK), but PCM out is fine.
-Is that because the emu10k1 sources don't include the card IDs for my
-model?
-Don't know if this would be enough or even right, but here's a patch
-proposal for this card's chip detail (attached to this report)
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
+
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
+
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- wwp - 02-26-06 12:06 
+ arpac - 07-20-06 17:28 
 ----------------------------------------------------------------------
-Okay, line-in is working fine now (issue is [FIXED]).. sorry about that,
-the cable was faulty.
-
-For the record, here is what `cat /proc/asound/cards` shows:
-
-0 [Audigy2        ]: Audigy2 - Audigy 2 Value [Unknown]
-                     Audigy 2 Value [Unknown] (rev.0, serial:0x10211102)
-at 0xd400, irq 12
-1 [UART           ]: MPU-401 UART - MPU-401 UART
-                     MPU-401 UART at 0x330, irq 5
+I've found someone who have an Intel Corporation 82801G with ALC883, on an
+acer laptop. sound is working for him with last alsa tarball ..
+**lucky one ^^**
 
 ----------------------------------------------------------------------
- jcdutton - 07-25-06 00:51 
+ lodp2 - 07-25-06 01:03 
 ----------------------------------------------------------------------
-User reports the problem has been fixed
+i don't want to seem impatient, but -- is this issue being worked on in
+some way or the other? i read about fixes having been committed for ALC883
+in the comments to some other issue, but having installed the latest hg
+version, it still isn't working for me.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-06 19:12 wwp            New Issue                                    
-02-22-06 19:12 wwp            File Added:
-alsa-driver-1.0.11rc3-audigy4-sb0400.diff                    
-02-22-06 19:12 wwp            Distribution              => Debian unstable 
-02-22-06 19:12 wwp            Kernel Version            => 2.6.5           
-02-22-06 19:21 wwp            Issue Monitored: wwp                         
-02-22-06 20:26 wwp            Note Added: 0008162                          
-02-22-06 20:30 pzad           Note Added: 0008163                          
-02-26-06 12:06 wwp            Note Added: 0008199                          
-07-18-06 14:39 jcdutton       Status                   new => assigned     
-07-18-06 14:39 jcdutton       Assigned To               => jcdutton        
-07-25-06 00:51 jcdutton       Status                   assigned => closed  
-07-25-06 00:51 jcdutton       Note Added: 0011218                          
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
 ======================================================================
 
 
