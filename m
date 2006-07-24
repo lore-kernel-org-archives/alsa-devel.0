@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
-	in incorrect order when doing a speaker-test
-Date: Mon, 24 Jul 2006 04:04:33 +0200
-Message-ID: <9a3073d509d145865df9d873379f4917@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Mon, 24 Jul 2006 04:19:09 +0200
+Message-ID: <ead7f7af1430e71e1a3589fb5f7a9108@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 912AA22E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0023422E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Jul 2006 04:04:33 +0200 (MEST)
+	Mon, 24 Jul 2006 04:19:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,197 +26,136 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2244> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                calestyo
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2244
-Category:                   PCI - ice1724
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.17
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-24-2006 04:04 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-24-2006 04:19 CEST
 ======================================================================
-Summary:                    Aureon 7.1 Universe speakers in incorrect order when
-doing a speaker-test
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-I use my Aureon 7.1 Universe with a TerraTec HomeAreon TXR 884 7.1 speaker
-set.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-I've connected the outputs of the soundard to those of the subwoofer
-which
-itself connects the small speakers the following way:
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
-Soundcard -------------- Subwoofer --- Small Speakers
-Out Front <---------+--> In FL <-----> Front Left Speaker
-                    \--> In FR <-----> Font Right Speaker
-Out Rear <----------+--> In SL <-----> Side Left Speaker
-                    \--> In SR <-----> Side Right Speaker
-Out Center/Subwoofer <-> In C <------> Center Speaker
-                      \> In Subwoofer
-Out Back Surround <----> In BL <-----> Back Left Speaker
-                    \--> In BR <-----> Back Right Speaker
 
-You might have a look at soundcard manual page 8
-(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=574)
-and speaker manual page 12
-(http://supportuk.terratec.net/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=724)
-My speakers are placed in my room in a configuration as the 7.1 shown on
-page 12
-in the speaker manual.
 
-As you note the connection from rear to side is a little bit strange (at
-least I
-thought so,...) but this seems to be correct, because when I use the
-windows
-mixer supplied by TerraTec itself, there is a surround test included which
-shows
-the position of the 8 speakers and let me put the indiviually on and off
-and
-this leads always to the correct position.
-
-The problem now: I tried the same as under Windows unter Linux with the
-speaker-test tool.
-I called it via speaker-test -t wav -c 8 and the following came out:
-What wav file was played ----- in which speaker position the wav file was
-played
-"Front Left" ----------------- Front Left Speaker  (correct)
-"Front Center" --------------- Center Speaker      (correct)
-"Front Right" ---------------- Front Right Speaker (correct)
-"Side Right" ----------------- Back Right Speaker  (probably wrong!)
-"Rear Right" ----------------- Side Right Speaker  (probably wrong!)
-"Rear Left" ------------------ Side Left Speaker  (probably wrong!)
-"Side Left" ------------------ Back Left Speaker  (probably wrong!)
-"LFE" ------------------------ Subwoofer (correct)
-
-No one could think that I should just switch the speaker cables but that
-can't
-be a proper solution (not only because this would break settings in the
-original
-Windows driver (which I only use for Upgrading my Plextor drive firmware
-;) ).
-I think the configuration of the surround for the Aureon 7.1 Universe has
-here
-some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-22-06 14:27 
+ bitmage2 - 07-23-06 15:04 
 ----------------------------------------------------------------------
-The buffer size and period size has constraints of step of 32 but max
-buffer size is not a multiple of 32
+The installed RPM package  "alsa" is 1.0.9-23.2 (includes alsa-lib ,
+alsa-utils , alsa-conf and libasound. This means alsa-lib and alsa-utils
+should be the same version.
 
-Buffer size range from 8 to 10920
-Period size range from 4 to 5460
-Using max buffer size 10920
+If it helps, I can install alsa 1.0.12rc1 now on a clean Linux
+installtion. Should I do so?
+
+About the test cases:
+
+speaker-test -c 2 -t wav    # Does not produce high load
+speaker-test -c 4 -Dsurround40 -t wav # Produces high load
+speaker-test -c 6 -Dsurround51 -t wav # Produces high load
+
+While playing around I made an interesting observation: The two
+probleamtic cases do not produce high load, if the machine is otherwise
+*completely* idle (means: don't move the mouse). If I start some activity
+(for example starting Firefox, use a file manager or execute something
+like "cat /boot/vmlinuz"), speaker-test immediately goes to 100% CPU time.
+In this case often a "Broken pipe" can be observed (see below).
+"speaker-test -c 2 -t wav" always works, no matter how hard I stress the
+machine.
+
+chris@bjork:~> speaker-test -c 6 -Dsurround51 -t wav
+
+speaker-test 0.0.8
+
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 16384
+Period size range from 8 to 512
 Periods = 4
-was set period_size = 0
-was set buffer_size = 10920
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-
-
-#define VT1724_BUFFER_ALIGN	0x20
-
-static int snd_vt1724_playback_pro_open(struct snd_pcm_substream
-*substream)
-{
-...
-        snd_pcm_hw_constraint_step(runtime, 0,
-SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-				   VT1724_BUFFER_ALIGN);
-	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-				   VT1724_BUFFER_ALIGN);
-
-
+Buffer time size 2525
+To choose buffer_size = 16384
+To choose period_size = 4096
+was set period_size = 512
+was set buffer_size = 16384
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+Write error: -32,Broken pipe
+ 2 - Rear Left
+ 5 - LFE
 
 ----------------------------------------------------------------------
- Raymond - 07-24-06 04:04 
+ Raymond - 07-24-06 04:19 
 ----------------------------------------------------------------------
-I modifed the dummy driver to emulate ice1724, it seem that there is no
-easy way to for speaker-test to find out a feasible combination of
-period_size, periods and buffer_size to for surround51
+It seem that the lock in CS46xx.pcm.rear may has side effect since the rear
+device of CS46xx support hardware mixing ( multiple subdevice )
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823
+
+hooks.0 {
+   type ctl_elems
+   hook_args [
+      {
+         name "Duplicate Front"
+         lock true
+         preserve true
+         value 0
+         optional true
+      }
+    ]
+ }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-06 01:35 calestyo       New Issue                                    
-06-29-06 01:35 calestyo       Distribution              => Debian GNU/Linux
-06-29-06 01:35 calestyo       Kernel Version            => 2.6.17          
-06-29-06 01:36 calestyo       Note Added: 0010634                          
-06-29-06 01:36 calestyo       Issue Monitored: calestyo                    
-06-29-06 15:29 Raymond        Note Added: 0010647                          
-06-29-06 15:36 calestyo       Note Added: 0010648                          
-06-29-06 15:37 calestyo       Note Added: 0010649                          
-06-29-06 15:40 Raymond        Note Added: 0010650                          
-06-29-06 15:45 calestyo       Note Added: 0010651                          
-06-29-06 15:52 Raymond        Note Added: 0010652                          
-06-29-06 15:54 Raymond        Note Edited: 0010652                         
-06-29-06 15:56 calestyo       Note Added: 0010653                          
-06-29-06 15:58 Raymond        Note Added: 0010654                          
-06-29-06 16:01 calestyo       Note Added: 0010655                          
-06-29-06 16:04 Raymond        Note Added: 0010656                          
-06-29-06 16:07 calestyo       Note Added: 0010657                          
-06-29-06 16:08 Raymond        Note Edited: 0010656                         
-06-29-06 16:12 Raymond        Note Added: 0010658                          
-06-29-06 16:19 calestyo       Note Added: 0010659                          
-06-29-06 17:50 tiwai          Note Added: 0010677                          
-06-29-06 19:05 calestyo       Note Added: 0010695                          
-06-30-06 02:02 Raymond        Note Added: 0010709                          
-06-30-06 02:14 rlrevell       Note Added: 0010711                          
-06-30-06 05:13 Raymond        Note Edited: 0010709                         
-07-03-06 19:28 calestyo       Note Added: 0010803                          
-07-03-06 19:37 rlrevell       Note Added: 0010804                          
-07-17-06 20:49 calestyo       Note Added: 0011049                          
-07-18-06 03:23 calestyo       Note Added: 0011051                          
-07-18-06 03:23 calestyo       Note Deleted: 0011049                        
-07-18-06 05:54 Raymond        Note Added: 0011052                          
-07-18-06 05:58 Raymond        Note Edited: 0011052                         
-07-18-06 13:37 calestyo       Note Added: 0011054                          
-07-18-06 14:24 Raymond        Note Added: 0011058                          
-07-18-06 14:25 Raymond        Note Edited: 0011058                         
-07-18-06 14:34 calestyo       Note Added: 0011059                          
-07-18-06 17:35 Raymond        Note Added: 0011067                          
-07-18-06 17:39 Raymond        Note Edited: 0011067                         
-07-18-06 18:03 calestyo       Note Added: 0011068                          
-07-18-06 18:12 Raymond        Note Added: 0011069                          
-07-18-06 18:30 calestyo       Note Added: 0011070                          
-07-19-06 03:36 Raymond        Note Added: 0011077                          
-07-19-06 05:50 Raymond        Note Edited: 0011077                         
-07-19-06 11:50 calestyo       Note Added: 0011084                          
-07-19-06 12:03 Raymond        Note Added: 0011085                          
-07-19-06 12:06 Raymond        Note Edited: 0011085                         
-07-19-06 12:11 calestyo       Note Added: 0011086                          
-07-19-06 16:46 Raymond        Note Added: 0011087                          
-07-19-06 18:21 calestyo       Note Added: 0011091                          
-07-19-06 18:22 calestyo       Note Added: 0011092                          
-07-19-06 20:01 tiwai          Note Added: 0011093                          
-07-19-06 21:30 calestyo       Note Added: 0011102                          
-07-20-06 04:01 Raymond        Note Added: 0011106                          
-07-20-06 08:06 Raymond        Note Added: 0011113                          
-07-20-06 12:38 calestyo       Note Added: 0011117                          
-07-20-06 12:48 calestyo       Note Added: 0011118                          
-07-20-06 13:44 Raymond        Note Added: 0011119                          
-07-20-06 13:57 calestyo       Note Added: 0011120                          
-07-20-06 14:09 Raymond        Note Added: 0011121                          
-07-20-06 14:25 calestyo       Note Added: 0011122                          
-07-20-06 14:37 Raymond        Note Added: 0011124                          
-07-20-06 14:47 calestyo       Note Added: 0011125                          
-07-21-06 04:27 Raymond        Note Added: 0011142                          
-07-21-06 04:35 Raymond        Note Edited: 0011142                         
-07-21-06 10:27 calestyo       Note Added: 0011148                          
-07-21-06 10:39 calestyo       Note Added: 0011149                          
-07-21-06 18:51 Raymond        Note Added: 0011152                          
-07-22-06 14:27 Raymond        Note Edited: 0011152                         
-07-24-06 04:02 Raymond        File Added: dummy.c                          
-07-24-06 04:04 Raymond        Note Added: 0011208                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
 ======================================================================
 
 
