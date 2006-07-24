@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001692]: sound doesn't work
-Date: Mon, 24 Jul 2006 18:54:55 +0200
-Message-ID: <d616ef9fd59c604d857d27da3e2ee3f9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002299]: no manual volume control for
+	Delta 1010 device (using ice1712)
+Date: Mon, 24 Jul 2006 20:01:04 +0200
+Message-ID: <30a512547d3954e33a44b16306903f1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39E10175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84E0118A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Jul 2006 18:54:56 +0200 (MEST)
+	Mon, 24 Jul 2006 20:01:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,65 +26,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1692> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2299> 
 ======================================================================
-Reported By:                jra2003
-Assigned To:                jcdutton
+Reported By:                Jarad
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1692
-Category:                   PCI - ca0106
+Issue ID:                   2299
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             12-29-2005 04:50 CET
-Last Modified:              07-24-2006 18:54 CEST
+Date Submitted:             07-24-2006 07:02 CEST
+Last Modified:              07-24-2006 20:01 CEST
 ======================================================================
-Summary:                    sound doesn't work
+Summary:                    no manual volume control for Delta 1010 device
+(using ice1712)
 Description: 
-After folling the instructions to the letter, I restart the computer and it
-finds the sound card and I let it configure it.  Once logged into root
-with KDE I goto KMenu > system settings > soundcard detection and I click
-'play test'  It might works once or twice with a sound being played then a
-question asking if it worked.  When it doesn't work it doesn't ask if I
-heard anything until a few seconds pass.  So the command to play the sound
-went through, but the final result is that the sound went to the wrong
-place and not to me sndcard and to my speakers.
-
-BTW: I did check the mixer levels and if it was muted or not and no
-problems there.
+Using an M-audio delta 1010 device under Fedora Core 4 I am unable to
+manually control the volume levels (individually or as a whole).
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-23-06 19:10 
+ johnrigg - 07-24-06 20:01 
 ----------------------------------------------------------------------
-Is the problem still present?
-Have you tried using more up to date alsa drivers?
+Have you tried envy24control? If FC4 doesn't include it you'll have to
+compile it from whichever version of alsa-tools source matches your
+kernel.
 
-----------------------------------------------------------------------
- jra2003 - 07-24-06 18:54 
-----------------------------------------------------------------------
-sry, but I have not kept up with Linux, although I still have it on a
-seperate HD ready to boot, I am now using windows most of the time.
+There's some stuff about using Delta 1010 on Linux (mostly about multiple
+cards, but some of it applies to single card) here:
 
-If I remember correctly though, I think download a beta driver(at the
-time) worked.  That beta driver is probably a regular driver now.
+http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-05 04:50 jra2003        New Issue                                    
-12-29-05 04:50 jra2003        Distribution              => Fedora Core 2   
-12-29-05 04:50 jra2003        Kernel Version            => 2.6.5           
-12-29-05 04:50 jra2003        Issue Monitored: jra2003                     
-12-29-05 05:34 jra2003        Note Added: 0007187                          
-07-23-06 19:10 jcdutton       Note Added: 0011202                          
-07-23-06 19:10 jcdutton       Status                   assigned => feedback
-07-24-06 18:54 jra2003        Note Added: 0011212                          
+07-24-06 07:02 Jarad          New Issue                                    
+07-24-06 07:02 Jarad          Kernel Version            => 2.6.11-1.1369_FC
+07-24-06 20:01 johnrigg       Note Added: 0011213                          
 ======================================================================
 
 
