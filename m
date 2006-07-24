@@ -1,15 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Tue, 25 Jul 2006 01:13:27 +0200
-Message-ID: <5b133edb1a36d29c4d05c126eaffc07c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001420]: Dell's modified SoundBlaster
+	Live! 5.1 OEM card does not work with emu10k1x driver on
+	Fedora Core 3 and 4
+Date: Tue, 25 Jul 2006 01:58:26 +0200
+Message-ID: <476d9e60372a7144e9d0290bfa82551c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 089C523F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4D5A19E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 01:13:27 +0200 (MEST)
+	Tue, 25 Jul 2006 01:58:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,75 +25,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1420> 
 ======================================================================
-Reported By:                lodp2
-Assigned To:                tiwai
+Reported By:                inkbrush
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2261
-Category:                   PCI - hda-intel
+Issue ID:                   1420
+Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-25
+Status:                     closed
+Distribution:               
+Kernel Version:             2.6.11-1.1369_FC4
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-25-2006 01:13 CEST
+Date Submitted:             09-14-2005 18:47 CEST
+Last Modified:              07-25-2006 01:58 CEST
 ======================================================================
-Summary:                    No sound with hda-intel ALC883
+Summary:                    Dell's modified SoundBlaster Live! 5.1 OEM card does
+not work with emu10k1x driver on Fedora Core 3 and 4
 Description: 
-I'm getting no sound on internal speakers, headphone and line jacks on my
-Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
-chip). What DOES work is recording, both internal mic and external. I
-tried all model options I found for ALC883 in ALSA-Configuration.txt
-(3stack-dig, 6stck-dig, auto, no option).
+I initially installed Fedora Core 3 on my Dell Pentium machine that came
+with factory installed SoundBlaster Live! 5.1, which is a modified version
+of Creative's actual SB card. The sound would not work at all. Gnome's
+soundcard detection would list the model of the card as emu10k1x while
+listing the module as emu10k1. Clicking "play test sound" did not produce
+any sound. When opening the volume control, I would get the error message
+that the device does not exist. (Sorry, I do not remember the exact
+message) 
 
-I frequently checked the settings in alsamixer (using alsamixergui), tried
-muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
+Following alsa web site's instructions for installing emu10k1x did not
+resolve the problem either. I kept getting some error messages along the
+way-one of which was dev/midi does not exist. No sound came out and The
+module was still listed as emu10k1. 
 
-I would have tried the latest HG version, but I ran into problems getting
-it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
-install", which both went through fine -- only "cat /proc/asound/version"
-still tells me I've got version 1.0.12rc1, compiled two days ago. I would
-appreciate any pointers, as I'm relatively new to this whole business..
+I tried another solution, which gave me only s half success. I reinstalled
+FC3 fresh and ran update rather than following alsa's instructions. Doing
+this corrected the soundcard detection, so that it listed the module as
+emu10k1x. The volume control and alsamixer also worked following the
+reinstall. Clicking the test sound button produced beautiful sound.
+However, no actual playback sound was coming out when I tried opening a
+wave file and loading an audio CD. I made sure to unmute thevolume
+control, but still no sound.
+
+I installed FC4, but it gives me the same results as the above paragraph.
+Again, I made sure to unmute the sound with volume control and alsamixer.
+
+It seems that other people are reporting similar problems
+www.fedoraforum.org and other web sites. This particular model of
+soundcard and the model of the PC it came in is relatively old -about two
+years for mine- but it's still a pretty common soundcard. I would
+appreciate a great deal if somebody could resolve this problem.
+
+I am a total Linux newbie with little experience in computers, but if
+there's anything I can do, such as send in pieces of the relevant system
+code, I would gladly do it. Thank you.
 ======================================================================
 
 ----------------------------------------------------------------------
- lodp2 - 07-25-06 01:03 
+ fmoraes - 02-12-06 17:11 
 ----------------------------------------------------------------------
-i don't want to seem impatient, but -- is this issue being worked on in
-some way or the other? i read about fixes having been committed for ALC883
-in the comments to some other issue, but having installed the latest hg
-version, it still isn't working for me.
+As I remember, the hardware database of FC3/4 had the driver listed wrong.
+Can you do an lsmod as root and make sure that the snd-emu10k1x driver is
+loaded correctly?
 
-----------------------------------------------------------------------
- rlrevell - 07-25-06 01:13 
-----------------------------------------------------------------------
-Obviously it is being worked on, as you mentioned some ALC883 changes were
-recently committed.
+If not, then the HAL database is the culprit and you need to modify it to
+correct the error in it. The file is located in
+/usr/share/hwdata/pcitable. Look for the line:
 
-Lack of access to hardware and documentation from vendors are big issues.
+0x1102	0x0006	"snd-emu10k1x"
+
+If it says snd-emu10k1, then it is incorrect and it is a Fedora bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-06 22:14 lodp2          New Issue                                    
-07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
-07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
-07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
-07-10-06 15:01 arpac          Issue Monitored: arpac                       
-07-10-06 15:02 arpac          Note Added: 0010961                          
-07-10-06 15:03 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-20-06 17:28 arpac          Note Added: 0011133                          
-07-25-06 01:03 lodp2          Note Added: 0011219                          
-07-25-06 01:13 rlrevell       Note Added: 0011220                          
+09-14-05 18:47 inkbrush       New Issue                                    
+09-14-05 18:47 inkbrush       Kernel Version            => 2.6.11-1.1369_FC4
+02-12-06 17:11 fmoraes        Note Added: 0008029                          
+07-25-06 01:58 Adrian Bunk    Status                   assigned => closed  
+07-25-06 01:58 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
