@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Tue, 25 Jul 2006 13:08:03 +0200
-Message-ID: <449f2cfac2fbfd4fbb838cbea841ba38@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002038]: Microphone is not working on
+	Sigmatel STAC9200
+Date: Tue, 25 Jul 2006 13:43:17 +0200
+Message-ID: <beb1a4ddb889320b80a8b94e9a8ecc0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D37A2234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7628227
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 13:08:03 +0200 (MEST)
+	Tue, 25 Jul 2006 13:43:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,72 +26,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2038> 
 ======================================================================
-Reported By:                lodp2
+Reported By:                telles
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2261
+Issue ID:                   2038
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-25
+Distribution:               Mandriva 2006
+Kernel Version:             2.6.12-18mdk
 ======================================================================
-Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-25-2006 13:08 CEST
+Date Submitted:             04-19-2006 20:58 CEST
+Last Modified:              07-25-2006 13:43 CEST
 ======================================================================
-Summary:                    No sound with hda-intel ALC883
+Summary:                    Microphone is not working on Sigmatel STAC9200
 Description: 
-I'm getting no sound on internal speakers, headphone and line jacks on my
-Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
-chip). What DOES work is recording, both internal mic and external. I
-tried all model options I found for ALC883 in ALSA-Configuration.txt
-(3stack-dig, 6stck-dig, auto, no option).
-
-I frequently checked the settings in alsamixer (using alsamixergui), tried
-muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
-
-I would have tried the latest HG version, but I ran into problems getting
-it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
-install", which both went through fine -- only "cat /proc/asound/version"
-still tells me I've got version 1.0.12rc1, compiled two days ago. I would
-appreciate any pointers, as I'm relatively new to this whole business..
+I have a laptop Dell Latitude 120L with a HDA Intel Sound Board:
+Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
+Audio Controller (rev 03)
+that is recognized as Sigmatel STAC9200.
+Sound is working great but the microphone is not working at all.
+I think that is missing some control on alsamixer about Mic, because there
+is no Mic's volume or sound control, only "Input Source" is present
+(Line|Mic) and seems that it doesn't change anything about Microphone.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-25-06 01:13 
+ maiquel - 07-20-06 15:36 
 ----------------------------------------------------------------------
-Obviously it is being worked on, as you mentioned some ALC883 changes were
-recently committed.
 
-Lack of access to hardware and documentation from vendors are big issues.
 
 ----------------------------------------------------------------------
- arpac - 07-25-06 13:08 
+ lorenzodp - 07-25-06 13:43 
 ----------------------------------------------------------------------
-hi, so, can we be usefull for helping devel to make good drivers ?
-if so, how to ?
+hi! I've got the same problem with a Sony vaio FE11M, no way to get any
+sign of life by the microphone.
+
+HDA Intel  &#9474;  Chip: SigmaTel STAC7661
+
+no mic in any mixer (alsamixer, amixer, ...)
+
+i use linux slackware and tried all kernels until 2.6.17.
+alsa is 1.0.11
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-06 22:14 lodp2          New Issue                                    
-07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
-07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
-07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
-07-10-06 15:01 arpac          Issue Monitored: arpac                       
-07-10-06 15:02 arpac          Note Added: 0010961                          
-07-10-06 15:03 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-20-06 17:28 arpac          Note Added: 0011133                          
-07-25-06 01:03 lodp2          Note Added: 0011219                          
-07-25-06 01:13 rlrevell       Note Added: 0011220                          
-07-25-06 13:08 arpac          Note Added: 0011226                          
+04-19-06 20:58 telles         New Issue                                    
+04-19-06 20:58 telles         Distribution              => Mandriva 2006   
+04-19-06 20:58 telles         Kernel Version            => 2.6.12-18mdk    
+04-19-06 22:09 rlrevell       Note Added: 0009358                          
+04-19-06 22:50 telles         Note Added: 0009359                          
+04-19-06 23:21 rlrevell       Note Added: 0009361                          
+04-20-06 14:30 tiwai          Note Added: 0009373                          
+04-20-06 15:59 telles         File Added: codec#0.txt                      
+04-20-06 15:59 telles         File Added: codec#1.txt                      
+04-20-06 16:01 telles         Note Added: 0009393                          
+04-20-06 16:04 telles         Note Edited: 0009393                         
+06-03-06 03:56 MACHINE        Note Added: 0010060                          
+06-17-06 23:52 maiquel        Issue Monitored: maiquel                     
+06-18-06 00:37 maiquel        Note Added: 0010294                          
+06-18-06 00:38 maiquel        File Added: test-2038.wav                    
+06-29-06 23:55 maiquel        Note Edited: 0010294                         
+07-20-06 15:36 maiquel        Note Added: 0011126                          
+07-25-06 13:43 lorenzodp      Note Added: 0011227                          
 ======================================================================
 
 
