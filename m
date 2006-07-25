@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001383]: ac3 passthrough lost in
-	2.6.12 and later
-Date: Tue, 25 Jul 2006 02:09:22 +0200
-Message-ID: <bdffc7799533460cf6e9d3e9de709165@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Tue, 25 Jul 2006 02:41:42 +0200
+Message-ID: <26957299067d8c331724150edb0d71bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFD59166
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A3A7179
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 02:09:22 +0200 (MEST)
+	Tue, 25 Jul 2006 02:41:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,71 +23,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1383> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                Antonio
-Assigned To:                jcdutton
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1383
-Category:                   PCI - emu10k1
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.12-1.1376_FC3
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-31-2005 11:52 CEST
-Last Modified:              07-25-2006 02:09 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-25-2006 02:41 CEST
 ======================================================================
-Summary:                    ac3 passthrough lost in 2.6.12 and later
+Summary:                    surround40 memory leak
 Description: 
-i have an audigy2 board
-when i used an 2.6.11 FC kernel (2.6.11-1.35_FC3) and earlier ones all was
-fine.
-when i updated to 2.6.12 fc3 kernels (2.6.12-1.1372_FC3 and
-2.6.12-1.1376_FC3) ac3 passthrough works no more.
-When i boot back to 2.6.11 ac3 is back....
-
-i consider the following patch(2.6.12 kernel changelog) is the reason:
-
-<perex@suse.cz>
-        [ALSA] Enables SPDIF output on the Audigy2 Value
-        
-        EMU10K1/EMU10K2 driver
-        Enables SPDIF output on the Audigy2 Value.
-        It seems to work for PCM, but not AC3 yet.
-
-
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 02-12-06 17:13 
+ bitmage2 - 07-24-06 21:25 
 ----------------------------------------------------------------------
-This is not an emu10k1x card.
+Raymond, in case that you still need information about the "value return by
+snd_pcm_info_get_subdevices_count()", I did a small test program (see
+below):
+
+
+chris@bjork:~> /opt/SVN/branches/3.5/kdemultimedia/kmix/a.out
+snd_pcm_open() = 0
+snd_pcm_info_get_subdevices_count() = 0 ; sizeof= 288
+
+
+----------------------------------------------------
+#include <alsa/asoundlib.h>
+
+main()
+{
+    snd_pcm_t *pcm;
+    int ret;
+    const snd_pcm_info_t *obj;
+
+    ret = snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_PLAYBACK,
+SND_PCM_NONBLOCK) ;
+    printf ( "snd_pcm_open() = %i\n", ret);
+    ret = snd_pcm_info_get_subdevices_count(obj);
+    printf ( "snd_pcm_info_get_subdevices_count() = %i ; sizeof= %i\n",
+ret, snd_pcm_info_sizeof() );
+}
 
 ----------------------------------------------------------------------
- Adrian Bunk - 07-25-06 02:09 
+ Raymond - 07-25-06 02:41 
 ----------------------------------------------------------------------
-Is this issue still present in recent ALSA versions (e.g. the version
-shipped with kernel 2.6.17)?
+I am just a reporter and do not have any cs46xx card too.
+
+Whether cs46xx support multiple instances of multi-channels seem depend on
+DSP firmware 
+
+Can you run multiple instances of surround40 and surround51 concurrently
+(speaker-test or 5.1 movie) by removing the lock in CS46xx.conf
+
+
+I want to find out a feasible solution (period_size, period and
+buffer_size calculation by snd_pcm_set_params() ) for my au8830 sound card
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724 by comparing
+au8830 (device 0 support 1, 2, 4 channels) with
+cs46xx (multi pluginn of device front, rear and center_lfe).
+
+Can you try alsa-lib example (i.e. alsa-lib/test/pcm_min.c) ? 
+
+I will upload a modifed version which test difference devices (hw:0,
+front, surround40, surround51) with  1, 2, 4, 6 channels and format S16_LE
+in snd_pcm_set_params() and print out the values of period_size and
+buffer_size returned by snd_pcm_get_params()
+
+BTW, you forget to call snd_pcm_info(pcm, obj) in your program
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 11:52 Antonio        New Issue                                    
-08-31-05 11:52 Antonio        Distribution              => Fedora Core 3   
-08-31-05 11:52 Antonio        Kernel Version            => 2.6.12-1.1376_FC3
-02-12-06 17:13 fmoraes        Note Added: 0008030                          
-02-12-06 17:13 fmoraes        Assigned To              fmoraes => jcdutton 
-07-09-06 17:49 jcdutton       Assigned To              jcdutton => fmoraes 
-07-25-06 02:09 Adrian Bunk    Note Added: 0011221                          
-07-25-06 02:09 Adrian Bunk    Assigned To              fmoraes => jcdutton 
-07-25-06 02:09 Adrian Bunk    Category                 PCI - emu10k1x => PCI -
-emu10k1
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
 ======================================================================
 
 
