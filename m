@@ -1,20 +1,16 @@
-From: "Chetana Tramble" <trambechetana@eerdsf01.ca.boeing.com>
-Subject: to puher
-Date: Tue, 25 Jul 2006 09:31:20 -0700
-Message-ID: <000001c6b007$c2f7fed0$957ba8c0@zcw83>
-Reply-To: Chetana Tramble <trambechetana@eerdsf01.ca.boeing.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Tue, 25 Jul 2006 21:53:11 +0200
+Message-ID: <e54a8f547461a1b1617fd37acf994fc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0622860842=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F1D4246
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A8E9235
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 18:34:11 +0200 (MEST)
-Received: from eerdsf01.ca.boeing.com (87.69.58.159.cable.012.net.il
-	[87.69.58.159])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	07F8B9967E for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 18:34:10 +0200 (MEST)
+	Tue, 25 Jul 2006 21:53:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,222 +23,161 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============0622860842==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6AFCD.169926D0"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+======================================================================
+Reported By:                bitmage2
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1869
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
+======================================================================
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-25-2006 21:53 CEST
+======================================================================
+Summary:                    Playing surround sound produces 100% CPU load
+Description: 
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C6AFCD.169926D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Bes f t S d el n lin x g W p atc v he c s
-=20
-R o OL c EX
-C t ARTI m ER
-BR x EIT l LI n NG
-BV v LGAR t I
-OM g EG e A
-PA t TE s K P w hilipp e e and m v any ot t her
-
-Ha s ndba f gs & Pu j rs f es, TI w FFA r NY & CO Je f werl g y
-
-O m rde l r TO k DA y Y and sav l e 2 r 5 % http://watkchdismyboi.com
-
-=20
-
-=20
-
-=20
-
-disappeared, and the family hushed it up; but the fact remained that the
-Tooks were not as respectable as the Bagginses, though they were
-undoubtedly richer. Not that Belladonna Took ever had any adventures
-after she became Mrs. Bungo Baggins. Bungo, that was Bilbos father,
-built the most luxurious hobbit-hole for her (and partly with her money)
-that was to be found either under The Hill or over The Hill or across
-
-
-------=_NextPart_000_0001_01C6AFCD.169926D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Bes<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > f </SPAN>t S<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > d </SPAN>el<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > n </SPAN>lin<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > x </SPAN>g W<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > p </SPAN>atc<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > v </SPAN>he<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > c </SPAN>s</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>R<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > o </SPAN>OL<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > c </SPAN>EX</DIV>
-<DIV>C<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > t </SPAN>ARTI<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > m </SPAN>ER</DIV>
-<DIV>BR<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > x </SPAN>EIT<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > l </SPAN>LI<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > n </SPAN>NG</DIV>
-<DIV>BV<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > v </SPAN>LGAR<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > t </SPAN>I</DIV>
-<DIV>OM<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > g </SPAN>EG<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > e </SPAN>A</DIV>
-<DIV>PA<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > t </SPAN>TE<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > s </SPAN>K P<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > w </SPAN>hilipp<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > e </SPAN>e and m<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > v </SPAN>any ot<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > t </SPAN>her</DIV>
-<P>Ha<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > s </SPAN>ndba<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > f </SPAN>gs & Pu<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > j </SPAN>rs<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > f </SPAN>es, TI<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > w </SPAN>FFA<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > r </SPAN>NY & CO Je<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > f </SPAN>werl<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > g </SPAN>y</P>
-<P>O<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > m </SPAN>rde<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > l </SPAN>r TO<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > k </SPAN>DA<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > y </SPAN>Y and sav<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > l </SPAN>e 2<SPAN id=3D"wyboh77"style =3D "
-FLOAT:
-
-right " > r </SPAN>5 % <A =
-href=3D"http://watkchdismyboi.com">http://watkchdismyboi.com</A></P>
-<P>&nbsp;</P>
-<P>&nbsp;</P>
-<P>&nbsp;</P>
-<DIV>disappeared, and the family hushed it up; but the fact remained =
-that the<BR>
-Tooks were not as respectable as the Bagginses, though they were<BR>
-undoubtedly richer. Not that Belladonna Took ever had any adventures<BR>
-after she became Mrs. Bungo Baggins. Bungo, that was Bilbos father,<BR>
-built the most luxurious hobbit-hole for her (and partly with her =
-money)<BR>
-that was to be found either under The Hill or over The Hill or =
-across<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6AFCD.169926D0--
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
 
 
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-25-06 10:13 
+----------------------------------------------------------------------
+If you can run multiple instance of 
+
+speaker-test -Dfront -c 2 -t wav
+speaker-test -Dcenter_lfe -c 2 -t wav
+
+but not
+
+speaker-test -Drear -c 2 -t wav
+
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+
+The problem will be the lock in rear device if you have more than one
+applications using the rear device
+
+Just comment the lock like EMU10K1.conf
+
+http://hg-mirror.alsa-project.org/alsa-lib?cmd=changeset;node=ad1bdc38bce9;style=gitweb
 
 
---===============0622860842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+----------------------------------------------------------------------
+ bitmage2 - 07-25-06 21:53 
+----------------------------------------------------------------------
+I have tested and can run multiple instances of all three commands (means: 
+also the "-Drear" one works) without commenting out the "lock".
+It also works if I comment out the "lock" in the "CS46xx.pcm.rear.0"
+section of /usr/share/alsa/cards/CS46xx.conf .
+
+After testing further I have good news and bad news:
+
+The good news: "speaker-test -c 6 -Dsurround51 -t wav" does not go to 100%
+CPU load when removing the "lock". :-)
+
+So far - so good. But my original stated goal was: "use the rest of my 5.1
+speaker set". And this goal includes playing back 2-channel MP3 files on
+all 6 speakers.
+
+So here's the bad news: I created a .asoundrc with a channel duplicator
+"pcm.ch51dup" or "pcm.duplicate" (see below. I found those on the
+internet). Using any of those two, the CPU goes again to 100% (Example:
+"speaker-test -Dch51dup -c 2 -t wav").
+
+  Christian
+
+---  ~/.asoundrc ---------------------------
+
+pcm.ch51dup {
+    type route
+    slave.pcm "surround51"
+    slave.channels 6
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 0.5
+    ttable.1.4 0.5
+    ttable.0.5 0.5
+    ttable.1.5 0.5
+}
+
+
+
+---  Alternative ~/.asoundrc ---------------------------
+
+pcm.duplicate {
+    type plug
+    slave.pcm "surround51"
+    slave.channels 6
+    route_policy duplicate
+}
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
+07-24-06 05:04 Raymond        Note Edited: 0011209                         
+07-24-06 20:38 bitmage2       Note Added: 0011214                          
+07-25-06 03:00 Raymond        Note Added: 0011223                          
+07-25-06 03:03 Raymond        Note Edited: 0011223                         
+07-25-06 03:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:13 Raymond        Note Edited: 0011223                         
+07-25-06 21:53 bitmage2       Note Added: 0011232                          
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0622860842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0622860842==--
