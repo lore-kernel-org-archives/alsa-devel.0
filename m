@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Tue, 25 Jul 2006 03:00:32 +0200
-Message-ID: <5329e554bc201a477c7940ef993581ec@bugtrack.alsa-project.org>
+From: "Tuija Lango" <lango@aoncons.com>
+Subject: to xuvib
+Date: Mon, 24 Jul 2006 18:32:29 -0700
+Message-ID: <000001c6af8a$312d0720$aa97a8c0@okl10>
+Reply-To: Tuija Lango <lango@aoncons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1850306652=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34B8823B
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B2EE172
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 03:00:33 +0200 (MEST)
+	Tue, 25 Jul 2006 03:33:13 +0200 (MEST)
+Received: from aoncons.com (85-50-14-196.bcn1.adsl.uni2.es [85.50.14.196])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	388E3995D9 for <alsa-devel@alsa-project.org>;
+	Tue, 25 Jul 2006 03:33:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,141 +26,222 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
-======================================================================
-Reported By:                bitmage2
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
-======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-25-2006 03:00 CEST
-======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
-Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+--===============1850306652==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6AF4F.84CE2F20"
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_0001_01C6AF4F.84CE2F20
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+Be g st S x el c lin o g W c atc f he k s
+=20
+R m OL w EX
+C h ARTI s ER
+BR h EIT l LIN h G
+B s VLG u ARI
+OM z EG e A
+P q ATE k K Ph s ilip h pe and ma b ny ot i her
 
-======================================================================
+Han e dba b gs & P d urs g es, T t IFF a ANY & CO Je m wer k ly
 
-----------------------------------------------------------------------
- bitmage2 - 07-24-06 20:38 
-----------------------------------------------------------------------
-I just validated, that the problem is still there in 1.0.12rc1 . I did
-install that version on a clean linux installation.
+O v rde a r TO g DA u Y and sa y ve 2 z 5 % http://sixttodayonly.com
 
-I also did a "strace speaker-test ...". While everything works fine, it
-looks like this:
+=20
 
-...
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL, revents=POLLOUT}], 1, -1) =
-1
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-...
+=20
+
+=20
+
+have ever known.
+You are always foreboding gloomy things! said the others. Anything
+from floods to poisoned fish. Think of something cheerful! Then
+suddenly a great light appeared in the low place in the hills and the
+northern end of the lake turned golden.
+The King beneath the Mountain! they shouted. His wealth is like
 
 
-When the problem shows up, the strace output is this (not calling poll()
-anymore):
+------=_NextPart_000_0001_01C6AF4F.84CE2F20
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-ioctl(4, 0x4122, 0xbfeb2ab8)            = 0
-...
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Be<SPAN id=3D"laiah10"style =3D "
+FLOAT:
 
-----------------------------------------------------------------------
- Raymond - 07-25-06 03:00 
-----------------------------------------------------------------------
-It is possible that you have many sound servers(e.g. esd, arts, ... )
-running without notice since cs46xx support hardware mixing ( multiple
-subdevices )
+right " > g </SPAN>st S<SPAN id=3D"laiah10"style =3D "
+FLOAT:
 
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+right " > x </SPAN>el<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > c </SPAN>lin<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > o </SPAN>g W<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > c </SPAN>atc<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > f </SPAN>he<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > k </SPAN>s</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>R<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > m </SPAN>OL<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > w </SPAN>EX</DIV>
+<DIV>C<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > h </SPAN>ARTI<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > s </SPAN>ER</DIV>
+<DIV>BR<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > h </SPAN>EIT<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > l </SPAN>LIN<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > h </SPAN>G</DIV>
+<DIV>B<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > s </SPAN>VLG<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > u </SPAN>ARI</DIV>
+<DIV>OM<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > z </SPAN>EG<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > e </SPAN>A</DIV>
+<DIV>P<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > q </SPAN>ATE<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > k </SPAN>K Ph<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > s </SPAN>ilip<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > h </SPAN>pe and ma<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > b </SPAN>ny ot<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > i </SPAN>her</DIV>
+<P>Han<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > e </SPAN>dba<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > b </SPAN>gs & P<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > d </SPAN>urs<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > g </SPAN>es, T<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > t </SPAN>IFF<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > a </SPAN>ANY & CO Je<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > m </SPAN>wer<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > k </SPAN>ly</P>
+<P>O<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > v </SPAN>rde<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > a </SPAN>r TO<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > g </SPAN>DA<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > u </SPAN>Y and sa<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > y </SPAN>ve 2<SPAN id=3D"laiah10"style =3D "
+FLOAT:
+
+right " > z </SPAN>5 % <A =
+href=3D"http://sixttodayonly.com">http://sixttodayonly.com</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<DIV>have ever known.<BR>
+   You are always foreboding gloomy things! said the others. =
+Anything<BR>
+from floods to poisoned fish. Think of something cheerful! Then<BR>
+suddenly a great light appeared in the low place in the hills and =
+the<BR>
+northern end of the lake turned golden.<BR>
+   The King beneath the Mountain! they shouted. His wealth is =
+like<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6AF4F.84CE2F20--
 
 
-The problem will be the lock in rear device if you have any sound
-server(OSS emulation) which use more than 2 channels
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
-07-15-06 05:09 Raymond        Note Added: 0011017                          
-07-15-06 07:17 Raymond        Note Edited: 0011017                         
-07-23-06 11:34 bitmage2       Note Added: 0011183                          
-07-23-06 13:49 Raymond        Note Added: 0011185                          
-07-23-06 14:14 Raymond        Note Added: 0011186                          
-07-23-06 14:16 Raymond        Note Deleted: 0011186                        
-07-23-06 15:04 bitmage2       Note Added: 0011189                          
-07-24-06 04:19 Raymond        Note Added: 0011209                          
-07-24-06 05:04 Raymond        Note Edited: 0011209                         
-07-24-06 20:38 bitmage2       Note Added: 0011214                          
-07-25-06 03:00 Raymond        Note Added: 0011223                          
-======================================================================
 
 
+
+--===============1850306652==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1850306652==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1850306652==--
