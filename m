@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Tue, 25 Jul 2006 21:53:11 +0200
-Message-ID: <e54a8f547461a1b1617fd37acf994fc3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002305]: Line Out not outputting Front
+	Headphone outputting poor quality
+Date: Tue, 25 Jul 2006 22:54:50 +0200
+Message-ID: <4a81a720e533eb89819dd35fe3add45c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A8E9235
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88495184
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 21:53:11 +0200 (MEST)
+	Tue, 25 Jul 2006 22:54:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,154 +24,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2305> 
 ======================================================================
-Reported By:                bitmage2
+Reported By:                FireBurn
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   2305
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Distribution:               Gentoo
+Kernel Version:             2.6.17-beyond2.2
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-25-2006 21:53 CEST
+Date Submitted:             07-25-2006 22:54 CEST
+Last Modified:              07-25-2006 22:54 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Line Out not outputting Front Headphone outputting
+poor quality
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+My Dell Inspiron 9100 onboard sound 1102:0004 Creative Labs SB Audigy is
+not working correctly even with every volume control set at maximum and
+the switchs all been tested there is no audio from Line Out
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
-
-
-
+There is Audio from the Front Headphone Jack but it is choppy and has a
+lot of noise in it
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-25-06 10:13 
-----------------------------------------------------------------------
-If you can run multiple instance of 
-
-speaker-test -Dfront -c 2 -t wav
-speaker-test -Dcenter_lfe -c 2 -t wav
-
-but not
-
-speaker-test -Drear -c 2 -t wav
-
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
-
-The problem will be the lock in rear device if you have more than one
-applications using the rear device
-
-Just comment the lock like EMU10K1.conf
-
-http://hg-mirror.alsa-project.org/alsa-lib?cmd=changeset;node=ad1bdc38bce9;style=gitweb
-
-
-
-----------------------------------------------------------------------
- bitmage2 - 07-25-06 21:53 
-----------------------------------------------------------------------
-I have tested and can run multiple instances of all three commands (means: 
-also the "-Drear" one works) without commenting out the "lock".
-It also works if I comment out the "lock" in the "CS46xx.pcm.rear.0"
-section of /usr/share/alsa/cards/CS46xx.conf .
-
-After testing further I have good news and bad news:
-
-The good news: "speaker-test -c 6 -Dsurround51 -t wav" does not go to 100%
-CPU load when removing the "lock". :-)
-
-So far - so good. But my original stated goal was: "use the rest of my 5.1
-speaker set". And this goal includes playing back 2-channel MP3 files on
-all 6 speakers.
-
-So here's the bad news: I created a .asoundrc with a channel duplicator
-"pcm.ch51dup" or "pcm.duplicate" (see below. I found those on the
-internet). Using any of those two, the CPU goes again to 100% (Example:
-"speaker-test -Dch51dup -c 2 -t wav").
-
-  Christian
-
----  ~/.asoundrc ---------------------------
-
-pcm.ch51dup {
-    type route
-    slave.pcm "surround51"
-    slave.channels 6
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 0.5
-    ttable.1.4 0.5
-    ttable.0.5 0.5
-    ttable.1.5 0.5
-}
-
-
-
----  Alternative ~/.asoundrc ---------------------------
-
-pcm.duplicate {
-    type plug
-    slave.pcm "surround51"
-    slave.channels 6
-    route_policy duplicate
-}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
-07-15-06 05:09 Raymond        Note Added: 0011017                          
-07-15-06 07:17 Raymond        Note Edited: 0011017                         
-07-23-06 11:34 bitmage2       Note Added: 0011183                          
-07-23-06 13:49 Raymond        Note Added: 0011185                          
-07-23-06 14:14 Raymond        Note Added: 0011186                          
-07-23-06 14:16 Raymond        Note Deleted: 0011186                        
-07-23-06 15:04 bitmage2       Note Added: 0011189                          
-07-24-06 04:19 Raymond        Note Added: 0011209                          
-07-24-06 05:04 Raymond        Note Edited: 0011209                         
-07-24-06 20:38 bitmage2       Note Added: 0011214                          
-07-25-06 03:00 Raymond        Note Added: 0011223                          
-07-25-06 03:03 Raymond        Note Edited: 0011223                         
-07-25-06 03:05 Raymond        Note Edited: 0011223                         
-07-25-06 10:05 Raymond        Note Edited: 0011223                         
-07-25-06 10:13 Raymond        Note Edited: 0011223                         
-07-25-06 21:53 bitmage2       Note Added: 0011232                          
+07-25-06 22:54 FireBurn       New Issue                                    
+07-25-06 22:54 FireBurn       Distribution              => Gentoo          
+07-25-06 22:54 FireBurn       Kernel Version            => 2.6.17-beyond2.2
 ======================================================================
 
 
