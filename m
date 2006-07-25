@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002303]: A lot of warning during
-	compilation of alsa-driver 1.0.12rc1
-Date: Tue, 25 Jul 2006 13:05:26 +0200
-Message-ID: <db83206e40d6e08eeaf4e2c00e961316@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Tue, 25 Jul 2006 13:08:03 +0200
+Message-ID: <449f2cfac2fbfd4fbb838cbea841ba38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D160234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D37A2234
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 13:05:27 +0200 (MEST)
+	Tue, 25 Jul 2006 13:08:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,161 +23,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2303> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                croiset
-Assigned To:                perex
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
+======================================================================
+Reported By:                lodp2
+Assigned To:                tiwai
+======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2303
-Category:                   0_compilation problem_!!!
+Issue ID:                   2261
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               =
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
+======================================================================
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              07-25-2006 13:08 CEST
+======================================================================
+Summary:                    No sound with hda-intel ALC883
+Description: 
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
 
-Kernel Version:             2.4.7-10
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-25-2006 13:05 CEST
-Last Modified:              07-25-2006 13:05 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    A lot of warning during compilation of alsa-dri=
-ver
-1.0.12rc1
-Description: =
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
 
-This is the list of warnings during thez compilation some of them creates
-some undefined symbols when you want to use the driver.
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
+======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 07-25-06 01:13 
+----------------------------------------------------------------------
+Obviously it is being worked on, as you mentioned some ALC883 changes were
+recently committed.
 
-+ make
-make[3]: D=E9pendance circulaire io.c <- io.c abandonn=E9e.
-sound.c: In function `snd_open':
-sound.c:177: warning: assignment discards qualifiers from pointer target
-type
-sound.c:182: warning: assignment discards qualifiers from pointer target
-type
-sound.c: At top level:
-sound.c:45: warning: `device_mode' defined but not used
-info.c: In function `snd_iprintf':
-info.c:119: warning: implicit declaration of function `might_sleep'
-In file included from sound_oss.c:6:
-../alsa-kernel/core/sound_oss.c: In function `snd_register_oss_device':
-../alsa-kernel/core/sound_oss.c:139: warning: passing arg 1 of
-`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
-type
-../alsa-kernel/core/sound_oss.c:143: warning: passing arg 1 of
-`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
-type
-aloop-kernel.c:43: warning: `pcm_devs' defined but not used
-mts64.c: In function `snd_mts64_attach':
-mts64.c:894: warning: implicit declaration of function
-`platform_device_alloc'
-mts64.c:894: warning: assignment makes pointer from integer without a
-cast
-mts64.c:901: warning: implicit declaration of function
-`platform_device_register'
-mts64.c:902: warning: implicit declaration of function
-`platform_device_put'
-In file included from
-/lib/modules/2.4.7-10/build/include/linux/module.h:11,
-                 from
-/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/adriver.h:45,
-                 from
-/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/sound/driver.h:47,
-                 from ../alsa-kernel/isa/als100.c:23,
-                 from als100.c:1:
-ad1889.c: In function `snd_ad1889_playback_pointer':
-ad1889.c:555: warning: implicit declaration of function `unlikely'
-In file included from als4000.c:1:
-../alsa-kernel/pci/als4000.c: In function `snd_als4000_create_gameport':
-../alsa-kernel/pci/als4000.c:596: warning: `r' might be used uninitialized
-in t
-his function
-../alsa-kernel/pci/atiixp_modem.c:55: warning: `enable' defined but not
-used
-../alsa-kernel/pci/atiixp.c:61: warning: `enable' defined but not used
-intel8x0.c:93: warning: `enable' defined but not used
-intel8x0.c:95: warning: `joystick' defined but not used
-../alsa-kernel/pci/intel8x0m.c:72: warning: `enable' defined but not used
-maestro3.c: In function `snd_m3_ac97_wait':
-maestro3.c:1958: warning: implicit declaration of function `cpu_relax'
-../alsa-kernel/pci/via82xx_modem.c:70: warning: `enable' defined but not
-used
-../alsa-kernel/pci/via82xx.c:107: warning: `enable' defined but not used
-../../alsa-kernel/pci/ali5451/ali5451.c:64: warning: `enable' defined but
-not used
-In file included from ../../alsa-kernel/pci/au88x0/au8810.c:9,
-                 from au8810.c:1:
-../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
-`vortex_interrupt':
-../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
-declaration of function `unlikely'
-In file included from ../../alsa-kernel/pci/au88x0/au8820.c:10,
-                 from au8820.c:1:
-../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
-`vortex_interrupt':
-../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
-declaration of function `unlikely'
-In file included from ../../alsa-kernel/pci/au88x0/au8830.c:10,
-                 from au8830.c:1:
-../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
-`vortex_interrupt':
-../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
-declaration of function `unlikely'
-../../alsa-kernel/pci/hda/hda_intel.c:74: warning: `enable' defined but
-not used
-../../alsa-kernel/pci/nm256/nm256.c:90: warning: `enable' defined but not
-used In file included from pcxhr.c:1:
-../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
-../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
-uninitialized in this function In file included from pcxhr_core.c:2:
-../../alsa-kernel/pci/pcxhr/pcxhr_core.c: In function
-`pcxhr_update_timer_pos':
-../../alsa-kernel/pci/pcxhr/pcxhr_core.c:1074: warning: `new_sample_count'
-migh t be used uninitialized in this function
-In file included from ymfpci_main.c:2:
-../../alsa-kernel/pci/ymfpci/ymfpci_main.c: In function
-`snd_ymfpci_pcm_interrupt':
-../../alsa-kernel/pci/ymfpci/ymfpci_main.c:329: warning: implicit
-declaration of function `unlikely'
-In file included from usx2yhwdeppcm.c:65:
-usbusx2yaudio.c: In function `i_usX2Y_urb_complete':
-usbusx2yaudio.c:318: warning: implicit declaration of function `unlikely'
-usbusx2yaudio.c:329: warning: implicit declaration of function `likely'
+Lack of access to hardware and documentation from vendors are big issues.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+----------------------------------------------------------------------
+ arpac - 07-25-06 13:08 
+----------------------------------------------------------------------
+hi, so, can we be usefull for helping devel to make good drivers ?
+if so, how to ?
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-25-06 13:05 croiset        New Issue                                    =
-
-07-25-06 13:05 croiset        Kernel Version            =3D> 2.4.7-10      =
-  =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
+07-25-06 13:08 arpac          Note Added: 0011226                          
+======================================================================
 
 
 
@@ -186,5 +99,4 @@ Date Modified  Username       Field                    Change              =
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
