@@ -1,17 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Tue, 25 Jul 2006 18:02:51 +0200
-Message-ID: <9cd0c99f5cb170fba4336c595e53f595@bugtrack.alsa-project.org>
+From: "Chetana Tramble" <trambechetana@eerdsf01.ca.boeing.com>
+Subject: to puher
+Date: Tue, 25 Jul 2006 09:31:20 -0700
+Message-ID: <000001c6b007$c2f7fed0$957ba8c0@zcw83>
+Reply-To: Chetana Tramble <trambechetana@eerdsf01.ca.boeing.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0622860842=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B81F7237
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F1D4246
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 18:02:51 +0200 (MEST)
+	Tue, 25 Jul 2006 18:34:11 +0200 (MEST)
+Received: from eerdsf01.ca.boeing.com (87.69.58.159.cable.012.net.il
+	[87.69.58.159])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	07F8B9967E for <alsa-devel@alsa-project.org>;
+	Tue, 25 Jul 2006 18:34:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,192 +27,222 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
-======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-25-2006 18:02 CEST
-======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
-Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+--===============0622860842==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6AFCD.169926D0"
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+This is a multi-part message in MIME format.
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+------=_NextPart_000_0001_01C6AFCD.169926D0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-If you slash out line 104, it resolves the issue.
+Bes f t S d el n lin x g W p atc v he c s
+=20
+R o OL c EX
+C t ARTI m ER
+BR x EIT l LI n NG
+BV v LGAR t I
+OM g EG e A
+PA t TE s K P w hilipp e e and m v any ot t her
 
-My question is,
+Ha s ndba f gs & Pu j rs f es, TI w FFA r NY & CO Je f werl g y
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
-======================================================================
+O m rde l r TO k DA y Y and sav l e 2 r 5 % http://watkchdismyboi.com
 
-----------------------------------------------------------------------
- Raymond - 07-24-06 07:48 
-----------------------------------------------------------------------
-Refer to the Function Block Diagram
+=20
 
-http://www.via.com.tw/en/products/audio/controllers/envy24ht/
+=20
 
-The current alsa driver ice1724.c support differenct sound cards by
-checking PCI SUBSYSTEM Vendor and Device ID and enable the corresponding
-features of the iec1724 chip.
+=20
 
-What you need to do is to implement the ap192 card specific low level
-routines in ap192.c and add snd_vt1724_ap192_cards in ice1724.c
+disappeared, and the family hushed it up; but the fact remained that the
+Tooks were not as respectable as the Bagginses, though they were
+undoubtedly richer. Not that Belladonna Took ever had any adventures
+after she became Mrs. Bungo Baggins. Bungo, that was Bilbos father,
+built the most luxurious hobbit-hole for her (and partly with her money)
+that was to be found either under The Hill or over The Hill or across
 
 
-static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
-	snd_vt1724_revo_cards,
-	snd_vt1724_amp_cards, 
-	snd_vt1724_aureon_cards,
-	snd_vt1720_mobo_cards,
-	snd_vt1720_pontis_cards,
-	snd_vt1724_prodigy192_cards,
-	snd_vt1724_juli_cards,
-	snd_vt1724_phase_cards,
-+       snd_vt1724_ap192_cards,
-	NULL,
-};
+------=_NextPart_000_0001_01C6AFCD.169926D0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-You have to read the datasheets and understand the function of those
-registers before you write the low level routines
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Bes<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
 
-You can use alsa-1.0.11rc2 to learn how to install driver, lib, utils and
-tools if you are user.
+right " > f </SPAN>t S<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
 
-When you want to develope a new driver, you must use HG repo since the
-alsa developer require you to send patch against HG repo
+right " > d </SPAN>el<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
 
-http://www.alsa-project.org/download.php
+right " > n </SPAN>lin<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
 
-ALSA HG (Mercurial) SCM repositories
+right " > x </SPAN>g W<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > p </SPAN>atc<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > v </SPAN>he<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > c </SPAN>s</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>R<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > o </SPAN>OL<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > c </SPAN>EX</DIV>
+<DIV>C<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > t </SPAN>ARTI<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > m </SPAN>ER</DIV>
+<DIV>BR<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > x </SPAN>EIT<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > l </SPAN>LI<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > n </SPAN>NG</DIV>
+<DIV>BV<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > v </SPAN>LGAR<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > t </SPAN>I</DIV>
+<DIV>OM<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > g </SPAN>EG<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > e </SPAN>A</DIV>
+<DIV>PA<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > t </SPAN>TE<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > s </SPAN>K P<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > w </SPAN>hilipp<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > e </SPAN>e and m<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > v </SPAN>any ot<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > t </SPAN>her</DIV>
+<P>Ha<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > s </SPAN>ndba<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > f </SPAN>gs & Pu<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > j </SPAN>rs<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > f </SPAN>es, TI<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > w </SPAN>FFA<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > r </SPAN>NY & CO Je<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > f </SPAN>werl<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > g </SPAN>y</P>
+<P>O<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > m </SPAN>rde<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > l </SPAN>r TO<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > k </SPAN>DA<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > y </SPAN>Y and sav<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > l </SPAN>e 2<SPAN id=3D"wyboh77"style =3D "
+FLOAT:
+
+right " > r </SPAN>5 % <A =
+href=3D"http://watkchdismyboi.com">http://watkchdismyboi.com</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<DIV>disappeared, and the family hushed it up; but the fact remained =
+that the<BR>
+Tooks were not as respectable as the Bagginses, though they were<BR>
+undoubtedly richer. Not that Belladonna Took ever had any adventures<BR>
+after she became Mrs. Bungo Baggins. Bungo, that was Bilbos father,<BR>
+built the most luxurious hobbit-hole for her (and partly with her =
+money)<BR>
+that was to be found either under The Hill or over The Hill or =
+across<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6AFCD.169926D0--
 
 
 
-----------------------------------------------------------------------
- Raymond - 07-25-06 18:02 
-----------------------------------------------------------------------
->> And wat is a gpio?
-
-It seem that you have not read the datasheet.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-======================================================================
 
 
+--===============0622860842==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0622860842==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0622860842==--
