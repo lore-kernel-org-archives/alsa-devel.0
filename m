@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Wed, 26 Jul 2006 04:30:06 +0200
-Message-ID: <c9af74e48c40eaa31192b437b0bf515e@bugtrack.alsa-project.org>
+Date: Wed, 26 Jul 2006 04:47:07 +0200
+Message-ID: <90162896241ef0d80d753040d1f2e256@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85A1821D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D34E18B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 04:30:06 +0200 (MEST)
+	Wed, 26 Jul 2006 04:47:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 04:30 CEST
+Last Modified:              07-26-2006 04:47 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,35 +68,21 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 01:33 
+ cruiseoveride - 07-26-06 04:41 
 ----------------------------------------------------------------------
-All the features of the envy24ht have already implemented in ice1724.c,
-ak4114.c, ak4xxx-adda.c
+ok i uploaded a pdf file from a bsd site. i hope this data sheet is wat i
+need?
 
-What you need to do is to trace which pins of envy24ht connect to which
-pins of AK4114, AK4358 and AK5385. espeically those GPIO pins ?
-
-You have to identify which components are connnected to those 23 GPIO pins
-of envy24ht 
-
-Do you really want to write from scratch or just modify existing driver to
-support audiophile 192 ?
-
-e.g. ap192_add_controls seem to call snd_akm4xxx_build_controls()
-
-
+if this card works under freebsd, then i could move over without issue.
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-26-06 04:30 
+ Raymond - 07-26-06 04:47 
 ----------------------------------------------------------------------
-Well i need to get the data sheet for the vt1724 first.
-my card was made 2005, hope it is the same vt chip from 2001
-or is there somewhere else i can get the data sheet from
+The "hello.c" equivalent of ALSA driver is dummy.c, you can use
+aplay/arecord to test PCM plugins, controls even when you don't have any
+soundcard
 
-i found this.
-http://www.nbritton.org/uploads/envy24/
-
-can i use bsd drivers as a guide?
+http://hg-mirror.alsa-project.org/alsa-kernel?f=9fc1fdbdaffc;file=drivers/dummy.c;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -191,6 +177,10 @@ Date Modified  Username       Field                    Change
 07-26-06 01:31 Raymond        Note Edited: 0011234                         
 07-26-06 01:33 Raymond        Note Edited: 0011234                         
 07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
+07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
+      
+07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
+07-26-06 04:47 Raymond        Note Added: 0011239                          
 ======================================================================
 
 
