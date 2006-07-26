@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Thu, 27 Jul 2006 00:54:15 +0200
-Message-ID: <acf232dcd64bf8447814a61b4a8a2dee@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 00:15:39 +0200
+Message-ID: <cf9e1e5c9fcbc1eeca75d4a901710073@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F2A3222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2192F178
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 00:54:16 +0200 (MEST)
+	Thu, 27 Jul 2006 00:15:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-27-2006 00:54 CEST
+Last Modified:              07-27-2006 00:15 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,25 +68,27 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-27-06 00:50 
+ cruiseoveride - 07-26-06 23:59 
 ----------------------------------------------------------------------
-yes i did have to change the makefile, talk about not being documented.
+do i need to change any of the makefiles? or configure scripts?
+
+i get the following while compiling
+
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.o
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice17xx-ak4xxx.o
+  Building modules, stage 2.
+  MODPOST
+WARNING: "snd_vt1724_ap192k_cards"
+[/usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.ko] undefined!
+  CC      /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.mod.o
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.ko
+....
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-27-06 00:15 
+----------------------------------------------------------------------
+yes i did have to chane the makefile, talk about not being documented.
 but im getting there
-
-i have  a stange problem nowm, when i load my ice1724 driver, i cant load
-my intel8x0 and vice versa???
-
-
-
-----------------------------------------------------------------------
- cruiseoveride - 07-27-06 00:54 
-----------------------------------------------------------------------
-i get the following error while trying to load both modules (intel8x0 and
-ice1724)
-
-ALSA /usr/src/Alsa_mine/alsa-driver/acore/init.c:133: cannot find the slot
-for index 0 (range 0-0)
-ICE1724: probe of 0000:05:07.0 failed with error -12
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -193,8 +195,6 @@ Date Modified  Username       Field                    Change
 07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
 07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
 07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
-07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
-07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
 ======================================================================
 
 
