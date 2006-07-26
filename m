@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Wed, 26 Jul 2006 07:46:52 +0200
-Message-ID: <362223a5845a48088e3707c3a042a44a@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 00:54:15 +0200
+Message-ID: <acf232dcd64bf8447814a61b4a8a2dee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B22B0125
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F2A3222
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 07:46:52 +0200 (MEST)
+	Thu, 27 Jul 2006 00:54:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 07:46 CEST
+Last Modified:              07-27-2006 00:54 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,30 +68,25 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 06:22 
+ cruiseoveride - 07-27-06 00:50 
 ----------------------------------------------------------------------
-About the "Multi Track Peak", ice1712 seem different from ice1724.
+yes i did have to change the makefile, talk about not being documented.
+but im getting there
 
-Is it possible to use TLV control to provide the label of the peak
-channels ?
+i have  a stange problem nowm, when i load my ice1724 driver, i cant load
+my intel8x0 and vice versa???
+
+
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 07:46 
+ cruiseoveride - 07-27-06 00:54 
 ----------------------------------------------------------------------
->> Question 1
->> ---------------
->> when i play something , the first two (1,2) start jumping up and down
-and      >> peaking at 255. wat do the others do? As they dont change at
-all.
+i get the following error while trying to load both modules (intel8x0 and
+ice1724)
 
-It seem that DMA and peak of envy24ht is working, only DAC , ADC and SPDIF
-is not initialised . This is why you cann't hear any sound
-
->> Question 2
->> ---------------
->> How to push noise into the capture interfaces to check monitor levels?
-
-As long as ADC is not initialsed, you cannot record sound
+ALSA /usr/src/Alsa_mine/alsa-driver/acore/init.c:133: cannot find the slot
+for index 0 (range 0-0)
+ICE1724: probe of 0000:05:07.0 failed with error -12
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -194,6 +189,12 @@ Date Modified  Username       Field                    Change
 07-26-06 05:17 Raymond        Note Edited: 0011240                         
 07-26-06 06:22 Raymond        Note Added: 0011242                          
 07-26-06 07:46 Raymond        Note Added: 0011243                          
+07-26-06 07:55 Raymond        Note Edited: 0011243                         
+07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
+07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
+07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
+07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
+07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
 ======================================================================
 
 
