@@ -1,15 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Wed, 26 Jul 2006 16:26:36 +0200
-Message-ID: <eac490e9b44f6debef1348d5b0500261@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Wed, 26 Jul 2006 23:59:37 +0200
+Message-ID: <8aa8d733f9130f70224beb2c4318da74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3FA415E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4771B178
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 16:26:36 +0200 (MEST)
+	Wed, 26 Jul 2006 23:59:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,103 +27,172 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                cruiseoveride
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-26-2006 16:26 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-26-2006 23:59 CEST
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
+
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
+
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
+
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 10:14 
+ cruiseoveride - 07-26-06 15:42 
 ----------------------------------------------------------------------
-The other limited resource of cs46xx is SRC
-
-     snd_printk (KERN_ERR "dsp_spos: no free PCM channel\n");
-
-     if (ins->nsrc_scb >= DSP_MAX_SRC_NR) { 
-         snd_printk(KERN_ERR "dsp_spos: to many SRC instances\n!"); 
-
-http://hg-mirror.alsa-project.org/alsa-kernel?f=7f6f95ddde08;file=include/cs46xx_dsp_spos.h;style=gitweb
-
-
-If the driver allow multiple instances of OSS application, it's better
-reject the OSS application when the resources are not enough in
-snd_xxx_open() instead of snd_xxx_hw_params(). 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047 
-
-It seem that OSS application (kernel emulation) don't expect any error
-after sucessful open.  However it doen's cause dead lock if you are
-running aoss
-
-
+Ill try and do some coding this weekend, quite busy at the office now.
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 16:26 
+ cruiseoveride - 07-26-06 23:59 
 ----------------------------------------------------------------------
->> How do I find out? 
+do i need to change any of the makefiles? or configure scripts?
 
-two 48-pins AC97 CS4294 chips on your sound card
+i get the following while compiling
+
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.o
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice17xx-ak4xxx.o
+  Building modules, stage 2.
+  MODPOST
+WARNING: "snd_vt1724_ap192k_cards"
+[/usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.ko] undefined!
+  CC      /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.mod.o
+  LD [M]  /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.ko
+....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+07-23-06 17:39 Raymond        Note Added: 0011191                          
+07-23-06 17:42 Raymond        Note Edited: 0011191                         
+07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
+07-23-06 18:03 rlrevell       Note Added: 0011194                          
+07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
+07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
+07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
+07-24-06 02:15 Raymond        Note Added: 0011206                          
+07-24-06 02:27 Raymond        Note Edited: 0011206                         
+07-24-06 02:28 Raymond        Note Edited: 0011206                         
+07-24-06 07:12 Raymond        Note Edited: 0011206                         
+07-24-06 07:48 Raymond        Note Edited: 0011206                         
+07-25-06 18:02 Raymond        Note Added: 0011230                          
+07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
+07-26-06 01:20 Raymond        Note Added: 0011234                          
+07-26-06 01:27 Raymond        Note Edited: 0011234                         
+07-26-06 01:31 Raymond        Note Edited: 0011234                         
+07-26-06 01:33 Raymond        Note Edited: 0011234                         
+07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
+07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
+      
+07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
+07-26-06 04:47 Raymond        Note Added: 0011239                          
+07-26-06 04:53 Raymond        Note Added: 0011240                          
+07-26-06 05:17 Raymond        Note Edited: 0011240                         
+07-26-06 06:22 Raymond        Note Added: 0011242                          
+07-26-06 07:46 Raymond        Note Added: 0011243                          
+07-26-06 07:55 Raymond        Note Edited: 0011243                         
+07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
+07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
 ======================================================================
 
 
