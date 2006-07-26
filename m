@@ -1,19 +1,15 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH 0/5] powerpc sound, some more patches
-Date: Wed, 26 Jul 2006 19:19:51 +0200
-Message-ID: <1153934392.10251.0.camel@johannes.berg>
-References: <20060718172841.046446000@sipsolutions.net>
-	<s5hy7uhsra7.wl%tiwai@suse.de>
-	<7015.131.234.232.48.1153840399.squirrel@secure.sipsolutions.net>
-	<1153864334.18353.8.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Wed, 26 Jul 2006 16:26:36 +0200
+Message-ID: <eac490e9b44f6debef1348d5b0500261@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1859577631=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A00A15E
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3FA415E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 19:21:06 +0200 (MEST)
-In-Reply-To: <1153864334.18353.8.camel@localhost.localdomain>
+	Wed, 26 Jul 2006 16:26:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,78 +19,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1859577631==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-p0J74OVGq/r2PC6Ko0Bz"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1823
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-26-2006 16:26 CEST
+======================================================================
+Summary:                    surround40 memory leak
+Description: 
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-26-06 10:14 
+----------------------------------------------------------------------
+The other limited resource of cs46xx is SRC
+
+     snd_printk (KERN_ERR "dsp_spos: no free PCM channel\n");
+
+     if (ins->nsrc_scb >= DSP_MAX_SRC_NR) { 
+         snd_printk(KERN_ERR "dsp_spos: to many SRC instances\n!"); 
+
+http://hg-mirror.alsa-project.org/alsa-kernel?f=7f6f95ddde08;file=include/cs46xx_dsp_spos.h;style=gitweb
 
 
---=-p0J74OVGq/r2PC6Ko0Bz
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+If the driver allow multiple instances of OSS application, it's better
+reject the OSS application when the resources are not enough in
+snd_xxx_open() instead of snd_xxx_hw_params(). 
 
-On Tue, 2006-07-25 at 16:52 -0500, Benjamin Herrenschmidt wrote:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047 
 
-> They should still, for sure. Johannes, please sync with Paulus since I
-> think you posted previous version of at least some of these that he's
-> about to push to Linus via the powerpc tree.
-
-Hm, I don't think I ever posted 'final' versions of these that I signed
-off, but I'll take a look.
-
-johannes
-
---=-p0J74OVGq/r2PC6Ko0Bz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (powerbook)
-
-iQIVAwUARMekNqVg1VMiehFYAQKrOA//S8OgCtjKEMKtG3m0DjCGbJs5qk9aTaE6
-u6/pRUH8QQHjs3n99aTh7/XWgkt+hmXvgUrNKMN2UGe05lDeGxJOfLSwKW71kaUP
-sGoXoBJ9rYyqkDjkL0kSv0SsUV3MIlR3fAstdg7dz4YbtEfRrcTVpOZlHnuF4BKN
-9NYL5NSIT8o3LOx3EE7zvcTiG6JLXFJTd2ZollGGbH39CQrSs9oapazQOyn5+jDm
-sxHsg+CC9a5DSX9A+JGWGLxGDxeSwu/ZA7j3WQopVywfrfqf1C4NInspfOAotPwy
-uaUZ7teHlFdK02U8bv1TtDcEzIBMdEHVxkslGZF2PshBf2MMttFqvzOeQdpHtAZM
-ubcxIDW6q9KtxdJ+irhELUYchQ4ysQkaUkBZ3euDz4l0wJxQ7LvxaKi7jffjEuZ9
-QPCHy7xdDhOMNUKxmTUNYeTpN0gh/9hz72eX4vdQP/xhW8PW2BEkQKuthZIyefyZ
-uYctvUPwTBC+E4/NgOXpWCYeqGEKs07c92sWHSpHvhMbLl7Nkt37anGQC37aaaRC
-USTWK1QGENceW24FQ9qG4s5rcYqe2HdQegBS3/OzmJW1jaE3DHro0N6m2s3UonEA
-gLKVsiroZR7R7IrHQ1Tm3t8EhyfUwse6fomVTdtBasSR4DWZ9Y3sxHDwF+FotjzM
-P1mMRqY9TQ8=
-=M/20
------END PGP SIGNATURE-----
-
---=-p0J74OVGq/r2PC6Ko0Bz--
+It seem that OSS application (kernel emulation) don't expect any error
+after sucessful open.  However it doen's cause dead lock if you are
+running aoss
 
 
 
---===============1859577631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+----------------------------------------------------------------------
+ Raymond - 07-26-06 16:26 
+----------------------------------------------------------------------
+>> How do I find out? 
+
+two 48-pins AC97 CS4294 chips on your sound card
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1859577631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1859577631==--
