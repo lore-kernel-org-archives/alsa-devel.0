@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Wed, 26 Jul 2006 04:47:07 +0200
-Message-ID: <90162896241ef0d80d753040d1f2e256@bugtrack.alsa-project.org>
+Date: Wed, 26 Jul 2006 04:53:44 +0200
+Message-ID: <1e24cea93e7d77be273a056396e4bb0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D34E18B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56F30234
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 04:47:07 +0200 (MEST)
+	Wed, 26 Jul 2006 04:53:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 04:47 CEST
+Last Modified:              07-26-2006 04:53 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,14 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-26-06 04:41 
-----------------------------------------------------------------------
-ok i uploaded a pdf file from a bsd site. i hope this data sheet is wat i
-need?
-
-if this card works under freebsd, then i could move over without issue.
-
-----------------------------------------------------------------------
  Raymond - 07-26-06 04:47 
 ----------------------------------------------------------------------
 The "hello.c" equivalent of ALSA driver is dummy.c, you can use
@@ -83,6 +75,12 @@ aplay/arecord to test PCM plugins, controls even when you don't have any
 soundcard
 
 http://hg-mirror.alsa-project.org/alsa-kernel?f=9fc1fdbdaffc;file=drivers/dummy.c;style=gitweb
+
+----------------------------------------------------------------------
+ Raymond - 07-26-06 04:53 
+----------------------------------------------------------------------
+datasheet is in the URL of
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11164
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -181,6 +179,7 @@ Date Modified  Username       Field                    Change
       
 07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
 07-26-06 04:47 Raymond        Note Added: 0011239                          
+07-26-06 04:53 Raymond        Note Added: 0011240                          
 ======================================================================
 
 
