@@ -1,19 +1,17 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 0/5] powerpc sound, some more patches
-Date: Tue, 25 Jul 2006 16:52:14 -0500
-Message-ID: <1153864334.18353.8.camel__34896.8188082383$1153874577$gmane$org@localhost.localdomain>
-References: <20060718172841.046446000@sipsolutions.net>
-	<s5hy7uhsra7.wl%tiwai@suse.de>
-	<7015.131.234.232.48.1153840399.squirrel@secure.sipsolutions.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Wed, 26 Jul 2006 04:30:06 +0200
+Message-ID: <c9af74e48c40eaa31192b437b0bf515e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD07D17C
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85A1821D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Jul 2006 23:52:22 +0200 (MEST)
-In-Reply-To: <7015.131.234.232.48.1153840399.squirrel@secure.sipsolutions.net>
+	Wed, 26 Jul 2006 04:30:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,23 +21,177 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-07-25 at 17:13 +0200, Johannes Berg wrote:
-> Takashi Iwai wrote:
-> 
-> > Thanks, now all patches are on ALSA tree.
-> 
-> Thanks.
-> These should still go into 2.6.18, will that be possible?
 
-They should still, for sure. Johannes, please sync with Paulus since I
-think you posted previous version of at least some of these that he's
-about to push to Linus via the powerpc tree.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+======================================================================
+Reported By:                cruiseoveride
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              07-26-2006 04:30 CEST
+======================================================================
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-Ben.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
+
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
+
+If you slash out line 104, it resolves the issue.
+
+My question is,
+
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-26-06 01:33 
+----------------------------------------------------------------------
+All the features of the envy24ht have already implemented in ice1724.c,
+ak4114.c, ak4xxx-adda.c
+
+What you need to do is to trace which pins of envy24ht connect to which
+pins of AK4114, AK4358 and AK5385. espeically those GPIO pins ?
+
+You have to identify which components are connnected to those 23 GPIO pins
+of envy24ht 
+
+Do you really want to write from scratch or just modify existing driver to
+support audiophile 192 ?
+
+e.g. ap192_add_controls seem to call snd_akm4xxx_build_controls()
+
+
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-26-06 04:30 
+----------------------------------------------------------------------
+Well i need to get the data sheet for the vt1724 first.
+my card was made 2005, hope it is the same vt chip from 2001
+or is there somewhere else i can get the data sheet from
+
+i found this.
+http://www.nbritton.org/uploads/envy24/
+
+can i use bsd drivers as a guide?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+07-23-06 17:39 Raymond        Note Added: 0011191                          
+07-23-06 17:42 Raymond        Note Edited: 0011191                         
+07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
+07-23-06 18:03 rlrevell       Note Added: 0011194                          
+07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
+07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
+07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
+07-24-06 02:15 Raymond        Note Added: 0011206                          
+07-24-06 02:27 Raymond        Note Edited: 0011206                         
+07-24-06 02:28 Raymond        Note Edited: 0011206                         
+07-24-06 07:12 Raymond        Note Edited: 0011206                         
+07-24-06 07:48 Raymond        Note Edited: 0011206                         
+07-25-06 18:02 Raymond        Note Added: 0011230                          
+07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
+07-26-06 01:20 Raymond        Note Added: 0011234                          
+07-26-06 01:27 Raymond        Note Edited: 0011234                         
+07-26-06 01:31 Raymond        Note Edited: 0011234                         
+07-26-06 01:33 Raymond        Note Edited: 0011234                         
+07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
+======================================================================
 
 
 
