@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Thu, 27 Jul 2006 00:57:29 +0200
-Message-ID: <a4e8ce0c230df60a6c1817ed3bdbf705@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 01:00:29 +0200
+Message-ID: <c615925d2f1d77b6e619c5bea118a44f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AF9D222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E02AE12E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 00:57:30 +0200 (MEST)
+	Thu, 27 Jul 2006 01:00:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-27-2006 00:57 CEST
+Last Modified:              07-27-2006 01:00 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,23 +68,16 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-27-06 00:54 
-----------------------------------------------------------------------
-i get the following error while trying to load both modules (intel8x0 and
-ice1724)
-
-ALSA /usr/src/Alsa/alsa-driver/acore/init.c:133: cannot find the slot for
-index 0 (range 0-0)
-ICE1724: probe of 0000:05:07.0 failed with error -12
-
-
-
-----------------------------------------------------------------------
  rlrevell - 07-27-06 00:57 
 ----------------------------------------------------------------------
 This is really not the right forum for driver development.  Please post
 your questions along with a link to your code to alsa-devel at
 lists.sourceforge.net.
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-27-06 01:00 
+----------------------------------------------------------------------
+can u move this thread to the driver section
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -195,6 +188,7 @@ Date Modified  Username       Field                    Change
 07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
 07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
 07-27-06 00:57 rlrevell       Note Added: 0011254                          
+07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
 ======================================================================
 
 
