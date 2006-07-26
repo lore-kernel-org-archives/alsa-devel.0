@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Wed, 26 Jul 2006 00:19:28 +0200
-Message-ID: <bf123f58a75cb0bf5471e8c069db564c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Wed, 26 Jul 2006 02:03:27 +0200
+Message-ID: <6d74ef850a976a59c04ea583effeb334@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D405243
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 772CB230
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 00:19:29 +0200 (MEST)
+	Wed, 26 Jul 2006 02:03:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,154 +26,136 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 00:19 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-26-2006 02:03 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
 
-If you slash out line 104, it resolves the issue.
 
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-25-06 18:02 
+ bitmage2 - 07-25-06 21:53 
 ----------------------------------------------------------------------
->> And wat is a gpio?
+I have tested and can run multiple instances of all three commands (means: 
+also the "-Drear" one works) without commenting out the "lock".
+It also works if I comment out the "lock" in the "CS46xx.pcm.rear.0"
+section of /usr/share/alsa/cards/CS46xx.conf .
 
-It seem that you have not read the datasheet.
+After testing further I have good news and bad news:
+
+The good news: "speaker-test -c 6 -Dsurround51 -t wav" does not go to 100%
+CPU load when removing the "lock". :-)
+
+So far - so good. But my original stated goal was: "use the rest of my 5.1
+speaker set". And this goal includes playing back 2-channel MP3 files on
+all 6 speakers.
+
+So here's the bad news: I created a .asoundrc with a channel duplicator
+"pcm.ch51dup" or "pcm.duplicate" (see below. I found those on the
+internet). Using any of those two, the CPU goes again to 100% (Example:
+"speaker-test -Dch51dup -c 2 -t wav").
+
+  Christian
+
+---  ~/.asoundrc ---------------------------
+
+pcm.ch51dup {
+    type route
+    slave.pcm "surround51"
+    slave.channels 6
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 0.5
+    ttable.1.4 0.5
+    ttable.0.5 0.5
+    ttable.1.5 0.5
+}
+
+
+
+---  Alternative ~/.asoundrc ---------------------------
+
+pcm.duplicate {
+    type plug
+    slave.pcm "surround51"
+    slave.channels 6
+    route_policy duplicate
+}
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-26-06 00:19 
+ Raymond - 07-26-06 02:03 
 ----------------------------------------------------------------------
-ok ray, im getting slightly on track.
+How many instances of surround40 or surround51 can you run ? It hard to
+notice 'out of sync' when using speaker-test
 
-in the ap192k.c file i use this structure...
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x133.htm
-yes/no?
-
-and the other thing is, i have working oss drivers, which i am currently
-using.
-Can i use those for anything? ossinfo etc?
+You may try the upmix plugin in alsa-plugins-1.0.12rc1 for up-mixing 2
+channels to 6 channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
+07-24-06 05:04 Raymond        Note Edited: 0011209                         
+07-24-06 20:38 bitmage2       Note Added: 0011214                          
+07-25-06 03:00 Raymond        Note Added: 0011223                          
+07-25-06 03:03 Raymond        Note Edited: 0011223                         
+07-25-06 03:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:13 Raymond        Note Edited: 0011223                         
+07-25-06 21:53 bitmage2       Note Added: 0011232                          
+07-26-06 02:03 Raymond        Note Added: 0011235                          
 ======================================================================
 
 
