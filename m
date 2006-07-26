@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Wed, 26 Jul 2006 04:53:44 +0200
-Message-ID: <1e24cea93e7d77be273a056396e4bb0c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Wed, 26 Jul 2006 06:15:40 +0200
+Message-ID: <08ce0f2d850c5dd4791ebd8c52807564@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56F30234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1525E24E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 04:53:44 +0200 (MEST)
+	Wed, 26 Jul 2006 06:15:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,159 +26,122 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
+Reported By:                carllivitt
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 04:53 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              07-26-2006 06:15 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-If you slash out line 104, it resolves the issue.
+I've also tried using the 'single_cmd=1' module loading option. 
 
-My question is,
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001957 HP dv8000t hda-intel codec not recognized
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 04:47 
+ haight - 07-03-06 22:19 
 ----------------------------------------------------------------------
-The "hello.c" equivalent of ALSA driver is dummy.c, you can use
-aplay/arecord to test PCM plugins, controls even when you don't have any
-soundcard
+Thanks, but I can live with it this way for now (or indefinitely if need
+be).  I'm just happy it works with linux as well as it does (wireless,
+video, etc).  Sound volume would be nice, but not that critical.
 
-http://hg-mirror.alsa-project.org/alsa-kernel?f=9fc1fdbdaffc;file=drivers/dummy.c;style=gitweb
+Still happy to help if anyone wants to work on the driver though.  I'll
+keep playing around to see if I can develop a fix or workaround.
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 04:53 
+ mlfarrell - 07-26-06 06:15 
 ----------------------------------------------------------------------
-datasheet is in the URL of
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11164
+Has anyone gotten the payable linuxant driver to work with the "Generic
+14f1 ID 5047" chip?  If so, I'm buying it because 20 bucks is worth it for
+decent sound in linux.  I've browsed all over linuxant's site and I can't
+find it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
-07-26-06 01:20 Raymond        Note Added: 0011234                          
-07-26-06 01:27 Raymond        Note Edited: 0011234                         
-07-26-06 01:31 Raymond        Note Edited: 0011234                         
-07-26-06 01:33 Raymond        Note Edited: 0011234                         
-07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
-07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
-      
-07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
-07-26-06 04:47 Raymond        Note Added: 0011239                          
-07-26-06 04:53 Raymond        Note Added: 0011240                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
+06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
+06-21-06 17:47 carllivitt     Note Added: 0010399                          
+06-21-06 18:44 rlrevell       Note Added: 0010401                          
+06-22-06 10:39 carllivitt     Note Added: 0010420                          
+06-22-06 17:50 GrueMaster     Note Added: 0010426                          
+06-26-06 14:29 Ytorres        Note Added: 0010535                          
+06-26-06 14:47 Ytorres        Issue Monitored: Ytorres                     
+07-03-06 21:50 haight         Issue Monitored: haight                      
+07-03-06 21:55 haight         File Added: codec.txt                        
+07-03-06 22:01 haight         Note Added: 0010808                          
+07-03-06 22:03 haight         Note Edited: 0010808                         
+07-03-06 22:06 rlrevell       Note Added: 0010809                          
+07-03-06 22:19 haight         Note Added: 0010810                          
+07-26-06 06:15 mlfarrell      Note Added: 0011241                          
 ======================================================================
 
 
