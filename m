@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Wed, 26 Jul 2006 08:34:23 +0200
-Message-ID: <760b68735f24c8187e7948318a5b07aa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Wed, 26 Jul 2006 08:41:27 +0200
+Message-ID: <4e632a35d9c9e7fc4a0bd5ec49a7f8de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EE94247
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E029195
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 08:34:23 +0200 (MEST)
+	Wed, 26 Jul 2006 08:41:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,88 +26,108 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-26-2006 08:34 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-26-2006 08:41 CEST
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
+
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 02:30 
+ Raymond - 07-26-06 02:09 
 ----------------------------------------------------------------------
-32 * 2 > ( 64 - capture pcm )
-16 * 4 > ( 64 - capture pcm )   
-11 * 6 > ( 64 - capture pcm )
+How many instances of surround40 or surround51 can you run ? It hard to
+notice 'out of sync' when using speaker-test
 
-It depends on DSP firmware support 7.1 or not
+You may try the upmix plugin in alsa-plugins-1.0.12rc1 for up-mixing 2
+channels to 6 channels.
 
-Which model of the AC97 codecs or DACs on your card ?
+Wound you mind run set_params_test.c and post the result in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724 ?
 
 
 
 ----------------------------------------------------------------------
- bitmage2 - 07-26-06 08:34 
+ bitmage2 - 07-26-06 08:41 
 ----------------------------------------------------------------------
-How do I find out? Can I look it up in a log file, or do I actually look at
-the text on the chips ?
+I can run 10 instances of "speaker-test -c 6 -Dsurround51 -t wav".
+Instances 1-5 run correct, instances 6-10 produce wrong noises (quickly
+looping sound), and instance 11 tells me:
+ -----
+ Unable to set hw params for playback: No such device or address
+ Setting of hwparams failed: No such device or address
+ -----
 
-The card and chip are these according to alsamixer:
-Card: Sound Fusion CS46xx                                                 
-                         Chip: Cirrus Logic CS4294 rev 5,Cirrus Logic
-CS4294 rev 5,Cirrus Logic CS4294 rev 5                 &#9474;
+I will try the the upmix plugin and dot the set_params_test.c test in the
+following couple of days.
+
+Christian
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
+07-24-06 05:04 Raymond        Note Edited: 0011209                         
+07-24-06 20:38 bitmage2       Note Added: 0011214                          
+07-25-06 03:00 Raymond        Note Added: 0011223                          
+07-25-06 03:03 Raymond        Note Edited: 0011223                         
+07-25-06 03:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:13 Raymond        Note Edited: 0011223                         
+07-25-06 21:53 bitmage2       Note Added: 0011232                          
+07-26-06 02:03 Raymond        Note Added: 0011235                          
+07-26-06 02:09 Raymond        Note Edited: 0011235                         
+07-26-06 08:41 bitmage2       Note Added: 0011245                          
 ======================================================================
 
 
