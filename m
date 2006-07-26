@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Wed, 26 Jul 2006 06:22:53 +0200
-Message-ID: <0ff003d7f5be98627d76a69c589a21d4@bugtrack.alsa-project.org>
+Date: Wed, 26 Jul 2006 04:41:03 +0200
+Message-ID: <7d04783d16ca9d2da7dec77798df34e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E36DD250
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45AC4247
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 06:22:53 +0200 (MEST)
+	Wed, 26 Jul 2006 04:41:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 06:22 CEST
+Last Modified:              07-26-2006 04:41 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,23 +68,24 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 05:17 
+ cruiseoveride - 07-26-06 04:30 
 ----------------------------------------------------------------------
-datasheet is in the URL of
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287#11164
+Well i need to get the data sheet for the vt1724 first.
+my card was made 2005, hope it is the same vt chip from 2001
+or is there somewhere else i can get the data sheet from
 
-Remember the length of the driver of the card (card->driver) must be <= 15
-and need to put 'shortname aliases AP192.conf' in aliases.conf
+i found this.
+http://www.nbritton.org/uploads/envy24/
 
-
+can i use bsd drivers as a guide?
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 06:22 
+ cruiseoveride - 07-26-06 04:41 
 ----------------------------------------------------------------------
-About the "Multi Track Peak", ice1712 seem different from ice1724.
+ok i uploaded a pdf file from a bsd site. i hope this data sheet is wat i
+need?
 
-Is it possible to use TLV control to provide the label of the peak
-channels ?
+if this card works under freebsd, then i could move over without issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -182,10 +183,6 @@ Date Modified  Username       Field                    Change
 07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
       
 07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
-07-26-06 04:47 Raymond        Note Added: 0011239                          
-07-26-06 04:53 Raymond        Note Added: 0011240                          
-07-26-06 05:17 Raymond        Note Edited: 0011240                         
-07-26-06 06:22 Raymond        Note Added: 0011242                          
 ======================================================================
 
 
