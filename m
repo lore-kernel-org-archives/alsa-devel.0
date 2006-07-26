@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Wed, 26 Jul 2006 15:42:17 +0200
-Message-ID: <37d48bf2ebe5067d13fe90c72c0b5d3d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002189]: No sound on speakers,
+	low volume on the headphones, Packard bell V7900
+Date: Wed, 26 Jul 2006 17:48:40 +0200
+Message-ID: <b1161d3f329c88d5fef2ee71bd3e1ca0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77F18189
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAFDF15E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Jul 2006 15:42:17 +0200 (MEST)
+	Wed, 26 Jul 2006 17:48:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,181 +26,174 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
 ======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
+Reported By:                bettored
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2189
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15-23-386
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-26-2006 15:42 CEST
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              07-26-2006 17:48 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    No sound on speakers, low volume on the headphones,
+Packard bell V7900
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+Hi,
+I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
+hda-intel, with problems.
+I have no sound on speakers and very low on the headphones.
+In the alsamixer all is on.
+Recently i actualized to Alsa 1.0.11 but with same problem.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+In the Volumen Control, i have two:
+1. HDA intel (alsa mixer)
+2. Realtek ALC260 (oss mixer)
+And it is correct.
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+Here leave same test:
 
-If you slash out line 104, it resolves the issue.
 
-My question is,
+janek@janek-laptop:~$ lsmod | grep snd
+snd_hda_intel          19348  2
+snd_hda_codec         143152  1 snd_hda_intel
+snd_pcm_oss            43936  0
+snd_mixer_oss          18944  2 snd_pcm_oss
+snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25348  1 snd_pcm
+snd                    55396  8
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
+soundcore              10208  2 snd
+snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
+--------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ lspci
+0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
+(rev 03)
+0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
+Port (rev 03)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 1 (rev 02)
+0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 2 (rev 02)
+0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 3 (rev 02)
+0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 4 (rev 02)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 02)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 02)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 02)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 02)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 02)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
+e2)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 02)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 02)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
+device 71c5
+0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
+(rev 02)
+0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
+(rev 02)
+0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
+0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
+(rev 01)
+0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
+(rev 02)
+
+
+-------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ modinfo soundcore
+filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
+depends:
+srcversion:     DD426F1CCA2CC5F060F6F92
+
+
+---------------------------------------------------------------------------
+
+
+Thanks for your time 
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 07:55 
+ urdle - 07-25-06 18:38 
 ----------------------------------------------------------------------
->> Question 1
->> ---------------
->> when i play something , the first two (1,2) start jumping up and down
-and      >> peaking at 255. wat do the others do? As they dont change at
-all.
+I have the same issue with my PB easynote v7907 : No sound at all, except a
+very very weak output (almost inaudible) through S/PDIF when playing an
+audio CD.
 
-It seem that DMA and peak of envy24ht is working, only DAC , ADC and SPDIF
-is not initialised . This is why you cann't hear any sound
+I use alsa1.11
 
->> Question 2
->> ---------------
->> How to push noise into the capture interfaces to check monitor levels?
-
-As long as ADC is not initialsed, you cannot record sound
-
-but you can try to check other playback peak (may need hack for alsa-lib
-to find the right conf file) assume card 2 is your audiophile.conf
-
-speaker-test -Dplughw:2,0 -c 4 -t wav
-speaker-test -Dplughw:2,0 -c 6 -t wav
-speaker-test -Dplughw:2,0 -c 8 -t wav
+I tried with an USB HeadSet, and it worked perfectly... In fact it was
+even too loud. I did that test to check that my alsa installation was
+working fine. So Alsa is working, but not on the notebook speakers nor at
+an audible level through S/PDIF.
 
 
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-26-06 15:42 
+ adrian_r - 07-26-06 17:48 
 ----------------------------------------------------------------------
-Ill try and do some coding this weekend, quite busy at the office now.
+I would like to report the same problem on a Packard Bell Easynote V7912,
+with Ubuntu Dapper. I also installed alsa 1.0.12rc1 and tried all the
+hda_intel models but without any success. I tried changing switches and
+settings with the hda_intel test model, but didn't manage to improve on
+the barely audible sound on the headphones (I have only tested with
+desktop sound events and with some I can
+hear a faint sound of something, and with others not).
+
+Thank you
+
+Adrian.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
-07-26-06 01:20 Raymond        Note Added: 0011234                          
-07-26-06 01:27 Raymond        Note Edited: 0011234                         
-07-26-06 01:31 Raymond        Note Edited: 0011234                         
-07-26-06 01:33 Raymond        Note Edited: 0011234                         
-07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
-07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
-      
-07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
-07-26-06 04:47 Raymond        Note Added: 0011239                          
-07-26-06 04:53 Raymond        Note Added: 0011240                          
-07-26-06 05:17 Raymond        Note Edited: 0011240                         
-07-26-06 06:22 Raymond        Note Added: 0011242                          
-07-26-06 07:46 Raymond        Note Added: 0011243                          
-07-26-06 07:55 Raymond        Note Edited: 0011243                         
-07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
+06-07-06 19:47 bettored       New Issue                                    
+06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
+06-15-06 20:25 bonobo         Note Added: 0010243                          
+06-15-06 20:32 bonobo         Note Edited: 0010243                         
+06-18-06 23:59 ixM            Note Added: 0010304                          
+06-20-06 19:52 tiwai          Note Added: 0010350                          
+06-21-06 19:02 ixM            Note Added: 0010402                          
+06-21-06 19:16 tiwai          Note Added: 0010403                          
+06-22-06 23:18 urdle          Issue Monitored: urdle                       
+06-25-06 14:02 bonobo         Note Added: 0010507                          
+06-25-06 21:37 bonobo         Note Added: 0010519                          
+07-01-06 13:46 bonobo         Note Added: 0010761                          
+07-19-06 17:29 urdle          Note Added: 0011089                          
+07-25-06 18:38 urdle          Note Edited: 0011089                         
+07-26-06 17:48 adrian_r       Note Added: 0011250                          
 ======================================================================
 
 
