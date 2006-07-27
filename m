@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002299]: no manual volume control for
-	Delta 1010 device (using ice1712)
-Date: Thu, 27 Jul 2006 12:58:09 +0200
-Message-ID: <42c68ed9d9fd2feb4f65cb6bbf5cee6c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002301]: 82801G ICH7 problems.
+Date: Thu, 27 Jul 2006 12:59:50 +0200
+Message-ID: <298ea3c754ffae452a7b07f87accc301@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22D3216C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDF79170
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 12:58:10 +0200 (MEST)
+	Thu, 27 Jul 2006 12:59:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,57 +25,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2301> 
 ======================================================================
-Reported By:                Jarad
-Assigned To:                
+Reported By:                magmax
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2299
-Category:                   PCI - ice1712
+Issue ID:                   2301
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11-1.1369_FC
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.17-1-686
 ======================================================================
-Date Submitted:             07-24-2006 07:02 CEST
-Last Modified:              07-27-2006 12:58 CEST
+Date Submitted:             07-24-2006 16:28 CEST
+Last Modified:              07-27-2006 12:59 CEST
 ======================================================================
-Summary:                    no manual volume control for Delta 1010 device
-(using ice1712)
+Summary:                    82801G ICH7 problems.
 Description: 
-Using an M-audio delta 1010 device under Fedora Core 4 I am unable to
-manually control the volume levels (individually or as a whole).
+I have two problems: 
+
+a) a really annoying acute noise that is present all the time.
+
+b) when you change whatever you want at alsamixer, all the sound (acute
+noise included) shuts down.
+
+This bug may be similar to 0002221.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 07-24-06 20:01 
+ tiwai - 07-27-06 12:59 
 ----------------------------------------------------------------------
-Have you tried envy24control? If FC4 doesn't include it you'll have to
-compile it from whichever version of alsa-tools source matches your
-kernel.
-
-There's some stuff about using Delta 1010 on Linux (mostly about multiple
-cards, but some of it applies to single card) here:
-
-http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
-
-----------------------------------------------------------------------
- tiwai - 07-27-06 12:58 
-----------------------------------------------------------------------
-It's not implemented in the driver intentionally.
-I have no hardware information about delta1010.  Does it have any analog
-volume control on hardware?
+Did you try model module option with various values, as described in
+ALSA-Configuration.txt?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-24-06 07:02 Jarad          New Issue                                    
-07-24-06 07:02 Jarad          Kernel Version            => 2.6.11-1.1369_FC
-07-24-06 20:01 johnrigg       Note Added: 0011213                          
-07-27-06 12:58 tiwai          Note Added: 0011269                          
+07-24-06 16:28 magmax         New Issue                                    
+07-24-06 16:28 magmax         Distribution              => Debian          
+07-24-06 16:28 magmax         Kernel Version            => 2.6.17-1-686    
+07-27-06 12:59 tiwai          Note Added: 0011270                          
 ======================================================================
 
 
