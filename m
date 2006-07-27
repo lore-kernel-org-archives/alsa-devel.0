@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002291]: AD1986A produces a high
-	fequency noise
-Date: Thu, 27 Jul 2006 13:02:16 +0200
-Message-ID: <73dcc1c705a1afa9c4333263853eaf8a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002303]: A lot of warning during
+	compilation of alsa-driver 1.0.12rc1
+Date: Thu, 27 Jul 2006 13:17:50 +0200
+Message-ID: <b2d7c1fdb0871d1a58ab0bad857bfb0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8BCA170
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3F1317B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 13:02:16 +0200 (MEST)
+	Thu, 27 Jul 2006 13:17:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,72 +24,202 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2291> 
-======================================================================
-Reported By:                michaeleekk
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2303> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                croiset
 Assigned To:                perex
-======================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Issue ID:                   2291
-Category:                   PCI - hda-intel
+Issue ID:                   2303
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.17-1.2145_FC5
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             07-18-2006 07:12 CEST
-Last Modified:              07-27-2006 13:02 CEST
-======================================================================
-Summary:                    AD1986A produces a high fequency noise
-Description: 
-Some noise, just like "weeeeee", produced when playing a sound files or
-music files.
-No exception. It always produced.
-======================================================================
+Status:                     assigned
+Distribution:               =
+
+Kernel Version:             2.4.7-10
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-25-2006 13:05 CEST
+Last Modified:              07-27-2006 13:17 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    A lot of warning during compilation of alsa-dri=
+ver
+1.0.12rc1
+Description: =
+
+This is the list of warnings during thez compilation some of them creates
+some undefined symbols when you want to use the driver.
+
+
++ make
+make[3]: D=E9pendance circulaire io.c <- io.c abandonn=E9e.
+sound.c: In function `snd_open':
+sound.c:177: warning: assignment discards qualifiers from pointer target
+type
+sound.c:182: warning: assignment discards qualifiers from pointer target
+type
+sound.c: At top level:
+sound.c:45: warning: `device_mode' defined but not used
+info.c: In function `snd_iprintf':
+info.c:119: warning: implicit declaration of function `might_sleep'
+In file included from sound_oss.c:6:
+../alsa-kernel/core/sound_oss.c: In function `snd_register_oss_device':
+../alsa-kernel/core/sound_oss.c:139: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+../alsa-kernel/core/sound_oss.c:143: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+aloop-kernel.c:43: warning: `pcm_devs' defined but not used
+mts64.c: In function `snd_mts64_attach':
+mts64.c:894: warning: implicit declaration of function
+`platform_device_alloc'
+mts64.c:894: warning: assignment makes pointer from integer without a
+cast
+mts64.c:901: warning: implicit declaration of function
+`platform_device_register'
+mts64.c:902: warning: implicit declaration of function
+`platform_device_put'
+In file included from
+/lib/modules/2.4.7-10/build/include/linux/module.h:11,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/adriver.h:45,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/sound/driver.h:47,
+                 from ../alsa-kernel/isa/als100.c:23,
+                 from als100.c:1:
+ad1889.c: In function `snd_ad1889_playback_pointer':
+ad1889.c:555: warning: implicit declaration of function `unlikely'
+In file included from als4000.c:1:
+../alsa-kernel/pci/als4000.c: In function `snd_als4000_create_gameport':
+../alsa-kernel/pci/als4000.c:596: warning: `r' might be used uninitialized
+in t
+his function
+../alsa-kernel/pci/atiixp_modem.c:55: warning: `enable' defined but not
+used
+../alsa-kernel/pci/atiixp.c:61: warning: `enable' defined but not used
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+../alsa-kernel/pci/intel8x0m.c:72: warning: `enable' defined but not used
+maestro3.c: In function `snd_m3_ac97_wait':
+maestro3.c:1958: warning: implicit declaration of function `cpu_relax'
+../alsa-kernel/pci/via82xx_modem.c:70: warning: `enable' defined but not
+used
+../alsa-kernel/pci/via82xx.c:107: warning: `enable' defined but not used
+../../alsa-kernel/pci/ali5451/ali5451.c:64: warning: `enable' defined but
+not used
+In file included from ../../alsa-kernel/pci/au88x0/au8810.c:9,
+                 from au8810.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8820.c:10,
+                 from au8820.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8830.c:10,
+                 from au8830.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+../../alsa-kernel/pci/hda/hda_intel.c:74: warning: `enable' defined but
+not used
+../../alsa-kernel/pci/nm256/nm256.c:90: warning: `enable' defined but not
+used In file included from pcxhr.c:1:
+../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
+../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
+uninitialized in this function In file included from pcxhr_core.c:2:
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c: In function
+`pcxhr_update_timer_pos':
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c:1074: warning: `new_sample_count'
+migh t be used uninitialized in this function
+In file included from ymfpci_main.c:2:
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c: In function
+`snd_ymfpci_pcm_interrupt':
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c:329: warning: implicit
+declaration of function `unlikely'
+In file included from usx2yhwdeppcm.c:65:
+usbusx2yaudio.c: In function `i_usX2Y_urb_complete':
+usbusx2yaudio.c:318: warning: implicit declaration of function `unlikely'
+usbusx2yaudio.c:329: warning: implicit declaration of function `likely'
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- michaeleekk - 07-22-06 08:54 
-----------------------------------------------------------------------
-My machine ... I'm using a PC, You mean my motherboard?
-My motherboard is ASUS M2NPV-VM, NVIDIA 430 Chipset.
-
-After run the lspci -nv:
-00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 1043:81cb
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 217
-        Memory at fe024000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [6c] HyperTransport: MSI Mapping
+ tiwai - 07-27-06 12:53 =
 
 ----------------------------------------------------------------------
- tiwai - 07-27-06 13:02 
+Except for likely() and unlikely(), they are harmless.
+Please try the uploaded patch.
+
 ----------------------------------------------------------------------
-Fixed on HG.
+ croiset - 07-27-06 13:17 =
+
+----------------------------------------------------------------------
+The first part of the patch is OK (configure.in).
+
+the second part is wrong. I search to makes i manually but I have one
+problem with these lines, I don't find the function list_entry in
+adriver.h :
+
+@@ -125,6 +126,10 @@ typedef __u32 __be32;
+              &pos->member !=3D (head);                                   =
+
+\
+              pos =3D list_entry(pos->member.next, typeof(*pos), member), =
+
+\
+                      prefetch(pos->member.next))
++#endif
++#ifndef likely
++#define likely(x)	x
++#define unlikely(x)	x
+ #endif
+ #endif /* LINUX_2_4__donotuse */
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-18-06 07:12 michaeleekk    New Issue                                    
-07-18-06 07:12 michaeleekk    Kernel Version            => 2.6.17-1.2145_FC5
-07-18-06 11:50 Adrian Bunk    Category                 0_compilation problem_!!!
-=> PCI - hda-intel
-07-19-06 20:18 tiwai          Note Added: 0011095                          
-07-20-06 05:07 michaeleekk    Note Added: 0011108                          
-07-20-06 05:12 michaeleekk    Note Added: 0011109                          
-07-20-06 06:47 tiwai          Note Added: 0011110                          
-07-22-06 08:54 michaeleekk    Note Added: 0011168                          
-07-27-06 13:02 tiwai          Status                   assigned => resolved
-07-27-06 13:02 tiwai          Resolution               open => fixed       
-07-27-06 13:02 tiwai          Note Added: 0011272                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-25-06 13:05 croiset        New Issue                                    =
+
+07-25-06 13:05 croiset        Kernel Version            =3D> 2.4.7-10      =
+  =
+
+07-27-06 12:53 tiwai          Note Added: 0011267                          =
+
+07-27-06 12:54 tiwai          File Added: 2.4.x-likely-fix.diff            =
+     =
+
+  =
+
+07-27-06 13:17 croiset        Note Added: 0011273                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
@@ -97,4 +227,5 @@ Date Modified  Username       Field                    Change
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
