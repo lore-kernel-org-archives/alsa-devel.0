@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001629]: error for "modprobe snd-mia"
-Date: Thu, 27 Jul 2006 08:38:38 +0200
-Message-ID: <52abeb8d38a01f4b86d0d867231c42c4@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 08:40:39 +0200
+Message-ID: <58dcdbef455ff0953ebfae10fcf7ef4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25A3621A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DECA21A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 08:38:38 +0200 (MEST)
+	Thu, 27 Jul 2006 08:40:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.12-10-386
 ======================================================================
 Date Submitted:             12-08-2005 03:06 CET
-Last Modified:              07-27-2006 08:38 CEST
+Last Modified:              07-27-2006 08:40 CEST
 ======================================================================
 Summary:                    error for "modprobe snd-mia"
 Description: 
@@ -222,6 +222,12 @@ of the currently running kernel.
 
 Which parameters did you give to configure?
 
+----------------------------------------------------------------------
+ Adrian Bunk - 07-27-06 08:40 
+----------------------------------------------------------------------
+Rethinking about this, the problem is most likely that you haven't unloaded
+the ALSA drivers shipped with your kernel.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -229,6 +235,7 @@ Date Modified  Username       Field                    Change
 12-08-05 03:06 wbrown338      Distribution              => Ubuntu          
 12-08-05 03:06 wbrown338      Kernel Version            => 2.6.12-10-386   
 07-27-06 08:38 Adrian Bunk    Note Added: 0011262                          
+07-27-06 08:40 Adrian Bunk    Note Added: 0011263                          
 ======================================================================
 
 
