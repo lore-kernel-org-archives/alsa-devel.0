@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Thu, 27 Jul 2006 00:15:39 +0200
-Message-ID: <cf9e1e5c9fcbc1eeca75d4a901710073@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 07:15:10 +0200
+Message-ID: <030673c10fabb411006e2c18d7d3e818@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2192F178
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C34C123D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 00:15:40 +0200 (MEST)
+	Thu, 27 Jul 2006 07:15:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-27-2006 00:15 CEST
+Last Modified:              07-27-2006 07:15 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,27 +68,54 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-26-06 23:59 
+ cruiseoveride - 07-27-06 06:38 
 ----------------------------------------------------------------------
-do i need to change any of the makefiles? or configure scripts?
+Wow ray, u should join the ALSA team, they need people like you haha
 
-i get the following while compiling
+Looks like uve closed this thread with that post. i guess i didnt really
+start this post for that program haha , i only later came to realise that
+the audiophile driver was in bad shape. but anyways...
 
-  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.o
-  LD [M]  /usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice17xx-ak4xxx.o
-  Building modules, stage 2.
-  MODPOST
-WARNING: "snd_vt1724_ap192k_cards"
-[/usr/src/Alsa_mine/alsa-driver/pci/ice1712/snd-ice1724.ko] undefined!
-  CC      /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.mod.o
-  LD [M]  /usr/src/Alsa_mine/alsa-driver/acore/oss/snd-mixer-oss.ko
-....
+im going to get a buddy of mine to check the wiring from the vt1724 to the
+DACs hopefully its the same as the Juli, but lets wait and see.
+
+and the other thing, do i need to do something in my devint to allow the
+card to work with other alsa cards, imean with the sequencer? 
+
+as i wanted to build the driver on an incremental process. each time
+rebooting and loading the new version, but at the current state, i just
+copied and  pasted the devinit from the phase22 and got a clean compile
+and added a few other things, just to see if the module loads cleanly but,
+i cant seem to have the ap192k and other cards loaded at the same time
+now?
+
+i guess i will figure this out myself again.
+
+but apart from that, this is about it for new ap192k.c code, and Yes
+rlrevell i know this is not the place for it but....
+
+static unsigned char ap192k_eeprom[] __devinitdata =
+{
+        0x68,   /* SYSCONF: 1xADC, 1xDACs */
+        0x80,   /* ACLINK: I2S */
+        0xf8,   /* I2S: vol, 96k and 192k, 24bit*/
+        0xc3,   /* SPDIF: out-en, out-int, spdif-in */
+        0xFF,   /* GPIO_DIR */
+        0xFF,   /* GPIO_DIR1 */
+        0xFF,   /* GPIO_DIR2 */
+        0x00,   /* GPIO_MASK */
+        0x00,   /* GPIO_MASK1 */
+        0x00,   /* GPIO_MASK2 */
+        0x00,   /* GPIO_STATE: */
+        0x00,   /* GPIO_STATE1: */
+        0x00,   /* GPIO_STATE2 */
+};
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-27-06 00:15 
+ rlrevell - 07-27-06 07:15 
 ----------------------------------------------------------------------
-yes i did have to chane the makefile, talk about not being documented.
-but im getting there
+Really, it's fine if you want to use the bug tracker for development, you
+just may get more responses from alsa-devel.  YMMV.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -195,6 +222,21 @@ Date Modified  Username       Field                    Change
 07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
 07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
 07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
+07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
+07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
+07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
+07-27-06 00:57 rlrevell       Note Added: 0011254                          
+07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
+07-27-06 01:03 rlrevell       Note Added: 0011256                          
+07-27-06 04:43 Raymond        Note Added: 0011257                          
+07-27-06 04:51 Raymond        Note Edited: 0011257                         
+07-27-06 06:25 Raymond        Note Added: 0011258                          
+07-27-06 06:28 Raymond        Note Edited: 0011258                         
+07-27-06 06:29 Raymond        Note Edited: 0011258                         
+07-27-06 06:36 Raymond        Note Edited: 0011258                         
+07-27-06 06:38 cruiseoveride  Note Added: 0011259                          
+07-27-06 06:44 Raymond        Note Edited: 0011258                         
+07-27-06 07:15 rlrevell       Note Added: 0011260                          
 ======================================================================
 
 
