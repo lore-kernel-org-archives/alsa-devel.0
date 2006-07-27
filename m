@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Thu, 27 Jul 2006 07:15:10 +0200
-Message-ID: <030673c10fabb411006e2c18d7d3e818@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002049]: No sound output on Sony Vaio
+	PCG FR130
+Date: Thu, 27 Jul 2006 16:15:24 +0200
+Message-ID: <4b76a7aba54137e35a73654135051932@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C34C123D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAA9521F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 07:15:10 +0200 (MEST)
+	Thu, 27 Jul 2006 16:15:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,218 +24,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2049> 
 ======================================================================
-Reported By:                cruiseoveride
+Reported By:                gerd94706
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2049
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-27-2006 07:15 CEST
+Date Submitted:             04-21-2006 04:43 CEST
+Last Modified:              07-27-2006 16:15 CEST
 ======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Summary:                    No sound output on Sony Vaio PCG FR130
 Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+The driver compiles & loads fine, but sound output does not work.
+Don't recall if the sound output was choppy or not-present, since it's
+been a while since I last tried.
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
-
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
-
-If you slash out line 104, it resolves the issue.
-
-My question is,
-
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-27-06 06:38 
+ gerd94706 - 04-21-06 06:00 
 ----------------------------------------------------------------------
-Wow ray, u should join the ALSA team, they need people like you haha
-
-Looks like uve closed this thread with that post. i guess i didnt really
-start this post for that program haha , i only later came to realise that
-the audiophile driver was in bad shape. but anyways...
-
-im going to get a buddy of mine to check the wiring from the vt1724 to the
-DACs hopefully its the same as the Juli, but lets wait and see.
-
-and the other thing, do i need to do something in my devint to allow the
-card to work with other alsa cards, imean with the sequencer? 
-
-as i wanted to build the driver on an incremental process. each time
-rebooting and loading the new version, but at the current state, i just
-copied and  pasted the devinit from the phase22 and got a clean compile
-and added a few other things, just to see if the module loads cleanly but,
-i cant seem to have the ap192k and other cards loaded at the same time
-now?
-
-i guess i will figure this out myself again.
-
-but apart from that, this is about it for new ap192k.c code, and Yes
-rlrevell i know this is not the place for it but....
-
-static unsigned char ap192k_eeprom[] __devinitdata =
-{
-        0x68,   /* SYSCONF: 1xADC, 1xDACs */
-        0x80,   /* ACLINK: I2S */
-        0xf8,   /* I2S: vol, 96k and 192k, 24bit*/
-        0xc3,   /* SPDIF: out-en, out-int, spdif-in */
-        0xFF,   /* GPIO_DIR */
-        0xFF,   /* GPIO_DIR1 */
-        0xFF,   /* GPIO_DIR2 */
-        0x00,   /* GPIO_MASK */
-        0x00,   /* GPIO_MASK1 */
-        0x00,   /* GPIO_MASK2 */
-        0x00,   /* GPIO_STATE: */
-        0x00,   /* GPIO_STATE1: */
-        0x00,   /* GPIO_STATE2 */
-};
+Sorry, I selected the wrong Category.
+This is what happens if you file a trouble-ticker just from memory.
+I believe it was the via-something drier, not cs46xx.
+Anyway, I looked it up at the time (whatever PCI id fit) and it loaded
+and
+recognized the chip. Just the sound-output didn't work!
 
 ----------------------------------------------------------------------
- rlrevell - 07-27-06 07:15 
+ tiwai - 04-25-06 17:40 
 ----------------------------------------------------------------------
-Really, it's fine if you want to use the bug tracker for development, you
-just may get more responses from alsa-devel.  YMMV.
+The description is too ambiguous (what is via-something?).
+Which driver did you try exactly?  Did you unmute and adjust mixer
+properly after loading the driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
-07-26-06 01:20 Raymond        Note Added: 0011234                          
-07-26-06 01:27 Raymond        Note Edited: 0011234                         
-07-26-06 01:31 Raymond        Note Edited: 0011234                         
-07-26-06 01:33 Raymond        Note Edited: 0011234                         
-07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
-07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
-      
-07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
-07-26-06 04:47 Raymond        Note Added: 0011239                          
-07-26-06 04:53 Raymond        Note Added: 0011240                          
-07-26-06 05:17 Raymond        Note Edited: 0011240                         
-07-26-06 06:22 Raymond        Note Added: 0011242                          
-07-26-06 07:46 Raymond        Note Added: 0011243                          
-07-26-06 07:55 Raymond        Note Edited: 0011243                         
-07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
-07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
-07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
-07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
-07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
-07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
-07-27-06 00:57 rlrevell       Note Added: 0011254                          
-07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
-07-27-06 01:03 rlrevell       Note Added: 0011256                          
-07-27-06 04:43 Raymond        Note Added: 0011257                          
-07-27-06 04:51 Raymond        Note Edited: 0011257                         
-07-27-06 06:25 Raymond        Note Added: 0011258                          
-07-27-06 06:28 Raymond        Note Edited: 0011258                         
-07-27-06 06:29 Raymond        Note Edited: 0011258                         
-07-27-06 06:36 Raymond        Note Edited: 0011258                         
-07-27-06 06:38 cruiseoveride  Note Added: 0011259                          
-07-27-06 06:44 Raymond        Note Edited: 0011258                         
-07-27-06 07:15 rlrevell       Note Added: 0011260                          
+04-21-06 04:43 gerd94706      New Issue                                    
+04-21-06 06:00 gerd94706      Note Added: 0009407                          
+04-25-06 17:40 tiwai          Note Added: 0009492                          
+07-27-06 16:15 Adrian Bunk    Status                   new => closed       
+07-27-06 16:15 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
