@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002287]: Segfaults all functions after
-	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
-	*) & val);
-Date: Thu, 27 Jul 2006 01:03:21 +0200
-Message-ID: <ae86cac38a0cc481ca3b18bf90819b04@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002303]: A lot of warning during
+	compilation of alsa-driver 1.0.12rc1
+Date: Thu, 27 Jul 2006 16:17:36 +0200
+Message-ID: <51bc7e6db09e613c0a5300c221979739@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E970222
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 223EF166
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 01:03:21 +0200 (MEST)
+	Thu, 27 Jul 2006 16:17:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,170 +25,211 @@ List-Id: alsa-devel@alsa-project.org
 
 
 A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
-======================================================================
-Reported By:                cruiseoveride
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2287
-Category:                   0_general
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2303> =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                croiset
+Assigned To:                perex
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Issue ID:                   2303
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-27-2006 01:03 CEST
-======================================================================
-Summary:                    Segfaults all functions after
-snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
-Description: 
-I am new to Alsa and am not happy at all at the state of documentation
-available.
-You guys seriously need to do something about this.
+Status:                     assigned
+Distribution:               =
 
-I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
-envy24control for this chip, However I first need to familiar myself with
-the ALSA API. So I began by looking for simple examples on how to use ALSA
-API and came accross the followinf prog (Attached file test.c).
+Kernel Version:             2.4.7-10
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-25-2006 13:05 CEST
+Last Modified:              07-27-2006 16:17 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    A lot of warning during compilation of alsa-dri=
+ver
+1.0.12rc1
+Description: =
 
-The program compiles cleanly with gcc-4.1 and runs, however after it
-prints out the ..."buffer size = 8192 frames"
-It segfaults.
+This is the list of warnings during thez compilation some of them creates
+some undefined symbols when you want to use the driver.
 
-If you slash out line 104, it resolves the issue.
 
-My question is,
++ make
+make[3]: D=E9pendance circulaire io.c <- io.c abandonn=E9e.
+sound.c: In function `snd_open':
+sound.c:177: warning: assignment discards qualifiers from pointer target
+type
+sound.c:182: warning: assignment discards qualifiers from pointer target
+type
+sound.c: At top level:
+sound.c:45: warning: `device_mode' defined but not used
+info.c: In function `snd_iprintf':
+info.c:119: warning: implicit declaration of function `might_sleep'
+In file included from sound_oss.c:6:
+../alsa-kernel/core/sound_oss.c: In function `snd_register_oss_device':
+../alsa-kernel/core/sound_oss.c:139: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+../alsa-kernel/core/sound_oss.c:143: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+aloop-kernel.c:43: warning: `pcm_devs' defined but not used
+mts64.c: In function `snd_mts64_attach':
+mts64.c:894: warning: implicit declaration of function
+`platform_device_alloc'
+mts64.c:894: warning: assignment makes pointer from integer without a
+cast
+mts64.c:901: warning: implicit declaration of function
+`platform_device_register'
+mts64.c:902: warning: implicit declaration of function
+`platform_device_put'
+In file included from
+/lib/modules/2.4.7-10/build/include/linux/module.h:11,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/adriver.h:45,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/sound/driver.h:47,
+                 from ../alsa-kernel/isa/als100.c:23,
+                 from als100.c:1:
+ad1889.c: In function `snd_ad1889_playback_pointer':
+ad1889.c:555: warning: implicit declaration of function `unlikely'
+In file included from als4000.c:1:
+../alsa-kernel/pci/als4000.c: In function `snd_als4000_create_gameport':
+../alsa-kernel/pci/als4000.c:596: warning: `r' might be used uninitialized
+in t
+his function
+../alsa-kernel/pci/atiixp_modem.c:55: warning: `enable' defined but not
+used
+../alsa-kernel/pci/atiixp.c:61: warning: `enable' defined but not used
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+../alsa-kernel/pci/intel8x0m.c:72: warning: `enable' defined but not used
+maestro3.c: In function `snd_m3_ac97_wait':
+maestro3.c:1958: warning: implicit declaration of function `cpu_relax'
+../alsa-kernel/pci/via82xx_modem.c:70: warning: `enable' defined but not
+used
+../alsa-kernel/pci/via82xx.c:107: warning: `enable' defined but not used
+../../alsa-kernel/pci/ali5451/ali5451.c:64: warning: `enable' defined but
+not used
+In file included from ../../alsa-kernel/pci/au88x0/au8810.c:9,
+                 from au8810.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8820.c:10,
+                 from au8820.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8830.c:10,
+                 from au8830.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+../../alsa-kernel/pci/hda/hda_intel.c:74: warning: `enable' defined but
+not used
+../../alsa-kernel/pci/nm256/nm256.c:90: warning: `enable' defined but not
+used In file included from pcxhr.c:1:
+../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
+../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
+uninitialized in this function In file included from pcxhr_core.c:2:
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c: In function
+`pcxhr_update_timer_pos':
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c:1074: warning: `new_sample_count'
+migh t be used uninitialized in this function
+In file included from ymfpci_main.c:2:
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c: In function
+`snd_ymfpci_pcm_interrupt':
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c:329: warning: implicit
+declaration of function `unlikely'
+In file included from usx2yhwdeppcm.c:65:
+usbusx2yaudio.c: In function `i_usX2Y_urb_complete':
+usbusx2yaudio.c:318: warning: implicit declaration of function `unlikely'
+usbusx2yaudio.c:329: warning: implicit declaration of function `likely'
 
-Is there a bug in this function?
-Code was obtained from http://www.linuxjournal.com/article/6735
-======================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- cruiseoveride - 07-27-06 01:00 
-----------------------------------------------------------------------
-can u move this thread to the driver section
+ croiset - 07-27-06 15:16 =
 
 ----------------------------------------------------------------------
- rlrevell - 07-27-06 01:03 
+I obtain one error (file does not exist) with the new line in adriver.h
+#include <linux/processor.h>
+If I comment this line, the compilation is fine.
+
+I obtain unresolved symbols only on these drivers :
+depmod -ae
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.7-10/kernel/sound/drivers/snd-mts64.o
+depmod:         platform_device_register
+depmod:         platform_device_alloc
+depmod:         platform_device_put
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.7-10/kernel/sound/pci/cs5535audio/snd-cs5535audio.o
+depmod:         snd_cs5535audio_resume
+depmod:         snd_cs5535audio_suspend
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.7-10/kernel/sound/pci/hda/snd-hda-intel.o
+depmod:         snd_hda_queue_unsol_event
+
 ----------------------------------------------------------------------
-What I meant was that this bug tracker is not the right forum for driver
-development.  Driver development should happen on the mailing list.
+ tiwai - 07-27-06 16:17 =
+
+----------------------------------------------------------------------
+I committed newer fixes on ALSA HG repo.  Please try it out.
 
 Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-06 18:03 cruiseoveride  New Issue                                    
-07-16-06 18:03 cruiseoveride  File Added: test.c                           
-07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
-07-17-06 02:44 Raymond        Note Added: 0011032                          
-07-17-06 02:47 Raymond        Note Edited: 0011032                         
-07-17-06 03:18 Raymond        Note Edited: 0011032                         
-07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
-07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
-07-17-06 07:31 Raymond        Note Added: 0011035                          
-07-17-06 08:23 Raymond        Note Added: 0011036                          
-07-17-06 08:26 Raymond        Note Edited: 0011036                         
-07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
-07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
-07-17-06 16:07 Raymond        Note Added: 0011042                          
-07-17-06 16:31 Raymond        Note Edited: 0011042                         
-07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
-07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
-07-17-06 17:34 Raymond        Note Added: 0011046                          
-07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
-07-18-06 07:44 Raymond        Note Added: 0011053                          
-07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
-07-18-06 14:35 Raymond        Note Added: 0011060                          
-07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
-07-19-06 03:27 Raymond        Note Added: 0011076                          
-07-19-06 06:21 Raymond        Note Added: 0011080                          
-07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
-07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
-07-20-06 04:22 Raymond        Note Added: 0011107                          
-07-20-06 05:01 Raymond        Note Edited: 0011107                         
-07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
-07-20-06 08:19 Raymond        Note Added: 0011114                          
-07-20-06 08:22 Raymond        Note Edited: 0011114                         
-07-20-06 10:49 Raymond        Note Added: 0011116                          
-07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
-07-20-06 16:09 Raymond        Note Added: 0011130                          
-07-20-06 16:12 Raymond        Note Added: 0011131                          
-07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
-07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
-07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
-07-20-06 17:49 Raymond        Note Added: 0011135                          
-07-20-06 17:55 Raymond        Note Edited: 0011135                         
-07-20-06 19:30 Raymond        Note Added: 0011136                          
-07-20-06 19:31 Raymond        Note Edited: 0011136                         
-07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
-07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
-07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
-07-21-06 03:28 Raymond        Note Added: 0011141                          
-07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
-07-22-06 02:13 Raymond        Note Added: 0011157                          
-07-22-06 02:42 Raymond        Note Edited: 0011157                         
-07-22-06 02:53 Raymond        Note Edited: 0011157                         
-07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
-07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
-07-22-06 04:12 Raymond        Note Added: 0011164                          
-07-22-06 04:15 Raymond        Note Edited: 0011164                         
-07-23-06 04:05 Raymond        Note Added: 0011179                          
-07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
-07-23-06 06:41 Raymond        Note Added: 0011182                          
-07-23-06 06:46 Raymond        Note Edited: 0011182                         
-07-23-06 06:47 Raymond        Note Edited: 0011182                         
-07-23-06 06:52 Raymond        Note Edited: 0011182                         
-07-23-06 06:55 Raymond        Note Edited: 0011182                         
-07-23-06 13:05 Raymond        Note Edited: 0011182                         
-07-23-06 13:11 Raymond        Note Edited: 0011182                         
-07-23-06 13:17 Raymond        Note Edited: 0011182                         
-07-23-06 13:23 Raymond        Note Edited: 0011182                         
-07-23-06 14:16 Raymond        Note Added: 0011187                          
-07-23-06 14:20 Raymond        Note Edited: 0011187                         
-07-23-06 15:24 Raymond        Note Edited: 0011187                         
-07-23-06 17:23 rlrevell       Note Added: 0011190                          
-07-23-06 17:39 Raymond        Note Added: 0011191                          
-07-23-06 17:42 Raymond        Note Edited: 0011191                         
-07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
-07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
-07-23-06 18:03 rlrevell       Note Added: 0011194                          
-07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
-07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
-07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
-07-24-06 02:15 Raymond        Note Added: 0011206                          
-07-24-06 02:27 Raymond        Note Edited: 0011206                         
-07-24-06 02:28 Raymond        Note Edited: 0011206                         
-07-24-06 07:12 Raymond        Note Edited: 0011206                         
-07-24-06 07:48 Raymond        Note Edited: 0011206                         
-07-25-06 18:02 Raymond        Note Added: 0011230                          
-07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
-07-26-06 01:20 Raymond        Note Added: 0011234                          
-07-26-06 01:27 Raymond        Note Edited: 0011234                         
-07-26-06 01:31 Raymond        Note Edited: 0011234                         
-07-26-06 01:33 Raymond        Note Edited: 0011234                         
-07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
-07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
-      
-07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
-07-26-06 04:47 Raymond        Note Added: 0011239                          
-07-26-06 04:53 Raymond        Note Added: 0011240                          
-07-26-06 05:17 Raymond        Note Edited: 0011240                         
-07-26-06 06:22 Raymond        Note Added: 0011242                          
-07-26-06 07:46 Raymond        Note Added: 0011243                          
-07-26-06 07:55 Raymond        Note Edited: 0011243                         
-07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
-07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
-07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
-07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
-07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
-07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
-07-27-06 00:57 rlrevell       Note Added: 0011254                          
-07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
-07-27-06 01:03 rlrevell       Note Added: 0011256                          
-======================================================================
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-25-06 13:05 croiset        New Issue                                    =
+
+07-25-06 13:05 croiset        Kernel Version            =3D> 2.4.7-10      =
+  =
+
+07-27-06 12:53 tiwai          Note Added: 0011267                          =
+
+07-27-06 12:54 tiwai          File Added: 2.4.x-likely-fix.diff            =
+     =
+
+  =
+
+07-27-06 13:17 croiset        Note Added: 0011273                          =
+
+07-27-06 13:45 croiset        Note Added: 0011274                          =
+
+07-27-06 14:28 tiwai          Note Added: 0011275                          =
+
+07-27-06 14:28 tiwai          File Added: 2.4.x-likely-fix2.diff           =
+     =
+
+   =
+
+07-27-06 15:16 croiset        Note Added: 0011276                          =
+
+07-27-06 16:17 tiwai          Note Added: 0011277                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
@@ -197,4 +237,5 @@ Date Modified  Username       Field                    Change
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
