@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002244]: Aureon 7.1 Universe speakers
 	in incorrect order when doing a speaker-test
-Date: Thu, 27 Jul 2006 12:29:11 +0200
-Message-ID: <a257d2cbcd334923f3e7e397ae48b8d5@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 12:34:19 +0200
+Message-ID: <2225c8312abf0d24fdd94dfa7914ee62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 568ED19E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D76A41AC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 12:29:12 +0200 (MEST)
+	Thu, 27 Jul 2006 12:34:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             06-29-2006 01:35 CEST
-Last Modified:              07-27-2006 12:29 CEST
+Last Modified:              07-27-2006 12:34 CEST
 ======================================================================
 Summary:                    Aureon 7.1 Universe speakers in incorrect order when
 doing a speaker-test
@@ -108,16 +108,14 @@ some mistake, hasn't it?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-24-06 04:04 
-----------------------------------------------------------------------
-I modifed the dummy driver to emulate ice1724, it seem that there is no
-easy way to for speaker-test to find out a feasible combination of
-period_size, periods and buffer_size to for surround51
-
-----------------------------------------------------------------------
  Raymond - 07-27-06 12:29 
 ----------------------------------------------------------------------
 Does it help if you use ICE1724.conf instead of Aureon71.conf ?
+
+----------------------------------------------------------------------
+ calestyo - 07-27-06 12:34 
+----------------------------------------------------------------------
+Please stand by,.. I'm a few days in holidays ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -193,6 +191,7 @@ Date Modified  Username       Field                    Change
 07-24-06 04:02 Raymond        File Added: dummy.c                          
 07-24-06 04:04 Raymond        Note Added: 0011208                          
 07-27-06 12:29 Raymond        Note Added: 0011265                          
+07-27-06 12:34 calestyo       Note Added: 0011266                          
 ======================================================================
 
 
