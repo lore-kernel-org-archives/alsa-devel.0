@@ -1,15 +1,16 @@
-From: "Miguela Gerry" <miguela@jbt-stl.com>
-Subject: Re: yygenVjlAGRA
-Date: Thu, 27 Jul 2006 03:35:00 -0700
-Message-ID: <000001c6b168$505041f0$65f6a8c0@iij24>
-Reply-To: Miguela Gerry <miguela@jbt-stl.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002303]: A lot of warning during
+	compilation of alsa-driver 1.0.12rc1
+Date: Thu, 27 Jul 2006 12:53:54 +0200
+Message-ID: <8e31c9bdb60090e54c1c069575e357d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0531462226=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 50.com (bzq-88-153-110-78.red.bezeqint.net [88.153.110.78])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9C5FD1AC
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96E0523D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 12:38:40 +0200 (MEST)
+	Thu, 27 Jul 2006 12:53:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,96 +23,177 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============0531462226==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6B12D.A3F169F0"
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2303> =
 
-This is a multi-part message in MIME format.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                croiset
+Assigned To:                perex
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Issue ID:                   2303
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               =
 
-------=_NextPart_000_0001_01C6B12D.A3F169F0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Kernel Version:             2.4.7-10
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-25-2006 13:05 CEST
+Last Modified:              07-27-2006 12:53 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    A lot of warning during compilation of alsa-dri=
+ver
+1.0.12rc1
+Description: =
 
-=20
-VlljAGRA from 3 , 35 $
-VAjLIlUM from 1 , 25 $
-AMjBlIEN
-CIjALIlS from 3 , 75 $
-=20
-http://www.battoverte.com
-=20
-
-,
-
-,
-
-,
-
-,
-
-Grab Goldy. Show strong interest in the market. Have him lay on a
-guide to take us there when it opens in the morning . . .
-As though speaking his name had been a summons; bugles sounded, the
-
-
-------=_NextPart_000_0001_01C6B12D.A3F169F0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV>VlljAGRA from 3 , 35 $<BR>VAjLIlUM from 1 , 25 =
-$<BR>AMjBlIEN<BR>CIjALIlS from 3 , 75 $</DIV>
-<DIV>&nbsp;</DIV>
-<A =
-href=3D"http://www.battoverte.com">http://www.battoverte.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<P>,</P>
-<P>,</P>
-<P>,</P>
-<P>,</P>
-<DIV> Grab  Goldy. Show strong interest in the market. Have him lay  on  =
-a<BR>
-guide to take us there when it opens in the morning . . .<BR>
- As  though speaking his name had been a summons; bugles sounded,  =
-the<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6B12D.A3F169F0--
+This is the list of warnings during thez compilation some of them creates
+some undefined symbols when you want to use the driver.
 
 
++ make
+make[3]: D=E9pendance circulaire io.c <- io.c abandonn=E9e.
+sound.c: In function `snd_open':
+sound.c:177: warning: assignment discards qualifiers from pointer target
+type
+sound.c:182: warning: assignment discards qualifiers from pointer target
+type
+sound.c: At top level:
+sound.c:45: warning: `device_mode' defined but not used
+info.c: In function `snd_iprintf':
+info.c:119: warning: implicit declaration of function `might_sleep'
+In file included from sound_oss.c:6:
+../alsa-kernel/core/sound_oss.c: In function `snd_register_oss_device':
+../alsa-kernel/core/sound_oss.c:139: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+../alsa-kernel/core/sound_oss.c:143: warning: passing arg 1 of
+`register_sound_special_Rd53e3aa3' discards qualifiers from pointer target
+type
+aloop-kernel.c:43: warning: `pcm_devs' defined but not used
+mts64.c: In function `snd_mts64_attach':
+mts64.c:894: warning: implicit declaration of function
+`platform_device_alloc'
+mts64.c:894: warning: assignment makes pointer from integer without a
+cast
+mts64.c:901: warning: implicit declaration of function
+`platform_device_register'
+mts64.c:902: warning: implicit declaration of function
+`platform_device_put'
+In file included from
+/lib/modules/2.4.7-10/build/include/linux/module.h:11,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/adriver.h:45,
+                 from
+/home/redhat/BUILD/alsa-driver-1.0.12rc1/include/sound/driver.h:47,
+                 from ../alsa-kernel/isa/als100.c:23,
+                 from als100.c:1:
+ad1889.c: In function `snd_ad1889_playback_pointer':
+ad1889.c:555: warning: implicit declaration of function `unlikely'
+In file included from als4000.c:1:
+../alsa-kernel/pci/als4000.c: In function `snd_als4000_create_gameport':
+../alsa-kernel/pci/als4000.c:596: warning: `r' might be used uninitialized
+in t
+his function
+../alsa-kernel/pci/atiixp_modem.c:55: warning: `enable' defined but not
+used
+../alsa-kernel/pci/atiixp.c:61: warning: `enable' defined but not used
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+../alsa-kernel/pci/intel8x0m.c:72: warning: `enable' defined but not used
+maestro3.c: In function `snd_m3_ac97_wait':
+maestro3.c:1958: warning: implicit declaration of function `cpu_relax'
+../alsa-kernel/pci/via82xx_modem.c:70: warning: `enable' defined but not
+used
+../alsa-kernel/pci/via82xx.c:107: warning: `enable' defined but not used
+../../alsa-kernel/pci/ali5451/ali5451.c:64: warning: `enable' defined but
+not used
+In file included from ../../alsa-kernel/pci/au88x0/au8810.c:9,
+                 from au8810.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8820.c:10,
+                 from au8820.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8830.c:10,
+                 from au8830.c:1:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2414: warning: implicit
+declaration of function `unlikely'
+../../alsa-kernel/pci/hda/hda_intel.c:74: warning: `enable' defined but
+not used
+../../alsa-kernel/pci/nm256/nm256.c:90: warning: `enable' defined but not
+used In file included from pcxhr.c:1:
+../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
+../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
+uninitialized in this function In file included from pcxhr_core.c:2:
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c: In function
+`pcxhr_update_timer_pos':
+../../alsa-kernel/pci/pcxhr/pcxhr_core.c:1074: warning: `new_sample_count'
+migh t be used uninitialized in this function
+In file included from ymfpci_main.c:2:
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c: In function
+`snd_ymfpci_pcm_interrupt':
+../../alsa-kernel/pci/ymfpci/ymfpci_main.c:329: warning: implicit
+declaration of function `unlikely'
+In file included from usx2yhwdeppcm.c:65:
+usbusx2yaudio.c: In function `i_usX2Y_urb_complete':
+usbusx2yaudio.c:318: warning: implicit declaration of function `unlikely'
+usbusx2yaudio.c:329: warning: implicit declaration of function `likely'
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ tiwai - 07-27-06 12:53 =
+
+----------------------------------------------------------------------
+Except for likely() and unlikely(), they are harmless.
+Please try the uploaded patch.
+
+Issue History
+Date Modified  Username       Field                    Change              =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-25-06 13:05 croiset        New Issue                                    =
+
+07-25-06 13:05 croiset        Kernel Version            =3D> 2.4.7-10      =
+  =
+
+07-27-06 12:53 tiwai          Note Added: 0011267                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
-
---===============0531462226==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0531462226==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0531462226==--
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
