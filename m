@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002307]: I have sound but can't use a
-	working microphone
-Date: Thu, 27 Jul 2006 23:39:48 +0200
-Message-ID: <77aece320f2176b3783798b4058c412a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Thu, 27 Jul 2006 23:50:29 +0200
+Message-ID: <9ae27c9e964334519e03c760269bfc48@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79F65193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3AB1168
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 23:39:48 +0200 (MEST)
+	Thu, 27 Jul 2006 23:50:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,45 +23,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2307> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
 ======================================================================
-Reported By:                Fred
-Assigned To:                
+Reported By:                lodp2
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2307
-Category:                   PCI - cs46xx
+Issue ID:                   2261
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Dapper Drake
-Kernel Version:             2.6.15-26
+Status:                     assigned
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             07-27-2006 23:39 CEST
-Last Modified:              07-27-2006 23:39 CEST
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              07-27-2006 23:50 CEST
 ======================================================================
-Summary:                    I have sound but can't use a working microphone
+Summary:                    No sound with hda-intel ALC883
 Description: 
-Everything is working but the microphone simply doesn't work.
-It seems really weird because the microphone seems to work : I hear myself
-and I can do Larsen. But no application wants to record something
-(sound-recorder, skype, gnome-sound-recorder). (and I know the microphone
-is working on another PC)
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
 
-Furthermore, I know alsa is working because when I switch to Mic2, I can't
-hear myself and I can't do Larsen anymore.
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
 
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
+
+----------------------------------------------------------------------
+ axj - 07-25-06 17:13 
+----------------------------------------------------------------------
+I have the same problem with Acer Aspire 1652Z WMLI on a Slackware. I'm
+tryng Alesa 1.0.12rc1... but without success.... I hope that, soon or
+later, someone will found a solution.... i really tryed everything... by
+the why, in the future, i will no more buy a noteboock without all the
+information like "lspci" and something else..... and expacially Acer......
+
+----------------------------------------------------------------------
+ pwaller - 07-27-06 23:50 
+----------------------------------------------------------------------
+Same symptoms with the ALC861.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-06 23:39 Fred           New Issue                                    
-07-27-06 23:39 Fred           Distribution              => Ubuntu Dapper Drake
-07-27-06 23:39 Fred           Kernel Version            => 2.6.15-26       
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
+07-25-06 13:08 arpac          Note Added: 0011226                          
+07-25-06 17:13 axj            Note Added: 0011229                          
+07-27-06 23:50 pwaller        Note Added: 0011281                          
 ======================================================================
 
 
