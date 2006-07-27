@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Fri, 28 Jul 2006 05:03:16 +0200
-Message-ID: <47f0c7b618b338429bef68eef05e9484@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001506]: What is required to add
+	echoaudio drivers to the alsa-kernel tree
+Date: Thu, 27 Jul 2006 08:35:58 +0200
+Message-ID: <59e6c1ae929570b35461611fa3c61da8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E50A9165
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C06B21A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 05:03:16 +0200 (MEST)
+	Thu, 27 Jul 2006 08:35:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,95 +24,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1506> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                wbrown338
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1506
+Category:                   PCI - echoaudio
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.12
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-28-2006 05:03 CEST
+Date Submitted:             10-26-2005 22:46 CEST
+Last Modified:              07-27-2006 08:35 CEST
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    What is required to add echoaudio drivers to the
+alsa-kernel tree
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+Greetings:
+
+I would like to see the echoaudio drivers (specifically mia) added to the
+alsa-kernel tree so that I do not have to disable the 2.6 alsa-kernels,
+custom compile alsa for my driver with the kernel source and then modify
+several config files.  What are the requirements for this driver to be
+added to alsa-kernel tree to be included in the kernel releases?  Are any
+otheres out there using these drivers??
+Thanks.
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-26-06 16:31 
+ Adrian Bunk - 07-27-06 08:35 
 ----------------------------------------------------------------------
->> How do I find out? 
-
-Can you find two 48-pins AC97 CS4294 chips on your sound card ?
-
-Does the windows driver really support 7.1 ?
-
-
-
-----------------------------------------------------------------------
- Raymond - 07-28-06 05:03 
-----------------------------------------------------------------------
-another limited resources are
-
-#define DSP_MAX_SCB_DESC 200
-#define DSP_MAX_TASK_DESC 50
+Included in kernel 2.6.18-rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
-07-26-06 16:28 Raymond        Note Edited: 0011249                         
-07-26-06 16:31 Raymond        Note Edited: 0011249                         
-07-28-06 05:03 Raymond        Note Added: 0011282                          
+10-26-05 22:46 wbrown338      New Issue                                    
+10-26-05 22:46 wbrown338      Kernel Version            => 2.6.12          
+07-27-06 08:35 Adrian Bunk    Note Added: 0011261                          
+07-27-06 08:35 Adrian Bunk    Status                   new => resolved     
+07-27-06 08:35 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
