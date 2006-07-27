@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002303]: A lot of warning during
 	compilation of alsa-driver 1.0.12rc1
-Date: Thu, 27 Jul 2006 13:17:50 +0200
-Message-ID: <b2d7c1fdb0871d1a58ab0bad857bfb0f@bugtrack.alsa-project.org>
+Date: Thu, 27 Jul 2006 13:45:48 +0200
+Message-ID: <cc4f47b1f7a15f0e08f6ad579c85662a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3F1317B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07A6718F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 13:17:50 +0200 (MEST)
+	Thu, 27 Jul 2006 13:45:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -52,7 +52,7 @@ Kernel Version:             2.4.7-10
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-25-2006 13:05 CEST
-Last Modified:              07-27-2006 13:17 CEST
+Last Modified:              07-27-2006 13:45 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -166,13 +166,6 @@ usbusx2yaudio.c:329: warning: implicit declaration of function `likely'
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 07-27-06 12:53 =
-
-----------------------------------------------------------------------
-Except for likely() and unlikely(), they are harmless.
-Please try the uploaded patch.
-
-----------------------------------------------------------------------
  croiset - 07-27-06 13:17 =
 
 ----------------------------------------------------------------------
@@ -197,6 +190,108 @@ adriver.h :
  #endif
  #endif /* LINUX_2_4__donotuse */
 
+----------------------------------------------------------------------
+ croiset - 07-27-06 13:45 =
+
+----------------------------------------------------------------------
+I found where I can put the last lines.
+
+snd.o creates unresolved symbols since the function might_sleep is
+undefined.
+info.c: In function `snd_iprintf':
+info.c:119: warning: implicit declaration of function `might_sleep'
+If I comment this function, everything is fine for snd.o.
+
+
+All unresolved symbols :
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/acore/snd.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/drivers/snd-mts64.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/drivers/snd-portman2x4.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/i2c/other/snd-tea575x-tuner.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/isa/msnd/snd-msnd-pinnacle.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/au88x0/snd-au8810.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/au88x0/snd-au8820.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/au88x0/snd-au8830.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/cs46xx/snd-cs46xx.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/cs5535audio/snd-cs5535audio.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/hda/snd-hda-intel.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-als4000.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-azt3328.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-cmipci.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-cs4281.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-ens1370.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-ens1371.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-es1938.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-es1968.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-maestro3.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-sonicvibes.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/snd-via82xx.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/trident/snd-trident.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pci/ymfpci/snd-ymfpci.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pcmcia/pdaudiocf/snd-pdaudiocf.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/pcmcia/vx/snd-vxpocket.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/usb/snd-usb-audio.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/usb/snd-usb-lib.o
+depmod: *** Unresolved symbols in
+/var/tmp/alsa-driver-1.0.12rc1-root//lib/modu
+les/2.4.7-10/kernel/sound/usb/usx2y/snd-usb-usx2y.o
+
 Issue History
 Date Modified  Username       Field                    Change              =
 
@@ -216,6 +311,8 @@ Date Modified  Username       Field                    Change              =
   =
 
 07-27-06 13:17 croiset        Note Added: 0011273                          =
+
+07-27-06 13:45 croiset        Note Added: 0011274                          =
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
