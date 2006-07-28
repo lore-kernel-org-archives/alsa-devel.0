@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002309]: No matter what I try,
-	I cannot get sound from the machine on Linux
-Date: Fri, 28 Jul 2006 21:32:47 +0200
-Message-ID: <ee685b4b70315b209626e985d0d3791b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Fri, 28 Jul 2006 19:14:39 +0200
+Message-ID: <bd91e8f690ab737024dc348230a8205e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AC6F15A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2711514F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 21:32:47 +0200 (MEST)
+	Fri, 28 Jul 2006 19:14:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +25,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2309> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
 ======================================================================
-Reported By:                ronware
+Reported By:                lodp2
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2309
+Issue ID:                   2261
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Frugalware 0.4
-Kernel Version:             2.6.17
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             07-28-2006 20:14 CEST
-Last Modified:              07-28-2006 21:32 CEST
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              07-28-2006 19:14 CEST
 ======================================================================
-Summary:                    No matter what I try, I cannot get sound from the
-machine on Linux
+Summary:                    No sound with hda-intel ALC883
 Description: 
-Installed Frugalware Linux (kernel 2.6.17) on new laptop, Acer Aspire
-1642ZWLCi.    Everything works except the sound.  Downloaded the RC3 build
-of alsa drivers etc. to see if that would fix the problem, based on posts
-I've read.  No go.
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
 
-The snd_hda_intel driver is loaded, and alsamixer is able to function, but
-no sound comes out (nothing is muted), neither from the speakers nor from
-the earphones.
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
 
-I've successfully got sound working under the same kernel on two other
-Acer machines; unfortunately Acer likes to play with new hardware, so the
-other machines have different sound chips than this one does.
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-28-06 20:39 
+ pwaller - 07-27-06 23:50 
 ----------------------------------------------------------------------
-RC3?  The latest ALSA version is 1.0.12-rc1.
-
-Did you try the various model options described in ALSA-Configuration.txt?
+Same symptoms with the ALC861.
 
 ----------------------------------------------------------------------
- ronware - 07-28-06 21:32 
+ arpac - 07-28-06 19:14 
 ----------------------------------------------------------------------
-Sorry, I meant 12rc1.
-
-I did test every combination of options; I keep getting:
-
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 177
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+still no change with the last hg (4hours ago, modif by tiwai) :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-28-06 20:14 ronware        New Issue                                    
-07-28-06 20:14 ronware        Distribution              => Frugalware 0.4  
-07-28-06 20:14 ronware        Kernel Version            => 2.6.17          
-07-28-06 20:39 rlrevell       Note Added: 0011288                          
-07-28-06 21:32 ronware        Note Added: 0011291                          
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
+07-25-06 13:08 arpac          Note Added: 0011226                          
+07-25-06 17:13 axj            Note Added: 0011229                          
+07-27-06 23:50 pwaller        Note Added: 0011281                          
+07-28-06 13:09 pwaller        Issue Monitored: pwaller                     
+07-28-06 19:14 arpac          Note Added: 0011286                          
 ======================================================================
 
 
