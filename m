@@ -1,15 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001629]: error for "modprobe snd-mia"
-Date: Thu, 27 Jul 2006 08:40:39 +0200
-Message-ID: <58dcdbef455ff0953ebfae10fcf7ef4b@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Question about kernel timers
+Date: Fri, 28 Jul 2006 09:01:50 +0200
+Message-ID: <20060728070150.GA25118@turing.informatik.uni-halle.de>
+References: <1153864917.25859.238.camel@mindpipe>
+	<1154049487.2927.98.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DECA21A
-	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Jul 2006 08:40:39 +0200 (MEST)
+In-reply-to: <1154049487.2927.98.camel@mindpipe>
+Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,226 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Tue, 2006-07-25 at 18:01 -0400, Lee Revell wrote:
+> > I've found that the kernel Oopses if you allocate a timer on the
+> > stack, so I use kmalloc().  It seems to work, but leaks memory, as
+> > there's no opportunity to free() all the timer_lists I'm creating on
+> > the fly.
+> 
+> I've solved this problem by passing a pointer to the struct timer_list
+> to the timer function, and kfree()ing it at the end.  It seems pretty
+> ugly but it works.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1629> 
-======================================================================
-Reported By:                wbrown338
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1629
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.12-10-386
-======================================================================
-Date Submitted:             12-08-2005 03:06 CET
-Last Modified:              07-27-2006 08:40 CEST
-======================================================================
-Summary:                    error for "modprobe snd-mia"
-Description: 
-Greetings:
+When the device is closed, you have to cancel all timers (or wait for
+them to finish), so I think you have to put them into a list or
+something like that.
 
-I get the following error when trying to install the mia driver after
-compiling the latest release against the latest kernel for Ubuntu.
+Is there an upper bound on the number of timers?
 
-root@ubuntu:/usr/src/alsa-driver-1.0.10 # modprobe snd-mia
-FATAL: Error inserting snd_mia
-(/lib/modules/2.6.12-10-386/kernel/sound/pci/echoaudio/snd-mia.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error running install command for snd_mia
+Another possibility would be to use one timer and to write your own
+event handling logic, but this is probably not worth the effort.
 
 
-
-
-dmesg output:
-[4295682.670000] snd_mia: disagrees about version of symbol
-snd_rawmidi_receive
-[4295682.670000] snd_mia: Unknown symbol snd_rawmidi_receive
-[4295682.670000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_empty
-[4295682.670000] snd_mia: Unknown symbol snd_rawmidi_transmit_empty
-[4295682.670000] snd_mia: disagrees about version of symbol snd_ctl_add
-[4295682.670000] snd_mia: Unknown symbol snd_ctl_add
-[4295682.670000] snd_mia: disagrees about version of symbol snd_pcm_new
-[4295682.670000] snd_mia: Unknown symbol snd_pcm_new
-[4295682.670000] snd_mia: disagrees about version of symbol
-snd_card_register
-[4295682.670000] snd_mia: Unknown symbol snd_card_register
-[4295682.670000] snd_mia: disagrees about version of symbol snd_card_free
-[4295682.671000] snd_mia: Unknown symbol snd_card_free
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_set_sync
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_set_sync
-[4295682.671000] snd_mia: Unknown symbol snd_verbose_printk
-[4295682.671000] snd_mia: disagrees about version of symbol snd_ctl_new1
-[4295682.671000] snd_mia: Unknown symbol snd_ctl_new1
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_ack
-[4295682.671000] snd_mia: Unknown symbol snd_rawmidi_transmit_ack
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_rule_add
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_hw_rule_add
-[4295682.671000] snd_mia: Unknown symbol snd_compat_kzalloc
-[4295682.671000] snd_mia: disagrees about version of symbol snd_card_new
-[4295682.671000] snd_mia: Unknown symbol snd_card_new
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_malloc_pages
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_lib_malloc_pages
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_ioctl
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_lib_ioctl
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_free_pages
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_lib_free_pages
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_peek
-[4295682.671000] snd_mia: Unknown symbol snd_rawmidi_transmit_peek
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_set_ops
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_set_ops
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_list
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_hw_constraint_list
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_device_new
-[4295682.671000] snd_mia: Unknown symbol snd_device_new
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_sgbuf_ops_page
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_sgbuf_ops_page
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_rawmidi_new
-[4295682.671000] snd_mia: Unknown symbol snd_rawmidi_new
-[4295682.671000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_integer
-[4295682.671000] snd_mia: Unknown symbol snd_pcm_hw_constraint_integer
-[4295682.672000] snd_mia: disagrees about version of symbol
-snd_rawmidi_set_ops
-[4295682.672000] snd_mia: Unknown symbol snd_rawmidi_set_ops
-[4295682.672000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_preallocate_pages
-[4295682.672000] snd_mia: Unknown symbol snd_pcm_lib_preallocate_pages
-[4295682.672000] snd_mia: disagrees about version of symbol
-snd_pcm_period_elapsed
-[4295682.672000] snd_mia: Unknown symbol snd_pcm_period_elapsed
-[4295682.672000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_step
-[4295682.672000] snd_mia: Unknown symbol snd_pcm_hw_constraint_step
-[4296236.343000] snd_mia: disagrees about version of symbol
-snd_rawmidi_receive
-[4296236.343000] snd_mia: Unknown symbol snd_rawmidi_receive
-[4296236.343000] snd_mia: Unknown symbol snd_hidden_kzalloc
-[4296236.343000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_empty
-[4296236.343000] snd_mia: Unknown symbol snd_rawmidi_transmit_empty
-[4296236.343000] snd_mia: disagrees about version of symbol snd_ctl_add
-[4296236.343000] snd_mia: Unknown symbol snd_ctl_add
-[4296236.343000] snd_mia: disagrees about version of symbol snd_pcm_new
-[4296236.343000] snd_mia: Unknown symbol snd_pcm_new
-[4296236.343000] snd_mia: disagrees about version of symbol
-snd_card_register
-[4296236.343000] snd_mia: Unknown symbol snd_card_register
-[4296236.343000] snd_mia: disagrees about version of symbol snd_card_free
-[4296236.343000] snd_mia: Unknown symbol snd_card_free
-[4296236.343000] snd_mia: Unknown symbol snd_wrapper_kfree
-[4296236.343000] snd_mia: Unknown symbol snd_hidden_kfree
-[4296236.343000] snd_mia: disagrees about version of symbol
-snd_pcm_set_sync
-[4296236.343000] snd_mia: Unknown symbol snd_pcm_set_sync
-[4296236.344000] snd_mia: Unknown symbol snd_verbose_printk
-[4296236.344000] snd_mia: disagrees about version of symbol snd_ctl_new1
-[4296236.344000] snd_mia: Unknown symbol snd_ctl_new1
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_ack
-[4296236.344000] snd_mia: Unknown symbol snd_rawmidi_transmit_ack
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_rule_add
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_hw_rule_add
-[4296236.344000] snd_mia: disagrees about version of symbol snd_card_new
-[4296236.344000] snd_mia: Unknown symbol snd_card_new
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_malloc_pages
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_lib_malloc_pages
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_ioctl
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_lib_ioctl
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_free_pages
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_lib_free_pages
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_rawmidi_transmit_peek
-[4296236.344000] snd_mia: Unknown symbol snd_rawmidi_transmit_peek
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_set_ops
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_set_ops
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_list
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_hw_constraint_list
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_device_new
-[4296236.344000] snd_mia: Unknown symbol snd_device_new
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_sgbuf_ops_page
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_sgbuf_ops_page
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_rawmidi_new
-[4296236.344000] snd_mia: Unknown symbol snd_rawmidi_new
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_integer
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_hw_constraint_integer
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_rawmidi_set_ops
-[4296236.344000] snd_mia: Unknown symbol snd_rawmidi_set_ops
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_lib_preallocate_pages
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_lib_preallocate_pages
-[4296236.344000] snd_mia: Unknown symbol snd_hidden_kmalloc
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_period_elapsed
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_period_elapsed
-[4296236.344000] snd_mia: disagrees about version of symbol
-snd_pcm_hw_constraint_step
-[4296236.344000] snd_mia: Unknown symbol snd_pcm_hw_constraint_step
-
-let me know if there is anything I can do to help get this to work.  
-Thanks. 
-
-======================================================================
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-27-06 08:38 
-----------------------------------------------------------------------
-It seems you compiled the driver against the wrong headers and/or the
-configuration of the tree with the headers doesn't match the configuration
-of the currently running kernel.
-
-Which parameters did you give to configure?
-
-----------------------------------------------------------------------
- Adrian Bunk - 07-27-06 08:40 
-----------------------------------------------------------------------
-Rethinking about this, the problem is most likely that you haven't unloaded
-the ALSA drivers shipped with your kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-08-05 03:06 wbrown338      New Issue                                    
-12-08-05 03:06 wbrown338      Distribution              => Ubuntu          
-12-08-05 03:06 wbrown338      Kernel Version            => 2.6.12-10-386   
-07-27-06 08:38 Adrian Bunk    Note Added: 0011262                          
-07-27-06 08:40 Adrian Bunk    Note Added: 0011263                          
-======================================================================
-
-
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
