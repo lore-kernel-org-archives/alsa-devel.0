@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Fri, 28 Jul 2006 20:44:15 +0200
-Message-ID: <d2d29273f8058428fd3009a53365d004@bugtrack.alsa-project.org>
+Date: Fri, 28 Jul 2006 20:50:33 +0200
+Message-ID: <d5c200cca33e19e5c447700c7ab10321@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04257157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FDAA16E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 20:44:15 +0200 (MEST)
+	Fri, 28 Jul 2006 20:50:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Kubuntu Dapper
 Kernel Version:             2.6.15-25
 ======================================================================
 Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-28-2006 20:44 CEST
+Last Modified:              07-28-2006 20:50 CEST
 ======================================================================
 Summary:                    No sound with hda-intel ALC883
 Description: 
@@ -62,12 +62,6 @@ appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 07-28-06 19:53 
-----------------------------------------------------------------------
-How can one tell when tiwai makes changes and it's worth checking to see
-whether the latest build works?
-
-----------------------------------------------------------------------
  arpac - 07-28-06 20:44 
 ----------------------------------------------------------------------
 pwaller: "How can one tell when tiwai makes changes and it's worth checking
@@ -75,6 +69,12 @@ to see whether the latest build works?"
 
 sorry I don't understand really your question, but probably the answer is:
 look at  http://hg-mirror.alsa-project.org/alsa-kernel
+
+----------------------------------------------------------------------
+ rlrevell - 07-28-06 20:50 
+----------------------------------------------------------------------
+pwaller: Just watch this bug report, it will be updated if thye problem is
+fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +98,7 @@ Date Modified  Username       Field                    Change
 07-28-06 19:14 arpac          Note Added: 0011286                          
 07-28-06 19:53 pwaller        Note Added: 0011287                          
 07-28-06 20:44 arpac          Note Added: 0011289                          
+07-28-06 20:50 rlrevell       Note Added: 0011290                          
 ======================================================================
 
 
