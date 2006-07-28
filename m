@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000653]: poor microphone recording
-	quality on pcicmi
-Date: Fri, 28 Jul 2006 10:58:17 +0200
-Message-ID: <693c382afd1e093aa80876df0bb3062c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in
+	record and/or Skype
+Date: Fri, 28 Jul 2006 10:59:06 +0200
+Message-ID: <6778b713d0e0be97461b266b65bd395b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A010B165
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76F0B171
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 10:58:17 +0200 (MEST)
+	Fri, 28 Jul 2006 10:59:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,84 +26,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
 ======================================================================
-Reported By:                pbienst
+Reported By:                iljaguaro
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   653
+Issue ID:                   1192
 Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r4
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              07-28-2006 10:58 CEST
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              07-28-2006 10:59 CEST
 ======================================================================
-Summary:                    poor microphone recording quality on pcicmi
+Summary:                    Microphone doesn't work in record and/or Skype
 Description: 
-I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
-card.
-
-When recording from a headset microphone, sound quality is really bad: low
-
-volume and quite some noise / distortion.
-
-I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
-Center/LFE' 
-is off.
-
-I've fiddled with all the other options, but they don't seem to affect the
-
-quality.
-
-I do my recording with:
-
-arecord -D hw:1,0 -d 4 test.wav
-
-Under Windows, sound quality is a lot better with the same setup.
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001192 Microphone doesn't work in record and/o...
+related to          0000183 Mic boost boosts mic playback and not r...
+related to          0000653 poor microphone recording quality on pc...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 15:59 
+ schorpp - 08-04-05 13:59 
 ----------------------------------------------------------------------
-Try the patch in #1192.
+patch -p[n] < cmipci-mic-boost2.diff
+
+you need alsa driver sources in cvs version and linux kernel sources
+installed(?).
 
 ----------------------------------------------------------------------
- thorstenhirsch - 11-07-05 20:56 
+ thorstenhirsch - 11-07-05 20:55 
 ----------------------------------------------------------------------
-problem (mic boost) is solved since alsa 1.0.10rc1 / kernel 2.6.13
+Problem is solved since alsa 1.0.10rc1 / kernel 2.6.13
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-04 10:58 pbienst        New Issue                                    
-11-18-04 10:58 pbienst        Distribution              => Gentoo          
-11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
-11-18-04 18:07 tiwai          Note Added: 0002453                          
-11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
-11-18-04 19:11 pbienst        Note Added: 0002459                          
-11-18-04 19:26 pbienst        Note Added: 0002460                          
-11-18-04 19:33 tiwai          Note Added: 0002461                          
-11-18-04 19:36 pbienst        Note Added: 0002462                          
-11-18-04 19:54 tiwai          Note Added: 0002467                          
-11-18-04 20:01 pbienst        Note Added: 0002468                          
-11-18-04 20:22 tiwai          Note Added: 0002469                          
-06-27-05 15:58 tiwai          Relationship added       related to 0001192  
-06-27-05 15:59 tiwai          Note Added: 0005273                          
-11-07-05 20:56 thorstenhirsch Note Added: 0006618                          
-07-28-06 10:58 Adrian Bunk    Status                   assigned => resolved
-07-28-06 10:58 Adrian Bunk    Resolution               open => fixed       
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+06-24-05 15:00 tiwai          Note Added: 0005224                          
+06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
+   
+06-26-05 11:46 iljaguaro      Note Added: 0005262                          
+06-26-05 23:21 sst4           Note Added: 0005269                          
+06-27-05 15:57 tiwai          Relationship added       related to 0000183  
+06-27-05 15:58 tiwai          Relationship added       related to 0000653  
+07-16-05 19:58 mlehto         Note Added: 0005501                          
+07-16-05 20:11 mlehto         Issue Monitored: mlehto                      
+08-04-05 08:36 dino           Note Added: 0005640                          
+08-04-05 13:59 schorpp        Note Added: 0005647                          
+11-07-05 20:55 thorstenhirsch Note Added: 0006617                          
+07-28-06 10:59 Adrian Bunk    Status                   assigned => resolved
+07-28-06 10:59 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
