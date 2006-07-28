@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001822]: Can't record with Hercules
-	Fortissimo II
-Date: Fri, 28 Jul 2006 18:52:49 +0200
-Message-ID: <eb82549d530c703c91897262b96f855e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Fri, 28 Jul 2006 19:53:53 +0200
+Message-ID: <329f50f7550a3ee01b09c145cc5c92cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72E6D17B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEE2C16D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 18:52:49 +0200 (MEST)
+	Fri, 28 Jul 2006 19:53:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,102 +25,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
 ======================================================================
-Reported By:                atler
-Assigned To:                
+Reported By:                lodp2
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1822
-Category:                   PCI - cs46xx
+Issue ID:                   2261
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               PLD
-Kernel Version:             2.6.14.7
+Status:                     assigned
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             02-05-2006 16:16 CET
-Last Modified:              07-28-2006 18:52 CEST
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              07-28-2006 19:53 CEST
 ======================================================================
-Summary:                    Can't record with Hercules Fortissimo II
+Summary:                    No sound with hda-intel ALC883
 Description: 
-I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
-produces 19K-32K file with no sound. What is weird is that I can record
-through alsa oss emulation in programs that use /dev/dsp.
-Similar problems already appeard here, but none of the solutions worked
-for me.
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
+
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
+
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-15-06 13:50 
+ arpac - 07-28-06 19:14 
 ----------------------------------------------------------------------
-Post the complete output of 
-
-arecord -v -Dhw:0,0 -d 10 test.wav
-
-or
-
-arecord -v -Dplughw:0,0 -d 10 test.wav
-
-
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=259#1090
-
-If dmix does not work, this means dsnoop may also not work
+still no change with the last hg (4hours ago, modif by tiwai) :(
 
 ----------------------------------------------------------------------
- atler - 07-28-06 18:52 
+ pwaller - 07-28-06 19:53 
 ----------------------------------------------------------------------
-$ arecord -v -Dhw:0,0 -d 10 -f cd test.wav
-Recording WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 512
-  period_time  : 11609
-  tick_time    : 4000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 512
-  xfer_align   : 512
-  start_threshold  : 1
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-
-Sorry I'm not very familiar with all this dmix/dsnoop stuff as I've never
-needed to care about it. Do you mean that dsnoop might not work until I
-enable mixing through dmix? If yes, why recording through oss works fine?
+How can one tell when tiwai makes changes and it's worth checking to see
+whether the latest build works?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 16:16 atler          New Issue                                    
-02-05-06 16:16 atler          File Added: asound.state                     
-02-05-06 16:16 atler          Distribution              => PLD             
-02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
-02-05-06 16:19 atler          Note Added: 0007937                          
-02-07-06 16:30 perex          Note Added: 0007959                          
-02-11-06 20:47 atler          Note Added: 0008021                          
-07-11-06 16:24 Raymond        Note Added: 0010974                          
-07-11-06 16:28 Raymond        Note Edited: 0010974                         
-07-14-06 22:28 atler          Note Added: 0011007                          
-07-15-06 09:13 Raymond        Note Added: 0011019                          
-07-15-06 13:22 atler          Note Added: 0011021                          
-07-15-06 13:50 Raymond        Note Added: 0011022                          
-07-28-06 18:52 atler          Note Added: 0011285                          
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
+07-25-06 13:08 arpac          Note Added: 0011226                          
+07-25-06 17:13 axj            Note Added: 0011229                          
+07-27-06 23:50 pwaller        Note Added: 0011281                          
+07-28-06 13:09 pwaller        Issue Monitored: pwaller                     
+07-28-06 19:14 arpac          Note Added: 0011286                          
+07-28-06 19:53 pwaller        Note Added: 0011287                          
 ======================================================================
 
 
