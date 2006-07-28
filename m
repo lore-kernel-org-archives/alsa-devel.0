@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000183]: Mic boost boosts mic playback
-	and not recording
-Date: Fri, 28 Jul 2006 10:54:20 +0200
-Message-ID: <3b3df749d3059c3dbffa2443c8478725@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000943]: cmipci freezes the whole
+	system
+Date: Fri, 28 Jul 2006 10:55:39 +0200
+Message-ID: <928af7e0db4c0f9e58e3bcdc24b9d529@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01351102
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 596E515C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 10:54:20 +0200 (MEST)
+	Fri, 28 Jul 2006 10:55:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,73 +24,104 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
 ======================================================================
-Reported By:                Schugy
-Assigned To:                
+Reported By:                aisotton
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   183
+Issue ID:                   943
 Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE 8.2
-Kernel Version:             2.4.25
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Debian Sid (Unstable)
+Kernel Version:             2.6.10
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-04-2004 13:51 CEST
-Last Modified:              07-28-2006 10:54 CEST
+Date Submitted:             02-25-2005 16:06 CET
+Last Modified:              07-28-2006 10:55 CEST
 ======================================================================
-Summary:                    Mic boost boosts mic playback and not recording
+Summary:                    cmipci freezes the whole system
 Description: 
-I've tried to record my voice with broadcast2000. The recording level is at
--30db (maybe 2db louder than without mic boost) while mic playback seems
-to be boosted up by 500% to an audiable level.
+Hi,
+
+I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
+gigabit ethernet controller (the board is an Asus A7V600). The sound
+card uses the cmipci module, and the ethernet card the sk98lin module.
+
+Playing sound and using the network at the same time freezes the sytem
+after a short time (generally 15-30 seconds); nothing is logged or
+displayed (I checked syslog, kern.log and /var/log/messages), it just
+freezes everything, forcing a reset of the machine (and after the
+subsequent reboot my mouse isn't recognized any more, but I don't think
+that matters).
+
+I am using that network card since more than a year, and it never gave a
+problem; thus I think the bug is in the cmipci driver (the system never
+froze before I installed the sound card).
+
+I did a memtest, but my memory seems to be ok.
+
+This happens with all kernels I tested, specifically:
+
+Debian kernel-image-2.6.10-1-k7-4
+Debian kernel-image-2.6.9-2-k7-5
+Debian kernel-image-2.6.8-2-k7-13
+Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
+Vanilla kernel 2.6.10, compiled with the same options as Debian
+kernel-image-2.6.10-1-k7-4.
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001192 Microphone doesn't work in record and/o...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 15:57 
+ runderwo - 09-24-05 18:12 
 ----------------------------------------------------------------------
-Try the patch in #1192.
+This is terrible.  Okay, is there any way you can do the following.  First,
+lspci -xxx and save the results in Linux.  Then, go to Windows and use a
+PCI dumper to dump the PCI configuration area there.  Post the results. 
+Also note whether or not the card works in Windows.  I know not everybody
+has access to windows so this is directed at those of you who have a
+windows installation to play with.
 
 ----------------------------------------------------------------------
- Schugy - 09-16-05 00:01 
+ tiwai - 10-05-05 18:58 
 ----------------------------------------------------------------------
-Mic boost now works perfectly with ALSA that is included in linux 2.6.13.
-Great job.
-Thank you very much ;)
+The stability depends quite much on the board and BIOS.
+In some cases, BIOS update solves the problems.
+
+Also, try the latest ALSA CVS version since legacy MIDI port is removed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-04-04 13:51 Schugy         New Issue                                    
-04-04-04 13:51 Schugy         Distribution              => SuSE 8.2        
-04-04-04 13:51 Schugy         Kernel Version            => 2.4.25          
-04-27-04 17:33 mlejeune       Note Added: 0000962                          
-04-27-04 17:35 mlejeune       Issue Monitored: mlejeune                    
-04-30-04 11:43 tiwai          Note Added: 0000982                          
-05-23-04 19:45 Schugy         Note Added: 0001180                          
-05-24-04 14:50 tiwai          Note Added: 0001183                          
-07-24-04 19:47 thorstenhirsch Note Added: 0001471                          
-04-07-05 00:12 jdthood        Status                   new => acknowledged 
-04-07-05 00:12 jdthood        Resolution               open => not fixable 
-04-07-05 06:25 charles_levert Note Added: 0004354                          
-06-27-05 15:57 tiwai          Relationship added       related to 0001192  
-06-27-05 15:57 tiwai          Note Added: 0005272                          
-09-16-05 00:01 Schugy         Note Added: 0006231                          
-07-28-06 10:54 Adrian Bunk    Status                   acknowledged => resolved
-07-28-06 10:54 Adrian Bunk    Resolution               not fixable => fixed
+02-25-05 16:06 aisotton       New Issue                                    
+02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
+02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
+02-25-05 21:57 runderwo       Note Added: 0003736                          
+02-26-05 02:33 aisotton       Note Added: 0003737                          
+06-11-05 23:46 sbambach       Note Added: 0004996                          
+06-11-05 23:48 sbambach       Note Added: 0004997                          
+06-11-05 23:48 sbambach       Issue Monitored: sbambach                    
+06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
+09-16-05 15:27 mitch_f        Note Added: 0006244                          
+09-22-05 19:40 mitch_f        Note Added: 0006357                          
+09-22-05 19:51 sbambach       Note Added: 0006358                          
+09-22-05 19:52 sbambach       Note Edited: 0006358                         
+09-22-05 20:16 runderwo       Note Added: 0006360                          
+09-24-05 14:17 mitch_f        Note Added: 0006369                          
+09-24-05 18:12 runderwo       Note Added: 0006375                          
+10-05-05 18:58 tiwai          Note Added: 0006437                          
+05-15-06 16:59 ksc91u         Issue Monitored: ksc91u                      
+07-28-06 10:55 Adrian Bunk    Status                   assigned => closed  
+07-28-06 10:55 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
