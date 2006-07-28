@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000997]: no sound at all
-Date: Fri, 28 Jul 2006 03:47:04 +0200
-Message-ID: <7b990da22906d5f058d5a7d3b5857e0d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Fri, 28 Jul 2006 05:03:16 +0200
+Message-ID: <47f0c7b618b338429bef68eef05e9484@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D907F171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E50A9165
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 03:47:04 +0200 (MEST)
+	Fri, 28 Jul 2006 05:03:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,197 +23,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=997> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                HawkHunter
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   997
-Category:                   PCI - cmipci
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Linux S0106002078b04ca8 2.6.9-5.0.3.ELsmp #1 SMP Sat
-Feb 19 19:38:02 CST 2005 i686 i686 i386 GNU/Linux
-Kernel Version:             kernel-2.6.9-5.0.3.EL
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-17-2005 05:17 CET
-Last Modified:              07-28-2006 03:47 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-28-2006 05:03 CEST
 ======================================================================
-Summary:                    no sound at all
+Summary:                    surround40 memory leak
 Description: 
-I cant get any sound - someone suggested that this would help you:
-
-[root@S0106002078b04ca8 ~]# lspci -vv
-00:01.0 VGA compatible controller: ATI Technologies Inc Radeon RV100 QY
-[Radeon 7000/VE] (prog-if 00 [VGA])
-        Subsystem: ATI Technologies Inc Radeon 7000
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping+ SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (2000ns min), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 3
-        Region 0: Memory at b8000000 (32-bit, prefetchable) [size=128M]
-        Region 1: I/O ports at 4000 [size=256]
-        Region 2: Memory at c6ef0000 (32-bit, non-prefetchable)
-[size=64K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:02.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev
-10)
-        Subsystem: C-Media Electronics Inc CMI8738/C3DX PCI Audio Device
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (500ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 4
-        Region 0: I/O ports at 4400 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:03.0 Ethernet controller: Macronix, Inc. [MXIC] MX987x5 (rev 20)
-        Subsystem: Unknown device 2078:0540
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping+ SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (2000ns min, 14000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 15
-        Region 0: I/O ports at 4800 [size=256]
-        Region 1: Memory at c6ee0000 (32-bit, non-prefetchable)
-[size=256]
-        Capabilities: [44] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=0mA
-PME(D0-,D1+,D2-,D3hot-,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:0c.0 System peripheral: Compaq Computer Corporation System Management
-Controller (rev 01)
-        Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Region 0: I/O ports at 4c00 [size=256]
-        Region 1: Memory at c6ed0000 (32-bit, non-prefetchable)
-[size=256]
-
-00:0e.0 VGA compatible controller: Cirrus Logic GD 5430/40 [Alpine] (rev
-22) (prog-if 00 [VGA])
-        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 0
-        Region 0: Memory at b7000000 (32-bit, prefetchable) [disabled]
-[size=16M]
-
-00:0f.0 EISA bridge: Intel Corp. 82375EB/SB PCI to EISA Bridge (rev 15)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 248
-
-00:14.0 RAM memory: Intel Corp. 450KX/GX [Orion] - 82453KX/GX Memory
-controller (rev 05)
-        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-
-00:19.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
-(rev 06)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ >SERR- <PERR+
-        Latency: 32, Cache Line Size 08
-
-00:1a.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
-(rev 06)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ >SERR- <PERR-
-        Latency: 32, Cache Line Size 08
-
-01:08.0 Class ff00: Compaq Computer Corporation PCI Hotplug Controller
-(rev 02)
-        Subsystem: Compaq Computer Corporation: Unknown device a2f7
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at c6ff0000 (32-bit, non-prefetchable)
-[size=256]
-
-01:0a.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
-03)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at 5000 [size=256]
-        Region 1: Memory at c6fe0000 (32-bit, non-prefetchable)
-[size=256]
-        Region 2: Memory at c6fd0000 (32-bit, non-prefetchable) [size=4K]
-
-01:0b.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
-03)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at 5400 [size=256]
-        Region 1: Memory at c6fc0000 (32-bit, non-prefetchable)
-[size=256]
-        Region 2: Memory at c6fb0000 (32-bit, non-prefetchable) [size=4K]
-
-[root@S0106002078b04ca8 ~]#
-
-Cheers, and thanks in advance for the help
-Trev
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:25 
+ Raymond - 07-26-06 16:31 
 ----------------------------------------------------------------------
-Could you be more specific? Do you have installed and configured the
-snd-cmipci driver?
+>> How do I find out? 
+
+Can you find two 48-pins AC97 CS4294 chips on your sound card ?
+
+Does the windows driver really support 7.1 ?
+
+
+
+----------------------------------------------------------------------
+ Raymond - 07-28-06 05:03 
+----------------------------------------------------------------------
+another limited resources are
+
+#define DSP_MAX_SCB_DESC 200
+#define DSP_MAX_TASK_DESC 50
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-05 05:17 HawkHunter     New Issue                                    
-03-17-05 05:17 HawkHunter     Distribution              => Linux
-S0106002078b04ca8 2.6.9-5.0.3.ELsmp #1 SMP Sat Feb 19 19:38:02 CST 2005 i686
-i686 i386 GNU/Linux
-03-17-05 05:17 HawkHunter     Kernel Version            => kernel-2.6.9-5.0.3.EL
-06-06-05 10:25 perex          Note Added: 0004892                          
-06-06-05 10:25 perex          Assigned To              perex =>            
-06-06-05 10:25 perex          Category                 0_compilation problem_!!!
-=> PCI - cmipci
-07-28-06 03:47 Adrian Bunk    Status                   assigned => closed  
-07-28-06 03:47 Adrian Bunk    Resolution               open => unable to
-duplicate
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
 ======================================================================
 
 
