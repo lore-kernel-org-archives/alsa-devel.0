@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001904]: No Sound At All
-Date: Fri, 28 Jul 2006 22:24:10 +0200
-Message-ID: <d6557a47249075bda4786e6d1537d6d5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002309]: No matter what I try,
+	I cannot get sound from the machine on Linux
+Date: Fri, 28 Jul 2006 22:29:53 +0200
+Message-ID: <801277e16ef3d0a7ba90742f9165e770@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3EE116E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6034B16E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 22:24:10 +0200 (MEST)
+	Fri, 28 Jul 2006 22:29:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,67 +24,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1904> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2309> 
 ======================================================================
-Reported By:                niels
-Assigned To:                jcdutton
+Reported By:                ronware
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1904
-Category:                   PCI - ca0106
+Issue ID:                   2309
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.15-i686
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Frugalware 0.4
+Kernel Version:             2.6.17
 ======================================================================
-Date Submitted:             03-10-2006 14:24 CET
-Last Modified:              07-28-2006 22:24 CEST
+Date Submitted:             07-28-2006 20:14 CEST
+Last Modified:              07-28-2006 22:29 CEST
 ======================================================================
-Summary:                    No Sound At All
+Summary:                    No matter what I try, I cannot get sound from the
+machine on Linux
 Description: 
-Hi There!
-Unfortunately I have to report that I am not getting a single sound out of
-my SB24Bit Live Sounbcard!
-All dependencies are fulfilled, the right kernel is installed, the actual
-libasound2 is installed, Alsaconf builds the driver, on alsamixer the
-Volumes are up - but still no sound!
-Well it could be the DSP, thats true, but thats pretty much unusual as it
-is a brandnew card!
-If you, the developer crew does have any suggestions what you want me to
-test tzo verify if it is a bug or not, don`t hesitate to contact me!
-If I am on the console and try aplay /usr/share/sounds/pop.wav nothing
-happens either. And yes I have disabled the artsd in the control menu of
-KDE!
+Installed Frugalware Linux (kernel 2.6.17) on new laptop, Acer Aspire
+1642ZWLCi.    Everything works except the sound.  Downloaded the RC3 build
+of alsa drivers etc. to see if that would fix the problem, based on posts
+I've read.  No go.
 
-Thanks
-Niels
+The snd_hda_intel driver is loaded, and alsamixer is able to function, but
+no sound comes out (nothing is muted), neither from the speakers nor from
+the earphones.
+
+I've successfully got sound working under the same kernel on two other
+Acer machines; unfortunately Acer likes to play with new hardware, so the
+other machines have different sound chips than this one does.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-13-06 21:49 
+ ronware - 07-28-06 21:32 
 ----------------------------------------------------------------------
-please post the output of the following commands:
-cat /proc/asound/version
-cat /proc/asound/cards
-amixer
+Sorry, I meant 12rc1.
+
+I did test every combination of options; I keep getting:
+
+
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 177
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+
+----------------------------------------------------------------------
+ rlrevell - 07-28-06 22:29 
+----------------------------------------------------------------------
+You must not be passing the model options correctly, otherwise it would not
+say "trying auto-probe".
+
+Try manually removing the module and loading it with "modprobe
+snd-hda-intel model=xxx".  Repeat with each value of xxx listed for ALC882
+in ALSA-Configuration.txt.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-06 14:24 niels          New Issue                                    
-03-10-06 14:24 niels          Distribution              => Debian          
-03-10-06 14:24 niels          Kernel Version            => 2.6.15-i686     
-04-13-06 21:49 jcdutton       Note Added: 0009272                          
-04-13-06 21:49 jcdutton       Status                   assigned => feedback
-07-28-06 22:24 Adrian Bunk    Status                   feedback => closed  
-07-28-06 22:24 Adrian Bunk    Resolution               open => unable to
-duplicate
+07-28-06 20:14 ronware        New Issue                                    
+07-28-06 20:14 ronware        Distribution              => Frugalware 0.4  
+07-28-06 20:14 ronware        Kernel Version            => 2.6.17          
+07-28-06 20:39 rlrevell       Note Added: 0011288                          
+07-28-06 21:32 ronware        Note Added: 0011291                          
+07-28-06 22:29 rlrevell       Note Added: 0011292                          
 ======================================================================
 
 
