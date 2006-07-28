@@ -1,12 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] Makefile cleanup
-Date: Fri, 28 Jul 2006 19:59:38 +0200
-Message-ID: <20060728175938.GA4072@tuba>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [alsa-cvslog] alsa-lib: Move dB parser to mixer
+	abstraction
+Date: Fri, 28 Jul 2006 19:29:29 +0100
+Message-ID: <44CA5789.1040308@superbug.co.uk>
+References: <ALOGGER1154091319.81@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <ALOGGER1154091319.81@alsa-project.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,24 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Let's remove an miro dependency from alsa-driver, because miro is a part 
-of alsa-kernel now.
+Takashi Iwai wrote:
+> changeset:   2174:9cef8245d99a19f79d6c90e8ddc78606e317fdd7
+> tag:         tip
+> user:        tiwai
+> date:        Fri Jul 28 14:36:37 2006 +0200
+> files:       include/control.h src/control/hcontrol.c src/mixer/simple_none.c
+> description:
+> Move dB parser to mixer abstraction
+> 
+> Moved the parser of dB value to mixer abstraction from hcontrol layer.
+> Also, cleaned up codes.
+> 
 
-Signed-off-by: Martin Langer <martin-langer@gmx.de>
+Is it too much to ask that if you commit code, that it actually works.
+Currently, any call to "static int get_dB_ops(..." returns an error,
+irrespective of whether the kernel driver returns useful dB info or not. :-(
 
---- alsa-driver/isa/cs423x/Makefile.ORIGINAL	2006-07-28 19:41:16.000000000 +0200
-+++ alsa-driver/isa/cs423x/Makefile	2006-07-28 19:41:31.000000000 +0200
-@@ -13,6 +13,5 @@
- 
- snd-pc98-cs4232-objs := pc98.o
- obj-$(CONFIG_SND_PC98_CS4232) += snd-pc98-cs4232.o snd-cs4231-lib.o
--obj-$(CONFIG_SND_MIRO) += snd-cs4231-lib.o
- 
- include $(SND_TOPDIR)/Rules.make
-
+At least the code I committed actually worked!
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
