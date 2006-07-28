@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002301]: 82801G ICH7 problems.
-Date: Fri, 28 Jul 2006 18:07:10 +0200
-Message-ID: <043bc8eb7ff7c74670be2d6a27fc45e7@bugtrack.alsa-project.org>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] Makefile cleanup
+Date: Fri, 28 Jul 2006 19:59:38 +0200
+Message-ID: <20060728175938.GA4072@tuba>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE38DCB
-	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 18:07:10 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,74 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Let's remove an miro dependency from alsa-driver, because miro is a part 
+of alsa-kernel now.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2301> 
-======================================================================
-Reported By:                magmax
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2301
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.17-1-686
-======================================================================
-Date Submitted:             07-24-2006 16:28 CEST
-Last Modified:              07-28-2006 18:07 CEST
-======================================================================
-Summary:                    82801G ICH7 problems.
-Description: 
-I have two problems: 
+Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
-a) a really annoying acute noise that is present all the time.
-
-b) when you change whatever you want at alsamixer, all the sound (acute
-noise included) shuts down.
-
-This bug may be similar to 0002221.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-27-06 12:59 
-----------------------------------------------------------------------
-Did you try model module option with various values, as described in
-ALSA-Configuration.txt?
-
-----------------------------------------------------------------------
- magmax - 07-28-06 18:07 
-----------------------------------------------------------------------
-Well... I didn't before.
-
-Now I have just proving a lot (some of them are: asus, 3stack, 5stack,
-w810, z71v, uniwill, test, F1734, acer, auto, lg, minimal, full, basic,
-laptop, ...) and the effect is the same. Some of them make my sound cart
-not to work (laptop, for example).
-
-Maybe I was doing it wrong. I tried the next:
-# rmmod snd_hda_intel
-# modprobe snd_hda_intel model=basic
-
-Thank you.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-24-06 16:28 magmax         New Issue                                    
-07-24-06 16:28 magmax         Distribution              => Debian          
-07-24-06 16:28 magmax         Kernel Version            => 2.6.17-1-686    
-07-27-06 12:59 tiwai          Note Added: 0011270                          
-07-28-06 18:07 magmax         Note Added: 0011284                          
-======================================================================
-
+--- alsa-driver/isa/cs423x/Makefile.ORIGINAL	2006-07-28 19:41:16.000000000 +0200
++++ alsa-driver/isa/cs423x/Makefile	2006-07-28 19:41:31.000000000 +0200
+@@ -13,6 +13,5 @@
+ 
+ snd-pc98-cs4232-objs := pc98.o
+ obj-$(CONFIG_SND_PC98_CS4232) += snd-pc98-cs4232.o snd-cs4231-lib.o
+-obj-$(CONFIG_SND_MIRO) += snd-cs4231-lib.o
+ 
+ include $(SND_TOPDIR)/Rules.make
 
 
 -------------------------------------------------------------------------
