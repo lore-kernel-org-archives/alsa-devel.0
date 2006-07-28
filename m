@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass
-	conflicts with line-as rear.
-Date: Fri, 28 Jul 2006 03:45:33 +0200
-Message-ID: <8f52b840988861bcacb891f7236a9adf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000997]: no sound at all
+Date: Fri, 28 Jul 2006 03:47:04 +0200
+Message-ID: <7b990da22906d5f058d5a7d3b5857e0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EAE0157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D907F171
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 03:45:34 +0200 (MEST)
+	Fri, 28 Jul 2006 03:47:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,114 +25,194 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=997> 
 ======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
+Reported By:                HawkHunter
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   644
+Issue ID:                   997
 Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
+Distribution:               Linux S0106002078b04ca8 2.6.9-5.0.3.ELsmp #1 SMP Sat
+Feb 19 19:38:02 CST 2005 i686 i686 i386 GNU/Linux
+Kernel Version:             kernel-2.6.9-5.0.3.EL
 Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              07-28-2006 03:45 CEST
+Date Submitted:             03-17-2005 05:17 CET
+Last Modified:              07-28-2006 03:47 CEST
 ======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
+Summary:                    no sound at all
 Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+I cant get any sound - someone suggested that this would help you:
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
+[root@S0106002078b04ca8 ~]# lspci -vv
+00:01.0 VGA compatible controller: ATI Technologies Inc Radeon RV100 QY
+[Radeon 7000/VE] (prog-if 00 [VGA])
+        Subsystem: ATI Technologies Inc Radeon 7000
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping+ SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (2000ns min), Cache Line Size 08
+        Interrupt: pin A routed to IRQ 3
+        Region 0: Memory at b8000000 (32-bit, prefetchable) [size=128M]
+        Region 1: I/O ports at 4000 [size=256]
+        Region 2: Memory at c6ef0000 (32-bit, non-prefetchable)
+[size=64K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-This Linux installation works in a dual-boot with windows xp.
+00:02.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev
+10)
+        Subsystem: C-Media Electronics Inc CMI8738/C3DX PCI Audio Device
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (500ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 4
+        Region 0: I/O ports at 4400 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
+00:03.0 Ethernet controller: Macronix, Inc. [MXIC] MX987x5 (rev 20)
+        Subsystem: Unknown device 2078:0540
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr+ Stepping+ SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (2000ns min, 14000ns max), Cache Line Size 08
+        Interrupt: pin A routed to IRQ 15
+        Region 0: I/O ports at 4800 [size=256]
+        Region 1: Memory at c6ee0000 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [44] Power Management version 1
+                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=0mA
+PME(D0-,D1+,D2-,D3hot-,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+00:0c.0 System peripheral: Compaq Computer Corporation System Management
+Controller (rev 01)
+        Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Region 0: I/O ports at 4c00 [size=256]
+        Region 1: Memory at c6ed0000 (32-bit, non-prefetchable)
+[size=256]
 
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
+00:0e.0 VGA compatible controller: Cirrus Logic GD 5430/40 [Alpine] (rev
+22) (prog-if 00 [VGA])
+        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 0
+        Region 0: Memory at b7000000 (32-bit, prefetchable) [disabled]
+[size=16M]
 
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
+00:0f.0 EISA bridge: Intel Corp. 82375EB/SB PCI to EISA Bridge (rev 15)
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr+ Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 248
 
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
+00:14.0 RAM memory: Intel Corp. 450KX/GX [Orion] - 82453KX/GX Memory
+controller (rev 05)
+        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
 
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
+00:19.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
+(rev 06)
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR+
+        Latency: 32, Cache Line Size 08
 
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
+00:1a.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
+(rev 06)
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR-
+        Latency: 32, Cache Line Size 08
 
-Julio Borges
-Rio de Janeiro - Brazil
+01:08.0 Class ff00: Compaq Computer Corporation PCI Hotplug Controller
+(rev 02)
+        Subsystem: Compaq Computer Corporation: Unknown device a2f7
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at c6ff0000 (32-bit, non-prefetchable)
+[size=256]
+
+01:0a.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
+03)
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: I/O ports at 5000 [size=256]
+        Region 1: Memory at c6fe0000 (32-bit, non-prefetchable)
+[size=256]
+        Region 2: Memory at c6fd0000 (32-bit, non-prefetchable) [size=4K]
+
+01:0b.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
+03)
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr+ Stepping- SERR+ FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: I/O ports at 5400 [size=256]
+        Region 1: Memory at c6fc0000 (32-bit, non-prefetchable)
+[size=256]
+        Region 2: Memory at c6fb0000 (32-bit, non-prefetchable) [size=4K]
+
+[root@S0106002078b04ca8 ~]#
+
+Cheers, and thanks in advance for the help
+Trev
 ======================================================================
 
 ----------------------------------------------------------------------
- jborges - 12-06-04 12:32 
+ perex - 06-06-05 10:25 
 ----------------------------------------------------------------------
-It seems that I have a different idea about enable. When I say it is not
-enable I want to mean that this is a dead control. I can not push the M
-key to mute or umute it. Neither it turns off by pushing that key. Another
-thing is there is no way to control the volume in these controls. The
-columns above their names stay empty all the time. It not possible to move
-the colors inside that columns.
-
-Really sorry for the incovenience. It would be more inteligente just to
-forget the whole troble. But, I just like to understand what is going on.
-
-Thanks anyway to stay in this strugle with me.
-
-----------------------------------------------------------------------
- tiwai - 12-07-04 18:33 
-----------------------------------------------------------------------
-Hmm, the constant value is OK.  They have really no values but only
-switches.  But non-working switches are of course unexpected problems.
-
-Please attach /proc/asound/card0/cmipci for debugging.
-Try to run the following:
-
-amixer set 'Line-In As Bass' off
-amixer set 'Line-In As Rear' off
-
-And compare the above proc file.  Any changes?
+Could you be more specific? Do you have installed and configured the
+snd-cmipci driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-11-18-04 19:04 jborges        Note Added: 0002458                          
-11-18-04 19:40 tiwai          Note Added: 0002463                          
-11-20-04 23:25 jborges        File Added: sound-cm8738-alsamixer.png            
-       
-11-28-04 10:51 jborges        Note Added: 0002621                          
-12-02-04 19:25 tiwai          Note Added: 0002691                          
-12-06-04 12:32 jborges        Note Added: 0002727                          
-12-07-04 18:33 tiwai          Note Added: 0002755                          
-07-28-06 03:45 Adrian Bunk    Status                   assigned => closed  
-07-28-06 03:45 Adrian Bunk    Resolution               open => unable to
+03-17-05 05:17 HawkHunter     New Issue                                    
+03-17-05 05:17 HawkHunter     Distribution              => Linux
+S0106002078b04ca8 2.6.9-5.0.3.ELsmp #1 SMP Sat Feb 19 19:38:02 CST 2005 i686
+i686 i386 GNU/Linux
+03-17-05 05:17 HawkHunter     Kernel Version            => kernel-2.6.9-5.0.3.EL
+06-06-05 10:25 perex          Note Added: 0004892                          
+06-06-05 10:25 perex          Assigned To              perex =>            
+06-06-05 10:25 perex          Category                 0_compilation problem_!!!
+=> PCI - cmipci
+07-28-06 03:47 Adrian Bunk    Status                   assigned => closed  
+07-28-06 03:47 Adrian Bunk    Resolution               open => unable to
 duplicate
 ======================================================================
 
