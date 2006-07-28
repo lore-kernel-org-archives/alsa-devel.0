@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002309]: No matter what I try,
 	I cannot get sound from the machine on Linux
-Date: Fri, 28 Jul 2006 20:14:17 +0200
-Message-ID: <f64eec3f1a4acaba7683fcf2bd0abab0@bugtrack.alsa-project.org>
+Date: Fri, 28 Jul 2006 20:39:45 +0200
+Message-ID: <c476cc620ed262db2749e96350309eda@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBCD51A1
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 151E8152
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Jul 2006 20:14:17 +0200 (MEST)
+	Fri, 28 Jul 2006 20:39:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2309> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Frugalware 0.4
 Kernel Version:             2.6.17
 ======================================================================
 Date Submitted:             07-28-2006 20:14 CEST
-Last Modified:              07-28-2006 20:14 CEST
+Last Modified:              07-28-2006 20:39 CEST
 ======================================================================
 Summary:                    No matter what I try, I cannot get sound from the
 machine on Linux
@@ -61,12 +61,20 @@ Acer machines; unfortunately Acer likes to play with new hardware, so the
 other machines have different sound chips than this one does.
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 07-28-06 20:39 
+----------------------------------------------------------------------
+RC3?  The latest ALSA version is 1.0.12-rc1.
+
+Did you try the various model options described in ALSA-Configuration.txt?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-28-06 20:14 ronware        New Issue                                    
 07-28-06 20:14 ronware        Distribution              => Frugalware 0.4  
 07-28-06 20:14 ronware        Kernel Version            => 2.6.17          
+07-28-06 20:39 rlrevell       Note Added: 0011288                          
 ======================================================================
 
 
