@@ -1,15 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: Question about kernel timers
-Date: Fri, 28 Jul 2006 09:01:50 +0200
-Message-ID: <20060728070150.GA25118@turing.informatik.uni-halle.de>
+Date: Fri, 28 Jul 2006 09:00:03 +0100
+Message-ID: <44C9C403.8040301@superbug.co.uk>
 References: <1153864917.25859.238.camel@mindpipe>
-	<1154049487.2927.98.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <1154049487.2927.98.camel@mindpipe>
-Content-disposition: inline
+In-Reply-To: <1153864917.25859.238.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,28 +22,36 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Lee Revell wrote:
-> On Tue, 2006-07-25 at 18:01 -0400, Lee Revell wrote:
-> > I've found that the kernel Oopses if you allocate a timer on the
-> > stack, so I use kmalloc().  It seems to work, but leaks memory, as
-> > there's no opportunity to free() all the timer_lists I'm creating on
-> > the fly.
+> I am writing a driver in which every time some event occurs, two
+> single-shot timers must be scheduled.  This event could happen many
+> times per second so many of these timers can be pending at once.  Can
+> someone point me to an example of a driver that does something like
+> this?
 > 
-> I've solved this problem by passing a pointer to the struct timer_list
-> to the timer function, and kfree()ing it at the end.  It seems pretty
-> ugly but it works.
+> All the ALSA drivers I can find that use timers have a single periodic
+> timer and use a struct timer_list in the card record.  However I think
+> this is not an option for me, as I must create new timers on the fly.
+> 
+> I've found that the kernel Oopses if you allocate a timer on the stack,
+> so I use kmalloc().  It seems to work, but leaks memory, as there's no
+> opportunity to free() all the timer_lists I'm creating on the fly.
+> 
+> Can I do this with a single struct timer_list?  Is it possible to
+> schedule multiple timers using add_timer() then changing the parameters
+> and add_timer() again?
+> 
+> It seems that this should be documented somewhere but it's not - LDD3
+> was no help.  All the examples were very simplistic.
+> 
+> Lee
+> 
 
-When the device is closed, you have to cancel all timers (or wait for
-them to finish), so I think you have to put them into a list or
-something like that.
+What is the purpose of these event timers?
+I can't think of any sound card that needs this sort of stuff.
+Can you use polling instead?
 
-Is there an upper bound on the number of timers?
+James
 
-Another possibility would be to use one timer and to write your own
-event handling logic, but this is probably not worth the effort.
-
-
-Regards,
-Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
