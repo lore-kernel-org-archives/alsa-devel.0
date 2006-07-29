@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002309]: No matter what I try,
-	I cannot get sound from the machine on Linux
-Date: Sat, 29 Jul 2006 20:38:21 +0200
-Message-ID: <76093f76e11fab5198736195614fb3ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sat, 29 Jul 2006 22:44:34 +0200
+Message-ID: <b235b46ba63aa6d1e3052f6afe84e68d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8AD9171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 906CA1A1
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 20:38:21 +0200 (MEST)
+	Sat, 29 Jul 2006 22:44:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,73 +25,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2309> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                ronware
-Assigned To:                tiwai
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2309
-Category:                   PCI - hda-intel
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Frugalware 0.4
-Kernel Version:             2.6.17
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-28-2006 20:14 CEST
-Last Modified:              07-29-2006 20:38 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-29-2006 22:44 CEST
 ======================================================================
-Summary:                    No matter what I try, I cannot get sound from the
-machine on Linux
+Summary:                    surround40 memory leak
 Description: 
-Installed Frugalware Linux (kernel 2.6.17) on new laptop, Acer Aspire
-1642ZWLCi.    Everything works except the sound.  Downloaded the RC3 build
-of alsa drivers etc. to see if that would fix the problem, based on posts
-I've read.  No go.
-
-The snd_hda_intel driver is loaded, and alsamixer is able to function, but
-no sound comes out (nothing is muted), neither from the speakers nor from
-the earphones.
-
-I've successfully got sound working under the same kernel on two other
-Acer machines; unfortunately Acer likes to play with new hardware, so the
-other machines have different sound chips than this one does.
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- ronware - 07-28-06 22:43 
+ Raymond - 07-29-06 17:23 
 ----------------------------------------------------------------------
-That is what I did.  I manually did "modprobe snd_hda_intel model=xxx" for
-the various models.
+Do your game use the capture device ?
+
+It seem that cs46xx does not support dsnoop
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076 
+
+
+Do all the volume controls (front,rear,center,lfe) change the volume of
+the correct channels ?
 
 ----------------------------------------------------------------------
- JeeBee - 07-29-06 20:38 
+ bitmage2 - 07-29-06 22:44 
 ----------------------------------------------------------------------
-I suffer from the same problem. I have an Acer Aspire 1640Z (configuration
-is 1642ZWLMi). And I also am not able to get sound working using Alsa. I
-also seem to have loaded snd_hda_intel succesfully. Though
-/var/log/messages keeps saying "kernel: hda_codec: Unknown model for
-ALC883, trying auto-probe from BIOS..."
-And I tried all models in ALSA-Configuration.txt, none of them worked :'(
-Would be great if somebody could fix this.
-More on my exact configuration can be found here:
-http://dutiih.st.ewi.tudelft.nl/~jonne/wiki/home/index.php?n=Main.AcerAspire1642ZWLMi
-Thanks in advance,
-JeeBee.
+I don't know what game darkbrain (bug reporter) is talking about. But I can
+answer your other question:
+Yes! All the volume controls (front,rear,center,lfe) change the volume of
+the correct channels. This is true for KMix (BTW: I am the KMix author) as
+well as for alsamixer.
+
+   Christian
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-28-06 20:14 ronware        New Issue                                    
-07-28-06 20:14 ronware        Distribution              => Frugalware 0.4  
-07-28-06 20:14 ronware        Kernel Version            => 2.6.17          
-07-28-06 20:39 rlrevell       Note Added: 0011288                          
-07-28-06 21:32 ronware        Note Added: 0011291                          
-07-28-06 22:29 rlrevell       Note Added: 0011292                          
-07-28-06 22:43 ronware        Note Added: 0011293                          
-07-29-06 20:38 JeeBee         Note Added: 0011310                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
+07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
+07-29-06 14:50 bitmage2       Note Added: 0011304                          
+07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
+    
+07-29-06 15:01 bitmage2       Note Added: 0011305                          
+07-29-06 15:03 bitmage2       File Added: test.state                       
+07-29-06 17:23 Raymond        Note Added: 0011309                          
+07-29-06 22:44 bitmage2       Note Added: 0011311                          
 ======================================================================
 
 
