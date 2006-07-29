@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002313]: intel8x0 probe fails with
-	error -12
-Date: Sat, 29 Jul 2006 12:22:01 +0200
-Message-ID: <bb37db785e0bd268ac5a108d550f589d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sat, 29 Jul 2006 12:20:48 +0200
+Message-ID: <4b033454bdd34dfe85e1a73677c1595f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E70A171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEB6C171
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 12:22:02 +0200 (MEST)
+	Sat, 29 Jul 2006 12:20:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,98 +23,109 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2313> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                coralsaw
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2313
-Category:                   PCI - intel8x0
-Reproducibility:            random
+Issue ID:                   1823
+Category:                   PCI - cs46xx
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Etch
-Kernel Version:             2.6.16
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-29-2006 12:22 CEST
-Last Modified:              07-29-2006 12:22 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-29-2006 12:20 CEST
 ======================================================================
-Summary:                    intel8x0 probe fails with error -12
+Summary:                    surround40 memory leak
 Description: 
-Hello,
-
-I'm running Debian Testing (ETCH) latest 2.6 kernel. Since a long time,
-I've been having a semi-persistent issue with my soundcards (once every
-approx. 5-10 reboots it works). Let me explain a bit.
-
-I have 3 soundcards in the PC. First there is the onboard soundcard, an
-Intel 82801DB which I want to configure as primary. Second, I have an RME
-multiface/cardbus card that I use under XP (dual boot) for music
-recording. And third, I have a Hauppauge WinTV card with a Conexant
-CX23880 audio chip.
-
-The problem I'm having is that most of the time, the Intel chip fails to
-be recognized during boot. I get the following dmesg error:
-
-   Intel ICH: probe of 0000:00:1f.5 failed with error -12
-
-Afterwards, ALSA cannot recognize the card as well, so even if I
-alsaconfand try to configure the Intel chip as primary, nothing changes
-and most of the times the Connexant chip is the one that shows in cat
-/proc/asound/cards.
-
-I've got no idea why the driver fails to be recognized, and I don't really
-know how to fix the issue, despite my long time google searches. I've
-waited for a month to see if it's an ETCH instability problem, to no
-avail. Note that I have no problem with either Ubuntu or XP on the same
-PC.
-
-cat /proc/asound/cards gives the following:
-
-   0 [CX8811         ]: CX88x - Conexant CX8811
-                        Conexant CX8811 at 0xf0000000
-   1 [DSP            ]: H-DSP - Hammerfall DSP
-                        RME Hammerfall DSP + Multiface at 0xef800000, irq
-193
-
-cat /proc/interrups gives the following:
-
-              CPU0
-     0:    1250978    IO-APIC-edge  timer
-     1:       6569    IO-APIC-edge  i8042
-     7:          0    IO-APIC-edge  parport0
-     8:          4    IO-APIC-edge  rtc
-    12:     166502    IO-APIC-edge  i8042
-    14:      12588    IO-APIC-edge  ide0
-    15:        153    IO-APIC-edge  ide1
-   169:     504906   IO-APIC-level  acpi, ohci1394, cx88[0], cx88[0]
-   185:      13253   IO-APIC-level  eth0
-   193:         59   IO-APIC-level  libata, ehci_hcd:usb4, hdsp
-   201:     423069   IO-APIC-level  uhci_hcd:usb1, mga@pci:0000:01:00.0
-   209:          0   IO-APIC-level  uhci_hcd:usb2
-   217:          0   IO-APIC-level  uhci_hcd:usb3
-   NMI:          0
-   LOC:    1250887
-   ERR:          0
-
-My dmesg.out, lspci.out and modules.conf are attached
-
-Can you please help me, I'd appreciate it. Thx!
-
-/coralsaw
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 07-28-06 10:25 
+----------------------------------------------------------------------
+another limited resources are
+
+#define DSP_MAX_SCB_DESC 200
+#define DSP_MAX_TASK_DESC 50
+
+You have to study how center_lfe was added and find out how to add side
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=1526aa09a60a;style=gitweb
+
+
+
+----------------------------------------------------------------------
+ bitmage2 - 07-29-06 12:20 
+----------------------------------------------------------------------
+Yes. I got 2 chips labeled "4294-J0 EP", and one labeled "CS4624-CQ".
+
+I don't know if the windows driver really supports 7.1 (in terms of 8
+*audio channels*): I don't own a 7.1 speaker set, and the
+documentation/handbook is not very specific about that.
+But what I know for sure is this:
+1) You can connect 7.1 *speakers*. The additional 2 speakers are plugged
+in the headphone jack.
+2) The control software shipping with Hercules GT XP7.1 allows to set a
+7.1 speaker setup.
+3) The hardware and the windows driver support 5.1 (I tested that)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-06 12:22 coralsaw       New Issue                                    
-07-29-06 12:22 coralsaw       File Added: coralsaw-alsa.tgz                    
-07-29-06 12:22 coralsaw       Distribution              => Debian Etch     
-07-29-06 12:22 coralsaw       Kernel Version            => 2.6.16          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
 ======================================================================
 
 
