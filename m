@@ -1,15 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sat, 29 Jul 2006 05:13:35 +0200
-Message-ID: <347b56c710f8a765e2e72ecf150226f6@bugtrack.alsa-project.org>
+From: "Kip Warner" <Kip@thevertigo.com>
+Subject: ALC883 Detection Issue
+Date: Fri, 28 Jul 2006 20:59:53 -0700
+Message-ID: <op.tdfmp3yxe8k94p@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C66431AC
-	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 05:13:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,106 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Greetings,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-29-2006 05:13 CEST
-======================================================================
-Summary:                    surround40 memory leak
-Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
-======================================================================
+I have an Intel HDA sound board with a Realtek ALC883 chipset. This is built into my four speaker ASUS A7J laptop.
 
-----------------------------------------------------------------------
- Raymond - 07-28-06 10:25 
-----------------------------------------------------------------------
-another limited resources are
+When I modprobe snd-hda-intel, I see the following in the kernel log:
 
-#define DSP_MAX_SCB_DESC 200
-#define DSP_MAX_TASK_DESC 50
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
 
-You have to study how center_lfe was added and find out how to add side
+I have tried experimenting with a number of different model strings for snd-hda-intel, all to no avail.
 
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=1526aa09a60a;style=gitweb
+I hear sound, but only out of the front two speakers. Alsamixer shows that it thinks the chipset is the Realtek ALC882 and only gives a slider for Headphone, Front, Line, CD, Mic, ... but with no "Rear" channel.
 
+"speaker-test -c4" confirms this because it only makes an audible hiss with the front two speakers but immediately goes silent with the back two. It looks like it is using the wrong chipset with the wrong speaker configuration.
 
+I have been wrestling with this for weeks and to no avail. I am using Alsa 1.0.12.rc1 with kernel 2.6.17.3. In my kernel options I enabled sound but disabled Alsa. I compiled Alsa manually with ./configure --with-cards=hda-intel. I have also tried the latest source from the HG repository. Same thing.
 
-----------------------------------------------------------------------
- Raymond - 07-29-06 05:13 
-----------------------------------------------------------------------
-It's strange that center_lfe_mix_scb do not call
-cs46xx_dsp_scb_set_volume() as  master_mix_scb and rear_mix_scb in
-cs46xx_dsp_set_dac_volume()
+Any help would be much appreciated.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
-07-26-06 16:28 Raymond        Note Edited: 0011249                         
-07-26-06 16:31 Raymond        Note Edited: 0011249                         
-07-28-06 05:03 Raymond        Note Added: 0011282                          
-07-28-06 10:25 Raymond        Note Edited: 0011282                         
-07-29-06 05:13 Raymond        Note Added: 0011298                          
-======================================================================
-
-
+--
+Kip
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
