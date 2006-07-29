@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sat, 29 Jul 2006 12:20:48 +0200
-Message-ID: <4b033454bdd34dfe85e1a73677c1595f@bugtrack.alsa-project.org>
+Date: Sat, 29 Jul 2006 12:23:48 +0200
+Message-ID: <da0687f3cc8303440bce63ed87004fa7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEB6C171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D18B9186
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 12:20:48 +0200 (MEST)
+	Sat, 29 Jul 2006 12:23:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-29-2006 12:20 CEST
+Last Modified:              07-29-2006 12:23 CEST
 ======================================================================
 Summary:                    surround40 memory leak
 Description: 
@@ -50,20 +50,6 @@ game in surround40 mode the game result unplayable after some minutes.
 And there is a problem in CS46xx.conf file, i need to remove the hook on
 the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-28-06 10:25 
-----------------------------------------------------------------------
-another limited resources are
-
-#define DSP_MAX_SCB_DESC 200
-#define DSP_MAX_TASK_DESC 50
-
-You have to study how center_lfe was added and find out how to add side
-
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=1526aa09a60a;style=gitweb
-
-
 
 ----------------------------------------------------------------------
  bitmage2 - 07-29-06 12:20 
@@ -79,6 +65,13 @@ in the headphone jack.
 2) The control software shipping with Hercules GT XP7.1 allows to set a
 7.1 speaker setup.
 3) The hardware and the windows driver support 5.1 (I tested that)
+
+----------------------------------------------------------------------
+ bitmage2 - 07-29-06 12:23 
+----------------------------------------------------------------------
+Forogt to tell in the last note: The chips labeled "4294-J0 EP" might have
+48 Pins. I thought I counted 40 Pins (10 on each side), but I might have
+counted wrong. If it is important, just tell me, and I will do a re-count.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -126,6 +119,7 @@ Date Modified  Username       Field                    Change
 07-29-06 05:13 Raymond        Note Added: 0011298                          
 07-29-06 09:06 Raymond        Note Deleted: 0011298                        
 07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
 ======================================================================
 
 
