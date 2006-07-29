@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002307]: I have sound but can't use a
-	working microphone
-Date: Sat, 29 Jul 2006 15:39:04 +0200
-Message-ID: <c7128307c99fe510d79d1ba7a0797fd0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002315]: alsaconf chooses disabled
+	soundcard
+Date: Sat, 29 Jul 2006 20:24:01 +0200
+Message-ID: <60ca7769e5a4299b224ba8d6ecccae9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABA81181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACBD115E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 15:39:04 +0200 (MEST)
+	Sat, 29 Jul 2006 20:24:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,61 +24,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2307> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2315> 
 ======================================================================
-Reported By:                Fred
+Reported By:                michaelfm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2307
-Category:                   PCI - cs46xx
-Reproducibility:            always
+Project:                    ALSA - utils
+Issue ID:                   2315
+Category:                   alsaconf
+Reproducibility:            have not tried
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Dapper Drake
-Kernel Version:             2.6.15-26
 ======================================================================
-Date Submitted:             07-27-2006 23:39 CEST
-Last Modified:              07-29-2006 15:39 CEST
+Date Submitted:             07-29-2006 20:24 CEST
+Last Modified:              07-29-2006 20:24 CEST
 ======================================================================
-Summary:                    I have sound but can't use a working microphone
+Summary:                    alsaconf chooses disabled soundcard
 Description: 
-Everything is working but the microphone simply doesn't work.
-It seems really weird because the microphone seems to work : I hear myself
-and I can do Larsen. But no application wants to record something
-(sound-recorder, skype, gnome-sound-recorder). (and I know the microphone
-is working on another PC)
+I use Zenwalk 2.8.  During installation alsaconf set up my soundcard.  I
+was initially puzzled because alsaconf detected my integrated soundcard
+(CMI9761) which is disabled in the BIOS and not normally an option.  I
+chose my preferred card (Creative Labs SB0400 Audigy2 Value) and continued
+the set up.  After setup I logged into XFCE.  When I ran alsamixer it
+showed I was using the C-Media card and I could not hear my music playing.
+ I ran alsaconf again in a terminal on the desktop.  I chose emu10k1 again
+and tried alsamixer again but alsamixer still showed that I was using the
+C-Media card.  At this point I restarted without running anything.  After
+reboot and logon alsamixer showed I was using the Sound Blaster.  At this
+point I was able to produce sound with alsamixer.
 
-Furthermore, I know alsa is working because when I switch to Mic2, I can't
-hear myself and I can't do Larsen anymore.
+I checked /proc and I see the C-Media card listed.  I can't say if this is
+the same as what I had before the 2.6.17.6 kernel because I never had a
+reason to look there.  
 
+The problems are that alsaconf set up the wrong soundcard and the settings
+only take effect after reboot.
+
+Michael
 ======================================================================
-
-----------------------------------------------------------------------
- jaime - 07-29-06 12:27 
-----------------------------------------------------------------------
-Fred,
-
-You might find a work-around in here somewhere:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076
-
-----------------------------------------------------------------------
- Fred - 07-29-06 15:39 
-----------------------------------------------------------------------
-you were right,
-Thanks a lot
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-06 23:39 Fred           New Issue                                    
-07-27-06 23:39 Fred           Distribution              => Ubuntu Dapper Drake
-07-27-06 23:39 Fred           Kernel Version            => 2.6.15-26       
-07-29-06 12:27 jaime          Note Added: 0011301                          
-07-29-06 15:39 Fred           Note Added: 0011307                          
+07-29-06 20:24 michaelfm      New Issue                                    
 ======================================================================
 
 
