@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001416]: Spinlock conflict causes
-	kernel panic with Vortex2 and Wine
-Date: Sat, 29 Jul 2006 05:13:06 +0200
-Message-ID: <f54f48ac6e69470fabdb09a7ec7a0cf0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sat, 29 Jul 2006 05:13:35 +0200
+Message-ID: <347b56c710f8a765e2e72ecf150226f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21161173
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C66431AC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 05:13:07 +0200 (MEST)
+	Sat, 29 Jul 2006 05:13:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,90 +23,99 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1416> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                mortrek
-Assigned To:                mjander
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1416
-Category:                   PCI - au88x0
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1447
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-14-2005 06:05 CEST
+Date Submitted:             02-05-2006 22:59 CET
 Last Modified:              07-29-2006 05:13 CEST
 ======================================================================
-Summary:                    Spinlock conflict causes kernel panic with Vortex2
-and Wine
+Summary:                    surround40 memory leak
 Description: 
-When attempting to run Wine (binary or self-compiled) the system freezes.
-Dmesg gives the following:
-[<c0103a61>] syscall_call+0x7/0xb
-[<c0193cde>] sys_ioctl+0x5d/0x6b
-[<c0193b27>] vfs_ioctl+0x50/0x1aa
-[<c01939f9>] do_ioctl+0x19/0x55
-[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
-[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
-[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
-[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
-[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
-[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
-[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
-[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
-[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
-[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
-[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
-[<f8a09889>] snd_vortex_pcm_hw_free+0x132/0x1f1 [snd_au8830]
-[<c0120d38>] panic+0x45/0x1e2
-<010>
-Kernel panic - not syncing: sound/pci/au88x0/au88x0_pcm.c:257:
-spin_lock(sound/pci/au88x0/au88x0_core.c:f6437b98) already locked by
-sound/pci/au88x0/au88x0_pcm.c/209. (Tainted: P     )
-
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-14-05 22:23 
+ Raymond - 07-28-06 10:25 
 ----------------------------------------------------------------------
-(Tainted: P )
+another limited resources are
 
-Looks like you loaded a proprietary module.  Just FYI, most kernel
-developers ignore bug reports from tainted kernels.
+#define DSP_MAX_SCB_DESC 200
+#define DSP_MAX_TASK_DESC 50
+
+You have to study how center_lfe was added and find out how to add side
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=1526aa09a60a;style=gitweb
+
+
 
 ----------------------------------------------------------------------
- Raymond - 06-29-06 03:03 
+ Raymond - 07-29-06 05:13 
 ----------------------------------------------------------------------
-enable OSS_DEBUG in core/oss/pcm_oss.c 
-
-need to find out
-
-[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
-[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
+It's strange that center_lfe_mix_scb do not call
+cs46xx_dsp_scb_set_volume() as  master_mix_scb and rear_mix_scb in
+cs46xx_dsp_set_dac_volume()
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-05 06:05 mortrek        New Issue                                    
-09-14-05 06:05 mortrek        Distribution              => Fedora Core 4   
-09-14-05 06:05 mortrek        Kernel Version            => 2.6.12-1.1447   
-09-14-05 13:33 Raymond        Note Added: 0006157                          
-09-14-05 22:23 rlrevell       Note Added: 0006187                          
-01-05-06 20:28 shurick        Issue Monitored: shurick                     
-02-09-06 09:43 Raymond        Note Added: 0007974                          
-06-28-06 12:00 Raymond        Note Deleted: 0007974                        
-06-29-06 03:03 Raymond        Note Added: 0010636                          
-07-29-06 05:13 Adrian Bunk    Status                   assigned => closed  
-07-29-06 05:13 Adrian Bunk    Resolution               open => unable to
-duplicate
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
 ======================================================================
 
 
