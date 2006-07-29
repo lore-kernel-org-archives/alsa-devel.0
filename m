@@ -1,11 +1,16 @@
-From: "Kip Warner" <Kip@thevertigo.com>
-Subject: ALC883 Detection Issue
-Date: Fri, 28 Jul 2006 20:59:53 -0700
-Message-ID: <op.tdfmp3yxe8k94p@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002311]: Still issues with audio cds
+	on ICH7 in Asus A8Jm
+Date: Sat, 29 Jul 2006 06:24:20 +0200
+Message-ID: <56c26a826116b2a77b99fd70761cd7b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79576185
+	for <alsa-devel@alsa-project.org>;
+	Sat, 29 Jul 2006 06:24:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,29 +20,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA Developers <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
 
-I have an Intel HDA sound board with a Realtek ALC883 chipset. This is built into my four speaker ASUS A7J laptop.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2311> 
+======================================================================
+Reported By:                bugmenot
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2311
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.17
+======================================================================
+Date Submitted:             07-29-2006 06:24 CEST
+Last Modified:              07-29-2006 06:24 CEST
+======================================================================
+Summary:                    Still issues with audio cds on ICH7 in Asus A8Jm
+Description: 
+The main issues with the ICH7 in Asus A8Jm have been fixed. However, I
+still don't get any sound from audio cds. Please find the lspci output
+below.
 
-When I modprobe snd-hda-intel, I see the following in the kernel log:
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: ASUSTeK Computer Inc. Unknown device 1153
+        Flags: bus master, fast devsel, latency 0, IRQ 23
+        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
-hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+======================================================================
 
-I have tried experimenting with a number of different model strings for snd-hda-intel, all to no avail.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-29-06 06:24 bugmenot       New Issue                                    
+07-29-06 06:24 bugmenot       Distribution              => Gentoo          
+07-29-06 06:24 bugmenot       Kernel Version            => 2.6.17          
+======================================================================
 
-I hear sound, but only out of the front two speakers. Alsamixer shows that it thinks the chipset is the Realtek ALC882 and only gives a slider for Headphone, Front, Line, CD, Mic, ... but with no "Rear" channel.
 
-"speaker-test -c4" confirms this because it only makes an audible hiss with the front two speakers but immediately goes silent with the back two. It looks like it is using the wrong chipset with the wrong speaker configuration.
-
-I have been wrestling with this for weeks and to no avail. I am using Alsa 1.0.12.rc1 with kernel 2.6.17.3. In my kernel options I enabled sound but disabled Alsa. I compiled Alsa manually with ./configure --with-cards=hda-intel. I have also tried the latest source from the HG repository. Same thing.
-
-Any help would be much appreciated.
-
---
-Kip
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
