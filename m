@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
-Date: Sat, 29 Jul 2006 04:14:33 +0200
-Message-ID: <d53f803a589e6a6b4a6b548b635ded23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001416]: Spinlock conflict causes
+	kernel panic with Vortex2 and Wine
+Date: Sat, 29 Jul 2006 05:13:06 +0200
+Message-ID: <f54f48ac6e69470fabdb09a7ec7a0cf0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC325142
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21161173
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 04:14:33 +0200 (MEST)
+	Sat, 29 Jul 2006 05:13:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,89 +24,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1416> 
 ======================================================================
-Reported By:                lodp2
-Assigned To:                tiwai
+Reported By:                mortrek
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2261
-Category:                   PCI - hda-intel
+Issue ID:                   1416
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-25
+Status:                     closed
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1447
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-06-2006 22:14 CEST
-Last Modified:              07-29-2006 04:14 CEST
+Date Submitted:             09-14-2005 06:05 CEST
+Last Modified:              07-29-2006 05:13 CEST
 ======================================================================
-Summary:                    No sound with hda-intel ALC883
+Summary:                    Spinlock conflict causes kernel panic with Vortex2
+and Wine
 Description: 
-I'm getting no sound on internal speakers, headphone and line jacks on my
-Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
-chip). What DOES work is recording, both internal mic and external. I
-tried all model options I found for ALC883 in ALSA-Configuration.txt
-(3stack-dig, 6stck-dig, auto, no option).
+When attempting to run Wine (binary or self-compiled) the system freezes.
+Dmesg gives the following:
+[<c0103a61>] syscall_call+0x7/0xb
+[<c0193cde>] sys_ioctl+0x5d/0x6b
+[<c0193b27>] vfs_ioctl+0x50/0x1aa
+[<c01939f9>] do_ioctl+0x19/0x55
+[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
+[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
+[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
+[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
+[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
+[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
+[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
+[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
+[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
+[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
+[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
+[<f8a09889>] snd_vortex_pcm_hw_free+0x132/0x1f1 [snd_au8830]
+[<c0120d38>] panic+0x45/0x1e2
+<010>
+Kernel panic - not syncing: sound/pci/au88x0/au88x0_pcm.c:257:
+spin_lock(sound/pci/au88x0/au88x0_core.c:f6437b98) already locked by
+sound/pci/au88x0/au88x0_pcm.c/209. (Tainted: P     )
 
-I frequently checked the settings in alsamixer (using alsamixergui), tried
-muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
-
-I would have tried the latest HG version, but I ran into problems getting
-it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
-install", which both went through fine -- only "cat /proc/asound/version"
-still tells me I've got version 1.0.12rc1, compiled two days ago. I would
-appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-28-06 20:50 
+ rlrevell - 09-14-05 22:23 
 ----------------------------------------------------------------------
-pwaller: Just watch this bug report, it will be updated if thye problem is
-fixed.
+(Tainted: P )
+
+Looks like you loaded a proprietary module.  Just FYI, most kernel
+developers ignore bug reports from tainted kernels.
 
 ----------------------------------------------------------------------
- pwaller - 07-29-06 04:14 
+ Raymond - 06-29-06 03:03 
 ----------------------------------------------------------------------
-Similar-looking (ish) issue to be found at
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035
+enable OSS_DEBUG in core/oss/pcm_oss.c 
 
-Is there anything I can do to help speed fixing these along? What is it
-that is actually preventing these from functioning? Or is this actually
-unknown? I spent the last 4 hours staring at realtek_patch.c trying
-various things from the patch on that other bug report with no luck.
+need to find out
 
-I'm extremely grateful to anyone who can help on this one.
-
-- Pete
+[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
+[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-06 22:14 lodp2          New Issue                                    
-07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
-07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
-07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
-07-10-06 15:01 arpac          Issue Monitored: arpac                       
-07-10-06 15:02 arpac          Note Added: 0010961                          
-07-10-06 15:03 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-10-06 15:04 arpac          Note Edited: 0010961                         
-07-20-06 17:28 arpac          Note Added: 0011133                          
-07-25-06 01:03 lodp2          Note Added: 0011219                          
-07-25-06 01:13 rlrevell       Note Added: 0011220                          
-07-25-06 13:08 arpac          Note Added: 0011226                          
-07-25-06 17:13 axj            Note Added: 0011229                          
-07-27-06 23:50 pwaller        Note Added: 0011281                          
-07-28-06 13:09 pwaller        Issue Monitored: pwaller                     
-07-28-06 19:14 arpac          Note Added: 0011286                          
-07-28-06 19:53 pwaller        Note Added: 0011287                          
-07-28-06 20:44 arpac          Note Added: 0011289                          
-07-28-06 20:50 rlrevell       Note Added: 0011290                          
-07-29-06 04:14 pwaller        Note Added: 0011297                          
+09-14-05 06:05 mortrek        New Issue                                    
+09-14-05 06:05 mortrek        Distribution              => Fedora Core 4   
+09-14-05 06:05 mortrek        Kernel Version            => 2.6.12-1.1447   
+09-14-05 13:33 Raymond        Note Added: 0006157                          
+09-14-05 22:23 rlrevell       Note Added: 0006187                          
+01-05-06 20:28 shurick        Issue Monitored: shurick                     
+02-09-06 09:43 Raymond        Note Added: 0007974                          
+06-28-06 12:00 Raymond        Note Deleted: 0007974                        
+06-29-06 03:03 Raymond        Note Added: 0010636                          
+07-29-06 05:13 Adrian Bunk    Status                   assigned => closed  
+07-29-06 05:13 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
