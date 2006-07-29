@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sat, 29 Jul 2006 17:23:21 +0200
-Message-ID: <7f437f26c47f960945fe1745a2116250@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000683]: sound works through speakers
+	only not through headphones
+Date: Sat, 29 Jul 2006 19:24:07 +0200
+Message-ID: <c68af9264be2b955b35833b2c541fb45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB994185
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00E08181
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 17:23:21 +0200 (MEST)
+	Sat, 29 Jul 2006 19:24:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,108 +24,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=683> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                michaelhoy2
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
+Issue ID:                   683
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Distribution:               fedora core 3
+Kernel Version:             2.6.9-1.667
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-29-2006 17:23 CEST
+Date Submitted:             11-28-2004 05:05 CET
+Last Modified:              07-29-2006 19:24 CEST
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    sound works through speakers only not through
+headphones
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+the sound works in fedora core 3, so far the only distro to properly handle
+your driver, but one small problem, it's a laptop and i HAVE to HAVE
+headphones because otherwise I'll be bothering people at work. Can I get
+some support to make the headphones work. BTW the volume mute and vol up
+and vol down on the side of the laptop don't work either, it's a compaq
+r3000 p4 2.8ghz laptop
 ======================================================================
 
 ----------------------------------------------------------------------
- bitmage2 - 07-29-06 15:01 
+ tiwai - 12-02-04 19:29 
 ----------------------------------------------------------------------
-I presume that you meant to use "-f", like this: alsactl store -f
-test.state
-Please see the attached file.
-
-----------------------------------------------------------------------
- Raymond - 07-29-06 17:23 
-----------------------------------------------------------------------
-Do your game use the capture device ?
-
-It seem that cs46xx does not support dsnoop
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076 
-
-
-Do all the volume controls (front,rear,center,lfe) change the volume of
-the correct channels ?
+Please show the contents of /proc/asound/card0/codec97#0/* files and
+/etc/asound.state.
+On some codecs, 'External Amplifier' control tunrs on/off the speaker.
+On some, you can turn on/off via 'Mono Playback Switch'.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
-07-26-06 16:28 Raymond        Note Edited: 0011249                         
-07-26-06 16:31 Raymond        Note Edited: 0011249                         
-07-28-06 05:03 Raymond        Note Added: 0011282                          
-07-28-06 10:25 Raymond        Note Edited: 0011282                         
-07-29-06 05:13 Raymond        Note Added: 0011298                          
-07-29-06 09:06 Raymond        Note Deleted: 0011298                        
-07-29-06 12:20 bitmage2       Note Added: 0011299                          
-07-29-06 12:23 bitmage2       Note Added: 0011300                          
-07-29-06 14:02 Raymond        Note Added: 0011302                          
-07-29-06 14:12 Raymond        Note Added: 0011303                          
-07-29-06 14:50 bitmage2       Note Added: 0011304                          
-07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
-    
-07-29-06 15:01 bitmage2       Note Added: 0011305                          
-07-29-06 15:03 bitmage2       File Added: test.state                       
-07-29-06 17:23 Raymond        Note Added: 0011309                          
+11-28-04 05:05 michaelhoy2    New Issue                                    
+11-28-04 05:05 michaelhoy2    Distribution              => fedora core 3   
+11-28-04 05:05 michaelhoy2    Kernel Version            => 2.6.9-1.667     
+12-02-04 19:29 tiwai          Note Added: 0002693                          
+07-29-06 19:24 Adrian Bunk    Status                   assigned => closed  
+07-29-06 19:24 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
