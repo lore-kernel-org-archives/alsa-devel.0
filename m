@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sat, 29 Jul 2006 14:02:24 +0200
-Message-ID: <9abb3fa9ce7de802a85bc89eb7193e51@bugtrack.alsa-project.org>
+Date: Sat, 29 Jul 2006 14:12:36 +0200
+Message-ID: <c1313abb4e4e23828bf807f2e48d5f96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04F25178
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7C3B15A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 14:02:24 +0200 (MEST)
+	Sat, 29 Jul 2006 14:12:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-29-2006 14:02 CEST
+Last Modified:              07-29-2006 14:12 CEST
 ======================================================================
 Summary:                    surround40 memory leak
 Description: 
@@ -52,17 +52,20 @@ the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- bitmage2 - 07-29-06 12:23 
-----------------------------------------------------------------------
-Forogt to tell in the last note: The chips labeled "4294-J0 EP" might have
-48 Pins. I thought I counted 40 Pins (10 on each side), but I might have
-counted wrong. If it is important, just tell me, and I will do a re-count.
-
-----------------------------------------------------------------------
  Raymond - 07-29-06 14:02 
 ----------------------------------------------------------------------
 Any error message in system log as described in
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=70#568
+
+----------------------------------------------------------------------
+ Raymond - 07-29-06 14:12 
+----------------------------------------------------------------------
+Post the content of the ac97 registers of the TWO cs4294 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=506#2051 
+
+and the content of test.state
+
+alsactl store test.state
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +115,7 @@ Date Modified  Username       Field                    Change
 07-29-06 12:20 bitmage2       Note Added: 0011299                          
 07-29-06 12:23 bitmage2       Note Added: 0011300                          
 07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
 ======================================================================
 
 
