@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001822]: Can't record with Hercules
-	Fortissimo II
-Date: Sat, 29 Jul 2006 02:19:29 +0200
-Message-ID: <1b409f719ad3971641b1fce6c91ce22a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Sat, 29 Jul 2006 03:01:32 +0200
+Message-ID: <74e4537ac68faa6bc509d71b53a2c347@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E235D16D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52E5721F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 02:19:29 +0200 (MEST)
+	Sat, 29 Jul 2006 03:01:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,98 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                atler
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1822
-Category:                   PCI - cs46xx
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               PLD
-Kernel Version:             2.6.14.7
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             02-05-2006 16:16 CET
-Last Modified:              07-29-2006 02:19 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              07-29-2006 03:01 CEST
 ======================================================================
-Summary:                    Can't record with Hercules Fortissimo II
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
-produces 19K-32K file with no sound. What is weird is that I can record
-through alsa oss emulation in programs that use /dev/dsp.
-Similar problems already appeard here, but none of the solutions worked
-for me.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
+
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- atler - 07-28-06 18:52 
+ Raymond - 07-26-06 10:27 
 ----------------------------------------------------------------------
-$ arecord -v -Dhw:0,0 -d 10 -f cd test.wav
-Recording WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 512
-  period_time  : 11609
-  tick_time    : 4000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 512
-  xfer_align   : 512
-  start_threshold  : 1
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
+#define DSP_MAX_PCM_CHANNELS 32
+#define DSP_MAX_SRC_NR 14
 
-
-Sorry I'm not very familiar with all this dmix/dsnoop stuff as I've never
-needed to care about it. Do you mean that dsnoop might not work until I
-enable mixing through dmix? If yes, why recording through oss works fine?
+     max. instances limited by pcm_channels
+stereo      31 * 1 <= ( 32 - 1 )
+surround40  15 * 2 <= ( 32 - 1 )
+surround51  10 * 3 <= ( 32 - 1 )
 
 ----------------------------------------------------------------------
- Raymond - 07-29-06 02:19 
+ Raymond - 07-29-06 03:01 
 ----------------------------------------------------------------------
-cs46xx driver support hardware mixing on playback and allow one instance of
-capture. 
-
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371#9010
-
-Do you mean that you cannot record sound using 'arecord -D hw:0,0
-test.wav' ?
+How many instances of stereo can be run without distortion ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 16:16 atler          New Issue                                    
-02-05-06 16:16 atler          File Added: asound.state                     
-02-05-06 16:16 atler          Distribution              => PLD             
-02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
-02-05-06 16:19 atler          Note Added: 0007937                          
-02-07-06 16:30 perex          Note Added: 0007959                          
-02-11-06 20:47 atler          Note Added: 0008021                          
-07-11-06 16:24 Raymond        Note Added: 0010974                          
-07-11-06 16:28 Raymond        Note Edited: 0010974                         
-07-14-06 22:28 atler          Note Added: 0011007                          
-07-15-06 09:13 Raymond        Note Added: 0011019                          
-07-15-06 13:22 atler          Note Added: 0011021                          
-07-15-06 13:50 Raymond        Note Added: 0011022                          
-07-28-06 18:52 atler          Note Added: 0011285                          
-07-29-06 02:19 Raymond        Note Added: 0011294                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
+07-24-06 05:04 Raymond        Note Edited: 0011209                         
+07-24-06 20:38 bitmage2       Note Added: 0011214                          
+07-25-06 03:00 Raymond        Note Added: 0011223                          
+07-25-06 03:03 Raymond        Note Edited: 0011223                         
+07-25-06 03:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:13 Raymond        Note Edited: 0011223                         
+07-25-06 21:53 bitmage2       Note Added: 0011232                          
+07-26-06 02:03 Raymond        Note Added: 0011235                          
+07-26-06 02:09 Raymond        Note Edited: 0011235                         
+07-26-06 08:41 bitmage2       Note Added: 0011245                          
+07-26-06 10:27 Raymond        Note Added: 0011247                          
+07-29-06 03:01 Raymond        Note Added: 0011295                          
 ======================================================================
 
 
