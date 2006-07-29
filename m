@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002310]: Asus W2Jb laptop sound not
-	working
-Date: Sat, 29 Jul 2006 02:00:24 +0200
-Message-ID: <84bf1d73aad182abc482a266319f79fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001822]: Can't record with Hercules
+	Fortissimo II
+Date: Sat, 29 Jul 2006 02:19:29 +0200
+Message-ID: <1b409f719ad3971641b1fce6c91ce22a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B8D6151
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E235D16D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Jul 2006 02:00:24 +0200 (MEST)
+	Sat, 29 Jul 2006 02:19:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,46 +24,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2310> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
 ======================================================================
-Reported By:                TornSoul
-Assigned To:                tiwai
+Reported By:                atler
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2310
-Category:                   PCI - hda-intel
+Issue ID:                   1822
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.17-gentoo-r4
+Status:                     new
+Distribution:               PLD
+Kernel Version:             2.6.14.7
 ======================================================================
-Date Submitted:             07-29-2006 02:00 CEST
-Last Modified:              07-29-2006 02:00 CEST
+Date Submitted:             02-05-2006 16:16 CET
+Last Modified:              07-29-2006 02:19 CEST
 ======================================================================
-Summary:                    Asus W2Jb laptop sound not working
+Summary:                    Can't record with Hercules Fortissimo II
 Description: 
-The Asus W2Jb uses Realtek High Definition Audio, which is the same as
-Intel High Definition Audio.
-
-Realtek has a driver available for download here:
-http://www.realtek.com.tw/downloads/dlac97-2.aspx?lineid=5&famid=12&series=8&Software=True
-
-However, the driver won't compile.  If I use the hda-intel drivers, they
-install and detect the card properly, however no sound comes out when you
-try to play audio.  (The mixer has been entirely unmuted and turned to the
-maximum volumes)
+I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
+produces 19K-32K file with no sound. What is weird is that I can record
+through alsa oss emulation in programs that use /dev/dsp.
+Similar problems already appeard here, but none of the solutions worked
+for me.
 ======================================================================
+
+----------------------------------------------------------------------
+ atler - 07-28-06 18:52 
+----------------------------------------------------------------------
+$ arecord -v -Dhw:0,0 -d 10 -f cd test.wav
+Recording WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 512
+  period_time  : 11609
+  tick_time    : 4000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 512
+  xfer_align   : 512
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+
+
+Sorry I'm not very familiar with all this dmix/dsnoop stuff as I've never
+needed to care about it. Do you mean that dsnoop might not work until I
+enable mixing through dmix? If yes, why recording through oss works fine?
+
+----------------------------------------------------------------------
+ Raymond - 07-29-06 02:19 
+----------------------------------------------------------------------
+cs46xx driver support hardware mixing on playback and allow one instance of
+capture. 
+
+Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371#9010
+
+Do you mean that you cannot record sound using 'arecord -D hw:0,0
+test.wav' ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-06 02:00 TornSoul       New Issue                                    
-07-29-06 02:00 TornSoul       Distribution              => Gentoo          
-07-29-06 02:00 TornSoul       Kernel Version            => 2.6.17-gentoo-r4
+02-05-06 16:16 atler          New Issue                                    
+02-05-06 16:16 atler          File Added: asound.state                     
+02-05-06 16:16 atler          Distribution              => PLD             
+02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
+02-05-06 16:19 atler          Note Added: 0007937                          
+02-07-06 16:30 perex          Note Added: 0007959                          
+02-11-06 20:47 atler          Note Added: 0008021                          
+07-11-06 16:24 Raymond        Note Added: 0010974                          
+07-11-06 16:28 Raymond        Note Edited: 0010974                         
+07-14-06 22:28 atler          Note Added: 0011007                          
+07-15-06 09:13 Raymond        Note Added: 0011019                          
+07-15-06 13:22 atler          Note Added: 0011021                          
+07-15-06 13:50 Raymond        Note Added: 0011022                          
+07-28-06 18:52 atler          Note Added: 0011285                          
+07-29-06 02:19 Raymond        Note Added: 0011294                          
 ======================================================================
 
 
