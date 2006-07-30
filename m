@@ -1,15 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sun, 30 Jul 2006 11:53:00 +0200
-Message-ID: <104ffdb591571ac34e68d0c59d305239@bugtrack.alsa-project.org>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: swsusp regression (s2dsk) [Was: 2.6.18-rc2-mm1]
+Date: Sun, 30 Jul 2006 12:53:48 +0159
+Message-ID: <44CC8FD3.5030403@gmail.com>
+References: <20060727015639.9c89db57.akpm@osdl.org>
+	<200607300931.07679.rjw@sisk.pl> <44CC68EE.1080208@gmail.com>
+	<200607301128.04395.rjw@sisk.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADBEC130
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2477B167
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 11:53:00 +0200 (MEST)
+	Sun, 30 Jul 2006 12:54:08 +0200 (MEST)
+Received: by nf-out-0910.google.com with SMTP id c29so206293nfb
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2006 03:54:07 -0700 (PDT)
+In-Reply-To: <200607301128.04395.rjw@sisk.pl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,149 +25,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: "Rafael J. Wysocki" <rjw@sisk.pl>
+Cc: Andrew Morton <akpm@osdl.org>, linux-pm@osdl.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, mingo@elte.hu
 List-Id: alsa-devel@alsa-project.org
 
+Uncc: linux-mm
+Cc: alsa-devel
+Cc: mingo
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-30-2006 11:52 CEST
-======================================================================
-Summary:                    surround40 memory leak
-Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
-======================================================================
+Rafael J. Wysocki wrote:
+> On Sunday 30 July 2006 10:08, Jiri Slaby wrote:
+>> Rafael J. Wysocki napsal(a):
+>>> On Sunday 30 July 2006 02:06, Pavel Machek wrote:
+>>>> Hi!
+>>>>
+>>>>>>>>> I have problems with swsusp again. While suspending, the very last thing kernel
+>>>>>>>>> writes is 'restoring higmem' and then hangs, hardly. No sysrq response at all.
+>>>>>>>>> Here is a snapshot of the screen:
+>>>>>>>>> http://www.fi.muni.cz/~xslaby/sklad/swsusp_higmem.gif
+>>>>>>>>>
+>>>>>>>>> It's SMP system (HT), higmem enabled (1 gig of ram).
+>>>>>>>> Most probably it hangs in device_power_up(), so the problem seems to be
+>>>>>>>> with one of the devices that are resumed with IRQs off.
+>>>>>>>>
+>>>>>>>> Does vanila .18-rc2 work?
+>>>>>>> Yup, it does.
+>>>>>> Can you try up kernel, no highmem? (mem=512M)?
+>>>>> It writes then:
+>>>>> p16v: status 0xffffffff, mask 0x00001000, pvoice f7c04a20, use 0
+>>>>> in endless loop when resuming -- after reading from swap.
+>>>> Okay, so we have two different problems here.
 
-----------------------------------------------------------------------
- Raymond - 07-30-06 03:41 
-----------------------------------------------------------------------
-Refer to test.state, there are two 'Capture Source Switch' because of two
-AC97 codec.
+[snip]
 
-Do all the capture sources connected to one AC97 and the other switch is
-dummy ?
+>>>> and one is probably driver problem with p16v (whatever it is).
+>>>>
+>>>> /data/l/linux/sound/pci/emu10k1/irq.c:
+>>>> snd_printk(KERN_ERR "p16v: status: 0x%08x, mask=0x%08x, pvoice=%p,
+>>>> use=%d\n", status2, mask, pvoice, pvoice->use);
+>>>>
+>>>> ...aha, so you may want to unload emu10k1 for testing.
+>> Sure, this helped.
+> 
+> So, we have two different regressions here.
+> 
+> Please try to revert git-alsa.patch and see if the emu10k1-related problem
+> goes away.
 
-Do it allow four channels capture if the capture sources are connected to
-two AC97 ?
-
-Can you post the output of amixer ?
-
-You better open another bug report if you want to fix the mixer controls
-of cs46xx driver
-
-
-
-----------------------------------------------------------------------
- darkbrain - 07-30-06 11:52 
-----------------------------------------------------------------------
->How about 'DAC Playback Volume' ? It seem to be the control which change
-the >volume of mixer_scb(s) inside DSP.
->Does it control the volume of all the playback channels ?
-Yes it does.
-
->If you want to implement the volume control per PCM stream (subdevice)
-like >emu10k1 or ymfpci, you may need to remove this control. 0001318
-I know it, but the volume control per PCM stream doesn't want to work,
-maybe bitmage2 wants to try that patch and play blinded till he undestand
-how scb manage these volumes.
-
->If there are only 2 pcm_channels left and pcm_multi try to open
-surround40 or >surround51, it is possible that pcm_multi and cs46xx driver
-is not capable to >recover from this kind of error.
-It's possible i'll do some tests.
-
->I don't know what game darkbrain (bug reporter) is talking about.
-Well i'm working on a my implementation of openal
-(dino.e4a.it/openal-alsa) and i've an unreleased version that can play
-with surrond40(that works with an emu10k1) unfortunally, because of this
-problems i can't use it :(
-
-bye,
-   DarkBrain
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
-07-26-06 16:28 Raymond        Note Edited: 0011249                         
-07-26-06 16:31 Raymond        Note Edited: 0011249                         
-07-28-06 05:03 Raymond        Note Added: 0011282                          
-07-28-06 10:25 Raymond        Note Edited: 0011282                         
-07-29-06 05:13 Raymond        Note Added: 0011298                          
-07-29-06 09:06 Raymond        Note Deleted: 0011298                        
-07-29-06 12:20 bitmage2       Note Added: 0011299                          
-07-29-06 12:23 bitmage2       Note Added: 0011300                          
-07-29-06 14:02 Raymond        Note Added: 0011302                          
-07-29-06 14:12 Raymond        Note Added: 0011303                          
-07-29-06 14:50 bitmage2       Note Added: 0011304                          
-07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
-    
-07-29-06 15:01 bitmage2       Note Added: 0011305                          
-07-29-06 15:03 bitmage2       File Added: test.state                       
-07-29-06 17:23 Raymond        Note Added: 0011309                          
-07-29-06 22:44 bitmage2       Note Added: 0011311                          
-07-30-06 03:26 Raymond        Note Added: 0011313                          
-07-30-06 03:33 Raymond        Note Added: 0011314                          
-07-30-06 03:39 Raymond        Note Edited: 0011314                         
-07-30-06 03:41 Raymond        Note Edited: 0011314                         
-07-30-06 11:52 darkbrain      Note Added: 0011317                          
-======================================================================
+Wow, it didn't helped, I find out there is a difference between in-kernel and 
+modules version of the driver. When compiled as modules (loaded/unloaded) 
+suspending (and resuming) is working ok (enabled higmem and preempt back -- 
+still no smp), when compiled in-kernel (see the config diff below), it doesn't 
+resume.
+@@ -1263,8 +1263,8 @@
+  CONFIG_SND=y
+  CONFIG_SND_TIMER=y
+  CONFIG_SND_PCM=y
+-CONFIG_SND_HWDEP=m
+-CONFIG_SND_RAWMIDI=m
++CONFIG_SND_HWDEP=y
++CONFIG_SND_RAWMIDI=y
+  CONFIG_SND_SEQUENCER=y
+  # CONFIG_SND_SEQ_DUMMY is not set
+  CONFIG_SND_OSSEMUL=y
+@@ -1282,8 +1282,8 @@
+  #
+  # Generic devices
+  #
+-CONFIG_SND_AC97_CODEC=m
+-CONFIG_SND_AC97_BUS=m
++CONFIG_SND_AC97_CODEC=y
++CONFIG_SND_AC97_BUS=y
+  # CONFIG_SND_DUMMY is not set
+  # CONFIG_SND_VIRMIDI is not set
+  # CONFIG_SND_MTPAV is not set
+@@ -1347,7 +1347,7 @@
+  # CONFIG_SND_INDIGO is not set
+  # CONFIG_SND_INDIGOIO is not set
+  # CONFIG_SND_INDIGODJ is not set
+-CONFIG_SND_EMU10K1=m
++CONFIG_SND_EMU10K1=y
+  # CONFIG_SND_EMU10K1X is not set
+  # CONFIG_SND_ENS1370 is not set
+  # CONFIG_SND_ENS1371 is not set
 
 
+> As far as the first one is concerned, the genirq-* patches look suspicious.
+
+Hmm, what to do?
+
+regards,
+-- 
+<a href="http://www.fi.muni.cz/~xslaby/">Jiri Slaby</a>
+faculty of informatics, masaryk university, brno, cz
+e-mail: jirislaby gmail com, gpg pubkey fingerprint:
+B674 9967 0407 CE62 ACC8  22A0 32CC 55C3 39D4 7A7E
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
