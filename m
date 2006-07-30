@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds
-	fine, the sound is too slow and dont play everything.
-Date: Sun, 30 Jul 2006 11:30:43 +0200
-Message-ID: <0f1389ac848fe12296e6743aa7cee7a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sun, 30 Jul 2006 11:53:00 +0200
+Message-ID: <104ffdb591571ac34e68d0c59d305239@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7346318D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADBEC130
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 11:30:43 +0200 (MEST)
+	Sun, 30 Jul 2006 11:53:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,94 +23,142 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                segnini75
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Kanotix - Debian/sid
-Kernel Version:             2.6.10
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              07-30-2006 11:30 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-30-2006 11:52 CEST
 ======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
+Summary:                    surround40 memory leak
 Description: 
-The modconf info about snd-als4000 retuns:
-
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
-
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
-
-Thanks!- Jesus Segnini
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- segnini75 - 03-23-05 03:51 
+ Raymond - 07-30-06 03:41 
 ----------------------------------------------------------------------
-The problem is back :S until one actualization the problem persist... what
-can i do? Thanks u!
+Refer to test.state, there are two 'Capture Source Switch' because of two
+AC97 codec.
+
+Do all the capture sources connected to one AC97 and the other switch is
+dummy ?
+
+Do it allow four channels capture if the capture sources are connected to
+two AC97 ?
+
+Can you post the output of amixer ?
+
+You better open another bug report if you want to fix the mixer controls
+of cs46xx driver
+
+
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:51 
+ darkbrain - 07-30-06 11:52 
 ----------------------------------------------------------------------
-segnini75: Can you please list which ALSA versions work and which ones
-don't?  That will help with bug hunting.
+>How about 'DAC Playback Volume' ? It seem to be the control which change
+the >volume of mixer_scb(s) inside DSP.
+>Does it control the volume of all the playback channels ?
+Yes it does.
+
+>If you want to implement the volume control per PCM stream (subdevice)
+like >emu10k1 or ymfpci, you may need to remove this control. 0001318
+I know it, but the volume control per PCM stream doesn't want to work,
+maybe bitmage2 wants to try that patch and play blinded till he undestand
+how scb manage these volumes.
+
+>If there are only 2 pcm_channels left and pcm_multi try to open
+surround40 or >surround51, it is possible that pcm_multi and cs46xx driver
+is not capable to >recover from this kind of error.
+It's possible i'll do some tests.
+
+>I don't know what game darkbrain (bug reporter) is talking about.
+Well i'm working on a my implementation of openal
+(dino.e4a.it/openal-alsa) and i've an unreleased version that can play
+with surrond40(that works with an emu10k1) unfortunally, because of this
+problems i can't use it :(
+
+bye,
+   DarkBrain
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
-02-22-05 17:15 segnini75      Note Added: 0003705                          
-02-22-05 17:16 segnini75      Note Edited: 0003705                         
-02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
-02-24-05 22:06 tiwai          Note Added: 0003728                          
-02-24-05 23:29 segnini75      Note Added: 0003731                          
-03-01-05 03:07 segnini75      Note Added: 0003753                          
-03-01-05 03:07 segnini75      Issue End Monitor: segnini75                    
-03-09-05 18:39 tiwai          Status                   new => resolved     
-03-09-05 18:39 tiwai          Resolution               open => fixed       
-03-09-05 18:39 tiwai          Assigned To               => tiwai           
-03-09-05 18:39 tiwai          Note Added: 0003832                          
-03-09-05 18:39 tiwai          Assigned To              tiwai =>            
-03-23-05 03:51 segnini75      Status                   resolved => feedback
-03-23-05 03:51 segnini75      Resolution               fixed => reopened   
-03-23-05 03:51 segnini75      Note Added: 0004150                          
-12-13-05 12:51 jdthood        Note Added: 0007005                          
-07-30-06 11:30 Adrian Bunk    Status                   feedback => closed  
-07-30-06 11:30 Adrian Bunk    Resolution               reopened => unable to
-duplicate
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
+07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
+07-29-06 14:50 bitmage2       Note Added: 0011304                          
+07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
+    
+07-29-06 15:01 bitmage2       Note Added: 0011305                          
+07-29-06 15:03 bitmage2       File Added: test.state                       
+07-29-06 17:23 Raymond        Note Added: 0011309                          
+07-29-06 22:44 bitmage2       Note Added: 0011311                          
+07-30-06 03:26 Raymond        Note Added: 0011313                          
+07-30-06 03:33 Raymond        Note Added: 0011314                          
+07-30-06 03:39 Raymond        Note Edited: 0011314                         
+07-30-06 03:41 Raymond        Note Edited: 0011314                         
+07-30-06 11:52 darkbrain      Note Added: 0011317                          
 ======================================================================
 
 
