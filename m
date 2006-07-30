@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001692]: sound doesn't work
-Date: Sun, 30 Jul 2006 18:00:20 +0200
-Message-ID: <0a394a6fe5eb713336ca1539f68aa8a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2
+	ZS: No capture control
+Date: Sun, 30 Jul 2006 18:10:11 +0200
+Message-ID: <d749fcf21531a36f2cb7cce1ffbb709f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34323165
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A50616C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 18:00:21 +0200 (MEST)
+	Sun, 30 Jul 2006 18:10:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,70 +24,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1692> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
 ======================================================================
-Reported By:                jra2003
+Reported By:                phineas
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1692
-Category:                   PCI - ca0106
+Issue ID:                   1365
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5
-Resolution:                 open
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Debian testing (etch)
+Kernel Version:             2.6.12.4 vanilla
 ======================================================================
-Date Submitted:             12-29-2005 04:50 CET
-Last Modified:              07-30-2006 18:00 CEST
+Date Submitted:             08-24-2005 09:22 CEST
+Last Modified:              07-30-2006 18:10 CEST
 ======================================================================
-Summary:                    sound doesn't work
+Summary:                    Dell/Creative Labs Audigy 2 ZS: No capture control
 Description: 
-After folling the instructions to the letter, I restart the computer and it
-finds the sound card and I let it configure it.  Once logged into root
-with KDE I goto KMenu > system settings > soundcard detection and I click
-'play test'  It might works once or twice with a sound being played then a
-question asking if it worked.  When it doesn't work it doesn't ask if I
-heard anything until a few seconds pass.  So the command to play the sound
-went through, but the final result is that the sound went to the wrong
-place and not to me sndcard and to my speakers.
+Unless this is a user overlooking a step...
 
-BTW: I did check the mixer levels and if it was muted or not and no
-problems there.
+There is no mute control on the "Master" item (or most other items for
+that matter).
+More importantly, the capture items do not have a capture control; they
+have level adjustments, but one cannot actually select an item for
+capturing.
+It appears that this Dell-supplied device (with Audigy subsytem 1003) is
+generally unknown to the drivers -- but it does work well for sound
+playback.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jra2003 - 07-24-06 18:54 
+ phineas - 12-14-05 23:03 
 ----------------------------------------------------------------------
-sry, but I have not kept up with Linux, although I still have it on a
-seperate HD ready to boot, I am now using windows most of the time.
+The code segment posted by pzad works as provided with alsa included with
+debian kernel 2.6.14.
 
-If I remember correctly though, I think download a beta driver(at the
-time) worked.  That beta driver is probably a regular driver now.
+Could someone apply the definition posted by pzad as a patch to CVS?
+
+
+$ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+
+$ cat /proc/asound/cards   
+0 [Audigy2        ]: Audigy2 - Audigy 2 ZS [SB0353]
+                     Audigy 2 ZS [SB0353] (rev.4, serial:0x10031102) at
+0xccc0, irq 17
 
 ----------------------------------------------------------------------
- jcdutton - 07-30-06 18:00 
+ jcdutton - 07-30-06 18:10 
 ----------------------------------------------------------------------
-User believes problem is solved.
+Can you please confirm what is says on the actual PCI card?
+SB0353 or SB0253.
+
+Can you also list what you tested. Just saying it worked is not very
+detailed.
+E.g.
+Speaker outputs for front, rear, center/lfe and side work.
+Mic input works
+Line input works.
+
+If you did not test everything, just say "not tested" next to it.
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-05 04:50 jra2003        New Issue                                    
-12-29-05 04:50 jra2003        Distribution              => Fedora Core 2   
-12-29-05 04:50 jra2003        Kernel Version            => 2.6.5           
-12-29-05 04:50 jra2003        Issue Monitored: jra2003                     
-12-29-05 05:34 jra2003        Note Added: 0007187                          
-07-23-06 19:10 jcdutton       Note Added: 0011202                          
-07-23-06 19:10 jcdutton       Status                   assigned => feedback
-07-24-06 18:54 jra2003        Note Added: 0011212                          
-07-30-06 18:00 jcdutton       Status                   feedback => closed  
-07-30-06 18:00 jcdutton       Note Added: 0011321                          
+08-24-05 09:22 phineas        New Issue                                    
+08-24-05 09:22 phineas        File Added: vegan.state                      
+08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
+08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
+08-24-05 20:58 phineas        Issue Monitored: phineas                     
+08-25-05 17:11 pzad           Note Added: 0005941                          
+08-26-05 22:04 phineas        Note Added: 0005958                          
+09-17-05 18:54 jdthood        Summary                  Dell/Creative Labs Audigy
+2 ZS mixer controls => Dell/Creative Labs Audigy 2 ZS: No capture control
+12-14-05 23:03 phineas        Note Added: 0007043                          
+07-18-06 14:43 jcdutton       Status                   new => assigned     
+07-18-06 14:43 jcdutton       Assigned To               => jcdutton        
+07-30-06 18:10 jcdutton       Note Added: 0011322                          
+07-30-06 18:10 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
