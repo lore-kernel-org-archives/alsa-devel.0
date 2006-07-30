@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000893]: KPhone output sounds like
-	gibberish
-Date: Sun, 30 Jul 2006 16:08:52 +0200
-Message-ID: <72228b6ef4790f6e2e0ab4e71fe8fcef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001442]: snapper: no sound after resume
+Date: Sun, 30 Jul 2006 16:09:58 +0200
+Message-ID: <27fd1e0bf1b195c3d3c22fbcc4152e1b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F000B15E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F063A168
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 16:08:52 +0200 (MEST)
+	Sun, 30 Jul 2006 16:09:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,56 +23,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=893> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1442> 
 ======================================================================
-Reported By:                Luke-Jr
+Reported By:                Johannes Berg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   893
+Issue ID:                   1442
 Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             Linux 2.6.10-gentoo-r6
-Resolution:                 unable to duplicate
+Status:                     resolved
+Distribution:               debian
+Kernel Version:             2.6.13
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-08-2005 21:51 CET
-Last Modified:              07-30-2006 16:08 CEST
+Date Submitted:             09-22-2005 17:32 CEST
+Last Modified:              07-30-2006 16:09 CEST
 ======================================================================
-Summary:                    KPhone output sounds like gibberish
+Summary:                    snapper: no sound after resume
 Description: 
-On my iBook, the output from KPhone sounds like gibberish. Not sure what
-details could cause this.
+After resuming from suspend to disk there's no sound with a snapper chip on
+a post-february 2005 powerbook.
+
+alsactl restore doesn't help, the only way I have managed to work around
+this is to reload the module
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000057 Kernel device in bad state after suspen...
 ======================================================================
 
 ----------------------------------------------------------------------
- Luke-Jr - 02-11-05 19:57 
+ Johannes Berg - 07-07-06 19:37 
 ----------------------------------------------------------------------
-The problem also occurs with linphone
-
-----------------------------------------------------------------------
- jdthood - 09-19-05 10:02 
-----------------------------------------------------------------------
-Luke-Jr: Do you get better results with the latest ALSA release?
+Please close (I cannot) -- I've obsoleted snd-powermac for that hardware
+with snd-aoa myself (and sleep works)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 21:51 Luke-Jr        New Issue                                    
-02-08-05 21:51 Luke-Jr        Kernel Version            => Linux
-2.6.10-gentoo-r6
-02-11-05 19:57 Luke-Jr        Note Added: 0003567                          
-02-11-05 19:57 Luke-Jr        Issue Monitored: Luke-Jr                     
-09-19-05 10:02 jdthood        Note Added: 0006282                          
-07-30-06 16:08 Adrian Bunk    Status                   assigned => closed  
-07-30-06 16:08 Adrian Bunk    Resolution               open => unable to
-duplicate
+09-22-05 17:32 Johannes Berg  New Issue                                    
+09-22-05 17:32 Johannes Berg  Distribution              => debian          
+09-22-05 17:32 Johannes Berg  Kernel Version            => 2.6.13          
+09-22-05 17:32 Johannes Berg  Issue Monitored: Johannes Berg                    
+09-29-05 20:55 jdthood        Relationship added       duplicate of 0000057
+07-07-06 19:37 Johannes Berg  Note Added: 0010919                          
+07-30-06 16:09 Adrian Bunk    Status                   assigned => resolved
+07-30-06 16:09 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
