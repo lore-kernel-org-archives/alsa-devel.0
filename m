@@ -1,19 +1,16 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: swsusp regression (s2dsk) [Was: 2.6.18-rc2-mm1]
-Date: Sun, 30 Jul 2006 13:34:38 +0200
-Message-ID: <200607301334.38704.rjw@sisk.pl>
-References: <20060727015639.9c89db57.akpm@osdl.org>
-	<200607301128.04395.rjw@sisk.pl> <44CC8FD3.5030403@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000735]: Big noise sound at resume
+	(back from suspend)
+Date: Sun, 30 Jul 2006 16:08:21 +0200
+Message-ID: <655e41ee3bbac3e74103d1ebdb1c569a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ogre.sisk.pl (ogre.sisk.pl [217.79.144.158])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3178812E
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 446C815E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 13:35:29 +0200 (MEST)
-In-Reply-To: <44CC8FD3.5030403@gmail.com>
-Content-Disposition: inline
+	Sun, 30 Jul 2006 16:08:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,107 +20,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jiri Slaby <jirislaby@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-pm@osdl.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, mingo@elte.hu
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 30 July 2006 12:54, Jiri Slaby wrote:
-> Uncc: linux-mm
-> Cc: alsa-devel
-> Cc: mingo
-> 
-> Rafael J. Wysocki wrote:
-> > On Sunday 30 July 2006 10:08, Jiri Slaby wrote:
-> >> Rafael J. Wysocki napsal(a):
-> >>> On Sunday 30 July 2006 02:06, Pavel Machek wrote:
-> >>>> Hi!
-> >>>>
-> >>>>>>>>> I have problems with swsusp again. While suspending, the very last thing kernel
-> >>>>>>>>> writes is 'restoring higmem' and then hangs, hardly. No sysrq response at all.
-> >>>>>>>>> Here is a snapshot of the screen:
-> >>>>>>>>> http://www.fi.muni.cz/~xslaby/sklad/swsusp_higmem.gif
-> >>>>>>>>>
-> >>>>>>>>> It's SMP system (HT), higmem enabled (1 gig of ram).
-> >>>>>>>> Most probably it hangs in device_power_up(), so the problem seems to be
-> >>>>>>>> with one of the devices that are resumed with IRQs off.
-> >>>>>>>>
-> >>>>>>>> Does vanila .18-rc2 work?
-> >>>>>>> Yup, it does.
-> >>>>>> Can you try up kernel, no highmem? (mem=512M)?
-> >>>>> It writes then:
-> >>>>> p16v: status 0xffffffff, mask 0x00001000, pvoice f7c04a20, use 0
-> >>>>> in endless loop when resuming -- after reading from swap.
-> >>>> Okay, so we have two different problems here.
-> 
-> [snip]
-> 
-> >>>> and one is probably driver problem with p16v (whatever it is).
-> >>>>
-> >>>> /data/l/linux/sound/pci/emu10k1/irq.c:
-> >>>> snd_printk(KERN_ERR "p16v: status: 0x%08x, mask=0x%08x, pvoice=%p,
-> >>>> use=%d\n", status2, mask, pvoice, pvoice->use);
-> >>>>
-> >>>> ...aha, so you may want to unload emu10k1 for testing.
-> >> Sure, this helped.
-> > 
-> > So, we have two different regressions here.
-> > 
-> > Please try to revert git-alsa.patch and see if the emu10k1-related problem
-> > goes away.
-> 
-> Wow, it didn't helped, I find out there is a difference between in-kernel and 
-> modules version of the driver. When compiled as modules (loaded/unloaded) 
-> suspending (and resuming) is working ok (enabled higmem and preempt back -- 
-> still no smp), when compiled in-kernel (see the config diff below), it doesn't 
-> resume.
-> @@ -1263,8 +1263,8 @@
->   CONFIG_SND=y
->   CONFIG_SND_TIMER=y
->   CONFIG_SND_PCM=y
-> -CONFIG_SND_HWDEP=m
-> -CONFIG_SND_RAWMIDI=m
-> +CONFIG_SND_HWDEP=y
-> +CONFIG_SND_RAWMIDI=y
->   CONFIG_SND_SEQUENCER=y
->   # CONFIG_SND_SEQ_DUMMY is not set
->   CONFIG_SND_OSSEMUL=y
-> @@ -1282,8 +1282,8 @@
->   #
->   # Generic devices
->   #
-> -CONFIG_SND_AC97_CODEC=m
-> -CONFIG_SND_AC97_BUS=m
-> +CONFIG_SND_AC97_CODEC=y
-> +CONFIG_SND_AC97_BUS=y
->   # CONFIG_SND_DUMMY is not set
->   # CONFIG_SND_VIRMIDI is not set
->   # CONFIG_SND_MTPAV is not set
-> @@ -1347,7 +1347,7 @@
->   # CONFIG_SND_INDIGO is not set
->   # CONFIG_SND_INDIGOIO is not set
->   # CONFIG_SND_INDIGODJ is not set
-> -CONFIG_SND_EMU10K1=m
-> +CONFIG_SND_EMU10K1=y
->   # CONFIG_SND_EMU10K1X is not set
->   # CONFIG_SND_ENS1370 is not set
->   # CONFIG_SND_ENS1371 is not set
 
-If the driver is compiled in, its .suspend() routine gets called before the
-suspend image is restored and puts the card in a state that confuses
-the .resume() called after the image has been restored.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=735> 
+======================================================================
+Reported By:                djdeath
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   735
+Category:                   PPC - powermac
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             12-20-2004 01:19 CET
+Last Modified:              07-30-2006 16:08 CEST
+======================================================================
+Summary:                    Big noise sound at resume (back from suspend)
+Description: 
+Sometimes when putting my ibook G4 to suspend, I have a big noise sound at
+resume.
+About 2 seconds of noise (very near of cat /boot/vmlinuz > /dev/dsp).
 
-I think snd_emu10k1_suspend() should reset the device if state == PMSG_PRETHAW .
+======================================================================
 
-> > As far as the first one is concerned, the genirq-* patches look suspicious.
-> 
-> Hmm, what to do?
+----------------------------------------------------------------------
+ djdeath - 12-29-04 05:57 
+----------------------------------------------------------------------
+> No, there is no problem when sound is muted.
 
-I would try to revert them altogether and see what happens.  If that doesn't
-help, the only thing that comes to mind is to carry out a binary search for
-the offending patch. :-(
+Sorry, but after a few new test, it seems it happens when sound is muted
+too.
 
-Greetings,
-Rafael
+
+
+----------------------------------------------------------------------
+ djdeath - 04-24-05 22:29 
+----------------------------------------------------------------------
+fixed since 2.6.12-rc2-mm2
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-04 01:19 djdeath        New Issue                                    
+12-20-04 01:19 djdeath        Distribution              => Debian          
+12-20-04 01:19 djdeath        Kernel Version            => 2.6.9           
+12-20-04 01:21 djdeath        Note Added: 0002864                          
+12-23-04 16:11 tiwai          Note Added: 0002924                          
+12-26-04 04:09 djdeath        Note Added: 0002934                          
+12-26-04 13:30 djdeath        Note Edited: 0002934                         
+12-29-04 05:57 djdeath        Note Edited: 0002934                         
+04-24-05 22:29 djdeath        Note Added: 0004567                          
+07-30-06 16:08 Adrian Bunk    Status                   assigned => resolved
+07-30-06 16:08 Adrian Bunk    Resolution               open => fixed       
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
