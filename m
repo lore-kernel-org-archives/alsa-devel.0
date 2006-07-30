@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002077]: emu10k1 will not use S24_LE
-Date: Sun, 30 Jul 2006 18:22:18 +0200
-Message-ID: <130b2f6499b675542f6f9cc8cc38883d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
+	sound
+Date: Sun, 30 Jul 2006 18:26:22 +0200
+Message-ID: <b2ea5b74e88b00c0abfed887a6f43c9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A67BE166
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEBC816C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 18:22:18 +0200 (MEST)
+	Sun, 30 Jul 2006 18:26:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,74 +24,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2077> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
 ======================================================================
-Reported By:                braininajar
+Reported By:                peter_scott
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2077
+Issue ID:                   2107
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.16
-Resolution:                 open
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111
 ======================================================================
-Date Submitted:             04-26-2006 21:51 CEST
-Last Modified:              07-30-2006 18:22 CEST
+Date Submitted:             05-08-2006 23:36 CEST
+Last Modified:              07-30-2006 18:26 CEST
 ======================================================================
-Summary:                    emu10k1 will not use S24_LE
+Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
-The Audigy2 is a 24-bit, 96k card. It will handle 24 bit, 96k samples. For
-some reason or other, the emu10k1 driver will not let it
+I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
+installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
+
+The already-existing-in-the-kernel emu10k1 sound module provides no sound
+for me (should it?), so I tried downloading and building emu10k1 in the
+alsa-driver and installing it according to the instructions in the
+"INSTALL" file in the source directory.
+
+But (of course?) it did not work.  Well, after all, the emu10k1 is already
+in the FC5 kernel.  Is there any way to get this sound card to work?
+
+I try "system-config-soundcard" (alsaconf is not included in alsa-utils
+for FC5) to test the card.
+
+I was led to believe that Audigy 2 ZS cards generally will work on linux
+systems, but I've also since read others write that not all Audigy 2 ZS
+cards run the same hardware.  It's a PCI card.  I am a little suspicious
+of the "CA0102-ICT" text on the chip.
+
+Any thoughts or predictions would be most welcome.  Maybe it should have a
+"ca0102" driver?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-26-06 22:20 
+ L0cKd0wN - 07-06-06 07:35 
 ----------------------------------------------------------------------
-Please provide output from:
+Im not sure if this is relevant or not, but im using FC5 kernel
+2.6.17-1.2145_FC5 i686 and have lost sound from my Creative Labs Audigy 2
+ZS Platinum card as well.  In earlier kernel builds (the version that was
+shipped on the FC5 dvd) I had sound, but with my recent update, I have
+lost it.
+
+
+
+----------------------------------------------------------------------
+ jcdutton - 07-30-06 18:26 
+----------------------------------------------------------------------
+Is this still a problem.
+If so, in order to help further, please provide the output from:
 cat /proc/asound/cards
 cat /proc/asound/version
+amixer
+lspci -vn |grep -1 0401
 
-24bit is not supported on all Audigy cards in linux yet.
-The 24bit is a special mode that bypassed the DSP.
-Unfortunately, the bypass method is different one almost every Audigy
-card, so until all the different methods are supported, it will not work
-on all Audigy cards.
+Support for the CA0102-ICT chip is included in the snd-emu10k1 module.
 
-Also 24bit capture on a PC sound card is next to pointless due to computer
-noise introduced and low quality codecs and front end components. You
-might get 18bits of real quality, but I doubt even that.
-
-There are exceptions to that in the really expensive professional sound
-capture devices that also have a PC interface, but very few of them work
-with Linux. E.g. the EMU1212m.
-
-James
-
-----------------------------------------------------------------------
- jcdutton - 07-30-06 18:22 
-----------------------------------------------------------------------
-Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-06 21:51 braininajar    New Issue                                    
-04-26-06 21:51 braininajar    Distribution              => gentoo          
-04-26-06 21:51 braininajar    Kernel Version            => 2.6.16          
-04-26-06 22:07 pzad           Note Added: 0009524                          
-04-26-06 22:20 jcdutton       Note Added: 0009525                          
-07-18-06 14:38 jcdutton       Status                   new => assigned     
-07-18-06 14:38 jcdutton       Assigned To               => jcdutton        
-07-30-06 18:22 jcdutton       Status                   assigned => closed  
-07-30-06 18:22 jcdutton       Note Added: 0011324                          
+05-08-06 23:36 peter_scott    New Issue                                    
+05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
+05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
+07-06-06 07:33 L0cKd0wN       Note Added: 0010854                          
+07-06-06 07:34 L0cKd0wN       Issue Monitored: L0cKd0wN                    
+07-06-06 07:35 L0cKd0wN       Note Edited: 0010854                         
+07-18-06 14:23 jcdutton       Status                   new => assigned     
+07-18-06 14:23 jcdutton       Assigned To               => jcdutton        
+07-30-06 18:26 jcdutton       Note Added: 0011325                          
+07-30-06 18:26 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
