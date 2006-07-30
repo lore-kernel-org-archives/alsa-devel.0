@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 30 Jul 2006 05:59:50 +0200
-Message-ID: <a58bc14a278afe41403d92ff5e02cce2@bugtrack.alsa-project.org>
+Date: Sun, 30 Jul 2006 06:26:57 +0200
+Message-ID: <dd1d2db2cd7349869a5a5e0358e22864@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD89319D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37496173
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 05:59:50 +0200 (MEST)
+	Sun, 30 Jul 2006 06:26:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              07-30-2006 05:59 CEST
+Last Modified:              07-30-2006 06:26 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -66,54 +66,6 @@ My question is,
 Is there a bug in this function?
 Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 07-27-06 11:45 
-----------------------------------------------------------------------
-On kernel 2.4 the alsa init script is 
-
-/etc/init.d/alsasound start
-
-/etc/init.d/alsasound stop
-
-You have to find out how to start/stop the alsa on kernel 2.6 (seem
-different with different linux distribution)
-
-Audiophile 192 has EEPROM (black ic plugged on socket near the oscillaor)
-and Juli don't.
-
-numid=1,iface=CARD,name='ICE1724 EEPROM'
-  ; type=BYTES,access=r----,values=52
-  :
-values=0x36,0x32,0x14,0x12,0x13,0x02,0x68,0x80,0xf8,0xc3,0xba,0xff,0x7f,0x45
-,0x00,0x00,0xb5,0x00,0x40,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x45,0x00,0x00,0x00,0xb5,0x00
-,0x40,0x00,0xba,0xff,0x7f,0x00
-
-#define VT1724_CFG_MPU401 0x20 /* MPU401 UARTs */
-
-If eeprom_read is correct, SYSCONF register should indicate the presence
-of mpu401_uart
-
-aplaymidi -l
-
-arecordmidi -l
-
-Since the driver already put the message in the system log "ice1724: No
-matching model found for ID". This means that mpu401_uart should be
-working (you should open another report if it is not working) , otherwise
-there is no point to let the driver remain in the kernel when you cannot
-playback/capture sound from the sound driver. Especially when the module
-parameter 'model' (for debug) is not specified.
-
-Technically speaking , you are just fix the dac,adc,spdif detection bug of
-ice1724 and let the driver initialize the dac,adc,spdif on your audiophine
-192 card rather than develope a new driver.
-
-This means that any unresolved bug in Juli may also exist on your modified
-driver. https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1889
-
-
 
 ----------------------------------------------------------------------
  Raymond - 07-30-06 05:59 
@@ -214,6 +166,14 @@ alsa-kernel/pci/ice1712/ice1724.c
 +       snd_vt1724_ap192_cards,
 	NULL,
  };
+
+----------------------------------------------------------------------
+ cruiseoveride - 07-30-06 06:26 
+----------------------------------------------------------------------
+yup im getting there,just checking the gpio wiring at the moment.
+
+this bug tracking system should split the thread into different pages when
+it get soo long like this.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -341,6 +301,7 @@ Date Modified  Username       Field                    Change
 07-27-06 10:48 Raymond        Note Edited: 0011264                         
 07-27-06 11:45 Raymond        Note Edited: 0011264                         
 07-30-06 05:59 Raymond        Note Added: 0011315                          
+07-30-06 06:26 cruiseoveride  Note Added: 0011316                          
 ======================================================================
 
 
