@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Sun, 30 Jul 2006 21:45:39 +0200
-Message-ID: <08c998fde1cb3531e362b834f9613e85@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002268]: No sound and odd problems
+Date: Sun, 30 Jul 2006 22:19:46 +0200
+Message-ID: <a7e356005f5f97a1067b438d0e634bb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7901E16D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FD05168
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 21:45:39 +0200 (MEST)
+	Sun, 30 Jul 2006 22:19:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,75 +25,123 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2268> 
 ======================================================================
-Reported By:                tjallen
-Assigned To:                
+Reported By:                fjalvingh
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+Issue ID:                   2268
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16-r9
 ======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              07-30-2006 21:45 CEST
+Date Submitted:             07-11-2006 01:08 CEST
+Last Modified:              07-30-2006 22:19 CEST
 ======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
+Summary:                    No sound and odd problems
 Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
+The 1.0.10 driver worked without any problems but no longer compiles
+against kernel 2.6.16. The latest versions (1.0.11, 1.0.12rc1) compile but
+give a lot of problems:
+- loading the driver causes the azx_get_response timeout error. Using
+pci=noacpi or acpi=off does not fix this; only the single_cmd=1 option
+fixes this.
+- the driver loads. But aplay reports the error:
+ALSA lib pcm_direct.c:819:(snd_pcm_direct_initialize_slave)
+snd_pcm_hw_params_any failed
+ALSA lib pcm_dmix.c:874:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:547: audio open error: Invalid argument
+- Trying to cat /proc/asound/card0/codec#0 causes the system to use 100%
+CPU (SYS). After a long time the cmd returns without any output. And my
+dmesg log/syslog is filled with messages like:
+----
+Jul 11 00:25:30 chatelet ALSA
+/var/tmp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/hda/hda_codec.c:204:
+hda_codec: invalid dep_range_val 0:7fff
+----
+This gets repeated a lot forming a messages file of about 1GB(!)
+
+lspci -v returns:
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: CLEVO/KAPOK Computer Unknown device 0900
+        Flags: bus master, fast devsel, latency 0, IRQ 20
+        Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+cat /proc/asound/cards:
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xb0000000 irq 20
+
+cat /proc/asound/devices
+  0: [ 0]   : control
+ 16: [ 0- 0]: digital audio playback
+ 22: [ 0- 6]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 25: [ 0- 1]: digital audio capture
+ 30: [ 0- 6]: digital audio capture
+ 33:        : timer
+
+cat /proc/asound/pcm
+00-06: Si3054 Modem : Si3054 Modem : playback 1 : capture 1
+00-01: ALC880 Analog : ALC880 Analog : capture 2
+00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
+
+when loading the driver dmesg shows:
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 17 (level, low) -> IRQ 20
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+and (appearently 1st load only):
+Jul 10 17:04:47 chatelet hda_codec: Unknown model for ALC880, trying
+auto-probe from BIOS...
+Jul 10 17:04:47 chatelet hda_codec: Cannot set up configuration from BIOS.
+ Using 3-stack mode...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rankincj - 07-23-06 02:25 
+ fjalvingh - 07-30-06 22:19 
 ----------------------------------------------------------------------
-I have added preliminary support for detecting non-PnP SoundScape cards to
-the ALSA driver. (All copied from the OSS driver, of course ;-).) I have
-checked that the module compiles under Linux 2.6.17.6 with gcc 4.1.1, but
-that's all. In fact, I can't even check whether I've broken the PnP
-support at the moment.
+I just took a new alsa version from source repository, and this one works!
+The dmesg shows:
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 17 (level, low) -> IRQ 20
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+ALSA /home/jal/prj/alsa/alsa-driver/pci/hda/hda_codec.c:2150: autoconfig:
+line_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /home/jal/prj/alsa/alsa-driver/pci/hda/hda_codec.c:2154:   
+speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /home/jal/prj/alsa/alsa-driver/pci/hda/hda_codec.c:2156:    hp=0x0,
+dig_out=0x0, din_in=0x0
+ALSA /home/jal/prj/alsa/alsa-driver/pci/hda/hda_codec.c:2164:    inputs:
+mic=0x0, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+hda_codec: Cannot set up configuration from BIOS.  Using 3-stack mode...
+ALSA
+/home/jal/prj/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:525:
+hda_intel: azx_get_response timeout, switching to single_cmd mode...
+ALSA /home/jal/prj/alsa/alsa-driver/pci/hda/hda_codec.c:572: hda_codec:
+cannot malloc
 
-Would anyone with the relevant hardware care to test-drive this module,
-please?
-
-----------------------------------------------------------------------
- tjallen - 07-30-06 21:45 
-----------------------------------------------------------------------
-I compiled the module for 2.6.17.1 (I've not had time to upgrade to
-2.6.17.6
-yet!) The new code still does not find the SoundScape Elite:
-sscape: hardware not detected at 0x534
+Sound seems OK despite the malloc warning.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
-06-30-06 22:38 rankincj       Note Added: 0010752                          
-06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
-07-02-06 01:39 rankincj       File Added: sscape.c                         
-07-02-06 01:41 rankincj       Note Added: 0010767                          
-07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
-07-02-06 03:19 tjallen        Note Added: 0010768                          
-07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
-07-23-06 02:25 rankincj       Note Added: 0011178                          
-07-30-06 21:45 tjallen        Note Added: 0011330                          
+07-11-06 01:08 fjalvingh      New Issue                                    
+07-11-06 01:08 fjalvingh      Distribution              => gentoo          
+07-11-06 01:08 fjalvingh      Kernel Version            => 2.6.16-r9       
+07-11-06 01:09 fjalvingh      Issue Monitored: fjalvingh                    
+07-30-06 22:19 fjalvingh      Note Added: 0011331                          
 ======================================================================
 
 
