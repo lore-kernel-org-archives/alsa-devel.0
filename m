@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sun, 30 Jul 2006 03:26:40 +0200
-Message-ID: <1013e852341fb29ba4faa8a5292ef710@bugtrack.alsa-project.org>
+Date: Sun, 30 Jul 2006 03:33:23 +0200
+Message-ID: <240771d5e22cbc43deef074d9a89baba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8833181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D449139
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Jul 2006 03:26:40 +0200 (MEST)
+	Sun, 30 Jul 2006 03:33:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              07-30-2006 03:26 CEST
+Last Modified:              07-30-2006 03:33 CEST
 ======================================================================
 Summary:                    surround40 memory leak
 Description: 
@@ -50,17 +50,6 @@ game in surround40 mode the game result unplayable after some minutes.
 And there is a problem in CS46xx.conf file, i need to remove the hook on
 the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
-
-----------------------------------------------------------------------
- bitmage2 - 07-29-06 22:44 
-----------------------------------------------------------------------
-I don't know what game darkbrain (bug reporter) is talking about. But I can
-answer your other question:
-Yes! All the volume controls (front,rear,center,lfe) change the volume of
-the correct channels. This is true for KMix (BTW: I am the KMix author) as
-well as for alsamixer.
-
-   Christian
 
 ----------------------------------------------------------------------
  Raymond - 07-30-06 03:26 
@@ -80,6 +69,21 @@ driver (e.g. Caller id switch and Off-hook Switch)
 cs4294 is not modem codec (MC97)
 
 Do you know any cs46xx chips support modem ?
+
+----------------------------------------------------------------------
+ Raymond - 07-30-06 03:33 
+----------------------------------------------------------------------
+Refer to test.state, there are two 'Capture Source Switch' because of two
+AC97 codec.
+
+Do all the capture sources connected to one AC97 and the other switch is
+dummy ?
+
+Do it allow four channels capture if the capture sources are connected to
+two AC97 ?
+
+You better open another bug report if you want to fix the controls of
+cs46xx driver
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -138,6 +142,7 @@ Date Modified  Username       Field                    Change
 07-29-06 17:23 Raymond        Note Added: 0011309                          
 07-29-06 22:44 bitmage2       Note Added: 0011311                          
 07-30-06 03:26 Raymond        Note Added: 0011313                          
+07-30-06 03:33 Raymond        Note Added: 0011314                          
 ======================================================================
 
 
