@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000745]: Crash when unplugging USB
-	Headset
-Date: Mon, 31 Jul 2006 01:48:28 +0200
-Message-ID: <c402761d82bc73ac941bd1322252434e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001111]: Audigy2NX: Channels
+	interchanged
+Date: Mon, 31 Jul 2006 01:49:12 +0200
+Message-ID: <477881cb768c0f3a2b14b897152a1074@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E882F16C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 917EB185
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 01:48:28 +0200 (MEST)
+	Mon, 31 Jul 2006 01:49:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,88 +26,129 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=745> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1111> 
 ======================================================================
-Reported By:                greve
+Reported By:                fabian
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   745
+Issue ID:                   1111
 Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   major
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.10-rc3 (also happened with 2.6.9)
+Distribution:               
+Kernel Version:             2.6.11.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-24-2004 12:56 CET
-Last Modified:              07-31-2006 01:48 CEST
+Date Submitted:             05-14-2005 17:34 CEST
+Last Modified:              07-31-2006 01:49 CEST
 ======================================================================
-Summary:                    Crash when unplugging USB Headset
+Summary:                    Audigy2NX: Channels interchanged
 Description: 
-Discovered this when trying to get a Logitech USB Headset to work.
+Hi
 
-All this with 2.6.9:
+I recently bought an Audigy2NX for my Laptop to use my Creative Inspire
+5300 5.1 System. I configured around a little bit, and tried to simulate
+5.1 sound with stereo-mp3s by copying the audiostreams using TTable. I got
+very confusing results so I tried speaker-test.
 
-When first plugging it in, snd-usb-audio was missing, so recompiled
-kernel, loaded module without rebooting (yes. i know. i was lazy.) and the
-Headset worked perfectly fine.
+speaker-test -D default -c 6 -f 300 -p 300
 
-When booting the machine the next time, headset was recognized propely,
-usb-audio driver loaded, /proc/asound showed Headset soundcard, mixer
-worked fine, no warning messages, but: NO SOUND. Everything CLAIMED to be
-working fine, but the headset remained silent.
+default is, cause I have to resample output to 48k to get correct sound:
 
-Tried around a couple of times with different settings of compiling things
-into the kernel/as module and eventually gave kernel 2.6.10-rc3 a try.
+1. Problem:
+The confusing thing is that I noticed that the rear speakers are
+interchanged with the subwoofer/center speaker. First I thought I made a
+mistake with the plugs, but I checked everything: I only get the correct
+output, when I plug the black chord for rear speaker in "Sub/center" on
+the Audigy and vice versa.
 
-While trying around with 2.6.9 and 2.6.10-rc3 both, at some time the
-keyboard would stop to work while fiddling with the USB Headset
-(pluggin/unplugging), while the mouse (also USB) was still working fine.
-The machine would hang during reboot and had to be reset by button.
+Little other problems:
+* The Master volume adjustor on the card itself doesn't work.
+* When I use the "Mute" button on the card, I only can unmute in software
+* The channels in "Alsamixer" are named very confusingly: 
+Speaker
+Speaker1
+Speaker2
+Speaker2
+Speaker2
+Speaker2
+Speaker3 (is a switch)
+How does Alsamixer get the labels for the channels? Can one rename the
+channels anywhere?
 
-Below is the syslog output from the kernel for the latest crash.
+And a question:
+* Will the remote control work someday?
 
-I know this may not be the most helpful error report ever written -- but I
-don't quite know where to look. Help appreciated.
 
-If you need more info, please let me know.
+And the last thing I want to say: I got in touch with ALSA today the first
+time, and I'm fascinated about the things you can do especially in
+asound.conf. Great great great Work! :-)
+
+greetings
+fabian
+
+PS:
+My /etc/asound.conf:
+
+pcm.intel8x0 {
+        type hw
+        card 0
+}
+
+ctl.intel8x0 {
+        type hw
+        card 0
+}
+
+pcm.Audigy2NX {
+        type hw
+        card 1
+}
+
+ctl.Audigy2NX {
+        type hw
+        card 1
+}
+
+pcm.!default {
+        type plug
+        slave {
+                pcm Audigy2NX
+                rate 48000
+        }
+}
+
+ctl.!default {
+        type plug
+        slave {
+                ctl Audigy2NX
+                rate 48000
+        }
+}
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-08-05 09:01 
+ Clemens Ladisch - 06-24-05 09:29 
 ----------------------------------------------------------------------
-Doesn't happen with my 2.6.11 kernel (hotplug and preempt enabled).
+ALSA 1.0.9 has better control names, and you don't need the 48 kHz hack
+anymore.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 10:53 
-----------------------------------------------------------------------
-There was a bug in the USB audio driver that resulted in the kernel input
-event thread being blocked when unplugging.  This has been fixed in CVS.
-
-As to the "no sound": Did you unmute and raise the volume of the
-appropriate mixer controls?  What is the output of "amixer contents"?
+The remote control is supported with the alsa_usb driver in the CVS
+version of LIRC.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-24-04 12:56 greve          New Issue                                    
-12-24-04 12:56 greve          Distribution              => Debian GNU/Linux
-12-24-04 12:56 greve          Kernel Version            => 2.6.10-rc3 (also
-happened with 2.6.9)
-12-24-04 13:03 greve          Note Added: 0002930                          
-12-26-04 18:13 greve          Note Added: 0002941                          
-12-26-04 18:14 greve          Note Deleted: 0002930                        
-12-26-04 20:39 greve          Note Edited: 0002941                         
-12-27-04 12:55 greve          Note Added: 0002959                          
-03-05-05 14:27 therp          Note Added: 0003803                          
-03-08-05 09:01 Clemens LadischNote Added: 0003811                          
-04-25-05 10:53 Clemens LadischNote Added: 0004573                          
-07-31-06 01:48 Adrian Bunk    Status                   assigned => resolved
-07-31-06 01:48 Adrian Bunk    Resolution               open => fixed       
+05-14-05 17:34 fabian         New Issue                                    
+05-14-05 17:34 fabian         Kernel Version            => 2.6.11.9        
+06-24-05 09:29 Clemens LadischNote Added: 0005206                          
+07-31-06 01:49 Adrian Bunk    Status                   assigned => resolved
+07-31-06 01:49 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
