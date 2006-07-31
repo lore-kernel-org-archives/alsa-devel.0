@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 01:32:21 +0200
-Message-ID: <d0f22ced782cbcb9df65b3c0695c48c8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
+	sound
+Date: Tue, 1 Aug 2006 01:41:23 +0200
+Message-ID: <ca0e5e867c53c44f7b70063426ebc027@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DDD3167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19BDD11D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 01:32:21 +0200 (MEST)
+	Tue,  1 Aug 2006 01:41:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,126 +26,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                peter_scott
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   2107
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Kernel Version:             2.6.16-1.2111
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 01:32 CEST
+Date Submitted:             05-08-2006 23:36 CEST
+Last Modified:              08-01-2006 01:41 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
+installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+The already-existing-in-the-kernel emu10k1 sound module provides no sound
+for me (should it?), so I tried downloading and building emu10k1 in the
+alsa-driver and installing it according to the instructions in the
+"INSTALL" file in the source directory.
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+But (of course?) it did not work.  Well, after all, the emu10k1 is already
+in the FC5 kernel.  Is there any way to get this sound card to work?
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+I try "system-config-soundcard" (alsaconf is not included in alsa-utils
+for FC5) to test the card.
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+I was led to believe that Audigy 2 ZS cards generally will work on linux
+systems, but I've also since read others write that not all Audigy 2 ZS
+cards run the same hardware.  It's a PCI card.  I am a little suspicious
+of the "CA0102-ICT" text on the chip.
 
-Please let me know if there is something more I can provide.
+Any thoughts or predictions would be most welcome.  Maybe it should have a
+"ca0102" driver?
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 08-01-06 00:45 
+ jcdutton - 07-31-06 20:48 
 ----------------------------------------------------------------------
-So it is possible to get it working but someone needs to port the patches
-so that it functions with 2.6.x, yeah? :s
+The Audigy 2 ZS is considerably better than the nvidia sound.
+This is particularly the case for Games and Voice over IP. Voice over IP
+benefits from better mic quality, and Games benefit from the out card
+being a hardware mixing device. The Audigy 2 ZS is, the nvidia sound is
+not.
 
-If anyone hears this plea, how long might this take? Life without sound is
-agony.
+----------------------------------------------------------------------
+ peter_scott - 08-01-06 01:41 
+----------------------------------------------------------------------
+Dear jcdutton,
 
-----------------------------------------------------------------------
- rlrevell - 08-01-06 01:32 
-----------------------------------------------------------------------
-The changes in that patch from Intervideo have already been applied to the
-current ALSA HG sources, please test it.
+OK, I will see if I can retrieve that card (which should be toward
+the end of next week) and try it again and post another note as to
+what works (or doesn't).  So please don't close this tag quite yet!
+
+Thanks so much,
+
+Peter Scott
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
-06-22-06 22:50 taschenorakel  File Added:
-alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
-06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
-06-26-06 16:38 rlrevell       Note Added: 0010548                          
-06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
-07-29-06 04:04 pwaller        Note Added: 0011296                          
-07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
-07-31-06 21:34 vertex         Note Added: 0011349                          
-08-01-06 00:45 pwaller        Note Added: 0011355                          
-08-01-06 01:32 rlrevell       Note Added: 0011358                          
+05-08-06 23:36 peter_scott    New Issue                                    
+05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
+05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
+07-06-06 07:33 L0cKd0wN       Note Added: 0010854                          
+07-06-06 07:34 L0cKd0wN       Issue Monitored: L0cKd0wN                    
+07-06-06 07:35 L0cKd0wN       Note Edited: 0010854                         
+07-18-06 14:23 jcdutton       Status                   new => assigned     
+07-18-06 14:23 jcdutton       Assigned To               => jcdutton        
+07-30-06 18:26 jcdutton       Note Added: 0011325                          
+07-30-06 18:26 jcdutton       Status                   assigned => feedback
+07-31-06 20:39 peter_scott    Note Added: 0011347                          
+07-31-06 20:48 jcdutton       Note Added: 0011348                          
+08-01-06 01:41 peter_scott    Note Added: 0011359                          
 ======================================================================
 
 
