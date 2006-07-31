@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound
-	produces 100% CPU load
-Date: Mon, 31 Jul 2006 23:16:23 +0200
-Message-ID: <0922bf0e67ca142349bbb8e6885e595d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002320]: Almost no sound on Asus
+	laptop with Realtek ALC861
+Date: Mon, 31 Jul 2006 23:52:22 +0200
+Message-ID: <14f1aac49df2e7c43c03514755de187e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A56B16C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7AC6816E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 23:16:24 +0200 (MEST)
+	Mon, 31 Jul 2006 23:52:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,107 +26,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
 ======================================================================
-Reported By:                bitmage2
-Assigned To:                
+Reported By:                mario_7
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   2320
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Status:                     assigned
+Distribution:               
+Kernel Version:             kernel-2.6.17.7
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              07-31-2006 23:16 CEST
+Date Submitted:             07-31-2006 00:41 CEST
+Last Modified:              07-31-2006 23:52 CEST
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Almost no sound on Asus laptop with Realtek ALC861
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
+be said that the sound is... 
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+But let me start from the beginning. 
 
+I tried many things to get sound on my laptop. I tried alsa drivers from
+realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
+examined my chipset properly - ALC861, other found it as ALC660. None of
+them were working (no sound). 
 
+2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
+included alsa drivers (1.0.11rc4), sound chipset was examined properly,
+but still nothing... 
 
+I started using various options with snd-hda-intel module. 
+Built-in speakers are not working with any of options
+(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
+
+With model=3stack I can hear sound with headphones but only when I plug
+them into line-in jack. The sound is very very quiet and it's also with
+crackling noise... (Volume is set to maximum level). 
+
+With model=6stack-dig situation is almost the same, except that the
+headphones are plugged into headphone jack and the same sound can be heard
+in only one headphone (the second one is just silent).
+
+The built-in microphone is working quite well (there is only not too loud
+squeal during records).
+
+Other options like posotion_fix=1/2 or single_cmd=1 are not changing
+anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
+login sound should be played).  
+
+If anyone would like to help me and need any other information than those
+placed in this post and in attached file, just ask for them and I'll
+answer :)
+
+Hope someone smart will know how to fix everything :)
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-30-06 03:06 
+ michaldemin - 07-31-06 19:16 
 ----------------------------------------------------------------------
->> Instances 1-5 run correct, instances 6-10 produce wrong noises (quickly
-looping sound)
-
-May be the wrong noises is related to the problem of '-t wav' option as
-described in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
-
-Do 'speaker-test -c 6 -Dsurround51 -t wav' run correctly for 10-20 rounds
-?
+I had the datasheet for a long time, i just never had a look in it. The
+tricky part is to determine which jack is connected to which port
+Would the Pin sense have any use ? I mean there could be utility to chceck
+which port is connected, and it would give me much less options to try.
+And also the impendance measured could be used to recognize some devices
+as well.
 
 ----------------------------------------------------------------------
- bitmage2 - 07-31-06 23:16 
+ mario_7 - 07-31-06 23:52 
 ----------------------------------------------------------------------
-Yes, 'speaker-test -c 6 -Dsurround51 -t wav' runs correctly for 20 rounds
-(correctly = shown channel gets played every time).
+If there is anything I could do to help you I'll do it, just tell me what
+:) 
 
-BTW: I found one (probably unrelated) information about the rear channel
-(on Hercules Game Theter XP7.1): The rear channels volume is regulated by
-controls Surround.0 and PCM.1 - this is very strange, as PCM.1 is the ONLY
-"index 1"-device I found that is doing something useful.
-
-PS: This test was made with ALSA 1.0.9b.
+There would be no problem if the sound would just be in the other jack
+than it sould be, but only if the sound would be good quality :P
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
-02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
-07-11-06 05:58 Raymond        Note Added: 0010964                          
-07-14-06 20:57 bitmage2       Note Added: 0011004                          
-07-14-06 20:59 bitmage2       Note Added: 0011005                          
-07-14-06 21:25 rlrevell       Note Added: 0011006                          
-07-14-06 22:40 bitmage2       Note Added: 0011008                          
-07-14-06 22:57 rlrevell       Note Added: 0011009                          
-07-15-06 01:28 bitmage2       Note Added: 0011013                          
-07-15-06 01:45 rlrevell       Note Added: 0011014                          
-07-15-06 05:09 Raymond        Note Added: 0011017                          
-07-15-06 07:17 Raymond        Note Edited: 0011017                         
-07-23-06 11:34 bitmage2       Note Added: 0011183                          
-07-23-06 13:49 Raymond        Note Added: 0011185                          
-07-23-06 14:14 Raymond        Note Added: 0011186                          
-07-23-06 14:16 Raymond        Note Deleted: 0011186                        
-07-23-06 15:04 bitmage2       Note Added: 0011189                          
-07-24-06 04:19 Raymond        Note Added: 0011209                          
-07-24-06 05:04 Raymond        Note Edited: 0011209                         
-07-24-06 20:38 bitmage2       Note Added: 0011214                          
-07-25-06 03:00 Raymond        Note Added: 0011223                          
-07-25-06 03:03 Raymond        Note Edited: 0011223                         
-07-25-06 03:05 Raymond        Note Edited: 0011223                         
-07-25-06 10:05 Raymond        Note Edited: 0011223                         
-07-25-06 10:13 Raymond        Note Edited: 0011223                         
-07-25-06 21:53 bitmage2       Note Added: 0011232                          
-07-26-06 02:03 Raymond        Note Added: 0011235                          
-07-26-06 02:09 Raymond        Note Edited: 0011235                         
-07-26-06 08:41 bitmage2       Note Added: 0011245                          
-07-26-06 10:27 Raymond        Note Added: 0011247                          
-07-29-06 03:01 Raymond        Note Added: 0011295                          
-07-30-06 03:06 Raymond        Note Added: 0011312                          
-07-31-06 23:16 bitmage2       Note Added: 0011353                          
+07-31-06 00:41 mario_7        New Issue                                    
+07-31-06 00:41 mario_7        File Added: info                             
+07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
+07-31-06 11:12 michaldemin    Note Added: 0011341                          
+07-31-06 13:59 michaldemin    Note Edited: 0011341                         
+07-31-06 16:44 michaldemin    Note Edited: 0011341                         
+07-31-06 17:47 tiwai          Note Added: 0011344                          
+07-31-06 19:16 michaldemin    Note Added: 0011346                          
+07-31-06 23:52 mario_7        Note Added: 0011354                          
 ======================================================================
 
 
