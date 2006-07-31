@@ -1,13 +1,16 @@
-From: Benoit Fouet <benoit.fouet@purplelabs.com>
-Subject: Re: How to read the sound card ?
-Date: Mon, 31 Jul 2006 09:23:14 +0200
-Message-ID: <44CDAFE2.4020406@purplelabs.com>
-References: <44CCBDCC.2010109@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002299]: no manual volume control for
+	Delta 1010 device (using ice1712)
+Date: Mon, 31 Jul 2006 10:31:10 +0200
+Message-ID: <6818c0fd5e85ab236b25b5cf0f28289a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44CCBDCC.2010109@free.fr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE74517E
+	for <alsa-devel@alsa-project.org>;
+	Mon, 31 Jul 2006 10:31:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,63 +20,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?ISO-8859-1?Q?Micha=EBl_Todorovic?= <michael.todorovic@free.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I think the simpler way is to write a plugin for alsa, which will take
-place in the plugin chain, just before outputing the sound.
-The last time i did that, you couldn't do it if using softmix (which has
-to be directly plugged to hw) but maybe it's possible now...
-There is a doc written on how to write an ALSA plugin, that should help
-you do that ;)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2299> 
+======================================================================
+Reported By:                Jarad
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2299
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-1.1369_FC
+======================================================================
+Date Submitted:             07-24-2006 07:02 CEST
+Last Modified:              07-31-2006 10:31 CEST
+======================================================================
+Summary:                    no manual volume control for Delta 1010 device
+(using ice1712)
+Description: 
+Using an M-audio delta 1010 device under Fedora Core 4 I am unable to
+manually control the volume levels (individually or as a whole).
+======================================================================
 
-Regards,
+----------------------------------------------------------------------
+ Jarad - 07-31-06 02:57 
+----------------------------------------------------------------------
+Sorry, I meant to get back to you all earlier...
 
--- Ben
+Tried the envy24control program, with only limited success. The best
+result I could achieve with it: I could only get the first two ports to
+adjust manually  and the rest seemed to be some average volume of the
+first two. This was achieved when setting the output controls to route to
+the digital (main) mixer instead of the individual PCM Out#. This is an
+improvement but still isn't adequate, I really need them all to work.
+
+Looked at the website, that was quite good actually and will be useful
+later as I will actually need mulitple Deltas (providing I can get one to
+work).
+
+Also looked at the manual for hardware info, and yeah, there's no direct
+hardware volume control capabilities. Which I'm thinking would imply it
+has to be controlled in software before the stream reaches the Delta 1010
+hardware. 
+
+I knew about alsactl but for all my fiddeling I couldn't result any
+changes to the problem. Having said that though, from the result with the
+envy24control (thanks for the tip by the way) I have a sneaking suspicion
+it may have something to do with my configuration settings for the unit. I
+dont know if anyone has it working for all output ports but could someone
+post a known working/semi-working configuration perhaps?
+
+Failing that I may just have to pull the envy24control program apart and
+work out the right set of command calls, though that doesn't look like
+it's going to be scalable to the rest of the outputs. :/
+
+----------------------------------------------------------------------
+ johnrigg - 07-31-06 10:31 
+----------------------------------------------------------------------
+You need to get rid of your existing .asoundrc. The Delta 1010 has a
+hardware mixer, which is controlled digitally by envy24control. You should
+not use dmix with this card. A single Delta 1010 should work perfectly
+without any .asoundrc.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-06 07:02 Jarad          New Issue                                    
+07-24-06 07:02 Jarad          Kernel Version            => 2.6.11-1.1369_FC
+07-24-06 20:01 johnrigg       Note Added: 0011213                          
+07-27-06 12:58 tiwai          Note Added: 0011269                          
+07-27-06 20:32 johnrigg       Note Added: 0011278                          
+07-31-06 02:57 Jarad          Note Added: 0011335                          
+07-31-06 10:31 johnrigg       Note Added: 0011339                          
+======================================================================
 
 
-Micha=EBl Todorovic wrote:
-
->hello,
->I want to read the data on the sound card (to do a fft and other =
-
->things). I have first tried the capture stream with snd_pcm_readi and =
-
->everything is working. My problem is that I want to read the sound =
-
->output (pcm or mixer). For example, I want to read the sound that xmms =
-
->or mplayer is writing on the sound card. If I just change =
-
->SND_PCM_STREAM_CAPTURE to SND_PCM_STREAM_PLAYBACK in snd_pcm_open, =
-
->snd_pcm_readi fails.
->
->So my question is : how can I read the sound output with the alsa-lib ?
->
->Thank you
->
->-------------------------------------------------------------------------
->Take Surveys. Earn Cash. Influence the Future of IT
->Join SourceForge.net's Techsay panel and you'll get the chance to share yo=
-ur
->opinions on IT & business topics through brief surveys -- and earn cash
->http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DD=
-EVDEV
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->  =
-
->
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
