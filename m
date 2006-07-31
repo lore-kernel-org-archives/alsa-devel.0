@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Mon, 31 Jul 2006 16:59:40 +0200
-Message-ID: <6f87dd0ad851c1db9669958512e43a6f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002320]: Almost no sound on Asus
+	laptop with Realtek ALC861
+Date: Mon, 31 Jul 2006 17:47:14 +0200
+Message-ID: <7ebd5448193ec78bf26308fc4cff142b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D564185
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47C59191
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 16:59:40 +0200 (MEST)
+	Mon, 31 Jul 2006 17:47:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,80 +26,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
 ======================================================================
-Reported By:                tjallen
-Assigned To:                
+Reported By:                mario_7
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+Issue ID:                   2320
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
+Status:                     assigned
+Distribution:               
+Kernel Version:             kernel-2.6.17.7
 ======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              07-31-2006 16:59 CEST
+Date Submitted:             07-31-2006 00:41 CEST
+Last Modified:              07-31-2006 17:47 CEST
 ======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
+Summary:                    Almost no sound on Asus laptop with Realtek ALC861
 Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
+I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
+be said that the sound is... 
+
+But let me start from the beginning. 
+
+I tried many things to get sound on my laptop. I tried alsa drivers from
+realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
+examined my chipset properly - ALC861, other found it as ALC660. None of
+them were working (no sound). 
+
+2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
+included alsa drivers (1.0.11rc4), sound chipset was examined properly,
+but still nothing... 
+
+I started using various options with snd-hda-intel module. 
+Built-in speakers are not working with any of options
+(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
+
+With model=3stack I can hear sound with headphones but only when I plug
+them into line-in jack. The sound is very very quiet and it's also with
+crackling noise... (Volume is set to maximum level). 
+
+With model=6stack-dig situation is almost the same, except that the
+headphones are plugged into headphone jack and the same sound can be heard
+in only one headphone (the second one is just silent).
+
+The built-in microphone is working quite well (there is only not too loud
+squeal during records).
+
+Other options like posotion_fix=1/2 or single_cmd=1 are not changing
+anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
+login sound should be played).  
+
+If anyone would like to help me and need any other information than those
+placed in this post and in attached file, just ask for them and I'll
+answer :)
+
+Hope someone smart will know how to fix everything :)
 ======================================================================
 
 ----------------------------------------------------------------------
- rankincj - 07-30-06 23:17 
+ michaldemin - 07-31-06 16:44 
 ----------------------------------------------------------------------
-Please apply this diff to the existing alsa-sscape.c attachment. It adds
-some debugging output to the module.
+I think that all these  hda-intel soundcards are having similar problems.
+It's just some kind of routing problem, how the codec is routed to
+out/input jacks.
+It looks like the codec has predefined table of how the ports should be
+configured, perhaps this table should be altered for each laptop model ?
 
-$ patch alsa-sscape.c < sscape.diff
+EDIT: I have been able to output the sound through MIC input ;) well kinda
+strange, but i should read the datasheet more carefully
+
+
 
 ----------------------------------------------------------------------
- tjallen - 07-31-06 16:59 
+ tiwai - 07-31-06 17:47 
 ----------------------------------------------------------------------
-The modified driver reports:
+Exactly.  As default, the driver reads the pin configuration set up by BIOS
+and assigns the basic mixer elements according to that unless the
+predefined configuration is given in the driver code.  Unfortunately, in
+many cases, the BIOS setup is broken, and in other many cases, the
+auto-configuration isn't perfectly matching with the actual state.  In
+such a case, we have to write up the proper support code.
 
- Enter snd_sscape_probe
- Enter detect_GA
- - fail step 1
- Exit detect_GA
- Enter detect_pnp
- Exit detect_pnp
- Exit detect_sscape
-sscape: hardware not detected at 0x534
+BTW, the datasheet of ALC861 is available on Realtek's web site.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
-06-30-06 22:38 rankincj       Note Added: 0010752                          
-06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
-07-02-06 01:39 rankincj       File Added: sscape.c                         
-07-02-06 01:41 rankincj       Note Added: 0010767                          
-07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
-07-02-06 03:19 tjallen        Note Added: 0010768                          
-07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
-07-23-06 02:25 rankincj       Note Added: 0011178                          
-07-30-06 21:45 tjallen        Note Added: 0011330                          
-07-30-06 23:14 rankincj       File Added: sscape.diff                      
-07-30-06 23:17 rankincj       Note Added: 0011332                          
-07-31-06 16:59 tjallen        Note Added: 0011343                          
+07-31-06 00:41 mario_7        New Issue                                    
+07-31-06 00:41 mario_7        File Added: info                             
+07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
+07-31-06 11:12 michaldemin    Note Added: 0011341                          
+07-31-06 13:59 michaldemin    Note Edited: 0011341                         
+07-31-06 16:44 michaldemin    Note Edited: 0011341                         
+07-31-06 17:47 tiwai          Note Added: 0011344                          
 ======================================================================
 
 
