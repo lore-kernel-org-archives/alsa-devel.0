@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
-	sound
-Date: Tue, 1 Aug 2006 01:41:23 +0200
-Message-ID: <ca0e5e867c53c44f7b70063426ebc027@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Tue, 1 Aug 2006 01:42:45 +0200
+Message-ID: <b13d5f93fcd3e31c078bb7a33440a1b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19BDD11D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92C5711D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 01:41:24 +0200 (MEST)
+	Tue,  1 Aug 2006 01:42:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,87 +27,198 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
 ======================================================================
-Reported By:                peter_scott
-Assigned To:                jcdutton
+Reported By:                cruiseoveride
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2107
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111
+Status:                     new
 ======================================================================
-Date Submitted:             05-08-2006 23:36 CEST
-Last Modified:              08-01-2006 01:41 CEST
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              08-01-2006 01:42 CEST
 ======================================================================
-Summary:                    audigy 2 ZS SB0350 gives no sound
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
 Description: 
-I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
-installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-The already-existing-in-the-kernel emu10k1 sound module provides no sound
-for me (should it?), so I tried downloading and building emu10k1 in the
-alsa-driver and installing it according to the instructions in the
-"INSTALL" file in the source directory.
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-But (of course?) it did not work.  Well, after all, the emu10k1 is already
-in the FC5 kernel.  Is there any way to get this sound card to work?
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-I try "system-config-soundcard" (alsaconf is not included in alsa-utils
-for FC5) to test the card.
+If you slash out line 104, it resolves the issue.
 
-I was led to believe that Audigy 2 ZS cards generally will work on linux
-systems, but I've also since read others write that not all Audigy 2 ZS
-cards run the same hardware.  It's a PCI card.  I am a little suspicious
-of the "CA0102-ICT" text on the chip.
+My question is,
 
-Any thoughts or predictions would be most welcome.  Maybe it should have a
-"ca0102" driver?
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-31-06 20:48 
+ rlrevell - 08-01-06 01:26 
 ----------------------------------------------------------------------
-The Audigy 2 ZS is considerably better than the nvidia sound.
-This is particularly the case for Games and Voice over IP. Voice over IP
-benefits from better mic quality, and Games benefit from the out card
-being a hardware mixing device. The Audigy 2 ZS is, the nvidia sound is
-not.
+"this bug tracking system should split the thread into different pages when
+it get soo long like this."
+
+No, you and Raymond should stop abusing the bug tracker by using it as a
+driver development forum, and use the mailing list like normal people. 
+I've asked Raymond 100 times and he just refuses to respond.
+
+You guys do have e-mail, right?
 
 ----------------------------------------------------------------------
- peter_scott - 08-01-06 01:41 
+ cruiseoveride - 08-01-06 01:42 
 ----------------------------------------------------------------------
-Dear jcdutton,
+can u give us email addresses??
 
-OK, I will see if I can retrieve that card (which should be toward
-the end of next week) and try it again and post another note as to
-what works (or doesn't).  So please don't close this tag quite yet!
+Ok, i got the wiring between between the vt1724 and the 3 dacs (AKMs) how
+do i code this into the driver, 
+is there any example, i looked at juli.c and i couldnt understand the 
 
-Thanks so much,
-
-Peter Scott
+/* GPIO Pins */
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 23:36 peter_scott    New Issue                                    
-05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
-05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
-07-06-06 07:33 L0cKd0wN       Note Added: 0010854                          
-07-06-06 07:34 L0cKd0wN       Issue Monitored: L0cKd0wN                    
-07-06-06 07:35 L0cKd0wN       Note Edited: 0010854                         
-07-18-06 14:23 jcdutton       Status                   new => assigned     
-07-18-06 14:23 jcdutton       Assigned To               => jcdutton        
-07-30-06 18:26 jcdutton       Note Added: 0011325                          
-07-30-06 18:26 jcdutton       Status                   assigned => feedback
-07-31-06 20:39 peter_scott    Note Added: 0011347                          
-07-31-06 20:48 jcdutton       Note Added: 0011348                          
-08-01-06 01:41 peter_scott    Note Added: 0011359                          
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+07-23-06 17:39 Raymond        Note Added: 0011191                          
+07-23-06 17:42 Raymond        Note Edited: 0011191                         
+07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
+07-23-06 18:03 rlrevell       Note Added: 0011194                          
+07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
+07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
+07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
+07-24-06 02:15 Raymond        Note Added: 0011206                          
+07-24-06 02:27 Raymond        Note Edited: 0011206                         
+07-24-06 02:28 Raymond        Note Edited: 0011206                         
+07-24-06 07:12 Raymond        Note Edited: 0011206                         
+07-24-06 07:48 Raymond        Note Edited: 0011206                         
+07-25-06 18:02 Raymond        Note Added: 0011230                          
+07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
+07-26-06 01:20 Raymond        Note Added: 0011234                          
+07-26-06 01:27 Raymond        Note Edited: 0011234                         
+07-26-06 01:31 Raymond        Note Edited: 0011234                         
+07-26-06 01:33 Raymond        Note Edited: 0011234                         
+07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
+07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
+      
+07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
+07-26-06 04:47 Raymond        Note Added: 0011239                          
+07-26-06 04:53 Raymond        Note Added: 0011240                          
+07-26-06 05:17 Raymond        Note Edited: 0011240                         
+07-26-06 06:22 Raymond        Note Added: 0011242                          
+07-26-06 07:46 Raymond        Note Added: 0011243                          
+07-26-06 07:55 Raymond        Note Edited: 0011243                         
+07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
+07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
+07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
+07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
+07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
+07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
+07-27-06 00:57 rlrevell       Note Added: 0011254                          
+07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
+07-27-06 01:03 rlrevell       Note Added: 0011256                          
+07-27-06 04:43 Raymond        Note Added: 0011257                          
+07-27-06 04:51 Raymond        Note Edited: 0011257                         
+07-27-06 06:25 Raymond        Note Added: 0011258                          
+07-27-06 06:28 Raymond        Note Edited: 0011258                         
+07-27-06 06:29 Raymond        Note Edited: 0011258                         
+07-27-06 06:36 Raymond        Note Edited: 0011258                         
+07-27-06 06:38 cruiseoveride  Note Added: 0011259                          
+07-27-06 06:44 Raymond        Note Edited: 0011258                         
+07-27-06 07:15 rlrevell       Note Added: 0011260                          
+07-27-06 10:24 Raymond        Note Added: 0011264                          
+07-27-06 10:33 Raymond        Note Edited: 0011264                         
+07-27-06 10:43 Raymond        Note Edited: 0011264                         
+07-27-06 10:48 Raymond        Note Edited: 0011264                         
+07-27-06 11:45 Raymond        Note Edited: 0011264                         
+07-30-06 05:59 Raymond        Note Added: 0011315                          
+07-30-06 06:26 cruiseoveride  Note Added: 0011316                          
+08-01-06 01:26 rlrevell       Note Added: 0011356                          
+08-01-06 01:42 cruiseoveride  Note Added: 0011360                          
 ======================================================================
 
 
