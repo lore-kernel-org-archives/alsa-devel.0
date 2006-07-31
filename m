@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Mon, 31 Jul 2006 21:34:03 +0200
-Message-ID: <1448f04d0b7b3b9d0a4ce5a1066a081b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 31 Jul 2006 22:42:29 +0200
+Message-ID: <e5252b5be04363740ed2bacfc679d37b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9622A11B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1000B185
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 21:34:03 +0200 (MEST)
+	Mon, 31 Jul 2006 22:42:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,142 +25,294 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              07-31-2006 21:34 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-31-2006 22:42 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    surround40 memory leak
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
-
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
-
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 07-29-06 04:04 
+ Raymond - 07-31-06 10:11 
 ----------------------------------------------------------------------
-Did people manage to get that patch working?
+>> Yes! All the volume controls (front,rear,center,lfe) change the volume
+of the correct channels. This is true for KMix
 
-If they did, could they maybe share some of the steps they took?
+Do you mean KMix can handle those duplicate controls ( created by TWO AC97
+) ?
 
-I've tried some crude hacking from the code in that patch but it's quite a
-long way out of my depth.
 
-Merely compiling the code and applying the patch didn't work for me, ended
-up with all sorts of strange behaviour. 
+        control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Playback Switch'
+		value true
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Master Playback Volume'
+		value.0 57
+		value.1 57
+	}
+control.14 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'PCM Playback Switch'
+		value false
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 20
+		value.1 20
+	}
+control.25 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Playback Switch'
+		index 1
+		value false
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Master Playback Volume'
+		index 1
+		value.0 45
+		value.1 42
+	}
+	control.27 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Center Playback Switch'
+		index 1
+		value true
+	}
+	control.28 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Center Playback Volume'
+		index 1
+		value 59
+	}
+	control.29 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'LFE Playback Switch'
+		index 1
+		value true
+	}
+	control.30 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 63'
+		iface MIXER
+		name 'LFE Playback Volume'
+		index 1
+		value 63
+	}
+	control.31 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Surround Playback Switch'
+		index 1
+		value.0 true
+		value.1 true
+	}
+	control.32 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Surround Playback Volume'
+		index 1
+		value.0 60
+		value.1 60
+	}
 
-- Pete
+	control.42 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'PCM Playback Switch'
+		index 1
+		value true
+	}
+	control.43 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'PCM Playback Volume'
+		index 1
+		value.0 27
+		value.1 27
+	}
+most likey those controls with 'index 1' is created by the secondary ac97
+
+but it contradict the definition of index control , since there is only
+one 'Center Playback Volume' and 'LFE Playback Volume'
+
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x851.htm
+
+The index field holds the index number of this control. If there are
+several different controls with the same name, they can be distinguished
+by the index number. This is the case when several codecs exist on the
+card. If the index is zero, you can omit the definition above.
+
+cs4294 is 4 channels codec, each codec only control the volume of 4
+playback channels in surround51 or surround71
+
+Can any of you post the output of 'alsa-lib/test/timer -list' to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2257
+?
+
+
 
 ----------------------------------------------------------------------
- vertex - 07-31-06 21:34 
+ bitmage2 - 07-31-06 22:42 
 ----------------------------------------------------------------------
-I got was able to cleanly apply the patch to the mentioned 1.0.9* version
-of the alsa driver package. Of course this alsa driver version won't
-compile against any modern kernels. Using FC3 or SuSE 9.3 is not an
-acceptable solution for me so I haven't bothered with it any more. I
-assume someone would need add the 861 specific portions of the patched
-driver code to a recent version and then update the code to include
-whatever api changes came about with newer kernels. Its a shame that
-people making money on the alsa project sat on this patch instead of
-sharing it with the community like they are supposed to have. If this made
-it into alsa at 1.0.9, the updated portions would have been updated with
-the next version change. Looks like none of the developers really care
-about users with this problem. I have 3 machines with this audio chipset
-and they are worthless to me as multimedia machines. What the hell do I
-have to do to get a developer to help?
+Raymond, this is about your question "Do you mean KMix can handle those
+duplicate controls ( created by TWO AC97 ) ?".
+I presume youre talking about those controls with index 1 (opposed to
+index 0), right?
+Honestly, I have no idea when those duplicate controls are uses. The only
+thing I can say is this: I got all those duplicated devices (like PCM.0,
+PCM.1 and Master.0, Master.1). And when I change the device state (volume,
+capture ore playback switch) the change is reflected in alsamixer (and
+vice versa).
+
+For testing I tried to play back more than 32 channels via speaker-test .
+I did  this for checking whether channels 33 and above would go on the
+second AC97. But ...
+1) The channels above 32 just produce nonsense sounds (short, looping
+sounds)
+2) The volume of the nonsense soundss could not be controlled (not by
+KMix, and also not by alsamixer)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
-06-22-06 22:50 taschenorakel  File Added:
-alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
-06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
-06-26-06 16:38 rlrevell       Note Added: 0010548                          
-06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
-07-29-06 04:04 pwaller        Note Added: 0011296                          
-07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
-07-31-06 21:34 vertex         Note Added: 0011349                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
+07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
+07-29-06 14:50 bitmage2       Note Added: 0011304                          
+07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
+    
+07-29-06 15:01 bitmage2       Note Added: 0011305                          
+07-29-06 15:03 bitmage2       File Added: test.state                       
+07-29-06 17:23 Raymond        Note Added: 0011309                          
+07-29-06 22:44 bitmage2       Note Added: 0011311                          
+07-30-06 03:26 Raymond        Note Added: 0011313                          
+07-30-06 03:33 Raymond        Note Added: 0011314                          
+07-30-06 03:39 Raymond        Note Edited: 0011314                         
+07-30-06 03:41 Raymond        Note Edited: 0011314                         
+07-30-06 11:52 darkbrain      Note Added: 0011317                          
+07-31-06 05:39 Raymond        Note Added: 0011336                          
+07-31-06 05:40 Raymond        Note Edited: 0011336                         
+07-31-06 05:43 Raymond        Note Edited: 0011336                         
+07-31-06 05:45 Raymond        Note Edited: 0011336                         
+07-31-06 05:47 Raymond        Note Edited: 0011336                         
+07-31-06 06:36 Raymond        Note Edited: 0011336                         
+07-31-06 08:40 Raymond        Note Edited: 0011336                         
+07-31-06 09:51 Raymond        Note Edited: 0011336                         
+07-31-06 09:56 Raymond        Note Edited: 0011336                         
+07-31-06 09:59 Raymond        Note Edited: 0011336                         
+07-31-06 10:06 Raymond        Note Edited: 0011336                         
+07-31-06 10:11 Raymond        Note Edited: 0011336                         
+07-31-06 22:42 bitmage2       Note Added: 0011350                          
 ======================================================================
 
 
