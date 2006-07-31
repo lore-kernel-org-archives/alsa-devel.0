@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002320]: Almost no sound on Asus
-	laptop with Realtek ALC861
-Date: Mon, 31 Jul 2006 23:52:22 +0200
-Message-ID: <14f1aac49df2e7c43c03514755de187e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001464]: No digital passthrough for
+	Turtle Beach Audio Advantage Micro
+Date: Tue, 1 Aug 2006 00:29:00 +0200
+Message-ID: <ea983358b789b485de437be039a8b2f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7AC6816E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C58A192
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 23:52:22 +0200 (MEST)
+	Tue,  1 Aug 2006 00:29:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,99 +24,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1464> 
 ======================================================================
-Reported By:                mario_7
-Assigned To:                tiwai
+Reported By:                mactalla
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2320
-Category:                   PCI - hda-intel
+Issue ID:                   1464
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             kernel-2.6.17.7
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.12-gentoo-r4
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-31-2006 00:41 CEST
-Last Modified:              07-31-2006 23:52 CEST
+Date Submitted:             09-27-2005 00:35 CEST
+Last Modified:              08-01-2006 00:28 CEST
 ======================================================================
-Summary:                    Almost no sound on Asus laptop with Realtek ALC861
+Summary:                    No digital passthrough for Turtle Beach Audio
+Advantage Micro
 Description: 
-I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
-be said that the sound is... 
+After loading the snd-usb-audio module, alsamixer only displays a single
+control (PCM).  This correctly controls the headphone jack on the sound
+card, but does not control the S/PDIF output.  The S/PDIF does output
+stereo sound.
 
-But let me start from the beginning. 
+Bug 0001438 also requests digital passthrough for snd-usb-audio, but since
+I have a different lsusb output, this may require attention of its own.
 
-I tried many things to get sound on my laptop. I tried alsa drivers from
-realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
-examined my chipset properly - ALC861, other found it as ALC660. None of
-them were working (no sound). 
-
-2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
-included alsa drivers (1.0.11rc4), sound chipset was examined properly,
-but still nothing... 
-
-I started using various options with snd-hda-intel module. 
-Built-in speakers are not working with any of options
-(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
-
-With model=3stack I can hear sound with headphones but only when I plug
-them into line-in jack. The sound is very very quiet and it's also with
-crackling noise... (Volume is set to maximum level). 
-
-With model=6stack-dig situation is almost the same, except that the
-headphones are plugged into headphone jack and the same sound can be heard
-in only one headphone (the second one is just silent).
-
-The built-in microphone is working quite well (there is only not too loud
-squeal during records).
-
-Other options like posotion_fix=1/2 or single_cmd=1 are not changing
-anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
-login sound should be played).  
-
-If anyone would like to help me and need any other information than those
-placed in this post and in attached file, just ask for them and I'll
-answer :)
-
-Hope someone smart will know how to fix everything :)
+I've included lsusb -v output, but am more than happy to do any additional
+poking around to figure out the hardware (just need to be told what).
 ======================================================================
 
 ----------------------------------------------------------------------
- michaldemin - 07-31-06 19:16 
+ mactalla - 10-16-05 03:50 
 ----------------------------------------------------------------------
-I had the datasheet for a long time, i just never had a look in it. The
-tricky part is to determine which jack is connected to which port
-Would the Pin sense have any use ? I mean there could be utility to chceck
-which port is connected, and it would give me much less options to try.
-And also the impendance measured could be used to recognize some devices
-as well.
+UPDATE
 
-----------------------------------------------------------------------
- mario_7 - 07-31-06 23:52 
-----------------------------------------------------------------------
-If there is anything I could do to help you I'll do it, just tell me what
-:) 
+I was looking in all the wrong places.  Links on the internet indicate
+digital outputs must be "enabled".  So I thought it was harder than it
+was.  As it turns out, the S/PDIF output is identical to the headphones
+jack, and passthrough works just fine.
 
-There would be no problem if the sound would just be in the other jack
-than it sould be, but only if the sound would be good quality :P
+True the only volume control in alsamixer doesn't affect the optical out
+(even when playing stereo), but I have enough volume dials that I don't
+care.  As far as I'm concerned, this bug can be marked RESOLVE - NOTABUG
+but I don't seem to have control to do that myself.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-06 00:41 mario_7        New Issue                                    
-07-31-06 00:41 mario_7        File Added: info                             
-07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
-07-31-06 11:12 michaldemin    Note Added: 0011341                          
-07-31-06 13:59 michaldemin    Note Edited: 0011341                         
-07-31-06 16:44 michaldemin    Note Edited: 0011341                         
-07-31-06 17:47 tiwai          Note Added: 0011344                          
-07-31-06 19:16 michaldemin    Note Added: 0011346                          
-07-31-06 23:52 mario_7        Note Added: 0011354                          
+09-27-05 00:35 mactalla       New Issue                                    
+09-27-05 00:35 mactalla       Distribution              => Gentoo          
+09-27-05 00:35 mactalla       Kernel Version            => 2.6.12-gentoo-r4
+10-16-05 03:50 mactalla       Note Added: 0006481                          
+08-01-06 00:28 Adrian Bunk    Status                   assigned => closed  
+08-01-06 00:28 Adrian Bunk    Resolution               open => not an issue
 ======================================================================
 
 
