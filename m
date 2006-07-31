@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002320]: Almost no sound on Asus
-	laptop with Realtek ALC861
-Date: Mon, 31 Jul 2006 11:12:58 +0200
-Message-ID: <bc451b521965a51cb09189ceda2a39e6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly
+	random times
+Date: Mon, 31 Jul 2006 12:23:06 +0200
+Message-ID: <138b9b29704b6231e9d4019f275ccafe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B7E615A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 869F122C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 11:12:59 +0200 (MEST)
+	Mon, 31 Jul 2006 12:23:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +26,176 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                mario_7
-Assigned To:                tiwai
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2320
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             kernel-2.6.17.7
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-31-2006 00:41 CEST
-Last Modified:              07-31-2006 11:12 CEST
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              07-31-2006 12:23 CEST
 ======================================================================
-Summary:                    Almost no sound on Asus laptop with Realtek ALC861
+Summary:                    module hangs at seemingly random times
 Description: 
-I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
-be said that the sound is... 
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-But let me start from the beginning. 
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-I tried many things to get sound on my laptop. I tried alsa drivers from
-realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
-examined my chipset properly - ALC861, other found it as ALC660. None of
-them were working (no sound). 
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
-2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
-included alsa drivers (1.0.11rc4), sound chipset was examined properly,
-but still nothing... 
 
-I started using various options with snd-hda-intel module. 
-Built-in speakers are not working with any of options
-(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
 
-With model=3stack I can hear sound with headphones but only when I plug
-them into line-in jack. The sound is very very quiet and it's also with
-crackling noise... (Volume is set to maximum level). 
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
 
-With model=6stack-dig situation is almost the same, except that the
-headphones are plugged into headphone jack and the same sound can be heard
-in only one headphone (the second one is just silent).
-
-The built-in microphone is working quite well (there is only not too loud
-squeal during records).
-
-Other options like posotion_fix=1/2 or single_cmd=1 are not changing
-anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
-login sound should be played).  
-
-If anyone would like to help me and need any other information than those
-placed in this post and in attached file, just ask for them and I'll
-answer :)
-
-Hope someone smart will know how to fix everything :)
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- michaldemin - 07-31-06 11:12 
+ Raymond - 07-13-06 16:16 
 ----------------------------------------------------------------------
-I think that all these problems related to hda-intel driver are having
-similar problems. It's just some kind of routing problem, how the codec is
-routed to out/input jacks.
-It looks like the codec has predefined table of how the ports should be
-configured, perhaps this table should be altered for each laptop model ?
+May be IRQ_REG is only applicable to au8820/au8830
+
+Please check whether the au8810 specific error "Vortex: irq reg error."
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=296 can/cannot be removed
+by changing IRQ from 0x24 ( IRQ_PCMOUT |
+IRQ_REG ) to IRQ_PCMOUT
+
+
+	hwwrite(card->mmio, VORTEX_CTRL,
+		hwread(card->mmio, VORTEX_CTRL) | CTRL_IRQ_ENABLE);
+	hwwrite(card->mmio, VORTEX_IRQ_CTRL,
+-		(hwread(card->mmio, VORTEX_IRQ_CTRL) & 0xffffefc0) | 0x24);
++		(hwread(card->mmio, VORTEX_IRQ_CTRL) & 0xffffefc0) | IRQ_PCMOUT);
+
+----------------------------------------------------------------------
+ Raymond - 07-31-06 12:23 
+----------------------------------------------------------------------
+Even au8820 support 48 DMA, au8830 support 96 DMA, however the current
+driver only implement those DMA with SRC. 
+
+snd_pcm_info_get_subdevices_count() will return a more accurate number
+which the driver currently supported.
+
+
+   // ADB pcm.
+-    if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
++    if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_SRC)) < 0) {
+        snd_card_free(card);
+        return err;
+     }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-06 00:41 mario_7        New Issue                                    
-07-31-06 00:41 mario_7        File Added: info                             
-07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
-07-31-06 11:12 michaldemin    Note Added: 0011341                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
+03-18-06 12:28 Raymond        Note Deleted: 0008273                        
+03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
+03-21-06 02:02 Raymond        Note Added: 0008734                          
+03-21-06 18:01 tiwai          Note Added: 0008754                          
+03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+
+03-22-06 02:28 Raymond        Note Added: 0008779                          
+03-22-06 02:31 Raymond        Note Edited: 0008779                         
+03-22-06 02:38 rlrevell       Note Added: 0008782                          
+03-22-06 04:00 Raymond        Note Added: 0008836                          
+03-22-06 04:09 rlrevell       Note Added: 0008839                          
+03-26-06 09:55 Raymond        Note Added: 0008967                          
+03-29-06 17:48 Raymond        Note Added: 0008995                          
+03-31-06 06:52 Raymond        Note Edited: 0008995                         
+04-02-06 07:01 Raymond        Note Edited: 0008995                         
+04-10-06 16:07 Raymond        Note Added: 0009190                          
+04-10-06 16:39 tiwai          Note Added: 0009192                          
+04-10-06 16:43 Raymond        Note Added: 0009194                          
+04-10-06 16:45 tiwai          Note Added: 0009195                          
+04-10-06 19:01 Raymond        Note Added: 0009215                          
+04-10-06 19:04 Raymond        Note Edited: 0009215                         
+04-10-06 19:05 tiwai          Note Added: 0009216                          
+04-11-06 18:36 Raymond        Note Added: 0009234                          
+04-11-06 18:54 tiwai          Note Added: 0009235                          
+06-25-06 07:04 Raymond        Note Added: 0010502                          
+06-26-06 02:46 Raymond        Note Added: 0010522                          
+06-26-06 03:05 Raymond        Note Edited: 0010522                         
+06-26-06 14:55 Raymond        Note Added: 0010536                          
+06-26-06 15:04 Raymond        Note Edited: 0010536                         
+06-27-06 08:22 Raymond        Note Added: 0010567                          
+06-27-06 10:15 Raymond        Note Edited: 0010567                         
+06-27-06 10:42 Raymond        Note Edited: 0010567                         
+06-28-06 03:46 Raymond        Note Added: 0010604                          
+06-28-06 03:52 Raymond        Note Edited: 0010604                         
+06-29-06 04:41 Raymond        Note Added: 0010639                          
+06-29-06 04:49 Raymond        Note Edited: 0010639                         
+06-29-06 05:12 Raymond        Note Edited: 0010639                         
+06-29-06 06:20 Raymond        Note Edited: 0010639                         
+06-29-06 09:55 Raymond        Note Added: 0010645                          
+06-29-06 13:48 Raymond        Note Edited: 0010645                         
+06-29-06 17:38 Raymond        Note Added: 0010672                          
+06-29-06 17:45 Raymond        Note Edited: 0010672                         
+07-01-06 15:03 Raymond        Note Deleted: 0010672                        
+07-13-06 16:16 Raymond        Note Added: 0010993                          
+07-31-06 12:23 Raymond        Note Added: 0011342                          
 ======================================================================
 
 
