@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no
 	sound
-Date: Mon, 31 Jul 2006 20:39:27 +0200
-Message-ID: <ef8aa8f65465435df177001f8b8b4d9d@bugtrack.alsa-project.org>
+Date: Mon, 31 Jul 2006 20:48:05 +0200
+Message-ID: <aeb16cae940cf74a07e9df32b3fa3a11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9E1F106
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1E5F197
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 20:39:27 +0200 (MEST)
+	Mon, 31 Jul 2006 20:48:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2111
 ======================================================================
 Date Submitted:             05-08-2006 23:36 CEST
-Last Modified:              07-31-2006 20:39 CEST
+Last Modified:              07-31-2006 20:48 CEST
 ======================================================================
 Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
@@ -70,19 +70,6 @@ Any thoughts or predictions would be most welcome.  Maybe it should have a
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-30-06 18:26 
-----------------------------------------------------------------------
-Is this still a problem.
-If so, in order to help further, please provide the output from:
-cat /proc/asound/cards
-cat /proc/asound/version
-amixer
-lspci -vn |grep -1 0401
-
-Support for the CA0102-ICT chip is included in the snd-emu10k1 module.
-
-
-----------------------------------------------------------------------
  peter_scott - 07-31-06 20:39 
 ----------------------------------------------------------------------
 Dear jcdutton,
@@ -102,6 +89,15 @@ thoughts you might have.
 
 -- Peter Scott
 
+----------------------------------------------------------------------
+ jcdutton - 07-31-06 20:48 
+----------------------------------------------------------------------
+The Audigy 2 ZS is considerably better than the nvidia sound.
+This is particularly the case for Games and Voice over IP. Voice over IP
+benefits from better mic quality, and Games benefit from the out card
+being a hardware mixing device. The Audigy 2 ZS is, the nvidia sound is
+not.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -116,6 +112,7 @@ Date Modified  Username       Field                    Change
 07-30-06 18:26 jcdutton       Note Added: 0011325                          
 07-30-06 18:26 jcdutton       Status                   assigned => feedback
 07-31-06 20:39 peter_scott    Note Added: 0011347                          
+07-31-06 20:48 jcdutton       Note Added: 0011348                          
 ======================================================================
 
 
