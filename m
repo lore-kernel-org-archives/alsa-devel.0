@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
-	volume (both in and out)
-Date: Tue, 1 Aug 2006 01:28:55 +0200
-Message-ID: <79aa98c3170fad8a75405cd307fa8754@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Tue, 1 Aug 2006 01:32:21 +0200
+Message-ID: <d0f22ced782cbcb9df65b3c0695c48c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE0E8166
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DDD3167
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 01:28:55 +0200 (MEST)
+	Tue,  1 Aug 2006 01:32:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,141 +26,126 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                garden
-Assigned To:                jcdutton
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              08-01-2006 01:28 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              08-01-2006 01:32 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- snover - 07-30-06 20:12 
+ pwaller - 08-01-06 00:45 
 ----------------------------------------------------------------------
-Hi jcdutton,
+So it is possible to get it working but someone needs to port the patches
+so that it functions with 2.6.x, yeah? :s
 
-After some experimentation and cursing I'm afraid I probably will not be
-able to build this patch to test for you. I will attempt to shake out some
-people downstream with a bit more experience that might be able to do it
-instead.
-
-The reason for my inability to do this is that patches in the HG SCM
-repository are failing against the copy of alsa-kernel that comes with my
-OS (AMD64 Ubuntu 6.06). Unfortunately, I don't feel I have the expertise
-to resolve this issue and I don't have enough time to gain the knowledge
-required to fix it (unless it's something that you can instruct me to
-do).
-
-For your knowledge, here is the failure that is currently occurring:
-
-Hacking autoconf.h...
-if [ ! -d include/sound -a ! -L include/sound ]; then \
-          ln -sf ../alsa-kernel/include include/sound ; \
-        fi
-cp -auvf include/version.h include/sound/version.h
-`include/version.h' -> `include/sound/version.h'
-make[1]: Entering directory
-`/home/colin/software/source/modules/alsa-driver/acore'
-copying file alsa-kernel/core/info.c
-patching file info.c
-Hunk #3 succeeded at 122 with fuzz 1.
-Hunk #7 succeeded at 484 with fuzz 1 (offset 11 lines).
-Hunk #8 FAILED at 520.
-Hunk #9 succeeded at 949 (offset 13 lines).
-Hunk #10 succeeded at 997 with fuzz 2 (offset 12 lines).
-1 out of 10 hunks FAILED -- saving rejects to file info.c.rej
-make[1]: *** [info.c] Error 1
-make[1]: Leaving directory
-`/home/colin/software/source/modules/alsa-driver/acore'
-make: *** [dep] Error 1
-
-I prepared the source by downloading the alsa-source package provided by
-Ubuntu and untarring it, then by pulling the latest sources from the HG
-SCM repository and overwriting the older files from the alsa-source
-package. I also tried downloading a fresh copy of the HG SCM repository
-and copied over ONLY the alsa-kernel directory, and it still failed.
-
-Again, I will try to find someone downstream to test this patch. Hopefully
-someone with a bit more experience will able to do so.
-
-Regards,
+If anyone hears this plea, how long might this take? Life without sound is
+agony.
 
 ----------------------------------------------------------------------
- rlrevell - 08-01-06 01:28 
+ rlrevell - 08-01-06 01:32 
 ----------------------------------------------------------------------
-Just don't use the Ubuntu ALSA packages, they are hacked up.  Get
-everything from the HG repository, and just install it over the Ubuntu
-ALSA.
+The changes in that patch from Intervideo have already been applied to the
+current ALSA HG sources, please test it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
-08-31-05 14:01 pzad           Note Added: 0005988                          
-08-31-05 18:54 rlrevell       Note Added: 0005990                          
-01-26-06 21:52 pzad           Note Added: 0007789                          
-01-26-06 21:55 rlrevell       Note Added: 0007790                          
-01-26-06 22:03 pzad           Note Added: 0007791                          
-01-28-06 23:11 andred         Issue Monitored: andred                      
-06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
-06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
-06-21-06 23:18 snover         Note Added: 0010409                          
-06-21-06 23:19 snover         Issue Monitored: snover                      
-06-21-06 23:19 snover         Note Edited: 0010409                         
-06-30-06 16:32 killrbuckeye   Note Added: 0010739                          
-06-30-06 16:34 pzad           Assigned To              pzad =>             
-06-30-06 18:22 jcdutton       Note Added: 0010750                          
-06-30-06 18:23 jcdutton       Assigned To               => jcdutton        
-07-06-06 07:39 L0cKd0wN       Note Added: 0010855                          
-07-06-06 07:40 L0cKd0wN       Note Edited: 0010855                         
-07-06-06 07:40 L0cKd0wN       Issue Monitored: L0cKd0wN                    
-07-09-06 17:38 jcdutton       File Added: capture-fix.diff                    
-07-09-06 17:39 jcdutton       Note Added: 0010953                          
-07-09-06 17:42 jcdutton       Note Added: 0010954                          
-07-09-06 17:42 jcdutton       Status                   assigned => feedback
-07-13-06 23:17 killrbuckeye   Note Added: 0010996                          
-07-15-06 00:26 snover         Note Added: 0011010                          
-07-15-06 00:27 snover         Note Edited: 0011010                         
-07-30-06 18:31 jcdutton       Note Added: 0011326                          
-07-30-06 20:12 snover         Note Added: 0011329                          
-08-01-06 01:28 rlrevell       Note Added: 0011357                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
+06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
+06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
+06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
+06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
+06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 22:50 taschenorakel  File Added:
+alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
+06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
+06-26-06 16:38 rlrevell       Note Added: 0010548                          
+06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
+07-29-06 04:04 pwaller        Note Added: 0011296                          
+07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
+07-31-06 21:34 vertex         Note Added: 0011349                          
+08-01-06 00:45 pwaller        Note Added: 0011355                          
+08-01-06 01:32 rlrevell       Note Added: 0011358                          
 ======================================================================
 
 
