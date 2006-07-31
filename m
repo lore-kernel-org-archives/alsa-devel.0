@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002299]: no manual volume control for
-	Delta 1010 device (using ice1712)
-Date: Mon, 31 Jul 2006 02:57:01 +0200
-Message-ID: <2ea16449b9525da35833785ec8ae09d2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 31 Jul 2006 05:39:50 +0200
+Message-ID: <0bb9fbe94c67bf8bd4ca20e30badc736@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28556161
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6B8E139
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 02:57:02 +0200 (MEST)
+	Mon, 31 Jul 2006 05:39:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,78 +25,131 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                Jarad
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2299
-Category:                   PCI - ice1712
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.11-1.1369_FC
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-24-2006 07:02 CEST
-Last Modified:              07-31-2006 02:57 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              07-31-2006 05:39 CEST
 ======================================================================
-Summary:                    no manual volume control for Delta 1010 device
-(using ice1712)
+Summary:                    surround40 memory leak
 Description: 
-Using an M-audio delta 1010 device under Fedora Core 4 I am unable to
-manually control the volume levels (individually or as a whole).
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 07-27-06 20:32 
+ darkbrain - 07-30-06 11:52 
 ----------------------------------------------------------------------
-No there's no analog volume control. I guessed that Jarad didn't know about
-envy24control (or alsactl).
+>How about 'DAC Playback Volume' ? It seem to be the control which change
+the >volume of mixer_scb(s) inside DSP.
+>Does it control the volume of all the playback channels ?
+Yes it does.
+
+>If you want to implement the volume control per PCM stream (subdevice)
+like >emu10k1 or ymfpci, you may need to remove this control. 0001318
+I know it, but the volume control per PCM stream doesn't want to work,
+maybe bitmage2 wants to try that patch and play blinded till he undestand
+how scb manage these volumes.
+
+>If there are only 2 pcm_channels left and pcm_multi try to open
+surround40 or >surround51, it is possible that pcm_multi and cs46xx driver
+is not capable to >recover from this kind of error.
+It's possible i'll do some tests.
+
+>I don't know what game darkbrain (bug reporter) is talking about.
+Well i'm working on a my implementation of openal
+(dino.e4a.it/openal-alsa) and i've an unreleased version that can play
+with surrond40(that works with an emu10k1) unfortunally, because of this
+problems i can't use it :(
+
+bye,
+   DarkBrain
 
 ----------------------------------------------------------------------
- Jarad - 07-31-06 02:57 
+ Raymond - 07-31-06 05:39 
 ----------------------------------------------------------------------
-Sorry, I meant to get back to you all earlier...
+>> Yes! All the volume controls (front,rear,center,lfe) change the volume
+of the correct channels. This is true for KMix
 
-Tried the envy24control program, with only limited success. The best
-result I could achieve with it: I could only get the first two ports to
-adjust manually  and the rest seemed to be some average volume of the
-first two. This was achieved when setting the output controls to route to
-the digital (main) mixer instead of the individual PCM Out#. This is an
-improvement but still isn't adequate, I really need them all to work.
-
-Looked at the website, that was quite good actually and will be useful
-later as I will actually need mulitple Deltas (providing I can get one to
-work).
-
-Also looked at the manual for hardware info, and yeah, there's no direct
-hardware volume control capabilities. Which I'm thinking would imply it
-has to be controlled in software before the stream reaches the Delta 1010
-hardware. 
-
-I knew about alsactl but for all my fiddeling I couldn't result any
-changes to the problem. Having said that though, from the result with the
-envy24control (thanks for the tip by the way) I have a sneaking suspicion
-it may have something to do with my configuration settings for the unit. I
-dont know if anyone has it working for all output ports but could someone
-post a known working/semi-working configuration perhaps?
-
-Failing that I may just have to pull the envy24control program apart and
-work out the right set of command calls, though that doesn't look like
-it's going to be scalable to the rest of the outputs. :/
+Do you mean KMix can handle those duplicate controls ( caused by 2 AC97 )
+?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-24-06 07:02 Jarad          New Issue                                    
-07-24-06 07:02 Jarad          Kernel Version            => 2.6.11-1.1369_FC
-07-24-06 20:01 johnrigg       Note Added: 0011213                          
-07-27-06 12:58 tiwai          Note Added: 0011269                          
-07-27-06 20:32 johnrigg       Note Added: 0011278                          
-07-31-06 02:57 Jarad          Note Added: 0011335                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
+07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
+07-29-06 14:50 bitmage2       Note Added: 0011304                          
+07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
+    
+07-29-06 15:01 bitmage2       Note Added: 0011305                          
+07-29-06 15:03 bitmage2       File Added: test.state                       
+07-29-06 17:23 Raymond        Note Added: 0011309                          
+07-29-06 22:44 bitmage2       Note Added: 0011311                          
+07-30-06 03:26 Raymond        Note Added: 0011313                          
+07-30-06 03:33 Raymond        Note Added: 0011314                          
+07-30-06 03:39 Raymond        Note Edited: 0011314                         
+07-30-06 03:41 Raymond        Note Edited: 0011314                         
+07-30-06 11:52 darkbrain      Note Added: 0011317                          
+07-31-06 05:39 Raymond        Note Added: 0011336                          
 ======================================================================
 
 
