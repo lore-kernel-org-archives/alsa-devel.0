@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002088]: Too many xruns with jack in
-	full-duplex mode.
-Date: Mon, 31 Jul 2006 09:03:39 +0200
-Message-ID: <bbfafb2ee1080a5d3412bc8ba9ad3784@bugtrack.alsa-project.org>
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
+Subject: Re: How to read the sound card ?
+Date: Mon, 31 Jul 2006 09:23:14 +0200
+Message-ID: <44CDAFE2.4020406@purplelabs.com>
+References: <44CCBDCC.2010109@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC96513D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 09:03:39 +0200 (MEST)
+In-Reply-To: <44CCBDCC.2010109@free.fr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,155 +17,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Micha=EBl_Todorovic?= <michael.todorovic@free.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2088> 
-======================================================================
-Reported By:                AnarSoul
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2088
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.16.1
-======================================================================
-Date Submitted:             05-01-2006 02:10 CEST
-Last Modified:              07-31-2006 09:03 CEST
-======================================================================
-Summary:                    Too many xruns with jack in full-duplex mode.
-Description: 
-Hundrends of xruns with JACK (jackit.sf.net) in fullduplex mode with
-snd-ca0106 (audigy se). But my onboard sound (intel-8x0) works fine.
+I think the simpler way is to write a plugin for alsa, which will take
+place in the plugin chain, just before outputing the sound.
+The last time i did that, you couldn't do it if using softmix (which has
+to be directly plugged to hw) but maybe it's possible now...
+There is a doc written on how to write an ALSA plugin, that should help
+you do that ;)
 
-Please, do something with this annoying thing :(
+Regards,
 
-======================================================================
-
-----------------------------------------------------------------------
- sergiusz - 07-31-06 08:41 
-----------------------------------------------------------------------
-Exactly the same issue here, playback-only mode works. When enabling duplex
-in the configuraton, jack stops immediately, output:
-
-08:40:09.609 JACK is starting...
-08:40:09.611 /usr/bin/jackd -R -dalsa -dhw:0 -r48000 -p256 -n2 -S
-08:40:09.620 JACK was started with PID=5579 (0x15cb).
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-JACK compiled with System V SHM support.
-loading driver ..
-apparent rate = 48000
-creating alsa driver ... hw:0|hw:0|256|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 256 frames, buffer = 2 periods
-nperiods = 2 for capture
-nperiods = 2 for playback
-08:40:11.833 Server configuration saved to "/home/sur/.jackdrc".
-08:40:11.836 Statistics reset.
-08:40:11.841 Client activated.
-08:40:11.844 Audio connection change.
-08:40:11.856 Audio connection graph change.
-08:40:11.914 XRUN callback (1).
-08:40:13.880 XRUN callback (198 skipped).
-jackd watchdog: timeout - killing jackd
-zombified - calling shutdown handler
-08:40:15.096 Shutdown notification.
-08:40:15.098 Client deactivated.
-08:40:15.103 JACK was stopped successfully.
-cannot send request type 7 to server
-cannot read result for request type 7 from server (Broken pipe)
-cannot send request type 7 to server
-cannot read result for request type 7 from server (Broken pipe)
+-- Ben
 
 
+Micha=EBl Todorovic wrote:
 
-----------------------------------------------------------------------
- Raymond - 07-31-06 09:03 
-----------------------------------------------------------------------
-Do you mean that the default option of jackd does not work when you specify
-'-r48000 -p256 -n2 -S' ?
+>hello,
+>I want to read the data on the sound card (to do a fft and other =
 
-The driver has constraints when selecting the right combination of
-period_size and periods and buffer size 
+>things). I have first tried the capture stream with snd_pcm_readi and =
 
-static struct snd_pcm_hardware snd_ca0106_playback_hw = {
-	.info =			(SNDRV_PCM_INFO_MMAP | 
-				 SNDRV_PCM_INFO_INTERLEAVED |
-				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-				 SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-	.rates =		(SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-				 SNDRV_PCM_RATE_192000),
-	.rate_min =		48000,
-	.rate_max =		192000,
-	.channels_min =		2,  //1,
-	.channels_max =		2,  //6,
-	.buffer_bytes_max =	((65536 - 64) * 8),
-	.period_bytes_min =	64,
-	.period_bytes_max =	(65536 - 64),
-	.periods_min =		2,
-	.periods_max =		8,
-	.fifo_size =		0,
-};
+>everything is working. My problem is that I want to read the sound =
 
-static struct snd_pcm_hardware snd_ca0106_capture_hw = {
-	.info =			(SNDRV_PCM_INFO_MMAP | 
-				 SNDRV_PCM_INFO_INTERLEAVED |
-				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-				 SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-	.rates =		(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-				 SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
-	.rate_min =		44100,
-	.rate_max =		192000,
-	.channels_min =		2,
-	.channels_max =		2,
-	.buffer_bytes_max =	((65536 - 64) * 8),
-	.period_bytes_min =	64,
-	.period_bytes_max =	(65536 - 64),
-	.periods_min =		2,
-	.periods_max =		2,
-	.fifo_size =		0,
-};
+>output (pcm or mixer). For example, I want to read the sound that xmms =
 
+>or mplayer is writing on the sound card. If I just change =
 
-if ((err = snd_pcm_hw_constraint_integer(runtime,
-SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
-                return err;
-	if ((err = snd_pcm_hw_constraint_step(runtime, 0,
-SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64)) < 0)
-                return err;
+>SND_PCM_STREAM_CAPTURE to SND_PCM_STREAM_PLAYBACK in snd_pcm_open, =
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-01-06 02:10 AnarSoul       New Issue                                    
-05-01-06 02:10 AnarSoul       Distribution              => Slackware 10.2  
-05-01-06 02:10 AnarSoul       Kernel Version            => 2.6.16.1        
-05-01-06 02:11 AnarSoul       Issue Monitored: AnarSoul                    
-05-01-06 02:12 AnarSoul       Note Added: 0009552                          
-07-11-06 06:10 Raymond        Note Added: 0010966                          
-07-31-06 08:40 sergiusz       Note Added: 0011337                          
-07-31-06 08:41 sergiusz       Note Edited: 0011337                         
-07-31-06 09:03 Raymond        Note Added: 0011338                          
-======================================================================
+>snd_pcm_readi fails.
+>
+>So my question is : how can I read the sound output with the alsa-lib ?
+>
+>Thank you
+>
+>-------------------------------------------------------------------------
+>Take Surveys. Earn Cash. Influence the Future of IT
+>Join SourceForge.net's Techsay panel and you'll get the chance to share yo=
+ur
+>opinions on IT & business topics through brief surveys -- and earn cash
+>http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DD=
+EVDEV
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>  =
 
-
+>
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
