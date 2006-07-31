@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002088]: Too many xruns with jack in
 	full-duplex mode.
-Date: Mon, 31 Jul 2006 08:40:57 +0200
-Message-ID: <982546049bbf84a38892a998b5637c47@bugtrack.alsa-project.org>
+Date: Mon, 31 Jul 2006 09:03:39 +0200
+Message-ID: <bbfafb2ee1080a5d3412bc8ba9ad3784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5831118C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC96513D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jul 2006 08:40:57 +0200 (MEST)
+	Mon, 31 Jul 2006 09:03:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.16.1
 ======================================================================
 Date Submitted:             05-01-2006 02:10 CEST
-Last Modified:              07-31-2006 08:40 CEST
+Last Modified:              07-31-2006 09:03 CEST
 ======================================================================
 Summary:                    Too many xruns with jack in full-duplex mode.
 Description: 
@@ -54,15 +54,10 @@ Please, do something with this annoying thing :(
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 07-11-06 06:10 
+ sergiusz - 07-31-06 08:41 
 ----------------------------------------------------------------------
-Post the output when you start running jackd
-
-----------------------------------------------------------------------
- sergiusz - 07-31-06 08:40 
-----------------------------------------------------------------------
-Exactly the same issue here, playback-only mode works. Here ist the jackd
-output:
+Exactly the same issue here, playback-only mode works. When enabling duplex
+in the configuraton, jack stops immediately, output:
 
 08:40:09.609 JACK is starting...
 08:40:09.611 /usr/bin/jackd -R -dalsa -dhw:0 -r48000 -p256 -n2 -S
@@ -97,6 +92,65 @@ cannot read result for request type 7 from server (Broken pipe)
 cannot send request type 7 to server
 cannot read result for request type 7 from server (Broken pipe)
 
+
+
+----------------------------------------------------------------------
+ Raymond - 07-31-06 09:03 
+----------------------------------------------------------------------
+Do you mean that the default option of jackd does not work when you specify
+'-r48000 -p256 -n2 -S' ?
+
+The driver has constraints when selecting the right combination of
+period_size and periods and buffer size 
+
+static struct snd_pcm_hardware snd_ca0106_playback_hw = {
+	.info =			(SNDRV_PCM_INFO_MMAP | 
+				 SNDRV_PCM_INFO_INTERLEAVED |
+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+				 SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+	.rates =		(SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
+				 SNDRV_PCM_RATE_192000),
+	.rate_min =		48000,
+	.rate_max =		192000,
+	.channels_min =		2,  //1,
+	.channels_max =		2,  //6,
+	.buffer_bytes_max =	((65536 - 64) * 8),
+	.period_bytes_min =	64,
+	.period_bytes_max =	(65536 - 64),
+	.periods_min =		2,
+	.periods_max =		8,
+	.fifo_size =		0,
+};
+
+static struct snd_pcm_hardware snd_ca0106_capture_hw = {
+	.info =			(SNDRV_PCM_INFO_MMAP | 
+				 SNDRV_PCM_INFO_INTERLEAVED |
+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+				 SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+	.rates =		(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+				 SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
+	.rate_min =		44100,
+	.rate_max =		192000,
+	.channels_min =		2,
+	.channels_max =		2,
+	.buffer_bytes_max =	((65536 - 64) * 8),
+	.period_bytes_min =	64,
+	.period_bytes_max =	(65536 - 64),
+	.periods_min =		2,
+	.periods_max =		2,
+	.fifo_size =		0,
+};
+
+
+if ((err = snd_pcm_hw_constraint_integer(runtime,
+SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
+                return err;
+	if ((err = snd_pcm_hw_constraint_step(runtime, 0,
+SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64)) < 0)
+                return err;
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +161,8 @@ Date Modified  Username       Field                    Change
 05-01-06 02:12 AnarSoul       Note Added: 0009552                          
 07-11-06 06:10 Raymond        Note Added: 0010966                          
 07-31-06 08:40 sergiusz       Note Added: 0011337                          
+07-31-06 08:41 sergiusz       Note Edited: 0011337                         
+07-31-06 09:03 Raymond        Note Added: 0011338                          
 ======================================================================
 
 
