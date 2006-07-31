@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Tue, 1 Aug 2006 01:42:45 +0200
-Message-ID: <b13d5f93fcd3e31c078bb7a33440a1b5@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 01:49:22 +0200
+Message-ID: <ada5b560cee9f7deb9b53be872434ac4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92C5711D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57EF3167
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 01:42:45 +0200 (MEST)
+	Tue,  1 Aug 2006 01:49:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-01-2006 01:42 CEST
+Last Modified:              08-01-2006 01:49 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,18 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-01-06 01:26 
-----------------------------------------------------------------------
-"this bug tracking system should split the thread into different pages when
-it get soo long like this."
-
-No, you and Raymond should stop abusing the bug tracker by using it as a
-driver development forum, and use the mailing list like normal people. 
-I've asked Raymond 100 times and he just refuses to respond.
-
-You guys do have e-mail, right?
-
-----------------------------------------------------------------------
  cruiseoveride - 08-01-06 01:42 
 ----------------------------------------------------------------------
 can u give us email addresses??
@@ -89,6 +77,12 @@ do i code this into the driver,
 is there any example, i looked at juli.c and i couldnt understand the 
 
 /* GPIO Pins */
+
+----------------------------------------------------------------------
+ rlrevell - 08-01-06 01:49 
+----------------------------------------------------------------------
+As I stated previously the ALSA development mailing list is alsa-devel at
+lists.sourceforge.net
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -219,6 +213,7 @@ Date Modified  Username       Field                    Change
 07-30-06 06:26 cruiseoveride  Note Added: 0011316                          
 08-01-06 01:26 rlrevell       Note Added: 0011356                          
 08-01-06 01:42 cruiseoveride  Note Added: 0011360                          
+08-01-06 01:49 rlrevell       Note Added: 0011361                          
 ======================================================================
 
 
