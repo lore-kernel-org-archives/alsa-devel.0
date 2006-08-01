@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001869]: Playing surround sound
 	produces 100% CPU load
-Date: Tue, 1 Aug 2006 08:15:57 +0200
-Message-ID: <3696c92f038f438e9e2c9162d820f49b@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 09:36:31 +0200
+Message-ID: <3411cde6b6c69a4bb04bbb32d9a22cde@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B2B718E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4268185
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 08:15:58 +0200 (MEST)
+	Tue,  1 Aug 2006 09:36:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
 2006 i686 athlon i386 GNU/Linux
 ======================================================================
 Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              08-01-2006 08:15 CEST
+Last Modified:              08-01-2006 09:36 CEST
 ======================================================================
 Summary:                    Playing surround sound produces 100% CPU load
 Description: 
@@ -63,26 +63,6 @@ Information" box.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-01-06 04:15 
-----------------------------------------------------------------------
-Are there any reason which prevent you to upgrade to ALSA 1.0.12rc1 ?
-
-In kernel 2.4, I can easily switch between different version of ALSA from
-1.0.2 to 1.0.12rc1.
-
-you have to ask the ALSA developer how to switch between stable and
-development version of ALSA in kernel 2.6
-
-The only way to find out the maximum number of instances of "surround41" ,
-"surround51" and "surround71" is to open pcm, set_channels and other
-parameter and call snd_pcm_hw_params() until snd_pcm_open() or
-snd_pcm_hw_params() fail
-
-You may try set_params_test4.c and post the result in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724 if cs46xx
-can use the new function snd_pcm_set_params().
-
-----------------------------------------------------------------------
  Raymond - 08-01-06 08:15 
 ----------------------------------------------------------------------
 >> -----
@@ -100,6 +80,19 @@ All 31 pcm_channels of cs46xx should be used up by now.
 
 What happen if you run an OSS application (e.g. mplayer -ao oss
 stereo.wav') ?
+
+----------------------------------------------------------------------
+ Raymond - 08-01-06 09:36 
+----------------------------------------------------------------------
+>>BTW: I found one (probably unrelated) information about the rear channel
+(on >>Hercules Game Theter XP7.1): The rear channels volume is regulated
+by controls >>Surround.0 and PCM.1 - this is very strange, as PCM.1 is the
+ONLY "index >>1"-device I found that is doing something useful.
+
+The jacks at the back support 5.1 plus the phone jack at the front to have
+8 speakers. 
+
+Not sure it is 8 channels unless cs4624 support 8 channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +137,7 @@ Date Modified  Username       Field                    Change
 08-01-06 02:40 Raymond        Note Added: 0011362                          
 08-01-06 04:15 Raymond        Note Added: 0011368                          
 08-01-06 08:15 Raymond        Note Added: 0011371                          
+08-01-06 09:36 Raymond        Note Added: 0011372                          
 ======================================================================
 
 
