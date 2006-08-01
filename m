@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 21:26:41 +0200
-Message-ID: <4a51801bc140e87438c3c440091fc147@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 21:28:48 +0200
+Message-ID: <3e75e7d5690df0c63435416134c027c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AB69153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 341F0153
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 21:26:42 +0200 (MEST)
+	Tue,  1 Aug 2006 21:28:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 21:26 CEST
+Last Modified:              08-01-2006 21:28 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,32 +73,15 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 08-01-06 21:24 
-----------------------------------------------------------------------
-Wow, my last post made suprisingly little sense, even to me.
-
-After some thought, I really don't want to mess around with a 2.4 kernel
-unless there is some easy way I can do it.
-
-When I start up a livecd, it's just going to use whatever sound drivers
-the livecd likes, yeah?
-
-Then if I compile that old patched thing, I won't be able to modprobe the
-patched version because the snd will already be loading. And since it's a
-livecd I can't restart and have it used the compiled module either.
-
-Is there an easy way of doing this without installing a 2.4 kernel on my
-machine? I really don't want to have to partition and crud, I've wasted so
-much time on this computer already and I've got everything working apart
-from this sound.
-
-- Peter
-
-----------------------------------------------------------------------
  rlrevell - 08-01-06 21:26 
 ----------------------------------------------------------------------
 You did apply the Intervideo patch to ALSA 1.0.9b, and not a newer version,
 correct?
+
+----------------------------------------------------------------------
+ pwaller - 08-01-06 21:28 
+----------------------------------------------------------------------
+Correct.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -164,6 +147,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-01-06 21:17 pwaller        Note Added: 0011379                          
 08-01-06 21:24 pwaller        Note Added: 0011380                          
 08-01-06 21:26 rlrevell       Note Added: 0011381                          
+08-01-06 21:28 pwaller        Note Added: 0011382                          
 ======================================================================
 
 
