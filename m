@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 21:24:59 +0200
-Message-ID: <1c9e6c8ec0c8baffcf6cea09230b3588@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 21:26:41 +0200
+Message-ID: <4a51801bc140e87438c3c440091fc147@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FAD8153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AB69153
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 21:24:59 +0200 (MEST)
+	Tue,  1 Aug 2006 21:26:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 21:24 CEST
+Last Modified:              08-01-2006 21:26 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,23 +73,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 08-01-06 21:17 
-----------------------------------------------------------------------
-I can tell because if I use audacity and record and tap the microphone I
-can see blips. I even went to the trouble of taking it to another computer
-and playing something I recorded there. It does indeed work.
-
-I could not get the patch to work because it was designed for the 2.4
-kernel, I believe. I had all sorts of problems trying to even compile it.
-
-I'm running 2.6 and have spent many hours fiddling with it.
-
-I have just had a thought though. Maybe I could run a livecd on the 2.4
-kernel and try that patched kernel. I'll try that and update people.
-
-- Peter
-
-----------------------------------------------------------------------
  pwaller - 08-01-06 21:24 
 ----------------------------------------------------------------------
 Wow, my last post made suprisingly little sense, even to me.
@@ -110,6 +93,12 @@ much time on this computer already and I've got everything working apart
 from this sound.
 
 - Peter
+
+----------------------------------------------------------------------
+ rlrevell - 08-01-06 21:26 
+----------------------------------------------------------------------
+You did apply the Intervideo patch to ALSA 1.0.9b, and not a newer version,
+correct?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,6 +163,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-01-06 21:14 rlrevell       Note Added: 0011378                          
 08-01-06 21:17 pwaller        Note Added: 0011379                          
 08-01-06 21:24 pwaller        Note Added: 0011380                          
+08-01-06 21:26 rlrevell       Note Added: 0011381                          
 ======================================================================
 
 
