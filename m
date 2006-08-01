@@ -1,15 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002076]: arecord gives silence
-Date: Tue, 1 Aug 2006 03:03:58 +0200
-Message-ID: <e59c10c201f2e3396cbd64b539fbece8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002287]: Segfaults all functions after
+	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
+	*) & val);
+Date: Tue, 1 Aug 2006 03:22:38 +0200
+Message-ID: <d74ef9ab33e3dd561b1647344f85983d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0EF811B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0DE77176
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 03:03:58 +0200 (MEST)
+	Tue,  1 Aug 2006 03:22:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,550 +25,200 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0002307.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2076> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                jaime
-Assigned To:                =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Issue ID:                   2076
-Category:                   PCI - cs46xx
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2287> 
+======================================================================
+Reported By:                cruiseoveride
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2287
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               =
+======================================================================
+Date Submitted:             07-16-2006 18:03 CEST
+Last Modified:              08-01-2006 03:22 CEST
+======================================================================
+Summary:                    Segfaults all functions after
+snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
+Description: 
+I am new to Alsa and am not happy at all at the state of documentation
+available.
+You guys seriously need to do something about this.
 
-Kernel Version:             =
+I have an M-Audio Audiophile Delta 192 (ICE1724) and I want to port
+envy24control for this chip, However I first need to familiar myself with
+the ALSA API. So I began by looking for simple examples on how to use ALSA
+API and came accross the followinf prog (Attached file test.c).
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             04-26-2006 16:28 CEST
-Last Modified:              07-29-2006 16:34 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    arecord gives silence
-Description: =
+The program compiles cleanly with gcc-4.1 and runs, however after it
+prints out the ..."buffer size = 8192 frames"
+It segfaults.
 
-IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
-Audio Accelerator] (rev 01).
+If you slash out line 104, it resolves the issue.
 
-alsamixer correctly mixes the inputs over to the line out (I can hear
-microphone in and line in successfully mixed) but arecord gives silence.
+My question is,
 
-I've tried using a usb soundcard on the same machine, and everything works
-fine there, so I think this is only the snd-cs46xx driver.
-
-I'm not sure what other info is useful - please let me know. Thank you.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0002307 I have sound but can't use a working mi...
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Is there a bug in this function?
+Code was obtained from http://www.linuxjournal.com/article/6735
+======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-06 18:11 =
+ rlrevell - 08-01-06 01:49 
+----------------------------------------------------------------------
+As I stated previously the ALSA development mailing list is alsa-devel at
+lists.sourceforge.net
 
 ----------------------------------------------------------------------
-Make sure that you unmute/raise "ADC Volume".
-
+ Raymond - 08-01-06 03:22 
 ----------------------------------------------------------------------
- jaime - 05-04-06 12:11 =
-
-----------------------------------------------------------------------
-Takashi.
-
-I've got it working by "toggling capture" (enabling recording) for the ADC
-channel (in addition to making sure that recording is enabled on both the
-Mic channel and the "Capture" channel).
-
-Seeing how alsaconf sets up the volume sliders and unmutes certain
-channels so that users can immediately get sound out of their machines,
-would it also be a good idea to make alsaconf set capture enabled on the
-ADC channel (and perhaps set the levels up a little) so that users can
-also immediately use software that needs audio capture? (I do realize that
-this can all be done using amixer or alsamixer, but I think one of the
-points of alsaconf is to set levels and so make users' lives a little
-easier).
-
-I've also got another qustion: with
-arecord -v -v -Dhw:0,0 -f cd test.wav
-I get a volume meter which works and the wave file is good.
-
-But when I use:
-arecord -v -v -f cd test.wav
-I just get:
-
-Recording WAVE...
-Plug PCM: Rate conversion PCM (48000, sformat=3DS16_LE)
-Its setup is...
-Slave: Direct Snoop PCM
-Its setup is...
-Hardware PCM Card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-Its setup is...
-
-and then everything stops. There's no volume meter (like previously) and
-the wav file is only 44 bytes long.
-
-Would you prefer me to put this new problem into a new bug report?
-
-Thank you.
-
-----------------------------------------------------------------------
- atler - 05-08-06 12:14 =
-
-----------------------------------------------------------------------
-It also seems to be the case in this bugreport:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1822
-
-Recording with 'arecord -v -v -Dhw:0,0 -f cd test.wav' works fine.
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 03:30 =
-
-----------------------------------------------------------------------
-cat /proc/asound/pcm
-
-Try the following test and post the output including the setup line output
-by arecord
-
-arecord -v -Dhw:0,0 -f cd test1.wav
-
-arecord -v -Dplughw:0,0 -f cd test2.wav
-
-arecord -v -f cd test3.wav
-
-
-
-----------------------------------------------------------------------
- atler - 06-29-06 09:08 =
-
-----------------------------------------------------------------------
-First two methods work fine, third one fails. Here comes complete output:
-
-% cat /proc/asound/pcm =
-
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-
-% arecord -v -Dhw:0,0 -f cd test1.wav
-Recording WAVE 'test1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 512
-period_time  : 11609
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-start_threshold  : 1
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-
-
-% arecord -v -Dplughw:0,0 -f cd test2.wav
-Recording WAVE 'test2.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 512 =
-
-period_time  : 11609
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-
-
-% arecord -v -f cd test3.wav
-Recording WAVE 'test3.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=3DS16_LE)
-Its setup is:
-Plug PCM: Rate conversion PCM (48000, sformat=3DS16_LE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 7526
-period_size  : 470
-period_time  : 10666
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 470
-xfer_align   : 470
-start_threshold  : 1
-stop_threshold   : 7526
-silence_threshold: 0
-silence_size : 0
-boundary     : 986447872
-Slave: Direct Snoop PCM
-
-Its setup is:
-stream       : CAPTURE
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 512
-period_time  : 10666
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1 =
-
-sleep_min    : 0 =
-
-avail_min    : 512 =
-
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 512
-period_time  : 10666
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1 =
-
-sleep_min    : 0 =
-
-avail_min    : 512 =
-
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 1073741824
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-
-----------------------------------------------------------------------
- Raymond - 06-29-06 09:32 =
-
-----------------------------------------------------------------------
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D371#9010
-
-Does it mean mean dsnoop is also not work with the hardware like CS46xx
-due to its design ?
-
-
-static struct snd_pcm_hardware snd_cs46xx_capture =3D
-{
-	.info =3D			(SNDRV_PCM_INFO_MMAP |
-				 SNDRV_PCM_INFO_INTERLEAVED |
-				 SNDRV_PCM_INFO_BLOCK_TRANSFER /*|*/
-				 /*SNDRV_PCM_INFO_RESUME*/),
-	.formats =3D		SNDRV_PCM_FMTBIT_S16_LE,
-	.rates =3D		SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000,
-	.rate_min =3D		5500,
-	.rate_max =3D		48000,
-	.channels_min =3D		2,
-	.channels_max =3D		2,
-
-
-
-----------------------------------------------------------------------
- Fred - 07-29-06 15:35 =
-
-----------------------------------------------------------------------
-I've the same system, enabled sound recording via ADC Volume in alsactl and
-did the same test. The two first are OK, third is false
-
-Subsystem: IBM Thinkpad T20
-
-0000:00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-	Subsystem: IBM: Unknown device 0132
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dmedium >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Latency: 64 (1000ns min, 6000ns max)
-	Interrupt: pin A routed to IRQ 11
-	Region 0: Memory at f4100000 (32-bit, non-prefetchable) [size=3D4K]
-	Region 1: Memory at f4000000 (32-bit, non-prefetchable) [size=3D1M]
-	Capabilities: <available only to root>
-
-
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-Enregistrement en cours WAVE 'test1.wav' : Signed 16 bit Little Endian,
-Taux 44100 Hz, St=E9r=E9o
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 512
-period_time  : 11609
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Termin=E9 par le signal Interruption...
-Enregistrement en cours WAVE 'test2.wav' : Signed 16 bit Little Endian,
-Taux 44100 Hz, St=E9r=E9o
-Plug PCM: Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 16384
-period_size  : 512
-period_time  : 11609
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 16384
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Termin=E9 par le signal Interruption...
-Enregistrement en cours WAVE 'test3.wav' : Signed 16 bit Little Endian,
-Taux 44100 Hz, St=E9r=E9o
-Plug PCM: Rate conversion PCM (48000, sformat=3DS16_LE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 7526
-period_size  : 470
-period_time  : 10666
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 470
-xfer_align   : 470
-start_threshold  : 1
-stop_threshold   : 7526
-silence_threshold: 0
-silence_size : 0
-boundary     : 986447872
-Slave: Direct Snoop PCM
-
-Its setup is:
-stream       : CAPTURE
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 512
-period_time  : 10666
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Hardware PCM card 0 'Sound Fusion CS46xx' device 0 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 512
-period_time  : 10666
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 512
-xfer_align   : 512
-start_threshold  : 1
-stop_threshold   : 1073741824
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Termin=E9 par le signal Interruption...
-
-----------------------------------------------------------------------
- Raymond - 07-29-06 16:35 =
-
-----------------------------------------------------------------------
-Are there any reason to use dsnoop if the cs46xx doesn't support ?
-
-This means that only one application can use capture device by changing
-default capture device from "dsnoop" to "hw" =
-
-
-May be someone can rewrite the driver to use the hardware mixer to support
-multiple instances of capture like au88x0
-
-http://hg-mirror.alsa-project.org/alsa-lib?f=3D8b52e1eece1b;file=3Dsrc/conf=
-/cards/CS46xx.conf;style=3Dgitweb
-
-
-	capture.pcm {
-		type plug
-		slave.pcm {
-			@func concat
--			strings [ "dsnoop:" $CARD ]
-+                       strings [ "hw:" $CARD ]
-		}
-	}
-
-
+For the buffer size segfault, please try to run set_params_test4.c (with
+default latency 0.5 sec and latency = 0 ) and post the result in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724
+
+
+If you have read the URLs in this post, you should notice the 'GPIO' and
+ice1724 expert is ungod, you should use the 'send a reminder' function or
+email to invite ungod or anyone who has send patch to add card support
+'ice1724' in the alsa-devel mailing list archive to join the discussion at
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-04-26-06 16:28 jaime          New Issue                                    =
-
-05-02-06 18:11 tiwai          Note Added: 0009568                          =
-
-05-04-06 12:11 jaime          Note Added: 0009613                          =
-
-05-08-06 12:14 atler          Note Added: 0009645                          =
-
-05-24-06 14:03 fuman          Issue Monitored: fuman                       =
-
-06-29-06 03:29 Raymond        Note Added: 0010638                          =
-
-06-29-06 03:30 Raymond        Note Edited: 0010638                         =
-
-06-29-06 09:08 atler          Note Added: 0010642                          =
-
-06-29-06 09:27 Raymond        Note Added: 0010643                          =
-
-06-29-06 09:32 Raymond        Note Edited: 0010643                         =
-
-07-29-06 15:35 Fred           Note Added: 0011306                          =
-
-07-29-06 15:36 Fred           Issue Monitored: Fred                        =
-
-07-29-06 16:34 Raymond        Note Added: 0011308                          =
-
-07-29-06 16:35 Raymond        Note Edited: 0011308                         =
-
-08-01-06 03:03 rlrevell       Relationship added       related to 0002307  =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-06 18:03 cruiseoveride  New Issue                                    
+07-16-06 18:03 cruiseoveride  File Added: test.c                           
+07-16-06 20:38 cruiseoveride  Issue Monitored: cruiseoveride                    
+07-17-06 02:44 Raymond        Note Added: 0011032                          
+07-17-06 02:47 Raymond        Note Edited: 0011032                         
+07-17-06 03:18 Raymond        Note Edited: 0011032                         
+07-17-06 05:45 cruiseoveride  Note Added: 0011033                          
+07-17-06 05:46 cruiseoveride  Note Edited: 0011033                         
+07-17-06 07:31 Raymond        Note Added: 0011035                          
+07-17-06 08:23 Raymond        Note Added: 0011036                          
+07-17-06 08:26 Raymond        Note Edited: 0011036                         
+07-17-06 14:48 cruiseoveride  Note Added: 0011039                          
+07-17-06 14:59 cruiseoveride  Note Added: 0011040                          
+07-17-06 16:07 Raymond        Note Added: 0011042                          
+07-17-06 16:31 Raymond        Note Edited: 0011042                         
+07-17-06 16:40 cruiseoveride  Note Added: 0011044                          
+07-17-06 17:13 cruiseoveride  Note Added: 0011045                          
+07-17-06 17:34 Raymond        Note Added: 0011046                          
+07-17-06 17:56 cruiseoveride  Note Added: 0011047                          
+07-18-06 07:44 Raymond        Note Added: 0011053                          
+07-18-06 14:21 cruiseoveride  Note Added: 0011057                          
+07-18-06 14:35 Raymond        Note Added: 0011060                          
+07-19-06 02:52 cruiseoveride  Note Added: 0011075                          
+07-19-06 03:27 Raymond        Note Added: 0011076                          
+07-19-06 06:21 Raymond        Note Added: 0011080                          
+07-19-06 17:43 cruiseoveride  Note Added: 0011090                          
+07-19-06 17:50 cruiseoveride  File Added: chip.jpg                         
+07-20-06 04:22 Raymond        Note Added: 0011107                          
+07-20-06 05:01 Raymond        Note Edited: 0011107                         
+07-20-06 08:05 cruiseoveride  Note Added: 0011112                          
+07-20-06 08:19 Raymond        Note Added: 0011114                          
+07-20-06 08:22 Raymond        Note Edited: 0011114                         
+07-20-06 10:49 Raymond        Note Added: 0011116                          
+07-20-06 15:52 cruiseoveride  Note Added: 0011127                          
+07-20-06 16:09 Raymond        Note Added: 0011130                          
+07-20-06 16:12 Raymond        Note Added: 0011131                          
+07-20-06 16:35 cruiseoveride  Note Added: 0011132                          
+07-20-06 16:39 cruiseoveride  Note Edited: 0011132                         
+07-20-06 17:42 cruiseoveride  Note Added: 0011134                          
+07-20-06 17:49 Raymond        Note Added: 0011135                          
+07-20-06 17:55 Raymond        Note Edited: 0011135                         
+07-20-06 19:30 Raymond        Note Added: 0011136                          
+07-20-06 19:31 Raymond        Note Edited: 0011136                         
+07-21-06 01:16 cruiseoveride  Note Added: 0011138                          
+07-21-06 01:28 cruiseoveride  Note Added: 0011139                          
+07-21-06 01:45 cruiseoveride  Note Added: 0011140                          
+07-21-06 03:28 Raymond        Note Added: 0011141                          
+07-21-06 20:23 cruiseoveride  Note Added: 0011155                          
+07-22-06 02:13 Raymond        Note Added: 0011157                          
+07-22-06 02:42 Raymond        Note Edited: 0011157                         
+07-22-06 02:53 Raymond        Note Edited: 0011157                         
+07-22-06 03:00 cruiseoveride  Note Added: 0011161                          
+07-22-06 03:01 cruiseoveride  Note Edited: 0011161                         
+07-22-06 04:12 Raymond        Note Added: 0011164                          
+07-22-06 04:15 Raymond        Note Edited: 0011164                         
+07-23-06 04:05 Raymond        Note Added: 0011179                          
+07-23-06 06:26 cruiseoveride  Note Added: 0011181                          
+07-23-06 06:41 Raymond        Note Added: 0011182                          
+07-23-06 06:46 Raymond        Note Edited: 0011182                         
+07-23-06 06:47 Raymond        Note Edited: 0011182                         
+07-23-06 06:52 Raymond        Note Edited: 0011182                         
+07-23-06 06:55 Raymond        Note Edited: 0011182                         
+07-23-06 13:05 Raymond        Note Edited: 0011182                         
+07-23-06 13:11 Raymond        Note Edited: 0011182                         
+07-23-06 13:17 Raymond        Note Edited: 0011182                         
+07-23-06 13:23 Raymond        Note Edited: 0011182                         
+07-23-06 14:16 Raymond        Note Added: 0011187                          
+07-23-06 14:20 Raymond        Note Edited: 0011187                         
+07-23-06 15:24 Raymond        Note Edited: 0011187                         
+07-23-06 17:23 rlrevell       Note Added: 0011190                          
+07-23-06 17:39 Raymond        Note Added: 0011191                          
+07-23-06 17:42 Raymond        Note Edited: 0011191                         
+07-23-06 17:49 cruiseoveride  Note Added: 0011192                          
+07-23-06 17:57 cruiseoveride  Note Added: 0011193                          
+07-23-06 18:03 rlrevell       Note Added: 0011194                          
+07-23-06 18:27 cruiseoveride  Note Added: 0011195                          
+07-23-06 18:30 cruiseoveride  Note Edited: 0011195                         
+07-23-06 18:33 cruiseoveride  Note Edited: 0011195                         
+07-24-06 02:15 Raymond        Note Added: 0011206                          
+07-24-06 02:27 Raymond        Note Edited: 0011206                         
+07-24-06 02:28 Raymond        Note Edited: 0011206                         
+07-24-06 07:12 Raymond        Note Edited: 0011206                         
+07-24-06 07:48 Raymond        Note Edited: 0011206                         
+07-25-06 18:02 Raymond        Note Added: 0011230                          
+07-26-06 00:19 cruiseoveride  Note Added: 0011233                          
+07-26-06 01:20 Raymond        Note Added: 0011234                          
+07-26-06 01:27 Raymond        Note Edited: 0011234                         
+07-26-06 01:31 Raymond        Note Edited: 0011234                         
+07-26-06 01:33 Raymond        Note Edited: 0011234                         
+07-26-06 04:30 cruiseoveride  Note Added: 0011237                          
+07-26-06 04:39 cruiseoveride  File Added: 1724-envy24ht_nov2001.pdf             
+      
+07-26-06 04:41 cruiseoveride  Note Added: 0011238                          
+07-26-06 04:47 Raymond        Note Added: 0011239                          
+07-26-06 04:53 Raymond        Note Added: 0011240                          
+07-26-06 05:17 Raymond        Note Edited: 0011240                         
+07-26-06 06:22 Raymond        Note Added: 0011242                          
+07-26-06 07:46 Raymond        Note Added: 0011243                          
+07-26-06 07:55 Raymond        Note Edited: 0011243                         
+07-26-06 15:42 cruiseoveride  Note Added: 0011248                          
+07-26-06 23:59 cruiseoveride  Note Added: 0011251                          
+07-27-06 00:15 cruiseoveride  Note Added: 0011252                          
+07-27-06 00:50 cruiseoveride  Note Edited: 0011252                         
+07-27-06 00:54 cruiseoveride  Note Added: 0011253                          
+07-27-06 00:54 cruiseoveride  Note Edited: 0011253                         
+07-27-06 00:57 rlrevell       Note Added: 0011254                          
+07-27-06 01:00 cruiseoveride  Note Added: 0011255                          
+07-27-06 01:03 rlrevell       Note Added: 0011256                          
+07-27-06 04:43 Raymond        Note Added: 0011257                          
+07-27-06 04:51 Raymond        Note Edited: 0011257                         
+07-27-06 06:25 Raymond        Note Added: 0011258                          
+07-27-06 06:28 Raymond        Note Edited: 0011258                         
+07-27-06 06:29 Raymond        Note Edited: 0011258                         
+07-27-06 06:36 Raymond        Note Edited: 0011258                         
+07-27-06 06:38 cruiseoveride  Note Added: 0011259                          
+07-27-06 06:44 Raymond        Note Edited: 0011258                         
+07-27-06 07:15 rlrevell       Note Added: 0011260                          
+07-27-06 10:24 Raymond        Note Added: 0011264                          
+07-27-06 10:33 Raymond        Note Edited: 0011264                         
+07-27-06 10:43 Raymond        Note Edited: 0011264                         
+07-27-06 10:48 Raymond        Note Edited: 0011264                         
+07-27-06 11:45 Raymond        Note Edited: 0011264                         
+07-30-06 05:59 Raymond        Note Added: 0011315                          
+07-30-06 06:26 cruiseoveride  Note Added: 0011316                          
+08-01-06 01:26 rlrevell       Note Added: 0011356                          
+08-01-06 01:42 cruiseoveride  Note Added: 0011360                          
+08-01-06 01:49 rlrevell       Note Added: 0011361                          
+08-01-06 03:22 Raymond        Note Added: 0011365                          
+======================================================================
 
 
 
@@ -574,5 +226,4 @@ Date Modified  Username       Field                    Change              =
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
