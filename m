@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002001]: fast repeated calls to adjust
-	volume incrementally fail for multi channel control of SB Extigy
-Date: Tue, 1 Aug 2006 16:28:34 +0200
-Message-ID: <dbf31b4e7320af17c1e5b8d293883c16@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002321]: no audio and very few mixer
+	options with C-Media 106 based USB sound card
+Date: Tue, 1 Aug 2006 16:43:43 +0200
+Message-ID: <46f9a6dffb0cba6563bd554c8c3bc758@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9968183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B521118D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 16:28:34 +0200 (MEST)
+	Tue,  1 Aug 2006 16:43:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,85 +24,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2001> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2321> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                
+Reported By:                doobedoobedo
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2001
-Category:                   amixer
+Project:                    ALSA - driver
+Issue ID:                   2321
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.14/5
 ======================================================================
-Date Submitted:             04-05-2006 00:06 CEST
-Last Modified:              08-01-2006 16:28 CEST
+Date Submitted:             08-01-2006 16:43 CEST
+Last Modified:              08-01-2006 16:43 CEST
 ======================================================================
-Summary:                    fast repeated calls to adjust volume incrementally
-fail for multi channel control of SB Extigy
+Summary:                    no audio and very few mixer options with C-Media 106
+based USB sound card
 Description: 
-The SB Extigy has multiple channels which amixer reports as:
-Simple mixer control 'Master',0
+no audio output with the snd-usb-audio module
+
+amixer output:
+Simple mixer control 'PCM',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 4095
+  Front Left: Capture 2048 [50%] [on]
+  Front Right: Capture 2048 [50%] [on]
+Simple mixer control 'PCM Capture Source',0
+  Capabilities: enum
+  Items: 'Mic' 'Input 1' 'Input 2' 'Mixer'
+  Item0: 'Mic'
+Simple mixer control 'PCM',1
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 4095
+  Front Left: Capture 2048 [50%]
+  Front Right: Capture 2048 [50%]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume cvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 8191 Capture 0 - 4095
+  Front Left: Playback 2048 [25%] [off] Capture 2048 [50%]
+  Front Right: Playback 2048 [25%] [off] Capture 2048 [50%]
+Simple mixer control 'Auto Gain Control',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Speaker',0
   Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer
-  Limits: Playback 0 - 200
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 8191
   Mono:
-  Front Left: Playback 146 [73%] [on]
-  Front Right: Playback 146 [73%] [on]
-  Rear Left: Playback 146 [73%] [on]
-  Rear Right: Playback 146 [73%] [on]
-  Front Center: Playback 146 [73%] [on]
-  Woofer: Playback 146 [73%] [on]
+  Front Left: Playback 2048 [25%] [on]
+  Front Right: Playback 2048 [25%] [on]
+Simple mixer control 'Speaker',1
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 37
+  Mono: Playback 15 [41%] [on]
 
-repeated calls to amixer to incrementally adjust the volume make the
-volume "wobble". The volume stays at about the same value but goes
-slightly up and down on different speakers (can't quite pin down which
-ones, but the effect is noticeable).
-
-The effect can be easily reproduced:
-while ( true ); do amixer sset Master 2- & done;
-
-Note the &. It is necessary, since
-while ( true ); do amixer sset Master 2-; done;
-will work just fine, however even here a small quirk can be observed.
-I let the above loop run and observe the volume through alsamixer. Now I
-issue in another shell amixer sset Master 150. 
-
-The volume does get set to the desired value on all controls associated
-with master (all 6 channels). However, sometimes (often for the last
-speakers) the volume gets reset to a lower value than it used to be before
-I use amixer.
-Example:
-
-channel                1   2   3   4   5   6
----------------------------------------------
-values before control 100 100 100 100 100 100
-values set by amixer  150 150 150 150 150 150
-values for next step  148 148 148  98  98  98
-
-How many channels are affected is up to chance, but the higher ones 5+6
-have a higher chance of being subject to this issue so I guess it could be
-some race between the various amixer processes.
-
-Note that this behavior is fine if I use a mono volume control.
+speaker 0 and mic will only decrease in volume in alsamixer, although no
+sound is played trough the speakers at all.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 08-01-06 16:28 
-----------------------------------------------------------------------
-Would you post the content of test.state after 'alsactl store -f
-test.state' ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-06 00:06 andersin       New Issue                                    
-08-01-06 16:28 Raymond        Note Added: 0011375                          
+08-01-06 16:43 doobedoobedo   New Issue                                    
+08-01-06 16:43 doobedoobedo   Distribution              => Gentoo          
+08-01-06 16:43 doobedoobedo   Kernel Version            => 2.6.14/5        
 ======================================================================
 
 
