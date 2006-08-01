@@ -1,16 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002325]: M-Audio Revolution 5.1:
-	capture does not work
-Date: Wed, 2 Aug 2006 00:03:23 +0200
-Message-ID: <ce4e6eecd924e40bd86ffb6b7bf4a07c@bugtrack.alsa-project.org>
+From: John Rigg <ad@carbon-black.co.uk>
+Subject: Re: pcm_multi poll timeout error
+Date: Tue, 1 Aug 2006 23:58:15 +0100
+Message-ID: <20060801225815.GB2782@localhost.localdomain>
+References: <20051209171605.GA4132@localhost.localdomain>
+	<200512091755.jB9HtR5i008279@sith.maoz.com>
+	<20051209201502.GA3751@localhost.localdomain>
+	<s5h4q5ezh4e.wl%tiwai@suse.de> <1154397867.14540.5.camel@mindpipe>
+	<s5hmzao91nj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7A55175
-	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Aug 2006 00:03:23 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hmzao91nj.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,67 +22,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: John Rigg <ad@carbon-black.co.uk>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>, Jeremy Hall <jhall@maoz.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 01, 2006 at 12:43:44PM +0200, Takashi Iwai wrote:
+> It's an "undefined behavior".
+> I suppose that software-linked PCM streams do right thing, but we need
+> to investigate the detail.
+> 
+> John, could you check whether the problem still appears with the
+> latest ALSA HG version, especially with alsa-lib?  I remember that
+> some fixes have been done on multi plugin.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2325> 
-======================================================================
-Reported By:                voss
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2325
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-02-2006 00:03 CEST
-Last Modified:              08-02-2006 00:03 CEST
-======================================================================
-Summary:                    M-Audio Revolution 5.1: capture does not work
-Description: 
-Hello,
+Yes, I'll check it. Might be a few days before I get time though.
 
-it seems that capturing sound from the microphone input does not work. 
-This is on a M-Audio Revolution 5.1 (envy24GT/ice1722 audio-controller)
-sound card with ALSA 1.0.11rc4 as included in the stock Linux kernel
-version 2.6.17.6.
-
-The command "arecord -fcd x.wav" creates a file "x.wav" which consists
-(except for the header) only of null bytes.  I tried to play with the
-mixer controls using alsamixer, but this did not change anything.  In
-particular I tried to set each of the controls "H/W", "H/W 1", "H/W 2",
-"H/W 3", "H/W 4" and "H/W 5" to the values "H/W In 0" and "H/W In 1"
-respectively, but still no input.
-
-Playback works fine.
-
-At
-http://sourceforge.net/mailarchive/forum.php?thread_id=26463750&forum_id=1751
-somebody else had encountered the same problem.
-
-Every bit of information I could scrape together about the sound card can
-be found at http://seehuhn.de/comp/hardware/revolution .  Please let me
-know if you need more information or if I should try something else.
-
-I hope this helps,
-Jochen
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-06 00:03 voss           New Issue                                    
-======================================================================
-
-
+John
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
