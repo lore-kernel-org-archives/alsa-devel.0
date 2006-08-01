@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 20:58:04 +0200
-Message-ID: <f787f934ed423f3d6f765613382f2fd5@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 21:14:06 +0200
+Message-ID: <b7e16bf2ccd0c51c96c775aecfc42c0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5308C16C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F7CD183
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 20:58:04 +0200 (MEST)
+	Tue,  1 Aug 2006 21:14:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 20:58 CEST
+Last Modified:              08-01-2006 21:14 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,16 +73,25 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-01-06 01:32 
-----------------------------------------------------------------------
-The changes in that patch from Intervideo have already been applied to the
-current ALSA HG sources, please test it.
-
-----------------------------------------------------------------------
  pwaller - 08-01-06 20:58 
 ----------------------------------------------------------------------
 well, I tried the latest hg compile with no success. Mic works, sound does
 not. If I can provide anything useful please give me a shout.
+
+----------------------------------------------------------------------
+ rlrevell - 08-01-06 21:14 
+----------------------------------------------------------------------
+OK.
+
+pwaller:  So you could never get ALSA to work with the Intervideo patch
+either?  How can you tell the mic works if you have no sound output?
+
+vertex:  You were able to get sound with the Intervideo patch?  Do you get
+sound with the latest ALSA HG sources?
+
+It's possible that some changes from the Intervideo patch are still
+missing from HG repository.  Or maybe you have slightly different
+hardware.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +153,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-01-06 00:45 pwaller        Note Added: 0011355                          
 08-01-06 01:32 rlrevell       Note Added: 0011358                          
 08-01-06 20:58 pwaller        Note Added: 0011377                          
+08-01-06 21:14 rlrevell       Note Added: 0011378                          
 ======================================================================
 
 
