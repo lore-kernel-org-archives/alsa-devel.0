@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 21:28:48 +0200
-Message-ID: <3e75e7d5690df0c63435416134c027c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002323]: MythTV PCM control doesn't
+	change alsamixer PCM with intel-hda driver and NVidia hardware
+Date: Tue, 1 Aug 2006 21:29:32 +0200
+Message-ID: <8ac54135606f50e2040cfd206a67194c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 341F0153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35469153
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 21:28:49 +0200 (MEST)
+	Tue,  1 Aug 2006 21:29:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,128 +26,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2323> 
 ======================================================================
-Reported By:                vertex
+Reported By:                Mark Knecht
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
+Issue ID:                   2323
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Distribution:               Gentoo-2006.0 fully updated
+Kernel Version:             2.6.17-gentoo-r4
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 21:28 CEST
+Date Submitted:             08-01-2006 21:15 CEST
+Last Modified:              08-01-2006 21:29 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    MythTV PCM control doesn't change alsamixer PCM with
+intel-hda driver and NVidia hardware
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+MYthTV is a popular set of programs for viewing live and recorded TV on the
+Linux platform. I run it here on about 10 machines. After setting up a new
+NVidia-based machine with mythfrontend I found I could not control the
+volume with MYth's default settings. I have not seen this problem on any
+other machine here.
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+Looking at alsamixer for this machine I see 'PCM' and 'Front' as the main
+two controls. With MythTV in it's default setting (Mixer controls PCM)
+when I change volume in Myth the PCM level in alsamixer does not change
+it's level. This is clearly different than all my other machines.
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+When I changed the Myth setting to 'Mixer controls Master' I found that
+Myth changes the 'Front' setting in alsamixer and I am able to control the
+volume, so it works, but it works differently than all my other machines.
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
+Since MYth is working correctly with all my other machines and since it's
+only the intel-hda driver that seems to act differently I assume this is a
+low-level bug in the Intel-HDA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-01-06 21:26 
+ rlrevell - 08-01-06 21:29 
 ----------------------------------------------------------------------
-You did apply the Intervideo patch to ALSA 1.0.9b, and not a newer version,
-correct?
+"With MythTV in it's default setting (Mixer controls PCM) when I change
+volume in Myth the PCM level in alsamixer does not change it's level."
 
-----------------------------------------------------------------------
- pwaller - 08-01-06 21:28 
-----------------------------------------------------------------------
-Correct.
+Can you control the PCM volume using alsamixer directly?  If so it's a
+MythTV bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
-06-22-06 22:50 taschenorakel  File Added:
-alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
-06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
-06-26-06 16:38 rlrevell       Note Added: 0010548                          
-06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
-07-29-06 04:04 pwaller        Note Added: 0011296                          
-07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
-07-31-06 21:34 vertex         Note Added: 0011349                          
-08-01-06 00:45 pwaller        Note Added: 0011355                          
-08-01-06 01:32 rlrevell       Note Added: 0011358                          
-08-01-06 20:58 pwaller        Note Added: 0011377                          
-08-01-06 21:14 rlrevell       Note Added: 0011378                          
-08-01-06 21:17 pwaller        Note Added: 0011379                          
-08-01-06 21:24 pwaller        Note Added: 0011380                          
-08-01-06 21:26 rlrevell       Note Added: 0011381                          
-08-01-06 21:28 pwaller        Note Added: 0011382                          
+08-01-06 21:15 Mark Knecht    New Issue                                    
+08-01-06 21:15 Mark Knecht    Distribution              => Gentoo-2006.0 fully
+updated
+08-01-06 21:15 Mark Knecht    Kernel Version            => 2.6.17-gentoo-r4
+08-01-06 21:29 rlrevell       Note Added: 0011383                          
 ======================================================================
 
 
