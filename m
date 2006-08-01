@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Tue, 1 Aug 2006 06:39:42 +0200
-Message-ID: <fe0a654b0e9d50c83dff501cf4bfba68@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001869]: Playing surround sound
+	produces 100% CPU load
+Date: Tue, 1 Aug 2006 08:15:57 +0200
+Message-ID: <3696c92f038f438e9e2c9162d820f49b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DFEA12A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B2B718E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 06:39:43 +0200 (MEST)
+	Tue,  1 Aug 2006 08:15:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,174 +26,124 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                bitmage2
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
+Issue ID:                   1869
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               SuSE Linux 10.0
+Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
+2006 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              08-01-2006 06:39 CEST
+Date Submitted:             02-23-2006 00:48 CET
+Last Modified:              08-01-2006 08:15 CEST
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    Playing surround sound produces 100% CPU load
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
+stereo without problems.
+I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
+speaker-test program. Running it without parameters or with 2 or 4.0
+channels works also fine. So far so good.
+
+But when I run it with 5.0 channels or 5.1 channels the CPU load of
+speaker-test goes to 100%. I'll show the output of top along with the
+command lines below (for the 2.0 and 5.1 case) in the "Additional
+Information" box.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-01-06 03:52 
+ Raymond - 08-01-06 04:15 
 ----------------------------------------------------------------------
->> No, the 'DAC Playback Volume' only works on Front (aka Master) and Rear.
-It does not have any effect on Center and LFE.
+Are there any reason which prevent you to upgrade to ALSA 1.0.12rc1 ?
 
-It is because only the list of master_mix_scb and rear_mix_scb were
-changed in cs46xx_dsp_set_dac_volume 
+In kernel 2.4, I can easily switch between different version of ALSA from
+1.0.2 to 1.0.12rc1.
 
-	/* main output */
-	scb = ins->master_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
+you have to ask the ALSA developer how to switch between stable and
+development version of ALSA in kernel 2.6
 
-	/* rear output */
-	scb = ins->rear_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
+The only way to find out the maximum number of instances of "surround41" ,
+"surround51" and "surround71" is to open pcm, set_channels and other
+parameter and call snd_pcm_hw_params() until snd_pcm_open() or
+snd_pcm_hw_params() fail
+
+You may try set_params_test4.c and post the result in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724 if cs46xx
+can use the new function snd_pcm_set_params().
 
 ----------------------------------------------------------------------
- Raymond - 08-01-06 06:39 
+ Raymond - 08-01-06 08:15 
 ----------------------------------------------------------------------
-In theory, you should able to run 31 instances of 'speaker-test -c 2 -t
-wav' concurrently , the 32th instances will be blocked on cs46xx
+>> -----
+>> Unable to set hw params for playback: No such device or address
+>> Setting of hwparams failed: No such device or address
+>> -----
 
-If you specify different rate in 'speaker-test -c 2 -r 8000 -t sine', the
-driver  only allow to play DSP_MAX_SRC_NR instances different rates.
+This is the normal behaviour of ALSA application for sound card with
+mutilple subdevices since snd_pcm_hw_params() fail.
 
-  if (ins->nsrc_scb >= DSP_MAX_SRC_NR) {
-         snd_printk(KERN_ERR "dsp_spos: to many SRC instances\n!"); 
+If you run 10 instances of 'speaker-test -Dsurround51 -c 6 -t wav'
+concurrently, run another instance of 'speaker-test -c 2 -t wav'.
 
+All 31 pcm_channels of cs46xx should be used up by now. 
 
->> For testing I tried to play back more than 32 channels via speaker-test
-. I did >>this for checking whether channels 33 and above would go on the
-second AC97. But ...
->> 1) The channels above 32 just produce nonsense sounds (short, looping
-sounds)
->> 2) The volume of the nonsense soundss could not be controlled (not by
-KMix, and >> also not by alsamixer)
-
-No, running speaker-test -c N with N > 2 on default device 'plughw' of
-cs46xx is the side effect of 'plug' plugin in CS46xx.conf
-
-Try open different device "default", "hw:0", "plughw:0" , "surround40" and
-"surround51"
-
-    snd_pcm_t *pcm;
-    snd_pcm_hw_params_t *hwparams;
-    int channel_max;
-    if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
-     	printf("Cannot open pcm.\n");
-    else {
-       	snd_pcm_hw_params_alloca(&hwparams);
-       	snd_pcm_hw_params_any(pcm, hwparams);
-	snd_pcm_hw_params_get_channels_max(hwparams, &channel_max);
-        printf("max channels = %d\n",channel_max);
-        snd_pcm_close(pcm);
-   };
+What happen if you run an OSS application (e.g. mplayer -ao oss
+stereo.wav') ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
-02-21-06 07:56 Raymond        Note Added: 0008152                          
-03-27-06 04:42 Raymond        Note Added: 0008987                          
-06-02-06 09:33 Raymond        Note Deleted: 0008152                        
-06-02-06 09:33 Raymond        Note Deleted: 0008987                        
-06-02-06 09:34 Raymond        Note Deleted: 0008076                        
-07-11-06 13:28 Raymond        Note Added: 0010970                          
-07-24-06 21:21 bitmage2       Note Added: 0011215                          
-07-24-06 21:25 bitmage2       Note Added: 0011216                          
-07-25-06 02:41 Raymond        Note Added: 0011222                          
-07-25-06 05:47 Raymond        Note Edited: 0011222                         
-07-25-06 10:18 darkbrain      Note Added: 0011224                          
-07-25-06 16:03 Raymond        Note Added: 0011228                          
-07-25-06 20:29 bitmage2       Note Added: 0011231                          
-07-26-06 02:21 Raymond        Note Added: 0011236                          
-07-26-06 02:26 Raymond        Note Edited: 0011236                         
-07-26-06 02:30 Raymond        Note Edited: 0011236                         
-07-26-06 08:34 bitmage2       Note Added: 0011244                          
-07-26-06 09:45 Raymond        Note Added: 0011246                          
-07-26-06 09:51 Raymond        Note Edited: 0011246                         
-07-26-06 09:56 Raymond        Note Edited: 0011246                         
-07-26-06 10:04 Raymond        Note Edited: 0011246                         
-07-26-06 10:08 Raymond        Note Edited: 0011246                         
-07-26-06 10:14 Raymond        Note Edited: 0011246                         
-07-26-06 16:26 Raymond        Note Added: 0011249                          
-07-26-06 16:28 Raymond        Note Edited: 0011249                         
-07-26-06 16:31 Raymond        Note Edited: 0011249                         
-07-28-06 05:03 Raymond        Note Added: 0011282                          
-07-28-06 10:25 Raymond        Note Edited: 0011282                         
-07-29-06 05:13 Raymond        Note Added: 0011298                          
-07-29-06 09:06 Raymond        Note Deleted: 0011298                        
-07-29-06 12:20 bitmage2       Note Added: 0011299                          
-07-29-06 12:23 bitmage2       Note Added: 0011300                          
-07-29-06 14:02 Raymond        Note Added: 0011302                          
-07-29-06 14:12 Raymond        Note Added: 0011303                          
-07-29-06 14:50 bitmage2       Note Added: 0011304                          
-07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
-    
-07-29-06 15:01 bitmage2       Note Added: 0011305                          
-07-29-06 15:03 bitmage2       File Added: test.state                       
-07-29-06 17:23 Raymond        Note Added: 0011309                          
-07-29-06 22:44 bitmage2       Note Added: 0011311                          
-07-30-06 03:26 Raymond        Note Added: 0011313                          
-07-30-06 03:33 Raymond        Note Added: 0011314                          
-07-30-06 03:39 Raymond        Note Edited: 0011314                         
-07-30-06 03:41 Raymond        Note Edited: 0011314                         
-07-30-06 11:52 darkbrain      Note Added: 0011317                          
-07-31-06 05:39 Raymond        Note Added: 0011336                          
-07-31-06 05:40 Raymond        Note Edited: 0011336                         
-07-31-06 05:43 Raymond        Note Edited: 0011336                         
-07-31-06 05:45 Raymond        Note Edited: 0011336                         
-07-31-06 05:47 Raymond        Note Edited: 0011336                         
-07-31-06 06:36 Raymond        Note Edited: 0011336                         
-07-31-06 08:40 Raymond        Note Edited: 0011336                         
-07-31-06 09:51 Raymond        Note Edited: 0011336                         
-07-31-06 09:56 Raymond        Note Edited: 0011336                         
-07-31-06 09:59 Raymond        Note Edited: 0011336                         
-07-31-06 10:06 Raymond        Note Edited: 0011336                         
-07-31-06 10:11 Raymond        Note Edited: 0011336                         
-07-31-06 22:42 bitmage2       Note Added: 0011350                          
-07-31-06 22:52 bitmage2       Note Added: 0011352                          
-08-01-06 02:48 Raymond        Note Added: 0011363                          
-08-01-06 02:53 Raymond        Note Edited: 0011363                         
-08-01-06 03:52 Raymond        Note Added: 0011366                          
-08-01-06 06:39 Raymond        Note Added: 0011370                          
+02-23-06 00:48 bitmage2       New Issue                                    
+02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
+02-23-06 00:48 bitmage2       Kernel Version            => Linux
+2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
+02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 00:55 bitmage2       Issue Monitored: bitmage2                    
+07-11-06 05:58 Raymond        Note Added: 0010964                          
+07-14-06 20:57 bitmage2       Note Added: 0011004                          
+07-14-06 20:59 bitmage2       Note Added: 0011005                          
+07-14-06 21:25 rlrevell       Note Added: 0011006                          
+07-14-06 22:40 bitmage2       Note Added: 0011008                          
+07-14-06 22:57 rlrevell       Note Added: 0011009                          
+07-15-06 01:28 bitmage2       Note Added: 0011013                          
+07-15-06 01:45 rlrevell       Note Added: 0011014                          
+07-15-06 05:09 Raymond        Note Added: 0011017                          
+07-15-06 07:17 Raymond        Note Edited: 0011017                         
+07-23-06 11:34 bitmage2       Note Added: 0011183                          
+07-23-06 13:49 Raymond        Note Added: 0011185                          
+07-23-06 14:14 Raymond        Note Added: 0011186                          
+07-23-06 14:16 Raymond        Note Deleted: 0011186                        
+07-23-06 15:04 bitmage2       Note Added: 0011189                          
+07-24-06 04:19 Raymond        Note Added: 0011209                          
+07-24-06 05:04 Raymond        Note Edited: 0011209                         
+07-24-06 20:38 bitmage2       Note Added: 0011214                          
+07-25-06 03:00 Raymond        Note Added: 0011223                          
+07-25-06 03:03 Raymond        Note Edited: 0011223                         
+07-25-06 03:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:05 Raymond        Note Edited: 0011223                         
+07-25-06 10:13 Raymond        Note Edited: 0011223                         
+07-25-06 21:53 bitmage2       Note Added: 0011232                          
+07-26-06 02:03 Raymond        Note Added: 0011235                          
+07-26-06 02:09 Raymond        Note Edited: 0011235                         
+07-26-06 08:41 bitmage2       Note Added: 0011245                          
+07-26-06 10:27 Raymond        Note Added: 0011247                          
+07-29-06 03:01 Raymond        Note Added: 0011295                          
+07-30-06 03:06 Raymond        Note Added: 0011312                          
+07-31-06 23:16 bitmage2       Note Added: 0011353                          
+08-01-06 02:40 Raymond        Note Added: 0011362                          
+08-01-06 04:15 Raymond        Note Added: 0011368                          
+08-01-06 08:15 Raymond        Note Added: 0011371                          
 ======================================================================
 
 
