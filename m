@@ -1,13 +1,16 @@
-From: Cruise X Overide <cruiseoveride@gmail.com>
-Subject: Re: GPIO on envy24ht M-Audio 192
-Date: Tue, 01 Aug 2006 13:45:36 -0400
-Message-ID: <1154454336.3383.8.camel@server>
-References: <1154390773.1991.1.camel@server>  <s5hd5bkbfrw.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0002322]: Alsa Sound Card Matrix
+	does not list the NVidia HDA driver
+Date: Tue, 1 Aug 2006 20:02:49 +0200
+Message-ID: <bfd7e2281817940420a0cf3380ef8eca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hd5bkbfrw.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50D10153
+	for <alsa-devel@alsa-project.org>;
+	Tue,  1 Aug 2006 20:02:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,45 +20,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-08-01 at 18:08 +0200, Takashi Iwai wrote:
-> At Mon, 31 Jul 2006 20:06:13 -0400,
-> Cruise X Overide wrote:
-> > 
-> > Ok, i got the wiring between between the vt1724 and the 3 dacs (AKMs)
-> > how do i code this into the driver, 
-> > is there any example, i looked at juli.c and i couldnt understand the 
-> > 
-> > /* GPIO Pins */
-> > 
-> > i was told that i only need to implement add_controls and init for this
-> > card?
-> 
-> There are different implementations with vt1724.
-> revo.c, aureon.c, pontis.c, prodigy192.c and phase.c are vt1724-based
-> boards using I2S transfer.  vt1720_mobo.c is for vt1724 with
-> ac97-codec.
-> 
-> The GPIO is usually controlled via snd_ice1712_gpio_write_bits() and
-> snd_ice1712_gpio_read().  See ice1712.h.
-> 
-> For AK codecs, there are some helper functions.  See
-> snd_ak4xxx_private in ice1712.h, too.
-> 
-> 
-> Takashi
 
-after looking at the juli.c, raymond has explained to me the meaning of
-the values under the /* GPIO Pins */
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2322> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   2322
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-01-2006 20:02 CEST
+Last Modified:              08-01-2006 20:02 CEST
+======================================================================
+Summary:                    Alsa Sound Card Matrix does not list the NVidia HDA
+driver
+Description: 
+Alsa Sound Card Matrix does not list the NVidia HDA driver. I had to get
+info from one of the mailing lists to discover it uses the Intel HDA
+driver.
+======================================================================
 
-
-#define GPIO_ANAIN_MONITOR      (1<<13) 
-
-i wanted to know wat the 13 means, and ray said it was the gpio pin.
-where do i find a table of gpio description (eg. AMAIN_MONITOR) and
-available definitions on the vt1724.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-01-06 20:02 Mark Knecht    New Issue                                    
+======================================================================
 
 
 
