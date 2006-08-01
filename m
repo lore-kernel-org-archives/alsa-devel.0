@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Tue, 1 Aug 2006 21:17:36 +0200
-Message-ID: <84c039514914a702a33e3d34160a90f2@bugtrack.alsa-project.org>
+Date: Tue, 1 Aug 2006 21:24:59 +0200
+Message-ID: <1c9e6c8ec0c8baffcf6cea09230b3588@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B44B3183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FAD8153
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 21:17:36 +0200 (MEST)
+	Tue,  1 Aug 2006 21:24:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-01-2006 21:17 CEST
+Last Modified:              08-01-2006 21:24 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,21 +73,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-01-06 21:14 
-----------------------------------------------------------------------
-OK.
-
-pwaller:  So you could never get ALSA to work with the Intervideo patch
-either?  How can you tell the mic works if you have no sound output?
-
-vertex:  You were able to get sound with the Intervideo patch?  Do you get
-sound with the latest ALSA HG sources?
-
-It's possible that some changes from the Intervideo patch are still
-missing from HG repository.  Or maybe you have slightly different
-hardware.
-
-----------------------------------------------------------------------
  pwaller - 08-01-06 21:17 
 ----------------------------------------------------------------------
 I can tell because if I use audacity and record and tap the microphone I
@@ -101,6 +86,28 @@ I'm running 2.6 and have spent many hours fiddling with it.
 
 I have just had a thought though. Maybe I could run a livecd on the 2.4
 kernel and try that patched kernel. I'll try that and update people.
+
+- Peter
+
+----------------------------------------------------------------------
+ pwaller - 08-01-06 21:24 
+----------------------------------------------------------------------
+Wow, my last post made suprisingly little sense, even to me.
+
+After some thought, I really don't want to mess around with a 2.4 kernel
+unless there is some easy way I can do it.
+
+When I start up a livecd, it's just going to use whatever sound drivers
+the livecd likes, yeah?
+
+Then if I compile that old patched thing, I won't be able to modprobe the
+patched version because the snd will already be loading. And since it's a
+livecd I can't restart and have it used the compiled module either.
+
+Is there an easy way of doing this without installing a 2.4 kernel on my
+machine? I really don't want to have to partition and crud, I've wasted so
+much time on this computer already and I've got everything working apart
+from this sound.
 
 - Peter
 
@@ -166,6 +173,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-01-06 20:58 pwaller        Note Added: 0011377                          
 08-01-06 21:14 rlrevell       Note Added: 0011378                          
 08-01-06 21:17 pwaller        Note Added: 0011379                          
+08-01-06 21:24 pwaller        Note Added: 0011380                          
 ======================================================================
 
 
