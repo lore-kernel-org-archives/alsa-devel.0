@@ -1,15 +1,16 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: snd_ctl_open and snd_rawmidi_open conflict
-Date: Wed, 2 Aug 2006 00:38:17 +0400
-Message-ID: <70a871c80608011338n3b086594t82c6851215fe9221@mail.gmail.com>
-References: <70a871c80607301752w16c1c014v40f574d17603f08d@mail.gmail.com>
-	<20060801101841.GA4775@ifiu1.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002325]: M-Audio Revolution 5.1:
+	capture does not work
+Date: Wed, 2 Aug 2006 00:03:23 +0200
+Message-ID: <ce4e6eecd924e40bd86ffb6b7bf4a07c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060801101841.GA4775@ifiu1.informatik.uni-halle.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7A55175
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Aug 2006 00:03:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,19 +20,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/1/06, Clemens Ladisch <clemens@ladisch.de> wrote:
-> The sequencer broadcasts notifications from the announce port when
-> sequencer clients/ports are created or destroyed.  (You don't need to
-> use the sequencer for your actual MIDI stuff.)
 
-How can I get notifications about rawmidi ports?
-Or I should rescan devices on every seq notification?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2325> 
+======================================================================
+Reported By:                voss
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2325
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-02-2006 00:03 CEST
+Last Modified:              08-02-2006 00:03 CEST
+======================================================================
+Summary:                    M-Audio Revolution 5.1: capture does not work
+Description: 
+Hello,
 
-Dmitry.
+it seems that capturing sound from the microphone input does not work. 
+This is on a M-Audio Revolution 5.1 (envy24GT/ice1722 audio-controller)
+sound card with ALSA 1.0.11rc4 as included in the stock Linux kernel
+version 2.6.17.6.
+
+The command "arecord -fcd x.wav" creates a file "x.wav" which consists
+(except for the header) only of null bytes.  I tried to play with the
+mixer controls using alsamixer, but this did not change anything.  In
+particular I tried to set each of the controls "H/W", "H/W 1", "H/W 2",
+"H/W 3", "H/W 4" and "H/W 5" to the values "H/W In 0" and "H/W In 1"
+respectively, but still no input.
+
+Playback works fine.
+
+At
+http://sourceforge.net/mailarchive/forum.php?thread_id=26463750&forum_id=1751
+somebody else had encountered the same problem.
+
+Every bit of information I could scrape together about the sound card can
+be found at http://seehuhn.de/comp/hardware/revolution .  Please let me
+know if you need more information or if I should try something else.
+
+I hope this helps,
+Jochen
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-02-06 00:03 voss           New Issue                                    
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
