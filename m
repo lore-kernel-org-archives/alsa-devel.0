@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001737]: The field ipc_gid must be a
-	valid group (create group audio)
-Date: Tue, 1 Aug 2006 15:53:55 +0200
-Message-ID: <e44ddda94f9450b5164ebc7bbe90a07e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002001]: fast repeated calls to adjust
+	volume incrementally fail for multi channel control of SB Extigy
+Date: Tue, 1 Aug 2006 16:28:34 +0200
+Message-ID: <dbf31b4e7320af17c1e5b8d293883c16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BD2214F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9968183
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Aug 2006 15:53:55 +0200 (MEST)
+	Tue,  1 Aug 2006 16:28:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,104 +24,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1737> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2001> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                andersin
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1737
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   2001
+Category:                   amixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-11-2006 12:12 CET
-Last Modified:              08-01-2006 15:53 CEST
+Date Submitted:             04-05-2006 00:06 CEST
+Last Modified:              08-01-2006 16:28 CEST
 ======================================================================
-Summary:                    The field ipc_gid must be a valid group (create
-group audio)
+Summary:                    fast repeated calls to adjust volume incrementally
+fail for multi channel control of SB Extigy
 Description: 
-/etc/group is not exist in Fedora Core 1
+The SB Extigy has multiple channels which amixer reports as:
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
+Front Center - Woofer
+  Limits: Playback 0 - 200
+  Mono:
+  Front Left: Playback 146 [73%] [on]
+  Front Right: Playback 146 [73%] [on]
+  Rear Left: Playback 146 [73%] [on]
+  Rear Right: Playback 146 [73%] [on]
+  Front Center: Playback 146 [73%] [on]
+  Woofer: Playback 146 [73%] [on]
 
-if alsa developer recommend application to use "default", the "default"
-device should work in all platform including Fedore Core 1.
+repeated calls to amixer to incrementally adjust the volume make the
+volume "wobble". The volume stays at about the same value but goes
+slightly up and down on different speakers (can't quite pin down which
+ones, but the effect is noticeable).
 
+The effect can be easily reproduced:
+while ( true ); do amixer sset Master 2- & done;
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1617
+Note the &. It is necessary, since
+while ( true ); do amixer sset Master 2-; done;
+will work just fine, however even here a small quirk can be observed.
+I let the above loop run and observe the volume through alsamixer. Now I
+issue in another shell amixer sset Master 150. 
 
-intel8x0 as card 0
+The volume does get set to the desired value on all controls associated
+with master (all 6 channels). However, sometimes (often for the last
+speakers) the volume gets reset to a lower value than it used to be before
+I use amixer.
+Example:
 
+channel                1   2   3   4   5   6
+---------------------------------------------
+values before control 100 100 100 100 100 100
+values set by amixer  150 150 150 150 150 150
+values for next step  148 148 148  98  98  98
 
-speaker-test -c 2
- 
-speaker-test 1.0.11rc2
- 
-Playback device is default
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
-valid group (create group audio)
-Playback open error: -22,Invalid argument
-ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
-valid group (create group audio)
-Playback open error: -22,Invalid argument
+How many channels are affected is up to chance, but the higher ones 5+6
+have a higher chance of being subject to this issue so I guess it could be
+some race between the various amixer processes.
 
- 
-speaker-test -c 2 -D plughw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 8 to 16384
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 16384
-To choose period_size = 4096
-was set period_size = 4096
-was set buffer_size = 16384
- 0 - Front Left
- 1 - Front Right
-Time per period = 5.633373
- 0 - Front Left
-
- aplay test.wav
-ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
-valid group (create group audio)
-aplay: main:547: audio open error: Invalid argument
-
- aplay -D plughw:0,0 test.wav
-Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
-Stereo
-
-
-
-
-
-
+Note that this behavior is fine if I use a mono volume control.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-01-06 14:05 
+ Raymond - 08-01-06 16:28 
 ----------------------------------------------------------------------
-Please close this bug report as I had solved the problem
+Would you post the content of test.state after 'alsactl store -f
+test.state' ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 12:12 Raymond        New Issue                                    
-08-01-06 14:05 Raymond        Note Added: 0011374                          
-08-01-06 15:53 Adrian Bunk    Status                   new => closed       
-08-01-06 15:53 Adrian Bunk    Resolution               open => fixed       
+04-05-06 00:06 andersin       New Issue                                    
+08-01-06 16:28 Raymond        Note Added: 0011375                          
 ======================================================================
 
 
