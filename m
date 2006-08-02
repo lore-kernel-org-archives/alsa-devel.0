@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002234]: ISA sscape driver does not
 	find Soundscape Elite
-Date: Thu, 3 Aug 2006 00:47:42 +0200
-Message-ID: <c34f882da441213955970fc5a4e27104@bugtrack.alsa-project.org>
+Date: Thu, 3 Aug 2006 01:40:32 +0200
+Message-ID: <897d180c52115aa50bf5b28de70861d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5278121E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBBD6225
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 00:47:42 +0200 (MEST)
+	Thu,  3 Aug 2006 01:40:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.17.1
 ======================================================================
 Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              08-03-2006 00:47 CEST
+Last Modified:              08-03-2006 01:40 CEST
 ======================================================================
 Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
@@ -51,24 +51,23 @@ the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- tjallen - 07-31-06 16:59 
-----------------------------------------------------------------------
-The modified driver reports:
-
- Enter snd_sscape_probe
- Enter detect_GA
- - fail step 1
- Exit detect_GA
- Enter detect_pnp
- Exit detect_pnp
- Exit detect_sscape
-sscape: hardware not detected at 0x534
-
-----------------------------------------------------------------------
  rankincj - 08-03-06 00:47 
 ----------------------------------------------------------------------
 Can you try passing 0x330 as the IO parameter instead, please? I think
 that's the significant address (for detection).
+
+----------------------------------------------------------------------
+ tjallen - 08-03-06 01:40 
+----------------------------------------------------------------------
+Progress, perhaps.  I changed the port=0x330 in modules.conf 
+and in modprobe.conf and got the following messages:
+
+ Enter snd_sscape_probe
+ Enter detect_GA
+ Exit detect_GA
+ Exit detect_sscape
+sscape: GA hardware detected at 0x330, using IRQ 5, DMA 0
+sscape: No AD1845 device at 0x338, IRQ 5
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +98,7 @@ Date Modified  Username       Field                    Change
 07-30-06 23:17 rankincj       Note Added: 0011332                          
 07-31-06 16:59 tjallen        Note Added: 0011343                          
 08-03-06 00:47 rankincj       Note Added: 0011391                          
+08-03-06 01:40 tjallen        Note Added: 0011392                          
 ======================================================================
 
 
