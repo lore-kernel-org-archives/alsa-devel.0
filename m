@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: GPIO on envy24ht M-Audio 192
-Date: Wed, 02 Aug 2006 13:45:02 -0400
-Message-ID: <1154540702.28412.2.camel@mindpipe>
-References: <1154390773.1991.1.camel@server> <s5hd5bkbfrw.wl%tiwai@suse.de>
-	<1154454336.3383.8.camel@server> <s5hvepbhzhx.wl%tiwai@suse.de>
-	<1154536420.7149.2.camel@server> <s5hslkfhypo.wl%tiwai@suse.de>
-	<1154539779.7149.7.camel@server>  <s5hk65rhwam.wl%tiwai@suse.de>
+From: Krivenok Dmitry <_asr_@inbox.ru>
+Subject: Re: =?koi8-r?b?VmlydHVhbCBzb3VuZCBjYXJk?=
+Date: Wed, 02 Aug 2006 21:57:52 +0400
+Message-ID: <E1G8Kye-0007Tx-00._asr_-inbox-ru@f12.mail.ru>
+References: <s5hlkq7hwd1.wl%tiwai=40suse.de>
+Reply-To: Krivenok Dmitry <_asr_@inbox.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk65rhwam.wl%tiwai@suse.de>
+In-Reply-To: =?koi8-r?Q?<s5hlkq7hwd1.wl%tiwai=40suse.de>?=
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,18 +19,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Cruise X Overide <cruiseoveride@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-08-02 at 19:39 +0200, Takashi Iwai wrote:
-> > now wat
+
+
+-----Original Message-----
+From: Takashi Iwai <tiwai@suse.de>
+To: Krivenok Dmitry <_asr_@inbox.ru>
+Date: Wed, 02 Aug 2006 19:37:46 +0200
+Subject: Re: Re[2]: [Alsa-devel] Virtual sound card
+
 > 
-> Wat? 
+> At Wed, 02 Aug 2006 21:31:18 +0400,
+> Krivenok Dmitry wrote:
+> > 
+> > 
+> > 
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > To: Krivenok Dmitry <_asr_@inbox.ru>
+> > Date: Wed, 02 Aug 2006 18:26:52 +0200
+> > Subject: Re: [Alsa-devel] Virtual sound card
+> > 
+> > > 
+> > > At Wed, 02 Aug 2006 16:16:03 +0400,
+> > > Krivenok Dmitry wrote:
+> > > > 
+> > > > Hello All!
+> > > >  
+> > > > What is the simplest way to implement virtual sound card?
+> > > > Special kernel module, which represents virtual device driver? Special plugin? 
+> > > > Or something else?
+> > > 
+> > > How about JACK?
+> > > 
+> > > We have already some alsa-lib plugins, such as file plugin.
+> > > You can record a PCM stream to a file while using another real
+> > > device.
+> > > 
+> > 
+> > Yes, I know about file plugin. 
+> > It works fine with commands like this:
+> > aplay -D file myfile.wav
+> > 
+> > Unfortunately, I don't know how to use it with Skype (new version, which supports ALSA).
+> > Skype supports real cards (e.g. my VIA8233) and virtual cards (e.g. dummy), i.e.
+> > devices with ALSA interface.
+> > But "file" isn't ALSA-device.
+> 
+> So, skype checks only the devices of kernel drivers?  And no way to
+> edit it manually?
+> 
+> Sigh, we really have to provide a good API for the device
+> enumeration.
+> 
+> > How to combine file plugin with alsa-device? Is it possible at all?
+> 
+> It's hackish but possible.  You can override "hw" and/or "plughw"
+> definition as you like, such as
+> 
+> pcm.!hw {
+> 	type file
+> 	slave.pcm {
+> 		type hw
+> 		card 0
+> 	}
+> 	file "foo.out"
+> }
+> 
 
-I think he means "Now what?"
+This is my asoundrc:
 
-Lee
+krivenok-home linux # cat ~/.asoundrc
+pcm.!hw {
+        type file
+        slave.pcm {
+                        type hw
+                        card 0
+        }
+        file "foo.out"
+}
 
+Attempt to play the file:
+
+krivenok-home linux # aplay /tmp/pcm.raw
+ALSA lib confmisc.c:670:(snd_func_card_driver) cannot find card '0'
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_card_driver returned error: No such device
+ALSA lib confmisc.c:391:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_concat returned error: No such device
+ALSA lib confmisc.c:1070:(snd_func_refer) error evaluating name
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer returned error: No such device
+ALSA lib conf.c:3947:(snd_config_expand) Evaluate error: No such device
+ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
+aplay: main:547: audio open error: No such device
+
+What is wrong?
+
+P.S.
+Sorry, if my questions are stupid.
+I am new here :) 
+
+> 
+> Takashi
+> 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
