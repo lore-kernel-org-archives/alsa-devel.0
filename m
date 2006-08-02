@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001909]: Labelling of controls for SB
-	Extigy is confusing
-Date: Wed, 2 Aug 2006 14:31:35 +0200
-Message-ID: <2c34b21d7a2b6eca2c3cfdd1029f475f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002326]: SB Audigy LS - Only Hear
+	Static
+Date: Wed, 2 Aug 2006 15:56:55 +0200
+Message-ID: <ea20b5ef76124998c75250ae5d8029ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCFFF1AC
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BEB4177
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Aug 2006 14:31:35 +0200 (MEST)
+	Wed,  2 Aug 2006 15:56:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,351 +24,156 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2326> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                
+Reported By:                derekwisong
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1909
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2326
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-1-486
 ======================================================================
-Date Submitted:             03-11-2006 16:33 CET
-Last Modified:              08-02-2006 14:31 CEST
+Date Submitted:             08-02-2006 15:56 CEST
+Last Modified:              08-02-2006 15:56 CEST
 ======================================================================
-Summary:                    Labelling of controls for SB Extigy is confusing
+Summary:                    SB Audigy LS - Only Hear Static
 Description: 
-The controls for the SB Extigy are all labelled as Master. The names should
-reflect the channel(s) that they control. Amixer shows this information
-(albeit its mapping of controls to actual channels is off).
-Additionally a Master 1 control exists that changes the volume of all
-channels.
+I only hear static when trying to play sounds with my SB Audigy LS. Here is
+my lspci and lsmod.
+
+-------------------- lspci ----------------------
+
+00:00.0 Host bridge: nVidia Corporation nForce2 AGP (different version?)
+(rev c1            )
+00:00.1 RAM memory: nVidia Corporation nForce2 Memory Controller 0 (rev
+c1)
+00:00.2 RAM memory: nVidia Corporation nForce2 Memory Controller 4 (rev
+c1)
+00:00.3 RAM memory: nVidia Corporation nForce2 Memory Controller 3 (rev
+c1)
+00:00.4 RAM memory: nVidia Corporation nForce2 Memory Controller 2 (rev
+c1)
+00:00.5 RAM memory: nVidia Corporation nForce2 Memory Controller 5 (rev
+c1)
+00:01.0 ISA bridge: nVidia Corporation nForce2 ISA Bridge (rev a4)
+00:01.1 SMBus: nVidia Corporation nForce2 SMBus (MCP) (rev a2)
+00:02.0 USB Controller: nVidia Corporation nForce2 USB Controller (rev
+a4)
+00:02.1 USB Controller: nVidia Corporation nForce2 USB Controller (rev
+a4)
+00:02.2 USB Controller: nVidia Corporation nForce2 USB Controller (rev
+a4)
+00:04.0 Ethernet controller: nVidia Corporation nForce2 Ethernet
+Controller (rev             a1)
+00:08.0 PCI bridge: nVidia Corporation nForce2 External PCI Bridge (rev
+a3)
+00:09.0 IDE interface: nVidia Corporation nForce2 IDE (rev a2)
+00:1e.0 PCI bridge: nVidia Corporation nForce2 AGP (rev c1)
+01:07.0 VGA compatible controller: nVidia Corporation NV18 [GeForce4 MX
+4000 AGP             8x] (rev c1)
+01:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+01:0a.0 PCI bridge: Hint Corp HB6 Universal PCI-PCI bridge
+(non-transparent mode            ) (rev 11)
+02:08.0 Multimedia video controller: Internext Compression Inc iTVC16
+(CX23416)             MPEG-2 Encoder (rev 01)
+02:09.0 Multimedia video controller: Internext Compression Inc iTVC16
+(CX23416)             MPEG-2 Encoder (rev 01) 
+
+------------------ lsmod --------------------
+
+Module                  Size  Used by
+nvidia               4546132  12
+ipv6                  222336  10
+nfsd                  207236  13
+lockd                  55432  2 nfsd
+nfs_acl                 3584  1 nfsd
+sunrpc                133052  9 nfsd,lockd,nfs_acl
+appletalk              32816  20
+button                  6672  0
+ac                      4868  0
+battery                 9732  0
+xfs                   492248  1
+exportfs                5504  2 nfsd,xfs
+dm_mod                 51512  0
+tda9887                14224  0
+wm8775                  5644  0
+cx25840                22160  0
+tuner                  21536  0
+tveeprom               13356  0
+ivtv                  181524  0
+firmware_class          9984  2 cx25840,ivtv
+i2c_algo_bit            8456  1 ivtv
+videodev                9088  1 ivtv
+joydev                  9024  0
+snd_ca0106             29860  0
+snd_ac97_codec         82336  1 snd_ca0106
+snd_pcm_oss            45856  0
+snd_mixer_oss          16768  1 snd_pcm_oss
+evdev                   8960  1
+snd_pcm                77576  3 snd_ca0106,snd_ac97_codec,snd_pcm_oss
+snd_timer              21636  1 snd_pcm
+snd_mpu401              6472  0
+snd_mpu401_uart         6784  1 snd_mpu401
+snd_rawmidi            22560  2 snd_ca0106,snd_mpu401_uart
+snd_seq_device          8204  1 snd_rawmidi
+snd                    48612  10
+snd_ca0106,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401,snd_mpu401_uart...
+mousedev               10784  1
+psmouse                32516  0
+rtc                    11700  0
+serio_raw               6660  0
+floppy                 54980  0
+parport_pc             32324  0
+parport                31944  1 parport_pc
+snd_ac97_bus            2304  1 snd_ac97_codec
+soundcore               9184  1 snd
+snd_page_alloc         10120  2 snd_ca0106,snd_pcm
+analog                 10528  0
+gameport               14216  1 analog
+pcspkr                  1924  0
+shpchp                 40000  0
+pci_hotplug            25012  1 shpchp
+i2c_nforce2             6528  0
+nvidia_agp              7452  1
+agpgart                31560  2 nvidia,nvidia_agp
+i2c_core               19600  9
+nvidia,tda9887,wm8775,cx25840,tuner,tveeprom,ivtv,i2c_algo_bit,i2c_nforce2
+ext3                  117768  1
+jbd                    48404  1 ext3
+ide_cd                 36612  0
+cdrom                  33568  1 ide_cd
+ide_disk               16128  5
+ide_generic             1408  0 [permanent]
+sata_nv                 8964  0
+libata                 50956  1 sata_nv
+scsi_mod              125928  1 libata
+generic                 4484  0 [permanent]
+amd74xx                13084  0 [permanent]
+ide_core              112544  5
+ide_cd,ide_disk,ide_generic,generic,amd74xx
+forcedeth              20228  0
+ehci_hcd               29192  0
+ohci_hcd               18052  0
+usbcore               113540  3 ehci_hcd,ohci_hcd
+thermal                13576  0
+processor              23104  1 thermal
+fan                     4868  0 
 ======================================================================
-
-----------------------------------------------------------------------
- andersin - 08-02-06 14:31 
-----------------------------------------------------------------------
-test.state:
-state.Extigy {
-         control.1 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'PCM Playback Switch'
-                 value true
-         }
-         control.2 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'PCM Playback Volume'
-                 value 200
-         }
-         control.3 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Digital In Switch'
-                 value true
-         }
-         control.4 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Digital In Volume'
-                 value 200
-         }
-         control.5 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Line Playback Switch'
-                 value false
-         }
-         control.6 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 2
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Line Playback Volume'
-                 value.0 176
-                 value.1 176
-         }
-         control.7 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Line Playback Volume'
-                 index 1
-                 value 176
-         }
-         control.8 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name '3D Stereo Extender Switch'
-                 value false
-         }
-         control.9 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Mic Playback Switch'
-                 value false
-         }
-         control.10 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Mic Playback Volume'
-                 value 200
-         }
-         control.11 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 6'
-                 iface MIXER
-                 name 'Channel Routing Mode Select'
-                 value 6
-         }
-         control.12 {
-                 comment.access 'read write'
-                 comment.type ENUMERATED
-                 comment.count 1
-                 comment.item.0 'Input 0'
-                 comment.item.1 Mic
-                 comment.item.2 Mixer
-                 iface MIXER
-                 name 'Capture Input Source'
-                 value 'Input 0'
-         }
-         control.13 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Capture Switch'
-                 value true
-         }
-         control.14 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Capture Volume'
-                 value 10
-         }
-         control.15 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Master Playback Switch'
-                 value true
-         }
-         control.16 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 6
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 value.0 130
-                 value.1 130
-                 value.2 130
-                 value.3 130
-                 value.4 130
-                 value.5 130
-         }
-         control.17 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 index 1
-                 value 130
-         }
-         control.18 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 96'
-                 iface MIXER
-                 name 'Tone Control - Bass'
-                 value 48
-         }
-         control.19 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 96'
-                 iface MIXER
-                 name 'Tone Control - Treble'
-                 value 48
-         }
-         control.20 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Speaker Playback Switch'
-                 value true
-         }
-         control.21 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Digital Out Playback Switch'
-                 value false
-         }
-         control.22 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'Digital Out1 Playback Switch'
-                 value false
-         }
-         control.23 {
-                 comment.access 'read write'
-                 comment.type BOOLEAN
-                 comment.count 1
-                 iface MIXER
-                 name 'IEC958 Optical Playback Switch'
-                 value false
-         }
- }
-
-----------------------------------------------------------------------
- andersin - 08-02-06 14:31 
-----------------------------------------------------------------------
-amixer:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer
-  Limits: Playback 0 - 200
-  Mono:
-  Front Left: Playback 150 [75%] [on]
-  Front Right: Playback 150 [75%] [on]
-  Rear Left: Playback 150 [75%] [on]
-  Rear Right: Playback 150 [75%] [on]
-  Front Center: Playback 150 [75%] [on]
-  Woofer: Playback 150 [75%] [on]
-Simple mixer control 'Master',1
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 150 [75%]
-Simple mixer control 'Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 96
-  Mono: 48 [50%]
-Simple mixer control 'Treble',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 96
-  Mono: 48 [50%]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 200 [100%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 200
-  Mono:
-  Front Left: Playback 176 [88%] [off]
-  Front Right: Playback 176 [88%] [off]
-Simple mixer control 'Line',1
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 176 [88%]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 200 [100%] [off]
-Simple mixer control 'IEC958 Optical',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 200
-  Mono: Capture 10 [5%] [on]
-Simple mixer control 'Capture Input Source',0
-  Capabilities: enum
-  Items: 'Input 0' 'Mic' 'Mixer'
-  Item0: 'Input 0'
-Simple mixer control '3D Stereo Extender',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Channel Routing Mode Select',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 6
-  Mono: 6 [100%]
-Simple mixer control 'Digital In',0
-  Capabilities: volume volume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 200
-  Mono: 200 [100%] Playback [on]
-Simple mixer control 'Digital Out',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Digital Out1',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Speaker',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 16:33 andersin       New Issue                                    
-08-02-06 02:40 Raymond        Note Added: 0011384                          
-08-02-06 14:31 andersin       Note Added: 0011388                          
-08-02-06 14:31 andersin       Note Added: 0011389                          
+08-02-06 15:56 derekwisong    New Issue                                    
+08-02-06 15:56 derekwisong    Distribution              => Debian          
+08-02-06 15:56 derekwisong    Kernel Version            => 2.6.15-1-486    
 ======================================================================
 
 
