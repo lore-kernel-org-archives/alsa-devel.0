@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001909]: Labelling of controls for SB
-	Extigy is confusing
-Date: Wed, 2 Aug 2006 02:40:50 +0200
-Message-ID: <c8de9dcc786f330801e9f72bcdda0efc@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001411]: plug:jack interface not
+	working for apps that both read and write
+Date: Wed, 2 Aug 2006 13:18:44 +0200
+Message-ID: <80fc65a03c4c7de6c13b993aa2b6d217@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87C7C167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3428718D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Aug 2006 02:40:50 +0200 (MEST)
+	Wed,  2 Aug 2006 13:18:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,42 +26,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1411> 
 ======================================================================
-Reported By:                andersin
+Reported By:                b0ef
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1909
-Category:                   alsamixer
+Project:                    ALSA - plugins
+Issue ID:                   1411
+Category:                   PCM - jack
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             03-11-2006 16:33 CET
-Last Modified:              08-02-2006 02:40 CEST
+Date Submitted:             09-10-2005 17:57 CEST
+Last Modified:              08-02-2006 13:18 CEST
 ======================================================================
-Summary:                    Labelling of controls for SB Extigy is confusing
+Summary:                    plug:jack interface not working for apps that both
+read and write
 Description: 
-The controls for the SB Extigy are all labelled as Master. The names should
-reflect the channel(s) that they control. Amixer shows this information
-(albeit its mapping of controls to actual channels is off).
-Additionally a Master 1 control exists that changes the volume of all
-channels.
+This is a general problem with any app that both read and write to the
+plug:jack device. It (plug:jack) however works for apps that only do one
+or the other. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-02-06 02:40 
+ b0ef - 09-10-05 18:11 
 ----------------------------------------------------------------------
-Would you post the content of test.state after 'alsactl store -f
-test.state'  and output of 'amixer' ?
+I have applied the realtime patch to linux from
+http://people.redhat.com/mingo/realtime-preempt/ but I've also tested
+without and see the same problem
+
+I'm running linux-2.6.13-rt4
+
+ALSA apps that use both playback and capture fails to work with plug:jack
+
+I have tested with several applications, primarily asterisk and kphone
+
+I have not found any app that uses both playback and capture that works
+with plug:jack. Normal playback and capture separate with plug:jack works
+great.
+
+----------------------------------------------------------------------
+ Raymond - 08-02-06 13:18 
+----------------------------------------------------------------------
+Are there any reason to use jack instead of ALSA when running asterisk and
+kphone (internet phone application)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 16:33 andersin       New Issue                                    
-08-02-06 02:40 Raymond        Note Added: 0011384                          
+09-10-05 17:57 b0ef           New Issue                                    
+09-10-05 18:11 b0ef           Note Added: 0006123                          
+03-24-06 05:49 Raymond        Note Added: 0008912                          
+08-02-06 13:11 Raymond        Note Deleted: 0008912                        
+08-02-06 13:18 Raymond        Note Added: 0011385                          
 ======================================================================
 
 
