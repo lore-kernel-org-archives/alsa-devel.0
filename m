@@ -1,14 +1,16 @@
-From: Julien Bramary <julien.bramary@blueyonder.co.uk>
-Subject: Re: Trigger Callback
-Date: Wed, 02 Aug 2006 13:16:10 +0100
-Message-ID: <44D0978A.10401@blueyonder.co.uk>
-References: <44CFB014.2050704@blueyonder.co.uk>	<1154462119.14540.73.camel@mindpipe>	<44CFB620.40609@blueyonder.co.uk>
-	<s5hslkf9xzj.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002300]: No sound with module
+	snd-hda-intel but alsa mixer works
+Date: Wed, 2 Aug 2006 14:25:36 +0200
+Message-ID: <f58b599db23a628f466288da1c50d2da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hslkf9xzj.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3802A16F
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Aug 2006 14:25:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,47 +20,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 01 Aug 2006 21:14:24 +0100,
-> Julien Bramary wrote:
->   
->> Lee Revell wrote:
->>
->>     
->>>>  > "PCM engine" refers to the hardware's PCM engine, not ALSA's.  It's 100%
->>>>  > device dependent - you need to consult the docs for your sound device to
->>>>  > determine how to start the PCM.
->>>>  >
->>>>  > Lee
->>>>         
->> Thanks, I see now why it starts, I'm doing some inits in my dac in the
->> open callback... I should do those here in the trigger.
->>     
->
-> Remember that the trigger callback is designed really as a "trigger".
-> That is, it should be executed as shortly as possible.  The callback
-> is even in the atomic context within spinlock and irq disablement, so
-> any function that my sleep shall cause lockup.
->
-> If you need to allocate something, it should be done in either
-> open, hw_params or prepare callback.  Only start and stop are done in
-> trigger callback.
->
->
-> Takashi
->
->   
-Thanks for the reminder. I think this should be ok. The only function I 
-now have in the trigger is the following 'write' (atomic enough):
-   /* enable SSC data Tx */
-   at91_ssc_write(AT91_SSC_CR, AT91_SSC_TXEN);
 
-Cheers,
-Julien
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2300> 
+======================================================================
+Reported By:                jredrejo
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2300
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             07-24-2006 15:04 CEST
+Last Modified:              08-02-2006 14:25 CEST
+======================================================================
+Summary:                    No sound with module snd-hda-intel but alsa mixer
+works
+Description: 
+I have last alsa stable release and tried also with 1.0.12rc1 with the same
+results: The sound seems to be configured but I get no sound output.
+These are some of my data:
+# cat /sys/module/snd_hda_intel/parameters/model
+<NULL>
+ lspci -nvd 8086:2668
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1025:007b
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
+
+linex-bcMnHH:/opt/zend# lspci -vd 8086:2668
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Acer Incorporated [ALI]: Unknown device 007b
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
+
+======================================================================
+
+----------------------------------------------------------------------
+ jredrejo - 08-02-06 14:25 
+----------------------------------------------------------------------
+I've attached the file alsa2.txt containing the output of:
+cat /proc/asound/card0/codec#0>alsa2.txt
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-06 15:04 jredrejo       New Issue                                    
+07-24-06 15:04 jredrejo       Kernel Version            => 2.6.16          
+08-02-06 14:25 jredrejo       File Added: alsa2.txt                        
+08-02-06 14:25 jredrejo       Note Added: 0011386                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
