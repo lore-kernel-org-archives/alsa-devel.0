@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001909]: Labelling of controls for SB
 	Extigy is confusing
-Date: Wed, 2 Aug 2006 14:31:04 +0200
-Message-ID: <c97433f6c99b3c5d310f73da77e440da@bugtrack.alsa-project.org>
+Date: Wed, 2 Aug 2006 14:31:35 +0200
+Message-ID: <2c34b21d7a2b6eca2c3cfdd1029f475f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A881D1AC
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCFFF1AC
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Aug 2006 14:31:04 +0200 (MEST)
+	Wed,  2 Aug 2006 14:31:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -50,12 +50,6 @@ reflect the channel(s) that they control. Amixer shows this information
 Additionally a Master 1 control exists that changes the volume of all
 channels.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 08-02-06 02:40 
-----------------------------------------------------------------------
-Would you post the content of test.state after 'alsactl store -f
-test.state'  and output of 'amixer' ?
 
 ----------------------------------------------------------------------
  andersin - 08-02-06 14:31 
@@ -270,12 +264,111 @@ state.Extigy {
          }
  }
 
+----------------------------------------------------------------------
+ andersin - 08-02-06 14:31 
+----------------------------------------------------------------------
+amixer:
+
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
+Front Center - Woofer
+  Limits: Playback 0 - 200
+  Mono:
+  Front Left: Playback 150 [75%] [on]
+  Front Right: Playback 150 [75%] [on]
+  Rear Left: Playback 150 [75%] [on]
+  Rear Right: Playback 150 [75%] [on]
+  Front Center: Playback 150 [75%] [on]
+  Woofer: Playback 150 [75%] [on]
+Simple mixer control 'Master',1
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 200
+  Mono: Playback 150 [75%]
+Simple mixer control 'Bass',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 96
+  Mono: 48 [50%]
+Simple mixer control 'Treble',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 96
+  Mono: 48 [50%]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 200
+  Mono: Playback 200 [100%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 200
+  Mono:
+  Front Left: Playback 176 [88%] [off]
+  Front Right: Playback 176 [88%] [off]
+Simple mixer control 'Line',1
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 200
+  Mono: Playback 176 [88%]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 200
+  Mono: Playback 200 [100%] [off]
+Simple mixer control 'IEC958 Optical',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Mono
+  Limits: Capture 0 - 200
+  Mono: Capture 10 [5%] [on]
+Simple mixer control 'Capture Input Source',0
+  Capabilities: enum
+  Items: 'Input 0' 'Mic' 'Mixer'
+  Item0: 'Input 0'
+Simple mixer control '3D Stereo Extender',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Channel Routing Mode Select',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 6
+  Mono: 6 [100%]
+Simple mixer control 'Digital In',0
+  Capabilities: volume volume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 200
+  Mono: 200 [100%] Playback [on]
+Simple mixer control 'Digital Out',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Digital Out1',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Speaker',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-11-06 16:33 andersin       New Issue                                    
 08-02-06 02:40 Raymond        Note Added: 0011384                          
 08-02-06 14:31 andersin       Note Added: 0011388                          
+08-02-06 14:31 andersin       Note Added: 0011389                          
 ======================================================================
 
 
