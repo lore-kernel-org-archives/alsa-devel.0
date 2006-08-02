@@ -1,13 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: envy24control with Hoontech C-Port
-Date: Wed, 02 Aug 2006 17:29:36 -0400
-Message-ID: <1154554176.2847.1.camel@mindpipe>
-References: <200608030724.16351.songshop@bizmedia.com.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Thu, 3 Aug 2006 00:47:42 +0200
+Message-ID: <c34f882da441213955970fc5a4e27104@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200608030724.16351.songshop@bizmedia.com.au>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5278121E
+	for <alsa-devel@alsa-project.org>;
+	Thu,  3 Aug 2006 00:47:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,18 +20,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Geoff Beasley <songshop@bizmedia.com.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-08-03 at 07:24 +1000, Geoff Beasley wrote:
-> version .60 does not have the  "sync led" that Doug Mclain told me he added. 
-> Should this be  in the latest stable alsa  1.11?  As I am running 3 cards in 
-> one machine this would be a very handy feature for ensuring a "synced" state 
-> between all 3. Does this not work with the Hoontech cards or is there a later 
-> version ?
 
-Try 1.0.12-rc1
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+======================================================================
+Reported By:                tjallen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2234
+Category:                   ISA - sscape
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
+======================================================================
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              08-03-2006 00:47 CEST
+======================================================================
+Summary:                    ISA sscape driver does not find Soundscape Elite
+Description: 
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
+======================================================================
+
+----------------------------------------------------------------------
+ tjallen - 07-31-06 16:59 
+----------------------------------------------------------------------
+The modified driver reports:
+
+ Enter snd_sscape_probe
+ Enter detect_GA
+ - fail step 1
+ Exit detect_GA
+ Enter detect_pnp
+ Exit detect_pnp
+ Exit detect_sscape
+sscape: hardware not detected at 0x534
+
+----------------------------------------------------------------------
+ rankincj - 08-03-06 00:47 
+----------------------------------------------------------------------
+Can you try passing 0x330 as the IO parameter instead, please? I think
+that's the significant address (for detection).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-30-06 22:38 rankincj       Note Added: 0010752                          
+06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
+07-02-06 01:39 rankincj       File Added: sscape.c                         
+07-02-06 01:41 rankincj       Note Added: 0010767                          
+07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
+07-02-06 03:19 tjallen        Note Added: 0010768                          
+07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
+07-23-06 02:25 rankincj       Note Added: 0011178                          
+07-30-06 21:45 tjallen        Note Added: 0011330                          
+07-30-06 23:14 rankincj       File Added: sscape.diff                      
+07-30-06 23:17 rankincj       Note Added: 0011332                          
+07-31-06 16:59 tjallen        Note Added: 0011343                          
+08-03-06 00:47 rankincj       Note Added: 0011391                          
+======================================================================
+
 
 
 -------------------------------------------------------------------------
