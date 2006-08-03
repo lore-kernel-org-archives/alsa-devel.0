@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002321]: no audio and very few mixer
 	options with C-Media 106 based USB sound card
-Date: Thu, 3 Aug 2006 20:32:39 +0200
-Message-ID: <a3e4e9a1eafa12d7ae7df8588889f37e@bugtrack.alsa-project.org>
+Date: Thu, 3 Aug 2006 20:37:03 +0200
+Message-ID: <32b1ef27300a239c425ff0440c5892da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E965217E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EBDA18D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 20:32:39 +0200 (MEST)
+	Thu,  3 Aug 2006 20:37:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14/5
 ======================================================================
 Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-03-2006 20:32 CEST
+Last Modified:              08-03-2006 20:37 CEST
 ======================================================================
 Summary:                    no audio and very few mixer options with C-Media 106
 based USB sound card
@@ -95,17 +95,6 @@ sound is played trough the speakers at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-03-06 19:15 
-----------------------------------------------------------------------
-slave.pcm "snd-usb-audio"
-
-is wrong, it should be something like
-
-slave.pcm hw:0,0
-
-(replace hw:0,0 with the correct device ID)
-
-----------------------------------------------------------------------
  doobedoobedo - 08-03-06 20:32 
 ----------------------------------------------------------------------
 Thanks for the suggestion 
@@ -146,6 +135,11 @@ $ aplay -D plughw:1,0 sound/Surround-SDL-testfiles/chan-id.wav
 Playing WAVE 'sound/Surround-SDL-testfiles/chan-id.wav' : Signed 16 bit
 Little Endian, Rate 44100 Hz, Channels 6
 
+----------------------------------------------------------------------
+ rlrevell - 08-03-06 20:37 
+----------------------------------------------------------------------
+Try putting "hw:1,0" in quotes
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -158,6 +152,7 @@ Date Modified  Username       Field                    Change
 08-03-06 17:34 doobedoobedo   Note Added: 0011404                          
 08-03-06 19:15 rlrevell       Note Added: 0011407                          
 08-03-06 20:32 doobedoobedo   Note Added: 0011408                          
+08-03-06 20:37 rlrevell       Note Added: 0011409                          
 ======================================================================
 
 
