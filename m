@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002321]: no audio and very few mixer
 	options with C-Media 106 based USB sound card
-Date: Thu, 3 Aug 2006 23:02:49 +0200
-Message-ID: <ba978f4dc83c6a59fbe9da2c4b3f1bdf@bugtrack.alsa-project.org>
+Date: Thu, 3 Aug 2006 23:13:11 +0200
+Message-ID: <de50f7a84168343b443eff2fce6fcb88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B3C2162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86C4222D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 23:02:50 +0200 (MEST)
+	Thu,  3 Aug 2006 23:13:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14/5
 ======================================================================
 Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-03-2006 23:02 CEST
+Last Modified:              08-03-2006 23:13 CEST
 ======================================================================
 Summary:                    no audio and very few mixer options with C-Media 106
 based USB sound card
@@ -95,11 +95,6 @@ sound is played trough the speakers at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-03-06 20:37 
-----------------------------------------------------------------------
-Try putting "hw:1,0" in quotes
-
-----------------------------------------------------------------------
  doobedoobedo - 08-03-06 23:02 
 ----------------------------------------------------------------------
 Thanks changing to "plughw:1,0" allowed me to change the channels around.
@@ -108,6 +103,13 @@ Thanks changing to "plughw:1,0" allowed me to change the channels around.
 Would I be right that adding an entry in usbmixer_maps.c would allow me to
 rename 'Speaker 1' to 'Master' by using the control numbers in
 /etc/asound.state -1?
+
+----------------------------------------------------------------------
+ rlrevell - 08-03-06 23:13 
+----------------------------------------------------------------------
+That should work.  But can't you just configure your apps to use that
+control as master?  It's a bug for an app to assume that there's a control
+called "Master" and fail if it does not exist.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +125,7 @@ Date Modified  Username       Field                    Change
 08-03-06 20:32 doobedoobedo   Note Added: 0011408                          
 08-03-06 20:37 rlrevell       Note Added: 0011409                          
 08-03-06 23:02 doobedoobedo   Note Added: 0011410                          
+08-03-06 23:13 rlrevell       Note Added: 0011411                          
 ======================================================================
 
 
