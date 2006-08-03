@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002329]: NEC Versa S5200 ICH7 not
-	recognised
-Date: Fri, 4 Aug 2006 01:40:12 +0200
-Message-ID: <8204f82e4c7d22074ad883de86893f91@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002321]: no audio and very few mixer
+	options with C-Media 106 based USB sound card
+Date: Fri, 4 Aug 2006 01:54:24 +0200
+Message-ID: <5cd1120aaf60c9f0451e9e881502e322@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D11E319E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4C2521B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 01:40:12 +0200 (MEST)
+	Fri,  4 Aug 2006 01:54:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,39 +24,113 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2329> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2321> 
 ======================================================================
-Reported By:                kaos-bt
-Assigned To:                tiwai
+Reported By:                doobedoobedo
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2329
-Category:                   PCI - hda-intel
+Issue ID:                   2321
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               suselinux 10.1
-Kernel Version:             2.6.16.21-0.13-smp
+Distribution:               Gentoo
+Kernel Version:             2.6.14/5
 ======================================================================
-Date Submitted:             08-04-2006 01:40 CEST
-Last Modified:              08-04-2006 01:40 CEST
+Date Submitted:             08-01-2006 16:43 CEST
+Last Modified:              08-04-2006 01:54 CEST
 ======================================================================
-Summary:                    NEC Versa S5200 ICH7 not recognised
+Summary:                    no audio and very few mixer options with C-Media 106
+based USB sound card
 Description: 
-NEC Versa S5200 laptop, ICH7 hda-intel chipset, (PCI id 1033:8328) is not
-recognised and I get no sound.
+no audio output with the snd-usb-audio module
+
+amixer output:
+Simple mixer control 'PCM',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 4095
+  Front Left: Capture 2048 [50%] [on]
+  Front Right: Capture 2048 [50%] [on]
+Simple mixer control 'PCM Capture Source',0
+  Capabilities: enum
+  Items: 'Mic' 'Input 1' 'Input 2' 'Mixer'
+  Item0: 'Mic'
+Simple mixer control 'PCM',1
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 4095
+  Front Left: Capture 2048 [50%]
+  Front Right: Capture 2048 [50%]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume cvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 8191 Capture 0 - 4095
+  Front Left: Playback 2048 [25%] [off] Capture 2048 [50%]
+  Front Right: Playback 2048 [25%] [off] Capture 2048 [50%]
+Simple mixer control 'Auto Gain Control',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Speaker',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 8191
+  Mono:
+  Front Left: Playback 2048 [25%] [on]
+  Front Right: Playback 2048 [25%] [on]
+Simple mixer control 'Speaker',1
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 37
+  Mono: Playback 15 [41%] [on]
+
+speaker 0 and mic will only decrease in volume in alsamixer, although no
+sound is played trough the speakers at all.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 08-04-06 01:31 
+----------------------------------------------------------------------
+Hmm, looking at the driver it really seems that your change should work. 
+Did you reboot?  Make sure the new driver is loaded?
+
+Sorry, I don't know the USB driver that well.  If it still doesn't work
+can you post your patch with a link to this bug report to alsa-devel at
+lists.sourceforge.net?
+
+----------------------------------------------------------------------
+ doobedoobedo - 08-04-06 01:54 
+----------------------------------------------------------------------
+I'm afraid mythtv is a bit too complex for me ;). I've been loading and
+unloading the snd-usb-audio module by hand, I did a reboot though and its
+still the same. I'll post to the devel list tomorrow, thanks for your
+help.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-06 01:40 kaos-bt        New Issue                                    
-08-04-06 01:40 kaos-bt        File Added: s5200                            
-08-04-06 01:40 kaos-bt        Distribution              => suselinux 10.1  
-08-04-06 01:40 kaos-bt        Kernel Version            => 2.6.16.21-0.13-smp
+08-01-06 16:43 doobedoobedo   New Issue                                    
+08-01-06 16:43 doobedoobedo   Distribution              => Gentoo          
+08-01-06 16:43 doobedoobedo   Kernel Version            => 2.6.14/5        
+08-01-06 16:51 doobedoobedo   Issue Monitored: doobedoobedo                    
+08-01-06 16:54 doobedoobedo   Note Added: 0011376                          
+08-03-06 03:40 doobedoobedo   Note Added: 0011393                          
+08-03-06 17:34 doobedoobedo   Note Added: 0011404                          
+08-03-06 19:15 rlrevell       Note Added: 0011407                          
+08-03-06 20:32 doobedoobedo   Note Added: 0011408                          
+08-03-06 20:37 rlrevell       Note Added: 0011409                          
+08-03-06 23:02 doobedoobedo   Note Added: 0011410                          
+08-03-06 23:13 rlrevell       Note Added: 0011411                          
+08-04-06 00:58 doobedoobedo   Note Added: 0011412                          
+08-04-06 01:21 rlrevell       Note Added: 0011413                          
+08-04-06 01:31 rlrevell       Note Added: 0011414                          
+08-04-06 01:54 doobedoobedo   Note Added: 0011415                          
 ======================================================================
 
 
