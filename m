@@ -1,14 +1,14 @@
-From: Krivenok Dmitry <_asr_@inbox.ru>
-Subject: Re: =?koi8-r?b?VmlydHVhbCBzb3VuZCBjYXJk?=
-Date: Thu, 03 Aug 2006 19:16:52 +0400
-Message-ID: <E1G8ewO-0009V0-00._asr_-inbox-ru@f7.mail.ru>
-References: <s5h1wrxhoet.wl%tiwai=40suse.de>
-Reply-To: Krivenok Dmitry <_asr_@inbox.ru>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SNDRV_PCM_IOCTL_START
+Date: Thu, 03 Aug 2006 17:20:33 +0200
+Message-ID: <20060803152033.GA26362@turing.informatik.uni-halle.de>
+References: <44D1D331.1050303@riccardotempesta.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: =?koi8-r?Q?<s5h1wrxhoet.wl%tiwai=40suse.de>?=
+In-reply-to: <44D1D331.1050303@riccardotempesta.com>
+Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,96 +18,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
+To: Riccardo Tempesta <info@riccardotempesta.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de>
-To: Krivenok Dmitry <_asr_@inbox.ru>
-Date: Thu, 03 Aug 2006 16:41:46 +0200
-Subject: Re: Re[8]: [Alsa-devel] Virtual sound card
-
+Riccardo Tempesta wrote:
+> ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: 
+> Broken pipe
 > 
-> At Thu, 03 Aug 2006 18:36:32 +0400,
-> Krivenok Dmitry wrote:
-> > 
-> > > > This is mplayer's log:
-> > > > krivenok-home ~ # strace mplayer Uno_momento.mp3  2>log2
-> > > > krivenok-home ~ # grep  snd log2
-> > > > open("/dev/snd/controlC0", O_RDWR)      = 5
-> > > > open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 6
-> > > > 
-> > > > OK :)
-> > > > 
-> > > > P.S.
-> > > > Is there a way to use separate files for in/out?
-> > > 
-> > > You can define different PCMs for playback and capture and bind them
-> > > using asym plugin, such as:
-> > > 
-> > > pcm.!hw {
-> > > 	type asym
-> > > 	playback.pcm {
-> > > 		type file
-> > > 		slave.pcm {
-> > > 			type hw
-> > > 			card 0
-> > > 		}
-> > > 		file "foo.out"
-> > > 	}
-> > > 	capture.pcm {
-> > > 		type file
-> > > 		slave.pcm {
-> > > 			type hw
-> > > 			card 0
-> > > 		}
-> > > 		file "foo.in"
-> > > 	}
-> > > }
-> > > 
-> > 
-> > It works with skype and mplayer, but aplay crashs (SegFault):
-> 
-> Ouch.  Could you get a backtrace via gdb?
-> 
+> What does it mean?
 
-More detailed output:
-
-krivenok-home aplay # gdb ./aplay
-GNU gdb 6.4
-Copyright 2005 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i386-pc-linux-gnu"...Using host libthread_db library "/lib/libthread_db.so.1".
-
-(gdb) r /tmp/12345
-Starting program: /tmp/alsa-utils-1.0.11/aplay/aplay /tmp/12345
-[Thread debugging using libthread_db enabled]
-[New Thread 16384 (LWP 28838)]
-Playing WAVE '/tmp/12345' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
-
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 16384 (LWP 28838)]
-0x401f8533 in strchr () from /lib/libc.so.6
-(gdb) bt
-#0  0x401f8533 in strchr () from /lib/libc.so.6
-#1  0x0804cc5b in set_params () at aplay.c:921
-#2  0x0804ef61 in playback_go (fd=8, loaded=0, count=2015232, rtype=2, name=0xbfb27a43 "/tmp/12345") at aplay.c:1954
-#3  0x0804f1f0 in playback (name=0xbfb27a43 "/tmp/12345") at aplay.c:2027
-#4  0x0804b8bf in main (argc=2, argv=0xbfb25bf4) at aplay.c:598
-(gdb)
+If this is a USB device, there should be some error message in the
+system log.
 
 
-
-> 
-> Takashi
-> 
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
