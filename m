@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002328]: Absolutely no sound
-	whatsoever on PB A8550 w/ Intel 82801 (ICH6)
-Date: Thu, 3 Aug 2006 07:43:40 +0200
-Message-ID: <9cf25d004d5d825f8ef734d14247d375@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001909]: Labelling of controls for SB
+	Extigy is confusing
+Date: Thu, 3 Aug 2006 09:47:24 +0200
+Message-ID: <66e1e883d8eed74fe47002bb0d59aa1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6058C195
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D980615C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 07:43:40 +0200 (MEST)
+	Thu,  3 Aug 2006 09:47:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,60 +24,140 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2328> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
 ======================================================================
-Reported By:                Illarane
+Reported By:                andersin
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2328
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1909
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15-1
 ======================================================================
-Date Submitted:             08-03-2006 07:43 CEST
-Last Modified:              08-03-2006 07:43 CEST
+Date Submitted:             03-11-2006 16:33 CET
+Last Modified:              08-03-2006 09:47 CEST
 ======================================================================
-Summary:                    Absolutely no sound whatsoever on PB A8550 w/ Intel
-82801 (ICH6)
+Summary:                    Labelling of controls for SB Extigy is confusing
 Description: 
-No matter what I have tried, there is absolutely no sound coming from
-either the built-in speakers or the headphones jack on this laptop. 
-alsaconf correctly identifies the sound card, however it sets it up
-exactly how I did, and thus doesn't fix the problem, all the correct
-modules are identified and installed at boot, everything is unmuted and
-turned right up, and the External Amplifier switch is OFF.  The OSS
-drivers (i810_audio) do not work either.  I can't even get noise from
-catting /bin/bash to /dev/dsp.
-
-For all intents and purposes, this is working fine; there are no errors,
-no warnings, I literally get nothing, not even sound.
-
-Apparently there is a software 'jacksense' switch which controls the
-output somehow?  I cannot see this in any of the mixers, so is there a
-patch somewhere with which it can be added?
-
-The last point to note is that when I cat /proc/asound/cards, I get this:
-0 [ICH6           ]: ICH4 - Intel ICH6
-                     Intel ICH6 with unknown codec at 0xb0040800, irq 169
-Unknown codec?
-
-I've included the relevant outputs below.
+The controls for the SB Extigy are all labelled as Master. The names should
+reflect the channel(s) that they control. Amixer shows this information
+(albeit its mapping of controls to actual channels is off).
+Additionally a Master 1 control exists that changes the volume of all
+channels.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 08-03-06 04:16 
+----------------------------------------------------------------------
+Most likely both alsamixer and amixer cannot handle these two controls
+properly
+
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x851.htm
+
+The index field holds the index number of this control. If there are
+several different controls with the same name, they can be distinguished
+by the index
+number. This is the case when several codecs exist on the card. If the
+index is zero, you can omit the definition above. 
+
+You have to ask the ALSA developer why index controls can have different
+count.
+The mixer applications need to be very smart to handle this difference in
+count
+
+       control.16 {
+                 comment.access 'read write'
+                 comment.type INTEGER
+                 comment.count 6
+                 comment.range '0 - 200'
+                 iface MIXER
+                 name 'Master Playback Volume'
+                 value.0 130
+                 value.1 130
+                 value.2 130
+                 value.3 130
+                 value.4 130
+                 value.5 130
+         }
+         control.17 {
+                 comment.access 'read write'
+                 comment.type INTEGER
+                 comment.count 1
+                 comment.range '0 - 200'
+                 iface MIXER
+                 name 'Master Playback Volume'
+                 index 1
+                 value 130
+         }
+
+
+
+----------------------------------------------------------------------
+ Raymond - 08-03-06 09:47 
+----------------------------------------------------------------------
+Syntax: SOURCE [DIRECTION] FUNCTION
+
+The following controls appear in capture view of alsamixer because it miss
+the 'Playback' direction
+
+Simple mixer control 'Bass',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 96
+  Mono: 48 [50%]
+Simple mixer control 'Treble',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 96
+  Mono: 48 [50%]
+
+The following control should only appear in capture view of alsamixer,
+because the control name did not follow Syntax: SOURCE [DIRECTION]
+FUNCTION
+
+Simple mixer control 'Capture Input Source',0
+  Capabilities: enum
+  Items: 'Input 0' 'Mic' 'Mixer'
+  Item0: 'Input 0'
+
+Simple mixer control 'Digital In',0
+  Capabilities: volume volume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 200
+  Mono: 200 [100%] Playback [on]
+
+These control also not follow the syntax.
+
+Simple mixer control 'Channel Routing Mode Select',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 6
+  Mono: 6 [100%]
+
+similar bug report https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971
+and https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366
+
+http://hg-mirror.alsa-project.org/alsa-kernel?f=2cd9765e57f6;file=Documentation/ControlNames.txt;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-06 07:43 Illarane       New Issue                                    
-08-03-06 07:43 Illarane       File Added: asound.state                     
-08-03-06 07:43 Illarane       Distribution              => Debian          
-08-03-06 07:43 Illarane       Kernel Version            => 2.6.15-1        
+03-11-06 16:33 andersin       New Issue                                    
+08-02-06 02:40 Raymond        Note Added: 0011384                          
+08-02-06 14:31 andersin       Note Added: 0011388                          
+08-02-06 14:31 andersin       Note Added: 0011389                          
+08-03-06 04:06 Raymond        Note Added: 0011395                          
+08-03-06 04:16 Raymond        Note Edited: 0011395                         
+08-03-06 09:47 Raymond        Note Added: 0011397                          
 ======================================================================
 
 
