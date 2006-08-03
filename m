@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001272]: sys_open symbol not known
-Date: Thu, 3 Aug 2006 13:54:08 +0200
-Message-ID: <24f7455e32a2158cacfdb897ff79363f@bugtrack.alsa-project.org>
+From: 017623780966@o2online.de
+Subject: No chance to get the soundcard working
+Date: Thu, 3 Aug 2006 13:04:10 +0100 (BST)
+Message-ID: <2902793.1154606650291.JavaMail.root@tintin.london.ongenie.net>
+Reply-To: 017623780966@o2online.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 751D6224
-	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 13:54:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,58 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1272> 
-======================================================================
-Reported By:                arturl
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1272
-Category:                   ISA - wavefront
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora 4
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             07-22-2005 10:06 CEST
-Last Modified:              08-03-2006 13:54 CEST
-======================================================================
-Summary:                    sys_open symbol not known
-Description: 
-The wavefront driver uses sys_open from kernel and this symbol is for
-unknown reason not exported. As a consequence module cannot be loaded.
-The sys_open function lack of export directive and after adding it all
-works OK.
-In fact this is not ALSA bug but...
-
-======================================================================
-
-----------------------------------------------------------------------
- Adrian Bunk - 08-03-06 13:54 
-----------------------------------------------------------------------
-sys_open() is exported by the kernel (I checked both 2.6.12 and 2.6.17).
-
-Please send the exact error messages you see.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-22-05 10:06 arturl         New Issue                                    
-07-22-05 10:06 arturl         Distribution              => Fedora 4        
-07-22-05 10:06 arturl         Kernel Version            => 2.6.12          
-08-09-05 08:34 arturl         Issue Monitored: arturl                      
-08-03-06 13:54 Adrian Bunk    Note Added: 0011399                          
-======================================================================
-
-
+Hello, i have a big problem with my soundcard. It have a Realtek alc260 
+chip (intel-hda) and its build in an Acer c204tmi notebook. I can not get 
+that card working with linux. I tried over 20 linux live cds and have installed 
+now gentoo linux on it. The problem i have is: the sound card is been found 
+by alsaconf and can be configured. Alsamixer also found the card and can 
+configure it. I have unmuted every channel and set it up to max. I have 
+always tired the headphone. I never could get sound of that notebook. In 
+dmesg i found that -> ALSA /var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-
+driver-1.0.12rc1/pci/hda/..
+/../alsa-kernel/pci/hda/hdaintel.c:525: hda_intel: azx_get_response timeout, 
+switching to single_cmd mode...
+i do not know is that the reason why i have no sound. I have testet the 
+sound with xmms,KsCD,Noatun, and other. xmms and noatun do not start playing 
+and KsCD start playing, but i can not hear anything.
+I also cant ask someone who got alsa running, because i am the only person 
+who use that notebook under linux.
+I do not know what i could do. Can you help me?
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
