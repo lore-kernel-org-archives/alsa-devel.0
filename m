@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001909]: Labelling of controls for SB
-	Extigy is confusing
-Date: Thu, 3 Aug 2006 04:06:27 +0200
-Message-ID: <0e44799626fa776d76438a8213742056@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Thu, 3 Aug 2006 04:26:33 +0200
+Message-ID: <30f3722e1e21d2d0e967d04a03e52f5f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4092193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99F5B19E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 04:06:27 +0200 (MEST)
+	Thu,  3 Aug 2006 04:26:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,168 +25,170 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                andersin
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1909
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-11-2006 16:33 CET
-Last Modified:              08-03-2006 04:06 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              08-03-2006 04:26 CEST
 ======================================================================
-Summary:                    Labelling of controls for SB Extigy is confusing
+Summary:                    surround40 memory leak
 Description: 
-The controls for the SB Extigy are all labelled as Master. The names should
-reflect the channel(s) that they control. Amixer shows this information
-(albeit its mapping of controls to actual channels is off).
-Additionally a Master 1 control exists that changes the volume of all
-channels.
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 08-02-06 14:31 
+ Raymond - 08-01-06 06:45 
 ----------------------------------------------------------------------
-amixer:
+In theory, you should able to run 31 instances of 'speaker-test -c 2 -t
+wav' concurrently , the 32th instances will be blocked on cs46xx
 
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer
-  Limits: Playback 0 - 200
-  Mono:
-  Front Left: Playback 150 [75%] [on]
-  Front Right: Playback 150 [75%] [on]
-  Rear Left: Playback 150 [75%] [on]
-  Rear Right: Playback 150 [75%] [on]
-  Front Center: Playback 150 [75%] [on]
-  Woofer: Playback 150 [75%] [on]
-Simple mixer control 'Master',1
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 150 [75%]
-Simple mixer control 'Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 96
-  Mono: 48 [50%]
-Simple mixer control 'Treble',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 96
-  Mono: 48 [50%]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 200 [100%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 200
-  Mono:
-  Front Left: Playback 176 [88%] [off]
-  Front Right: Playback 176 [88%] [off]
-Simple mixer control 'Line',1
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 176 [88%]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 200 [100%] [off]
-Simple mixer control 'IEC958 Optical',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 200
-  Mono: Capture 10 [5%] [on]
-Simple mixer control 'Capture Input Source',0
-  Capabilities: enum
-  Items: 'Input 0' 'Mic' 'Mixer'
-  Item0: 'Input 0'
-Simple mixer control '3D Stereo Extender',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Channel Routing Mode Select',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 6
-  Mono: 6 [100%]
-Simple mixer control 'Digital In',0
-  Capabilities: volume volume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 200
-  Mono: 200 [100%] Playback [on]
-Simple mixer control 'Digital Out',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Digital Out1',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Speaker',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
+If you specify different rate in 'speaker-test -Dhw:0,0 -c 2 -r 8000 -t
+sine', the driver  only allow to play DSP_MAX_SRC_NR instances different
+rates.
+
+  if (ins->nsrc_scb >= DSP_MAX_SRC_NR) {
+         snd_printk(KERN_ERR "dsp_spos: to many SRC instances\n!"); 
+
+
+>> For testing I tried to play back more than 32 channels via speaker-test
+. I did >>this for checking whether channels 33 and above would go on the
+second AC97. But ...
+>> 1) The channels above 32 just produce nonsense sounds (short, looping
+sounds)
+>> 2) The volume of the nonsense soundss could not be controlled (not by
+KMix, and >> also not by alsamixer)
+
+No, running speaker-test -c N with N > 2 on default device 'plughw' of
+cs46xx is the side effect of 'plug' plugin in CS46xx.conf
+
+Try open different device "default", "hw:0", "plughw:0" , "surround40" and
+"surround51"
+
+    snd_pcm_t *pcm;
+    snd_pcm_hw_params_t *hwparams;
+    int channel_max;
+    if ( snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0 )
+     	printf("Cannot open pcm.\n");
+    else {
+       	snd_pcm_hw_params_alloca(&hwparams);
+       	snd_pcm_hw_params_any(pcm, hwparams);
+	snd_pcm_hw_params_get_channels_max(hwparams, &channel_max);
+        printf("max channels = %d\n",channel_max);
+        snd_pcm_close(pcm);
+   };
+
+
 
 ----------------------------------------------------------------------
- Raymond - 08-03-06 04:06 
+ Raymond - 08-03-06 04:26 
 ----------------------------------------------------------------------
-Most likely both alsamixer and amixer cannot handle these two controls
-properly
+>> The only thing I can say is this: I got all those duplicated devices
+(like 
+>> PCM.0, PCM.1 and Master.0, Master.1). And when I change the device
+state 
+>> (volume, capture ore playback switch) the change is reflected in
+alsamixer (and
+>> vice versa).
 
-       control.16 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 6
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 value.0 130
-                 value.1 130
-                 value.2 130
-                 value.3 130
-                 value.4 130
-                 value.5 130
-         }
-         control.17 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 index 1
-                 value 130
-         }
+Are you sure KMix can handle those Master Playback Volume controls in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 16:33 andersin       New Issue                                    
-08-02-06 02:40 Raymond        Note Added: 0011384                          
-08-02-06 14:31 andersin       Note Added: 0011388                          
-08-02-06 14:31 andersin       Note Added: 0011389                          
-08-03-06 04:06 Raymond        Note Added: 0011395                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
+06-02-06 09:33 Raymond        Note Deleted: 0008152                        
+06-02-06 09:33 Raymond        Note Deleted: 0008987                        
+06-02-06 09:34 Raymond        Note Deleted: 0008076                        
+07-11-06 13:28 Raymond        Note Added: 0010970                          
+07-24-06 21:21 bitmage2       Note Added: 0011215                          
+07-24-06 21:25 bitmage2       Note Added: 0011216                          
+07-25-06 02:41 Raymond        Note Added: 0011222                          
+07-25-06 05:47 Raymond        Note Edited: 0011222                         
+07-25-06 10:18 darkbrain      Note Added: 0011224                          
+07-25-06 16:03 Raymond        Note Added: 0011228                          
+07-25-06 20:29 bitmage2       Note Added: 0011231                          
+07-26-06 02:21 Raymond        Note Added: 0011236                          
+07-26-06 02:26 Raymond        Note Edited: 0011236                         
+07-26-06 02:30 Raymond        Note Edited: 0011236                         
+07-26-06 08:34 bitmage2       Note Added: 0011244                          
+07-26-06 09:45 Raymond        Note Added: 0011246                          
+07-26-06 09:51 Raymond        Note Edited: 0011246                         
+07-26-06 09:56 Raymond        Note Edited: 0011246                         
+07-26-06 10:04 Raymond        Note Edited: 0011246                         
+07-26-06 10:08 Raymond        Note Edited: 0011246                         
+07-26-06 10:14 Raymond        Note Edited: 0011246                         
+07-26-06 16:26 Raymond        Note Added: 0011249                          
+07-26-06 16:28 Raymond        Note Edited: 0011249                         
+07-26-06 16:31 Raymond        Note Edited: 0011249                         
+07-28-06 05:03 Raymond        Note Added: 0011282                          
+07-28-06 10:25 Raymond        Note Edited: 0011282                         
+07-29-06 05:13 Raymond        Note Added: 0011298                          
+07-29-06 09:06 Raymond        Note Deleted: 0011298                        
+07-29-06 12:20 bitmage2       Note Added: 0011299                          
+07-29-06 12:23 bitmage2       Note Added: 0011300                          
+07-29-06 14:02 Raymond        Note Added: 0011302                          
+07-29-06 14:12 Raymond        Note Added: 0011303                          
+07-29-06 14:50 bitmage2       Note Added: 0011304                          
+07-29-06 14:51 bitmage2       File Added: proc-asound-card0-codec               
+    
+07-29-06 15:01 bitmage2       Note Added: 0011305                          
+07-29-06 15:03 bitmage2       File Added: test.state                       
+07-29-06 17:23 Raymond        Note Added: 0011309                          
+07-29-06 22:44 bitmage2       Note Added: 0011311                          
+07-30-06 03:26 Raymond        Note Added: 0011313                          
+07-30-06 03:33 Raymond        Note Added: 0011314                          
+07-30-06 03:39 Raymond        Note Edited: 0011314                         
+07-30-06 03:41 Raymond        Note Edited: 0011314                         
+07-30-06 11:52 darkbrain      Note Added: 0011317                          
+07-31-06 05:39 Raymond        Note Added: 0011336                          
+07-31-06 05:40 Raymond        Note Edited: 0011336                         
+07-31-06 05:43 Raymond        Note Edited: 0011336                         
+07-31-06 05:45 Raymond        Note Edited: 0011336                         
+07-31-06 05:47 Raymond        Note Edited: 0011336                         
+07-31-06 06:36 Raymond        Note Edited: 0011336                         
+07-31-06 08:40 Raymond        Note Edited: 0011336                         
+07-31-06 09:51 Raymond        Note Edited: 0011336                         
+07-31-06 09:56 Raymond        Note Edited: 0011336                         
+07-31-06 09:59 Raymond        Note Edited: 0011336                         
+07-31-06 10:06 Raymond        Note Edited: 0011336                         
+07-31-06 10:11 Raymond        Note Edited: 0011336                         
+07-31-06 22:42 bitmage2       Note Added: 0011350                          
+07-31-06 22:52 bitmage2       Note Added: 0011352                          
+08-01-06 02:48 Raymond        Note Added: 0011363                          
+08-01-06 02:53 Raymond        Note Edited: 0011363                         
+08-01-06 03:52 Raymond        Note Added: 0011366                          
+08-01-06 06:39 Raymond        Note Added: 0011370                          
+08-01-06 06:45 Raymond        Note Edited: 0011370                         
+08-03-06 04:26 Raymond        Note Added: 0011396                          
 ======================================================================
 
 
