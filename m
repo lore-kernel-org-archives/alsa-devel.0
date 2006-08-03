@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002320]: Almost no sound on Asus
 	laptop with Realtek ALC861
-Date: Thu, 3 Aug 2006 14:58:31 +0200
-Message-ID: <229cc7da2f5a7cce0a4d0746ad3718cd@bugtrack.alsa-project.org>
+Date: Thu, 3 Aug 2006 15:04:32 +0200
+Message-ID: <c22b050b8b9573504f5420726fe787be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADAE4139
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B59422F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Aug 2006 14:58:31 +0200 (MEST)
+	Thu,  3 Aug 2006 15:04:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             kernel-2.6.17.7
 ======================================================================
 Date Submitted:             07-31-2006 00:41 CEST
-Last Modified:              08-03-2006 14:58 CEST
+Last Modified:              08-03-2006 15:04 CEST
 ======================================================================
 Summary:                    Almost no sound on Asus laptop with Realtek ALC861
 Description: 
@@ -87,15 +87,6 @@ Hope someone smart will know how to fix everything :)
 ======================================================================
 
 ----------------------------------------------------------------------
- mario_7 - 07-31-06 23:52 
-----------------------------------------------------------------------
-If there is anything I could do to help you I'll do it, just tell me what
-:) 
-
-There would be no problem if the sound would just be in the other jack
-than it sould be, but only if the sound would be good quality :P
-
-----------------------------------------------------------------------
  michaldemin - 08-03-06 14:58 
 ----------------------------------------------------------------------
 I have tried to set all the ports as output and set the card to 8channel
@@ -106,6 +97,19 @@ i first loade the driver. I think that the ALC861 might be configured the
 right way by bios, and when the dirver loads it resets the codec to
 default config. Resulting no sound (not even the beeping anymore). Any
 ideas ?
+
+----------------------------------------------------------------------
+ tiwai - 08-03-06 15:04 
+----------------------------------------------------------------------
+In general, what we need are:
+
+- mapping of each pin widgets and actual I/O
+- any additional feature to activate speaker output (e.g. EAPD, GPIO, a
+hidden  register, etc)
+
+If we don't get this infromation from the hardware vendor (ASUS), you have
+to figure out by yourself -- by trial and error.  That I cannot help at
+all without the hardware here in my hand...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +124,7 @@ Date Modified  Username       Field                    Change
 07-31-06 19:16 michaldemin    Note Added: 0011346                          
 07-31-06 23:52 mario_7        Note Added: 0011354                          
 08-03-06 14:58 michaldemin    Note Added: 0011401                          
+08-03-06 15:04 tiwai          Note Added: 0011402                          
 ======================================================================
 
 
