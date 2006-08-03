@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002321]: no audio and very few mixer
 	options with C-Media 106 based USB sound card
-Date: Fri, 4 Aug 2006 01:21:44 +0200
-Message-ID: <0a8821ad91f37bbbaab37a4e2293c947@bugtrack.alsa-project.org>
+Date: Fri, 4 Aug 2006 01:31:03 +0200
+Message-ID: <88a71062372df7974c2172b7277e5699@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6670B195
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B441D130
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 01:21:44 +0200 (MEST)
+	Fri,  4 Aug 2006 01:31:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14/5
 ======================================================================
 Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-04-2006 01:21 CEST
+Last Modified:              08-04-2006 01:31 CEST
 ======================================================================
 Summary:                    no audio and very few mixer options with C-Media 106
 based USB sound card
@@ -95,57 +95,21 @@ sound is played trough the speakers at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- doobedoobedo - 08-04-06 00:58 
-----------------------------------------------------------------------
-It's mythtv that's the problem and as it's going to be attached to my myth
-box it's fairly critical to me that volume control works... but I agree
-that mythtv should have better configuration to allow it.
-
-But anyway I applied this patch:
-
---- alsa-driver-1.0.11.orig/alsa-kernel/usb/usbmixer_maps.c     
-2006-03-16 08:25:56.000000000 +0000
-+++ alsa-driver-1.0.11/alsa-kernel/usb/usbmixer_maps.c  2006-08-03
-22:49:09.000000000 +0100
-@@ -234,6 +234,15 @@
-        { 0 } /* terminator */
- };
-
-+/* C-Media 106 based card from Asound - hack to get only working volume
-control marked as Master */
-+static struct usbmix_name_map cm106_map[] = {
-+       { 3, NULL }, /* was Speaker Playback Switch */
-+       { 4, NULL }, /* was Speaker Playback */
-+       { 5, "Master Playback Switch" }, /* was Speaker 1 Playback Switch
-*/
-+       { 6, "Master Playback" }, /* was Speaker 1 Playback */
-+       { 0 } /* terminator */
-+};
-+
- /*
-  * Control map entries
-  */
-@@ -276,6 +283,10 @@
-                .id = USB_ID(0x0c45, 0x1158),
-                .map = justlink_map,
-        },
-+       {
-+               .id = USB_ID(0x0d8c, 0x0006),
-+               .map = cm106_map,
-+       },
-        { 0 } /* terminator */
- };
-
-
-
-Which didn't work - any ideas why?
-
-----------------------------------------------------------------------
  rlrevell - 08-04-06 01:21 
 ----------------------------------------------------------------------
 No idea.
 
 Can't you just patch MythTV?
+
+----------------------------------------------------------------------
+ rlrevell - 08-04-06 01:31 
+----------------------------------------------------------------------
+Hmm, looking at the driver it really seems that your change should work. 
+Did you reboot?  Make sure the new driver is loaded?
+
+Sorry, I don't know the USB driver that well.  If it still doesn't work
+can you post your patch with a link to this bug report to alsa-devel at
+lists.sourceforge.net?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -164,6 +128,7 @@ Date Modified  Username       Field                    Change
 08-03-06 23:13 rlrevell       Note Added: 0011411                          
 08-04-06 00:58 doobedoobedo   Note Added: 0011412                          
 08-04-06 01:21 rlrevell       Note Added: 0011413                          
+08-04-06 01:31 rlrevell       Note Added: 0011414                          
 ======================================================================
 
 
