@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002321]: no audio and very few mixer
-	options with C-Media 106 based USB sound card
-Date: Fri, 4 Aug 2006 02:06:02 +0200
-Message-ID: <5127c0096cae3207f72225b35c54e5f4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Fri, 4 Aug 2006 02:35:37 +0200
+Message-ID: <87c19d79fe375a234b99b77aad2de766@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1669816E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB47F13C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 02:06:02 +0200 (MEST)
+	Fri,  4 Aug 2006 02:35:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,110 +26,163 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2321> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
 ======================================================================
-Reported By:                doobedoobedo
+Reported By:                nikke
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2321
-Category:                   USB - usb-audio
+Issue ID:                   2159
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14/5
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-04-2006 02:06 CEST
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              08-04-2006 02:35 CEST
 ======================================================================
-Summary:                    no audio and very few mixer options with C-Media 106
-based USB sound card
+Summary:                    ac3 passthrough not working on recent versions
 Description: 
-no audio output with the snd-usb-audio module
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
 
-amixer output:
-Simple mixer control 'PCM',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 4095
-  Front Left: Capture 2048 [50%] [on]
-  Front Right: Capture 2048 [50%] [on]
-Simple mixer control 'PCM Capture Source',0
-  Capabilities: enum
-  Items: 'Mic' 'Input 1' 'Input 2' 'Mixer'
-  Item0: 'Mic'
-Simple mixer control 'PCM',1
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 4095
-  Front Left: Capture 2048 [50%]
-  Front Right: Capture 2048 [50%]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume cvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 8191 Capture 0 - 4095
-  Front Left: Playback 2048 [25%] [off] Capture 2048 [50%]
-  Front Right: Playback 2048 [25%] [off] Capture 2048 [50%]
-Simple mixer control 'Auto Gain Control',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 8191
-  Mono:
-  Front Left: Playback 2048 [25%] [on]
-  Front Right: Playback 2048 [25%] [on]
-Simple mixer control 'Speaker',1
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 37
-  Mono: Playback 15 [41%] [on]
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
 
-speaker 0 and mic will only decrease in volume in alsamixer, although no
-sound is played trough the speakers at all.
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
+
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
+
+If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- doobedoobedo - 08-04-06 01:54 
+ Quiverth - 08-03-06 14:15 
 ----------------------------------------------------------------------
-I'm afraid mythtv is a bit too complex for me ;). I've been loading and
-unloading the snd-usb-audio module by hand, I did a reboot though and its
-still the same. I'll post to the devel list tomorrow, thanks for your
-help.
+Added /etc/asound.state from ALSA 1.0.12rc1. AC3 passthrough is not working
+for me. To my eyes the controls seem to be present, and the digital output
+does work, just not AC3 pass-through.
 
 ----------------------------------------------------------------------
- rlrevell - 08-04-06 02:06 
+ Raymond - 08-04-06 02:35 
 ----------------------------------------------------------------------
-You should add some printk()s to debug it.  First, verify that it is
-recognizing your device and the USB id matches right.  Then, try changing
-the usbmix_name_map table around.  For example create 10 entries and label
-them "Master 1-10", etc.
+The pcm volume per voice is initialised in snd_ymfpci_mixer(), 
+ 
+  chip->pcm_mixer[idx].left = 0x8000;
+  chip->pcm_mixer[idx].right = 0x8000; 
+
+alsactl restore value from /etc/asound.state after the driver is loaded. 
+
+26214 =0x6666
+
+Do the driver need to check the access flag
+(SNDRV_CTL_ELEM_ACCESS_INACTIVE) in snd_ymfpci_pcm_vol_put() ? 
+
+
+	control.60 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32768'
+		iface PCM
+		name 'PCM Playback Volume'
+		value.0 26214
+		value.1 26214
+	}
+	control.61 {
+		comment.access 'read write inactive'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32768'
+		iface PCM
+		subdevice 1
+		name 'PCM Playback Volume'
+		value.0 26214
+		value.1 26214
+	}
+
+...
+
+	control.90 {
+		comment.access 'read write inactive'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32768'
+		iface PCM
+		subdevice 30
+		name 'PCM Playback Volume'
+		value.0 26214
+		value.1 26214
+	}
+	control.91 {
+		comment.access 'read write inactive'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32768'
+		iface PCM
+		subdevice 31
+		name 'PCM Playback Volume'
+		value.0 26214
+		value.1 26214
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-06 16:43 doobedoobedo   New Issue                                    
-08-01-06 16:43 doobedoobedo   Distribution              => Gentoo          
-08-01-06 16:43 doobedoobedo   Kernel Version            => 2.6.14/5        
-08-01-06 16:51 doobedoobedo   Issue Monitored: doobedoobedo                    
-08-01-06 16:54 doobedoobedo   Note Added: 0011376                          
-08-03-06 03:40 doobedoobedo   Note Added: 0011393                          
-08-03-06 17:34 doobedoobedo   Note Added: 0011404                          
-08-03-06 19:15 rlrevell       Note Added: 0011407                          
-08-03-06 20:32 doobedoobedo   Note Added: 0011408                          
-08-03-06 20:37 rlrevell       Note Added: 0011409                          
-08-03-06 23:02 doobedoobedo   Note Added: 0011410                          
-08-03-06 23:13 rlrevell       Note Added: 0011411                          
-08-04-06 00:58 doobedoobedo   Note Added: 0011412                          
-08-04-06 01:21 rlrevell       Note Added: 0011413                          
-08-04-06 01:31 rlrevell       Note Added: 0011414                          
-08-04-06 01:54 doobedoobedo   Note Added: 0011415                          
-08-04-06 02:06 rlrevell       Note Added: 0011416                          
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+06-15-06 02:18 Raymond        Note Added: 0010221                          
+06-15-06 02:27 Raymond        Note Edited: 0010221                         
+06-15-06 11:03 Mimosius       Note Added: 0010237                          
+06-15-06 23:43 nikke          Note Added: 0010246                          
+06-16-06 13:01 Mimosius       Note Added: 0010250                          
+06-16-06 13:16 Mimosius       Note Edited: 0010250                         
+06-16-06 13:26 Raymond        Note Added: 0010251                          
+06-16-06 13:31 Raymond        Note Edited: 0010251                         
+06-16-06 13:37 Mimosius       Note Added: 0010252                          
+06-16-06 16:25 Raymond        Note Added: 0010255                          
+06-17-06 01:17 nikke          Note Added: 0010262                          
+06-17-06 02:43 Raymond        Note Edited: 0010251                         
+06-17-06 10:21 Raymond        Note Added: 0010266                          
+06-17-06 10:24 Raymond        Note Edited: 0010266                         
+06-17-06 11:02 Raymond        Note Added: 0010267                          
+06-17-06 14:25 Raymond        Note Added: 0010268                          
+06-17-06 15:16 nikke          Note Added: 0010269                          
+06-17-06 16:10 Raymond        Note Added: 0010270                          
+06-17-06 16:23 Raymond        Note Edited: 0010270                         
+06-17-06 18:22 rlrevell       Note Added: 0010280                          
+06-18-06 04:03 Raymond        Note Added: 0010295                          
+06-18-06 04:08 Raymond        Note Edited: 0010295                         
+06-18-06 04:14 Raymond        Note Edited: 0010295                         
+06-18-06 13:30 Raymond        Note Edited: 0010295                         
+06-19-06 13:11 Clemens LadischStatus                   new => assigned     
+06-19-06 13:11 Clemens LadischAssigned To               => Clemens Ladisch 
+06-19-06 13:33 Clemens LadischStatus                   assigned => resolved
+06-19-06 13:33 Clemens LadischResolution               open => not fixable 
+06-19-06 13:33 Clemens LadischNote Added: 0010307                          
+06-19-06 21:43 nikke          Status                   resolved => feedback
+06-19-06 21:43 nikke          Resolution               not fixable => reopened
+06-19-06 21:43 nikke          Note Added: 0010320                          
+06-19-06 22:10 Mimosius       Note Added: 0010321                          
+06-20-06 04:56 Raymond        Note Added: 0010325                          
+06-20-06 04:57 Raymond        Note Edited: 0010325                         
+07-24-06 13:26 Quiverth       Issue Monitored: Quiverth                    
+08-03-06 14:08 Quiverth       File Added: asound.state                     
+08-03-06 14:15 Quiverth       Note Added: 0011400                          
+08-04-06 02:35 Raymond        Note Added: 0011417                          
 ======================================================================
 
 
