@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001612]: Ubuntu5.10 not configured for
-	Alsa device:surround51?
-Date: Fri, 4 Aug 2006 10:41:22 +0200
-Message-ID: <70cad31f6aae157dd737ccd83a94644e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002331]: Everything works,
+	but no sound. Mic works. ICH7, ALC861
+Date: Fri, 4 Aug 2006 11:18:42 +0200
+Message-ID: <206984a2855bef833f0ff9a433af3ab3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12529153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18D11141
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 10:41:22 +0200 (MEST)
+	Fri,  4 Aug 2006 11:18:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,255 +24,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1612> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2331> 
 ======================================================================
-Reported By:                Manolo
-Assigned To:                
+Reported By:                pwaller
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1612
-Category:                   1_OTHERS
+Issue ID:                   2331
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 Breezy
-Kernel Version:             Linux 2.6.12
+Status:                     assigned
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.17.6
 ======================================================================
-Date Submitted:             12-02-2005 17:51 CET
-Last Modified:              08-04-2006 10:41 CEST
+Date Submitted:             08-04-2006 11:18 CEST
+Last Modified:              08-04-2006 11:18 CEST
 ======================================================================
-Summary:                    Ubuntu5.10 not configured for Alsa
-device:surround51?
+Summary:                    Everything works, but no sound. Mic works. ICH7,
+ALC861
 Description: 
-Hardware
-  Motherboard: Abit Ic7, Audio: Onboard (Intel ICH5) RealTek
-    ALC650F 6-Channel AC97 CODEC.
-  uP: Pentium4, Hyperthreading, 3Ghz
+New laptop, I'm unsure of the exact make, it is unbranded - I don't know
+what the hardware is apart from what lspci and such are telling me. If I
+need to find out from some documentatin I will do so.
 
-Software
-  Ubuntu 5.10
-  Custom compiled kernel from 'linux-source-2.6.12 2.6.12-10.24'
-    make menuconfig
-      Device Drivers
-        Sound
-          <M> Sound card support
-          Advanced Linux Sound Architecture --->
-            <M> Advanced Linux Sound Architecture
-            <M>   Sequencer support
-            <M>     Sequencer dummy client
-            <M>   OSS Mixer API
-            <M>   OSS PCM (digital audio) API
-            [*]   OSS Sequencer API
-            <M>   RTC Timer support
-            PCI devices --->
-              <M>  All drivers <M> when option available.
-          Open Sound System --->
-            < > Open Sound System
-  Compiled Alsa packages:
-    alsa-driver-1.0.10
-    alsa-lib-1.0.10
-    alsa-utils-1.0.10 # configure --disable-nls: configure fails
-otherwise.
-    alsa-oss
-    alsa-plugins-1.0.10 # configure,pcm/Makefile.in:Modified to compile
-without
-      jack.
-    Note: At boot, if file /var/lib/alsa/asound.state does not exist,
-file
-      /etc/asound.state is overwritten with default values (No surround
-sound!).
-      Alsa package is not responsible for this (Ubuntu5.10 or
-Kernel2.6.12??).
+I've tried every setting for model= available.
 
-Sound Applications
-  aplay (alsa-utils-1.0.10)
-  audacity 1.2.3 #Device /dev/dsp
-  xmms 1.2.10 #plugin /usr/lib/xmms/Input/libwav.so (does not accept
-    5.1ChannelFile.wav) replaced by older version (Ubuntu 4.10).
-  mplayer 4.0.2
-  xine v0.99.3
+pwaller@jupiter$ sudo lspci -nv -s 00:1b.0
+0000:00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 1584:9072
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at fe0f8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
-esd daemon running:
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel
-    Error Message: There was an error initializing the audio i/o
-      layer. You will not be able to play or record audio.
-      Error: Host error.
-  audacity #gnome-terminal
-    Most of the times application starts without error message.
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel
-    Error Message: Couldn't open audio. Please check that:
-      Your soundcard is configured properly
-      You have the correct output plugin selected
-      No other program is blocking the soundcard.
-    After several Play/ErrorMessage:
-      5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.gnome-terminal
-    Most of the times application starts without error message.
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
+pwaller@jupiter$ sudo lspci -v -s 00:1b.0
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+        Subsystem: Uniwill Computer Corp: Unknown device 9072
 
-esd daemon NOT running (killall esd):
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel or gnome-terminal
-    Application starts without error message
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
+pwaller@jupiter$ sudo lshw -C multimedia
+  *-multimedia
+       description: Multimedia controller
+       product: 82801G (ICH7 Family) High Definition Audio Controller
+       vendor: Intel Corporation
+       physical id: 1b
+       bus info: pci@00:1b.0
+       version: 02
+       width: 64 bits
+       clock: 33MHz
+       capabilities: bus_master cap_list
+       configuration: driver=HDA Intel
+       resources: iomemory:fe0f8000-fe0fbfff irq:169
+
+
+dmesg | grep snd
+(no output).
+
+pwaller@jupiter$ lsmod | grep hda
+snd_hda_intel          20116  0
+snd_hda_codec         164400  1 snd_hda_intel
+snd_pcm                82820  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd                    60552  6
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+snd_page_alloc         11272  2 snd_hda_intel,snd_pcm
+
+Seems to be a fairly common issue, looking at various bug reports here.
+:(
+
 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 08-04-06 09:51 
-----------------------------------------------------------------------
-ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-
-The slave of dmix is hw, this means the 'hw' is already used by other
-application (e.g. web browser plugin - flash, sound server running in
-background, ...)
-
-
-Do you have a customized .asoundrc ?
-
-AFAIK, aplay cannot read a 6-channels wav file. (RIFF)
-
-You may try the ALSA upmix plugin ( require alsa-1.0.11 or later ) for
-upmix stereo to 6-channels.
-
-
-
-----------------------------------------------------------------------
- Manolo - 08-04-06 10:41 
-----------------------------------------------------------------------
-I don't have a customized .asoundrc
-
-aplay reads and plays 6-channel wav files all right but sends error
-messages to .xsession-errors if invoked with -Dsurround51.
-
-Please read:
-https://launchpad.net/distros/ubuntu/+source/alsa-lib/+bug/26483
-which includes a lot of information about this bug.
-
-I don't want to be an audio expert, I just want to use Linux.
-I bought a set of 'Home Cinema' speakers and naively thought it would be a
-matter of plug and play.
-Well it was not. It took me more than one week of fiddling with ALSA,
-Linux kernel, etc, until I could use my new speakers.
-Now it works all right but still there is no master volume control -gnome
-volume control only affects FrontLeft and FrontRight channels- and all
-applications using surround51 send continuous error messages to
-.xsession-errors. xine has an expra problem sometimes refusing to play
-surround51 movies:
-https://sourceforge.net/tracker/?func=detail&atid=109655&aid=1226595&group_id=9655
-
-Forgive me if I am mistaken but I think ALSA should be more
-'intelligent':
-All audio streams carry number of channels information, neither user nor
-applications need to specify the number of channels to ALSA (Why 'aplay
--Dsurround51 5.1File.wav'?). A line in ALSA configuration file specifying
-the number of speakers available should be enough to have it map audio
-channels into available output channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-05 17:51 Manolo         New Issue                                    
-12-02-05 17:51 Manolo         Distribution              => Ubuntu 5.10 Breezy
-12-02-05 17:51 Manolo         Kernel Version            => Linux 2.6.12    
-12-03-05 13:54 Manolo         Note Added: 0006898                          
-07-28-06 05:39 Raymond        Note Added: 0011283                          
-08-02-06 20:15 Manolo         Note Added: 0011390                          
-08-03-06 03:56 Raymond        Note Added: 0011394                          
-08-03-06 05:33 Raymond        Note Edited: 0011394                         
-08-03-06 17:37 Manolo         Note Added: 0011405                          
-08-03-06 18:20 Raymond        Note Added: 0011406                          
-08-04-06 03:29 Raymond        Note Edited: 0011406                         
-08-04-06 05:25 Raymond        Note Edited: 0011406                         
-08-04-06 09:51 Raymond        Note Edited: 0011406                         
-08-04-06 10:41 Manolo         Note Added: 0011418                          
+08-04-06 11:18 pwaller        New Issue                                    
+08-04-06 11:18 pwaller        Distribution              => Ubuntu Dapper   
+08-04-06 11:18 pwaller        Kernel Version            => 2.6.17.6        
 ======================================================================
 
 
