@@ -1,15 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How to stop a device immediately??
-Date: Fri, 4 Aug 2006 16:23:03 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0608041621360.9118@tm8103-a.perex-int.cz>
-References: <44D342E3.908@graphics.cs.uni-sb.de>
-	<Pine.LNX.4.61.0608041457460.9118@tm8103-a.perex-int.cz>
-	<44D35720.8020107@graphics.cs.uni-sb.de>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: envy24control with Hoontech C-Port
+Date: Fri, 4 Aug 2006 16:30:51 +0100
+Message-ID: <20060804153051.GA2642@localhost.localdomain>
+References: <200608030724.16351.songshop@bizmedia.com.au>
+	<200608040739.05362.songshop@bizmedia.com.au>
+	<s5hy7u4vnn8.wl%tiwai@suse.de>
+	<200608042014.12404.songshop@bizmedia.com.au>
+	<s5hslkcvkzi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44D35720.8020107@graphics.cs.uni-sb.de>
+Content-Disposition: inline
+In-Reply-To: <s5hslkcvkzi.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,75 +22,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Eric Peters <epeters@graphics.cs.uni-sb.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Geoff Beasley <songshop@bizmedia.com.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 4 Aug 2006, Eric Peters wrote:
-
-> Thanks Jaroslav for your fast reply,
+On Fri, Aug 04, 2006 at 12:44:17PM +0200, Takashi Iwai wrote:
+> At Fri, 4 Aug 2006 20:14:12 +1000,
+> Geoff Beasley wrote:
+> > 
+> > sure; i understand that. ;) 
+> > 
+> >  i thought the sync "led" would also apply for the spdif sync as well. no?
 > 
-> Jaroslav Kysela wrote:
-> > On Fri, 4 Aug 2006, Eric Peters wrote:
-> > 
-> > 
-> >>Dear all,
-> >>
-> >>I have a PCM device which is playing some PCM samples. The soundbuffer
-> >>is pretty full. And now I want to pause the buffer immediately (as
-> >>fast as possible) and sometime later I want to resume at exactly this
-> >>sample I paused.
-> >>
-> >>Now I found the two functions snd_pcm_pause and snd_pcm_resume. But
-> >>unfortunately these functions aren't supported by all hardware.
-> > 
-> > 
-> > Right.
-> > 
-> > 
-> >>Or do you have an idea how to implement such a feature? I also found
-> >>the two functions snd_pcm_drain and snd_pcm_drop. But when I use this
-> >>functions the sound buffer will be empty if I resume. And with
-> >>snd_pcm_drain there will be a delay between I pause the playback and
-> >>there are no more samples out of my spaekers.
-> > 
-> > 
-> > If hw pause/resume is supported - check snd_pcm_hw_params_can_pause(), 
-> > then you may use it, otherwise you should implement the pause in this way:
-> > 
-> > on pause:
-> > 
-> > 1) remember the current position in playback buffer (using snd_pcm_delay())
-> > 2) use snd_pcm_drop() to stop the stream immediately
-> > 
-> > on resume:
-> > 
-> > 3) fill ring buffer from the position saved in 1)
-> > 4) restart playback
-> > 
-> > In other words, if hardware does not support pause, application must 
-> > "emulate" this behaviour.
-> 
-> Yes, you're right. But I'm not sure if I understand your suggestion.
-> 
-> In 1) I will remember the current position of the playback buffer.
-> 
-> If I use snd_pcm_drop in 2) I will lose all frames I already put into
-> the playback buffer, or not?
+> I'm not sure what "led" means.  The fix was to change the control
+> element types for the latest drivers, and the feature wasn't changed
+> at all by that patch.
 
-Yes, exactly.
+Sync LED? My Delta 1010s don't have anything like that. The only
+indication that clocks are synced via S/PDIF is that jackd will
+run with the S/PDIF cable plugged in and it will show a slew of xruns
+(and eventually die) when the cable is unplugged.
 
-> If so, for 3) I have to know which samples I dropped so I can rewrite
-> them to the playback buffer, right?
+IIRC Doug's fix was just to allow S/PDIF sync to work with the Delta
+1010LT (it already worked for the Delta 1010). I don't think he got
+round to fixing sync via wordclock input for the 1010LT (that works for
+the Delta 1010 but not Delta 1010LT AFAIK).
 
-Right.
+BTW the Delta 1010 does have an indicator in envy24control that shows
+when the clock is synced to wordclock input - could this be the "led"
+referred to?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+John
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
