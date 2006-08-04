@@ -1,19 +1,16 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: [alsa-announce] ALSA 1.0.12rc2
-Date: Fri, 04 Aug 2006 18:35:00 +0200
-Message-ID: <m24pwsfoi3.fsf@vador.mandriva.com>
-References: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Starting the device manually
+Date: Fri, 04 Aug 2006 18:44:50 +0200
+Message-ID: <20060804164450.GA4743@turing.informatik.uni-halle.de>
+References: <44C494F4.6050301@graphics.cs.uni-sb.de>
+	<20060724110516.GA12899@turing.informatik.uni-halle.de>
+	<44C4B1B9.6060705@graphics.cs.uni-sb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 971B715C
-	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 18:35:01 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
-	(Jaroslav Kysela's message of "Fri,
-	4 Aug 2006 16:01:26 +0200 (CEST)")
+In-reply-to: <44C4B1B9.6060705@graphics.cs.uni-sb.de>
+Content-disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,49 +20,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Eric Peters <epeters@graphics.cs.uni-sb.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+Eric Peters wrote:
+> Clemens Ladisch wrote:
+> > Eric Peters wrote:
+> >>In some other messages on this list there was the hint to set this
+> >>threshhold larger than the max_buffer_size and then the device shouldn't
+> >>start automatically. So I've done. But unfortunately the playback starts
+> >>again automatically.
+> > 
+> > What are the contents of /proc/asound/card?/pcm0p/sub0/sw_params during
+> > playback?
+> 
+> start_threshold: 2703204728
 
-> Hi all,
-> =
+This is way too large.  In fact, it's so large that, as a signed value,
+it's negative.
 
-> 	1.0.12rc2 ALSA packages (except tools and oss - no changes) were =
+Just use the boundary value, which is appropriate for 'almost infinity'
+values like this.
 
-> released. The list of changes can be obtained here:
-> =
+> >>/* calculating the number of frames of a buffer and a period */
+> >>buffer_frames = buffer_time * sample_rate;
+> >>period_frames = period_time * sample_rate;
+> > 
+> > Is this correct?  Aren't the xxx_time variables in microseconds?
+> 
+> I don't know. ;-)
+> How is a frame defined?
 
-> 	http://www.alsa-project.org/changes/v1-0-12rc1--v1-0-12rc2.txt
+It's the amount of data that is transferred in one sample period.  It's
+more than one sample when there is more than one channel.
 
-it looks like alsa-firmware lacks some check in its configure.in...
+The buffer_time/period_time variables are in microseconds, while the
+sample_rate uses seconds (Hz = 1/s), so you would have to divide by
+1000000 for the calculation to make sense.
 
-make[1]: Entering directory `/tmp/tv-build/alsa-tools-1.0.12rc1/alsa-firmwa=
-re-1.0.12rc2/emu'
-if x86_64-mandriva-linux-gnu-gcc -DPACKAGE_NAME=3D\"\" -DPACKAGE_TARNAME=3D=
-\"\" -DPACKAGE_VERSION=3D\"\" -DPACKAGE_STRING=3D\"\" -DPACKAGE_BUGREPORT=
-=3D\"\" -DPACKAGE=3D\"alsa-firmware\" -DVERSION=3D\"1.0.12rc2\" -DSTDC_HEAD=
-ERS=3D1  -I. -I.     -O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=3D2 -fexceptions -M=
-T fw_writer.o -MD -MP -MF ".deps/fw_writer.Tpo" -c -o fw_writer.o fw_writer=
-.c; \
-then mv -f ".deps/fw_writer.Tpo" ".deps/fw_writer.Po"; else rm -f ".deps/fw=
-_writer.Tpo"; exit 1; fi
-fw_writer.c:31:32: error: audio_dock_netlist.h: Aucun fichier ou r=E9pertoi=
-re de ce type
-fw_writer.c: In function 'main':
-fw_writer.c:56: error: 'audio_dock_netlist' undeclared (first use in this f=
-unction)
-fw_writer.c:56: error: (Each undeclared identifier is reported only once
-fw_writer.c:56: error: for each function it appears in.)
-make[1]: *** [fw_writer.o] Erreur 1
-make[1]: Leaving directory `/tmp/tv-build/alsa-tools-1.0.12rc1/alsa-firmwar=
-e-1.0.12rc2/emu'
-make: *** [all-recursive] Erreur 1
+> > ..., but it is common to use just the boundary value instead of
+> > some explicitly calculated value.
+> 
+> The boundary value in the output above? How can I determine this value 
+> in my application?
+
+snd_pcm_sw_params_get_boundary()
+
+
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
