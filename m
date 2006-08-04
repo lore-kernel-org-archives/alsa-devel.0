@@ -1,19 +1,15 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: snd_ctl_open and snd_rawmidi_open conflict
-Date: Sat, 5 Aug 2006 01:30:39 +0400
-Message-ID: <70a871c80608041430r7b289747ve16936909fa167e4@mail.gmail.com>
-References: <70a871c80607301752w16c1c014v40f574d17603f08d@mail.gmail.com>
-	<s5h3bchabr4.wl%tiwai@suse.de>
-	<70a871c80608011336w52e4d734v533eb650129a5564@mail.gmail.com>
-	<s5hmzanhws3.wl%tiwai@suse.de>
-	<70a871c80608021254q206ebc31jc8977c4d5e4e0891@mail.gmail.com>
-	<s5hodv2gj64.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002334]: Microphone doesn't work
+Date: Fri, 4 Aug 2006 23:46:48 +0200
+Message-ID: <c04308a2d243508fcb0f63a7b1a77168@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hodv2gj64.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6A0914F
+	for <alsa-devel@alsa-project.org>;
+	Fri,  4 Aug 2006 23:46:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,16 +19,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/3/06, Takashi Iwai <tiwai@suse.de> wrote:
-> The patch below should fix the problems.  Give it a try.
 
-Thanks. It helped.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2334> 
+======================================================================
+Reported By:                extremecarver
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2334
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Dapper (Gnome and XFCE both no difference)
+Kernel Version:             2.6.12.2 - beyond1.1
+======================================================================
+Date Submitted:             08-04-2006 23:46 CEST
+Last Modified:              08-04-2006 23:46 CEST
+======================================================================
+Summary:                    Microphone doesn't work
+Description: 
+Actually the hardware is a Sigmatel 9200 chip STAC9200, on a dell 630m
+laptop. with intel 915chipset: When recording in gnome recorder i only
+hear noise. In skype I hear nothing.
 
-Dmitry.
+I compiled from source using the following settings:
+http://ubuntuforums.org/showthread.php?t=195434&highlight=hda-intel
+
+except that I changed to 1.0.12rc2
+Also 1.12rc1 did not work. 
+
+There is also a thread under
+http://www.ubuntuforums.org/showthread.php?t=206606&highlight=alsa+compile
+
+The microphone problem should have been solved in 1.0.11rc5 but it doesn't
+seem to work for anyone.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-04-06 23:46 extremecarver  New Issue                                    
+08-04-06 23:46 extremecarver  Distribution              => Ubuntu Dapper (Gnome
+and XFCE both no difference)
+08-04-06 23:46 extremecarver  Kernel Version            => 2.6.12.2 - beyond1.1
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
