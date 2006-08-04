@@ -1,15 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002332]: Inbuilt speakers not muted
-Date: Fri, 4 Aug 2006 15:49:12 +0200
-Message-ID: <a69888b652591c53eddd51d3e7237b9f@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: ALSA 1.0.12rc2
+Date: Fri, 4 Aug 2006 16:01:26 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF359177
-	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 15:49:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,63 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: ALSA Announce <alsa-announce@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2332> 
-======================================================================
-Reported By:                santhosh_irtt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2332
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Linux santhosh 2.6.12-12mdksmp #1 SMP Fri Sep 9
-17:43:23 CEST 2005 i686 Genuine Intel(R) CPU           T2500  @ 2.00GHz unknown
-GNU/Linux
-Kernel Version:             
-======================================================================
-Date Submitted:             08-04-2006 15:49 CEST
-Last Modified:              08-04-2006 15:49 CEST
-======================================================================
-Summary:                    Inbuilt speakers not muted
-Description: 
-I am using Dell Latitude 620 laptop. I have installed mandrake 2006 in my
-notebook. I am using following sound card...
+	1.0.12rc2 ALSA packages (except tools and oss - no changes) were 
+released. The list of changes can be obtained here:
 
-       Card: HDA Intel                                                    
-                                      
-       Chip: SigmaTel STAC9200                                            
-                                       
+	http://www.alsa-project.org/changes/v1-0-12rc1--v1-0-12rc2.txt
 
-AlsaMixer v1.0.9
+				Have fun,
+						Jaroslav
 
-The problem is the inbuilt speakers present in the laptop is not muted
-when i connect the Head Phone in the headphone slot.
-
-The output comes both thro headphone and the speakers in laptop.
-
-I dont know how to fix this.
-Please help me.....
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-06 15:49 santhosh_irtt  New Issue                                    
-08-04-06 15:49 santhosh_irtt  Distribution              => Linux santhosh
-2.6.12-12mdksmp #1 SMP Fri Sep 9 17:43:23 CEST 2005 i686 Genuine Intel(R) CPU   
-       T2500  @ 2.00GHz unknown
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
