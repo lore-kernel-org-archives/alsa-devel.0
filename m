@@ -1,15 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002334]: Microphone doesn't work
-Date: Fri, 4 Aug 2006 23:46:48 +0200
-Message-ID: <c04308a2d243508fcb0f63a7b1a77168@bugtrack.alsa-project.org>
+From: Christoph Lameter <christoph@lameter.com>
+Subject: cmipci driver locking up linux hard
+Date: Fri, 4 Aug 2006 16:22:56 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0608041616590.9917@graphe.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6A0914F
-	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 23:46:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,57 +15,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I recently bought a cmpci pci card with support for 6 channel surround 
+sound. Vendor was PPA Int'l.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2334> 
-======================================================================
-Reported By:                extremecarver
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2334
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper (Gnome and XFCE both no difference)
-Kernel Version:             2.6.12.2 - beyond1.1
-======================================================================
-Date Submitted:             08-04-2006 23:46 CEST
-Last Modified:              08-04-2006 23:46 CEST
-======================================================================
-Summary:                    Microphone doesn't work
-Description: 
-Actually the hardware is a Sigmatel 9200 chip STAC9200, on a dell 630m
-laptop. with intel 915chipset: When recording in gnome recorder i only
-hear noise. In skype I hear nothing.
+I can play music for shorter or longer time period but then it invariably 
+locks up. If one tries the surround sound then it locks up very fast. 
+Guess some concurrency issue? Run on a P4M800PROC Motherbord with
+a Pentium940 (verified that lockup also occurs with single processor).
 
-I compiled from source using the following settings:
-http://ubuntuforums.org/showthread.php?t=195434&highlight=hda-intel
+Tried to enable the nmi_watchdog but it also could not revive linux.
 
-except that I changed to 1.0.12rc2
-Also 1.12rc1 did not work. 
+How do I debug this thing?
 
-There is also a thread under
-http://www.ubuntuforums.org/showthread.php?t=206606&highlight=alsa+compile
+christoph@pentium940:/proc/asound$ cat cards
+ 0 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
+                      C-Media PCI CMI8738-MC6 (model 55) at 0xe800, irq 201
 
-The microphone problem should have been solved in 1.0.11rc5 but it doesn't
-seem to work for anyone.
-======================================================================
+christoph@pentium940:/proc/asound/card0$ cat cmipci
+C-Media PCI CMI8738-MC6 (model 55) at 0xe800, irq 201
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-06 23:46 extremecarver  New Issue                                    
-08-04-06 23:46 extremecarver  Distribution              => Ubuntu Dapper (Gnome
-and XFCE both no difference)
-08-04-06 23:46 extremecarver  Kernel Version            => 2.6.12.2 - beyond1.1
-======================================================================
+00: 02 00 00 00
+04: 10 0c 00 00
+08: 03 00 09 00
+0c: 00 00 00 0a
+10: c0 00 00 00
+14: 00 00 00 00
+18: 00 00 80 0c
+1c: 00 00 fe ff
+20: 10 40 08 00
+24: 00 01 00 04
+28: ff ff ff ff
+2c: ff ff ff ff
+30: 00 00 00 00
+34: 00 00 00 00
+38: 00 00 00 00
+3c: 00 00 00 00
+
+christoph@pentium940:/proc/asound/card0$ cat id
+CMI8738MC6
 
 
 
