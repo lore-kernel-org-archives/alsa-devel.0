@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002321]: no audio and very few mixer
 	options with C-Media 106 based USB sound card
-Date: Fri, 4 Aug 2006 01:54:24 +0200
-Message-ID: <5cd1120aaf60c9f0451e9e881502e322@bugtrack.alsa-project.org>
+Date: Fri, 4 Aug 2006 02:06:02 +0200
+Message-ID: <5127c0096cae3207f72225b35c54e5f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4C2521B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1669816E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 01:54:24 +0200 (MEST)
+	Fri,  4 Aug 2006 02:06:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14/5
 ======================================================================
 Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-04-2006 01:54 CEST
+Last Modified:              08-04-2006 02:06 CEST
 ======================================================================
 Summary:                    no audio and very few mixer options with C-Media 106
 based USB sound card
@@ -95,22 +95,20 @@ sound is played trough the speakers at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-04-06 01:31 
-----------------------------------------------------------------------
-Hmm, looking at the driver it really seems that your change should work. 
-Did you reboot?  Make sure the new driver is loaded?
-
-Sorry, I don't know the USB driver that well.  If it still doesn't work
-can you post your patch with a link to this bug report to alsa-devel at
-lists.sourceforge.net?
-
-----------------------------------------------------------------------
  doobedoobedo - 08-04-06 01:54 
 ----------------------------------------------------------------------
 I'm afraid mythtv is a bit too complex for me ;). I've been loading and
 unloading the snd-usb-audio module by hand, I did a reboot though and its
 still the same. I'll post to the devel list tomorrow, thanks for your
 help.
+
+----------------------------------------------------------------------
+ rlrevell - 08-04-06 02:06 
+----------------------------------------------------------------------
+You should add some printk()s to debug it.  First, verify that it is
+recognizing your device and the USB id matches right.  Then, try changing
+the usbmix_name_map table around.  For example create 10 entries and label
+them "Master 1-10", etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -131,6 +129,7 @@ Date Modified  Username       Field                    Change
 08-04-06 01:21 rlrevell       Note Added: 0011413                          
 08-04-06 01:31 rlrevell       Note Added: 0011414                          
 08-04-06 01:54 doobedoobedo   Note Added: 0011415                          
+08-04-06 02:06 rlrevell       Note Added: 0011416                          
 ======================================================================
 
 
