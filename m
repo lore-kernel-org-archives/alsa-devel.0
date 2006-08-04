@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001909]: Labelling of controls for SB
 	Extigy is confusing
-Date: Fri, 4 Aug 2006 18:50:19 +0200
-Message-ID: <8c7bbd7eaed29ba436669d7ed96f5725@bugtrack.alsa-project.org>
+Date: Fri, 4 Aug 2006 18:59:50 +0200
+Message-ID: <c5437e6bf2ace278b177da40c712964d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CED65149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FF5116E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 18:50:19 +0200 (MEST)
+	Fri,  4 Aug 2006 18:59:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-11-2006 16:33 CET
-Last Modified:              08-04-2006 18:50 CEST
+Last Modified:              08-04-2006 18:59 CEST
 ======================================================================
 Summary:                    Labelling of controls for SB Extigy is confusing
 Description: 
@@ -52,52 +52,6 @@ reflect the channel(s) that they control. Amixer shows this information
 Additionally a Master 1 control exists that changes the volume of all
 channels.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 08-03-06 04:16 
-----------------------------------------------------------------------
-Most likely both alsamixer and amixer cannot handle these two controls
-properly
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x851.htm
-
-The index field holds the index number of this control. If there are
-several different controls with the same name, they can be distinguished
-by the index
-number. This is the case when several codecs exist on the card. If the
-index is zero, you can omit the definition above. 
-
-You have to ask the ALSA developer why index controls can have different
-count.
-The mixer applications need to be very smart to handle this difference in
-count
-
-       control.16 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 6
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 value.0 130
-                 value.1 130
-                 value.2 130
-                 value.3 130
-                 value.4 130
-                 value.5 130
-         }
-         control.17 {
-                 comment.access 'read write'
-                 comment.type INTEGER
-                 comment.count 1
-                 comment.range '0 - 200'
-                 iface MIXER
-                 name 'Master Playback Volume'
-                 index 1
-                 value 130
-         }
-
-
 
 ----------------------------------------------------------------------
  Raymond - 08-03-06 11:43 
@@ -158,6 +112,14 @@ http://hg-mirror.alsa-project.org/alsa-kernel?f=2cd9765e57f6;file=Documentation/
 
 
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 08-04-06 18:59 
+----------------------------------------------------------------------
+andersin, your control names do not quite match the controls seen in other
+SB Extigy devices (and that the driver expects).
+
+Please post the output of "lsusb -v" for this device.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -179,6 +141,7 @@ driver
 08-04-06 18:50 Clemens LadischStatus                   new => assigned     
 08-04-06 18:50 Clemens LadischCategory                 alsamixer => USB -
 usb-audio
+08-04-06 18:59 Clemens LadischNote Added: 0011420                          
 ======================================================================
 
 
