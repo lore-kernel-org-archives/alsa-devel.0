@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [alsa-announce] ALSA 1.0.12rc2
-Date: Fri, 4 Aug 2006 19:19:28 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0608041918120.9118@tm8103-a.perex-int.cz>
-References: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
-	<m24pwsfoi3.fsf@vador.mandriva.com> <s5h7j1otpmz.wl%tiwai@suse.de>
-	<m2slkce88q.fsf@vador.mandriva.com>
+From: "Franca Adamski" <dukesu@gulfcc.org>
+Subject: Re: wecoyVzlAGRA
+Date: Fri, 4 Aug 2006 13:47:12 -0700
+Message-ID: <000001c6b807$298287e0$29afa8c0@cir8>
+Reply-To: Franca Adamski <dukesu@gulfcc.org>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-1463789724-1770691048-1154711968=:9118"
+Content-Type: multipart/mixed; boundary="===============2116704340=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 819E6140
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24EEC120
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Aug 2006 19:19:29 +0200 (MEST)
-In-Reply-To: <m2slkce88q.fsf@vador.mandriva.com>
+	Fri,  4 Aug 2006 22:47:38 +0200 (MEST)
+Received: from gcalaw.com (249.178.99-84.rev.gaoland.net [84.99.178.249])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	9F0A6997B0 for <alsa-devel@alsa-project.org>;
+	Fri,  4 Aug 2006 22:47:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,52 +23,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Thierry Vignaud <tvignaud@mandriva.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is a multi-part message in MIME format.
 
----1463789724-1770691048-1154711968=:9118
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+--===============2116704340==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6B7CC.7D23AFE0"
 
-yOn Fri, 4 Aug 2006, Thierry Vignaud wrote:
+This is a multi-part message in MIME format.
 
-> Takashi Iwai <tiwai@suse.de> writes:
->=20
-> > > it looks like alsa-firmware lacks some check in its configure.in...
-> > >=20
-> > > make[1]: Entering directory `/tmp/tv-build/alsa-tools-1.0.12rc1/alsa-=
-firmware-1.0.12rc2/emu'
-> > > if x86_64-mandriva-linux-gnu-gcc -DPACKAGE_NAME=3D\"\" -DPACKAGE_TARN=
-AME=3D\"\" -DPACKAGE_VERSION=3D\"\" -DPACKAGE_STRING=3D\"\" -DPACKAGE_BUGRE=
-PORT=3D\"\" -DPACKAGE=3D\"alsa-firmware\" -DVERSION=3D\"1.0.12rc2\" -DSTDC_=
-HEADERS=3D1  -I. -I.     -O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=3D2 -fexception=
-s -MT fw_writer.o -MD -MP -MF ".deps/fw_writer.Tpo" -c -o fw_writer.o fw_wr=
-iter.c; \
-> > > then mv -f ".deps/fw_writer.Tpo" ".deps/fw_writer.Po"; else rm -f ".d=
-eps/fw_writer.Tpo"; exit 1; fi
-> > > fw_writer.c:31:32: error: audio_dock_netlist.h: Aucun fichier ou r=E9=
-pertoire de ce type
-> >=20
-> > Oops, it's missing in emu/Makefile.am.
-> >=20
-> > I fixed it on HG.  Jaroslav, could you re-tag and re-package
-> > alsa-firmware?
->=20
-> as 1.0.12-rc2.1 preferrally for proper updates for distributors...
+------=_NextPart_000_0001_01C6B7CC.7D23AFE0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-We use 1.0.12rc2a naming scheme. I'll do new package.
+Hi,
+=20
+VALzlUM from 1, 25 $
+VzlAGRA from 3, 35 $
+CzlALIS from 3, 75 $
+AMBzlEN
+=20
+http://www.buhunomera.com
+=20
+,
+,
+,
+,
+,
+same time. If you cant think of anything else to do crook your arm
+and admire your biceps.
+Sounds a paradise, she frowned.
 
-=09=09=09=09=09=09Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
----1463789724-1770691048-1154711968=:9118
+------=_NextPart_000_0001_01C6B7CC.7D23AFE0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>VALzlUM from  1, 25 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>VzlAGRA from  3, 35 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>CzlALIS from  3, 75 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>AMBzlEN</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.buhunomera.com">http://www.buhunomera.com</A></FONT></=
+DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>same  time. If you cant think of =
+anything else to do crook  your  arm<BR>
+and admire your biceps.<BR>
+ Sounds a paradise, she frowned.<BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6B7CC.7D23AFE0--
+
+
+
+
+
+--===============2116704340==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -79,7 +108,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
----1463789724-1770691048-1154711968=:9118
+--===============2116704340==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -90,4 +119,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
----1463789724-1770691048-1154711968=:9118--
+--===============2116704340==--
