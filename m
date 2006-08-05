@@ -1,15 +1,15 @@
-From: Giorgio Padrin <giorgio@mandarinlogiq.org>
-Subject: Re: [PATCH] pxa2xx-i2sound
-Date: Sat, 5 Aug 2006 21:21:08 +0200
-Message-ID: <200608052121.08423.giorgio@mandarinlogiq.org>
-References: <200608051937.13845.giorgio@mandarinlogiq.org>
-	<Pine.LNX.4.61.0608051950510.9377@tm8103.perex-int.cz>
+From: Tim Burrell <tim@timburrell.net>
+Subject: Re: hda intel driver and no surround sound with nvidia
+ mcp55 (chip ID RealTek 888)
+Date: Sat, 05 Aug 2006 16:42:44 -0300
+Message-ID: <44D4F4B4.4040708@timburrell.net>
+References: <44D4BD9F.9010601@timburrell.net>
+	<Pine.LNX.4.61.0608051946190.9377@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0608051950510.9377@tm8103.perex-int.cz>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0608051946190.9377@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,31 +20,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Alle 19:53, sabato 5 agosto 2006, Jaroslav Kysela ha scritto:
-> On Sat, 5 Aug 2006, Giorgio Padrin wrote:
-> > Hi,
-> >
-> > This is minimal patch updating the pxa2xx-i2sound code in alsa-driver.
->
-> Applied, but please, be more verbose in future:
->
-> 1) one-line patch summary is missing (what patch does)
-> 2) explanation why this patch is required is missing
-> 3) Signed-off-by line is missing
+>> I'm trying to get multichannel sound working on my nvidia nforce 590
+>> based mobo that uses the intel hd audio (nvidia mcp55) chipset.  It
+>> plays fine in two channels but any attempts to use -Dsurround51 or
+>> -Dsurround40 fail.  Ie:
+>>
+>> Playing WAVE 'space_battle.wav' : Signed 16 bit Little Endian, Rate
+>> 44100 Hz, Channels 6
+>> aplay: set_params:906: Channels count non available
+> 
+> That's correct. Use -Dplug:surround40, because the count of channels from 
+> the .wav file has to be converted to four.
 
-You're right.
+I just upgraded to 1.0.12_rc2, and I've got a lot more mixer controls in
+alsamixer now.  I can see front, rear, surround, etc.  And now I can
+finally specify -Dplug:surround71 to get 8 channel audio!
 
->
-> I know, it's really simple patch, but I don't know exactly which problems
-> are with the mmap access on the pxa platform (probably DMA memory area
-> coherency, right?).
+However, there is one problem.  On my card the channels are not exactly
+correct when running speaker-test.  The side and rear speakers are
+reversed.  I double checked this with my card's manual, and in Windows.
 
-I didn't investigate the issue; I disabled mmapped access mode by prudence.
+In dmesg I see the following:
 
-Giorgio
+hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+pdplus: version 0.0.5
+hda-intel: Invalid position buffer, using LPIB read method instead.
+
+Also, curiously, using the same settings as speaker-test (which works
+fine), aplay hangs when trying to play multichannel audio files.  Same
+for mplayer (with or without -channels settings).
+
+Thanks,
+
+Tim.
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
