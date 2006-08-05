@@ -1,21 +1,16 @@
-From: Uli <psycho@foex-gaming.com>
-Subject: ALSA works, OSS doesnt
-Date: Sat, 05 Aug 2006 21:49:07 +0200
-Message-ID: <44D4F633.3060302@foex-gaming.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Sat, 5 Aug 2006 22:04:07 +0200
+Message-ID: <7105f8cb2bee4674af2b878e4dce4825@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from irc.kuja.in (irc.kuja.in [217.160.180.121])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FB47173
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96A86199
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 21:49:12 +0200 (MEST)
-Received: from [192.168.2.102] (p57A6715C.dip.t-dialin.net [87.166.113.92])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	by irc.kuja.in (Postfix) with ESMTP id D9064256203
-	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 21:50:39 +0200 (CEST)
+	Sat,  5 Aug 2006 22:04:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,76 +23,157 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi,
-since i updated my gentoo box from kernel 2.6.16 to 2.6.17 all apps
-using OSS for sound didnt work. Skype pitched the sound, Firefox had
-gaps and so on.
-I did some git-bisect to find out what broke my sound and got compile
-errors...
-Here is what i got to:
-- ------------------------------------------------------
-21a3479a0b606d36fe24093f70a1c27328cec286 is first bad commit
-diff-tree 21a3479a0b606d36fe24093f70a1c27328cec286 (from
-153abaa4ff0500070a282dd0868367d69388d527)
-Author: Jaroslav Kysela <perex@suse.cz>
-Date:   Fri Jan 13 09:12:11 2006 +0100
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              08-05-2006 22:04 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-    [ALSA] PCM midlevel & PCM OSS - make procfs & OSS plugin code optional
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-    Modules: ALSA Core,PCM Midlevel,ALSA<-OSS emulation,USB generic driver
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-    1) The verbose procfs code for the PCM midlevel and usb audio
-       can be removed now (more patches will follow).
-       CONFIG_SND_VERBOSE_PROCFS
-    2) The PCM OSS plugin system can be also compiled optionaly.
-       CONFIG_SND_PCM_OSS_PLUGINS
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-    Signed-off-by: Jaroslav Kysela <perex@suse.cz>
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
-:040000 040000 de2951ee7fcc2dd79e4b05f9929689e4c236eb66
-6b0d7ac583b44b7a86dbd223b4e5b797333ea2eb M	include
-:040000 040000 e8a248df599daeb773720babe3b9bd0740e3a813
-7c182a880af29f6b19a3ae7479ff1d9ec35f5aa4 M	sound
-- ---------------------------------------------
-0534ab4279bd25e2d0a888af07466446dac05d74 is first bad commit
-diff-tree 0534ab4279bd25e2d0a888af07466446dac05d74 (from
-9d83911ac082c6d63c1c08f235349113d8c1d0a3)
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Fri Jan 13 12:09:12 2006 +0100
+Please let me know if there is something more I can provide.
+======================================================================
 
-    [ALSA] Clean up pcm-oss plugins
+----------------------------------------------------------------------
+ jlpedrosa - 08-05-06 19:24 
+----------------------------------------------------------------------
+hi!
 
-    Modules: ALSA<-OSS emulation
+thanks a lot for you work, i'm not used to csv downloading and patching,
+could you make a 5 line guide of what in needed to get sound working? i've
+enetered in the hg and i don't know how to start.
 
-    Clean up pcm-oss plugin codes.
-    Removed dead codes, and simplified route/rate plugins.
+What distributions are you using? the only i could make boot was Suse 10.1
 
-    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+tried mandriva, and kubuntu, in fact kunbutu booted in live mode but
+failed to boot with local installation, i think it was something about the
+mother board, more specific, de SATA controller.
 
-:040000 040000 a7cf54730a307149c77418ca229bb5604e69ec5e
-8f891f51f762d0468b6c59e839b11358be3b0d3a M	sound
-- -----------------------------------------------
-I'm totaly sure one of this comitts broke the sound because i had some
-compile error and copying the whole directory and continued in one with
-git bisect bad and in the other with good. So i got two 'solutions' but
-i hope at least this can help fix the bug.
-If i can do any more for fixing this, just ask.
-If this bug is already fixed: I'm sorry, just ignore this mail.
+Thanks again! gonna be great hear music again.
 
-Uli Schlachter
-- --
-Who is this LAN and why makes he so many partys?
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+----------------------------------------------------------------------
+ michaldemin - 08-05-06 22:04 
+----------------------------------------------------------------------
+use the latest patch ! in the previous one i have swaped the 4ch and 2ch
+mode by accident
 
-iD8DBQFE1PYJABixOSrV998RAj9LAJ9PrpC6OLfW8SoGj7+rl0LF9qLFLwCfSokN
-SvDX3vPKYejAak5igLkamTQ=
-=pIvA
------END PGP SIGNATURE-----
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
+06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
+06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
+06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
+06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
+06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 22:50 taschenorakel  File Added:
+alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
+06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
+06-26-06 16:38 rlrevell       Note Added: 0010548                          
+06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
+07-29-06 04:04 pwaller        Note Added: 0011296                          
+07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
+07-31-06 21:34 vertex         Note Added: 0011349                          
+08-01-06 00:45 pwaller        Note Added: 0011355                          
+08-01-06 01:32 rlrevell       Note Added: 0011358                          
+08-01-06 20:58 pwaller        Note Added: 0011377                          
+08-01-06 21:14 rlrevell       Note Added: 0011378                          
+08-01-06 21:17 pwaller        Note Added: 0011379                          
+08-01-06 21:24 pwaller        Note Added: 0011380                          
+08-01-06 21:26 rlrevell       Note Added: 0011381                          
+08-01-06 21:28 pwaller        Note Added: 0011382                          
+08-04-06 19:53 norbusan       Issue Monitored: norbusan                    
+08-05-06 18:07 michaldemin    Note Added: 0011441                          
+08-05-06 18:07 michaldemin    Issue Monitored: michaldemin                    
+08-05-06 18:34 michaldemin    Note Edited: 0011441                         
+08-05-06 18:36 michaldemin    Note Added: 0011442                          
+08-05-06 18:39 pwaller        Note Added: 0011443                          
+08-05-06 19:10 michaldemin    File Added: uniwill.patch                    
+08-05-06 19:11 michaldemin    Note Added: 0011445                          
+08-05-06 19:24 jlpedrosa      Note Added: 0011446                          
+08-05-06 22:01 michaldemin    File Added: uniwill-new.patch                    
+08-05-06 22:04 michaldemin    Note Added: 0011447                          
+======================================================================
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
