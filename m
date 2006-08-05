@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001612]: Ubuntu5.10 not configured for
 	Alsa device:surround51?
-Date: Sat, 5 Aug 2006 10:13:09 +0200
-Message-ID: <89af0c5f2a85a218717cb786c482b685@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 10:31:39 +0200
+Message-ID: <906d7a461d311b6ad20def75092de8b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16C0F17E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51E9DCB
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 10:13:09 +0200 (MEST)
+	Sat,  5 Aug 2006 10:31:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Ubuntu 5.10 Breezy
 Kernel Version:             Linux 2.6.12
 ======================================================================
 Date Submitted:             12-02-2005 17:51 CET
-Last Modified:              08-05-2006 10:13 CEST
+Last Modified:              08-05-2006 10:31 CEST
 ======================================================================
 Summary:                    Ubuntu5.10 not configured for Alsa
 device:surround51?
@@ -206,25 +206,6 @@ Channels.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-05-06 06:55 
-----------------------------------------------------------------------
-Post output of
-
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
-
-content of test.state after 'alsactl store -f test.state'
-
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-cat /proc/asound/card0/pcm0p/info
-
-aplay -v stereo.wav
-
-
-
-----------------------------------------------------------------------
  Manolo - 08-05-06 10:13 
 ----------------------------------------------------------------------
 Please note that, after reporting this bug, I have changed my system
@@ -238,6 +219,29 @@ Please find attached RequestedData.txt
 
 Best regards,
 Manolo.
+
+----------------------------------------------------------------------
+ Raymond - 08-05-06 10:31 
+----------------------------------------------------------------------
+subdevices_avail equal to zero means one application already use the
+playback device, most likely a sound server daemon open either /dev/dsp or
+hw:0
+
+If the sound card does not support hardware mixing, all application need
+to use 'dmix' throught 'default' device.
+
+cat /proc/asound/card0/pcm0p/info
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: Intel ICH
+name: Intel ICH5
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -260,6 +264,8 @@ Date Modified  Username       Field                    Change
 08-04-06 15:18 Raymond        Note Added: 0011419                          
 08-05-06 06:55 Raymond        Note Edited: 0011419                         
 08-05-06 10:13 Manolo         Note Added: 0011424                          
+08-05-06 10:13 Manolo         File Added: RequestedData.txt                    
+08-05-06 10:31 Raymond        Note Added: 0011425                          
 ======================================================================
 
 
