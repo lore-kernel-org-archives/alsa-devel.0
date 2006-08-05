@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Sat, 5 Aug 2006 18:36:23 +0200
-Message-ID: <a192062d57d0196402c911cdd5c07cad@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 18:39:39 +0200
+Message-ID: <5060d6aecfe22cacab0bb49606a10c43@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA594142
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19AE916A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 18:36:23 +0200 (MEST)
+	Sat,  5 Aug 2006 18:39:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-05-2006 18:36 CEST
+Last Modified:              08-05-2006 18:39 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,27 +73,18 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- michaldemin - 08-05-06 18:34 
-----------------------------------------------------------------------
-I've GOT IT !!! For all of you Uniwill owners:
-As this codec has NO gpio, i thought they might have udes the VREFO pin as
-a signal to turn on the amp. I have changed the 3stack init, to enable all
-possible VREFs and it worked! 
-Port E VREFO has to be turned on. You need to add this line to
-alc861_threestack_init_verbs
-
-{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 }, 
-then use the model 3stack-dig
-I hope to see this in HG soon  d:-D
-
-
-
-----------------------------------------------------------------------
  michaldemin - 08-05-06 18:36 
 ----------------------------------------------------------------------
 Another suggestion, I have 2 jack outputs on the front panel of the
 notebook, There could be 2ch and 4ch switch in the alsa mixer. 
 If anyone wants patch for the HG, I can create one in few minutes
+
+----------------------------------------------------------------------
+ pwaller - 08-05-06 18:39 
+----------------------------------------------------------------------
+I do!
+
+- Pete
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -165,6 +156,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-05-06 18:07 michaldemin    Issue Monitored: michaldemin                    
 08-05-06 18:34 michaldemin    Note Edited: 0011441                         
 08-05-06 18:36 michaldemin    Note Added: 0011442                          
+08-05-06 18:39 pwaller        Note Added: 0011443                          
 ======================================================================
 
 
