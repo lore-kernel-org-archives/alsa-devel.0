@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sat, 5 Aug 2006 02:10:23 +0200
-Message-ID: <fea340ebfaa722cfe1cc92518e955412@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 02:50:17 +0200
+Message-ID: <212dcb36a4abb158e70ac63560b8f710@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36C74174
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FC4D184
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 02:10:24 +0200 (MEST)
+	Sat,  5 Aug 2006 02:50:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-05-2006 02:10 CEST
+Last Modified:              08-05-2006 02:50 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,52 +68,7 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-01-06 09:07 
-----------------------------------------------------------------------
-Do any GPIO pins of envy24ht connected to IC other than the 3 AKM ICs ?
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090#5457
-
-I can only tell you that you don't need GPIO_ANALOG_PRESENT since
-audiophile 192  cannot detach the daugther card like juli.
-
-Ask the expert about the values of AKxxxx_ADDR 
-
-You have to check the other define GPIO_XXX are correct by reading the
-datasheet and the wiring  
-
-Ask any user with juli about how GPIOs are connected to understand the
-relationship of bit shift (1<< ??) and pin number (e.g.
-GPIO_ANALOG_PRESENT can be easily traced in juli)
-
-If you don't post the wiring info, how can other help you ?
-
-Find out how to make the the driver know 
-
-DAC is SND_AK4358  
-ADC is SND_AK5385  
-SPDIF is AK4114    
-
-Follow rlrevell's instruction in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090 to test the new
-driver.
-
-/* other board-specific data */
-union { 
-
-
-  struct {
-       ak4114_t *ak4114;
-       unsigned int analog: 1;
-  }     juli;
-+ struct {
-+      ak4114_t *ak4114;
-+ }    ap192;
-} spec;
-
-
-
-----------------------------------------------------------------------
- Raymond - 08-05-06 02:10 
+ Raymond - 08-05-06 02:38 
 ----------------------------------------------------------------------
 >> Ok, i got the wiring between between the vt1724 and the 3 dacs (AKMs)
 how do i >> code this into the driver,
@@ -121,13 +76,20 @@ how do i >> code this into the driver,
 /* GPIO Pins */
 
 Those define GPIO_XXXXX were not used in juli.c , it seem to be just a
-description of those GPIOs connected to XXXXX (pin of the target or
-function) since juli does not get the dir,mask from EEPROM data.
+description of those GPIOs connected to XXXXX (function or name of the pin
+of the target) since juli does not get the dir,mask from EEPROM data.
 
 In you case, AP192 has EEPROM and the gpio are initialised by the values
 from EEPROM. 
 
 Do your AP192 GPIO wiring different from juli ?
+
+
+
+----------------------------------------------------------------------
+ cruiseoveride - 08-05-06 02:50 
+----------------------------------------------------------------------
+I will post the complete wiring info from the 3 AKMs to the envy24ht soon
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -275,6 +237,8 @@ Date Modified  Username       Field                    Change
 08-01-06 07:33 Raymond        Note Edited: 0011369                         
 08-01-06 09:07 Raymond        Note Edited: 0011369                         
 08-05-06 02:10 Raymond        Note Added: 0011421                          
+08-05-06 02:38 Raymond        Note Edited: 0011421                         
+08-05-06 02:50 cruiseoveride  Note Added: 0011422                          
 ======================================================================
 
 
