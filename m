@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: hda intel driver and no surround sound with nvidia
- mcp55 (chip ID RealTek 888)
-Date: Sat, 5 Aug 2006 19:47:27 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0608051946190.9377@tm8103.perex-int.cz>
-References: <44D4BD9F.9010601@timburrell.net>
+Subject: Re: [PATCH] pxa2xx-i2sound
+Date: Sat, 5 Aug 2006 19:53:31 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0608051950510.9377@tm8103.perex-int.cz>
+References: <200608051937.13845.giorgio@mandarinlogiq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44D4BD9F.9010601@timburrell.net>
+In-Reply-To: <200608051937.13845.giorgio@mandarinlogiq.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,26 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Tim Burrell <tim@timburrell.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 5 Aug 2006, Tim Burrell wrote:
+On Sat, 5 Aug 2006, Giorgio Padrin wrote:
 
-> Hi there,
+> Hi,
 > 
-> I'm trying to get multichannel sound working on my nvidia nforce 590
-> based mobo that uses the intel hd audio (nvidia mcp55) chipset.  It
-> plays fine in two channels but any attempts to use -Dsurround51 or
-> -Dsurround40 fail.  Ie:
-> 
-> Playing WAVE 'space_battle.wav' : Signed 16 bit Little Endian, Rate
-> 44100 Hz, Channels 6
-> aplay: set_params:906: Channels count non available
+> This is minimal patch updating the pxa2xx-i2sound code in alsa-driver.
 
-That's correct. Use -Dplug:surround40, because the count of channels from 
-the .wav file has to be converted to four.
+Applied, but please, be more verbose in future:
 
+1) one-line patch summary is missing (what patch does)
+2) explanation why this patch is required is missing
+3) Signed-off-by line is missing
+
+I know, it's really simple patch, but I don't know exactly which problems 
+are with the mmap access on the pxa platform (probably DMA memory area 
+coherency, right?).
+
+					Thanks,
 						Jaroslav
 
 -----
