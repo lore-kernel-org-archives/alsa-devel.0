@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002298]: "Invalid argument" error with
-	USB audio device
-Date: Sat, 5 Aug 2006 14:27:12 +0200
-Message-ID: <8fe8e2a361ed0e248bc9eb2765645d86@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002337]: Compilation problem ...
+	previous advice here didn't work for me ...
+Date: Sat, 5 Aug 2006 14:33:58 +0200
+Message-ID: <0e085e9606396906d9a5c0b78a5d6cd5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6334216A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1739E171
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 14:27:12 +0200 (MEST)
+	Sat,  5 Aug 2006 14:33:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,79 +24,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2298> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
-Reported By:                lukeross
-Assigned To:                Clemens Ladisch
+Reported By:                Mikey84
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2298
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   2337
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core Linux 4
-Kernel Version:             2.6.14-1.1653_FC4
+Status:                     feedback
 ======================================================================
-Date Submitted:             07-22-2006 13:34 CEST
-Last Modified:              08-05-2006 14:27 CEST
+Date Submitted:             08-05-2006 09:46 CEST
+Last Modified:              08-05-2006 14:33 CEST
 ======================================================================
-Summary:                    "Invalid argument" error with USB audio device
+Summary:                    Compilation problem ... previous advice here didn't
+work for me ...
 Description: 
-Plugged in a USB audio device which is recognised as follows:
+I have also a compilation problem. Almost similar as cimmo had, and I tried
+to do the same tricks as he was told to do, but they didn't work ... I
+have alsa-driver and alsa-lib correctly installed, but this alsa-utils
+doesn't compile ...
 
-T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
-D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
-P:  Vendor=0e6a ProdID=0310 Rev= 1.11
-S:  Product=USB Audio Device
-C:* #Ifs= 3 Cfg#= 1 Atr=80 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
-E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=16ms
-I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00
-Driver=snd-usb-audio
-I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00
-Driver=snd-usb-audio
-I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00
-Driver=snd-usb-audio
-E:  Ad=02(O) Atr=09(Isoc) MxPS= 192 Ivl=1ms
+'Make' gives me this kind of error message:
 
-Whenever I try to play on this device I get the following error:
+_______________________________________________________________________________
 
-Setting of hwparams failed: Invalid argument
-Broken configuration for playback: no configurations available: Invalid
-argument
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o: In function `control_access':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
+undefined reference to `snd_ctl_elem_info_is_tlv_writable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
+undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
+amixer.o: In function `show_control':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
+undefined reference to `snd_hctl_elem_tlv_read'
+collect2: ld returned 1 exit status
+make[1]: *** [amixer] Error 1
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: *** [all-recursive] Error 1
+[root@a-55-58 alsa-utils-1.0.12rc2]#
+
+_______________________________________________________________________________
+                                      
 ======================================================================
 
 ----------------------------------------------------------------------
- lukeross - 07-23-06 12:52 
+ Mikey84 - 08-05-06 14:04 
 ----------------------------------------------------------------------
-After a lot of googling, I turned up the following link to someone with the
-same chipset:
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=9969515&forum_id=1752
-
-This patch works for me, and with respect to the second message in the
-thread the sound plays normally, suggesting (if I understand the problem
-correctly) that the chipset is giving out incorrect information about
-supported rates.
+I have all the same versions (1.0.12rc2), but still it doesn't work ...
 
 ----------------------------------------------------------------------
- lukeross - 08-05-06 14:27 
+ jcdutton - 08-05-06 14:33 
 ----------------------------------------------------------------------
-Please close this bug, as it is part of a bigger issue which I'll open a
-much more descriptive bug about, and hopefully attach a patch to.
+It appears that you have not installed alsa-lib correctly.
+Please try to re-install it.
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-06 13:34 lukeross       New Issue                                    
-07-22-06 13:34 lukeross       Distribution              => Fedora Core Linux 4
-07-22-06 13:34 lukeross       Kernel Version            => 2.6.14-1.1653_FC4
-07-23-06 12:52 lukeross       Note Added: 0011184                          
-08-05-06 14:27 lukeross       Note Added: 0011432                          
+08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
+08-05-06 14:04 Mikey84        Note Added: 0011430                          
+08-05-06 14:33 jcdutton       Note Added: 0011433                          
+08-05-06 14:33 jcdutton       Status                   new => feedback     
 ======================================================================
 
 
