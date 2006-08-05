@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Sat, 5 Aug 2006 13:36:37 +0200
-Message-ID: <fc8d462539728091d13ea2c697dc097a@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002337]: Compilation problem ...
+	previous advice here didn't work for me ...
+Date: Sat, 5 Aug 2006 14:04:08 +0200
+Message-ID: <b4977baa38b19f2cfa14e89e1780e5db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7A9F153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4384516E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:36:37 +0200 (MEST)
+	Sat,  5 Aug 2006 14:04:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,88 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
-Reported By:                tjallen
+Reported By:                Mikey84
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+Project:                    ALSA - utils
+Issue ID:                   2337
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              08-05-2006 13:36 CEST
+Date Submitted:             08-05-2006 09:46 CEST
+Last Modified:              08-05-2006 14:04 CEST
 ======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
+Summary:                    Compilation problem ... previous advice here didn't
+work for me ...
 Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
+I have also a compilation problem. Almost similar as cimmo had, and I tried
+to do the same tricks as he was told to do, but they didn't work ... I
+have alsa-driver and alsa-lib correctly installed, but this alsa-utils
+doesn't compile ...
+
+'Make' gives me this kind of error message:
+
+_______________________________________________________________________________
+
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o: In function `control_access':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
+undefined reference to `snd_ctl_elem_info_is_tlv_writable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
+undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
+amixer.o: In function `show_control':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
+undefined reference to `snd_hctl_elem_tlv_read'
+collect2: ld returned 1 exit status
+make[1]: *** [amixer] Error 1
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: *** [all-recursive] Error 1
+[root@a-55-58 alsa-utils-1.0.12rc2]#
+
+_______________________________________________________________________________
+                                      
 ======================================================================
 
 ----------------------------------------------------------------------
- tjallen - 08-03-06 01:40 
+ Raymond - 08-05-06 10:10 
 ----------------------------------------------------------------------
-Progress, perhaps.  I changed the port=0x330 in modules.conf 
-and in modprobe.conf and got the following messages:
-
- Enter snd_sscape_probe
- Enter detect_GA
- Exit detect_GA
- Exit detect_sscape
-sscape: GA hardware detected at 0x330, using IRQ 5, DMA 0
-sscape: No AD1845 device at 0x338, IRQ 5
+alsa-util depends on alsa-lib, must be same version
 
 ----------------------------------------------------------------------
- rankincj - 08-05-06 13:36 
+ Mikey84 - 08-05-06 14:04 
 ----------------------------------------------------------------------
-This new patch replaces the original sscape.diff patch for the
-alsa-sscape.c file. As well as all the contents of that patch, it adds a
-new parameter to the snd-sscape.ko module called "codec_port":
-
-So for a non-PnP SoundScape, you would use e.g. "port=0x330
-codec_port=0x534"
-
-"codec_port" should be optional for a PnP model because we should already
-know where to find the codec port for those.
+I have all the same versions (1.0.12rc2), but still it doesn't work ...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
-06-30-06 22:38 rankincj       Note Added: 0010752                          
-06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
-07-02-06 01:39 rankincj       File Added: sscape.c                         
-07-02-06 01:41 rankincj       Note Added: 0010767                          
-07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
-07-02-06 03:19 tjallen        Note Added: 0010768                          
-07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
-07-23-06 02:25 rankincj       Note Added: 0011178                          
-07-30-06 21:45 tjallen        Note Added: 0011330                          
-07-30-06 23:14 rankincj       File Added: sscape.diff                      
-07-30-06 23:17 rankincj       Note Added: 0011332                          
-07-31-06 16:59 tjallen        Note Added: 0011343                          
-08-03-06 00:47 rankincj       Note Added: 0011391                          
-08-03-06 01:40 tjallen        Note Added: 0011392                          
-08-05-06 13:31 rankincj       File Added: codec-io.diff                    
-08-05-06 13:36 rankincj       Note Added: 0011429                          
+08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
+08-05-06 14:04 Mikey84        Note Added: 0011430                          
 ======================================================================
 
 
