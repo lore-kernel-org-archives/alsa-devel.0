@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001995]: Master and PCM control missing
-Date: Sat, 5 Aug 2006 13:18:23 +0200
-Message-ID: <cca70a3eb94838faef1a1b1b1012f25c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002320]: Almost no sound on Asus
+	laptop with Realtek ALC861
+Date: Sat, 5 Aug 2006 13:26:24 +0200
+Message-ID: <3b09a818db955d98113854b8cf3800a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E16ACD4
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D727A16B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:18:23 +0200 (MEST)
+	Sat,  5 Aug 2006 13:26:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,132 +24,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1995> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
 ======================================================================
-Reported By:                baja
-Assigned To:                
+Reported By:                mario_7
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1995
-Category:                   CORE - control
+Issue ID:                   2320
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               
-Kernel Version:             
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Kernel Version:             kernel-2.6.17.7
 ======================================================================
-Date Submitted:             04-03-2006 06:13 CEST
-Last Modified:              08-05-2006 13:18 CEST
+Date Submitted:             07-31-2006 00:41 CEST
+Last Modified:              08-05-2006 13:26 CEST
 ======================================================================
-Summary:                    Master and PCM control missing
+Summary:                    Almost no sound on Asus laptop with Realtek ALC861
 Description: 
-1.0.11rc3 had the PCM control but the Master control was missing. rc4 now
-has both the PCM and the Master volume control missing. 
+I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
+be said that the sound is... 
 
-Drivers loaded:
+But let me start from the beginning. 
 
-$ lsmod | grep snd
-snd_seq_dummy           3396  0
-snd_seq_oss            34240  0
-snd_seq_midi_event      7232  1 snd_seq_oss
-snd_seq                54528  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device          7952  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            42016  0
-snd_mixer_oss          16320  1 snd_pcm_oss
-snd_hda_intel          16028  1
-snd_hda_codec         166536  1 snd_hda_intel
-snd_pcm                88396  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22600  2 snd_seq,snd_pcm
-snd                    59072  12
-snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          9360  2 snd_hda_intel,snd_pcm
+I tried many things to get sound on my laptop. I tried alsa drivers from
+realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
+examined my chipset properly - ALC861, other found it as ALC660. None of
+them were working (no sound). 
 
-Controls reported by alsa
-$ amixer controls
-numid=11,iface=MIXER,name='Headphone Playback Switch'
-numid=4,iface=MIXER,name='Surround Playback Switch'
-numid=3,iface=MIXER,name='Surround Playback Volume'
-numid=7,iface=MIXER,name='Center Playback Switch'
-numid=5,iface=MIXER,name='Center Playback Volume'
-numid=8,iface=MIXER,name='LFE Playback Switch'
-numid=6,iface=MIXER,name='LFE Playback Volume'
-numid=17,iface=MIXER,name='Line Playback Switch'
-numid=16,iface=MIXER,name='Line Playback Volume'
-numid=19,iface=MIXER,name='CD Playback Switch'
-numid=18,iface=MIXER,name='CD Playback Volume'
-numid=13,iface=MIXER,name='Mic Playback Switch'
-numid=12,iface=MIXER,name='Mic Playback Volume'
-numid=21,iface=MIXER,name='Capture Switch'
-numid=23,iface=MIXER,name='Capture Switch',index=1
-numid=25,iface=MIXER,name='Capture Switch',index=2
-numid=20,iface=MIXER,name='Capture Volume'
-numid=22,iface=MIXER,name='Capture Volume',index=1
-numid=24,iface=MIXER,name='Capture Volume',index=2
-numid=29,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=30,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=31,iface=MIXER,name='IEC958 Playback Default'
-numid=32,iface=MIXER,name='IEC958 Playback Switch'
-numid=34,iface=MIXER,name='IEC958 Capture Default'
-numid=33,iface=MIXER,name='IEC958 Capture Switch'
-numid=15,iface=MIXER,name='Front Mic Playback Switch'
-numid=14,iface=MIXER,name='Front Mic Playback Volume'
-numid=2,iface=MIXER,name='Front Playback Switch'
-numid=1,iface=MIXER,name='Front Playback Volume'
-numid=26,iface=MIXER,name='Input Source'
-numid=27,iface=MIXER,name='Input Source',index=1
-numid=28,iface=MIXER,name='Input Source',index=2
-numid=10,iface=MIXER,name='Side Playback Switch'
-numid=9,iface=MIXER,name='Side Playback Volume'
+2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
+included alsa drivers (1.0.11rc4), sound chipset was examined properly,
+but still nothing... 
 
-Assuming that that this is an issue since applications look for this
-"generic" volume controls.
+I started using various options with snd-hda-intel module. 
+Built-in speakers are not working with any of options
+(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
 
-Thanks
+With model=3stack I can hear sound with headphones but only when I plug
+them into line-in jack. The sound is very very quiet and it's also with
+crackling noise... (Volume is set to maximum level). 
 
-Baja
+With model=6stack-dig situation is almost the same, except that the
+headphones are plugged into headphone jack and the same sound can be heard
+in only one headphone (the second one is just silent).
 
+The built-in microphone is working quite well (there is only not too loud
+squeal during records).
 
+Other options like posotion_fix=1/2 or single_cmd=1 are not changing
+anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
+login sound should be played).  
 
+If anyone would like to help me and need any other information than those
+placed in this post and in attached file, just ask for them and I'll
+answer :)
+
+Hope someone smart will know how to fix everything :)
 ======================================================================
 
 ----------------------------------------------------------------------
- baja - 04-03-06 06:17 
+ michaldemin - 08-03-06 15:41 
 ----------------------------------------------------------------------
-By the way... I am using a MSi mother board:
-
-MSI K8NGM2-FID Socket 939 NVIDIA GeForce 6150
-
-ls pci reports:
-
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev
-a2)
-
-with snd_hda_intel...
+Mine isnt Asus, it is the one known as uniwill e31ei1 (made some chineese
+producer for various resellers).
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:47 
+ mario_7 - 08-05-06 13:26 
 ----------------------------------------------------------------------
-The most important information is missing:  Please upload
-/proc/asound/card0/codec#* files.
+I wrote an email to Realtek... Hope someone will amswer it. :) 
+Now I'm thinking about writing an email to Asus too.
 
-Possibly there is no master volume or PCM control on your chip indeed, but
-only volume for each output jack, Front, Surround, CLFE.
+The Realtek driver for Windows works fine. I don't know if it is possible
+but maybe you could get some informations from that driver?
+
+Michaldemin, does the sound you got was like mine, described in bug
+report, or was it clear and good quality?
+
+Tiwai, if there would be some HowTo or HandBook... I know nothing about
+programming drivers but if it is similar to creating PHP scripts, then
+maybe I would be able to do something... :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 06:13 baja           New Issue                                    
-04-03-06 06:17 baja           Note Added: 0009084                          
-04-07-06 19:47 tiwai          Note Added: 0009154                          
-08-05-06 13:18 Adrian Bunk    Status                   new => closed       
-08-05-06 13:18 Adrian Bunk    Resolution               open => unable to
-duplicate
+07-31-06 00:41 mario_7        New Issue                                    
+07-31-06 00:41 mario_7        File Added: info                             
+07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
+07-31-06 11:12 michaldemin    Note Added: 0011341                          
+07-31-06 13:59 michaldemin    Note Edited: 0011341                         
+07-31-06 16:44 michaldemin    Note Edited: 0011341                         
+07-31-06 17:47 tiwai          Note Added: 0011344                          
+07-31-06 19:16 michaldemin    Note Added: 0011346                          
+07-31-06 23:52 mario_7        Note Added: 0011354                          
+08-03-06 14:58 michaldemin    Note Added: 0011401                          
+08-03-06 15:04 tiwai          Note Added: 0011402                          
+08-03-06 15:41 michaldemin    Note Added: 0011403                          
+08-05-06 13:26 mario_7        Note Added: 0011428                          
 ======================================================================
 
 
