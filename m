@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002320]: Almost no sound on Asus
-	laptop with Realtek ALC861
-Date: Sat, 5 Aug 2006 13:26:24 +0200
-Message-ID: <3b09a818db955d98113854b8cf3800a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Sat, 5 Aug 2006 13:36:37 +0200
+Message-ID: <fc8d462539728091d13ea2c697dc097a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D727A16B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7A9F153
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:26:24 +0200 (MEST)
+	Sat,  5 Aug 2006 13:36:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,104 +26,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                mario_7
-Assigned To:                tiwai
+Reported By:                tjallen
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2320
-Category:                   PCI - hda-intel
+Issue ID:                   2234
+Category:                   ISA - sscape
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             kernel-2.6.17.7
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             07-31-2006 00:41 CEST
-Last Modified:              08-05-2006 13:26 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              08-05-2006 13:36 CEST
 ======================================================================
-Summary:                    Almost no sound on Asus laptop with Realtek ALC861
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
-be said that the sound is... 
-
-But let me start from the beginning. 
-
-I tried many things to get sound on my laptop. I tried alsa drivers from
-realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
-examined my chipset properly - ALC861, other found it as ALC660. None of
-them were working (no sound). 
-
-2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
-included alsa drivers (1.0.11rc4), sound chipset was examined properly,
-but still nothing... 
-
-I started using various options with snd-hda-intel module. 
-Built-in speakers are not working with any of options
-(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
-
-With model=3stack I can hear sound with headphones but only when I plug
-them into line-in jack. The sound is very very quiet and it's also with
-crackling noise... (Volume is set to maximum level). 
-
-With model=6stack-dig situation is almost the same, except that the
-headphones are plugged into headphone jack and the same sound can be heard
-in only one headphone (the second one is just silent).
-
-The built-in microphone is working quite well (there is only not too loud
-squeal during records).
-
-Other options like posotion_fix=1/2 or single_cmd=1 are not changing
-anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
-login sound should be played).  
-
-If anyone would like to help me and need any other information than those
-placed in this post and in attached file, just ask for them and I'll
-answer :)
-
-Hope someone smart will know how to fix everything :)
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- michaldemin - 08-03-06 15:41 
+ tjallen - 08-03-06 01:40 
 ----------------------------------------------------------------------
-Mine isnt Asus, it is the one known as uniwill e31ei1 (made some chineese
-producer for various resellers).
+Progress, perhaps.  I changed the port=0x330 in modules.conf 
+and in modprobe.conf and got the following messages:
+
+ Enter snd_sscape_probe
+ Enter detect_GA
+ Exit detect_GA
+ Exit detect_sscape
+sscape: GA hardware detected at 0x330, using IRQ 5, DMA 0
+sscape: No AD1845 device at 0x338, IRQ 5
 
 ----------------------------------------------------------------------
- mario_7 - 08-05-06 13:26 
+ rankincj - 08-05-06 13:36 
 ----------------------------------------------------------------------
-I wrote an email to Realtek... Hope someone will amswer it. :) 
-Now I'm thinking about writing an email to Asus too.
+This new patch replaces the original sscape.diff patch for the
+alsa-sscape.c file. As well as all the contents of that patch, it adds a
+new parameter to the snd-sscape.ko module called "codec_port":
 
-The Realtek driver for Windows works fine. I don't know if it is possible
-but maybe you could get some informations from that driver?
+So for a non-PnP SoundScape, you would use e.g. "port=0x330
+codec_port=0x534"
 
-Michaldemin, does the sound you got was like mine, described in bug
-report, or was it clear and good quality?
-
-Tiwai, if there would be some HowTo or HandBook... I know nothing about
-programming drivers but if it is similar to creating PHP scripts, then
-maybe I would be able to do something... :)
+"codec_port" should be optional for a PnP model because we should already
+know where to find the codec port for those.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-06 00:41 mario_7        New Issue                                    
-07-31-06 00:41 mario_7        File Added: info                             
-07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
-07-31-06 11:12 michaldemin    Note Added: 0011341                          
-07-31-06 13:59 michaldemin    Note Edited: 0011341                         
-07-31-06 16:44 michaldemin    Note Edited: 0011341                         
-07-31-06 17:47 tiwai          Note Added: 0011344                          
-07-31-06 19:16 michaldemin    Note Added: 0011346                          
-07-31-06 23:52 mario_7        Note Added: 0011354                          
-08-03-06 14:58 michaldemin    Note Added: 0011401                          
-08-03-06 15:04 tiwai          Note Added: 0011402                          
-08-03-06 15:41 michaldemin    Note Added: 0011403                          
-08-05-06 13:26 mario_7        Note Added: 0011428                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-30-06 22:38 rankincj       Note Added: 0010752                          
+06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
+07-02-06 01:39 rankincj       File Added: sscape.c                         
+07-02-06 01:41 rankincj       Note Added: 0010767                          
+07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
+07-02-06 03:19 tjallen        Note Added: 0010768                          
+07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
+07-23-06 02:25 rankincj       Note Added: 0011178                          
+07-30-06 21:45 tjallen        Note Added: 0011330                          
+07-30-06 23:14 rankincj       File Added: sscape.diff                      
+07-30-06 23:17 rankincj       Note Added: 0011332                          
+07-31-06 16:59 tjallen        Note Added: 0011343                          
+08-03-06 00:47 rankincj       Note Added: 0011391                          
+08-03-06 01:40 tjallen        Note Added: 0011392                          
+08-05-06 13:31 rankincj       File Added: codec-io.diff                    
+08-05-06 13:36 rankincj       Note Added: 0011429                          
 ======================================================================
 
 
