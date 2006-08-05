@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc
-	linux
-Date: Sat, 5 Aug 2006 13:14:40 +0200
-Message-ID: <b1fda0d93dc22fcb0eb63f23ad557042@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002084]: If the PCM channel is being
+	used and the same time that X is on-screen,
+	... total hard crash of whole system.
+Date: Sat, 5 Aug 2006 13:15:42 +0200
+Message-ID: <723e6bf1c8e80e701921724784ccaaac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8120816B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C140616B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:14:40 +0200 (MEST)
+	Sat,  5 Aug 2006 13:15:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,92 +25,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2084> 
 ======================================================================
-Reported By:                eradicator
+Reported By:                terrym
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   731
+Issue ID:                   2084
 Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
-Resolution:                 fixed
+Status:                     closed
+Distribution:               ROCK Linux, both 2.0.3 and trunk
+Kernel Version:             2.4.x and 2.6.x, currently running 2.6.16.2
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              08-05-2006 13:14 CEST
+Date Submitted:             04-29-2006 04:40 CEST
+Last Modified:              08-05-2006 13:15 CEST
 ======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
+Summary:                    If the PCM channel is being used and the same time
+that X is on-screen, ... total hard crash of whole system.
 Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
-
-
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
-
-The strace can be found in bug #167 as I originally mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
-
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
+X can be running as long as it is not on screen, that is, a text console is
+in use. It does not matter if the sound app is console based or GUI (X
+based), the result is the same: the moment sound plays via PCM and X is on
+screen, there is a hard crash that instantly locks up the whole system,
+the kernel it self crashes, as an already issued shutdown w/delay will not
+finish.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 04-04-05 20:32 
+ tiwai - 05-02-06 18:06 
 ----------------------------------------------------------------------
-Ok, the ioctl32 problems seem to be all fixed.  The 'aoss mpg123' problem
-is fixed with >=1.0.8.  Additionally, timidity -Os produces sound which is
-skippy like xmms.  This seems to be directly related to the driver and not
-ioctl32 as I popped in an ens1371 based card which works fine with xmms. 
-Additionally, a native 64bit xmms causes the same skipping in playback, so
-this seems to be a bug in the sun_cs4231 driver.  It's odd that the oss
-playback (in-kernel as well as aoss) would work fine though...
-
-----------------------------------------------------------------------
- eradicator - 07-19-05 06:50 
-----------------------------------------------------------------------
-this can probably be closed as this specific issue is no longer a problem
-(but others have cropped up in 1.0.9 that I'll open a new bug for)
+Please elaborate the hardware details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-03-16-05 11:23 eradicator     Note Added: 0003936                          
-03-16-05 11:41 eradicator     Note Added: 0003938                          
-03-16-05 12:26 tiwai          Note Added: 0003939                          
-03-16-05 20:26 eradicator     Note Added: 0003964                          
-04-04-05 20:32 eradicator     Note Added: 0004329                          
-07-19-05 06:50 eradicator     Note Added: 0005526                          
-08-05-06 13:14 Adrian Bunk    Status                   new => resolved     
-08-05-06 13:14 Adrian Bunk    Resolution               open => fixed       
+04-29-06 04:40 terrym         New Issue                                    
+04-29-06 04:40 terrym         Distribution              => ROCK Linux, both
+2.0.3 and trunk
+04-29-06 04:40 terrym         Kernel Version            => 2.4.x and 2.6.x,
+currently running 2.6.16.2
+05-02-06 18:06 tiwai          Note Added: 0009565                          
+08-05-06 13:15 Adrian Bunk    Status                   new => closed       
+08-05-06 13:15 Adrian Bunk    Resolution               open => unable to
+duplicate
 ======================================================================
 
 
