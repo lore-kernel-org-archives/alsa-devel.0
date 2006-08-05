@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002337]: Compilation problem ...
-	previous advice here didn't work for me ...
-Date: Sat, 5 Aug 2006 15:24:47 +0200
-Message-ID: <4a1dc483d2ee89a4b743ab81abaa454c@bugtrack.alsa-project.org>
+From: "Lubomir Schmidt" <017623780966@o2online.de>
+Subject: Re: No chance to get the soundcard working
+Date: Sat, 5 Aug 2006 17:04:32 +0200
+Message-ID: <005501c6b8a0$755bdab0$8801a8c0@dell4150>
+References: <s5h7j1phqgr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90C3B16B
-	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 15:24:47 +0200 (MEST)
+In-Reply-To: <s5h7j1phqgr.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,663 +17,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello, I tried that with pci=3Dnoacpi (there is no BIOS-update available). =
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
-======================================================================
-Reported By:                Mikey84
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2337
-Category:                   alsactl
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             08-05-2006 09:46 CEST
-Last Modified:              08-05-2006 15:24 CEST
-======================================================================
-Summary:                    Compilation problem ... previous advice here didn't
-work for me ...
-Description: 
-I have also a compilation problem. Almost similar as cimmo had, and I tried
-to do the same tricks as he was told to do, but they didn't work ... I
-have alsa-driver and alsa-lib correctly installed, but this alsa-utils
-doesn't compile ...
+Now I see more mistakes in dmesg. The sound is not wrking.
+Here the mistakes from dmesg:
+PCI: No IRQ known for interrupt pin A of device 0000:00:1b.0. Please try
+using pci=3Dbiosirq.
+setup_irq: irq handler mismatch
+ <c0138e38> setup_irq+0x118/0x120  <f89f4800> azx_interrupt+0x0/0xc0
+[snd_hda_intel]
+ <c0138feb> request_irq+0x8b/0xc0  <f89f57b1> azx_create+0x121/0x4d0
+[snd_hda_intel]
+ <f89f4800> azx_interrupt+0x0/0xc0 [snd_hda_intel]  <f89f5bb8>
+azx_probe+0x58/0x100 [snd_hda_intel]
+ <c02452a5> __pci_device_probe+0x65/0x80  <c02452ef>
+pci_device_probe+0x2f/0x60
+ <c02b5189> driver_probe_device+0x99/0xf0  <c03ddf2b>
+klist_dec_and_del+0x1b/0x20
+ <c02b5260> __driver_attach+0x0/0x90  <c02b52e3> __driver_attach+0x83/0x90
+ <c02b446d> bus_for_each_dev+0x5d/0x80  <c023afd3>
+kobject_set_name+0x43/0xe0
+ <c02b5315> driver_attach+0x25/0x30  <c02b5260> __driver_attach+0x0/0x90
+ <c02b4a74> bus_add_driver+0x84/0xe0  <c02b5806> driver_register+0x66/0xa0
+ <c02b5780> klist_devices_get+0x0/0x10  <c02b5790>
+klist_devices_put+0x0/0x10
+ <c02455b0> __pci_register_driver+0x40/0x60  <c0124d42>
+blocking_notifier_call_chain+0x32/0x50
+ <f887c018> alsa_card_azx_init+0x18/0x1c [snd_hda_intel]  <c0132135>
+sys_init_module+0xe5/0x150
+ <c0102fcf> sysenter_past_esp+0x54/0x75 =
 
-'Make' gives me this kind of error message:
-
-_______________________________________________________________________________
-
-Making all in amixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
-amixer.o: In function `control_access':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
-undefined reference to `snd_ctl_elem_info_is_tlv_writable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
-undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
-amixer.o: In function `show_control':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
-undefined reference to `snd_hctl_elem_tlv_read'
-collect2: ld returned 1 exit status
-make[1]: *** [amixer] Error 1
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-make: *** [all-recursive] Error 1
-[root@a-55-58 alsa-utils-1.0.12rc2]#
-
-_______________________________________________________________________________
-                                      
-======================================================================
-
-----------------------------------------------------------------------
- Mikey84 - 08-05-06 14:44 
-----------------------------------------------------------------------
-I did, but still it doesn't work ...
-
-And yes, my system is a x86_64 thing ...
-
-This is what I get from "make":
-_______________________________________________________________________________
-
-Making all in include
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make  all-am
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-Making all in alsactl
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsactl.o -MD
--MP -MF ".deps/alsactl.Tpo" -c -o alsactl.o alsactl.c; \
-then mv -f ".deps/alsactl.Tpo" ".deps/alsactl.Po"; else rm -f
-".deps/alsactl.Tpo"; exit 1; fi
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT state.o -MD -MP
--MF ".deps/state.Tpo" -c -o state.o state.c; \
-then mv -f ".deps/state.Tpo" ".deps/state.Po"; else rm -f
-".deps/state.Tpo"; exit 1; fi
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT names.o -MD -MP
--MF ".deps/names.Tpo" -c -o names.o names.c; \
-then mv -f ".deps/names.Tpo" ".deps/names.Po"; else rm -f
-".deps/names.Tpo"; exit 1; fi
-gcc  -g -O2   -o alsactl  alsactl.o state.o names.o  -lasound -lm -ldl
--lpthread
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-Making all in alsaconf
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-Making all in po
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-make[2]: Nothing to be done for `all-am'.
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-Making all in alsamixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsamixer.o -MD
--MP -MF ".deps/alsamixer.Tpo" -c -o alsamixer.o alsamixer.c; \
-then mv -f ".deps/alsamixer.Tpo" ".deps/alsamixer.Po"; else rm -f
-".deps/alsamixer.Tpo"; exit 1; fi
-gcc  -g -O2   -o alsamixer  alsamixer.o -lncurses -lasound -lm -ldl
--lpthread
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-Making all in amidi
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include    -g -O2 -MT
-amidi.o -MD -MP -MF ".deps/amidi.Tpo" -c -o amidi.o amidi.c; \
-then mv -f ".deps/amidi.Tpo" ".deps/amidi.Po"; else rm -f
-".deps/amidi.Tpo"; exit 1; fi
-gcc  -g -O2   -o amidi  amidi.o  -lasound -lm -ldl -lpthread
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-Making all in amixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include    -g -O2 -MT
-amixer.o -MD -MP -MF ".deps/amixer.Tpo" -c -o amixer.o amixer.c; \
-then mv -f ".deps/amixer.Tpo" ".deps/amixer.Po"; else rm -f
-".deps/amixer.Tpo"; exit 1; fi
-gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
-amixer.o
-:
- 
-In
- 
-function
- 
-`
-control_access
-'
-:
-
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
 ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-157
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_readable
-'
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/hd
+a/../../alsa-kernel/pci/hda/hda_intel.c:1491: hda-intel: unable to grab IRQ
+0
+HDA Intel: probe of 0000:00:1b.0 failed with error -16
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-158
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_writable
-'
+There are olso that messages by boot with the green stars in front of them.
+There is olso a mistake:
+   Loading: snd-seq =85
+ERROR: Failed to load necessary drivers
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-159
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_commandable
-'
+Thank you for your help
 
-amixer.o
-:
- 
-In
- 
-function
- 
-`
-show_control
-'
-:
+-----Urspr=FCngliche Nachricht-----
+Von: Takashi Iwai [mailto:tiwai@suse.de] =
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-539
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_readable
-'
+Gesendet: Donnerstag, 3. August 2006 15:57
+An: 017623780966@o2online.de
+Cc: alsa-devel@lists.sourceforge.net
+Betreff: Re: [Alsa-devel] No chance to get the soundcard working
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-542
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_hctl_elem_tlv_read
-'
+At Thu, 3 Aug 2006 13:04:10 +0100 (BST),
+017623780966@o2online.de wrote:
+> =
 
-collect2: 
-ld returned 1 exit status
+> Hello, i have a big problem with my soundcard. It have a Realtek alc260 =
 
-make[1]: 
-*** [amixer] Error 1
+> chip (intel-hda) and its build in an Acer c204tmi notebook. I can not get =
 
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-make: 
-*** [all-recursive] Error 1
+> that card working with linux. I tried over 20 linux live cds and have
+installed =
 
-Making install in include
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
-Making install in alsactl
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
-  /usr/bin/install -c 'alsactl' '/usr/sbin/alsactl'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /usr/bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
-Making install in alsaconf
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-Making install in po
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
-mkdir -p -- /usr/share
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-make[3]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
- /usr/bin/install -c 'alsaconf' '/usr/sbin/alsaconf'
- /usr/bin/install -c -m 644 alsaconf.8 /usr/man/man8/alsaconf.8
- /usr/bin/install -c -m 644 alsaconf.fr.8 /usr/man/fr/man8/alsaconf.8
-make[3]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
-Making install in alsamixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-test -z "/usr/bin" || mkdir -p -- "/usr/bin"
-  /usr/bin/install -c 'alsamixer' '/usr/bin/alsamixer'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /usr/bin/install -c -m 644 './alsamixer.1' '/usr/man/man1/alsamixer.1'
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
-Making install in amidi
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-make[2]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-test -z "/usr/bin" || mkdir -p -- "/usr/bin"
-  /usr/bin/install -c 'amidi' '/usr/bin/amidi'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /usr/bin/install -c -m 644 './amidi.1' '/usr/man/man1/amidi.1'
-make[2]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
-Making install in amixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
-amixer.o
-:
- 
-In
- 
-function
- 
-`
-control_access
-'
-:
+> now gentoo linux on it. The problem i have is: the sound card is been
+found =
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-157
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_readable
-'
+> by alsaconf and can be configured. Alsamixer also found the card and can =
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-158
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_writable
-'
+> configure it. I have unmuted every channel and set it up to max. I have =
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-159
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_commandable
-'
+> always tired the headphone. I never could get sound of that notebook. In =
 
-amixer.o
-:
- 
-In
- 
-function
- 
-`
-show_control
-'
-:
+> dmesg i found that -> ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-
+> driver-1.0.12rc1/pci/hda/..
+> /../alsa-kernel/pci/hda/hdaintel.c:525: hda_intel: azx_get_response
+timeout, =
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-539
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_ctl_elem_info_is_tlv_readable
-'
+> switching to single_cmd mode...
 
-/
-home
-/
-Mikey_A
-/
-Asennus_LINUX
-/
-Linux
-/
-ALSA
-/
-alsa
--
-utils
--
-1.0.12rc2
-/
-amixer
-/
-amixer.c
-:
-542
-:
- 
-undefined
- 
-reference
- 
-to
- 
-`
-snd_hctl_elem_tlv_read
-'
+This is usually a BIOS problem.
 
-collect2: 
-ld returned 1 exit status
+> i do not know is that the reason why i have no sound. I have testet the =
 
-make[1]: 
-*** [amixer] Error 1
+> sound with xmms,KsCD,Noatun, and other. xmms and noatun do not start
+playing =
 
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-make: 
-*** [install-recursive] Error 1
+> and KsCD start playing, but i can not hear anything.
+> I also cant ask someone who got alsa running, because i am the only person
 
-----------------------------------------------------------------------
- Raymond - 08-05-06 15:24 
-----------------------------------------------------------------------
-TLV is a new feature in alsa-lib 1.0.12rc2.
+> who use that notebook under linux.
+> I do not know what i could do. Can you help me?
 
-This means the alsa-lib (1.0.12rc2) is installed to a wrong location, when
-you compile alsa-utils-1.0.12rc2, it still find the old version of
-alsa-lib
+Try to update BIOS if available, at first.
+If still doesn't work, try pci=3Dnoacpi or acpi=3Doff boot option.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-05-06 09:46 Mikey84        New Issue                                    
-08-05-06 10:10 Raymond        Note Added: 0011423                          
-08-05-06 14:04 Mikey84        Note Added: 0011430                          
-08-05-06 14:33 jcdutton       Note Added: 0011433                          
-08-05-06 14:33 jcdutton       Status                   new => feedback     
-08-05-06 14:44 Mikey84        Note Added: 0011434                          
-08-05-06 15:24 Raymond        Note Added: 0011437                          
-======================================================================
 
+Takashi
 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
