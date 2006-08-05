@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002325]: M-Audio Revolution 5.1:
-	capture does not work
-Date: Sat, 5 Aug 2006 17:35:29 +0200
-Message-ID: <fd7cad4f61a53b394263c8650c263852@bugtrack.alsa-project.org>
+From: Tim Burrell <tim@timburrell.net>
+Subject: hda intel driver and no surround sound with nvidia
+ mcp55 (chip ID RealTek 888)
+Date: Sat, 05 Aug 2006 12:47:43 -0300
+Message-ID: <44D4BD9F.9010601@timburrell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4257BD8
-	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 17:35:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,80 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi there,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2325> 
-======================================================================
-Reported By:                voss
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2325
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-02-2006 00:03 CEST
-Last Modified:              08-05-2006 17:35 CEST
-======================================================================
-Summary:                    M-Audio Revolution 5.1: capture does not work
-Description: 
-Hello,
+I'm trying to get multichannel sound working on my nvidia nforce 590
+based mobo that uses the intel hd audio (nvidia mcp55) chipset.  It
+plays fine in two channels but any attempts to use -Dsurround51 or
+-Dsurround40 fail.  Ie:
 
-it seems that capturing sound from the microphone input does not work. 
-This is on a M-Audio Revolution 5.1 (envy24GT/ice1722 audio-controller)
-sound card with ALSA 1.0.11rc4 as included in the stock Linux kernel
-version 2.6.17.6.
+Playing WAVE 'space_battle.wav' : Signed 16 bit Little Endian, Rate
+44100 Hz, Channels 6
+aplay: set_params:906: Channels count non available
 
-The command "arecord -fcd x.wav" creates a file "x.wav" which consists
-(except for the header) only of null bytes.  I tried to play with the
-mixer controls using alsamixer, but this did not change anything.  In
-particular I tried to set each of the controls "H/W", "H/W 1", "H/W 2",
-"H/W 3", "H/W 4" and "H/W 5" to the values "H/W In 0" and "H/W In 1"
-respectively, but still no input.
+I've been working on it long enough that I suspect it's a driver
+limitation (but please correct me if I'm wrong!).  I've verified that
+the card works in surround mode in Windows, so I know the hardware is fine.
 
-Playback works fine.
+Is there anything I can do to get my soundcard working?  Or if it's a
+driver issue, is there anything I can do to help?
 
-At
-http://sourceforge.net/mailarchive/forum.php?thread_id=26463750&forum_id=1751
-somebody else had encountered the same problem.
+Thanks,
 
-Every bit of information I could scrape together about the sound card can
-be found at http://seehuhn.de/comp/hardware/revolution .  Please let me
-know if you need more information or if I should try something else.
-
-I hope this helps,
-Jochen
-======================================================================
-
-----------------------------------------------------------------------
- voss - 08-05-06 17:35 
-----------------------------------------------------------------------
-I tried alsa-driver version 1.0.12rc2 and found that the problem is still
-present there.
-
-Every bit of information I could scrape together about the sound card can
-be found at http://seehuhn.de/comp/hardware/revolution [^] . Please let me
-know if you need more information or if I should try something else.
-
-Shall I copy information from my web page into the bug report log?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-06 00:03 voss           New Issue                                    
-08-05-06 17:35 voss           Note Added: 0011440                          
-======================================================================
-
-
+Tim.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
