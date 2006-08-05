@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002161]: Build ALSA to play file wave
-Date: Sat, 5 Aug 2006 13:16:35 +0200
-Message-ID: <b70d0bb48625def2978e4bc7e4fd0fe6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001620]: snd_hda_intel mixer query
+	problem
+Date: Sat, 5 Aug 2006 13:17:51 +0200
+Message-ID: <6b489050728f6aea24ca5c9f24dd6cc2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5477516B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EB50C8
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:16:35 +0200 (MEST)
+	Sat,  5 Aug 2006 13:17:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,66 +24,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2161> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1620> 
 ======================================================================
-Reported By:                pvtuan
+Reported By:                dja
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2161
-Category:                   CORE - pcm
+Issue ID:                   1620
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.6.11-1.1369_FC4
-Resolution:                 not an issue
+Status:                     resolved
+Distribution:               RedhatFedore core 4
+Kernel Version:             2.6.14-1.1644_FC4.root
+
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-26-2006 12:12 CEST
-Last Modified:              08-05-2006 13:16 CEST
+Date Submitted:             12-05-2005 04:03 CET
+Last Modified:              08-05-2006 13:17 CEST
 ======================================================================
-Summary:                    Build ALSA to play file wave
+Summary:                    snd_hda_intel mixer query problem
 Description: 
-I write a example to open sound card and playback a wave file. In my file I
-want to know sizeof type "snd_pcm_hw_params_t". So I use function
-"sizeof(snd_pcm_hw_params_t)" for my purpose. When I build my example,
-there is an error:invalid application of `sizeof' to incomplete type. I
-try to find definition of this type but only se "typedef
-_snd_pcm_hw_params snd_pcm_hw_params_t" and no more.
+I have a system with an Asus board (intel 915 shipset) with the outboard
+sound:
 
-Can you help me with this problem?
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 05)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 8181
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at cddf8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Thank you for your help.
-Thanks in advance
-PVTuan
+Modules load,  cannot load alsamixer or amixer to unmute channels
+amixer reports:
+amixer: Mixer default load error: Invalid argument
+
+however on further inspection:
+# amixer controls
+numid=28,iface=MIXER,name='PCM Playback Volume'
+numid=5,iface=MIXER,name='Center Playback Switch'
+amixer: Control default snd_hctl_elem_info error: Invalid argument
+
+# amixer contents
+numid=28,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---,values=2,min=0,max=255,step=0
+  : values=255,255
+numid=5,iface=MIXER,name='Center Playback Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+amixer: Control default snd_hctl_elem_info error: Invalid argument
+
+
+I'll take a stab that the snd_hctl_elem_info error is being fed back
+invalid information from snd_hda_intel ?  
+
+When these commands are run this message comes up in dmesg each time:
+hda_codec: num_steps = 0 for NID=0x9
+
+playing audio seems to work though no sound is heard. (I suspect all
+channels are muted as default, only I can't unmute them because of this)
+
+the kernel is 2.6.14-1.1644_FC4.root
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0002162 Build ALSA to play file wave
-======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-26-06 13:37 
+ tiwai - 12-06-05 15:56 
 ----------------------------------------------------------------------
-You can't do that.
-snd_pcm_hw_params_t details are private to alsa-lib.
-alsa-lib has api calls to alloc/free this structure.
-alsa-lib also has api calls to retrieve particular settings inside the
-structure.
+Try the latest ALSA CVS version.  The detection should have been improved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-06 12:12 pvtuan         New Issue                                    
-05-26-06 12:12 pvtuan         Kernel Version            => 2.6.11-1.1369_FC4
-05-26-06 13:37 jcdutton       Note Added: 0009975                          
-05-26-06 14:45 tiwai          Relationship added       has duplicate 0002162
-08-05-06 13:16 Adrian Bunk    Status                   new => closed       
-08-05-06 13:16 Adrian Bunk    Resolution               open => not an issue
+12-05-05 04:03 dja            New Issue                                    
+12-05-05 04:03 dja            Distribution              => RedhatFedore core 4
+12-05-05 04:03 dja            Kernel Version            =>
+2.6.14-1.1644_FC4.root
+
+12-06-05 15:56 tiwai          Note Added: 0006927                          
+08-05-06 13:17 Adrian Bunk    Status                   new => resolved     
+08-05-06 13:17 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
