@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002321]: no audio and very few mixer
-	options with C-Media 106 based USB sound card
-Date: Sat, 5 Aug 2006 17:16:59 +0200
-Message-ID: <7121bc37695e557479d2c086bb979636@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000321]: Left front channel always
+	muted on boot
+Date: Sat, 5 Aug 2006 17:29:26 +0200
+Message-ID: <802d395200737c36fc76eefb8925a368@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2764316A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E0BAD4
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 17:17:00 +0200 (MEST)
+	Sat,  5 Aug 2006 17:29:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,146 +26,132 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2321> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321> 
 ======================================================================
-Reported By:                doobedoobedo
-Assigned To:                Clemens Ladisch
+Reported By:                64bitten
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2321
-Category:                   USB - usb-audio
+Issue ID:                   321
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14/5
+Status:                     acknowledged
+Distribution:               gentoo
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             08-01-2006 16:43 CEST
-Last Modified:              08-05-2006 17:16 CEST
+Date Submitted:             06-02-2004 08:09 CEST
+Last Modified:              08-05-2006 17:29 CEST
 ======================================================================
-Summary:                    no audio and very few mixer options with C-Media 106
-based USB sound card
+Summary:                    Left front channel always muted on boot
 Description: 
-no audio output with the snd-usb-audio module
-
-amixer output:
-Simple mixer control 'PCM',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 4095
-  Front Left: Capture 2048 [50%] [on]
-  Front Right: Capture 2048 [50%] [on]
-Simple mixer control 'PCM Capture Source',0
-  Capabilities: enum
-  Items: 'Mic' 'Input 1' 'Input 2' 'Mixer'
-  Item0: 'Mic'
-Simple mixer control 'PCM',1
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 4095
-  Front Left: Capture 2048 [50%]
-  Front Right: Capture 2048 [50%]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume cvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 8191 Capture 0 - 4095
-  Front Left: Playback 2048 [25%] [off] Capture 2048 [50%]
-  Front Right: Playback 2048 [25%] [off] Capture 2048 [50%]
-Simple mixer control 'Auto Gain Control',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 8191
-  Mono:
-  Front Left: Playback 2048 [25%] [on]
-  Front Right: Playback 2048 [25%] [on]
-Simple mixer control 'Speaker',1
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 37
-  Mono: Playback 15 [41%] [on]
-
-speaker 0 and mic will only decrease in volume in alsamixer, although no
-sound is played trough the speakers at all.
+ice1724 (M Audio Revolution 7.1 in my case) always restores the mixer
+settings at boot, but the left front channel is muted regardless.  The fix
+is to run alsamixer and adjust the slider again.  This forces the channel
+to unmute.  Should I be worried "amixer scontrols" reports everything as
+"Mono" as well?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-04-06 02:06 
+ Raymond - 06-23-06 15:44 
 ----------------------------------------------------------------------
-You should add some printk()s to debug it.  First, verify that it is
-recognizing your device and the USB id matches right.  Then, try changing
-the usbmix_name_map table around.  For example create 10 entries and label
-them "Master 1-10", etc.
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x851.htm
+
+The index field holds the index number of this control. If there are
+several different controls with the same name, they can be distinguished
+by the index number. This is the case when several codecs exist on the
+card. If the index is zero, you can omit the definition above.
+
+you have to ask tiwai why those index controls have different name
+
+	control.18 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 255'
+		iface MIXER
+		name PCM
+		value.0 168
+		value.1 168
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'PCM Center'
+		index 1
+		value 0
+	}
+	control.20 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'PCM Sub'
+		index 2
+		value 0
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 255'
+		iface MIXER
+		name 'PCM Rear'
+		index 3
+		value.0 0
+		value.1 0
+	}
 
 ----------------------------------------------------------------------
- doobedoobedo - 08-05-06 17:16 
+ voss - 08-05-06 17:29 
 ----------------------------------------------------------------------
-Good idea, the usb ids matched but the indexes in the map don't correspond
-to those in asound.state (but I believe they correspond to the bUnitID as
-output by lsusb -v ?) my patch ended up:
-
---- alsa-driver-1.0.11.orig/alsa-kernel/usb/usbmixer_maps.c     2006-03-16
-08:25:56.000000000 +0000
-+++ alsa-driver-1.0.11/alsa-kernel/usb/usbmixer_maps.c  2006-08-05
-12:35:17.000000000 +0100
-@@ -234,6 +234,13 @@
-        { 0 } /* terminator */
- };
-
-+/* C-Media 106 based card from Asound - hack to get only working volume
-control marked as Master */
-+static struct usbmix_name_map cm106_map[] = {
-+       { 12, "Master Playback Switch"},
-+       { 13, "Master Playback"},
-+       { 0 } /* terminator */
-+};
-+
- /*
-  * Control map entries
-  */
-@@ -276,6 +283,10 @@
-                .id = USB_ID(0x0c45, 0x1158),
-                .map = justlink_map,
-        },
-+       {
-+               .id = USB_ID(0x0d8c, 0x0006),
-+               .map = cm106_map,
-+       },
-        { 0 } /* terminator */
- };
-
-Unfortunately mythtv still doesn't like it as it's a mono mixer and it
-expects stereo :/. looks like I need to write an external volume control
-script... which means I don't need the patch.
-
-I have, however, learnt something :)
+Just for the record: I can still see this problem with an M-Audio
+Revolution 5.1 card and alsa-driver version 1.0.12rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-06 16:43 doobedoobedo   New Issue                                    
-08-01-06 16:43 doobedoobedo   Distribution              => Gentoo          
-08-01-06 16:43 doobedoobedo   Kernel Version            => 2.6.14/5        
-08-01-06 16:51 doobedoobedo   Issue Monitored: doobedoobedo                    
-08-01-06 16:54 doobedoobedo   Note Added: 0011376                          
-08-03-06 03:40 doobedoobedo   Note Added: 0011393                          
-08-03-06 17:34 doobedoobedo   Note Added: 0011404                          
-08-03-06 19:15 rlrevell       Note Added: 0011407                          
-08-03-06 20:32 doobedoobedo   Note Added: 0011408                          
-08-03-06 20:37 rlrevell       Note Added: 0011409                          
-08-03-06 23:02 doobedoobedo   Note Added: 0011410                          
-08-03-06 23:13 rlrevell       Note Added: 0011411                          
-08-04-06 00:58 doobedoobedo   Note Added: 0011412                          
-08-04-06 01:21 rlrevell       Note Added: 0011413                          
-08-04-06 01:31 rlrevell       Note Added: 0011414                          
-08-04-06 01:54 doobedoobedo   Note Added: 0011415                          
-08-04-06 02:06 rlrevell       Note Added: 0011416                          
-08-05-06 17:16 doobedoobedo   Note Added: 0011438                          
+06-02-04 08:09 64bitten       New Issue                                    
+06-02-04 08:09 64bitten       Distribution              => gentoo          
+06-02-04 08:09 64bitten       Kernel Version            => 2.6.6           
+12-17-04 03:15 K6-III         Note Added: 0002845                          
+12-17-04 06:46 herby          Note Added: 0002846                          
+12-17-04 06:51 rlrevell       Note Added: 0002847                          
+12-21-04 07:09 64bitten       File Added: amixer.bad                       
+12-21-04 07:10 64bitten       Note Added: 0002896                          
+04-09-05 17:24 jdthood        Status                   new => acknowledged 
+10-20-05 02:36 sst4           Note Added: 0006497                          
+10-20-05 05:18 Fran           Note Added: 0006498                          
+10-21-05 03:51 64bitten       Note Added: 0006509                          
+11-18-05 21:03 goldenfish     Note Added: 0006758                          
+11-18-05 21:04 goldenfish     File Added: proc_changes.diff                    
+06-20-06 22:55 effie          Issue Monitored: effie                       
+06-20-06 23:05 effie          Issue End Monitor: effie                     
+06-20-06 23:29 effie          Note Added: 0010356                          
+06-20-06 23:31 effie          Note Edited: 0010356                         
+06-21-06 06:10 Raymond        Note Added: 0010382                          
+06-21-06 09:05 goldenfish     Note Added: 0010384                          
+06-21-06 09:07 goldenfish     File Added: asound.state                     
+06-21-06 09:37 herby          Note Added: 0010388                          
+06-21-06 10:00 Raymond        Note Added: 0010389                          
+06-21-06 10:01 Raymond        Note Edited: 0010389                         
+06-21-06 10:17 Raymond        Note Edited: 0010389                         
+06-21-06 10:36 Raymond        Note Edited: 0010389                         
+06-21-06 14:25 Raymond        Note Edited: 0010389                         
+06-22-06 06:30 Raymond        Note Added: 0010417                          
+06-22-06 11:30 Raymond        Note Edited: 0010417                         
+06-23-06 14:03 hlabs          Note Added: 0010447                          
+06-23-06 14:10 Raymond        Note Added: 0010448                          
+06-23-06 14:18 hlabs          File Added: asound.state.1                    
+06-23-06 14:20 hlabs          Note Added: 0010449                          
+06-23-06 14:52 hlabs          Note Added: 0010450                          
+06-23-06 15:44 Raymond        Note Added: 0010452                          
+08-05-06 17:29 voss           Note Added: 0011439                          
 ======================================================================
 
 
