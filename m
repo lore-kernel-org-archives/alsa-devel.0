@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002337]: Compilation problem ...
 	previous advice here didn't work for me ...
-Date: Sat, 5 Aug 2006 09:46:31 +0200
-Message-ID: <cd4fc5c0430151545a71fd69519dcfb0@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 10:11:00 +0200
+Message-ID: <a01ac9e18a40bdd44fd88d47f01f31a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7E0C179
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F87A17E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 09:46:31 +0200 (MEST)
+	Sat,  5 Aug 2006 10:11:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-05-2006 09:46 CEST
-Last Modified:              08-05-2006 09:46 CEST
+Last Modified:              08-05-2006 10:10 CEST
 ======================================================================
 Summary:                    Compilation problem ... previous advice here didn't
 work for me ...
@@ -81,10 +81,16 @@ _______________________________________________________________________________
                                       
 ======================================================================
 
+----------------------------------------------------------------------
+ Raymond - 08-05-06 10:10 
+----------------------------------------------------------------------
+alsa-util depends on alsa-lib, must be same version
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
 ======================================================================
 
 
