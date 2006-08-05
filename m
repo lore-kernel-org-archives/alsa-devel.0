@@ -1,19 +1,16 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH 0/5] powerpc sound, some more patches
-Date: Sat, 05 Aug 2006 18:09:52 +0200
-Message-ID: <1154794192.31814.10.camel@johannes.berg>
-References: <20060718172841.046446000@sipsolutions.net>
-	<s5hy7uhsra7.wl%tiwai@suse.de>
-	<7015.131.234.232.48.1153840399.squirrel@secure.sipsolutions.net>
-	<s5hirllsoae.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Sat, 5 Aug 2006 18:36:23 +0200
+Message-ID: <a192062d57d0196402c911cdd5c07cad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0698381413=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31757188
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA594142
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 18:11:13 +0200 (MEST)
-In-Reply-To: <s5hirllsoae.wl%tiwai@suse.de>
+	Sat,  5 Aug 2006 18:36:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,77 +20,157 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>, benh@kernel.crashing.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0698381413==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-lzjcDFPkuf+PFHuFEuoR"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              08-05-2006 18:36 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
+======================================================================
+
+----------------------------------------------------------------------
+ michaldemin - 08-05-06 18:34 
+----------------------------------------------------------------------
+I've GOT IT !!! For all of you Uniwill owners:
+As this codec has NO gpio, i thought they might have udes the VREFO pin as
+a signal to turn on the amp. I have changed the 3stack init, to enable all
+possible VREFs and it worked! 
+Port E VREFO has to be turned on. You need to add this line to
+alc861_threestack_init_verbs
+
+{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 }, 
+then use the model 3stack-dig
+I hope to see this in HG soon  d:-D
 
 
---=-lzjcDFPkuf+PFHuFEuoR
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+
+----------------------------------------------------------------------
+ michaldemin - 08-05-06 18:36 
+----------------------------------------------------------------------
+Another suggestion, I have 2 jack outputs on the front panel of the
+notebook, There could be 2ch and 4ch switch in the alsa mixer. 
+If anyone wants patch for the HG, I can create one in few minutes
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
+06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
+06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
+06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
+06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
+06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 22:50 taschenorakel  File Added:
+alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
+06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
+06-26-06 16:38 rlrevell       Note Added: 0010548                          
+06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
+07-29-06 04:04 pwaller        Note Added: 0011296                          
+07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
+07-31-06 21:34 vertex         Note Added: 0011349                          
+08-01-06 00:45 pwaller        Note Added: 0011355                          
+08-01-06 01:32 rlrevell       Note Added: 0011358                          
+08-01-06 20:58 pwaller        Note Added: 0011377                          
+08-01-06 21:14 rlrevell       Note Added: 0011378                          
+08-01-06 21:17 pwaller        Note Added: 0011379                          
+08-01-06 21:24 pwaller        Note Added: 0011380                          
+08-01-06 21:26 rlrevell       Note Added: 0011381                          
+08-01-06 21:28 pwaller        Note Added: 0011382                          
+08-04-06 19:53 norbusan       Issue Monitored: norbusan                    
+08-05-06 18:07 michaldemin    Note Added: 0011441                          
+08-05-06 18:07 michaldemin    Issue Monitored: michaldemin                    
+08-05-06 18:34 michaldemin    Note Edited: 0011441                         
+08-05-06 18:36 michaldemin    Note Added: 0011442                          
+======================================================================
 
 
-> Jaroslav, could you update alsa git tree for pushing?
-> We have ca. 20 pending fixes including these ppc-patches.
-
-Pretty please? People are hitting these bugs every week and I always get
-mail about it (and probably more people hitting the bugs who don't
-manage to mail me...).
-
-johannes
-
---=-lzjcDFPkuf+PFHuFEuoR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (powerbook)
-
-iQIVAwUARNTCz6Vg1VMiehFYAQJt2A//WhjDUvD/uuGF6E1hS5yDQ8djkCistXxg
-UC++Cd1QUAOm3jNpq09IQWcGPXQiLWqzW1I6vuEQMkuIWQPyn551Ud1hnQVIiliF
-qt+8f4kjvHVyHkTl7diyyr3JmHFG1j2l1sVlKmlfJgtRbG9EDbSkY/IlzfvL/DPa
-4Nb5v7UKy87UeFJHxPl0t8UBfY7TO0LWR70gP7YWYPdm7fWJ2Ek5eg+FzwRFeCfn
-ZIUctEZimYWQHr8y3HJoNvtpiTuhjCs75///BURf3L4KwSbA7Auq1Irspph5Ea63
-U+itpoLj+LH4itdRz/glxaTp/MZqVdZOT/Soe5RY3WcnsV8DOtb+4bu3qBk2PTHQ
-2Uv7D0Nwaxlxh3SvlfZVfV2CkxIpxcAm5UwqQxsIzcWHjndg8Y/Fpq6iHGZQV95i
-bYMsKAkA4tr49V22X7Y68CpqJf3vxixuJxMSltsN30AgORBHzF15kNXE+uDZY23S
-gYeQm9YyuwKklbtdsedZ0ViZHiqtzX8kerXFrUyA74iTnDw7SYzudUq/Co/P6gSO
-hao+htYvBaXhNoPpApabdahxcDb9jpTQ6qqGktBQx54sW5hlRS0HrJ5ppW7KjU68
-f0eyMZNPi24A44fW4XSIPxuO3zC/5gmAejruyKGm6VZl1I5X+PfACshJ/4ftfFwW
-L1BLtzVLX/U=
-=sYm0
------END PGP SIGNATURE-----
-
---=-lzjcDFPkuf+PFHuFEuoR--
-
-
-
---===============0698381413==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0698381413==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0698381413==--
