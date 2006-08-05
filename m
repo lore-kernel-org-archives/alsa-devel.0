@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Sat, 5 Aug 2006 22:04:07 +0200
-Message-ID: <7105f8cb2bee4674af2b878e4dce4825@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002234]: ISA sscape driver does not
+	find Soundscape Elite
+Date: Sat, 5 Aug 2006 22:50:35 +0200
+Message-ID: <dc1fee1a371664e21271499157ff46b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96A86199
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD13C13A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 22:04:07 +0200 (MEST)
+	Sat,  5 Aug 2006 22:50:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,151 +26,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                tjallen
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   2234
+Category:                   ISA - sscape
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Status:                     new
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-05-2006 22:04 CEST
+Date Submitted:             06-26-2006 15:52 CEST
+Last Modified:              08-05-2006 22:50 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
-
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
-
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
+The ALSA driver builds fine, both as a module and built-in but
+the driver does not find the Soundscape Elite card.
 ======================================================================
 
 ----------------------------------------------------------------------
- jlpedrosa - 08-05-06 19:24 
+ rankincj - 08-05-06 13:36 
 ----------------------------------------------------------------------
-hi!
+This new patch replaces the original sscape.diff patch for the
+alsa-sscape.c file. As well as all the contents of that patch, it adds a
+new parameter to the snd-sscape.ko module called "codec_port":
 
-thanks a lot for you work, i'm not used to csv downloading and patching,
-could you make a 5 line guide of what in needed to get sound working? i've
-enetered in the hg and i don't know how to start.
+So for a non-PnP SoundScape, you would use e.g. "port=0x330
+codec_port=0x534"
 
-What distributions are you using? the only i could make boot was Suse 10.1
-
-tried mandriva, and kubuntu, in fact kunbutu booted in live mode but
-failed to boot with local installation, i think it was something about the
-mother board, more specific, de SATA controller.
-
-Thanks again! gonna be great hear music again.
+"codec_port" should be optional for a PnP model because we should already
+know where to find the codec port for those.
 
 ----------------------------------------------------------------------
- michaldemin - 08-05-06 22:04 
+ tjallen - 08-05-06 22:50 
 ----------------------------------------------------------------------
-use the latest patch ! in the previous one i have swaped the 4ch and 2ch
-mode by accident
+The patch does not apply cleanly:
+
+11> patch alsa-sscape.c < codec-io.diff
+patching file alsa-sscape.c
+Hunk #7 FAILED at 893.
+1 out of 15 hunks FAILED -- saving rejects to file alsa-sscape.c.rej
+
+Even so, the resulting module does compile but produces kernel
+messages
+ Enter snd_sscape_probe
+ Enter detect_GA
+ Exit detect_GA
+ Exit detect_sscape
+sscape: GA hardware detected at 0x330, using IRQ 9, DMA 0
+unknown CS chip with version 0x0
+sscape: No AD1845 device at 0x534, IRQ 9
+
+I believe that the Elite is an AD1848 chip.  The default values
+for the codec are codec_port=0x534 IRQ=9 DMA=1.  The host
+port (MPU 401) default value is port=0x330 (or possibly 0x332) 
+and IRQ=5.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
-06-22-06 22:50 taschenorakel  File Added:
-alsa-driver-1.0.9b_24a-with-symbols.diff.bz2                    
-06-26-06 13:25 jlpedrosa      Note Added: 0010532                          
-06-26-06 16:38 rlrevell       Note Added: 0010548                          
-06-27-06 16:09 jlpedrosa      Note Added: 0010595                          
-07-29-06 04:04 pwaller        Note Added: 0011296                          
-07-29-06 04:04 pwaller        Issue Monitored: pwaller                     
-07-31-06 21:34 vertex         Note Added: 0011349                          
-08-01-06 00:45 pwaller        Note Added: 0011355                          
-08-01-06 01:32 rlrevell       Note Added: 0011358                          
-08-01-06 20:58 pwaller        Note Added: 0011377                          
-08-01-06 21:14 rlrevell       Note Added: 0011378                          
-08-01-06 21:17 pwaller        Note Added: 0011379                          
-08-01-06 21:24 pwaller        Note Added: 0011380                          
-08-01-06 21:26 rlrevell       Note Added: 0011381                          
-08-01-06 21:28 pwaller        Note Added: 0011382                          
-08-04-06 19:53 norbusan       Issue Monitored: norbusan                    
-08-05-06 18:07 michaldemin    Note Added: 0011441                          
-08-05-06 18:07 michaldemin    Issue Monitored: michaldemin                    
-08-05-06 18:34 michaldemin    Note Edited: 0011441                         
-08-05-06 18:36 michaldemin    Note Added: 0011442                          
-08-05-06 18:39 pwaller        Note Added: 0011443                          
-08-05-06 19:10 michaldemin    File Added: uniwill.patch                    
-08-05-06 19:11 michaldemin    Note Added: 0011445                          
-08-05-06 19:24 jlpedrosa      Note Added: 0011446                          
-08-05-06 22:01 michaldemin    File Added: uniwill-new.patch                    
-08-05-06 22:04 michaldemin    Note Added: 0011447                          
+06-26-06 15:52 tjallen        New Issue                                    
+06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
+06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
+06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+06-28-06 23:25 rankincj       Note Added: 0010628                          
+06-29-06 00:40 tjallen        Note Added: 0010630                          
+06-29-06 17:57 tiwai          Note Added: 0010679                          
+06-29-06 20:30 tjallen        Note Added: 0010701                          
+06-29-06 23:14 rankincj       Note Added: 0010703                          
+06-29-06 23:17 rankincj       Note Added: 0010704                          
+06-30-06 01:45 tjallen        Note Added: 0010708                          
+06-30-06 02:10 rankincj       Note Added: 0010710                          
+06-30-06 14:46 tjallen        Note Added: 0010735                          
+06-30-06 22:38 rankincj       Note Added: 0010752                          
+06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
+07-02-06 01:39 rankincj       File Added: sscape.c                         
+07-02-06 01:41 rankincj       Note Added: 0010767                          
+07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
+07-02-06 03:19 tjallen        Note Added: 0010768                          
+07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
+07-23-06 02:25 rankincj       Note Added: 0011178                          
+07-30-06 21:45 tjallen        Note Added: 0011330                          
+07-30-06 23:14 rankincj       File Added: sscape.diff                      
+07-30-06 23:17 rankincj       Note Added: 0011332                          
+07-31-06 16:59 tjallen        Note Added: 0011343                          
+08-03-06 00:47 rankincj       Note Added: 0011391                          
+08-03-06 01:40 tjallen        Note Added: 0011392                          
+08-05-06 13:31 rankincj       File Added: codec-io.diff                    
+08-05-06 13:36 rankincj       Note Added: 0011429                          
+08-05-06 22:43 rankincj       File Added: codec-io-v2.diff                    
+08-05-06 22:50 tjallen        Note Added: 0011448                          
 ======================================================================
 
 
