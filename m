@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001612]: Ubuntu5.10 not configured for
-	Alsa device:surround51?
-Date: Sat, 5 Aug 2006 15:17:55 +0200
-Message-ID: <04cf064cfbaaa1358b1471cf3760d87d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002337]: Compilation problem ...
+	previous advice here didn't work for me ...
+Date: Sat, 5 Aug 2006 15:24:47 +0200
+Message-ID: <4a1dc483d2ee89a4b743ab81abaa454c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F01E1138
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90C3B16B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 15:17:55 +0200 (MEST)
+	Sat,  5 Aug 2006 15:24:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,250 +26,651 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1612> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
-Reported By:                Manolo
+Reported By:                Mikey84
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1612
-Category:                   1_OTHERS
+Project:                    ALSA - utils
+Issue ID:                   2337
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 Breezy
-Kernel Version:             Linux 2.6.12
+Status:                     feedback
 ======================================================================
-Date Submitted:             12-02-2005 17:51 CET
-Last Modified:              08-05-2006 15:17 CEST
+Date Submitted:             08-05-2006 09:46 CEST
+Last Modified:              08-05-2006 15:24 CEST
 ======================================================================
-Summary:                    Ubuntu5.10 not configured for Alsa
-device:surround51?
+Summary:                    Compilation problem ... previous advice here didn't
+work for me ...
 Description: 
-Hardware
-  Motherboard: Abit Ic7, Audio: Onboard (Intel ICH5) RealTek
-    ALC650F 6-Channel AC97 CODEC.
-  uP: Pentium4, Hyperthreading, 3Ghz
+I have also a compilation problem. Almost similar as cimmo had, and I tried
+to do the same tricks as he was told to do, but they didn't work ... I
+have alsa-driver and alsa-lib correctly installed, but this alsa-utils
+doesn't compile ...
 
-Software
-  Ubuntu 5.10
-  Custom compiled kernel from 'linux-source-2.6.12 2.6.12-10.24'
-    make menuconfig
-      Device Drivers
-        Sound
-          <M> Sound card support
-          Advanced Linux Sound Architecture --->
-            <M> Advanced Linux Sound Architecture
-            <M>   Sequencer support
-            <M>     Sequencer dummy client
-            <M>   OSS Mixer API
-            <M>   OSS PCM (digital audio) API
-            [*]   OSS Sequencer API
-            <M>   RTC Timer support
-            PCI devices --->
-              <M>  All drivers <M> when option available.
-          Open Sound System --->
-            < > Open Sound System
-  Compiled Alsa packages:
-    alsa-driver-1.0.10
-    alsa-lib-1.0.10
-    alsa-utils-1.0.10 # configure --disable-nls: configure fails
-otherwise.
-    alsa-oss
-    alsa-plugins-1.0.10 # configure,pcm/Makefile.in:Modified to compile
-without
-      jack.
-    Note: At boot, if file /var/lib/alsa/asound.state does not exist,
-file
-      /etc/asound.state is overwritten with default values (No surround
-sound!).
-      Alsa package is not responsible for this (Ubuntu5.10 or
-Kernel2.6.12??).
+'Make' gives me this kind of error message:
 
-Sound Applications
-  aplay (alsa-utils-1.0.10)
-  audacity 1.2.3 #Device /dev/dsp
-  xmms 1.2.10 #plugin /usr/lib/xmms/Input/libwav.so (does not accept
-    5.1ChannelFile.wav) replaced by older version (Ubuntu 4.10).
-  mplayer 4.0.2
-  xine v0.99.3
+_______________________________________________________________________________
 
-esd daemon running:
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel
-    Error Message: There was an error initializing the audio i/o
-      layer. You will not be able to play or record audio.
-      Error: Host error.
-  audacity #gnome-terminal
-    Most of the times application starts without error message.
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel
-    Error Message: Couldn't open audio. Please check that:
-      Your soundcard is configured properly
-      You have the correct output plugin selected
-      No other program is blocking the soundcard.
-    After several Play/ErrorMessage:
-      5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.gnome-terminal
-    Most of the times application starts without error message.
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o: In function `control_access':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
+undefined reference to `snd_ctl_elem_info_is_tlv_writable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
+undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
+amixer.o: In function `show_control':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
+undefined reference to `snd_hctl_elem_tlv_read'
+collect2: ld returned 1 exit status
+make[1]: *** [amixer] Error 1
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: *** [all-recursive] Error 1
+[root@a-55-58 alsa-utils-1.0.12rc2]#
 
-esd daemon NOT running (killall esd):
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel or gnome-terminal
-    Application starts without error message
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
-
+_______________________________________________________________________________
+                                      
 ======================================================================
 
 ----------------------------------------------------------------------
- Manolo - 08-05-06 14:55 
+ Mikey84 - 08-05-06 14:44 
 ----------------------------------------------------------------------
-Thank you Raymond,
+I did, but still it doesn't work ...
 
->subdevices_avail equal to zero means one application already
->use the playback device, most likely a sound server daemon
-'esd'. I wrote in
-https://launchpad.net/distros/ubuntu/+source/alsa-lib/+bug/26483:
-{
-With the present setup (default Ubuntu), if 'esd' is not running ('killall
-esd'), applications do not cause alsa to output 'ALSA lib pcm_dmix.c:802:
-(snd_pcm_dmix_open) unable to open slave' to $HOME/.xsession-errors.
-}
-This confirms the name I gave this bug: "Ubuntu5.10 not configured for
-Alsa"
+And yes, my system is a x86_64 thing ...
 
-It is good to know the reason for the error messages but It does not help
-me in any way. If would rather have the error messages than stop 'esd'.
+This is what I get from "make":
+_______________________________________________________________________________
 
+Making all in include
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make  all-am
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+Making all in alsactl
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsactl.o -MD
+-MP -MF ".deps/alsactl.Tpo" -c -o alsactl.o alsactl.c; \
+then mv -f ".deps/alsactl.Tpo" ".deps/alsactl.Po"; else rm -f
+".deps/alsactl.Tpo"; exit 1; fi
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT state.o -MD -MP
+-MF ".deps/state.Tpo" -c -o state.o state.c; \
+then mv -f ".deps/state.Tpo" ".deps/state.Po"; else rm -f
+".deps/state.Tpo"; exit 1; fi
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT names.o -MD -MP
+-MF ".deps/names.Tpo" -c -o names.o names.c; \
+then mv -f ".deps/names.Tpo" ".deps/names.Po"; else rm -f
+".deps/names.Tpo"; exit 1; fi
+gcc  -g -O2   -o alsactl  alsactl.o state.o names.o  -lasound -lm -ldl
+-lpthread
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+Making all in alsaconf
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+Making all in po
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+Making all in alsamixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsamixer.o -MD
+-MP -MF ".deps/alsamixer.Tpo" -c -o alsamixer.o alsamixer.c; \
+then mv -f ".deps/alsamixer.Tpo" ".deps/alsamixer.Po"; else rm -f
+".deps/alsamixer.Tpo"; exit 1; fi
+gcc  -g -O2   -o alsamixer  alsamixer.o -lncurses -lasound -lm -ldl
+-lpthread
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+Making all in amidi
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include    -g -O2 -MT
+amidi.o -MD -MP -MF ".deps/amidi.Tpo" -c -o amidi.o amidi.c; \
+then mv -f ".deps/amidi.Tpo" ".deps/amidi.Po"; else rm -f
+".deps/amidi.Tpo"; exit 1; fi
+gcc  -g -O2   -o amidi  amidi.o  -lasound -lm -ldl -lpthread
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include    -g -O2 -MT
+amixer.o -MD -MP -MF ".deps/amixer.Tpo" -c -o amixer.o amixer.c; \
+then mv -f ".deps/amixer.Tpo" ".deps/amixer.Po"; else rm -f
+".deps/amixer.Tpo"; exit 1; fi
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o
+:
+ 
+In
+ 
+function
+ 
+`
+control_access
+'
+:
 
-Best regards,
-Manolo.
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+157
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_readable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+158
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_writable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+159
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_commandable
+'
+
+amixer.o
+:
+ 
+In
+ 
+function
+ 
+`
+show_control
+'
+:
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+539
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_readable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+542
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_hctl_elem_tlv_read
+'
+
+collect2: 
+ld returned 1 exit status
+
+make[1]: 
+*** [amixer] Error 1
+
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: 
+*** [all-recursive] Error 1
+
+Making install in include
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/include'
+Making install in alsactl
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
+  /usr/bin/install -c 'alsactl' '/usr/sbin/alsactl'
+test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
+ /usr/bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsactl'
+Making install in alsaconf
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+Making install in po
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
+mkdir -p -- /usr/share
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf/po'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+make[3]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
+ /usr/bin/install -c 'alsaconf' '/usr/sbin/alsaconf'
+ /usr/bin/install -c -m 644 alsaconf.8 /usr/man/man8/alsaconf.8
+ /usr/bin/install -c -m 644 alsaconf.fr.8 /usr/man/fr/man8/alsaconf.8
+make[3]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsaconf'
+Making install in alsamixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+test -z "/usr/bin" || mkdir -p -- "/usr/bin"
+  /usr/bin/install -c 'alsamixer' '/usr/bin/alsamixer'
+test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
+ /usr/bin/install -c -m 644 './alsamixer.1' '/usr/man/man1/alsamixer.1'
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/alsamixer'
+Making install in amidi
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+make[2]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+test -z "/usr/bin" || mkdir -p -- "/usr/bin"
+  /usr/bin/install -c 'amidi' '/usr/bin/amidi'
+test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
+ /usr/bin/install -c -m 644 './amidi.1' '/usr/man/man1/amidi.1'
+make[2]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amidi'
+Making install in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o
+:
+ 
+In
+ 
+function
+ 
+`
+control_access
+'
+:
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+157
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_readable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+158
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_writable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+159
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_commandable
+'
+
+amixer.o
+:
+ 
+In
+ 
+function
+ 
+`
+show_control
+'
+:
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+539
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_ctl_elem_info_is_tlv_readable
+'
+
+/
+home
+/
+Mikey_A
+/
+Asennus_LINUX
+/
+Linux
+/
+ALSA
+/
+alsa
+-
+utils
+-
+1.0.12rc2
+/
+amixer
+/
+amixer.c
+:
+542
+:
+ 
+undefined
+ 
+reference
+ 
+to
+ 
+`
+snd_hctl_elem_tlv_read
+'
+
+collect2: 
+ld returned 1 exit status
+
+make[1]: 
+*** [amixer] Error 1
+
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: 
+*** [install-recursive] Error 1
 
 ----------------------------------------------------------------------
- Raymond - 08-05-06 15:17 
+ Raymond - 08-05-06 15:24 
 ----------------------------------------------------------------------
-It's strange that you can use aplay to play 6-channels wav.
+TLV is a new feature in alsa-lib 1.0.12rc2.
 
-Post output of
-
-aplay -L
-
-strace -e trace=open -Dsurround51 5.1ChannelFile.wav
-
-Do you still have application which still need esd ?
+This means the alsa-lib (1.0.12rc2) is installed to a wrong location, when
+you compile alsa-utils-1.0.12rc2, it still find the old version of
+alsa-lib
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-05 17:51 Manolo         New Issue                                    
-12-02-05 17:51 Manolo         Distribution              => Ubuntu 5.10 Breezy
-12-02-05 17:51 Manolo         Kernel Version            => Linux 2.6.12    
-12-03-05 13:54 Manolo         Note Added: 0006898                          
-07-28-06 05:39 Raymond        Note Added: 0011283                          
-08-02-06 20:15 Manolo         Note Added: 0011390                          
-08-03-06 03:56 Raymond        Note Added: 0011394                          
-08-03-06 05:33 Raymond        Note Edited: 0011394                         
-08-03-06 17:37 Manolo         Note Added: 0011405                          
-08-03-06 18:20 Raymond        Note Added: 0011406                          
-08-04-06 03:29 Raymond        Note Edited: 0011406                         
-08-04-06 05:25 Raymond        Note Edited: 0011406                         
-08-04-06 09:51 Raymond        Note Edited: 0011406                         
-08-04-06 10:41 Manolo         Note Added: 0011418                          
-08-04-06 10:43 Manolo         Note Edited: 0011418                         
-08-04-06 15:18 Raymond        Note Added: 0011419                          
-08-05-06 06:55 Raymond        Note Edited: 0011419                         
-08-05-06 10:13 Manolo         Note Added: 0011424                          
-08-05-06 10:13 Manolo         File Added: RequestedData.txt                    
-08-05-06 10:31 Raymond        Note Added: 0011425                          
-08-05-06 10:36 Raymond        Note Edited: 0011425                         
-08-05-06 10:41 Raymond        Note Edited: 0011425                         
-08-05-06 10:43 Raymond        Note Edited: 0011425                         
-08-05-06 14:55 Manolo         Note Added: 0011435                          
-08-05-06 15:17 Raymond        Note Added: 0011436                          
+08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
+08-05-06 14:04 Mikey84        Note Added: 0011430                          
+08-05-06 14:33 jcdutton       Note Added: 0011433                          
+08-05-06 14:33 jcdutton       Status                   new => feedback     
+08-05-06 14:44 Mikey84        Note Added: 0011434                          
+08-05-06 15:24 Raymond        Note Added: 0011437                          
 ======================================================================
 
 
