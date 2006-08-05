@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Sat, 5 Aug 2006 23:09:10 +0200
-Message-ID: <6d54726024ccc7e12b965757e3b8ba8f@bugtrack.alsa-project.org>
+From: Cruise X Overide <cruiseoveride@gmail.com>
+Subject: Re: GPIO on envy24ht M-Audio 192
+Date: Sat, 05 Aug 2006 17:16:10 -0400
+Message-ID: <1154812570.15566.4.camel@server>
+References: <1154390773.1991.1.camel@server> <s5hd5bkbfrw.wl%tiwai@suse.de>
+	<1154454336.3383.8.camel@server> <s5hvepbhzhx.wl%tiwai@suse.de>
+	<1154536420.7149.2.camel@server> <s5hslkfhypo.wl%tiwai@suse.de>
+	<1154539779.7149.7.camel@server> <s5hk65rhwam.wl%tiwai@suse.de>
+	<1154547463.7149.9.camel@server> <s5hwt9qglnq.wl%tiwai@suse.de>
+	<1154624587.19243.1.camel@server> <s5hslkdwxkg.wl%tiwai@suse.de>
+	<s5hk65pww9l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 198BAD8
-	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 23:09:11 +0200 (MEST)
+In-Reply-To: <s5hk65pww9l.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,107 +23,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
-======================================================================
-Reported By:                tjallen
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
-======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              08-05-2006 23:09 CEST
-======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
-Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
-======================================================================
-
-----------------------------------------------------------------------
- tjallen - 08-05-06 23:02 
-----------------------------------------------------------------------
-Oops, I'm sorry I missed the codec-io-v2.diff, which patches cleanly.
-Unfortunately, the same messages result from that module:
-
- Enter snd_sscape_probe
- Enter detect_GA
- Exit detect_GA
- Exit detect_sscape
-sscape: GA hardware detected at 0x330, using IRQ 9, DMA 0
-unknown CS chip with version 0x0
-sscape: No AD1845 device at 0x534, IRQ 9
+Wiring Info for M-Audio Audiophile 192 (AP192K) Rev-E
+--------------------------------------------------------
 
 
-My /etc/modprobe.conf and /etc/modules.conf have the line:
-options snd-sscape port=0x330 codec_port=0x534 irq=9 mpu_irq=5 dma=0
-isapnp=0
+AK4358 <=> Envy24HT
+--------------------------------------------------------
+AK4358 pin 19 (CCLK/SCL) <-> Envy24HT pin 51 (GPIO1)
+AK4358 pin 20 (CDTI/SDA) <-> Envy24HT pin 53 (GPIO3)
+AK4358 pin 21 (CSN/CAD1) <-> Envy24HT pin 56 (GPIO4)
 
-----------------------------------------------------------------------
- rankincj - 08-05-06 23:09 
-----------------------------------------------------------------------
-> My /etc/modprobe.conf and /etc/modules.conf have the line:
-> options snd-sscape port=0x330 codec_port=0x534 irq=9 mpu_irq=5 dma=0
-isapnp=0
+AK4114 <=> Envy24HT
+------------------------------------------------------- 
+AK4114 pin 34 (CCLK) <-> Envy24HT pin 51 (GPIO1) 
+AK4114 pin 33 (CDTI) <-> Envy24HT pin 53 (GPIO3) 
+AK4114 pin 32 (CDTO) <-> Envy24HT pin 52 (GPIO2) 
+AK4114 pin 35 (CSN) <-> Envy24HT pin 59 (GPIO7) 
 
-This should read:
-options snd-sscape port=0x330 codec_port=0x534 irq=5 mpu_irq=9 dma=0
-isapnp=0
+AK5385A <=> Envy24HT
+-------------------------------------------------------
+AK5385 CKS0 does not appear to connect to Envy24HT
+AK5385A DFS0 pin 18 <=> Envy24HT GPIO10 pin 77 
+AK5385A DFS1 pin 20 <=> either Envy24HT pin 78 or 79, 
 
-However, I doubt it will make much difference. There's probably more
-non-PnP initialising to do.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
-06-30-06 22:38 rankincj       Note Added: 0010752                          
-06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
-07-02-06 01:39 rankincj       File Added: sscape.c                         
-07-02-06 01:41 rankincj       Note Added: 0010767                          
-07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
-07-02-06 03:19 tjallen        Note Added: 0010768                          
-07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
-07-23-06 02:25 rankincj       Note Added: 0011178                          
-07-30-06 21:45 tjallen        Note Added: 0011330                          
-07-30-06 23:14 rankincj       File Added: sscape.diff                      
-07-30-06 23:17 rankincj       Note Added: 0011332                          
-07-31-06 16:59 tjallen        Note Added: 0011343                          
-08-03-06 00:47 rankincj       Note Added: 0011391                          
-08-03-06 01:40 tjallen        Note Added: 0011392                          
-08-05-06 13:31 rankincj       File Added: codec-io.diff                    
-08-05-06 13:36 rankincj       Note Added: 0011429                          
-08-05-06 22:43 rankincj       File Added: codec-io-v2.diff                    
-08-05-06 22:50 tjallen        Note Added: 0011448                          
-08-05-06 23:02 tjallen        Note Added: 0011449                          
-08-05-06 23:09 rankincj       Note Added: 0011450                          
-======================================================================
-
+On Thu, 2006-08-03 at 19:43 +0200, Takashi Iwai wrote:
+> At Thu, 03 Aug 2006 19:14:55 +0200,
+> I wrote:
+> > 
+> > At Thu, 03 Aug 2006 13:03:07 -0400,
+> > Cruise X Overide wrote:
+> > > 
+> > >  how do i figure out the i2c address of each codec chip
+> > > > is this in the datasheet of the aks?
+> > > > 
+> > > > No.  It should be in the datasheet of your M-Audio board (if any), but
+> > > > not in the datasheet of controller or codec chips.
+> > > > 
+> > > > 
+> > > > Takashi
+> > > 
+> > > would have an idea where i could find such a datasheet?
+> > 
+> > That's why I asked about the datasheet of the board (_not_ about
+> > VT1724!) in the early reply...
+> > 
+> > Only the board vendor (M-Audio) may provide such one.  Ask them about
+> > it.
+> 
+> Well, actually, this is the most difficult part for writing a linux
+> driver.  Other things can get easier when you have more experiences.
+> 
+> I forgot to mention that i2c address may be limited occasionally by
+> the codec chip.  In such a case, the amount of guess work would be
+> much smaller.  Check the datasheet of AK codecs precisely.
+> 
+> 
+> Takashi
 
 
 -------------------------------------------------------------------------
