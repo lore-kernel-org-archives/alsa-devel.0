@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Sat, 5 Aug 2006 19:11:44 +0200
-Message-ID: <417d11bc1b19d36fcdf954705a0ca0b1@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 19:24:51 +0200
+Message-ID: <0658e6e01a6dd7c924294d2a4c5e9211@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C47B7159
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A843B5
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 19:11:44 +0200 (MEST)
+	Sat,  5 Aug 2006 19:24:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              08-05-2006 19:11 CEST
+Last Modified:              08-05-2006 19:24 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,17 +73,27 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaller - 08-05-06 18:39 
-----------------------------------------------------------------------
-I do!
-
-- Pete
-
-----------------------------------------------------------------------
  michaldemin - 08-05-06 19:11 
 ----------------------------------------------------------------------
 i have added patch file for the HG repo. after patching select
 model=uniwill-m31
+
+----------------------------------------------------------------------
+ jlpedrosa - 08-05-06 19:24 
+----------------------------------------------------------------------
+hi!
+
+thanks a lot for you work, i'm not used to csv downloading and patching,
+could you make a 5 line guide of what in needed to get sound working? i've
+enetered in the hg and i don't know how to start.
+
+What distributions are you using? the only i could make boot was Suse 10.1
+
+tried mandriva, and kubuntu, in fact kunbutu booted in live mode but
+failed to boot with local installation, i think it was something about the
+mother board, more specific, de SATA controller.
+
+Thanks again! gonna be great hear music again.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -158,6 +168,7 @@ alsa-driver-1.0.9b_24a-with-symbols.diff.bz2
 08-05-06 18:39 pwaller        Note Added: 0011443                          
 08-05-06 19:10 michaldemin    File Added: uniwill.patch                    
 08-05-06 19:11 michaldemin    Note Added: 0011445                          
+08-05-06 19:24 jlpedrosa      Note Added: 0011446                          
 ======================================================================
 
 
