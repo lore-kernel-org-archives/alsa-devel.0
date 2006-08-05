@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
-	problem on kernel 2.4
-Date: Sat, 5 Aug 2006 13:14:32 +0200
-Message-ID: <4156f997ee010a622c462d73aecc6cd3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc
+	linux
+Date: Sat, 5 Aug 2006 13:14:40 +0200
+Message-ID: <b1fda0d93dc22fcb0eb63f23ad557042@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C13816B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8120816B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 13:14:33 +0200 (MEST)
+	Sat,  5 Aug 2006 13:14:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,172 +24,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2333> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                eradicator
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2333
-Category:                   0_compilation problem_!!!
+Issue ID:                   731
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-04-2006 17:32 CEST
+Date Submitted:             12-19-2004 13:21 CET
 Last Modified:              08-05-2006 13:14 CEST
 ======================================================================
-Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
+Summary:                    snd-ioctl32 problems on sparc linux
 Description: 
-./configure --with-cards=all
+Some 32bit alsa programs fail on sparc64, but when these programs are
+compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
+cases.
 
-make
 
-gcc32 -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -DALSA_BUILD -nostdinc
--iwithprefix include -I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss
--fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
-linear.c mulaw.c route.c rate.c > .depend
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from mixer_oss.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from pcm_oss.c:29:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/pcm_plugin.c:27,
-                 from pcm_plugin.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/io.c:22,
-                 from io.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/copy.c:22,
-                 from copy.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/linear.c:23,
-                 from linear.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/mulaw.c:24,
-                 from mulaw.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/route.c:22,
-                 from route.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/rate.c:22,
-                 from rate.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-make[3]: *** [fastdep] Error 1
-make[3]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
-make[2]: *** [_sfdep_oss] Error 2
-make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2'
-make: *** [include/sndversions.h] Error 2
+32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
+...
+Text: Reset All Controller
+Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
+failed: Broken pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+Terminated sig=0x02
+
+The strace can be found in bug #167 as I originally mentioned it there. 
+When doing this, you hear the first tone, and then the failed ioctl occur
+(so it's not on the first one)...
+
+32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
+System lockup... I just noticed this one, so I haven't been able to debug,
+but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
+problems...
+using alsa-oss version 1.0.7
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-05-06 13:14 
+ eradicator - 04-04-05 20:32 
 ----------------------------------------------------------------------
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
--I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer 
--DEXPORT_SYMTAB -c mixer_oss.c
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
--I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer
--D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(pcm_oss)"   -c -o
-pcm_oss.o pcm_oss.c
-{standard input}: Assembler messages:
-{standard input}:5552: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5553: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:5634: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5635: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6035: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6036: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6074: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6075: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6091: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6092: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6115: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6116: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6187: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6188: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6204: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6205: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7450: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7451: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7509: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7510: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7613: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7614: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7798: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7799: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7843: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7844: Error: unknown pseudo-op: `.text.lock.'
-make[2]: *** [pcm_oss.o] Error 1
-make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
-make[1]: *** [_modsubdir_oss] Error 2
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make: *** [compile] Error 1
+Ok, the ioctl32 problems seem to be all fixed.  The 'aoss mpg123' problem
+is fixed with >=1.0.8.  Additionally, timidity -Os produces sound which is
+skippy like xmms.  This seems to be directly related to the driver and not
+ioctl32 as I popped in an ens1371 based card which works fine with xmms. 
+Additionally, a native 64bit xmms causes the same skipping in playback, so
+this seems to be a bug in the sun_cs4231 driver.  It's odd that the oss
+playback (in-kernel as well as aoss) would work fine though...
+
+----------------------------------------------------------------------
+ eradicator - 07-19-05 06:50 
+----------------------------------------------------------------------
+this can probably be closed as this specific issue is no longer a problem
+(but others have cropped up in 1.0.9 that I'll open a new bug for)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-06 17:32 Raymond        New Issue                                    
-08-04-06 17:32 Raymond        Distribution              => Fedora Core 1   
-08-04-06 17:32 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-08-05-06 13:14 Raymond        Note Added: 0011427                          
+12-19-04 13:21 eradicator     New Issue                                    
+12-19-04 13:21 eradicator     Distribution              => Gentoo          
+12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
+12-21-04 18:44 tiwai          Note Added: 0002901                          
+12-22-04 07:39 eradicator     Note Added: 0002907                          
+12-22-04 11:58 tiwai          Note Added: 0002908                          
+03-16-05 11:23 eradicator     Note Added: 0003936                          
+03-16-05 11:41 eradicator     Note Added: 0003938                          
+03-16-05 12:26 tiwai          Note Added: 0003939                          
+03-16-05 20:26 eradicator     Note Added: 0003964                          
+04-04-05 20:32 eradicator     Note Added: 0004329                          
+07-19-05 06:50 eradicator     Note Added: 0005526                          
+08-05-06 13:14 Adrian Bunk    Status                   new => resolved     
+08-05-06 13:14 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
