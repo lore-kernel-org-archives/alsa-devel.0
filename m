@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002320]: Almost no sound on Asus
-	laptop with Realtek ALC861
-Date: Sat, 5 Aug 2006 14:11:28 +0200
-Message-ID: <75c94e9c3d42124083bd8afa667569c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002298]: "Invalid argument" error with
+	USB audio device
+Date: Sat, 5 Aug 2006 14:27:12 +0200
+Message-ID: <8fe8e2a361ed0e248bc9eb2765645d86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1BD112E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6334216A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 14:11:28 +0200 (MEST)
+	Sat,  5 Aug 2006 14:27:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,104 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2298> 
 ======================================================================
-Reported By:                mario_7
-Assigned To:                tiwai
+Reported By:                lukeross
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2320
-Category:                   PCI - hda-intel
+Issue ID:                   2298
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             kernel-2.6.17.7
+Distribution:               Fedora Core Linux 4
+Kernel Version:             2.6.14-1.1653_FC4
 ======================================================================
-Date Submitted:             07-31-2006 00:41 CEST
-Last Modified:              08-05-2006 14:11 CEST
+Date Submitted:             07-22-2006 13:34 CEST
+Last Modified:              08-05-2006 14:27 CEST
 ======================================================================
-Summary:                    Almost no sound on Asus laptop with Realtek ALC861
+Summary:                    "Invalid argument" error with USB audio device
 Description: 
-I have almost no sound on my Asus A6RP-AP002 laptop. Almost because it can
-be said that the sound is... 
+Plugged in a USB audio device which is recognised as follows:
 
-But let me start from the beginning. 
+T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
+D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+P:  Vendor=0e6a ProdID=0310 Rev= 1.11
+S:  Product=USB Audio Device
+C:* #Ifs= 3 Cfg#= 1 Atr=80 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=16ms
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00
+Driver=snd-usb-audio
+I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00
+Driver=snd-usb-audio
+I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00
+Driver=snd-usb-audio
+E:  Ad=02(O) Atr=09(Isoc) MxPS= 192 Ivl=1ms
 
-I tried many things to get sound on my laptop. I tried alsa drivers from
-realtek website, alsa 1.0.11 and latest drivers from HG. Alsa 1.0.11
-examined my chipset properly - ALC861, other found it as ALC660. None of
-them were working (no sound). 
+Whenever I try to play on this device I get the following error:
 
-2 days ago I downloaded latest 2.6.17.7 kernel and compiled it with
-included alsa drivers (1.0.11rc4), sound chipset was examined properly,
-but still nothing... 
-
-I started using various options with snd-hda-intel module. 
-Built-in speakers are not working with any of options
-(model=3stack/3stack-dig/6stack-dig) but headphones are almost working...
-
-With model=3stack I can hear sound with headphones but only when I plug
-them into line-in jack. The sound is very very quiet and it's also with
-crackling noise... (Volume is set to maximum level). 
-
-With model=6stack-dig situation is almost the same, except that the
-headphones are plugged into headphone jack and the same sound can be heard
-in only one headphone (the second one is just silent).
-
-The built-in microphone is working quite well (there is only not too loud
-squeal during records).
-
-Other options like posotion_fix=1/2 or single_cmd=1 are not changing
-anything (with posotion_fix=2 Ubuntu is not loading, X hangs when the
-login sound should be played).  
-
-If anyone would like to help me and need any other information than those
-placed in this post and in attached file, just ask for them and I'll
-answer :)
-
-Hope someone smart will know how to fix everything :)
+Setting of hwparams failed: Invalid argument
+Broken configuration for playback: no configurations available: Invalid
+argument
 ======================================================================
 
 ----------------------------------------------------------------------
- mario_7 - 08-05-06 13:26 
+ lukeross - 07-23-06 12:52 
 ----------------------------------------------------------------------
-I wrote an email to Realtek... Hope someone will amswer it. :) 
-Now I'm thinking about writing an email to Asus too.
+After a lot of googling, I turned up the following link to someone with the
+same chipset:
 
-The Realtek driver for Windows works fine. I don't know if it is possible
-but maybe you could get some informations from that driver?
+http://sourceforge.net/mailarchive/forum.php?thread_id=9969515&forum_id=1752
 
-Michaldemin, does the sound you got was like mine, described in bug
-report, or was it clear and good quality?
-
-Tiwai, if there would be some HowTo or HandBook... I know nothing about
-programming drivers but if it is similar to creating PHP scripts, then
-maybe I would be able to do something... :)
+This patch works for me, and with respect to the second message in the
+thread the sound plays normally, suggesting (if I understand the problem
+correctly) that the chipset is giving out incorrect information about
+supported rates.
 
 ----------------------------------------------------------------------
- michaldemin - 08-05-06 14:11 
+ lukeross - 08-05-06 14:27 
 ----------------------------------------------------------------------
-my sound wasn't clear, it contained a high frequency beeping.
+Please close this bug, as it is part of a bigger issue which I'll open a
+much more descriptive bug about, and hopefully attach a patch to.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-06 00:41 mario_7        New Issue                                    
-07-31-06 00:41 mario_7        File Added: info                             
-07-31-06 00:41 mario_7        Kernel Version            => kernel-2.6.17.7 
-07-31-06 11:12 michaldemin    Note Added: 0011341                          
-07-31-06 13:59 michaldemin    Note Edited: 0011341                         
-07-31-06 16:44 michaldemin    Note Edited: 0011341                         
-07-31-06 17:47 tiwai          Note Added: 0011344                          
-07-31-06 19:16 michaldemin    Note Added: 0011346                          
-07-31-06 23:52 mario_7        Note Added: 0011354                          
-08-03-06 14:58 michaldemin    Note Added: 0011401                          
-08-03-06 15:04 tiwai          Note Added: 0011402                          
-08-03-06 15:41 michaldemin    Note Added: 0011403                          
-08-05-06 13:26 mario_7        Note Added: 0011428                          
-08-05-06 14:11 michaldemin    Note Added: 0011431                          
+07-22-06 13:34 lukeross       New Issue                                    
+07-22-06 13:34 lukeross       Distribution              => Fedora Core Linux 4
+07-22-06 13:34 lukeross       Kernel Version            => 2.6.14-1.1653_FC4
+07-23-06 12:52 lukeross       Note Added: 0011184                          
+08-05-06 14:27 lukeross       Note Added: 0011432                          
 ======================================================================
 
 
