@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002336]: No sound with via 8237 (with
-	ALC655) on P4M800PRO motherboard
-Date: Sat, 5 Aug 2006 03:38:49 +0200
-Message-ID: <60583bd8667553630340857731649e0a@bugtrack.alsa-project.org>
+From: "Timotei Mix" <dioni@girish.8k.com>
+Subject: Re: aiuebVzlAGRA
+Date: Fri, 4 Aug 2006 20:32:15 -0700
+Message-ID: <000001c6b83f$bf306c70$0c04a8c0@ttq84>
+Reply-To: Timotei Mix <dioni@girish.8k.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2017619485=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C056CFE
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FD2F151
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 03:38:49 +0200 (MEST)
+	Sat,  5 Aug 2006 05:32:50 +0200 (MEST)
+Received: from aubetech.com (unknown [62.57.233.61])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	9091E99571 for <alsa-devel@alsa-project.org>;
+	Sat,  5 Aug 2006 05:32:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,51 +26,98 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2336> 
-======================================================================
-Reported By:                clameter
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2336
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Testing
-Kernel Version:             2.6.18-rc3
-======================================================================
-Date Submitted:             08-05-2006 03:38 CEST
-Last Modified:              08-05-2006 03:38 CEST
-======================================================================
-Summary:                    No sound with via 8237 (with ALC655) on P4M800PRO
-motherboard
-Description: 
-Everything seems to work just fine from the viewpoint of the sound
-applications.
-I can play around in alsamixer any way I want but there is never any
-output.
-If I hookup a USB headset I get sound just fine. If I attach my speakers
-to a different machine sound is there.
+--===============2017619485==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6B805.12D40570"
 
-======================================================================
+This is a multi-part message in MIME format.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-05-06 03:38 clameter       New Issue                                    
-08-05-06 03:38 clameter       Distribution              => Debian Testing  
-08-05-06 03:38 clameter       Kernel Version            => 2.6.18-rc3      
-======================================================================
+------=_NextPart_000_0001_01C6B805.12D40570
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+=20
+CzlALIS from 3, 75 $
+VALzlUM from 1, 25 $
+AMBzlEN
+VzlAGRA from 3, 35 $
+=20
+http://www.guheradesacunmer.com
+=20
+,
+,
+,
+,
+,
+tunnels. I was only vaguely aware of our two guides, Floyd and the
+scuttling form of Fido. The next time we stopped I sagged against the
+wall. Enough was enough yet already.
 
 
+------=_NextPart_000_0001_01C6B805.12D40570
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>CzlALIS from  3, 75 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>VALzlUM from  1, 25 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>AMBzlEN</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>VzlAGRA from  3, 35 $</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.guheradesacunmer.com">http://www.guheradesacunmer.com<=
+/A></FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>,</FONT></DIV>
+<DIV><DIV><FONT face=3DArial size=3D2>tunnels.  I  was only vaguely =
+aware of our two guides, Floyd  and  the<BR>
+scuttling form of Fido. The next time we stopped I sagged against  =
+the<BR>
+wall. Enough was enough yet already.<BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6B805.12D40570--
+
+
+
+
+
+--===============2017619485==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============2017619485==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2017619485==--
