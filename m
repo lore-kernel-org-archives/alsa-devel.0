@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002234]: ISA sscape driver does not
 	find Soundscape Elite
-Date: Sat, 5 Aug 2006 23:02:35 +0200
-Message-ID: <64955bbc4d8ebdd08554c700a7ea0a3c@bugtrack.alsa-project.org>
+Date: Sat, 5 Aug 2006 23:09:10 +0200
+Message-ID: <6d54726024ccc7e12b965757e3b8ba8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD861D4
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 198BAD8
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Aug 2006 23:02:35 +0200 (MEST)
+	Sat,  5 Aug 2006 23:09:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,38 +42,13 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.17.1
 ======================================================================
 Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              08-05-2006 23:02 CEST
+Last Modified:              08-05-2006 23:09 CEST
 ======================================================================
 Summary:                    ISA sscape driver does not find Soundscape Elite
 Description: 
 The ALSA driver builds fine, both as a module and built-in but
 the driver does not find the Soundscape Elite card.
 ======================================================================
-
-----------------------------------------------------------------------
- tjallen - 08-05-06 22:50 
-----------------------------------------------------------------------
-The patch does not apply cleanly:
-
-11> patch alsa-sscape.c < codec-io.diff
-patching file alsa-sscape.c
-Hunk #7 FAILED at 893.
-1 out of 15 hunks FAILED -- saving rejects to file alsa-sscape.c.rej
-
-Even so, the resulting module does compile but produces kernel
-messages
- Enter snd_sscape_probe
- Enter detect_GA
- Exit detect_GA
- Exit detect_sscape
-sscape: GA hardware detected at 0x330, using IRQ 9, DMA 0
-unknown CS chip with version 0x0
-sscape: No AD1845 device at 0x534, IRQ 9
-
-I believe that the Elite is an AD1848 chip.  The default values
-for the codec are codec_port=0x534 IRQ=9 DMA=1.  The host
-port (MPU 401) default value is port=0x330 (or possibly 0x332) 
-and IRQ=5.
 
 ----------------------------------------------------------------------
  tjallen - 08-05-06 23:02 
@@ -93,6 +68,20 @@ sscape: No AD1845 device at 0x534, IRQ 9
 My /etc/modprobe.conf and /etc/modules.conf have the line:
 options snd-sscape port=0x330 codec_port=0x534 irq=9 mpu_irq=5 dma=0
 isapnp=0
+
+----------------------------------------------------------------------
+ rankincj - 08-05-06 23:09 
+----------------------------------------------------------------------
+> My /etc/modprobe.conf and /etc/modules.conf have the line:
+> options snd-sscape port=0x330 codec_port=0x534 irq=9 mpu_irq=5 dma=0
+isapnp=0
+
+This should read:
+options snd-sscape port=0x330 codec_port=0x534 irq=5 mpu_irq=9 dma=0
+isapnp=0
+
+However, I doubt it will make much difference. There's probably more
+non-PnP initialising to do.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -129,6 +118,7 @@ Date Modified  Username       Field                    Change
 08-05-06 22:43 rankincj       File Added: codec-io-v2.diff                    
 08-05-06 22:50 tjallen        Note Added: 0011448                          
 08-05-06 23:02 tjallen        Note Added: 0011449                          
+08-05-06 23:09 rankincj       Note Added: 0011450                          
 ======================================================================
 
 
