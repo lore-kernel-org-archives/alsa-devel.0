@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002337]: Compilation problem ...
-	previous advice here didn't work for me ...
-Date: Sun, 6 Aug 2006 07:14:45 +0200
-Message-ID: <b18bf337a569973a37c5fd68c214fe32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002280]: nforce 570 with AD1988A no
+	sound
+Date: Sun, 6 Aug 2006 11:15:17 +0200
+Message-ID: <b56af73bb343d5ae4e7bf344faf03440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15168157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F147513A
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 07:14:46 +0200 (MEST)
+	Sun,  6 Aug 2006 11:15:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,88 +26,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2280> 
 ======================================================================
-Reported By:                Mikey84
-Assigned To:                
+Reported By:                Tobias Diedrich
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2337
-Category:                   alsactl
+Project:                    ALSA - driver
+Issue ID:                   2280
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               Debian/GNU Linux testing
+Kernel Version:             2.6.18-rc1
 ======================================================================
-Date Submitted:             08-05-2006 09:46 CEST
-Last Modified:              08-06-2006 07:14 CEST
+Date Submitted:             07-14-2006 14:40 CEST
+Last Modified:              08-06-2006 11:15 CEST
 ======================================================================
-Summary:                    Compilation problem ... previous advice here didn't
-work for me ...
+Summary:                    nforce 570 with AD1988A no sound
 Description: 
-I have also a compilation problem. Almost similar as cimmo had, and I tried
-to do the same tricks as he was told to do, but they didn't work ... I
-have alsa-driver and alsa-lib correctly installed, but this alsa-utils
-doesn't compile ...
-
-'Make' gives me this kind of error message:
-
-_______________________________________________________________________________
-
-Making all in amixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
-amixer.o: In function `control_access':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
-undefined reference to `snd_ctl_elem_info_is_tlv_writable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
-undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
-amixer.o: In function `show_control':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
-undefined reference to `snd_hctl_elem_tlv_read'
-collect2: ld returned 1 exit status
-make[1]: *** [amixer] Error 1
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-make: *** [all-recursive] Error 1
-[root@a-55-58 alsa-utils-1.0.12rc2]#
-
-_______________________________________________________________________________
-                                      
+I just bought a new mainboard, an Asus M2N with nforce 570 chipset (mcp55)
+and snd-hda-intel loads fine, but complains about an unknown chip version
+and tries to get some configuration values from the BIOS. Apparently this
+does not work, since while it loads fine I have so far been unable to get
+any sound from it.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-05-06 15:24 
+ tiwai - 07-19-06 20:33 
 ----------------------------------------------------------------------
-TLV is a new feature in alsa-lib 1.0.12rc2.
-
-This means the alsa-lib (1.0.12rc2) is installed to a wrong location, when
-you compile alsa-utils-1.0.12rc2, it still find the old version of
-alsa-lib
+Try the latest HG version.  The codec might be AD1988B, not AD1988A.
 
 ----------------------------------------------------------------------
- Mikey84 - 08-06-06 07:14 
+ Tobias Diedrich - 08-06-06 11:15 
 ----------------------------------------------------------------------
-Still it didn't work ... I used the '--prefix' and '--libdir' commands with
-the both alsa-lib and alsa-utils, but still ... So, if this is the
-problem, should I do something else? What commands I exactly have to use?
+Ok, I got around to testing it again and it is working now since 2.6.18-rc2
+AFAICS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-06 09:46 Mikey84        New Issue                                    
-08-05-06 10:10 Raymond        Note Added: 0011423                          
-08-05-06 14:04 Mikey84        Note Added: 0011430                          
-08-05-06 14:33 jcdutton       Note Added: 0011433                          
-08-05-06 14:33 jcdutton       Status                   new => feedback     
-08-05-06 14:44 Mikey84        Note Added: 0011434                          
-08-05-06 15:24 Raymond        Note Added: 0011437                          
-08-06-06 07:14 Mikey84        Note Added: 0011464                          
+07-14-06 14:40 Tobias DiedrichNew Issue                                    
+07-14-06 14:40 Tobias DiedrichDistribution              => Debian/GNU Linux
+testing
+07-14-06 14:40 Tobias DiedrichKernel Version            => 2.6.18-rc1      
+07-19-06 20:33 tiwai          Note Added: 0011098                          
+08-06-06 11:15 Tobias DiedrichNote Added: 0011465                          
 ======================================================================
 
 
