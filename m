@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001361]: sound choppy when resuming alsa
-	client process
-Date: Sun, 6 Aug 2006 13:06:11 +0200
-Message-ID: <e77cd61f72f91534c3884a77d3b07bdb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
+	problem on kernel 2.4
+Date: Sun, 6 Aug 2006 13:43:55 +0200
+Message-ID: <c8f05a1967bf45f39a54c4c13a7a4fa0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A7C9172
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38249173
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 13:06:12 +0200 (MEST)
+	Sun,  6 Aug 2006 13:43:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,62 +24,201 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1361> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2333> 
 ======================================================================
-Reported By:                mbwardle
+Reported By:                Raymond
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1361
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2333
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     closed
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             08-23-2005 12:39 CEST
-Last Modified:              08-06-2006 13:06 CEST
+Date Submitted:             08-04-2006 17:32 CEST
+Last Modified:              08-06-2006 13:43 CEST
 ======================================================================
-Summary:                    sound choppy when resuming alsa client process
+Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
 Description: 
-If I start an ALSA client process from a terminal, begin playback of a
-song, suspend the process, then resume the process, the playback becomes
-choppy (has many intermittent periods of silence per second).
+./configure --with-cards=all
 
-A possibly related similar problem seems to occur if there is a runaway
-process on the system which starves the ALSA client of CPU time.  Even
-after the client gets a good slice of CPU time, the sound remains choppy.
+make
 
-This issue was originally reported as a bug in Ubuntu Linux
-<http://bugzilla.ubuntu.com/show_bug.cgi?id=13003>.
+gcc32 -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
+-I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -DALSA_BUILD -nostdinc
+-iwithprefix include -I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss
+-fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
+linear.c mulaw.c route.c rate.c > .depend
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from mixer_oss.c:22:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from pcm_oss.c:29:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/pcm_plugin.c:27,
+                 from pcm_plugin.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/io.c:22,
+                 from io.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/copy.c:22,
+                 from copy.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/linear.c:23,
+                 from linear.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/mulaw.c:24,
+                 from mulaw.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/route.c:22,
+                 from route.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from
+/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/rate.c:22,
+                 from rate.c:2:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+make[3]: *** [fastdep] Error 1
+make[3]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
+make[2]: *** [_sfdep_oss] Error 2
+make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
+make[1]: *** [dep] Error 1
+make[1]: Leaving directory `/alsa-driver-1.0.12rc2'
+make: *** [include/sndversions.h] Error 2
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 09:58 
+ Raymond - 08-05-06 13:14 
 ----------------------------------------------------------------------
-Could you try 1.0.10rc3 alsa-lib package?
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
+-I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer 
+-DEXPORT_SYMTAB -c mixer_oss.c
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
+-I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer
+-D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(pcm_oss)"   -c -o
+pcm_oss.o pcm_oss.c
+{standard input}: Assembler messages:
+{standard input}:5552: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:5553: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:5634: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:5635: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6035: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6036: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6074: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6075: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6091: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6092: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6115: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6116: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6187: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6188: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:6204: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:6205: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:7450: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:7451: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:7509: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:7510: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:7613: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:7614: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:7798: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:7799: Error: unknown pseudo-op: `.text.lock.'
+{standard input}:7843: Warning: rest of line ignored; first ignored
+character is `"'
+{standard input}:7844: Error: unknown pseudo-op: `.text.lock.'
+make[2]: *** [pcm_oss.o] Error 1
+make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
+make[1]: *** [_modsubdir_oss] Error 2
+make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
+make: *** [compile] Error 1
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:34 
+ Raymond - 08-06-06 13:43 
 ----------------------------------------------------------------------
-Submitter: Do you still see this problem with ALSA 1.0.10?
+Still has error after download adriver.h from 
+
+http://hg.alsa-project.org/alsa-driver?fd=9dca103e6e5c;file=include/adriver.h
+
+
+
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h  
+-DEXPORT_SYMTAB -c hwdep.c
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from hwdep.c:22:
+/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
+passed 1 arguments, but takes just 0
+In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
+                 from hwdep.c:22:
+/alsa-driver-1.0.12rc2/include/adriver.h:142: syntax error before '{'
+token
+make[1]: *** [hwdep.o] Error 1
+make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
+make: *** [compile] Error 1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-23-05 12:39 mbwardle       New Issue                                    
-08-23-05 12:39 mbwardle       File Added: asound.conf                      
-11-14-05 09:58 perex          Note Added: 0006699                          
-11-14-05 09:58 perex          Status                   assigned => feedback
-12-13-05 12:34 jdthood        Note Added: 0006995                          
-08-06-06 13:06 Adrian Bunk    Status                   feedback => closed  
-08-06-06 13:06 Adrian Bunk    Resolution               open => unable to
-duplicate
+08-04-06 17:32 Raymond        New Issue                                    
+08-04-06 17:32 Raymond        Distribution              => Fedora Core 1   
+08-04-06 17:32 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+08-05-06 13:14 Raymond        Note Added: 0011427                          
+08-06-06 13:43 Raymond        Note Added: 0011466                          
 ======================================================================
 
 
