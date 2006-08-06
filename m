@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002337]: Compilation problem ...
-	previous advice here didn't work for me ...
-Date: Sun, 6 Aug 2006 15:24:08 +0200
-Message-ID: <cefda628dc5787710afbfc2a6f135568@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002261]: No sound with hda-intel ALC883
+Date: Sun, 6 Aug 2006 16:12:27 +0200
+Message-ID: <2fca4ef11c2a0082538dcac05265dc4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65F9F18F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4018179
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 15:24:08 +0200 (MEST)
+	Sun,  6 Aug 2006 16:12:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,91 +25,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2261> 
 ======================================================================
-Reported By:                Mikey84
-Assigned To:                
+Reported By:                lodp2
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2337
-Category:                   alsactl
+Project:                    ALSA - driver
+Issue ID:                   2261
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               Kubuntu Dapper
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             08-05-2006 09:46 CEST
-Last Modified:              08-06-2006 15:24 CEST
+Date Submitted:             07-06-2006 22:14 CEST
+Last Modified:              08-06-2006 16:12 CEST
 ======================================================================
-Summary:                    Compilation problem ... previous advice here didn't
-work for me ...
+Summary:                    No sound with hda-intel ALC883
 Description: 
-I have also a compilation problem. Almost similar as cimmo had, and I tried
-to do the same tricks as he was told to do, but they didn't work ... I
-have alsa-driver and alsa-lib correctly installed, but this alsa-utils
-doesn't compile ...
+I'm getting no sound on internal speakers, headphone and line jacks on my
+Acer Aspire 1652 Z, which has a HDA-Intel card (Realtek ALC883 (ALC882?)
+chip). What DOES work is recording, both internal mic and external. I
+tried all model options I found for ALC883 in ALSA-Configuration.txt
+(3stack-dig, 6stck-dig, auto, no option).
 
-'Make' gives me this kind of error message:
+I frequently checked the settings in alsamixer (using alsamixergui), tried
+muting/unmuting IEC958, Front, Line. Always tested using aplay *.wav.
 
-_______________________________________________________________________________
-
-Making all in amixer
-make[1]: Entering directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
-amixer.o: In function `control_access':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
-undefined reference to `snd_ctl_elem_info_is_tlv_writable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
-undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
-amixer.o: In function `show_control':
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
-undefined reference to `snd_ctl_elem_info_is_tlv_readable'
-/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
-undefined reference to `snd_hctl_elem_tlv_read'
-collect2: ld returned 1 exit status
-make[1]: *** [amixer] Error 1
-make[1]: Leaving directory
-`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
-make: *** [all-recursive] Error 1
-[root@a-55-58 alsa-utils-1.0.12rc2]#
-
-_______________________________________________________________________________
-                                      
+I would have tried the latest HG version, but I ran into problems getting
+it installed: I did a "./hgcompile --with-cards=hda-intel" and "sudo make
+install", which both went through fine -- only "cat /proc/asound/version"
+still tells me I've got version 1.0.12rc1, compiled two days ago. I would
+appreciate any pointers, as I'm relatively new to this whole business..
 ======================================================================
 
 ----------------------------------------------------------------------
- Mikey84 - 08-06-06 07:14 
+ coling - 08-03-06 12:46 
 ----------------------------------------------------------------------
-Still it didn't work ... I used the '--prefix' and '--libdir' commands with
-the both alsa-lib and alsa-utils, but still ... So, if this is the
-problem, should I do something else? What commands I exactly have to use?
+I've also got a Acer Aspire 1652Z WLMI and this problem. I can hack around
+the alsa driver sources happily enough so let me know if you need me to
+test patches etc. Don't really know what I would need to change to fix it,
+but happy to test.
+
+Cheers
+
+Col.
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 15:24 
+ er-ku - 08-06-06 16:12 
 ----------------------------------------------------------------------
-alsa-driver
-
-http://hg-mirror.alsa-project.org/alsa-kernel?f=258da3fe5bb1;file=Documentation/ALSA-Configuration.txt;style=gitweb
-
-alsa-lib
-
-http://hg-mirror.alsa-project.org/alsa-lib?f=8f8cb7b13673;file=INSTALL;style=gitweb
+rlrevell: may I suggest that "test" models should be added to all ALC
+codecs?
+Also, once again, i'd rather call them "full" models and not require to
+use debug flags to get them compiled in.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-06 09:46 Mikey84        New Issue                                    
-08-05-06 10:10 Raymond        Note Added: 0011423                          
-08-05-06 14:04 Mikey84        Note Added: 0011430                          
-08-05-06 14:33 jcdutton       Note Added: 0011433                          
-08-05-06 14:33 jcdutton       Status                   new => feedback     
-08-05-06 14:44 Mikey84        Note Added: 0011434                          
-08-05-06 15:24 Raymond        Note Added: 0011437                          
-08-06-06 07:14 Mikey84        Note Added: 0011464                          
-08-06-06 15:24 Raymond        Note Added: 0011471                          
+07-06-06 22:14 lodp2          New Issue                                    
+07-06-06 22:14 lodp2          Distribution              => Kubuntu Dapper  
+07-06-06 22:14 lodp2          Kernel Version            => 2.6.15-25       
+07-06-06 22:24 lodp2          Issue Monitored: lodp2                       
+07-10-06 15:01 arpac          Issue Monitored: arpac                       
+07-10-06 15:02 arpac          Note Added: 0010961                          
+07-10-06 15:03 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-10-06 15:04 arpac          Note Edited: 0010961                         
+07-20-06 17:28 arpac          Note Added: 0011133                          
+07-25-06 01:03 lodp2          Note Added: 0011219                          
+07-25-06 01:13 rlrevell       Note Added: 0011220                          
+07-25-06 13:08 arpac          Note Added: 0011226                          
+07-25-06 17:13 axj            Note Added: 0011229                          
+07-27-06 23:50 pwaller        Note Added: 0011281                          
+07-28-06 13:09 pwaller        Issue Monitored: pwaller                     
+07-28-06 19:14 arpac          Note Added: 0011286                          
+07-28-06 19:53 pwaller        Note Added: 0011287                          
+07-28-06 20:44 arpac          Note Added: 0011289                          
+07-28-06 20:50 rlrevell       Note Added: 0011290                          
+07-29-06 04:14 pwaller        Note Added: 0011297                          
+08-03-06 12:44 coling         Issue Monitored: coling                      
+08-03-06 12:46 coling         Note Added: 0011398                          
+08-04-06 19:54 norbusan       Issue Monitored: norbusan                    
+08-06-06 16:12 er-ku          Note Added: 0011472                          
 ======================================================================
 
 
