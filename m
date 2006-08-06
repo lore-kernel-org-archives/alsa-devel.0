@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 6 Aug 2006 03:16:02 +0200
-Message-ID: <86e32560ca809cfd53ffc6d84ace1e6f@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 03:25:01 +0200
+Message-ID: <8bcac89b1040b4cc8eb87a33176be5e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF531F8
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E67BA168
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 03:16:02 +0200 (MEST)
+	Sun,  6 Aug 2006 03:25:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-06-2006 03:16 CEST
+Last Modified:              08-06-2006 03:24 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,28 +68,6 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 02:31 
-----------------------------------------------------------------------
-Do your AP192 EEPROM content as same as bobek's AP192 in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646 ?
-
-If you have study ice1724.c and datasheet of AK4358
-
-3-wire mode or I2C mode of AK4358 is determined by control mode select pin
-18
-
-In I2C mode, CAD0 and CAD1 are used to compose the device address.
-
-
-numid=1,iface=CARD,name='ICE1724 EEPROM'
-  ; type=BYTES,access=r----,values=52
-  :
-values=0x36,0x32,0x14,0x12,0x13,0x02,0x68,0x80,0xf8,0xc3,0xba,0xff,0x7f,0x45
-,0x00,0x00,0xb5,0x00,0x40,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x45,0x00,0x00,0x00,0xb5,0x00
-,0x40,0x00,0xba,0xff,0x7f,0x00
-
-----------------------------------------------------------------------
  cruiseoveride - 08-06-06 03:16 
 ----------------------------------------------------------------------
 > Do your AP192 EEPROM content as same as bobek's AP192 in 0001646 ?
@@ -98,6 +76,11 @@ Umm, whats an eeprom dump? there a bsd utility which is supposed to be
 able to do this, i will try it out, and see what happens
 
 or do u want me to compare his "Additional Information" to my card?
+
+----------------------------------------------------------------------
+ Raymond - 08-06-06 03:24 
+----------------------------------------------------------------------
+Post content of /proc/asound/card0/ice1724
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -250,6 +233,7 @@ Date Modified  Username       Field                    Change
 08-05-06 23:17 cruiseoveride  Note Added: 0011451                          
 08-06-06 02:31 Raymond        Note Added: 0011453                          
 08-06-06 03:16 cruiseoveride  Note Added: 0011456                          
+08-06-06 03:24 Raymond        Note Added: 0011457                          
 ======================================================================
 
 
