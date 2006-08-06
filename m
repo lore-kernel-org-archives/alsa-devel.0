@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002280]: nforce 570 with AD1988A no
-	sound
-Date: Sun, 6 Aug 2006 14:20:58 +0200
-Message-ID: <a7fe4454f37b8dbf03bb8d4c53547c19@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000998]: access to second playback
+	hangs
+Date: Sun, 6 Aug 2006 14:20:59 +0200
+Message-ID: <4aaebf610ec186a35105ba963ac989c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBF48170
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7642F175
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 14:20:58 +0200 (MEST)
+	Sun,  6 Aug 2006 14:20:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,59 +24,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2280> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
 ======================================================================
-Reported By:                Tobias Diedrich
-Assigned To:                tiwai
+Reported By:                allefant
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2280
-Category:                   PCI - hda-intel
+Issue ID:                   998
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian/GNU Linux testing
-Kernel Version:             2.6.18-rc1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-6
 ======================================================================
-Date Submitted:             07-14-2006 14:40 CEST
+Date Submitted:             03-19-2005 00:16 CET
 Last Modified:              08-06-2006 14:20 CEST
 ======================================================================
-Summary:                    nforce 570 with AD1988A no sound
+Summary:                    access to second playback hangs
 Description: 
-I just bought a new mainboard, an Asus M2N with nforce 570 chipset (mcp55)
-and snd-hda-intel loads fine, but complains about an unknown chip version
-and tries to get some configuration values from the BIOS. Apparently this
-does not work, since while it loads fine I have so far been unable to get
-any sound from it.
+This is haunting my since about half a year, since I got this card. Every
+time the second playback device is accessed, there's a complete hardware
+freeze. Disabling the second playback device makes it work. I know, this
+isn't the best report, since I didn't compile the latest version and did
+not much testing (no fun getting constant HW freezes) - but anyway, I
+thought I report it here, maybe my workaround can help someone who googles
+for this problems at least (or, maybe someone can give me even a hint how
+to fix it).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-19-06 20:33 
+ Raymond - 07-14-06 15:54 
 ----------------------------------------------------------------------
-Try the latest HG version.  The codec might be AD1988B, not AD1988A.
+The driver only allow either playback on second subdevice or capture but
+not both together.
 
 ----------------------------------------------------------------------
- Tobias Diedrich - 08-06-06 11:15 
+ Raymond - 08-06-06 14:20 
 ----------------------------------------------------------------------
-Ok, I got around to testing it again and it is working now since 2.6.18-rc2
-AFAICS.
+Reducing the number of subdevices from 2 to 1 mean the driver need dmix and
+dsnoop
+
+However dmix doesn't like the driver support both mono and stereo.
+
+static struct snd_pcm_hardware snd_es1938_playback =
+{ 
+
+.channels_min = 1,
+.channels_max = 2,
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-14-06 14:40 Tobias DiedrichNew Issue                                    
-07-14-06 14:40 Tobias DiedrichDistribution              => Debian/GNU Linux
-testing
-07-14-06 14:40 Tobias DiedrichKernel Version            => 2.6.18-rc1      
-07-19-06 20:33 tiwai          Note Added: 0011098                          
-08-06-06 11:15 Tobias DiedrichNote Added: 0011465                          
-08-06-06 14:20 Adrian Bunk    Status                   assigned => resolved
-08-06-06 14:20 Adrian Bunk    Resolution               open => fixed       
+03-19-05 00:16 allefant       New Issue                                    
+03-19-05 00:16 allefant       Distribution              => Debian sid      
+03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
+04-06-05 00:30 allefant       Note Added: 0004344                          
+04-06-05 12:34 allefant       Note Added: 0004345                          
+04-06-05 12:49 allefant       Note Added: 0004346                          
+07-14-06 15:54 Raymond        Note Added: 0010999                          
+08-06-06 14:20 Raymond        Note Added: 0011467                          
 ======================================================================
 
 
