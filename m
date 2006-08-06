@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
-	problem on kernel 2.4
-Date: Sun, 6 Aug 2006 15:12:10 +0200
-Message-ID: <fff50f5ac1a8814eab05cd0da948d83e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002337]: Compilation problem ...
+	previous advice here didn't work for me ...
+Date: Sun, 6 Aug 2006 15:24:08 +0200
+Message-ID: <cefda628dc5787710afbfc2a6f135568@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9DA0125
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65F9F18F
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 15:12:10 +0200 (MEST)
+	Sun,  6 Aug 2006 15:24:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,159 +26,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2333> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                Mikey84
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2333
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   2337
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     feedback
 ======================================================================
-Date Submitted:             08-04-2006 17:32 CEST
-Last Modified:              08-06-2006 15:12 CEST
+Date Submitted:             08-05-2006 09:46 CEST
+Last Modified:              08-06-2006 15:24 CEST
 ======================================================================
-Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
+Summary:                    Compilation problem ... previous advice here didn't
+work for me ...
 Description: 
-./configure --with-cards=all
+I have also a compilation problem. Almost similar as cimmo had, and I tried
+to do the same tricks as he was told to do, but they didn't work ... I
+have alsa-driver and alsa-lib correctly installed, but this alsa-utils
+doesn't compile ...
 
-make
+'Make' gives me this kind of error message:
 
-gcc32 -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -DALSA_BUILD -nostdinc
--iwithprefix include -I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss
--fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
-linear.c mulaw.c route.c rate.c > .depend
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from mixer_oss.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from pcm_oss.c:29:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/pcm_plugin.c:27,
-                 from pcm_plugin.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/io.c:22,
-                 from io.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/copy.c:22,
-                 from copy.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/linear.c:23,
-                 from linear.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/mulaw.c:24,
-                 from mulaw.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/route.c:22,
-                 from route.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/rate.c:22,
-                 from rate.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-make[3]: *** [fastdep] Error 1
-make[3]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
-make[2]: *** [_sfdep_oss] Error 2
-make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2'
-make: *** [include/sndversions.h] Error 2
+_______________________________________________________________________________
 
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o: In function `control_access':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
+undefined reference to `snd_ctl_elem_info_is_tlv_writable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
+undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
+amixer.o: In function `show_control':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
+undefined reference to `snd_hctl_elem_tlv_read'
+collect2: ld returned 1 exit status
+make[1]: *** [amixer] Error 1
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: *** [all-recursive] Error 1
+[root@a-55-58 alsa-utils-1.0.12rc2]#
+
+_______________________________________________________________________________
+                                      
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 15:10 
+ Mikey84 - 08-06-06 07:14 
 ----------------------------------------------------------------------
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
--DKBUILD_BASENAME=asihpi   -c -o asihpi.o asihpi.c
-In file included from hpios.h:36,
-                 from hpi.h:49,
-                 from asihpi.c:49:
-hpios_linux_kernel.h:60:1: warning: "irqs_disabled" redefined
-In file included from
-/lib/modules/2.4.22-1.2199.nptl/build/include/asm/semaphore.h:39,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/fs.h:202,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/capability.h:17,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/binfmts.h:4,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/sched.h:10,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/mm.h:4,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/slab.h:14,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/asm/pci.h:37,
-                 from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/pci.h:658,
-                 from asihpi.c:30:
-/lib/modules/2.4.22-1.2199.nptl/build/include/asm/system.h:341:1: warning:
-this is the location of the previous definition
+Still it didn't work ... I used the '--prefix' and '--libdir' commands with
+the both alsa-lib and alsa-utils, but still ... So, if this is the
+problem, should I do something else? What commands I exactly have to use?
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 15:12 
+ Raymond - 08-06-06 15:24 
 ----------------------------------------------------------------------
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
--DKBUILD_BASENAME=pcxhr   -c -o pcxhr.o pcxhr.c
-In file included from pcxhr.c:1:
-../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
-../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
-uninitialized in this function
+alsa-driver
+
+http://hg-mirror.alsa-project.org/alsa-kernel?f=258da3fe5bb1;file=Documentation/ALSA-Configuration.txt;style=gitweb
+
+alsa-lib
+
+http://hg-mirror.alsa-project.org/alsa-lib?f=8f8cb7b13673;file=INSTALL;style=gitweb
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-06 17:32 Raymond        New Issue                                    
-08-04-06 17:32 Raymond        Distribution              => Fedora Core 1   
-08-04-06 17:32 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-08-05-06 13:14 Raymond        Note Added: 0011427                          
-08-06-06 13:43 Raymond        Note Added: 0011466                          
-08-06-06 14:34 Raymond        Note Added: 0011468                          
-08-06-06 15:10 Raymond        Note Added: 0011469                          
-08-06-06 15:12 Raymond        Note Added: 0011470                          
+08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
+08-05-06 14:04 Mikey84        Note Added: 0011430                          
+08-05-06 14:33 jcdutton       Note Added: 0011433                          
+08-05-06 14:33 jcdutton       Status                   new => feedback     
+08-05-06 14:44 Mikey84        Note Added: 0011434                          
+08-05-06 15:24 Raymond        Note Added: 0011437                          
+08-06-06 07:14 Mikey84        Note Added: 0011464                          
+08-06-06 15:24 Raymond        Note Added: 0011471                          
 ======================================================================
 
 
