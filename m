@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 6 Aug 2006 03:58:14 +0200
-Message-ID: <c2bf44d086c490baccde8ae926fa084d@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 04:17:18 +0200
+Message-ID: <01ef8fa27ac85208c47b17b2ba5cc4e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 216A9168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22729168
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 03:58:15 +0200 (MEST)
+	Sun,  6 Aug 2006 04:17:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-06-2006 03:58 CEST
+Last Modified:              08-06-2006 04:17 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,108 +68,7 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 08-06-06 03:54 
-----------------------------------------------------------------------
-ICEnsemble ICE1724 at 0x7400, irq 66
-
-EEPROM:
-  Subvendor        : 0x12143236
-  Size             : 19 bytes
-  Version          : 2
-  System Config    : 0x68
-  ACLink           : 0x80
-  I2S              : 0xf8
-  S/PDIF           : 0xc3
-  GPIO direction   : 0x7fffba
-  GPIO mask        : 0x45
-  GPIO state       : 0x4000b5
-  Extra #18        : 0x0
-
-Registers:
-  PSDOUT03 : 0x00000033
-  CCS00    : 0x00
-  CCS01    : 0x00
-  CCS02    : 0x00
-  CCS03    : 0x00
-  CCS04    : 0x68
-  CCS05    : 0x80
-  CCS06    : 0xf8
-  CCS07    : 0x43
-  CCS08    : 0x00
-  CCS09    : 0x00
-  CCS0a    : 0x00
-  CCS0b    : 0x00
-  CCS0c    : 0x00
-  CCS0d    : 0x0a
-  CCS0e    : 0x00
-  CCS0f    : 0x00
-  CCS10    : 0x00
-  CCS11    : 0x00
-  CCS12    : 0x12
-  CCS13    : 0x80
-  CCS14    : 0xf0
-  CCS15    : 0x00
-  CCS16    : 0x45
-  CCS17    : 0x00
-  CCS18    : 0xba
-  CCS19    : 0xff
-  CCS1a    : 0x7f
-  CCS1b    : 0x00
-  CCS1c    : 0x00
-  CCS1d    : 0x00
-  CCS1e    : 0x40
-  CCS1f    : 0x00
-  MT00     : 0x00
-  MT01     : 0x08
-  MT02     : 0x00
-  MT03     : 0x08
-  MT04     : 0x00
-  MT05     : 0x00
-  MT06     : 0x00
-  MT07     : 0x00
-  MT08     : 0x00
-  MT09     : 0x00
-  MT0a     : 0x00
-  MT0b     : 0x00
-  MT0c     : 0x00
-  MT0d     : 0x00
-  MT0e     : 0x00
-  MT0f     : 0x00
-  MT10     : 0x00
-  MT11     : 0x00
-  MT12     : 0x00
-  MT13     : 0x00
-  MT14     : 0x00
-  MT15     : 0x00
-  MT16     : 0x00
-  MT17     : 0x00
-  MT18     : 0x00
-  MT19     : 0x00
-  MT1a     : 0x00
-  MT1b     : 0x00
-  MT1c     : 0x00
-  MT1d     : 0x00
-  MT1e     : 0x00
-  MT1f     : 0x00
-  MT20     : 0x00
-  MT21     : 0x00
-  MT22     : 0x00
-  MT23     : 0x00
-  MT24     : 0x00
-  MT25     : 0x00
-  MT26     : 0x00
-  MT27     : 0x00
-  MT28     : 0x00
-  MT29     : 0x00
-  MT2a     : 0x00
-  MT2b     : 0x00
-  MT2c     : 0x33
-  MT2d     : 0x00
-  MT2e     : 0x00
-  MT2f     : 0x00
-
-----------------------------------------------------------------------
- cruiseoveride - 08-06-06 03:58 
+ cruiseoveride - 08-06-06 03:59 
 ----------------------------------------------------------------------
 diff file1  file2
 2c2
@@ -189,8 +88,25 @@ diff file1  file2
 ---
 >   MT2c : 0x00
 
-
+file1 is my card
 looks like they're a little different
+
+
+
+----------------------------------------------------------------------
+ Raymond - 08-06-06 04:17 
+----------------------------------------------------------------------
+GPIO direction : 0x7fffba
+GPIO mask : 0x45
+GPIO state : 0x4000b5
+
+You should able to tell us which GPIO is read only, write only if you have
+study ice1724.c
+
+>From the datasheet, AK4358 does not support read command.
+
+This means that AK4358_ADDR can be calculated from the GPIO pin if you
+know AK3538 is operating in I2C mode
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -348,6 +264,8 @@ Date Modified  Username       Field                    Change
 08-06-06 03:30 Raymond        Note Edited: 0011457                         
 08-06-06 03:54 cruiseoveride  Note Added: 0011458                          
 08-06-06 03:58 cruiseoveride  Note Added: 0011459                          
+08-06-06 03:59 cruiseoveride  Note Edited: 0011459                         
+08-06-06 04:17 Raymond        Note Added: 0011460                          
 ======================================================================
 
 
