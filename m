@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
 	problem on kernel 2.4
-Date: Sun, 6 Aug 2006 14:34:25 +0200
-Message-ID: <55382935e693c8632402fcac37c8fe36@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 15:10:47 +0200
+Message-ID: <7a31c4041a2b1c67fe729c523fb6a8b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84B8F17E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64198125
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 14:34:25 +0200 (MEST)
+	Sun,  6 Aug 2006 15:10:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 1
 Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
 Date Submitted:             08-04-2006 17:32 CEST
-Last Modified:              08-06-2006 14:34 CEST
+Last Modified:              08-06-2006 15:10 CEST
 ======================================================================
 Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
 Description: 
@@ -118,34 +118,6 @@ make: *** [include/sndversions.h] Error 2
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 13:43 
-----------------------------------------------------------------------
-Still has error after download adriver.h from 
-
-http://hg.alsa-project.org/alsa-driver?fd=9dca103e6e5c;file=include/adriver.h
-
-
-
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h  
--DEXPORT_SYMTAB -c hwdep.c
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from hwdep.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from hwdep.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142: syntax error before '{'
-token
-make[1]: *** [hwdep.o] Error 1
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make: *** [compile] Error 1
-
-----------------------------------------------------------------------
  Raymond - 08-06-06 14:34 
 ----------------------------------------------------------------------
 {standard input}: Assembler messages:
@@ -160,6 +132,42 @@ This error seem related to the following patch
 
 http://hg-mirror.alsa-project.org/alsa-driver?cmd=changeset;node=8a02d60ea2be;style=gitweb
 
+----------------------------------------------------------------------
+ Raymond - 08-06-06 15:10 
+----------------------------------------------------------------------
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=asihpi   -c -o asihpi.o asihpi.c
+In file included from hpios.h:36,
+                 from hpi.h:49,
+                 from asihpi.c:49:
+hpios_linux_kernel.h:60:1: warning: "irqs_disabled" redefined
+In file included from
+/lib/modules/2.4.22-1.2199.nptl/build/include/asm/semaphore.h:39,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/fs.h:202,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/capability.h:17,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/binfmts.h:4,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/sched.h:10,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/mm.h:4,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/slab.h:14,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/asm/pci.h:37,
+                 from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/pci.h:658,
+                 from asihpi.c:30:
+/lib/modules/2.4.22-1.2199.nptl/build/include/asm/system.h:341:1: warning:
+this is the location of the previous definition
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -169,6 +177,7 @@ Date Modified  Username       Field                    Change
 08-05-06 13:14 Raymond        Note Added: 0011427                          
 08-06-06 13:43 Raymond        Note Added: 0011466                          
 08-06-06 14:34 Raymond        Note Added: 0011468                          
+08-06-06 15:10 Raymond        Note Added: 0011469                          
 ======================================================================
 
 
