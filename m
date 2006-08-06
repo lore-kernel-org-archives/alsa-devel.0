@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002234]: ISA sscape driver does not
-	find Soundscape Elite
-Date: Sun, 6 Aug 2006 02:43:02 +0200
-Message-ID: <be4b02b225081dca66684d9ee0260fb9@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001411]: plug:jack interface not
+	working for apps that both read and write
+Date: Sun, 6 Aug 2006 03:09:24 +0200
+Message-ID: <d828f8ba90686ea8b8f95584f1421707@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 928BB11B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFA21179
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 02:43:02 +0200 (MEST)
+	Sun,  6 Aug 2006 03:09:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,96 +26,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1411> 
 ======================================================================
-Reported By:                tjallen
+Reported By:                b0ef
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2234
-Category:                   ISA - sscape
+Project:                    ALSA - plugins
+Issue ID:                   1411
+Category:                   PCM - jack
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.17.1
 ======================================================================
-Date Submitted:             06-26-2006 15:52 CEST
-Last Modified:              08-06-2006 02:43 CEST
+Date Submitted:             09-10-2005 17:57 CEST
+Last Modified:              08-06-2006 03:09 CEST
 ======================================================================
-Summary:                    ISA sscape driver does not find Soundscape Elite
+Summary:                    plug:jack interface not working for apps that both
+read and write
 Description: 
-The ALSA driver builds fine, both as a module and built-in but
-the driver does not find the Soundscape Elite card.
+This is a general problem with any app that both read and write to the
+plug:jack device. It (plug:jack) however works for apps that only do one
+or the other. 
 ======================================================================
 
 ----------------------------------------------------------------------
- rankincj - 08-05-06 23:29 
+ Raymond - 08-02-06 13:18 
 ----------------------------------------------------------------------
-Given that the OSS driver writes these log messages:
-
-<SoundScape (MPU401)> at 0x330 irq 9 dma 1,0
-<SoundScape PNP (AD1848)> at 0x534 irq 5 dma 1,1
-
-then maybe you should set dma=1 too.
+Are there any reason to use jack instead of ALSA when running asterisk and
+kphone (internet phone application)?
 
 ----------------------------------------------------------------------
- tjallen - 08-06-06 02:43 
+ b0ef - 08-06-06 03:09 
 ----------------------------------------------------------------------
-With modules.conf and modprobe.conf containing the line
+Indeed. There are several reasons. 
 
- options snd-sscape port=0x330 codec_port=0x534 irq=5 mpu_irq=9 dma=1
-isapnp=0 
+First off; it's very important to preprocess the audio signal so you get a
+good voice when talking. For radio shows and audio conferencing you need
+good control of the audio channel. 
 
-the driver reports:
+Secondly, for audio cards that requires exclusive access, it's not
+possible to use ALSA and JACk at the same time and of course JACK is
+always up in a serious audio environment. 
 
- Enter snd_sscape_probe
- Enter detect_GA
- Exit detect_GA
- Exit detect_sscape
-sscape: GA hardware detected at 0x330, using IRQ 5, DMA 1
-unknown CS chip with version 0x0
-sscape: No AD1845 device at 0x534, IRQ 5
+I request that this bug be closed as I've recently changed audio card. I
+will open new bugs on the JACK plugin, f.ex that it doesn't work with
+96kHz sampling rates. 
+
+This bug is too old to pursue and no one has added any info to help
+resolve it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-06 15:52 tjallen        New Issue                                    
-06-26-06 15:52 tjallen        Distribution              => Slackware 10.2  
-06-26-06 15:52 tjallen        Kernel Version            => 2.6.17.1        
-06-26-06 22:57 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-06-28-06 23:25 rankincj       Note Added: 0010628                          
-06-29-06 00:40 tjallen        Note Added: 0010630                          
-06-29-06 17:57 tiwai          Note Added: 0010679                          
-06-29-06 20:30 tjallen        Note Added: 0010701                          
-06-29-06 23:14 rankincj       Note Added: 0010703                          
-06-29-06 23:17 rankincj       Note Added: 0010704                          
-06-30-06 01:45 tjallen        Note Added: 0010708                          
-06-30-06 02:10 rankincj       Note Added: 0010710                          
-06-30-06 14:46 tjallen        Note Added: 0010735                          
-06-30-06 22:38 rankincj       Note Added: 0010752                          
-06-30-06 22:47 Adrian Bunk    Note Added: 0010753                          
-07-02-06 01:39 rankincj       File Added: sscape.c                         
-07-02-06 01:41 rankincj       Note Added: 0010767                          
-07-02-06 03:15 tjallen        File Added: sscape.dmesg                     
-07-02-06 03:19 tjallen        Note Added: 0010768                          
-07-23-06 02:23 rankincj       File Added: alsa-sscape.c                    
-07-23-06 02:25 rankincj       Note Added: 0011178                          
-07-30-06 21:45 tjallen        Note Added: 0011330                          
-07-30-06 23:14 rankincj       File Added: sscape.diff                      
-07-30-06 23:17 rankincj       Note Added: 0011332                          
-07-31-06 16:59 tjallen        Note Added: 0011343                          
-08-03-06 00:47 rankincj       Note Added: 0011391                          
-08-03-06 01:40 tjallen        Note Added: 0011392                          
-08-05-06 13:31 rankincj       File Added: codec-io.diff                    
-08-05-06 13:36 rankincj       Note Added: 0011429                          
-08-05-06 22:43 rankincj       File Added: codec-io-v2.diff                    
-08-05-06 22:50 tjallen        Note Added: 0011448                          
-08-05-06 23:02 tjallen        Note Added: 0011449                          
-08-05-06 23:09 rankincj       Note Added: 0011450                          
-08-05-06 23:29 rankincj       Note Added: 0011452                          
-08-06-06 02:43 tjallen        Note Added: 0011454                          
+08-06-06 03:09 b0ef           Note Added: 0011455                          
 ======================================================================
 
 
