@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
 	problem on kernel 2.4
-Date: Sun, 6 Aug 2006 15:10:47 +0200
-Message-ID: <7a31c4041a2b1c67fe729c523fb6a8b8@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 15:12:10 +0200
+Message-ID: <fff50f5ac1a8814eab05cd0da948d83e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64198125
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9DA0125
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 15:10:47 +0200 (MEST)
+	Sun,  6 Aug 2006 15:12:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 1
 Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
 Date Submitted:             08-04-2006 17:32 CEST
-Last Modified:              08-06-2006 15:10 CEST
+Last Modified:              08-06-2006 15:12 CEST
 ======================================================================
 Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
 Description: 
@@ -118,21 +118,6 @@ make: *** [include/sndversions.h] Error 2
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 14:34 
-----------------------------------------------------------------------
-{standard input}: Assembler messages:
-{standard input}:5552: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5553: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:5634: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5635: Error: unknown pseudo-op: `.text.lock.'
-
-This error seem related to the following patch
-
-http://hg-mirror.alsa-project.org/alsa-driver?cmd=changeset;node=8a02d60ea2be;style=gitweb
-
-----------------------------------------------------------------------
  Raymond - 08-06-06 15:10 
 ----------------------------------------------------------------------
 gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
@@ -168,6 +153,21 @@ In file included from
 /lib/modules/2.4.22-1.2199.nptl/build/include/asm/system.h:341:1: warning:
 this is the location of the previous definition
 
+----------------------------------------------------------------------
+ Raymond - 08-06-06 15:12 
+----------------------------------------------------------------------
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=pcxhr   -c -o pcxhr.o pcxhr.c
+In file included from pcxhr.c:1:
+../../alsa-kernel/pci/pcxhr/pcxhr.c: In function `pcxhr_trigger':
+../../alsa-kernel/pci/pcxhr/pcxhr.c:640: warning: `stream' might be used
+uninitialized in this function
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -178,6 +178,7 @@ Date Modified  Username       Field                    Change
 08-06-06 13:43 Raymond        Note Added: 0011466                          
 08-06-06 14:34 Raymond        Note Added: 0011468                          
 08-06-06 15:10 Raymond        Note Added: 0011469                          
+08-06-06 15:12 Raymond        Note Added: 0011470                          
 ======================================================================
 
 
