@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001612]: Ubuntu5.10 not configured for
-	Alsa device:surround51?
-Date: Sun, 6 Aug 2006 07:09:34 +0200
-Message-ID: <2209a24c66f2e6f468e653e481565568@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002337]: Compilation problem ...
+	previous advice here didn't work for me ...
+Date: Sun, 6 Aug 2006 07:14:45 +0200
+Message-ID: <b18bf337a569973a37c5fd68c214fe32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E75B4142
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15168157
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 07:09:34 +0200 (MEST)
+	Sun,  6 Aug 2006 07:14:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,257 +26,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1612> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2337> 
 ======================================================================
-Reported By:                Manolo
+Reported By:                Mikey84
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1612
-Category:                   1_OTHERS
+Project:                    ALSA - utils
+Issue ID:                   2337
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 Breezy
-Kernel Version:             Linux 2.6.12
+Status:                     feedback
 ======================================================================
-Date Submitted:             12-02-2005 17:51 CET
-Last Modified:              08-06-2006 07:09 CEST
+Date Submitted:             08-05-2006 09:46 CEST
+Last Modified:              08-06-2006 07:14 CEST
 ======================================================================
-Summary:                    Ubuntu5.10 not configured for Alsa
-device:surround51?
+Summary:                    Compilation problem ... previous advice here didn't
+work for me ...
 Description: 
-Hardware
-  Motherboard: Abit Ic7, Audio: Onboard (Intel ICH5) RealTek
-    ALC650F 6-Channel AC97 CODEC.
-  uP: Pentium4, Hyperthreading, 3Ghz
+I have also a compilation problem. Almost similar as cimmo had, and I tried
+to do the same tricks as he was told to do, but they didn't work ... I
+have alsa-driver and alsa-lib correctly installed, but this alsa-utils
+doesn't compile ...
 
-Software
-  Ubuntu 5.10
-  Custom compiled kernel from 'linux-source-2.6.12 2.6.12-10.24'
-    make menuconfig
-      Device Drivers
-        Sound
-          <M> Sound card support
-          Advanced Linux Sound Architecture --->
-            <M> Advanced Linux Sound Architecture
-            <M>   Sequencer support
-            <M>     Sequencer dummy client
-            <M>   OSS Mixer API
-            <M>   OSS PCM (digital audio) API
-            [*]   OSS Sequencer API
-            <M>   RTC Timer support
-            PCI devices --->
-              <M>  All drivers <M> when option available.
-          Open Sound System --->
-            < > Open Sound System
-  Compiled Alsa packages:
-    alsa-driver-1.0.10
-    alsa-lib-1.0.10
-    alsa-utils-1.0.10 # configure --disable-nls: configure fails
-otherwise.
-    alsa-oss
-    alsa-plugins-1.0.10 # configure,pcm/Makefile.in:Modified to compile
-without
-      jack.
-    Note: At boot, if file /var/lib/alsa/asound.state does not exist,
-file
-      /etc/asound.state is overwritten with default values (No surround
-sound!).
-      Alsa package is not responsible for this (Ubuntu5.10 or
-Kernel2.6.12??).
+'Make' gives me this kind of error message:
 
-Sound Applications
-  aplay (alsa-utils-1.0.10)
-  audacity 1.2.3 #Device /dev/dsp
-  xmms 1.2.10 #plugin /usr/lib/xmms/Input/libwav.so (does not accept
-    5.1ChannelFile.wav) replaced by older version (Ubuntu 4.10).
-  mplayer 4.0.2
-  xine v0.99.3
+_______________________________________________________________________________
 
-esd daemon running:
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel
-    Error Message: There was an error initializing the audio i/o
-      layer. You will not be able to play or record audio.
-      Error: Host error.
-  audacity #gnome-terminal
-    Most of the times application starts without error message.
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel
-    Error Message: Couldn't open audio. Please check that:
-      Your soundcard is configured properly
-      You have the correct output plugin selected
-      No other program is blocking the soundcard.
-    After several Play/ErrorMessage:
-      5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.gnome-terminal
-    Most of the times application starts without error message.
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
+Making all in amixer
+make[1]: Entering directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+gcc  -g -O2   -o amixer  amixer.o -lm -lasound -lm -ldl -lpthread
+amixer.o: In function `control_access':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:157:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:158:
+undefined reference to `snd_ctl_elem_info_is_tlv_writable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:159:
+undefined reference to `snd_ctl_elem_info_is_tlv_commandable'
+amixer.o: In function `show_control':
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:539:
+undefined reference to `snd_ctl_elem_info_is_tlv_readable'
+/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer/amixer.c:542:
+undefined reference to `snd_hctl_elem_tlv_read'
+collect2: ld returned 1 exit status
+make[1]: *** [amixer] Error 1
+make[1]: Leaving directory
+`/home/Mikey_A/Asennus_LINUX/Linux/ALSA/alsa-utils-1.0.12rc2/amixer'
+make: *** [all-recursive] Error 1
+[root@a-55-58 alsa-utils-1.0.12rc2]#
 
-esd daemon NOT running (killall esd):
-  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
-    2ChannelFile.wav: Sound Ok.
-    No output sent to .xsession-errors
-  audacity #GnomePanel or gnome-terminal
-    Application starts without error message
-  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    No output sent to .xsession-errors
-    2ChannelFile.wav: Sound Ok.
-  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel or
-gnome-terminal
-    Application starts without error message
-    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
-    No StdError error messages (-v)
-    All kinds of files and DVDs (Multichannel AC3) play Ok.
-    .xsession-errors fills with:
-      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Surround5.1
-    Error Message: The audio device is unavailable. Please verify if
-another program
-      already uses it.
-    StdError error messages (--verbose):
-      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
-or
-        resource busy
-      audio_alsa_out: >>> check if another program already uses PCM <<<
-    After several Play/ErrorMessage:
-      All kinds of files and DVDs (Multichannel AC3) play Ok.
-      .xsession-errors fills with:
-        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
-  xine # 'xine --verbose --audio-driver
-alsa';SpeakerArrangement:Stereo2.0
-    No error Message
-    No StdError error messages
-    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
-Channels.
-    No output sent to .xsession-errors
-
+_______________________________________________________________________________
+                                      
 ======================================================================
 
 ----------------------------------------------------------------------
- Manolo - 08-05-06 18:50 
+ Raymond - 08-05-06 15:24 
 ----------------------------------------------------------------------
-Gnome/Multimedia_System_Selector:
-  Default Sink
-    Output: ALSA - Advanced Linux Sound Architecture
-    Pipeline: alsasink
-  Default Source
-    Input: ALSA - Advanced Linux Sound Architecture
-    Pipeline: alsarc
-But Gnome starts and uses 'esd' as well as most applications.
+TLV is a new feature in alsa-lib 1.0.12rc2.
 
-Please find attached RequestedData2.txt
-
-Saludos,
-Manolo.
+This means the alsa-lib (1.0.12rc2) is installed to a wrong location, when
+you compile alsa-utils-1.0.12rc2, it still find the old version of
+alsa-lib
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 07:09 
+ Mikey84 - 08-06-06 07:14 
 ----------------------------------------------------------------------
-The device 0 of ICH5 support 2, 4, 6 channels but only has one subdevice.
-
-You have to stop esd before playing surround51
-
-AFAIK dmix does not support mixing of stereo , surround40 and surround51.
-
-open("/usr/share/alsa/cards/ICH4.conf", O_RDONLY) = 3
-
-        control.47 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 '2ch'
-                comment.item.1 '4ch'
-                comment.item.2 '6ch'
-                iface MIXER
-                name 'Channel Mode'
-                value '6ch'
-        }
+Still it didn't work ... I used the '--prefix' and '--libdir' commands with
+the both alsa-lib and alsa-utils, but still ... So, if this is the
+problem, should I do something else? What commands I exactly have to use?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-05 17:51 Manolo         New Issue                                    
-12-02-05 17:51 Manolo         Distribution              => Ubuntu 5.10 Breezy
-12-02-05 17:51 Manolo         Kernel Version            => Linux 2.6.12    
-12-03-05 13:54 Manolo         Note Added: 0006898                          
-07-28-06 05:39 Raymond        Note Added: 0011283                          
-08-02-06 20:15 Manolo         Note Added: 0011390                          
-08-03-06 03:56 Raymond        Note Added: 0011394                          
-08-03-06 05:33 Raymond        Note Edited: 0011394                         
-08-03-06 17:37 Manolo         Note Added: 0011405                          
-08-03-06 18:20 Raymond        Note Added: 0011406                          
-08-04-06 03:29 Raymond        Note Edited: 0011406                         
-08-04-06 05:25 Raymond        Note Edited: 0011406                         
-08-04-06 09:51 Raymond        Note Edited: 0011406                         
-08-04-06 10:41 Manolo         Note Added: 0011418                          
-08-04-06 10:43 Manolo         Note Edited: 0011418                         
-08-04-06 15:18 Raymond        Note Added: 0011419                          
-08-05-06 06:55 Raymond        Note Edited: 0011419                         
-08-05-06 10:13 Manolo         Note Added: 0011424                          
-08-05-06 10:13 Manolo         File Added: RequestedData.txt                    
-08-05-06 10:31 Raymond        Note Added: 0011425                          
-08-05-06 10:36 Raymond        Note Edited: 0011425                         
-08-05-06 10:41 Raymond        Note Edited: 0011425                         
-08-05-06 10:43 Raymond        Note Edited: 0011425                         
-08-05-06 14:55 Manolo         Note Added: 0011435                          
-08-05-06 15:17 Raymond        Note Added: 0011436                          
-08-05-06 15:50 Raymond        Note Deleted: 0011436                        
-08-05-06 18:50 Manolo         Note Added: 0011444                          
-08-05-06 18:50 Manolo         File Added: RequestedData2.txt                    
-08-06-06 07:09 Raymond        Note Added: 0011463                          
+08-05-06 09:46 Mikey84        New Issue                                    
+08-05-06 10:10 Raymond        Note Added: 0011423                          
+08-05-06 14:04 Mikey84        Note Added: 0011430                          
+08-05-06 14:33 jcdutton       Note Added: 0011433                          
+08-05-06 14:33 jcdutton       Status                   new => feedback     
+08-05-06 14:44 Mikey84        Note Added: 0011434                          
+08-05-06 15:24 Raymond        Note Added: 0011437                          
+08-06-06 07:14 Mikey84        Note Added: 0011464                          
 ======================================================================
 
 
