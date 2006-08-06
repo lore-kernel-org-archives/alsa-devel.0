@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 6 Aug 2006 04:17:18 +0200
-Message-ID: <01ef8fa27ac85208c47b17b2ba5cc4e4@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 04:46:51 +0200
+Message-ID: <785d16921c312ff2cbdede47fe701269@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22729168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAE39168
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 04:17:19 +0200 (MEST)
+	Sun,  6 Aug 2006 04:46:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-06-2006 04:17 CEST
+Last Modified:              08-06-2006 04:46 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -68,45 +68,36 @@ Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
 
 ----------------------------------------------------------------------
- cruiseoveride - 08-06-06 03:59 
-----------------------------------------------------------------------
-diff file1  file2
-2c2
-<   PSDOUT03 : 0x00000033
----
->   PSDOUT03 : 0x00000000
-10c10
-<   CCS07 : 0x43
----
->   CCS07 : 0xc3
-36c36
-<   MT01 : 0x08
----
->   MT01 : 0x00
-79c79
-<   MT2c : 0x33
----
->   MT2c : 0x00
-
-file1 is my card
-looks like they're a little different
-
-
-
-----------------------------------------------------------------------
- Raymond - 08-06-06 04:17 
+ Raymond - 08-06-06 04:38 
 ----------------------------------------------------------------------
 GPIO direction : 0x7fffba
 GPIO mask : 0x45
 GPIO state : 0x4000b5
 
-You should able to tell us which GPIO is read only, write only if you have
-study ice1724.c
+You should able to tell us which GPIO is read only, write only or
+read/write if you have study ice1724.c
 
 >From the datasheet, AK4358 does not support read command.
 
 This means that AK4358_ADDR can be calculated from the GPIO pin if you
-know AK3538 is operating in I2C mode
+know AK4358 is operating in I2C mode
+
+Ask the expert the meaning of   Extra #18 : 0x0
+
+>> The card physically has 3 outs
+>> S/P DIF
+>> Main Out - (1/4' TRS) seperate left and right
+>> Monitor Out - (1/4' TRS) seperate left and right
+
+You have to find out which DACs of AK4358 are connected to the analog out
+jacks.
+
+
+
+----------------------------------------------------------------------
+ cruiseoveride - 08-06-06 04:46 
+----------------------------------------------------------------------
+whos is the expert and where can i reach this person
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -266,6 +257,11 @@ Date Modified  Username       Field                    Change
 08-06-06 03:58 cruiseoveride  Note Added: 0011459                          
 08-06-06 03:59 cruiseoveride  Note Edited: 0011459                         
 08-06-06 04:17 Raymond        Note Added: 0011460                          
+08-06-06 04:18 Raymond        Note Edited: 0011460                         
+08-06-06 04:20 Raymond        Note Edited: 0011460                         
+08-06-06 04:36 Raymond        Note Edited: 0011460                         
+08-06-06 04:38 Raymond        Note Edited: 0011460                         
+08-06-06 04:46 cruiseoveride  Note Added: 0011461                          
 ======================================================================
 
 
