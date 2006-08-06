@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002333]: alsa -1.0.12rc2 compilation
-	problem on kernel 2.4
-Date: Sun, 6 Aug 2006 13:43:55 +0200
-Message-ID: <c8f05a1967bf45f39a54c4c13a7a4fa0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002280]: nforce 570 with AD1988A no
+	sound
+Date: Sun, 6 Aug 2006 14:20:58 +0200
+Message-ID: <a7fe4454f37b8dbf03bb8d4c53547c19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38249173
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBF48170
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 13:43:56 +0200 (MEST)
+	Sun,  6 Aug 2006 14:20:58 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,201 +24,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2333> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2280> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                Tobias Diedrich
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2333
-Category:                   0_compilation problem_!!!
+Issue ID:                   2280
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     resolved
+Distribution:               Debian/GNU Linux testing
+Kernel Version:             2.6.18-rc1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-04-2006 17:32 CEST
-Last Modified:              08-06-2006 13:43 CEST
+Date Submitted:             07-14-2006 14:40 CEST
+Last Modified:              08-06-2006 14:20 CEST
 ======================================================================
-Summary:                    alsa -1.0.12rc2 compilation problem on kernel 2.4
+Summary:                    nforce 570 with AD1988A no sound
 Description: 
-./configure --with-cards=all
-
-make
-
-gcc32 -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -DALSA_BUILD -nostdinc
--iwithprefix include -I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss
--fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
-linear.c mulaw.c route.c rate.c > .depend
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from mixer_oss.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from pcm_oss.c:29:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/pcm_plugin.c:27,
-                 from pcm_plugin.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/io.c:22,
-                 from io.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/copy.c:22,
-                 from copy.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/linear.c:23,
-                 from linear.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/mulaw.c:24,
-                 from mulaw.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/route.c:22,
-                 from route.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from
-/alsa-driver-1.0.12rc2/alsa-kernel/core/oss/rate.c:22,
-                 from rate.c:2:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-make[3]: *** [fastdep] Error 1
-make[3]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
-make[2]: *** [_sfdep_oss] Error 2
-make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2'
-make: *** [include/sndversions.h] Error 2
-
+I just bought a new mainboard, an Asus M2N with nforce 570 chipset (mcp55)
+and snd-hda-intel loads fine, but complains about an unknown chip version
+and tries to get some configuration values from the BIOS. Apparently this
+does not work, since while it loads fine I have so far been unable to get
+any sound from it.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-05-06 13:14 
+ tiwai - 07-19-06 20:33 
 ----------------------------------------------------------------------
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
--I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer 
--DEXPORT_SYMTAB -c mixer_oss.c
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
--I/alsa-driver-1.0.12rc2/alsa-kernel/core/oss -fno-omit-frame-pointer
--D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(pcm_oss)"   -c -o
-pcm_oss.o pcm_oss.c
-{standard input}: Assembler messages:
-{standard input}:5552: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5553: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:5634: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:5635: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6035: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6036: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6074: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6075: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6091: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6092: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6115: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6116: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6187: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6188: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:6204: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:6205: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7450: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7451: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7509: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7510: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7613: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7614: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7798: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7799: Error: unknown pseudo-op: `.text.lock.'
-{standard input}:7843: Warning: rest of line ignored; first ignored
-character is `"'
-{standard input}:7844: Error: unknown pseudo-op: `.text.lock.'
-make[2]: *** [pcm_oss.o] Error 1
-make[2]: Leaving directory `/alsa-driver-1.0.12rc2/acore/oss'
-make[1]: *** [_modsubdir_oss] Error 2
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make: *** [compile] Error 1
+Try the latest HG version.  The codec might be AD1988B, not AD1988A.
 
 ----------------------------------------------------------------------
- Raymond - 08-06-06 13:43 
+ Tobias Diedrich - 08-06-06 11:15 
 ----------------------------------------------------------------------
-Still has error after download adriver.h from 
-
-http://hg.alsa-project.org/alsa-driver?fd=9dca103e6e5c;file=include/adriver.h
-
-
-
-gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa-driver-1.0.12rc2/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h  
--DEXPORT_SYMTAB -c hwdep.c
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from hwdep.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142:35: macro "might_sleep"
-passed 1 arguments, but takes just 0
-In file included from /alsa-driver-1.0.12rc2/include/sound/driver.h:46,
-                 from hwdep.c:22:
-/alsa-driver-1.0.12rc2/include/adriver.h:142: syntax error before '{'
-token
-make[1]: *** [hwdep.o] Error 1
-make[1]: Leaving directory `/alsa-driver-1.0.12rc2/acore'
-make: *** [compile] Error 1
+Ok, I got around to testing it again and it is working now since 2.6.18-rc2
+AFAICS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-06 17:32 Raymond        New Issue                                    
-08-04-06 17:32 Raymond        Distribution              => Fedora Core 1   
-08-04-06 17:32 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-08-05-06 13:14 Raymond        Note Added: 0011427                          
-08-06-06 13:43 Raymond        Note Added: 0011466                          
+07-14-06 14:40 Tobias DiedrichNew Issue                                    
+07-14-06 14:40 Tobias DiedrichDistribution              => Debian/GNU Linux
+testing
+07-14-06 14:40 Tobias DiedrichKernel Version            => 2.6.18-rc1      
+07-19-06 20:33 tiwai          Note Added: 0011098                          
+08-06-06 11:15 Tobias DiedrichNote Added: 0011465                          
+08-06-06 14:20 Adrian Bunk    Status                   assigned => resolved
+08-06-06 14:20 Adrian Bunk    Resolution               open => fixed       
 ======================================================================
 
 
