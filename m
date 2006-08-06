@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002287]: Segfaults all functions after
 	snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t
 	*) & val);
-Date: Sun, 6 Aug 2006 03:54:21 +0200
-Message-ID: <ca94dd488bb760f8c287c605394e2f19@bugtrack.alsa-project.org>
+Date: Sun, 6 Aug 2006 03:58:14 +0200
+Message-ID: <c2bf44d086c490baccde8ae926fa084d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61B30168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 216A9168
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Aug 2006 03:54:22 +0200 (MEST)
+	Sun,  6 Aug 2006 03:58:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-16-2006 18:03 CEST
-Last Modified:              08-06-2006 03:54 CEST
+Last Modified:              08-06-2006 03:58 CEST
 ======================================================================
 Summary:                    Segfaults all functions after
 snd_pcm_hw_params_get_buffer_size (params,(snd_pcm_uframes_t *) & val);
@@ -66,16 +66,6 @@ My question is,
 Is there a bug in this function?
 Code was obtained from http://www.linuxjournal.com/article/6735
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 08-06-06 03:30 
-----------------------------------------------------------------------
-Post content of /proc/asound/card0/ice1724
-
-Some pin of AKxxx IC are already set low/high by the GPIO using the values
-in the EEPROM
-
-
 
 ----------------------------------------------------------------------
  cruiseoveride - 08-06-06 03:54 
@@ -177,6 +167,30 @@ Registers:
   MT2d     : 0x00
   MT2e     : 0x00
   MT2f     : 0x00
+
+----------------------------------------------------------------------
+ cruiseoveride - 08-06-06 03:58 
+----------------------------------------------------------------------
+diff file1  file2
+2c2
+<   PSDOUT03 : 0x00000033
+---
+>   PSDOUT03 : 0x00000000
+10c10
+<   CCS07 : 0x43
+---
+>   CCS07 : 0xc3
+36c36
+<   MT01 : 0x08
+---
+>   MT01 : 0x00
+79c79
+<   MT2c : 0x33
+---
+>   MT2c : 0x00
+
+
+looks like they're a little different
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -333,6 +347,7 @@ Date Modified  Username       Field                    Change
 08-06-06 03:28 Raymond        Note Edited: 0011457                         
 08-06-06 03:30 Raymond        Note Edited: 0011457                         
 08-06-06 03:54 cruiseoveride  Note Added: 0011458                          
+08-06-06 03:58 cruiseoveride  Note Added: 0011459                          
 ======================================================================
 
 
