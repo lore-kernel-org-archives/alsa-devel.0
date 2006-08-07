@@ -1,7 +1,7 @@
 From: Christoph Lameter <christoph@lameter.com>
 Subject: Re: cmipci driver locking up linux hard
-Date: Mon, 7 Aug 2006 12:15:10 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0608071212410.6570@graphe.net>
+Date: Mon, 7 Aug 2006 12:53:47 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0608071252380.7100@graphe.net>
 References: <Pine.LNX.4.64.0608041616590.9917@graphe.net>
 	<s5hy7u0raux.wl%tiwai@suse.de>
 	<Pine.LNX.4.64.0608070927480.3308@graphe.net>
@@ -26,40 +26,39 @@ List-Id: alsa-devel@alsa-project.org
 
 On Mon, 7 Aug 2006, Takashi Iwai wrote:
 
-> > Yes. This was reported against 2.6.18-rc3.
+> diff -r c02c4dc749e7 pci/cmipci.c
+> --- a/pci/cmipci.c	Sat Aug 05 13:48:40 2006 +0200
+> +++ b/pci/cmipci.c	Mon Aug 07 20:02:53 2006 +0200
+> @@ -2825,7 +2825,7 @@ static int __devinit snd_cmipci_create(s
+>  		.dev_free =	snd_cmipci_dev_free,
+>  	};
+>  	unsigned int val = 0;
+> -	long iomidi;
+> +	long iomidi = 0;
+>  	int integrated_midi;
+>  	int pcm_index, pcm_spdif_index;
+>  	static struct pci_device_id intel_82437vx[] = {
+> @@ -2931,6 +2931,7 @@ static int __devinit snd_cmipci_create(s
+>  		return err;
+>  	}
+>  
+> +#if 0
+>  	integrated_midi = snd_cmipci_read_b(cm, CM_REG_MPU_PCI) != 0xff;
+>  	if (integrated_midi && mpu_port[dev] == 1)
+>  		iomidi = cm->iobase + CM_REG_MPU_PCI;
+> @@ -2953,6 +2954,7 @@ static int __devinit snd_cmipci_create(s
+>  
+>  	if ((err = snd_cmipci_create_fm(cm, fm_port[dev])) < 0)
+>  		return err;
+> +#endif
+>  
+>  	/* reset mixer */
+>  	snd_cmipci_mixer_write(cm, 0, 0);
 > 
-> :-<
-> 
-> Did you set CONFIG_SND_DEBUG=y, just to be sure?
 
-#
-# Advanced Linux Sound Architecture
-#
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_HWDEP=m
-CONFIG_SND_RAWMIDI=m
-# CONFIG_SND_SEQUENCER is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_PCM_OSS_PLUGINS=y
-CONFIG_SND_RTCTIMER=m
-CONFIG_SND_DYNAMIC_MINORS=y
-CONFIG_SND_SUPPORT_OLD_API=y
-CONFIG_SND_VERBOSE_PROCFS=y
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_DEBUG=y
-CONFIG_SND_DEBUG_DETECT=y
-# CONFIG_SND_PCM_XRUN_DEBUG is not set
-
-
-> Also, you can still try the old OSS cmpci driver...
-
-I have tried older version for the VIA8237/ALC655 issue but not for this 
-one yet. I bought a USB audio stick for $20. That works but no surround 
-sound. sighn. Will try the patch and report back.
+Tried the patch and it looked up on the first gnome sound. Rebooted again 
+and now its okay just occasionally doing gnome beeps (same as before). 
+Will lockup if I play an mp3.
 
 
 -------------------------------------------------------------------------
