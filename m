@@ -1,16 +1,16 @@
 From: Christoph Lameter <christoph@lameter.com>
-Subject: Re: P4M800PRO Mobo with VIA8237 (ALC655) no sound
-Date: Mon, 7 Aug 2006 12:11:53 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0608071210280.6493@graphe.net>
-References: <Pine.LNX.4.64.0608041624260.9917@graphe.net>
-	<s5hwt9kralg.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0608070930080.3308@graphe.net>
-	<s5hfyg8s9j7.wl%tiwai@suse.de>
+Subject: Re: cmipci driver locking up linux hard
+Date: Mon, 7 Aug 2006 12:15:10 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0608071212410.6570@graphe.net>
+References: <Pine.LNX.4.64.0608041616590.9917@graphe.net>
+	<s5hy7u0raux.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0608070927480.3308@graphe.net>
+	<s5hhd0os9nv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfyg8s9j7.wl%tiwai@suse.de>
+In-Reply-To: <s5hhd0os9nv.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,20 +26,41 @@ List-Id: alsa-devel@alsa-project.org
 
 On Mon, 7 Aug 2006, Takashi Iwai wrote:
 
-> Your box is cursed ;-)
-
-Gosh. I need an an exorcist?
-
-> > > Otherwise, it's a problem of ac97 mixer setting for ALC655.
-> > > Please attach the generated file by "alsactl -f somefile store", and 
-> > > the contents of /proc/asound/card0/codec97#0/* files for further
-> > > checking.
+> > Yes. This was reported against 2.6.18-rc3.
 > 
-> The mixer looks really OK.
-> Any influence by turning on "External Amplifier" mixer swith?
+> :-<
+> 
+> Did you set CONFIG_SND_DEBUG=y, just to be sure?
 
-None. Just tried it again. I have toyed with these options for a long 
-time.
+#
+# Advanced Linux Sound Architecture
+#
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_HWDEP=m
+CONFIG_SND_RAWMIDI=m
+# CONFIG_SND_SEQUENCER is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_PCM_OSS_PLUGINS=y
+CONFIG_SND_RTCTIMER=m
+CONFIG_SND_DYNAMIC_MINORS=y
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_VERBOSE_PROCFS=y
+CONFIG_SND_VERBOSE_PRINTK=y
+CONFIG_SND_DEBUG=y
+CONFIG_SND_DEBUG_DETECT=y
+# CONFIG_SND_PCM_XRUN_DEBUG is not set
+
+
+> Also, you can still try the old OSS cmpci driver...
+
+I have tried older version for the VIA8237/ALC655 issue but not for this 
+one yet. I bought a USB audio stick for $20. That works but no surround 
+sound. sighn. Will try the patch and report back.
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
