@@ -1,18 +1,10 @@
-From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
-Date: Wed, 09 Aug 2006 00:07:41 +0200
-Message-ID: <20060809000741.7zournuj4c0wcwc8@webmail.supelec.fr>
-References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
-	<1155056548.23266.267914050@webmail.messagingengine.com>
-	<20060808184722.6627D55E2E7@zeus.olymp.home>
-	<20060808222250.kgpv3965ss0oowoo@webmail.supelec.fr>
-	<20060808214138.419D4DE279@zeus.olymp.home>
+From: Jochen Voss <voss@seehuhn.de>
+Subject: [PATCH] complete the AK5365 support
+Date: Tue, 8 Aug 2006 23:59:09 +0100
+Message-ID: <20060808225908.GA22724@tarte.seehuhn.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1669476636=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060808214138.419D4DE279@zeus.olymp.home>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,61 +14,174 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Peter Oehry <peter.oehry@gmx.li>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Thank you for all this information!
 
-You're welcome, I had that much difficulties in finding these mapping 
-that I'm happy to see it can be usefull for other devices ;-)
-
-> I'll need some time to check what is needed for the Fast Track Pro.
-
-In fact it's not that tricky: just install a usb sniffer under windows, 
-then play with the control panel and check the SELECT_INTERFACE 
-messages for Interface/AlternateSetting. With the audiophile USB, it 
-only changes:
-* if you change the bit depth
-* if you change the sampling rate
-* if you enable/disable the SPDIF input
-
-> I think there is a big chance that many things are handled the same 
-> way like Audiophile. At least the number of Channels and also the 
-> mapping of digital an analog interfaces are the same. I tried to 
-> connect directly to the 24-Bit mode after startup of the USB device 
-> and I had the same "wrong" signal on both channels. This makes me 
-> positve to believe that the byte alignement (like you described) gets 
-> mixed up after mode switching.
-
-Yes that sounds exactly the same...
-
-> The distortion I head on both channels could have something to do 
-> with endianess. Instead of a sine wave I had a 3rd Harmonic at level 
-> of about -55dB (in the range of one byte) and the noise level was 
-> about -80dB (the range of the second byte).
-
-The relevant section in usbaudio.c is the "is_big_endian_format" function.
-Maybe just testing by adding your usb_id in this function will correct 
-endianness ?
-
-See:
-
-2297 /* 2298 * check if the device uses big-endian samples 2299 */ 2300 
-static int is_big_endian_format(struct snd_usb_audio *chip, struct 
-audioformat *fp) 2301 { 2302 switch (chip->usb_id) { 2303 case 
-USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */ 2304 
-if (fp->endpoint & USB_DIR_IN) 2305 return 1; 2306 break; 2307 case 
-USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */ 2308 return 1; 
-2309 } 2310 return 0; 2311 }
+--===============1669476636==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
 
 
-Regards,
-Thibault
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Complete the AK5365 support.
+
+This adds a boolean control to toggle the soft mute feature of the
+AK5365 chip.
+
+Signed-off-by: Jochen Voss <voss@seehuhn.de>
+
+
+diff -ur alsa-driver-1.0.12rc2.orig/alsa-kernel/i2c/other/ak4xxx-adda.c als=
+a-driver-1.0.12rc2/alsa-kernel/i2c/other/ak4xxx-adda.c
+--- alsa-driver-1.0.12rc2.orig/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-08-=
+08 21:54:30.000000000 +0100
++++ alsa-driver-1.0.12rc2/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-08-08 23=
+:51:31.000000000 +0100
+@@ -472,6 +472,57 @@
+ 	return change;
+ }
+=20
++static int ak4xxx_switch_info(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type =3D SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count =3D 1;
++	uinfo->value.integer.min =3D 0;
++	uinfo->value.integer.max =3D 1;
++	return 0;
++}
++
++static int ak4xxx_switch_get(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
++	int chip =3D AK_GET_CHIP(kcontrol->private_value);
++	int addr =3D AK_GET_ADDR(kcontrol->private_value);
++	int shift =3D AK_GET_SHIFT(kcontrol->private_value);
++	int invert =3D AK_GET_INVERT(kcontrol->private_value);
++	unsigned char val =3D snd_akm4xxx_get(ak, chip, addr);
++
++	if (invert)
++		val =3D ! val;
++	ucontrol->value.integer.value[0] =3D (val & (1<<shift)) !=3D 0;
++	return 0;
++}
++
++static int ak4xxx_switch_put(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
++	int chip =3D AK_GET_CHIP(kcontrol->private_value);
++	int addr =3D AK_GET_ADDR(kcontrol->private_value);
++	int shift =3D AK_GET_SHIFT(kcontrol->private_value);
++	int invert =3D AK_GET_INVERT(kcontrol->private_value);
++	long flag =3D ucontrol->value.integer.value[0];
++	unsigned char val, oval;
++	int change;
++
++	if (invert)
++		flag =3D ! flag;
++	oval =3D snd_akm4xxx_get(ak, chip, addr);
++	if (flag)
++		val =3D oval | (1<<shift);
++	else
++		val =3D oval & ~(1<<shift);
++	change =3D (oval !=3D val);
++	if (change)
++		snd_akm4xxx_write(ak, chip, addr, val);
++	return change;
++}
++
+ /*
+  * build AK4xxx controls
+  */
+@@ -621,6 +672,27 @@
+ 					      SNDRV_CTL_ELEM_ACCESS_WRITE));
+ 		if (err < 0)
+ 			goto __error;
++
++		memset(ctl, 0, sizeof(*ctl));
++		if (ak->channel_names =3D=3D NULL)
++			strcpy(ctl->id.name, "Capture Switch");
++		else
++			strcpy(ctl->id.name, ak->channel_names[1]);
++		ctl->id.index =3D ak->idx_offset * 2;
++		ctl->id.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
++		ctl->count =3D 1;
++		ctl->info =3D ak4xxx_switch_info;
++		ctl->get =3D ak4xxx_switch_get;
++		ctl->put =3D ak4xxx_switch_put;
++		/* register 2, bit 0 (SMUTE): 0 =3D normal operation, 1 =3D mute */
++		ctl->private_value =3D
++			AK_COMPOSE(0, 2, 0, 0) | AK_INVERT;
++		ctl->private_data =3D ak;
++		err =3D snd_ctl_add(ak->card,
++				  snd_ctl_new(ctl, SNDRV_CTL_ELEM_ACCESS_READ|
++					      SNDRV_CTL_ELEM_ACCESS_WRITE));
++		if (err < 0)
++			goto __error;
+ 	}
+=20
+ 	if (ak->type =3D=3D SND_AK4355 || ak->type =3D=3D SND_AK4358)
+diff -ur alsa-driver-1.0.12rc2.orig/alsa-kernel/pci/ice1712/revo.c alsa-dri=
+ver-1.0.12rc2/alsa-kernel/pci/ice1712/revo.c
+--- alsa-driver-1.0.12rc2.orig/alsa-kernel/pci/ice1712/revo.c	2006-08-08 21=
+:54:31.000000000 +0100
++++ alsa-driver-1.0.12rc2/alsa-kernel/pci/ice1712/revo.c	2006-08-08 23:37:2=
+6.000000000 +0100
+@@ -99,7 +99,7 @@
+ 					"PCM LFE Playback Volume", "PCM Rear Playback Volume"};
+=20
+ static unsigned int revo51_adc_num_stereo[] =3D {2};
+-static char *revo51_adc_channel_names[] =3D {"PCM Capture Volume"};
++static char *revo51_adc_channel_names[] =3D {"PCM Capture Volume","PCM Cap=
+ture Switch"};
+=20
+ static struct snd_akm4xxx akm_revo_front __devinitdata =3D {
+ 	.type =3D SND_AK4381,
+
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFE2Rc8f+iD8yEbECURAvt+AKCa/VqTANqDAWnuvaZgnBpOD1AxOwCgsV9F
+rfSWqQaGSQP+GOezhKlyMx8=
+=kXJq
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--
+
+
+--===============1669476636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1669476636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1669476636==--
