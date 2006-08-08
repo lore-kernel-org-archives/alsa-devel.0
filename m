@@ -1,10 +1,14 @@
-From: Jochen Voss <voss@seehuhn.de>
-Subject: [PATCH] complete the AK5365 support
-Date: Tue, 8 Aug 2006 23:59:09 +0100
-Message-ID: <20060808225908.GA22724@tarte.seehuhn.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [ALSA - driver 0002339]: No sound with ALC260 chip
+Date: Wed, 9 Aug 2006 09:05:33 +0930 (CST)
+Message-ID: <200608082335.k78NZXKA015151@auster.physics.adelaide.edu.au>
+References: <s5hk65jr3w4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1669476636=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hk65jr3w4.wl%tiwai@suse.de> from "Takashi Iwai" at Aug 08,
+	2006 11:08:27 AM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,174 +18,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development list <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi
 
---===============1669476636==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
-Content-Disposition: inline
+> > "Lubomir" posted via the bugtracker:
+> > > I own an Acer c204 and am the only one person who use linux on it. I can
+> > > not get sound out of my headphone or the normal speaker. ...
+:
+> > It sounds like this particular Acer laptop needs more than the basic
+> > ALC260 model. ...
+> 
+> It seems that his laptop has a problem with with communication to
+> HD-audio codec, too, according to his recent post to alsa-devel ML:
+> 
+> > To: alsa-devel@lists.sourceforge.net
+> > Subject: [Alsa-devel] No chance to get the soundcard working
+> > From: 017623780966@o2online.de
+> > 
+> > Hello, i have a big problem with my soundcard. It have a Realtek alc260 
+> > chip (intel-hda) and its build in an Acer c204tmi notebook. I can not get 
+> > that card working with linux. I tried over 20 linux live cds and have installed 
+> > now gentoo linux on it. The problem i have is: the sound card is been found 
+> > by alsaconf and can be configured. Alsamixer also found the card and can 
+> > configure it. I have unmuted every channel and set it up to max. I have 
+> > always tired the headphone. I never could get sound of that notebook. In 
+> > dmesg i found that -> ALSA /var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-
+> > driver-1.0.12rc1/pci/hda/..
+> > /../alsa-kernel/pci/hda/hdaintel.c:525: hda_intel: azx_get_response timeout, 
+> > switching to single_cmd mode...
+> > i do not know is that the reason why i have no sound. I have testet the 
+> > sound with xmms,KsCD,Noatun, and other. xmms and noatun do not start playing 
+> > and KsCD start playing, but i can not hear anything.
+> > I also cant ask someone who got alsa running, because i am the only person 
+> > who use that notebook under linux.
+> > I do not know what i could do. Can you help me?
 
+Interesting.  For what it's worth, I also see the azx_get_response timeout
+message every so often on my ALC260-equipped laptop, but its presence
+doesn't appear to prevent the sound system from working.  The last kernel I
+definitely saw the message was one of the 2.6.16-rt kernels.  I recently put
+2.6.17-rt8 on there but haven't checked for the message lately.
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One thing which would be interesting to know is whether the original poster
+sees this timeout message on every boot or not.  Given that the message
+doesn't appear to stop alsa from functioning in my case, it may be worth
+trying the model settings from my previous post anyway.
 
-Complete the AK5365 support.
-
-This adds a boolean control to toggle the soft mute feature of the
-AK5365 chip.
-
-Signed-off-by: Jochen Voss <voss@seehuhn.de>
-
-
-diff -ur alsa-driver-1.0.12rc2.orig/alsa-kernel/i2c/other/ak4xxx-adda.c als=
-a-driver-1.0.12rc2/alsa-kernel/i2c/other/ak4xxx-adda.c
---- alsa-driver-1.0.12rc2.orig/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-08-=
-08 21:54:30.000000000 +0100
-+++ alsa-driver-1.0.12rc2/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-08-08 23=
-:51:31.000000000 +0100
-@@ -472,6 +472,57 @@
- 	return change;
- }
-=20
-+static int ak4xxx_switch_info(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type =3D SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count =3D 1;
-+	uinfo->value.integer.min =3D 0;
-+	uinfo->value.integer.max =3D 1;
-+	return 0;
-+}
-+
-+static int ak4xxx_switch_get(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
-+	int chip =3D AK_GET_CHIP(kcontrol->private_value);
-+	int addr =3D AK_GET_ADDR(kcontrol->private_value);
-+	int shift =3D AK_GET_SHIFT(kcontrol->private_value);
-+	int invert =3D AK_GET_INVERT(kcontrol->private_value);
-+	unsigned char val =3D snd_akm4xxx_get(ak, chip, addr);
-+
-+	if (invert)
-+		val =3D ! val;
-+	ucontrol->value.integer.value[0] =3D (val & (1<<shift)) !=3D 0;
-+	return 0;
-+}
-+
-+static int ak4xxx_switch_put(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
-+	int chip =3D AK_GET_CHIP(kcontrol->private_value);
-+	int addr =3D AK_GET_ADDR(kcontrol->private_value);
-+	int shift =3D AK_GET_SHIFT(kcontrol->private_value);
-+	int invert =3D AK_GET_INVERT(kcontrol->private_value);
-+	long flag =3D ucontrol->value.integer.value[0];
-+	unsigned char val, oval;
-+	int change;
-+
-+	if (invert)
-+		flag =3D ! flag;
-+	oval =3D snd_akm4xxx_get(ak, chip, addr);
-+	if (flag)
-+		val =3D oval | (1<<shift);
-+	else
-+		val =3D oval & ~(1<<shift);
-+	change =3D (oval !=3D val);
-+	if (change)
-+		snd_akm4xxx_write(ak, chip, addr, val);
-+	return change;
-+}
-+
- /*
-  * build AK4xxx controls
-  */
-@@ -621,6 +672,27 @@
- 					      SNDRV_CTL_ELEM_ACCESS_WRITE));
- 		if (err < 0)
- 			goto __error;
-+
-+		memset(ctl, 0, sizeof(*ctl));
-+		if (ak->channel_names =3D=3D NULL)
-+			strcpy(ctl->id.name, "Capture Switch");
-+		else
-+			strcpy(ctl->id.name, ak->channel_names[1]);
-+		ctl->id.index =3D ak->idx_offset * 2;
-+		ctl->id.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
-+		ctl->count =3D 1;
-+		ctl->info =3D ak4xxx_switch_info;
-+		ctl->get =3D ak4xxx_switch_get;
-+		ctl->put =3D ak4xxx_switch_put;
-+		/* register 2, bit 0 (SMUTE): 0 =3D normal operation, 1 =3D mute */
-+		ctl->private_value =3D
-+			AK_COMPOSE(0, 2, 0, 0) | AK_INVERT;
-+		ctl->private_data =3D ak;
-+		err =3D snd_ctl_add(ak->card,
-+				  snd_ctl_new(ctl, SNDRV_CTL_ELEM_ACCESS_READ|
-+					      SNDRV_CTL_ELEM_ACCESS_WRITE));
-+		if (err < 0)
-+			goto __error;
- 	}
-=20
- 	if (ak->type =3D=3D SND_AK4355 || ak->type =3D=3D SND_AK4358)
-diff -ur alsa-driver-1.0.12rc2.orig/alsa-kernel/pci/ice1712/revo.c alsa-dri=
-ver-1.0.12rc2/alsa-kernel/pci/ice1712/revo.c
---- alsa-driver-1.0.12rc2.orig/alsa-kernel/pci/ice1712/revo.c	2006-08-08 21=
-:54:31.000000000 +0100
-+++ alsa-driver-1.0.12rc2/alsa-kernel/pci/ice1712/revo.c	2006-08-08 23:37:2=
-6.000000000 +0100
-@@ -99,7 +99,7 @@
- 					"PCM LFE Playback Volume", "PCM Rear Playback Volume"};
-=20
- static unsigned int revo51_adc_num_stereo[] =3D {2};
--static char *revo51_adc_channel_names[] =3D {"PCM Capture Volume"};
-+static char *revo51_adc_channel_names[] =3D {"PCM Capture Volume","PCM Cap=
-ture Switch"};
-=20
- static struct snd_akm4xxx akm_revo_front __devinitdata =3D {
- 	.type =3D SND_AK4381,
-
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE2Rc8f+iD8yEbECURAvt+AKCa/VqTANqDAWnuvaZgnBpOD1AxOwCgsV9F
-rfSWqQaGSQP+GOezhKlyMx8=
-=kXJq
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
-
-
---===============1669476636==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards
+  jonathan
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1669476636==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1669476636==--
