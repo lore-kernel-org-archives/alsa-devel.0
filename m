@@ -1,17 +1,20 @@
-From: Jaroslaw Gorny <jaroslav@aster.pl>
-Subject: Re: bugtracker register problem
-Date: Tue, 8 Aug 2006 19:42:35 +0200
-Message-ID: <200608081942.42918.jaroslav@aster.pl>
-References: <200608061432.19066.jaroslav@aster.pl>
-	<s5h8xlzr0ao.wl%tiwai@suse.de>
+From: Jochen Voss <voss@seehuhn.de>
+Subject: Re: GPIO connections for the M-Audio Revolution 5.1
+Date: Tue, 8 Aug 2006 18:47:42 +0100
+Message-ID: <20060808174741.GA29366@tarte.seehuhn.de>
+References: <20060808104015.GA20149@seehuhn.de> <s5h4pwnqydd.wl%tiwai@suse.de>
+	<20060808111850.GB2922@localhost.localdomain>
+	<s5hzmefpj2o.wl%tiwai@suse.de>
+	<20060808114033.GA3784@tarte.seehuhn.de>
+	<s5hpsfbpe9t.wl%tiwai@suse.de>
+	<20060808163025.GA12347@tarte.seehuhn.de>
+	<s5hr6zrfa1s.wl%tiwai@suse.de>
+	<20060808172037.GC12347@tarte.seehuhn.de>
+	<s5hk65jf83f.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0434818131=="
+Content-Type: multipart/mixed; boundary="===============1736148156=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail3.astercity.net (mail3.aster.pl [212.76.33.55])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0B611A1
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Aug 2006 19:41:20 +0200 (MEST)
-In-Reply-To: <s5h8xlzr0ao.wl%tiwai@suse.de>
+In-Reply-To: <s5hk65jf83f.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,73 +25,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA development list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============0434818131==
-Content-Type: multipart/signed; boundary="nextPart1244319.INpziVYy87";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
 
---nextPart1244319.INpziVYy87
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+--===============1736148156==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Content-Disposition: inline
 
-Hi,
 
-Dnia wtorek, 8 sierpnia 2006 12:26, Takashi Iwai napisa=C5=82:
-> At Sun, 6 Aug 2006 14:32:11 +0200,
->
-> Jaroslaw Gorny wrote:
-> > Hi,
-> > I tried to set up an account in bugtracker, but after pasting url sent =
-in
-> > the e-mail the following error has appeared:
-> >
-> >
-> > <code>
-> > APPLICATION ERROR #1901
->
-> It was a server problem and is working now again.
->
->
-> Takashi
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, it's OK now.
-Regards,
+Hello Takashi,
 
-Jaroslav
+On Tue, Aug 08, 2006 at 07:30:44PM +0200, Takashi Iwai wrote:
+> > Is the last argument (mask) for AK_COMPOSE the maximum allowed mixer
+> > value?  Is it ok if this is not a power of two?
+>=20
+> Yes and yes.
 
+Fine.  Slowly I am getting there.  Now I have something working,
+which uses the following addition to snd_akm4xxx_build_controls:
 
-=2D-=20
-Jaroslaw Gorny
-jaroslav@aster.pl
+	if (ak->type =3D=3D SND_AK5365) {
+		memset(ctl, 0, sizeof(*ctl));
+		if (ak->channel_names =3D=3D NULL) {
+			strcpy(ctl->id.name, "ADC Volume");
+		} else {
+			strcpy(ctl->id.name, ak->channel_names[0]);
+		}
+		ctl->id.index =3D ak->idx_offset * 2;
+		ctl->id.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
+		ctl->count =3D 1;
+		ctl->info =3D snd_akm4xxx_stereo_volume_info;
+		ctl->get =3D snd_akm4xxx_stereo_volume_get;
+		ctl->put =3D snd_akm4xxx_stereo_volume_put;
+		/* register 4 & 5 */
+		ctl->private_value =3D
+			AK_COMPOSE(0, 4, 0, 0x98);
+		ctl->private_data =3D ak;
+		err =3D snd_ctl_add(ak->card,
+				  snd_ctl_new(ctl, SNDRV_CTL_ELEM_ACCESS_READ|
+					      SNDRV_CTL_ELEM_ACCESS_WRITE));
+	=09
+		if (err < 0)
+			goto __error;
 
+		idx +=3D 2;	/* always stereo */
+	}
 
-=2D----BEGIN GEEK CODE BLOCK-----
-Version: 3.12
-GMU/E/CS d+/-- s+: a- c++ UL++/US P+>++ L+++>++++
-E>++ W N++ o? K w--- !O M V- PS+++ PE++ Y PGP>++ t 5
-X- R- tv--/!tv b++ DI-- D G- e++>+++ h-- r+++ z+++
-=2D----END GEEK CODE BLOCK-----
+(I will post a complete patch later today.)
 
---nextPart1244319.INpziVYy87
-Content-Type: application/pgp-signature
+This gives me a beautiful (and working!) volume slider for the capture
+channel.  Does this look ok to you?  The magic constant 0x98 is from
+page 35 of the spec and I think is correct.  I did not imitate the
+loop over idx which other parts of this function have.  I hope that
+this is ok.
+
+The card seems to have a separate mute control.  How do I create a
+mixer element for this?  I would like alsamixer to place a little mute
+box just under the slider bar.  I looked around, but could not find
+anything similar to copy within the ice1723 directory.
+
+Many thanks for your help,
+Jochen
+--=20
+http://seehuhn.de/
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQBE2M0S6haYWsLTFVgRAjbAAJ0dj+/4LXnrkXYGBOhksAi0Q6548QCbBv3t
-NTP1+XuXoItQzWOrgbI+uTo=
-=TUak
+iD8DBQFE2M49f+iD8yEbECURAqIaAKCSljGAkpZIqgU3eHGC9WZNyZK0OgCgymVU
+qhmF89IDaAuem6FgD8IyfEc=
+=9x5C
 -----END PGP SIGNATURE-----
 
---nextPart1244319.INpziVYy87--
+--PEIAKu/WMn1b1Hv9--
 
 
---===============0434818131==
+--===============1736148156==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,7 +123,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0434818131==
+--===============1736148156==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -110,4 +134,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0434818131==--
+--===============1736148156==--
