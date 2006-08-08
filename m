@@ -1,18 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Linux v2.6.18-rc4, snd-aoa link error
-Date: Tue, 08 Aug 2006 16:03:49 -0400
-Message-ID: <1155067429.26338.96.camel@mindpipe>
-References: <Pine.LNX.4.64.0608061127070.5167@g5.osdl.org>
-	<20060808194651.GA29482@aepfle.de>
+From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
+Date: Tue, 08 Aug 2006 22:22:50 +0200
+Message-ID: <20060808222250.kgpv3965ss0oowoo@webmail.supelec.fr>
+References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
+	<1155056548.23266.267914050@webmail.messagingengine.com>
+	<20060808184722.6627D55E2E7@zeus.olymp.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0D9301A7
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Aug 2006 22:03:53 +0200 (MEST)
-In-Reply-To: <20060808194651.GA29482@aepfle.de>
+In-Reply-To: <20060808184722.6627D55E2E7@zeus.olymp.home>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,28 +20,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Olaf Hering <olaf@aepfle.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Oehry <peter.oehry@gmx.li>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-08-08 at 21:46 +0200, Olaf Hering wrote:
-> Attached config fails to link. No idea if it makes sense for an ibook1.
-> 
+> What I know from the manual is that the device can do
+>
+> either 4X4 (2 stereo in and 2 stereo out) in 16-Bit mode up to 48kHz
+> or 4x2 2 stereo in and 1 stero out in 24-Bit mode up to 48kHz
+> or 2X4 1 stereo in and 2 stereo out in 24-Bit mode up to 48kHz
 
-Looks like we need:
+Same thing for Audiophile USB.
 
---- aoa/Kconfig~	2006-08-08 16:02:30.000000000 -0400
-+++ aoa/Kconfig	2006-08-08 16:03:26.000000000 -0400
-@@ -5,6 +5,7 @@
- 	tristate "Apple Onboard Audio driver"
- 	depends on SND
- 	select SND_PCM
-+	select I2C
- 	---help---
- 	This option enables the new driver for the various
- 	Apple Onboard Audio components.
+> some more limitations are present when using higher sampling rates up 
+> to 96kHz
+> thus I belive that normally in 24-Bit mode the alternate settings 3 
+> and 6 should not
+> be used. At least I had no output witch setting 3 and I had an output 
+> with setting 2.
 
-Lee
+I had to find out which mapping is used for my device as well. I used 
+usb sniff under windows and played with the M-Audio control panel... My 
+conclusions are described in Documentation/Audiophile-Usb.txt which can 
+give you ideas about how M-Audio implements usb interfaces.
+
+>
+> Do you know which calls are necessary to switch the config of a usb device?
+
+In my case I use a device_setup parameter at the module initialization, 
+because it seems that switching from AltSettings corresponding to 
+16bits endpoints to  AltSettings corresponding to 24bits endpoints 
+causes allignment errors.
+
+> I have to investigate this further. It can not be a general problem 
+> because the 16-Bit mode is working. But it can be that the alignment 
+> of 24-Bit is different.
+
+Yes looks like it is.... you can have a look at the patch I proposed, 
+you may find interresting info:
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=4249e5ffdb3f;style=gitweb
+
+Regards,
+Thibault
 
 
 -------------------------------------------------------------------------
