@@ -1,14 +1,20 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: [RFC] compatibility between alsa-kernel and alsa-lib
-Date: Tue, 08 Aug 2006 18:52:22 +0200
-Message-ID: <m2fyg741bt.fsf_-_@vador.mandriva.com>
-References: <m23bcd612c.fsf@vador.mandriva.com> <s5hzmekvnyg.wl%tiwai@suse.de>
+From: Jochen Voss <voss@seehuhn.de>
+Subject: Re: GPIO connections for the M-Audio Revolution 5.1
+Date: Tue, 8 Aug 2006 17:52:32 +0100
+Message-ID: <20060808165231.GB12347@tarte.seehuhn.de>
+References: <20060807203113.GA5305@tarte.seehuhn.de>
+	<s5hbqqvr0i6.wl%tiwai@suse.de> <20060808104015.GA20149@seehuhn.de>
+	<s5h4pwnqydd.wl%tiwai@suse.de>
+	<20060808111850.GB2922@localhost.localdomain>
+	<s5hzmefpj2o.wl%tiwai@suse.de>
+	<20060808114033.GA3784@tarte.seehuhn.de>
+	<s5hpsfbpe9t.wl%tiwai@suse.de>
+	<20060808163025.GA12347@tarte.seehuhn.de>
+	<s5hr6zrfa1s.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0630382242=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hzmekvnyg.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
-	04 Aug 2006 11:40:07 +0200")
+In-Reply-To: <s5hr6zrfa1s.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,51 +24,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
 
-> > I may have already raised this (sorry), but from times to times, a
-> > change in a driver (ie a mixer element change) is coupled with a
-> > corresponding change in the config file in
-> > /usr/share/alsa/cards/).
-> > 
-> > This means that there's a point of linkage between alsa-kernel and
-> > alsa-lib (that is one has to use older releases for both kernel
-> > and libs or new releases for both).
-> > 
-> > Is there a way to ensure some compatibility, ie alsa-lib-1.0.20
-> > will work with both kernel-2.6.32 and kernel-2.6.16 despite driver
-> > snd-foobar has changed it's mixer in kernel-2.6.20?
-> > 
-> > Maybe with versionnated config files or versionnated definitions
-> > in the config files?
-> > 
-> > I know that this can be hard since more and more change will be
-> > accumulated (on the other hand, such changes don't happen that
-> > often).
-> 
-> Yes, that's a missing part, so far.
-> 
-> Currently, we keep the backward compatibility as much as possible.
-> For example, if a control element is renamed, we keep the old entry
-> with "optional true" attribute so that the same config works for
-> older version.  But, this wouldn't work if the device number changes
-> or any other critical change occurs.
-> 
-> The versioned config would be a solution.  The question is how to
-> take the version number/string.  One possible idea is that a card
-> provides a read-only control element named "Version" with
-> IFACE_CARD.  Or simply a new ioctl for this purpose.
-> 
-> Anyway, this implementation should be more discussed on alsa-devel
-> ML.
+--===============0630382242==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
+Content-Disposition: inline
 
-let's forward it alsa-devel@ ml then.
+
+--2B/JsCI69OhZNC5r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Takashi,
+
+On Tue, Aug 08, 2006 at 06:48:31PM +0200, Takashi Iwai wrote:
+> OK, this implies that CS0 is for DAC and CS1 for ADC.  CS2 isn't used,
+> so basically it doesn't matter to be set or not.
+I agree.
+
+> What we need next is to write up a code to communicate with ADC chip.
+> It could be merged into i2c/other/ak4xxx-adda.c, but it could be a
+> standlone implementation as found in aureon.c.
+Yes, I am currently looking at ak4xxx-adda.c.
+I will see what I can do and report the result later.
+
+Many thanks for your help,
+Jochen
+--=20
+http://seehuhn.de/
+
+--2B/JsCI69OhZNC5r
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFE2MFPf+iD8yEbECURAj8QAJ4tHUlGj4AR5hj3YcMf0zQANnEoVQCeKLUq
+H8cxzQ6r1kYZ0z99XjxfL5Q=
+=w2Hx
+-----END PGP SIGNATURE-----
+
+--2B/JsCI69OhZNC5r--
+
+
+--===============0630382242==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0630382242==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0630382242==--
