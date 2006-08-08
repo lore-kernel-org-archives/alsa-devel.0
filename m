@@ -1,14 +1,14 @@
 From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: [RFC] Addition of sysfs file for PCM
-Date: Tue, 08 Aug 2006 18:51:18 +0200
-Message-ID: <m2k65j41dl.fsf@vador.mandriva.com>
-References: <s5hvep3ntsf.wl%tiwai@suse.de>
+Subject: [RFC] compatibility between alsa-kernel and alsa-lib
+Date: Tue, 08 Aug 2006 18:52:22 +0200
+Message-ID: <m2fyg741bt.fsf_-_@vador.mandriva.com>
+References: <m23bcd612c.fsf@vador.mandriva.com> <s5hzmekvnyg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hvep3ntsf.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
-	08 Aug 2006 17:14:56 +0200")
+In-Reply-To: <s5hzmekvnyg.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
+	04 Aug 2006 11:40:07 +0200")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,32 +18,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai <tiwai@suse.de> writes:
 
-> Hi,
+> > I may have already raised this (sorry), but from times to times, a
+> > change in a driver (ie a mixer element change) is coupled with a
+> > corresponding change in the config file in
+> > /usr/share/alsa/cards/).
+> > 
+> > This means that there's a point of linkage between alsa-kernel and
+> > alsa-lib (that is one has to use older releases for both kernel
+> > and libs or new releases for both).
+> > 
+> > Is there a way to ensure some compatibility, ie alsa-lib-1.0.20
+> > will work with both kernel-2.6.32 and kernel-2.6.16 despite driver
+> > snd-foobar has changed it's mixer in kernel-2.6.20?
+> > 
+> > Maybe with versionnated config files or versionnated definitions
+> > in the config files?
+> > 
+> > I know that this can be hard since more and more change will be
+> > accumulated (on the other hand, such changes don't happen that
+> > often).
 > 
-> I've discussed with HAL guys about the current problem of sound
-> configuration over HAL.  One issue is that both audio and modem PCM
-> devices appear on the same card (e.g. HD-audio), and can't be
-> distinguished from the device name itself.
+> Yes, that's a missing part, so far.
 > 
-> For solving this, I made a patch to add a sysfs file in
-> /sys/class/sound/pcm* directories indicating the PCM device class.
+> Currently, we keep the backward compatibility as much as possible.
+> For example, if a control element is renamed, we keep the old entry
+> with "optional true" attribute so that the same config works for
+> older version.  But, this wouldn't work if the device number changes
+> or any other critical change occurs.
+> 
+> The versioned config would be a solution.  The question is how to
+> take the version number/string.  One possible idea is that a card
+> provides a read-only control element named "Version" with
+> IFACE_CARD.  Or simply a new ioctl for this purpose.
+> 
+> Anyway, this implementation should be more discussed on alsa-devel
+> ML.
 
-I'd suggest discussing this with Greg Kroah-Hartman.
- 
-> If anyone has better idea or implementation, let me know.
-> 
-> Another qustion regarding this is whether we push it to the public
-> HG repo right now, or wait until 1.0.12-final is released.
-> As usual, I have no idea when we reach 1.0.12-final, hence I prefer
-> pushing it as soon as possible, but this would bring of course a
-> possibility of regression (especially for building with the older
-> kernels).
+let's forward it alsa-devel@ ml then.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
