@@ -1,32 +1,50 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: alsa driver problem (snd_via82xx)
-Date: Wed, 09 Aug 2006 16:43:55 -0400
-Message-ID: <1155156235.26338.196.camel@mindpipe>
-References: <97c31bd80608091159h40db8bc2l891cab8ddf7165ef@mail.gmail.com>
+From: Gene Heskett <gene.heskett@verizon.net>
+Subject: Re: ALSA problems with 2.6.18-rc3
+Date: Wed, 09 Aug 2006 16:51:27 -0400
+Message-ID: <200608091651.28077.gene.heskett@verizon.net>
+References: <44D8F3E5.5020508@ukonline.co.uk>
+ <200608091417.55431.gene.heskett@verizon.net>
+ <1155156090.26338.193.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751366AbWHIUoA@vger.kernel.org>
-In-Reply-To: <97c31bd80608091159h40db8bc2l891cab8ddf7165ef@mail.gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751367AbWHIUv4@vger.kernel.org>
+In-reply-to: <1155156090.26338.193.camel@mindpipe>
+Content-disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bartlomiej Celary <bartlomiej.celary@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: linux-kernel@vger.kernel.org
+Cc: Lee Revell <rlrevell@joe-job.com>, Andrew Benton <b3nt@ukonline.co.uk>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-08-09 at 20:59 +0200, Bartlomiej Celary wrote:
-> Hello,
-> 
-> I am having a problem with alsa driver. It is not a big issue, but a
-> significant drawback...
-> Ive used the form, so here it is.
-> 
-> [1.] One line summary of the problem:
-> While using snd_via82xx the PCM volume is not responding to changing
-> Master Volume.
+On Wednesday 09 August 2006 16:41, Lee Revell wrote:
+[...]
+>> >Takashi-san,
+>> >
+>> >Does this help at all?  Many users are reporting that sound broke with
+>> >2.6.18-rc*.
+>> >
+>> >Lee
+>>
+>> Takashi-san's suggestion earlier today of running an "alsactl -F
+>> restore" seems to have fixed all those diffs right up, I now have good
+>> sound with an emu10k1 using an audigy 2 as card-0, running
+>> kernel-2.6.18-rc4.
+>
+>Distros should probably be using this as a default.  Otherwise, simply
+>adding a new mixer control will cause restoring mixer settings to fail.
+>
+>Lee
 
-This should be reported to the ALSA bug tracker (or alsa-devel mailing
-list if you can help fix the code), not LKML:
+I already have the 'alsactl restore' in my rc.local.  Would there be any 
+harm in just adding the -F to that invocation, or will that just restore 
+it to a 'default' condition always.  Seems like it would, canceling 
+anything you have done & then did an 'alsactl store' to save..
 
-https://bugtrack.alsa-project.org/alsa-bug/bug_report_advanced_page.php
-
-Lee
+-- 
+Cheers, Gene
+People having trouble with vz bouncing email to me should add the word
+'online' between the 'verizon', and the dot which bypasses vz's
+stupid bounce rules.  I do use spamassassin too. :-)
+Yahoo.com and AOL/TW attorneys please note, additions to the above
+message by Gene Heskett are:
+Copyright 2006 by Maurice Eugene Heskett, all rights reserved.
