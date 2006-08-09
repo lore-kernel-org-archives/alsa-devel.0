@@ -1,18 +1,26 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: Linux v2.6.18-rc4, snd-aoa link error
-Date: Wed, 09 Aug 2006 13:37:09 +0200
-Message-ID: <44D9C8E5.10109@sipsolutions.net>
-References: <Pine.LNX.4.64.0608061127070.5167@g5.osdl.org>	<20060808194651.GA29482@aepfle.de>	<1155067429.26338.96.camel@mindpipe>	<s5hoduudypc.wl%tiwai@suse.de>	<44D9B1BE.9070600@sipsolutions.net>
-	<s5hk65idwia.wl%tiwai@suse.de>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: Re: underrun!!! (at least 0,
+	249 ms long) was (struct snd_pcm_hardware_t values)
+Date: Wed, 9 Aug 2006 13:46:12 +0200
+Message-ID: <d9def9db0608090446i26c25eb7yb73b3eadc2eb4ff5@mail.gmail.com>
+References: <d9def9db0608071809x648b8febsbc6feba4930e5cfa@mail.gmail.com>
+	<s5hac6fr0bv.wl%tiwai@suse.de>
+	<d9def9db0608090308u7eb538e4y9ca7db9c212b07d1@mail.gmail.com>
+	<s5hlkpydx0h.wl%tiwai@suse.de>
+	<d9def9db0608090357m68e51f06xc5f75ae898696963@mail.gmail.com>
+	<s5hejvqdv7k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3AE7234
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.182])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDEB619D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Aug 2006 13:37:23 +0200 (MEST)
-In-Reply-To: <s5hk65idwia.wl%tiwai@suse.de>
+	Wed,  9 Aug 2006 13:46:13 +0200 (MEST)
+Received: by py-out-1112.google.com with SMTP id b29so36171pya
+	for <alsa-devel@alsa-project.org>; Wed, 09 Aug 2006 04:46:12 -0700 (PDT)
+In-Reply-To: <s5hejvqdv7k.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,39 +31,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Olaf Hering <olaf@aepfle.de>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Someone who owned G5 must know...
->   
-Yeah, I really should know :) But I'm not sure at the moment, and the 
-powermac I own is a few hundred kilometers away...
-> diff -r 5b67bba2d36f aoa/codecs/Kconfig
-> --- a/aoa/codecs/Kconfig	Tue Aug 08 21:13:42 2006 +0200
-> +++ b/aoa/codecs/Kconfig	Wed Aug 09 12:10:43 2006 +0200
-> @@ -1,6 +1,7 @@ config SND_AOA_ONYX
->  config SND_AOA_ONYX
->  	tristate "support Onyx chip"
->  	depends on SND_AOA
-> +	select I2C
->  	---help---
->  	This option enables support for the Onyx (pcm3052)
->  	codec chip found in the latest Apple machines
-> @@ -18,6 +19,7 @@ config SND_AOA_TAS
->  config SND_AOA_TAS
->  	tristate "support TAS chips"
->  	depends on SND_AOA
-> +	select I2C
->  	---help---
->  	This option enables support for the tas chips
->  	found in a lot of Apple Machines, especially
->   
-That looks good to me, and should get rid of the build failure. However, 
-if one doesn't configure I2C_POWERMAC, no codec will ever be found at 
-runtime.
+On 8/9/06, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 9 Aug 2006 12:57:08 +0200,
+> Markus Rechberger wrote:
+> >
+> > > > the driver was always available uppon request... thought it would be
+> > > > nice to host it in an alsa development tree or so but I haven't got
+> > > > any answer regarding this a while ago.. I put it into my video4linux
+> > > > development tree now..
+> > >
+> > > We can put it to alsa-driver tree and later push it to upstream when
+> > > the code is well brushed up.
+> > >
+> > > So, could you post the code, or as a patch, to alsa-devel ML?
+> > > The post is easier for reviewing and correcting some issues.
+> > >
+> >
+> > have you seen how the devcode is managed on linuxtv.org? Think
+> > something like that would be very nice for alsa too...
+> >
+> > http://linuxtv.org/hg/
+>
+> http://hg-mirror.alsa-project.org ?
+>
+> Anyway the HG web interface is not suitable for interactive discussion
+> and review to add comments and correct codes.
+>
+>
 
-johannes
+no it's just every developer has it's own tree there. And as soon as
+one developer finished some things it gets merged to the master in
+case of linuxtv it would be v4l-dvb.
+I'm just writing about that because alsa also uses mercurial maybe it
+would also be nice to have it like that there?
+
+Markus
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
