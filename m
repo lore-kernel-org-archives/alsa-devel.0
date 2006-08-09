@@ -1,18 +1,22 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: Linux v2.6.18-rc4, snd-aoa link error
-Date: Wed, 09 Aug 2006 11:58:22 +0200
-Message-ID: <44D9B1BE.9070600@sipsolutions.net>
-References: <Pine.LNX.4.64.0608061127070.5167@g5.osdl.org>	<20060808194651.GA29482@aepfle.de>	<1155067429.26338.96.camel@mindpipe>
-	<s5hoduudypc.wl%tiwai@suse.de>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: Re: underrun!!! (at least 0,
+	249 ms long) was (struct snd_pcm_hardware_t values)
+Date: Wed, 9 Aug 2006 12:08:00 +0200
+Message-ID: <d9def9db0608090308u7eb538e4y9ca7db9c212b07d1@mail.gmail.com>
+References: <d9def9db0608071809x648b8febsbc6feba4930e5cfa@mail.gmail.com>
+	<s5hac6fr0bv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E49C9229
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.181])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E6A6229
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Aug 2006 11:59:05 +0200 (MEST)
-In-Reply-To: <s5hoduudypc.wl%tiwai@suse.de>
+	Wed,  9 Aug 2006 12:08:01 +0200 (MEST)
+Received: by py-out-1112.google.com with SMTP id b29so4182pya
+	for <alsa-devel@alsa-project.org>; Wed, 09 Aug 2006 03:08:00 -0700 (PDT)
+In-Reply-To: <s5hac6fr0bv.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,64 +27,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Olaf Hering <olaf@aepfle.de>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->> --- aoa/Kconfig~	2006-08-08 16:02:30.000000000 -0400
->> +++ aoa/Kconfig	2006-08-08 16:03:26.000000000 -0400
->> @@ -5,6 +5,7 @@
->>  	tristate "Apple Onboard Audio driver"
->>  	depends on SND
->>  	select SND_PCM
->> +	select I2C
->>  	---help---
->>  	This option enables the new driver for the various
->>  	Apple Onboard Audio components.
->>     =
+Hi,
 
+On 8/8/06, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 8 Aug 2006 03:09:43 +0200,
+> Markus Rechberger wrote:
+> >
+> > Ok I managed to get rid of that garbled background noise now I get
+> > underrun messages...
+> >
+> > $ aplay -D hw:2,1 5_5_2006__07_00_59.wav
+> > Playing WAVE '5_5_2006__07_00_59.wav' : Signed 16 bit Little Endian,
+> > Rate 9600 Hz, Mono
+> > underrun!!! (at least 0,271 ms long)
+> > underrun!!! (at least 0,248 ms long)
+> > [...]
+> >
+> > I can hear the sound clearly, but looks like these 200ms cause a choppy
+> sound...
+> > I also tried to add support for this device to snd-usb-audio, but
+> > since this device has no synchronisation packets the driver fails...
+> > Does anyone know what causes such a buffer underrun?
 >
-> Maybe better to put it in aoa/codecs/Kconfig.
-> The requirement of i2c is not in the core part of aoa driver but in
-> the codec support codes.
->   =
 
-Yes, each codec except for toonie should select I2C. Looks like I missed =
+This is fixed now I set the buffer size 3 times as high as the period
+size.. though I still have the same choppy effect. Seems like a
+problem with the filled USB packets.. I wonder why the supported
+packet size is 128 bytes but the windows driver fills max. 38 bytes of
+every packet... My driver currently fills only 20 bytes since this is
+the average of what the windriver does too.
 
-that, sorry.
+> For example, the calculation of the current pointer doesn't match with
+> the actual position.
+>
 
-However, I was recently told that the expected behaviour with I2C (in a =
+there might be something wrong in line 350/351 but it has a lower
+priority at the moment for me...
 
-thread discussing the motion sensor) that I2C should be depended upon, =
+> > I think it still has something to do with the snd_pcm_hardware_t values...
+>
+> My guess is that the problem is the implementation of pointer
+> callback.
+>
+> > maybe the time will come when I'm not the only one on this ML who
+> > answers my questions....
+>
+> Maybe you'll get more response if you show your codes more openly...
+> Otherwise it's just a wild guess.
+>
 
-not selected. I very much disagree (*), however, and would like to see a =
+there we go:
+http://linuxtv.org/hg/~mrechberger/v4l-dvb?mf=598d5b40d82a;path=/v4l_experimental/usbaudio/;style=gitweb
 
-select here.
+the projectwebsite:
+http://alsa.opensrc.org/au600
 
-Unfortunately, I started new work in N=FCrnberg, don't have any internet =
+the driver was always available uppon request... thought it would be
+nice to host it in an alsa development tree or so but I haven't got
+any answer regarding this a while ago.. I put it into my video4linux
+development tree now..
 
-at home right now and am not supposed to bring my own laptop to work. =
-
-Would someone else create the required patch?
-> Should I2C_POWERMANC be selected, too?
-It makes sense since the aoa driver is specific to machines that have =
-
-the i2c powermac bus, but I'm ambivalent about it. Though, does the G5 =
-
-require I2C_POWERMAC? I'm not completely sure about that.
-
-johannes
-
-(*) I don't think it makes sense to bother someone configuring the =
-
-kernel with the some concept called I2C. The user should be able to just =
-
-select the sound driver necessary.
+Markus
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
