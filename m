@@ -1,14 +1,18 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [ALSA - driver 0002339]: No sound with ALC260 chip
-Date: Wed, 9 Aug 2006 09:05:33 +0930 (CST)
-Message-ID: <200608082335.k78NZXKA015151@auster.physics.adelaide.edu.au>
-References: <s5hk65jr3w4.wl%tiwai@suse.de>
+From: Christoph Lameter <christoph@lameter.com>
+Subject: Re: cmipci driver locking up linux hard
+Date: Tue, 8 Aug 2006 17:14:52 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0608081713040.2054@graphe.net>
+References: <Pine.LNX.4.64.0608041616590.9917@graphe.net>
+	<s5hy7u0raux.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0608070927480.3308@graphe.net>
+	<s5hhd0os9nv.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0608071318580.7499@graphe.net>
+	<s5hhd0nr2va.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk65jr3w4.wl%tiwai@suse.de> from "Takashi Iwai" at Aug 08,
-	2006 11:08:27 AM
+In-Reply-To: <s5hhd0nr2va.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,56 +23,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+On Tue, 8 Aug 2006, Takashi Iwai wrote:
 
-> > "Lubomir" posted via the bugtracker:
-> > > I own an Acer c204 and am the only one person who use linux on it. I can
-> > > not get sound out of my headphone or the normal speaker. ...
-:
-> > It sounds like this particular Acer laptop needs more than the basic
-> > ALC260 model. ...
+> I still don't get it right whether the problem is in the interrupt
+> lockup or it hits some hardware things.  The fact that the lockup
+> happens after playing mp3 sounds like the former, though.
 > 
-> It seems that his laptop has a problem with with communication to
-> HD-audio codec, too, according to his recent post to alsa-devel ML:
-> 
-> > To: alsa-devel@lists.sourceforge.net
-> > Subject: [Alsa-devel] No chance to get the soundcard working
-> > From: 017623780966@o2online.de
-> > 
-> > Hello, i have a big problem with my soundcard. It have a Realtek alc260 
-> > chip (intel-hda) and its build in an Acer c204tmi notebook. I can not get 
-> > that card working with linux. I tried over 20 linux live cds and have installed 
-> > now gentoo linux on it. The problem i have is: the sound card is been found 
-> > by alsaconf and can be configured. Alsamixer also found the card and can 
-> > configure it. I have unmuted every channel and set it up to max. I have 
-> > always tired the headphone. I never could get sound of that notebook. In 
-> > dmesg i found that -> ALSA /var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-
-> > driver-1.0.12rc1/pci/hda/..
-> > /../alsa-kernel/pci/hda/hdaintel.c:525: hda_intel: azx_get_response timeout, 
-> > switching to single_cmd mode...
-> > i do not know is that the reason why i have no sound. I have testet the 
-> > sound with xmms,KsCD,Noatun, and other. xmms and noatun do not start playing 
-> > and KsCD start playing, but i can not hear anything.
-> > I also cant ask someone who got alsa running, because i am the only person 
-> > who use that notebook under linux.
-> > I do not know what i could do. Can you help me?
+> Could you check the values of registers CM_REG_INT_STATUS and
+> CM_REG_INT_HLDCLR in snd_cmipci_interrupt() by printk?
 
-Interesting.  For what it's worth, I also see the azx_get_response timeout
-message every so often on my ALC260-equipped laptop, but its presence
-doesn't appear to prevent the sound system from working.  The last kernel I
-definitely saw the message was one of the 2.6.16-rt kernels.  I recently put
-2.6.17-rt8 on there but haven't checked for the message lately.
+Ok. Output was
 
-One thing which would be interesting to know is whether the original poster
-sees this timeout message on every boot or not.  Given that the message
-doesn't appear to stop alsa from functioning in my case, it may be worth
-trying the model settings from my previous post anyway.
+XXXX cmpci STAT=0x800000c1 INT=0xa010000
 
-Regards
-  jonathan
+Was not able to use the system with this.
+ 
+> Also, you can comment out the whole block of if (cm->pcm) { ... }
+> in snd_cmipci_interrupt().  This will skip the processing of data,
+> i.e. exclude the possibility in ALSA PCM core part.
+
+Did that at the same time as adding the printk part. Will now take out the 
+printk to see if it still works.
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
