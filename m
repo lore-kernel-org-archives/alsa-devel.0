@@ -1,19 +1,16 @@
-From: Christoph Lameter <christoph@lameter.com>
-Subject: Re: cmipci driver locking up linux hard
-Date: Tue, 8 Aug 2006 17:20:46 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0608081719350.2302@graphe.net>
-References: <Pine.LNX.4.64.0608041616590.9917@graphe.net>
-	<s5hy7u0raux.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0608070927480.3308@graphe.net>
-	<s5hhd0os9nv.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0608071318580.7499@graphe.net>
-	<s5hhd0nr2va.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0608081713040.2054@graphe.net>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
+Date: Wed, 09 Aug 2006 05:19:35 +0200
+Message-ID: <m2fyg6a94o.fsf@vador.mandriva.com>
+References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
+	<1155056548.23266.267914050@webmail.messagingengine.com>
+	<20060808202335.1ypdlgq4tckkcwg4@webmail.supelec.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.64.0608081713040.2054@graphe.net>
+In-Reply-To: <20060808202335.1ypdlgq4tckkcwg4@webmail.supelec.fr> (Thibault Le
+	Meur's message of "Tue, 08 Aug 2006 20:23:35 +0200")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,18 +20,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
+To: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 8 Aug 2006, Christoph Lameter wrote:
+Thibault Le Meur <Thibault.LeMeur@supelec.fr> writes:
 
-> Did that at the same time as adding the printk part. Will now take out the 
-> printk to see if it still works.
+> For instance I had to introduce the device_setup module parameter in
+> order to make my Audiophile USB pre-select 16bits OR 24bits mode
+> because switching between the two modes while the device is turned
+> on doesn't work:
 
-System hangs on X startup. All screens are grey (background) and I hear a 
-murmuring sound from the speakers. wirr wirr wirr. The murmuring sound 
-continues until I reset the system.
+is it a linux kernel limitation or an harware issue (eg does switching
+fork under windows)?
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
