@@ -1,18 +1,18 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: Re: OSS-em: jittery playback (stop/start) with	S3C24XX
-	(dev)
-Date: Wed, 9 Aug 2006 12:11:11 +0100
-Message-ID: <20060809111111.GC27724@trinity.fluff.org>
-References: <20060807080525.GC2929@trinity.fluff.org>
-	<1154940349.14887.18.camel@localhost.localdomain>
-	<20060809102318.GB27724@trinity.fluff.org>
-	<1155121254.8442.78.camel@localhost.localdomain>
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Subject: Re: ALSA 1.0.12rc2
+Date: Wed, 9 Aug 2006 13:13:19 +0200
+Message-ID: <20060809111319.GD31959@neu.nirvana>
+References: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
+Reply-To: ALSA development <alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0961620532=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1155121254.8442.78.camel@localhost.localdomain>
+Received: from junior.physik.fu-berlin.de (at1-old.physik.fu-berlin.de
+	[160.45.32.86])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B35E621C
+	for <alsa-devel@alsa-project.org>;
+	Wed,  9 Aug 2006 13:13:23 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,116 +22,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Cc: Ben Dooks <ben-alsa@fluff.org>, alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 09, 2006 at 12:00:54PM +0100, Liam Girdwood wrote:
-> On Wed, 2006-08-09 at 11:23 +0100, Ben Dooks wrote:
-> > On Mon, Aug 07, 2006 at 09:45:49AM +0100, Liam Girdwood wrote:
-> > > On Mon, 2006-08-07 at 08:05 +0000, Ben Dooks wrote:
-> > > > I am currently working on the I2S drivers for the S3C24XX series
-> > > > ARM9 SoC, and have been having trouble with jittery or interrupted
-> > > > playback with ALSA 1.0.12rc1, on 2.6.18-rc2. 
-> > > > 
-> > > > The problem seems to manifest itself the most when using pause
-> > > > with madplay (madplay is compiled and optimised for the arm920t
-> > > > core, so seems to be efficiently decoding mp3s).
-> > > > 
-> > > > The symptoms are:
-> > > > 
-> > > > 1) madplay opens and configures /dev/dsp
-> > > > 
-> > > > 2) madplay writes 4068 bytes to start play (apprx 1/40th sec, by my calc)
-> > > > 
-> > > > 3) ALSA starts the sound driver by calling hw_params and then trigger(START)
-> > > > 
-> > > > 4) before madplay has the chance to write more data, the hw indicates
-> > > >    the initial buffer done (4096 bytes/buffer) and informs ALSA core. 
-> > > > 
-> > > > 5) more time passes, and the snd_pcm_hw_ptr_post detects an overrun on
-> > > >    the buffer, and issues trigger(STOP) to stop the sound driver
-> > > > 
-> > > > 6) by this time, madplay writes some more data, and therefore we return
-> > > >    to step 3.
-> > > > 
-> > > > The problem is that there is a large pause between 5 and 6, up to about
-> > > > 1 second, and thus the sound output becomes choppy and/or broken. Sometimes
-> > > > it seems to recover from this, and get back to playing audio fine.
-> > > > 
-> > > > examples from the log:
-> > > > 
-> > > > [21474589.680000] snd_pcm_oss_write: file c05341d4, buff befb0e20, size 4608
-> > > > [21474589.680000] s3c24xx_snd_pcm_prepare: substream=c06ff1e4, chip=c0aa9b10
-> > > > [21474589.760000] s3c2410_dma_enqueue: id=c0aa9b5c, data=30ab0000, size=4096
-> > > > [21474589.760000] s3c24xx_snd_pcm_trigger: trigger START
-> > > > [21474589.765000] snd_pcm_oss_write: returning 4608
-> > > > [21474589.785000] dma0: s3c2410_dma_irq
-> > > > [21474591.680000] snd_pcm_update_hw_ptr_post: hw_ptr=00003409, appl_ptr=00000400
-> > > > [21474591.680000] snd_pcm_update_hw_ptr_post: xrun substream c06ff1e4
-> > > > [21474591.680000] xrun: substream c06ff1e4
-> > > > [21474591.680000] snd_pcm_stop: substream c06ff1e4, state 4
-> > > > 
-> > > > as you can see, in this case the next thing my debug can see after we
-> > > > get the irq to say the buffer has completed, almost two seconds elapses
-> > > > to the point where ALSA core finds the buffer has over-run (played more
-> > > > data than the application wrote) and causes the stream to stop.
-> > > > 
-> > > > Are there any pointers to find out where the time is being taken, or has
-> > > > anyone else encountered a similar problem recently?
-> > > > 
-> > > 
-> > > Fwiw, I've not had any issues like this with madplay on pxa2xx. Mplayer
-> > > also works fine on pxa2xx with oss emulation (although mplayer native
-> > > alsa support has problems).
-> > > 
-> > > Is there enough buffer space (or periods) for your audio data ? (from
-> > > struct snd_pcm_hardware). It looks like only 1 period worth of data is
-> > > being written by madplay before audio trigger. I would usually expect it
-> > > to write several periods worth of data and then trigger. 
-> > 
-> > Yeah, I advertise 64KiB total buffer, and 4096 byte periods (to ensure
-> > that we can keep the DMA system running, as it only has a current/next
-> > buffer serviced by an interrupt.
-> >  
-> > > However, if aplay works fine then it's probably not related to audio
-> > > buffers.
-> > 
-> > aplay doesn't seem to even try and trigger, it gets to hw_params and then
-> > sits there (although this could be a bug in my buildroot+alsautils build.
-> > 
-> 
-> Btw, are you using gcc 4.1.x. I've seen some optimisation issues with it
-> where it completely breaks the pcm parameter refinements on ARM.
 
-No, 3.4.2, i've already run into optimisation bugs in the kernel with
-4.0.1, so have been using the older compilers to build buildroot.
- 
-> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=27363
-> 
->  A workaround is to build alsa-lib and alsa-kernel with -O1. There is
-> now a patch for gcc here:-
-> 
-> http://www.openembedded.org/repo/org.openembedded.dev/packages/gcc/gcc-4.1.1/cse.patch
-> 
-> > SoX behaves even worse than madplay, and I belive this is also using the
-> > libasound to provide audio. It writes data then seems to sit around until
-> > after the buffer has been played to start playing some more data.
-> > 
-> 
-> I would probably try and get aplay/arecord working first as they use
-> alsa-lib as the alsa developers intended. Although, it's strange that
-> aplay is sitting in hw_params... 
+--===============0961620532==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ycz6tD7Th1CMF4v7"
+Content-Disposition: inline
 
--- 
-Ben
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+--Ycz6tD7Th1CMF4v7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+On Fri, Aug 04, 2006 at 04:01:26PM +0200, Jaroslav Kysela wrote:
+> 	1.0.12rc2 ALSA packages (except tools and oss - no changes) were=20
+> released. The list of changes can be obtained here:
+
+I tried to build on several FC/RHEL platforms, there are some new
+failures wrt rc1:
+
+a) all 2.4. kernel platforms (but probably more binutils related):
+   Starting with pcm_oss.o it fails on assembly
+
+{standard input}:5744: Warning: rest of line ignored; first ignored charact=
+er is `"'
+{standard input}:5745: Error: unknown pseudo-op: `.text.lock.'
+
+b) on 2.6.10/x86_64:
+
+  CC [M]  /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/ioctl32.o
+  CC [M]  /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32.o
+In file included from /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32.c=
+:16:
+/builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32_new.c: In function `snd=
+_pcm_info_ioctl32':
+/builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32_new.c:409: error: struc=
+ture has no member named `no_mmap_ctrl'
+make[4]: *** [/builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32.o] Error 1
+
+c) on 2.6.17/x86_64 xen guest kernels:
+
+  CC [M]  /builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.o
+/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.c: In function 'snd_co=
+mpat_vmalloc_to_page':
+/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.c:40: error: implicit =
+declaration of function 'VMALLOC_VMADDR'
+/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.c:45: error: incompati=
+ble type for argument 1 of 'pud_val'
+/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.c:46: error: implicit =
+declaration of function 'pte_offset'
+/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.c:46: warning: assignm=
+ent makes pointer from integer without a cast
+make[3]: *** [/builddir/alsa-driver-1.0.12rc2/acore/memory_wrapper.o] Error=
+ 1
+
+
+--=20
+Axel.Thimm at ATrpms.net
+
+--Ycz6tD7Th1CMF4v7
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFE2cNPQBVS1GOamfERAkSwAJ9IXaiLcFqKxMyjSn8BWMwgxX/OYwCeJB+2
+OsHxnXuTKfr1jag3JaGei8c=
+=LtlS
+-----END PGP SIGNATURE-----
+
+--Ycz6tD7Th1CMF4v7--
+
+
+--===============0961620532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0961620532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0961620532==--
