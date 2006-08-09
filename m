@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: ALSA problems with 2.6.18-rc3
-Date: Wed, 09 Aug 2006 18:49:32 -0400
-Message-ID: <1155163773.26338.226.camel@mindpipe>
-References: <44D8F3E5.5020508@ukonline.co.uk>
-	<200608092307.27615.s0348365@sms.ed.ac.uk>
-	<1155161498.26338.216.camel@mindpipe>
-	<200608092328.47039.s0348365@sms.ed.ac.uk>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [ALSA - driver 0002339]: No sound with ALC260 chip
+Date: Thu, 10 Aug 2006 09:10:48 +0930 (CST)
+Message-ID: <200608092340.k79NenXH015512@auster.physics.adelaide.edu.au>
+References: <002001c6bbbf$ac896170$8801a8c0@dell4150>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200608092328.47039.s0348365@sms.ed.ac.uk>
+In-Reply-To: <002001c6bbbf$ac896170$8801a8c0@dell4150> from "Lubomir Schmidt"
+	at Aug 09, 2006 04:25:31 PM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,22 +18,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alistair John Strachan <s0348365@sms.ed.ac.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, Andrew Benton <b3nt@ukonline.co.uk>, Gene Heskett <gene.heskett@verizon.net>, alsa-devel <alsa-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
+To: Lubomir Schmidt <017623780966@o2online.de>
+Cc: alsa-devel@lists.sourceforge.net, jwoithe@physics.adelaide.edu.au
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-08-09 at 23:28 +0100, Alistair John Strachan wrote:
-> I think this argument is mostly deflated by the fact that other 
-> multimedia-centric operating systems do not ship with controls muted.
-> If hardware is detected, all sliders are set to 50%. I think this is
-> superior. 
+> > 2) do:
+> >      rmmod snd-hda-intel
+> >      rmmod snd-hda-codec
+> Have worked( I had to enable the unload option in the kernel and rebuild
+> alsa-driver,ieee80211,ipw2200)
 
-The developers audio drivers for other operating systems have full
-access to the documentation of all the hardware they support, so it's
-possible for them to establish "working" defaults for every device.
+Which upload option?
 
-Lee
+> > 3) try
+> >      modprobe snd-hda-intel model=acer
+> Have worked
+> >    With a bit of luck this won't give any errors.  Use alsamixer and
+> >    aplay (for example) to test sound and see if you get any joy.
+> 
+> I get a mistake when I try to start alsamixer -> alsamixer: function
+> snd_ctl_open failed for default: No such device
 
+Hmm, that would imply that the sound driver didn't find any suitable
+hardware.  Perhaps try this again and post the last few lines of a
+dmesg command run immediately after the modprobe.  This should tell us
+what the snd-hda-intel found and what it did.
+
+In another earlier post you also mentioned seeing timeout messages
+in the dmesg output; do you get these all the time, or just sporadically?
+
+> Should I try alsaconf?
+
+Probably not at this stage.  While working out precisely what is going on
+it's easier to stick with doing things manually.  Oh yes, it might also be
+wise to see what is in your /etc/modules.d/alsa file and perhaps temporarily
+removing it; that way we know there's no potential clash between what's in
+that and what you try on the command line.
+
+> Alsaconf sais that it will change some things in /etc/modules.d/alsa. Will
+> it change the option "model=acer" again to default?
+
+I suspect so, so let's leave alsaconf out of it for the moment.
+
+Regards
+  jonathan
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
