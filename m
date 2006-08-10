@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: Skylake: Populate modules
-	after loading
-Date: Wed, 10 Aug 2016 09:40:49 +0530
-Message-ID: <1470802250-9232-3-git-send-email-vinod.koul@intel.com>
-References: <1470802250-9232-1-git-send-email-vinod.koul@intel.com>
+From: Dharageswari R <dharageswari.r@intel.com>
+Subject: Underrun with 2 periods on skylake HDA driver
+Date: Thu, 10 Aug 2006 10:34:15 +0530
+Message-ID: <20060810050415.GB5190@dhara-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F117265A8C
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 06:03:17 +0200 (CEST)
-In-Reply-To: <1470802250-9232-1-git-send-email-vinod.koul@intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88BA0265906
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 07:04:36 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, dharageswari.r@intel.com, vinod.koul@intel.com, Hardik T <hardik.t.shah@intel.com>, Shah@dhara-desktop.alsa-project.org, Ughreja@dhara-desktop.alsa-project.org, Rakesh A <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Once topology and firmware are loaded, we can parse the manifest. Use driver
-pipe and widget list to get list of all modules and populate the data.
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 140249269cdb..eb1f00b28df1 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1138,6 +1138,32 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
- 
-+static int skl_populate_modules(struct skl *skl)
-+{
-+	struct skl_pipeline *p;
-+	struct skl_pipe_module *m;
-+	struct snd_soc_dapm_widget *w;
-+	struct skl_module_cfg *mconfig;
-+	int ret;
-+
-+	list_for_each_entry(p, &skl->ppl_list, node) {
-+		list_for_each_entry(m, &p->pipe->w_list, node) {
-+
-+			w = m->w;
-+			mconfig = w->priv;
-+
-+			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
-+			if (ret < 0) {
-+				dev_err(skl->skl_sst->dev,
-+					"query module info failed:%d\n", ret);
-+				goto err;
-+			}
-+		}
-+	}
-+err:
-+	return ret;
-+}
-+
- static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(platform->dev);
-@@ -1169,6 +1195,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- 			dev_err(platform->dev, "Failed to boot first fw: %d\n", ret);
- 			return ret;
- 		}
-+		skl_populate_modules(skl);
- 	}
- 	pm_runtime_mark_last_busy(platform->dev);
- 	pm_runtime_put_autosuspend(platform->dev);
--- 
-1.9.1
+SGVsbG8sCgpXaGlsZSBkb2luZyB0aGUgdmFsaWRhdGlvbiBvZiBTa3lsYWtlIEhEQSBkcml2ZXIg
+dXNpbmcgYXBsYXkgYW5kCmZvbGxvd2luZyBwYXJhbWV0ZXJzLCB3ZSBub3RpY2VkIHVuZGVycnVu
+IGlzc3Vlcy4KCmFwbGF5IC1EaHc6MCwwLDAgLXZ2IHNfNDhLXzE2Qml0X1N1bnNoaW5lLndhdiAt
+RiAxMDAwMDAgLUIgMjAwMDAwIC1kIDIwCkl0cyBzZXR1cCBpczoKc3RyZWFtICAgICAgIDogUExB
+WUJBQ0sKYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQKZm9ybWF0ICAgICAgIDogUzE2X0xF
+CnN1YmZvcm1hdCAgICA6IFNURApjaGFubmVscyAgICAgOiAyCnJhdGUgICAgICAgICA6IDQ4MDAw
+CmV4YWN0IHJhdGUgICA6IDQ4MDAwICg0ODAwMC8xKQptc2JpdHMgICAgICAgOiAxNgpidWZmZXJf
+c2l6ZSAgOiA5NjAwCnBlcmlvZF9zaXplICA6IDQ4MDAKcGVyaW9kX3RpbWUgIDogMTAwMDAwCnRz
+dGFtcF9tb2RlICA6IE5PTkUKcGVyaW9kX3N0ZXAgIDogMQphdmFpbF9taW4gICAgOiA0ODAwCnBl
+cmlvZF9ldmVudCA6IDAKc3RhcnRfdGhyZXNob2xkICA6IDk2MDAKc3RvcF90aHJlc2hvbGQgICA6
+IDk2MDAKc2lsZW5jZV90aHJlc2hvbGQ6IDAKc2lsZW5jZV9zaXplIDogMApib3VuZGFyeSAgICAg
+OiA1NDA0MzE5NTUyODQ0NTk1MjAwCmFwcGxfcHRyICAgICA6IDAKaHdfcHRyICAgICAgIDogMAoK
+QWZ0ZXIgZG9pbmcgZnVydGhlciBkZWJ1Z2dpbmcsIHdoYXQgSSBmb3VuZCBpcwoKMS5ETUEgY29t
+cGxldGUgaW50ZXJydXB0IG9jY3VycyBmb3IgdGhlIGZpcnN0IHBlcmlvZC4KMi5Ecml2ZXIgcmVh
+ZHMgRE1BIHBvc2l0aW9uIGluIGJ1ZmZlciBwb2ludGVyIGFuZCBnZXRzIHZhbHVlIG9mIDQ3ODQu
+CjMuRHJpdmVyIGNhbGxzIHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBmdW5jdGlvbiB0byByZXBv
+cnQgcGVyaW9kCiAgZWxhcHNlZCBpbnRlcnJ1cHQgdG8gYXBwbGljYXRpb24gd2l0aCBETUEgcG9z
+aXRpb24gPSA0Nzg0Lgo0LnNuZF9wY21fbGliX3dyaXRlMSgpIGlzIHdhaXRpbmcgZm9yIOKAnGF2
+YWlsX21pbuKAnSBmcmVlIHNwYWNlIHRvIGJlCiAgYXZhaWxhYmxlLiBJbiB0aGlzIGNhc2UgdGhl
+IGF2YWlsX21pbiA9IDQ4MDAgYW5kIGF0IHRoaXMgaW50ZXJydXB0CiAgdGhlIGF2YWlsID0gNDg3
+NCBhbmQgc28gaXQgZG9lcyBub3Qgd3JpdGUgYW55IGRhdGEuCjUuRE1BIGNvbXBsZXRlIGludGVy
+cnVwdCBvY2N1cnMgZm9yIHRoZSBzZWNvbmQgcGVyaW9kLgo2LkRyaXZlciByZWFkcyBETUEgcG9z
+aXRpb24gaW4gdGhlIGJ1ZmZlciBwb2ludGVyIGFuZCBnZXRzIHZhbHVlIG9mIDk2MDAuCjcuRHJp
+dmVyIGNhbGxzIHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBmdW5jdGlvbiB0byByZXBvcnQgcGVy
+aW9kIAogIGVsYXBzZWQgaW50ZXJydXB0Lgo4Lk5vdyB0aGUgc25kX3BjbV9saWJfd3JpdGUxKCkg
+Z2V0cyBhdmFpbCA+IGF2YWlsX21pbiBidXQgaXTigJlzIHRvbyBsYXRlCiAgYmVjYXVzZSBETUEg
+aGFzIGFscmVhZHkgc3RhcnRlZCBwbGF5aW5nIGRhdGEgZnJvbSBmaXJzdCBwZXJpb2QsIHdoaWNo
+CiAgaXMgbm90IHlldCB3cml0dGVuIGJ5IHRoZSBhcHBsaWNhdGlvbi4KOS5UaGlzIGNhdXNlcyB1
+bmRlcnJ1bi4KCkxvZ3M6Cjg1Ny44NzA5NzQ6IGh3cHRyOiBwY21DMEQwcC9zdWIwOiBJUlE6IHBv
+cz00ODAwLCBvbGQ9MTkyMDAsIGJhc2U9MTkyMDAsIApwZXJpb2Q9NDgwMCwgYnVmPTk2MDAKODU3
+Ljg3MTIzNzogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IFBPUzogcG9zPTQ4MDAsIG9sZD0yNDAwMCwg
+YmFzZT0xOTIwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTcuOTcwOTcyOiBod3B0cjogcGNt
+QzBEMHAvc3ViMDogSVJROiBwb3M9MCwgb2xkPTI0MDAwLCBiYXNlPTE5MjAwLCAKcGVyaW9kPTQ4
+MDAsIGJ1Zj05NjAwCjg1Ny45NzExMDE6IGh3cHRyOiBwY21DMEQwcC9zdWIwOiBQT1M6IHBvcz0w
+LCBvbGQ9Mjg4MDAsIGJhc2U9Mjg4MDAsIApwZXJpb2Q9NDgwMCwgYnVmPTk2MDAKODU4LjA3MDk3
+MTogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IElSUTogcG9zPTQ3ODQsIG9sZD0yODgwMCwgYmFzZT0y
+ODgwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTguMTcwOTY4OiBod3B0cjogcGNtQzBEMHAv
+c3ViMDogSVJROiBwb3M9MCwgb2xkPTMzNTg0LCBiYXNlPTI4ODAwLCAKcGVyaW9kPTQ4MDAsIGJ1
+Zj05NjAwCjg1OC4xNzA5ODg6IHhydW46IHBjbUMwRDBwL3N1YjA6IFhSVU46IG9sZD0zODQwMCwg
+YmFzZT0zODQwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTguMTcyMjQwOiBod3B0cjogcGNt
+QzBEMHAvc3ViMDogUE9TOiBwb3M9OTYsIG9sZD0wLCBiYXNlPTAsIApwZXJpb2Q9NDgwMCwgYnVm
+PTk2MDAKODU4LjI2OTg2NzogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IElSUTogcG9zPTQ3OTgsIG9s
+ZD05NiwgYmFzZT0wLCAKcGVyaW9kPTQ4MDAsIGJ1Zj05NjAwCjg1OC4zNjk5MDI6IGh3cHRyOiBw
+Y21DMEQwcC9zdWIwOiBJUlE6IHBvcz0wLCBvbGQ9NDc5OCwgYmFzZT0wLCAKcGVyaW9kPTQ4MDAs
+IGJ1Zj05NjAwCgpJIGNoZWNrZWQgd2l0aCBIREEgYXJjaGl0ZWN0cyBhbmQgdGhleSBhcmUgc2F5
+aW5nIHRoYXQgd2hlbiB0aGUgRE1BIApjb21wbGV0aW9uIGludGVycnVwdCBvY2N1cnMgdGhlcmUg
+Y2FuIGJlIHNsaWdodCBkZWxheSBiZWZvcmUgdGhlIERNQSAKUG9zaXRpb24gSW4gQnVmZmVyIFBv
+aW50ZXIgZ2V0cyB1cGRhdGVkLiBTbyBkcml2ZXIgaXMgZXhwZWN0ZWQgdG8gCnJlZmlsbCBkYXRh
+IGJhc2VkIG9uIHdoYXRldmVyIGNvbnRlbnQgaXMgcmVmbGVjdGVkIGluIHRoZSBETUEgUG9zaXRp
+b24KSW4gQnVmZmVyLgoKV2hhdCBpcyB0aGUgcmlnaHQgd2F5IHRvIGZpeCB0aGlzIGlzc3VlID8K
+ClRoYW5rcywKRGhhcmEuUgoKLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
