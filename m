@@ -1,21 +1,14 @@
-From: =?iso-2022-jp?B?GyRCJGYkLSQoGyhC?= <yamamura334@yahoo.co.jp>
-Subject: =?iso-2022-jp?b?GyRCJDQkYSRzJEokNSQkISJHLiQvJEobKEI=?=
-	=?iso-2022-jp?b?GyRCJEMkRiQ3JF4kQyRGGyhC?=
-Date: Thu, 10 Aug 2006 19:54:09 +0200 (MEST)
-Message-ID: <20060810175409.2B7EE9945D@mail.perex.cz>
-Reply-To: yamamura334@yahoo.co.jp
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: The minimal ALSA installation
+Date: Thu, 10 Aug 2006 21:52:15 +0200
+Message-ID: <m2irl074i8.fsf@vador.mandriva.com>
+References: <44DB613D.5070202@wojteks.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CACB258
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Aug 2006 19:54:11 +0200 (MEST)
-Received: from alsa-project.org (unknown [61.47.176.96])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	2B7EE9945D for <alsa-devel@alsa-project.org>;
-	Thu, 10 Aug 2006 19:54:09 +0200 (MEST)
+In-Reply-To: <44DB613D.5070202@wojteks.net> (Wojciech =?utf-8?B?xZpjaWVz?=
+	=?utf-8?B?acWEc2tpJ3M=?= message of "Thu, 10 Aug 2006 18:39:25 +0200")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,23 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: wojteks@wojteks.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-少し熱くなりすぎたみたいです。そんなに怒らないでください。
-気持ちだけ先行して自分だけはしゃぎ過ぎているようです。
-この年齢にもなって恥ずかしいですね。
-
-仕事一筋だったので、男性とプライベートで２ショットでお話するのは
-久しぶりになるんです。少し引いてしまうでしょうか。
-
-http://www.newz7.com/boom　で待ちます。幸枝
-
-
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+V29qY2llY2ggxZpjaWVzacWEc2tpIDx3b2p0ZWtzQHdvanRla3MubmV0PiB3cml0ZXM6Cgo+IEkg
+d2FudCBhZGQgc3VwcG9ydCBmb3IgQUxTQSB0byB0aGUgVGhpbnN0YXRpb24gTGludXggZGlzdHJp
+YnV0aW9uCj4gKGh0dHA6Ly90aGluc3RhdGlvbi5zZi5uZXQpLgo+IAo+IEl0J3MgTGludXggZGlz
+dHJpYnV0aW9uIGRlc2lnbmVkL2NyZWF0ZWQgZm9yIHRoaW4gY2xpZW50IGFuZCBzbWFsbAo+IHNp
+emUgaXMgdmVyeSBpbXBvcnRhbnQuCj4gCj4gQUxTQSBkcml2ZXIgYXJlIGNvbXBpbGxlZCBhcyBr
+ZXJuZWwgbW9kdWxlcyAoY3VycmVudCBrZXJuZWwgdmVyc2lvbgo+IGluIFRoaW5zdGF0aW9uIDIu
+MlJDNCBpcyAyLjYuMTYuNS4KPiAKPiBXaGF0IHBhcnQgb2YgQUxTQSBzb2Z0d2FyZSAoYWxzYS1s
+aWIsIGFsc2EtdG9vbCwgYWxzYS1vc3MsIGV0YykgSQo+IG11c3QgYWRkID8KCi0gYWxzYS1saWIg
+c28gdGhhdCBjYW4gdXNlIGFsc2EtdXRpbHMgKHNlZSBiZWxvdykKLSBhbHNhLXV0aWxzIHNvIHRo
+YXQgeW91IGNhbiBzZXQgdGhlIG1peGVyIHRvIHNnIG1vcmUgcmVsZXZhbnQgCiAgdGhhbiBtdXRl
+ZCBzb3VuZC4uLgotIGFsc2EtZmlybXdhcmUgaWYgeW91ciBzb3VuZCBjYXJkcyBuZWVkIGEgZmly
+bXdhcmUKLSBhbHNhLXRvb2xzIGlmIHlvdXIgY2FyZCBuZWVkIHNvbWUgc3BlY2lhbGl6ZWQgdG9v
+bAoKCmFsc2Etb3NzIG1heSBiZSBuZWVkZWQgdG8gcGxheSB3aXRoIHNvbWUgb2RkIGFwcGxpY2F0
+aW9ucyBvciBpbiBvcmRlcgp0byBwbGF5IHdoaWxlIG90aGVyIGFwcHMgYXJlIHBsYXlpbmcgdG9v
+IG9uIGEgY2FyZCB3L28gaHcgbWl4ZXIuCkkgZG9uJ3Qga25vdyBmb3IgYWxzYS1wbHVnaW5zCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRv
+IHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3
+aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93
+bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBB
+cGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtp
+ZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
