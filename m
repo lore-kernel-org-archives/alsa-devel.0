@@ -1,14 +1,12 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: The minimal ALSA installation
-Date: Thu, 10 Aug 2006 21:52:15 +0200
-Message-ID: <m2irl074i8.fsf@vador.mandriva.com>
-References: <44DB613D.5070202@wojteks.net>
+From: Mauricio Teixeira <mteixeira@webset.net>
+Subject: What is the status of the "no mic" problem on
+	hda-intel?
+Date: Thu, 10 Aug 2006 16:55:05 -0300
+Message-ID: <1155239705.4989.15.camel@scrat.homelinux.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44DB613D.5070202@wojteks.net> (Wojciech =?utf-8?B?xZpjaWVz?=
-	=?utf-8?B?acWEc2tpJ3M=?= message of "Thu, 10 Aug 2006 18:39:25 +0200")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,32 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: wojteks@wojteks.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-V29qY2llY2ggxZpjaWVzacWEc2tpIDx3b2p0ZWtzQHdvanRla3MubmV0PiB3cml0ZXM6Cgo+IEkg
-d2FudCBhZGQgc3VwcG9ydCBmb3IgQUxTQSB0byB0aGUgVGhpbnN0YXRpb24gTGludXggZGlzdHJp
-YnV0aW9uCj4gKGh0dHA6Ly90aGluc3RhdGlvbi5zZi5uZXQpLgo+IAo+IEl0J3MgTGludXggZGlz
-dHJpYnV0aW9uIGRlc2lnbmVkL2NyZWF0ZWQgZm9yIHRoaW4gY2xpZW50IGFuZCBzbWFsbAo+IHNp
-emUgaXMgdmVyeSBpbXBvcnRhbnQuCj4gCj4gQUxTQSBkcml2ZXIgYXJlIGNvbXBpbGxlZCBhcyBr
-ZXJuZWwgbW9kdWxlcyAoY3VycmVudCBrZXJuZWwgdmVyc2lvbgo+IGluIFRoaW5zdGF0aW9uIDIu
-MlJDNCBpcyAyLjYuMTYuNS4KPiAKPiBXaGF0IHBhcnQgb2YgQUxTQSBzb2Z0d2FyZSAoYWxzYS1s
-aWIsIGFsc2EtdG9vbCwgYWxzYS1vc3MsIGV0YykgSQo+IG11c3QgYWRkID8KCi0gYWxzYS1saWIg
-c28gdGhhdCBjYW4gdXNlIGFsc2EtdXRpbHMgKHNlZSBiZWxvdykKLSBhbHNhLXV0aWxzIHNvIHRo
-YXQgeW91IGNhbiBzZXQgdGhlIG1peGVyIHRvIHNnIG1vcmUgcmVsZXZhbnQgCiAgdGhhbiBtdXRl
-ZCBzb3VuZC4uLgotIGFsc2EtZmlybXdhcmUgaWYgeW91ciBzb3VuZCBjYXJkcyBuZWVkIGEgZmly
-bXdhcmUKLSBhbHNhLXRvb2xzIGlmIHlvdXIgY2FyZCBuZWVkIHNvbWUgc3BlY2lhbGl6ZWQgdG9v
-bAoKCmFsc2Etb3NzIG1heSBiZSBuZWVkZWQgdG8gcGxheSB3aXRoIHNvbWUgb2RkIGFwcGxpY2F0
-aW9ucyBvciBpbiBvcmRlcgp0byBwbGF5IHdoaWxlIG90aGVyIGFwcHMgYXJlIHBsYXlpbmcgdG9v
-IG9uIGEgY2FyZCB3L28gaHcgbWl4ZXIuCkkgZG9uJ3Qga25vdyBmb3IgYWxzYS1wbHVnaW5zCgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRv
-IHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3
-aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93
-bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBB
-cGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtp
-ZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi!
+
+I would like to know what is the status of the issue regarding the fact
+that we don't have MIC input on hda-intel based cards. Anyone working on
+that?
+
+I've checked from bugs #2038 and #2237.
+
+TIA.
+
+-- 
+% Mauricio Teixeira (netmask)
+% mteixeira{a}webset{d}net <> Maceio/AL/BR
+% http://mteixeira.webset.net <> http://pmping.sf.net
+
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
