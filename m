@@ -1,11 +1,13 @@
-From: =?ISO-8859-2?Q?Wojciech_=A6ciesi=F1ski?= <wojteks@wojteks.net>
-Subject: The minimal ALSA installation
-Date: Thu, 10 Aug 2006 18:39:25 +0200
-Message-ID: <44DB613D.5070202@wojteks.net>
-Reply-To: wojteks@wojteks.net
+From: "Stefano D'Angelo" <zanga.mail@gmail.com>
+Subject: Re: Line6 TonePort
+Date: Thu, 10 Aug 2006 18:39:37 +0200
+Message-ID: <160c13350608100939g6fa6d201r59123dd9764e45e4@mail.gmail.com>
+References: <160c13350608100919yee3fc8p14096f59aa0071f7@mail.gmail.com>
+	<d9def9db0608100932l20d659b7p416057585eab686b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0045671656=="
+Content-Type: multipart/mixed; boundary="===============0138941835=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <d9def9db0608100932l20d659b7p416057585eab686b@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,64 +17,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============0045671656==
-Content-Type: multipart/signed; micalg=pgp-ripemd160;
-	protocol="application/pgp-signature";
-	boundary="------------enig6C787655F0BE1DF9165A41F8"
+--===============0138941835==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_26791_2285361.1155227977419"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig6C787655F0BE1DF9165A41F8
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: quoted-printable
+------=_Part_26791_2285361.1155227977419
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hello,
-I want add support for ALSA to the Thinstation Linux distribution
-(http://thinstation.sf.net).
+reverse engineer... but i managed to have it playing good. the problem is
+that i used the copy callback and so mmaping was not avaible
 
-It's Linux distribution designed/created for thin client and small size
-is very important.
+Stefano
 
-ALSA driver are compilled as kernel modules (current kernel version in
-Thinstation 2.2RC4 is 2.6.16.5.
+2006/8/10, Markus Rechberger <mrechberger@gmail.com>:
+>
+> do you reverse engineer that driver, or do you have any specs?
+>
+> Markus
+>
+> On 8/10/06, Stefano D'Angelo <zanga.mail@gmail.com> wrote:
+> > I hope this is the last time I write but I don't think so.
+> > The problem is quite simple: this USB card does not support DMA
+> transfers
+> > (yes, seems impossible but that's what it is), so a support for this
+> sound
+> > card is difficult to obtain working on the snd-usb-audio module, Takashi
+> > told me to use an intermediate buffer, but I really don't know how to do
+> it.
+> > Should I copy data from the buffer (playback) on usb transfer
+> completition
+> > callbacks? But in such case isn't it the same to just copy data into the
+> > urb's transfer buffer?
+> > I tried to avoid using this buffer and what I obtain is something that
+> > resembles what the card should be playing but with huge noise.
+> > Please help!
+> >
+> > Stefano
+> >
+> >
+>
+>
+> --
+> Markus Rechberger
+>
 
-What part of ALSA software (alsa-lib, alsa-tool, alsa-oss, etc) I must ad=
-d ?
+------=_Part_26791_2285361.1155227977419
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-In next step I want use ALSA with libao for Music Player Deamon
-(http://www.musicpd.org).
+reverse engineer... but i managed to have it playing good. the problem
+is that i used the copy callback and so mmaping was not avaible<br><br>Stefano<br><br><div><span class="gmail_quote">2006/8/10, Markus Rechberger &lt;<a href="mailto:mrechberger@gmail.com">mrechberger@gmail.com</a>&gt;:</span>
+<blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">do you reverse engineer that driver, or do you have any specs?<br><br>Markus<br><br>On 8/10/06, Stefano D'Angelo &lt;
+<a href="mailto:zanga.mail@gmail.com">zanga.mail@gmail.com</a>&gt; wrote:<br>&gt; I hope this is the last time I write but I don't think so.<br>&gt; The problem is quite simple: this USB card does not support DMA transfers
+<br>&gt; (yes, seems impossible but that's what it is), so a support for this sound<br>&gt; card is difficult to obtain working on the snd-usb-audio module, Takashi<br>&gt; told me to use an intermediate buffer, but I really don't know how to do it.
+<br>&gt; Should I copy data from the buffer (playback) on usb transfer completition<br>&gt; callbacks? But in such case isn't it the same to just copy data into the<br>&gt; urb's transfer buffer?<br>&gt; I tried to avoid using this buffer and what I obtain is something that
+<br>&gt; resembles what the card should be playing but with huge noise.<br>&gt; Please help!<br>&gt;<br>&gt; Stefano<br>&gt;<br>&gt;<br><br><br>--<br>Markus Rechberger<br></blockquote></div><br>
 
-Thanks for help.
-
-Best regards
-
---=20
-Wojciech =A6ciesi=F1ski; wojteks@wojteks.net
-
-Wolne Oprogramowanie czyni wolnym...
-Popierasz Open Source ? Czytaj http://7thguard.net
-
-
---------------enig6C787655F0BE1DF9165A41F8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE22FAmrWmitRn22IRAz6CAKCHsYh4AEmugO1yuA09dpkhn8u9AQCg2KFz
-/7MOtY7DIdsVucktbWqlMxw=
-=oo7M
------END PGP SIGNATURE-----
-
---------------enig6C787655F0BE1DF9165A41F8--
+------=_Part_26791_2285361.1155227977419--
 
 
---===============0045671656==
+--===============0138941835==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,7 +93,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0045671656==
+--===============0138941835==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,4 +104,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0045671656==--
+--===============0138941835==--
