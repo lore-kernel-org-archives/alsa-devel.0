@@ -1,12 +1,14 @@
-From: Mauricio Teixeira <mteixeira@webset.net>
-Subject: What is the status of the "no mic" problem on
-	hda-intel?
-Date: Thu, 10 Aug 2006 16:55:05 -0300
-Message-ID: <1155239705.4989.15.camel@scrat.homelinux.net>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: What is the status of the "no mic" problem
+	on	hda-intel?
+Date: Thu, 10 Aug 2006 16:02:34 -0400
+Message-ID: <1155240154.20210.19.camel@mindpipe>
+References: <1155239705.4989.15.camel@scrat.homelinux.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1155239705.4989.15.camel@scrat.homelinux.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,23 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Mauricio Teixeira <mteixeira@webset.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Thu, 2006-08-10 at 16:55 -0300, Mauricio Teixeira wrote:
+> Hi!
+> 
+> I would like to know what is the status of the issue regarding the fact
+> that we don't have MIC input on hda-intel based cards. Anyone working on
+> that?
+> 
+> I've checked from bugs #2038 and #2237.
+> 
 
-I would like to know what is the status of the issue regarding the fact
-that we don't have MIC input on hda-intel based cards. Anyone working on
-that?
+There is no "no mic" problem on hda-intel - the problem is with specific
+Sigmatel HDA codecs.
 
-I've checked from bugs #2038 and #2237.
+The status is exactly as the bug report says - it doesn't work yet.
+Probably no developer has the hardware necessary to debug it.
 
-TIA.
+Lee
 
--- 
-% Mauricio Teixeira (netmask)
-% mteixeira{a}webset{d}net <> Maceio/AL/BR
-% http://mteixeira.webset.net <> http://pmping.sf.net
 
 
 -------------------------------------------------------------------------
