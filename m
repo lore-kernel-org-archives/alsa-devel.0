@@ -1,13 +1,19 @@
-From: thomas.besser@ngi.de
-Subject: Re: no sound anymore... (alsa & ac97 & intel8x0)
-Date: Thu, 10 Aug 2006 16:24:21 +0200
-Message-ID: <ebffj0$lol$2@sea.gmane.org>
-References: <ebf2vj$ajv$1@sea.gmane.org> <s5hwt9gwwx4.wl%tiwai@suse.de>
-	<ebff4k$lol$1@sea.gmane.org>
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Subject: Re: ALSA 1.0.12rc2
+Date: Thu, 10 Aug 2006 17:29:18 +0200
+Message-ID: <20060810152918.GA3148@neu.nirvana>
+References: <Pine.LNX.4.61.0608041600090.9118@tm8103-a.perex-int.cz>
+	<20060809111319.GD31959@neu.nirvana> <s5hd5baducm.wl%tiwai@suse.de>
+Reply-To: ALSA development <alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0447248295=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from junior.physik.fu-berlin.de (at1-old.physik.fu-berlin.de
+	[160.45.32.86])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CA66163
+	for <alsa-devel@alsa-project.org>;
+	Thu, 10 Aug 2006 17:29:22 +0200 (MEST)
+In-Reply-To: <s5hd5baducm.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,280 +23,122 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-thomas.besser@ngi.de wrote:
 
-> Takashi Iwai wrote:
->> At Thu, 10 Aug 2006 12:49:12 +0200,
->> thomas.besser@ngi.de wrote:
-> 
->> In most cases, it's a mixer configuration issue.
-> 
-> All 'governors' are IMO unmuted and turned on with alsamixer. Is there any
-> command line tool to verify that?
-
-Ok, I found it ;-)
-
-thomas@ThessyMobil:~$ amixer
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 17 [55%] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Headphone Jack Sense',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 23 [74%] [on] Capture [off]
-  Front Right: Playback 23 [74%] [on] Capture [off]
-Simple mixer control 'Line Jack Sense',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 23 [74%] [on] Capture [off]
-  Front Right: Playback 23 [74%] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 22 [71%] [on]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic2'
-Simple mixer control 'Video',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 16 [52%] [on]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 15 [48%] [on] Capture [on]
-  Front Right: Playback 15 [48%] [on] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities: enum
-  Items: 'Mix' 'Mic'
-  Item0: 'Mic'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [off]
-  Front Right: Capture 0 [0%] [off]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [on]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Stereo Mic',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-thomas@ThessyMobil:~$
-thomas@ThessyMobil:~$
-thomas@ThessyMobil:~$
-thomas@ThessyMobil:~$ alsamixer
-
-thomas@ThessyMobil:~$ amixer
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 17 [55%] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Headphone Jack Sense',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 23 [74%] [on] Capture [off]
-  Front Right: Playback 23 [74%] [on] Capture [off]
-Simple mixer control 'Line Jack Sense',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 23 [74%] [on] Capture [off]
-  Front Right: Playback 23 [74%] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 22 [71%] [on]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic2'
-Simple mixer control 'Video',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 16 [52%] [on]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 16 [52%] [on] Capture [on]
-  Front Right: Playback 16 [52%] [on] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities: enum
-  Items: 'Mix' 'Mic'
-  Item0: 'Mix'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [off]
-  Front Right: Capture 0 [0%] [off]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [on]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Stereo Mic',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-
-Thomas
+--===============0447248295==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
+Content-Disposition: inline
 
 
+--liOOAslEiF7prFVr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 09, 2006 at 01:25:13PM +0200, Takashi Iwai wrote:
+> At Wed, 9 Aug 2006 13:13:19 +0200,
+> Axel Thimm wrote:
+> > On Fri, Aug 04, 2006 at 04:01:26PM +0200, Jaroslav Kysela wrote:
+> > > 	1.0.12rc2 ALSA packages (except tools and oss - no changes) were=20
+> > > released. The list of changes can be obtained here:
+> >=20
+> > I tried to build on several FC/RHEL platforms, there are some new
+> > failures wrt rc1:
+> >=20
+> > a) all 2.4. kernel platforms (but probably more binutils related):
+> >    Starting with pcm_oss.o it fails on assembly
+> >=20
+> > {standard input}:5744: Warning: rest of line ignored; first ignored cha=
+racter is `"'
+> > {standard input}:5745: Error: unknown pseudo-op: `.text.lock.'
+>=20
+> Does it happen with HG version?
+
+It now fails on
+
+In file included from ca0106_mixer.c:2:
+=2E./../alsa-kernel/pci/ca0106/ca0106_mixer.c:499: unknown field `p' specif=
+ied in initializer
+
+or
+
+In file included from pcm32.c:5:
+pcm32_old.c: In function `snd_pcm_info_ioctl32':
+pcm32_old.c:521: structure has no member named `no_compat_mmap'
+
+or
+
+adriver.h:142:35: macro "might_sleep" passed 1 arguments, but takes just 0
+
+
+> > b) on 2.6.10/x86_64:
+> >=20
+> >   CC [M]  /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/ioctl32.o
+> >   CC [M]  /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32.o
+> > In file included from /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm=
+32.c:16:
+> > /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32_new.c: In function =
+`snd_pcm_info_ioctl32':
+> > /builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32_new.c:409: error: s=
+tructure has no member named `no_mmap_ctrl'
+> > make[4]: *** [/builddir/alsa-driver-1.0.12rc2/acore/ioctl32/pcm32.o] Er=
+ror 1
+>=20
+> OK, that's my failure.  The patch below should fix.
+> (applied to HG now.)
+
+Now it dies on
+
+  CC [M]  /builddir/alsa-driver-1.0.12-hg20060810/acore/ioctl32/pcm32.o
+In file included from /builddir/alsa-driver-1.0.12-hg20060810/acore/ioctl32=
+/pcm32.c:16:
+/builddir/alsa-driver-1.0.12-hg20060810/acore/ioctl32/pcm32_new.c: In funct=
+ion `snd_pcm_info_ioctl32':
+/builddir/alsa-driver-1.0.12-hg20060810/acore/ioctl32/pcm32_new.c:409: erro=
+r: structure has no member named `no_compat_mmap'
+
+--=20
+Axel.Thimm at ATrpms.net
+
+--liOOAslEiF7prFVr
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFE21DOQBVS1GOamfERApdPAKCHO9eoShZqijPlJAJsF76+asYfQACfYpbS
+pdFQNMgLIzlyUgPz2jg+h0w=
+=bLau
+-----END PGP SIGNATURE-----
+
+--liOOAslEiF7prFVr--
+
+
+--===============0447248295==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0447248295==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0447248295==--
