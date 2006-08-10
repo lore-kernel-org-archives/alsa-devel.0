@@ -1,8 +1,9 @@
 From: thomas.besser@ngi.de
 Subject: Re: no sound anymore... (alsa & ac97 & intel8x0)
-Date: Thu, 10 Aug 2006 16:16:41 +0200
-Message-ID: <ebff4k$lol$1@sea.gmane.org>
+Date: Thu, 10 Aug 2006 16:24:21 +0200
+Message-ID: <ebffj0$lol$2@sea.gmane.org>
 References: <ebf2vj$ajv$1@sea.gmane.org> <s5hwt9gwwx4.wl%tiwai@suse.de>
+	<ebff4k$lol$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,41 +20,273 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 10 Aug 2006 12:49:12 +0200,
-> thomas.besser@ngi.de wrote:
-> Please elaborate what do you mean "sound doesn't work".
+thomas.besser@ngi.de wrote:
 
-I can simply not hear any sound. Devices are there:
-
-ThessyMobil:~# ls -l /dev/dsp*
-crw-rw----  1 root audio 14, 3 Aug 10 11:04 /dev/dsp
-ThessyMobil:~# ls -l /dev/mixer*
-crw-rw----  1 root audio 14, 0 Aug 10 11:04 /dev/mixer
-
-No error message from kde or other programs that there is no sound device.
-
-If I plug in knoppix 5 cd sound works fine, so no hardware issue.
-
-> In most cases, it's a mixer configuration issue.
-
-All 'governors' are IMO unmuted and turned on with alsamixer. Is there any
-command line tool to verify that?
-
->> Error messages:
->> ALSA sound/pci/ac97/ac97_codec.c:1898: AC'97 2 does not respond - RESET
->> ALSA sound/pci/ac97/ac97_codec.c:1907: AC'97 2 access is not valid
->> [0xffffffff], removing mixer.
->> ALSA sound/pci/intel8x0.c:2129: Unable to initialize codec #2
->> 
->> Whats going wrong there?
+> Takashi Iwai wrote:
+>> At Thu, 10 Aug 2006 12:49:12 +0200,
+>> thomas.besser@ngi.de wrote:
 > 
-> This message might be harmless, indicating only a modem codec.
+>> In most cases, it's a mixer configuration issue.
+> 
+> All 'governors' are IMO unmuted and turned on with alsamixer. Is there any
+> command line tool to verify that?
 
-Ok, a modem is integrated, but I don't use it and so I've not compiled this
-kernel module.
+Ok, I found it ;-)
+
+thomas@ThessyMobil:~$ amixer
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 17 [55%] [on]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Headphone Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 23 [74%] [on] Capture [off]
+  Front Right: Playback 23 [74%] [on] Capture [off]
+Simple mixer control 'Line Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 23 [74%] [on] Capture [off]
+  Front Right: Playback 23 [74%] [on] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 22 [71%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Mic Select',0
+  Capabilities: enum
+  Items: 'Mic1' 'Mic2'
+  Item0: 'Mic2'
+Simple mixer control 'Video',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 16 [52%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 15 [48%] [on] Capture [on]
+  Front Right: Playback 15 [48%] [on] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities: enum
+  Items: 'Mix' 'Mic'
+  Item0: 'Mic'
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [on]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Stereo Mic',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+thomas@ThessyMobil:~$
+thomas@ThessyMobil:~$
+thomas@ThessyMobil:~$
+thomas@ThessyMobil:~$ alsamixer
+
+thomas@ThessyMobil:~$ amixer
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 17 [55%] [on]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Headphone Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 23 [74%] [on] Capture [off]
+  Front Right: Playback 23 [74%] [on] Capture [off]
+Simple mixer control 'Line Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 23 [74%] [on] Capture [off]
+  Front Right: Playback 23 [74%] [on] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 22 [71%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Mic Select',0
+  Capabilities: enum
+  Items: 'Mic1' 'Mic2'
+  Item0: 'Mic2'
+Simple mixer control 'Video',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 16 [52%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 16 [52%] [on] Capture [on]
+  Front Right: Playback 16 [52%] [on] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities: enum
+  Items: 'Mix' 'Mic'
+  Item0: 'Mix'
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [on]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Stereo Mic',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
 
 Thomas
+
 
 
 -------------------------------------------------------------------------
