@@ -1,15 +1,13 @@
-From: ApartmentLoans <ApartmentLoans@triplealdo.com>
-Subject: Apartment Programs Apartment Loans
-Date: Thu, 10 Aug 2006 23:50:10 +0000
-Message-ID: <44dbc632@hropp.com>
+From: Julien Bramary <julien.bramary@blueyonder.co.uk>
+Subject: Re: How to Test my Driver
+Date: Fri, 11 Aug 2006 01:42:15 +0100
+Message-ID: <44DBD267.1070800@blueyonder.co.uk>
+References: <44DAA852.3040402@blueyonder.co.uk> <s5hzmecwx2e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from hropp.com (smtp1.hropp.com [66.103.146.31])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 868961A7
-	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Aug 2006 01:49:43 +0200 (MEST)
+In-Reply-To: <s5hzmecwx2e.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,55 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Friend <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Southeastern Mortgage Partners, LLC
-Commercial Mortgage Investments
+Takashi Iwai wrote:
+> At Thu, 10 Aug 2006 04:30:26 +0100,
+> Julien Bramary wrote:
+>   
+>> Hello all,
+>>
+>> I am writing an alsa driver for a Micronas DAC on an embedded arm 
+>> system. (I am still an Alsa beginner).
+>> The device is now able to play wav with aplay and mp3 with madplay 
+>> without too much trouble (pause-resume works etc).
+>>
+>> However, I'd like to know if there is a way to test the driver more 
+>> extensively (at various sampling rates etc...).
+>>     
+>
+> I usually try aplay with various wav files that are converted to
+> different rates, channels and formats by sox or other tools.
+> Also, using different buffer size and period size with aplay is
+> recommended.
+>
+> For multiple channels, speaker-test is a good tool, too.
+>
+>
+> Takashi
+>
+>   
+Thank you Takashi,
+I will use audacity to generate the adequate wav files and tweak the 
+buffer and period sizes in aplay as you suggested.
 
-Apartment Programs 
-We Specialize In Apartment Loans
 
-Rates From 6.5%
-
-Apartment Loans
-
-*   5+ Units, mixed use & mobile home parks 
-*   Loan amounts $100,000 to $10,000,000 
-*   Interest only options available 
-*   80% loan to value 
-*   Up to 85% combined loan to value with our MEZZ program 
-*   80% cash out refinance
-*   30 year amortization 
-*   Forward interest rate locks 
-*   Wide array of programs available 
-*   Nationwide
-
-We offer the best customer service, lowest interest rates and most flexible programs 
-available.
-
-Call 800-779-9967 
-or Click Here for More Information 
-http://triplealdo.com/firstmort/ml.htm
-
-Contact information:
-
-Sheree Berk 
-sberk@smpcommercialloans.com 
-678-420-1300
-
-Keelee Peterson 
-kpeterson@smpcommercialloans.com
-678-420-1316 
-
-To advertise your product or service fax or email us for info:
-P.O. Box 161526 Altamonte Springs, FL 32716 
-info@hropportunity.com 
-
-______________________________________________________
-
-To change your subscription details or stop receiving emails, click here:
-http://hropp.com/c/4/alsa-devel%40alsa-project.org
+Julien
 
 
 -------------------------------------------------------------------------
