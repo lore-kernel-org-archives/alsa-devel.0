@@ -1,19 +1,13 @@
-From: "Perlie Laycock" <terceroi@echc.org>
-Subject: Re: degie
-Date: Sat, 12 Aug 2006 03:10:03 -0700
-Message-ID: <000001c6bdf7$7a3715c0$3fb8a8c0@fhd42>
-Reply-To: Perlie Laycock <terceroi@echc.org>
+From: "Lubomir Schmidt" <017623780966@o2online.de>
+Subject: Re: [ALSA - driver 0002339]: No sound with ALC260 chip
+Date: Sat, 12 Aug 2006 22:06:47 +0200
+Message-ID: <000901c6be4a$d86394e0$8801a8c0@dell4150>
+References: <200608092340.k79NenXH015512@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0620716008=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A47B19D
-	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Aug 2006 12:11:09 +0200 (MEST)
-Received: from echc.org (dyn-83-157-67-253.ppp.tiscali.fr [83.157.67.253])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	32D3799581 for <alsa-devel@alsa-project.org>;
-	Sat, 12 Aug 2006 12:11:08 +0200 (MEST)
+In-Reply-To: <200608092340.k79NenXH015512@auster.physics.adelaide.edu.au>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,106 +17,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, jwoithe@physics.adelaide.edu.au
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+> > 2) do:
+> >      rmmod snd-hda-intel
+> >      rmmod snd-hda-codec
+> Have worked( I had to enable the unload option in the kernel and rebuild
+> alsa-driver,ieee80211,ipw2200)
 
---===============0620716008==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6BDBC.CDD83DC0"
+Which upload option?
+-> Not upload, unload option. I need the unload module option in the kernel.
+Without it rmmod do not work.
 
-This is a multi-part message in MIME format.
+> > 3) try
+> >      modprobe snd-hda-intel model=acer
+> Have worked
+> >    With a bit of luck this won't give any errors.  Use alsamixer and
+> >    aplay (for example) to test sound and see if you get any joy.
+> 
+> I get a mistake when I try to start alsamixer -> alsamixer: function
+> snd_ctl_open failed for default: No such device
 
-------=_NextPart_000_0001_01C6BDBC.CDD83DC0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hmm, that would imply that the sound driver didn't find any suitable
+hardware.  Perhaps try this again and post the last few lines of a
+dmesg command run immediately after the modprobe.  This should tell us
+what the snd-hda-intel found and what it did.
 
-Hi,
-best online prjce on
-=20
-CljALlS
-VljAGRA
-VAjLlUM
-AMjBlEN
-=20
-http://www.lukinmerawunsa.com
-=20
-,
-,
-,
-,
-,
-,
-Meaning dont tempt the gods. Keep your head down. Because saying
-that something was good would surely bring about the opposite.
-Bite your tongue, good old Ma. What a lot of malarky.
-
-
-------=_NextPart_000_0001_01C6BDBC.CDD83DC0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV>best online prjce on</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>CljALlS</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>VljAGRA</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>VAjLlUM</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>AMjBlEN</FONT></DIV>
-
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.lukinmerawunsa.com">http://www.lukinmerawunsa.com</A><=
-/DIV>
-<DIV>&nbsp;</DIV>
-<DIV>,</DIV>
-<DIV>,</DIV>
-<DIV>,</DIV>
-<DIV>,</DIV>
-<DIV>,</DIV>
-<DIV>,</DIV>
-<DIV> Meaning  dont  tempt the gods. Keep your head down.  Because  =
-saying<BR>
-that something was good would surely bring about the opposite.<BR>
- Bite your tongue, good old Ma. What a lot of =
-malarky.<BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6BDBC.CDD83DC0--
+->When i look into modprobe before i modprobe the driver and modprobe him
+after that i can see 3 new messages:
+#modprobe snd-hda-intel model=acer
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> Link [LNKA] -> GSI 10 (level, low) ->
+IRQ 10
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA
+/var/tmp/portage/alsa-driver-1.0.12_rc1-r1/work/alsa-driver-1.0.12rc1/pci/hd
+a/../../alsa-kernel/pci/hda/hda_intel.c:525: hda_intel: azx_get_response
+timeout, switching to single_cmd mode...
 
 
+In another earlier post you also mentioned seeing timeout messages
+in the dmesg output; do you get these all the time, or just sporadically?
 
+->They are always comming when i start alsa (you see that in the message
+above)
 
+> Should I try alsaconf?
 
---===============0620716008==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Probably not at this stage.  While working out precisely what is going on
+it's easier to stick with doing things manually.  Oh yes, it might also be
+wise to see what is in your /etc/modules.d/alsa file and perhaps temporarily
+removing it; that way we know there's no potential clash between what's in
+that and what you try on the command line.
+
+->Ok, wont use alsaconf
+Here is my /etc/modules.d/alsa: http://rafb.net/paste/results/Bi1ad944.html
+
+> Alsaconf sais that it will change some things in /etc/modules.d/alsa. Will
+> it change the option "model=acer" again to default?
+
+I suspect so, so let's leave alsaconf out of it for the moment.
+
+->Okay
+
+Regards
+  jonathan
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0620716008==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0620716008==--
