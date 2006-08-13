@@ -1,11 +1,28 @@
-From: Gilles Stenger <gilles@stengerfamily.fr>
-Subject: SB Live! 24-bit External (usb) ir transmitter support
-Date: Sun, 13 Aug 2006 16:55:21 +0200
-Message-ID: <44DF3D59.6040907@stengerfamily.fr>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: Re: underrun!!! (at least 0,
+	249 ms long) was (struct snd_pcm_hardware_t values)
+Date: Sun, 13 Aug 2006 22:02:13 +0200
+Message-ID: <d9def9db0608131302i6caf57a7n44e2ba3995594dcf@mail.gmail.com>
+References: <d9def9db0608071809x648b8febsbc6feba4930e5cfa@mail.gmail.com>
+	<s5hac6fr0bv.wl%tiwai@suse.de>
+	<d9def9db0608090308u7eb538e4y9ca7db9c212b07d1@mail.gmail.com>
+	<s5hlkpydx0h.wl%tiwai@suse.de>
+	<d9def9db0608090357m68e51f06xc5f75ae898696963@mail.gmail.com>
+	<s5hejvqdv7k.wl%tiwai@suse.de>
+	<d9def9db0608090446i26c25eb7yb73b3eadc2eb4ff5@mail.gmail.com>
+	<s5hac6eds7x.wl%tiwai@suse.de>
+	<d9def9db0608100315j273dc3f9i1eab93f467356c71@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.178])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65398195
+	for <alsa-devel@alsa-project.org>;
+	Sun, 13 Aug 2006 22:02:15 +0200 (MEST)
+Received: by py-out-1112.google.com with SMTP id b29so93863pya
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2006 13:02:13 -0700 (PDT)
+In-Reply-To: <d9def9db0608100315j273dc3f9i1eab93f467356c71@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,34 +33,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+okay just a small update regarding that au600 usb phone bridge device
+I'm working on:
+I'm able to capture audio correctly now, playback also works fine.
 
-I'have recently bought a SB Live! 24-bit External card. I'm using Alsa 
-1.0.11 ( Fedora Core 5, 2.6.16 kernel ).
+My problem was that I'm not allowed to replay the urbs at the end of
+the callback function.. Now I requeue them into a linked list and let
+the IRQ callback replay them as long as a special flag in the irq
+transfer bufffer isn't set (must be some kind of throttling
+mechanism)..
+I'll go on with cleaning up the driver within the next few days and
+submit the latest version...
 
-For this card, sound works with stock snd-usb-audio driver but not the 
-remote control ( it remain undetected ).
+Markus
 
-I'have a patch to make to the usbmixer.c file which enable this remote 
-control. Work well ( for me ) with lirc-0.8.0.
+On 8/10/06, Markus Rechberger <mrechberger@gmail.com> wrote:
+> On 8/9/06, Takashi Iwai <tiwai@suse.de> wrote:
+> > At Wed, 9 Aug 2006 13:46:12 +0200,
+> > Markus Rechberger wrote:
+> > >
+> > > On 8/9/06, Takashi Iwai <tiwai@suse.de> wrote:
+> > > > At Wed, 9 Aug 2006 12:57:08 +0200,
+> > > > Markus Rechberger wrote:
+> > > > >
+> > > > > > > the driver was always available uppon request... thought it
+> would
+> > be
+> > > > > > > nice to host it in an alsa development tree or so but I haven't
+> > got
+> > > > > > > any answer regarding this a while ago.. I put it into my
+> > video4linux
+> > > > > > > development tree now..
+> > > > > >
+> > > > > > We can put it to alsa-driver tree and later push it to upstream
+> when
+> > > > > > the code is well brushed up.
+> > > > > >
+> > > > > > So, could you post the code, or as a patch, to alsa-devel ML?
+> > > > > > The post is easier for reviewing and correcting some issues.
+> > > > > >
+> > > > >
+> > > > > have you seen how the devcode is managed on linuxtv.org? Think
+> > > > > something like that would be very nice for alsa too...
+> > > > >
+> > > > > http://linuxtv.org/hg/
+> > > >
+> > > > http://hg-mirror.alsa-project.org ?
+> > > >
+> > > > Anyway the HG web interface is not suitable for interactive discussion
+> > > > and review to add comments and correct codes.
+> > > >
+> > > >
+> > >
+> > > no it's just every developer has it's own tree there. And as soon as
+> > > one developer finished some things it gets merged to the master in
+> > > case of linuxtv it would be v4l-dvb.
+> > > I'm just writing about that because alsa also uses mercurial maybe it
+> > > would also be nice to have it like that there?
+> >
+> > Well, it's a bit different development style.
+> > Yes, we can have individual repos and the main repo for merging like
+> > kernel development, and I like that style, too.  But the current style
+> > works well, so no urgent reason to change it right now.
+> >
+> > Anyway, what I mentioned is that the version control is totally
+> > irrelevant from the review process.  The merge process like above
+> > works only if the detailed review can be skipped (i.e. push from
+> > trusted subsystem maintainers).  But it doesn't work if you want to
+> > review and correct codes.
+> >
+> >
+> well I'll keep the code in my repository till I'm done with it..
+>
+> I fixed up the playback for 40 seconds now, afterwards it adds some
+> buzz again.. (there must be some kind of synchronisation in it ..)
+> I disabled recording for adding the playback .. I also need to fix
+> this up again..
+> Not sure if that device supports to adjust the volume.. I'll check
+> what the windriver does when moving the sliders...
+> So far everything looks promising with the reverse engineered specs :)
+>
+> Markus
+>
 
-First question, where do I submit the patch ? Here is the diff :
 
-1781d1780
-<       case USB_ID(0x041e, 0x3040):
-1965c1964
-<       if (mixer->chip->usb_id == USB_ID(0x041e, 
-0x3020)||mixer->chip->usb_id == USB_ID(0x041e, 0x3040)) {
----
- >       if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020)) {
-
-Second question, is there anyone able to test this and report any trouble ?
-
-Gilles
-
+-- 
+Markus Rechberger
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
