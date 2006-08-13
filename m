@@ -1,10 +1,12 @@
-From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: [PATCH] dbri driver cleanup
-Date: Sun, 13 Aug 2006 16:14:54 +0200
-Message-ID: <44df33de13c52@wp.pl>
+From: Gilles Stenger <gilles@stengerfamily.fr>
+Subject: SB Live! 24-bit External (usb) ir transmitter support
+Date: Sun, 13 Aug 2006 16:55:21 +0200
+Message-ID: <44DF3D59.6040907@stengerfamily.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="part44df33de18a70"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,93 +19,34 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hello all,
 
---part44df33de18a70
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'have recently bought a SB Live! 24-bit External card. I'm using Alsa 
+1.0.11 ( Fedora Core 5, 2.6.16 kernel ).
 
-This is a small clean up of the dbri driver for sparc machines.=20
+For this card, sound works with stock snd-usb-audio driver but not the 
+remote control ( it remain undetected ).
 
-It contains also a fix to DBRI interrupt queue initialization.
+I'have a patch to make to the usbmixer.c file which enable this remote 
+control. Work well ( for me ) with lirc-0.8.0.
 
-Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
+First question, where do I submit the patch ? Here is the diff :
 
+1781d1780
+<       case USB_ID(0x041e, 0x3040):
+1965c1964
+<       if (mixer->chip->usb_id == USB_ID(0x041e, 
+0x3020)||mixer->chip->usb_id == USB_ID(0x041e, 0x3040)) {
 ---
+ >       if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020)) {
 
-This is the first patch for the dbri driver. I plan to rework
-this driver at least to the level of OSS dbri driver (16-bit
-stereo PCM and no annoying noises during playback).
+Second question, is there anyone able to test this and report any trouble ?
 
-Regards,
-Krzysztof Helt
+Gilles
 
-
-
-
-----------------------------------------------------
-Gooor=B1ce Last Minute! Egipt, Tunezja, Turcja... Kliknij i zarezerwuj:
-http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fwycieczki.pasaz.wp.pl&sid=3D844
-
---part44df33de18a70
-Content-Type: application/octet-stream; name="dbri-patch1.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="dbri-patch1.diff"
-
-LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
-OC0wNCAxNDo0MToyOC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
-cmMvZGJyaS5jCTIwMDYtMDgtMTMgMTU6NTQ6NDQuMDAwMDAwMDAwICswMjAwCkBAIC0xMDQsMTcg
-KzEwNCwxNSBAQCBzdGF0aWMgY2hhciAqY21kc1tdID0gewogCiAjZGVmaW5lIGRwcmludGsoYSwg
-eC4uLikgaWYoZGJyaV9kZWJ1ZyAmIGEpIHByaW50ayhLRVJOX0RFQlVHIHgpCiAKLSNkZWZpbmUg
-REJSSV9DTUQoY21kLCBpbnRyLCB2YWx1ZSkgKChjbWQgPDwgMjgpIHwJCQlcCi0JCQkJICAgICgx
-IDw8IDI3KSB8IFwKLQkJCQkgICAgdmFsdWUpCiAjZWxzZQogI2RlZmluZSBkcHJpbnRrKGEsIHgu
-Li4pCiAKLSNkZWZpbmUgREJSSV9DTUQoY21kLCBpbnRyLCB2YWx1ZSkgKChjbWQgPDwgMjgpIHwJ
-CQlcCi0JCQkJICAgIChpbnRyIDw8IDI3KSB8IFwKLQkJCQkgICAgdmFsdWUpCiAjZW5kaWYJCQkJ
-LyogREJSSV9ERUJVRyAqLwogCisjZGVmaW5lIERCUklfQ01EKGNtZCwgaW50ciwgdmFsdWUpICgo
-Y21kIDw8IDI4KSB8CVwKKwkJCQkgICAgKGludHIgPDwgMjcpIHwJXAorCQkJCSAgICB2YWx1ZSkK
-KwogLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgogCUNTNDIxNSBzcGVjaWZpYyBkZWZpbml0aW9ucyBhbmQg
-c3RydWN0dXJlcwogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KQEAgLTY5MCw3ICs2ODgsNiBAQCBzdGF0
-aWMgdm9sYXRpbGUgczMyICpkYnJpX2NtZGxvY2soc3RydWN0CiBzdGF0aWMgdm9pZCBkYnJpX2Nt
-ZHNlbmQoc3RydWN0IHNuZF9kYnJpICogZGJyaSwgdm9sYXRpbGUgczMyICogY21kKQogewogCXZv
-bGF0aWxlIHMzMiAqcHRyOwotCXUzMglyZWc7CiAKIAlmb3IgKHB0ciA9ICZkYnJpLT5kbWEtPmNt
-ZFswXTsgcHRyIDwgY21kOyBwdHIrKykgewogCQlkcHJpbnRrKERfQ01ELCAiY21kOiAlbHg6JTA4
-eFxuIiwgKHVuc2lnbmVkIGxvbmcpcHRyLCAqcHRyKTsKQEAgLTcwOSw5ICs3MDYsNiBAQCBzdGF0
-aWMgdm9pZCBkYnJpX2NtZHNlbmQoc3RydWN0IHNuZF9kYnJpCiAKIAkvKiBTZXQgY29tbWFuZCBw
-b2ludGVyIGFuZCBzaWduYWwgaXQgaXMgdmFsaWQuICovCiAJc2J1c193cml0ZWwoZGJyaS0+ZG1h
-X2R2bWEsIGRicmktPnJlZ3MgKyBSRUc4KTsKLQlyZWcgPSBzYnVzX3JlYWRsKGRicmktPnJlZ3Mg
-KyBSRUcwKTsKLQlyZWcgfD0gRF9QOwotCXNidXNfd3JpdGVsKHJlZywgZGJyaS0+cmVncyArIFJF
-RzApOwogCiAJLypzcGluX3VubG9jaygmZGJyaS0+bG9jayk7ICovCiB9CkBAIC03NTIsNyArNzQ2
-LDcgQEAgc3RhdGljIHZvaWQgZGJyaV9pbml0aWFsaXplKHN0cnVjdCBzbmRfZAogCSAqLwogCWZv
-ciAobiA9IDA7IG4gPCBEQlJJX05PX0lOVFMgLSAxOyBuKyspIHsKIAkJZG1hX2FkZHIgPSBkYnJp
-LT5kbWFfZHZtYTsKLQkJZG1hX2FkZHIgKz0gZGJyaV9kbWFfb2ZmKGludHIsICgobiArIDEpICYg
-REJSSV9JTlRfQkxLKSk7CisJCWRtYV9hZGRyICs9IGRicmlfZG1hX29mZihpbnRyLCAoKG4gKyAx
-KSAqIERCUklfSU5UX0JMSykpOwogCQlkYnJpLT5kbWEtPmludHJbbiAqIERCUklfSU5UX0JMS10g
-PSBkbWFfYWRkcjsKIAl9CiAJZG1hX2FkZHIgPSBkYnJpLT5kbWFfZHZtYSArIGRicmlfZG1hX29m
-ZihpbnRyLCAwKTsK
-
---part44df33de18a70
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---part44df33de18a70
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---part44df33de18a70--
