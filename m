@@ -1,22 +1,17 @@
-From: peter.oehry@gmx.li
-Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
-Date: Mon, 14 Aug 2006 14:14:16 +0200
-Message-ID: <20060814141416.nkc3usnogk0w044o@zeus.oda.li>
-References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
-	<1155056548.23266.267914050@webmail.messagingengine.com>
-	<20060808184722.6627D55E2E7@zeus.olymp.home>
-	<20060808222250.kgpv3965ss0oowoo@webmail.supelec.fr>
-	<20060808214138.419D4DE279@zeus.olymp.home>
-	<20060809000741.7zournuj4c0wcwc8@webmail.supelec.fr>
-	<20060810213340.A53144FA617@zeus.olymp.home>
-	<20060811112018.8j3chcuqg4c444w4@webmail.supelec.fr>
-	<20060813214825.5654969E159@zeus.olymp.home>
-	<1155554196.1617.268317929@webmail.messagingengine.com>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: Re: Line6 TonePort
+Date: Mon, 14 Aug 2006 17:22:23 +0200
+Message-ID: <d9def9db0608140822o175061a8qe46868bfc4d61169@mail.gmail.com>
+References: <160c13350608100919yee3fc8p14096f59aa0071f7@mail.gmail.com>
+	<1155316913.11766.268179999@webmail.messagingengine.com>
+	<160c13350608111307w5a0778ffm4aa01046c95f1132@mail.gmail.com>
+	<d9def9db0608111644s22ab3361ob68011034fb8d502@mail.gmail.com>
+	<160c13350608140146u5ab2d3ddu38990ec20160974@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1155554196.1617.268317929@webmail.messagingengine.com>
+In-Reply-To: <160c13350608140146u5ab2d3ddu38990ec20160974@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,56 +22,230 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net, Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+To: Stefano D'Angelo <zanga.mail@gmail.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Clemens Ladisch <cladisch@fastmail.net>:
+Hi,
 
-> Peter Oehry wrote:
->> Thibault Le Meur <Thibault.LeMeur@supelec.fr> wrote:
->> 2. Another interesting thing is that in fact the device sensds the data
->> little endian in 16-Bit mode and big endian in 24-Bit mode.
+    .buffer_bytes_max    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2,
+    .period_bytes_min    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2,
+    .period_bytes_max    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2,
+
+I don't know what value TONEPORT_48000_24_PACKET_SIZE_OUT is _BUT_
+I had to take care about this in my driver too.
+The max packet size is 128 bytes, but I'm only allowed to fill 18-20 bytes.
+Theoretically I could submit 2560 bytes within one urb but as soon as
+I submit more than 384 bytes or less I get a buzz or choppy sound.
+Have a look at the windows usbsnoop logs again.
+
+Here's the code of my usb audio driver:
+http://kurzlink.de/sBMLkXGXe
+
+Markus
+
+On 8/14/06, Stefano D'Angelo <zanga.mail@gmail.com> wrote:
+> Clemens you were right of course, what I was saying was just bull shit (and
+> I'm sorry).
+> However the problem remains... I really don't know what's wrong with my code
+> so I post the "interesting parts" here. Please help, I DO need this card to
+> work!
 >
-> IIRC other M-Audio devices to that, too.  The reasons seems to be that
-> the device is basically big-endian, but the 16-bit interfaces are
-> designed to work with Windows' usbaudio.sys.
+> static snd_pcm_hardware_t snd_toneport_playback_hw = {
+>     .info            = SNDRV_PCM_INFO_MMAP |
+>                   SNDRV_PCM_INFO_INTERLEAVED |
+>                   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>                   SNDRV_PCM_INFO_MMAP_VALID,
+>     .formats        = SNDRV_PCM_FMTBIT_S16_LE |
+>                   SNDRV_PCM_FMTBIT_S24_3LE,
+>     .rates            = SNDRV_PCM_RATE_44100 |
+>                   SNDRV_PCM_RATE_48000,
+>     .rate_min        = 44100,
+>     .rate_max        = 48000,
+>     .channels_min        = 2,
+>     .channels_max        = 2,
+>     .buffer_bytes_max    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2,
+>     .period_bytes_min    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2,
+>     .period_bytes_max    = TONEPORT_48000_24_PACKET_SIZE_OUT * 2,
+>     .periods_min        = 1,
+>     .periods_max        = 2
+> };
 >
->> For what I think it should be possible to switch modes without restarting
->> the kernel module and switch on and off the device. It should be possible
->> to switch the mode by resetting all interfaces and setting up the new
->> altsets like the windows driver does. This would eventually need a new
->> proc interace
+> Here period_bytes_min are is as the maximum period size to use just one PCM.
 >
-> Why proc?
+> #define snd_toneport_period_elapsed(old, new) \
+>     (new >= TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2) || \
+>     ((old < TONEPORT_48000_24_PACKET_SIZE_OUT * 2) && \
+>      (new >= TONEPORT_48000_24_PACKET_SIZE_OUT * 2))
 >
-> If the configuration needs to be changed at runtime, and if the driver
-> cannot do this automatically, a mixer control would be the best solution.
+> This one should test if a period is elapsed based on the old playback
+> position (I see other drivers call such pointers hwptr) and the new one
+> (before this last is "normalized").
+>
+> /*
+>  * null urb trasfer's completition callback
+>  */
+> static void snd_toneport_playback_complete_first(struct urb* urb,
+>         struct pt_regs* regs)
+> {
+>     snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb->context);
+>     snd_pcm_runtime_t *runtime = substream->runtime;
+>     struct snd_toneport *chip = snd_pcm_substream_chip(substream);
+>
+>     memcpy(urb->transfer_buffer, runtime->dma_area,
+>             chip->playback_packet_size * 2);
+>
+>     urb->complete = snd_toneport_playback_complete;
+>
+>     usb_submit_urb(urb, GFP_ATOMIC);
+> }
+>
+> /*
+>  * playback transfers' completition callback
+>  */
+> static void snd_toneport_playback_complete(struct urb* urb,
+>         struct pt_regs* regs)
+> {
+>     snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb->context);
+>     snd_pcm_runtime_t *runtime = substream->runtime;
+>     struct snd_toneport *chip = snd_pcm_substream_chip(substream);
+>     int new_pos = chip->playback_pos + chip->playback_packet_size * 2;
+>     int offs;
+>
+>     if (new_pos <= TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2) {
+>         memcpy(urb->transfer_buffer,
+>                 runtime->dma_area + chip->playback_pos,
+>                 chip->playback_packet_size * 2);
+>     } else {
+>         offs = TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2 -
+>             chip->playback_pos;
+>         memcpy(urb->transfer_buffer,
+>                 runtime->dma_area + chip->playback_pos,
+>                 offs);
+>         memcpy(urb->transfer_buffer + new_pos,
+>                 runtime->dma_area,
+>                 chip->playback_packet_size * 2 - offs);
+>     }
+>
+>     if (snd_toneport_period_elapsed(chip->playback_pos, new_pos)) {
+>         if (new_pos >= TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2)
+>             new_pos -= TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2;
+>         chip->playback_pos = new_pos;
+>         snd_pcm_period_elapsed(substream);
+>     } else {
+>         chip->playback_pos = new_pos;
+>     }
+>
+>     if (chip->status & TONEPORT_STATUS_PLAYBACK)
+>         usb_submit_urb(urb, GFP_ATOMIC);
+> }
+>
+> /*
+>  * hw_params callback
+>  *
+>  * TODO: capture and full duplex
+>  */
+> static int snd_toneport_pcm_hw_params(snd_pcm_substream_t *substream,
+>         snd_pcm_hw_params_t *hw_params)
+> {
+>     struct snd_toneport *chip = snd_pcm_substream_chip(substream);
+>     unsigned char msg[] = TONEPORT_MSG_3;
+>     int alt, err;
+>
+>     alt = (params_format(hw_params) == SNDRV_PCM_FORMAT_S16_LE) ? 1 : 3;
+>     if ((params_rate(hw_params) == 44100))
+>         alt++;
+>
+>     if ((err = usb_set_interface(chip->dev, 0, alt)) < 0)
+>         return err;
+>     chip->altsetting = alt;
+>
+>     if ((err = snd_toneport_submit_control_transfer(chip->dev, msg)) < 0)
+>         return err;
+>
+>     chip->playback_packet_size = out_sizes[alt - 1];
+>     if (!chip->playback_urb) {
+>         chip->playback_urb = usb_alloc_urb(2, GFP_KERNEL);
+>         chip->playback_urb->dev = chip->dev;
+>         chip->playback_urb->pipe = usb_sndisocpipe(chip->dev, 1);
+>         chip->playback_urb->context = substream;
+>         chip->playback_urb->transfer_flags = URB_ISO_ASAP |
+>             URB_NO_TRANSFER_DMA_MAP;
+>         chip->playback_urb->interval = 1;
+>         chip->playback_urb->number_of_packets = 2;
+>         chip->playback_urb->iso_frame_desc[0].offset = 0;
+>     } else {
+>         usb_buffer_free(chip->dev, chip->playback_packet_size * 2,
+>                 chip->playback_urb->transfer_buffer,
+>                 chip->playback_urb->transfer_dma);
+>     }
+>     if (!(chip->playback_urb->transfer_buffer =
+>         usb_buffer_alloc(chip->dev, chip->playback_packet_size * 2,
+>             GFP_KERNEL, &chip->playback_urb->transfer_dma)))
+>         return -ENOMEM;
+>     chip->playback_urb->transfer_buffer_length =
+>         chip->playback_packet_size * 2;
+>     chip->playback_urb->iso_frame_desc[0].length =
+>         chip->playback_urb->iso_frame_desc[1].offset =
+>         chip->playback_urb->iso_frame_desc[1].length =
+>         chip->playback_packet_size;
+>
+>     return snd_pcm_lib_malloc_pages(substream,
+>             TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2);
+> }
+>
+> /*
+>  * trigger callback
+>  */
+> static int snd_toneport_pcm_trigger(snd_pcm_substream_t *substream, int cmd)
+> {
+>     struct snd_toneport *chip = snd_pcm_substream_chip(substream);
+>
+>     switch (cmd) {
+>     case SNDRV_PCM_TRIGGER_START:
+>         memset(chip->playback_urb->transfer_buffer, 0,
+>                 chip->playback_packet_size * 2);
+>         chip->playback_pos = 0;
+>         chip->status |= TONEPORT_STATUS_PLAYBACK;
+>         chip->playback_urb->complete =
+>             snd_toneport_playback_complete_first;
+>         return usb_submit_urb(chip->playback_urb, GFP_ATOMIC);
+>         break;
+>     case SNDRV_PCM_TRIGGER_STOP:
+>         chip->status &= ~TONEPORT_STATUS_PLAYBACK;
+>         break;
+>     default:
+>             return -EINVAL;
+>         break;
+>     }
+>
+>     return 0;
+> }
+>
+> /*
+>  * pointer callback
+>  */
+> static snd_pcm_uframes_t snd_toneport_pcm_pointer(
+>         snd_pcm_substream_t* substream)
+> {
+>     struct snd_toneport *chip = snd_pcm_substream_chip(substream);
+>
+>     return bytes_to_frames(substream->runtime, chip->playback_pos);
+> }
+>
+> As you can see I chose to store the playback position in bytes instead of
+> frames because I have 6-bytes frames and 4-bytes frames (depends on the
+> format).
+> Also TONEPORT_48000_24_PACKET_SIZE_OUT * 2 * 2 is the alsa buffer size.
+> Thanks,
+>
+> Stefano
+>
 >
 
-This sounds good to me :-) Is the mixer interace good to understand or  
-is there some documentation on it? So I could try to do some testing  
-on that.
 
-Would such a solution be accepted in the driver?
-
->> How do I know if I also need a quirk for the midi devices?
->
-> You need a quirk when there aren't any class-specific descriptors for
-> the MIDI port.
-
-Thank you. That will mean that it should work with the Fast Track.  
-I'll organise a MIDI device and thest this. :-)
-
->
->
-> Regards,
-> Clemens
->
->
->
-
-
+-- 
+Markus Rechberger
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
