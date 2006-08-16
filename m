@@ -1,9 +1,9 @@
-From: "busytrade" <busytrade_mail@163.com>
-Subject: =?GB2312?B?ssm5utDFz6KjoQ==?=
-Date: Wed, 16 Aug 2006 16:00:00 +0800
-Message-ID: <E1GDGLD-0006NG-J5@mail.sourceforge.net>
-Reply-To: rambo.wu@busytrade.com
-Content-Type: multipart/mixed; boundary="===============1034176856=="
+From: "Andrew L. Neporada" <nepal@asplinux.ru>
+Subject: Connexant HDA codec support
+Date: Wed, 16 Aug 2006 13:45:44 +0400
+Message-ID: <1155721544.3871.43.camel@leeloo.asplinux.ru>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-QP9hF2iE0ApiBLO7g6Bo"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +17,291 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1034176856==
-Content-Type: text/plain;charset="GB2312"
 
-尊敬的男士/女士：
+--=-QP9hF2iE0ApiBLO7g6Bo
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-您好! 大买家采购是万国商业网专业的网上采购专区，国内外知名企业，各行业的龙头企业，采购金额大、采购数量多、采购品种广的企业和政府等等，都可以免费加入此专区。加入大买家采购专区。您可以在采购中心（http://china.busytrade.com/buyers/）免费发布采购信息，我们有专人根据您发布的信息帮助您去找相应的客户，进行一对一配对，让您在短时间内和客户达成合作。
-服务内容：
-一．我们可以为您提供更多的优质供应商供您选择。
-二．大大降低了您的采购成本。
-三．有专人为您服务，为您节省更多的时间和精力。
-四．同时您也拥有自己的特色网站，可以展示您的产品，您的需求，让客户能更快的找到您。
-万国商业网，真正做到让你的生意忙起来！
-更多详情请联系：Tel: 86-21-51752008    Fax: 86-21-51752002
-             E-mail: jj.lu@busytrade.com
+Hi.
 
-致礼！
- 
+I am trying to put microphone on Connexant HDA codec to work
+(codec PCI ID 14f1:5045, "lspci -v" and
+"cat /proc/asound/card0/codec#0"  output attached).
 
+Currently (with kernel 2.6.17 and alsa-driver 1.0.12rc1) playback works,
+but there is no Mic support (no Mic control in alsamixer, no sound
+recording).
 
-Dear Sir/Madam,
+AFAIK, Connexant codecs are not supported due to missing specs.
+However, it seems that I've manged to intercept CORBs sent to codec in
+Windows.
 
-Hello!Busytrade Sourcing Center is the "Professional Sourcing Consultant" making your sourcing products more simple and exciting.You can post sourcing information freely in our sourcing center as follows: （http://china.busytrade.com/buyers/）.our work team will help you to find the right suppliers according to your demand and match the supplies for you.You will get more chances to cooperate with them in short time.
-
-Our service content and advantages:
-1.	We can provice many top quality suppliers for you to choose.
-2.	Recucing your sourcing cost.
-3.	You can enjoy the service by appointed person so as to save your time and energy.
-4.	Meanwhile you will have your own website which you can post products and demand in order to attract more customers.
-More information please contact: Tel: 86-21-51752008    Fax: 86-21-51752002
-                              E-mail: joice.cai@busytrade.com
-                      
-Yours sincerely,
-
-Busytrade sourcing center
-
-Busytrade.com, Busy with trade!
+Maybe someone familiar with HDA internals can help me?
 
 
---===============1034176856==
+                            Andrew.
+
+--=-QP9hF2iE0ApiBLO7g6Bo
+Content-Disposition: attachment; filename=lspci.txt
+Content-Type: text/plain; name=lspci.txt; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+00:00.0 Host bridge: Intel Corp.: Unknown device 27a0 (rev 03)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, fast devsel, latency 0
+	Capabilities: [e0] Vendor Specific Information
+
+00:01.0 PCI bridge: Intel Corp.: Unknown device 27a1 (rev 03) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	Memory behind bridge: dc000000-ddffffff
+	Prefetchable memory behind bridge: 00000000c0000000-00000000cff00000
+	Capabilities: [88] #0d [0000]
+	Capabilities: [80] Power Management version 2
+	Capabilities: [90] Message Signalled Interrupts: 64bit- Queue=0/0 Enable+
+	Capabilities: [a0] Express Root Port (Slot+) IRQ 0
+	Capabilities: [100] Virtual Channel
+	Capabilities: [140] Unknown (5)
+
+00:1b.0 Class 0403: Intel Corp.: Unknown device 27d8 (rev 02)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, fast devsel, latency 0, IRQ 58
+	Memory at de300000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+	Capabilities: [70] Express Unknown type IRQ 0
+	Capabilities: [100] Virtual Channel
+	Capabilities: [130] Unknown (5)
+
+00:1c.0 PCI bridge: Intel Corp.: Unknown device 27d0 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+	Capabilities: [40] Express Root Port (Slot+) IRQ 0
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0 Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+	Capabilities: [100] Virtual Channel
+	Capabilities: [180] Unknown (5)
+
+00:1c.1 PCI bridge: Intel Corp.: Unknown device 27d2 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=08, subordinate=08, sec-latency=0
+	I/O behind bridge: 00002000-00002fff
+	Memory behind bridge: d8000000-d9ffffff
+	Prefetchable memory behind bridge: 00000000d2000000-00000000d3f00000
+	Capabilities: [40] Express Root Port (Slot+) IRQ 0
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0 Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+	Capabilities: [100] Virtual Channel
+	Capabilities: [180] Unknown (5)
+
+00:1c.2 PCI bridge: Intel Corp.: Unknown device 27d4 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
+	I/O behind bridge: 00003000-00003fff
+	Memory behind bridge: da000000-dbffffff
+	Prefetchable memory behind bridge: 00000000d4000000-00000000d5f00000
+	Capabilities: [40] Express Root Port (Slot+) IRQ 0
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0 Enable+
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+	Capabilities: [100] Virtual Channel
+	Capabilities: [180] Unknown (5)
+
+00:1d.0 USB Controller: Intel Corp.: Unknown device 27c8 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0, IRQ 66
+	I/O ports at 1800 [size=32]
+
+00:1d.1 USB Controller: Intel Corp.: Unknown device 27c9 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0, IRQ 233
+	I/O ports at 1820 [size=32]
+
+00:1d.2 USB Controller: Intel Corp.: Unknown device 27ca (rev 02) (prog-if 00 [UHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0, IRQ 185
+	I/O ports at 1840 [size=32]
+
+00:1d.3 USB Controller: Intel Corp.: Unknown device 27cb (rev 02) (prog-if 00 [UHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0, IRQ 169
+	I/O ports at 1860 [size=32]
+
+00:1d.7 USB Controller: Intel Corp.: Unknown device 27cc (rev 02) (prog-if 20 [EHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0, IRQ 66
+	Memory at de304000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [58] Debug port
+
+00:1e.0 PCI bridge: Intel Corp. 82801 Mobile PCI Bridge (rev e2) (prog-if 01 [Subtractive decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=05, subordinate=05, sec-latency=32
+	I/O behind bridge: 00004000-00004fff
+	Memory behind bridge: de000000-de0fffff
+	Prefetchable memory behind bridge: 0000000030000000-0000000031f00000
+	Capabilities: [50] #0d [0000]
+
+00:1f.0 ISA bridge: Intel Corp.: Unknown device 27b9 (rev 02)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 0
+	Capabilities: [e0] Vendor Specific Information
+
+00:1f.2 IDE interface: Intel Corp.: Unknown device 27c4 (rev 02) (prog-if 80 [Master])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, 66Mhz, medium devsel, latency 0, IRQ 233
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at 18b0 [size=16]
+	Capabilities: [70] Power Management version 2
+
+00:1f.3 SMBus: Intel Corp.: Unknown device 27da (rev 02)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: medium devsel, IRQ 10
+	I/O ports at 18e0 [size=32]
+
+01:00.0 VGA compatible controller: nVidia Corporation: Unknown device 01d8 (rev a1) (prog-if 00 [VGA])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, fast devsel, latency 0, IRQ 11
+	Memory at dd000000 (32-bit, non-prefetchable) [size=16M]
+	Memory at c0000000 (64-bit, prefetchable) [size=256M]
+	Memory at dc000000 (64-bit, non-prefetchable) [size=16M]
+	Capabilities: [60] Power Management version 2
+	Capabilities: [68] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+	Capabilities: [78] Express Endpoint IRQ 0
+	Capabilities: [100] Virtual Channel
+	Capabilities: [128] Power Budgeting
+
+04:00.0 Ethernet controller: Marvell Technology Group Ltd.: Unknown device 4363 (rev 10)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, fast devsel, latency 0, IRQ 50
+	Memory at da000000 (64-bit, non-prefetchable) [size=16K]
+	[virtual] Memory at 00003000 (32-bit, non-prefetchable) [size=256]
+	[virtual] Expansion ROM at d4000000 [disabled] [size=128K]
+	Capabilities: [48] Power Management version 3
+	Capabilities: [50] Vital Product Data
+	Capabilities: [5c] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable+
+	Capabilities: [e0] Express Legacy Endpoint IRQ 0
+	Capabilities: [100] Advanced Error Reporting
+
+05:01.0 CardBus bridge: Texas Instruments: Unknown device 8039
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: bus master, medium devsel, latency 168, IRQ 185
+	Memory at de006000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=05, secondary=06, subordinate=07, sec-latency=176
+	Memory window 0: 30000000-31fff000 (prefetchable)
+	Memory window 1: 32000000-33fff000
+	I/O window 0: 00004000-000040ff
+	I/O window 1: 00004400-000044ff
+	16-bit legacy interface ports at 0001
+
+05:01.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a (prog-if 10 [OHCI])
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: medium devsel, IRQ 10
+	Memory at de005000 (32-bit, non-prefetchable) [disabled] [size=2K]
+	Memory at de000000 (32-bit, non-prefetchable) [disabled] [size=16K]
+	Capabilities: [44] Power Management version 2
+
+05:01.2 Unknown mass storage controller: Texas Instruments: Unknown device 803b
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: medium devsel, IRQ 10
+	Memory at de004000 (32-bit, non-prefetchable) [disabled] [size=4K]
+	Capabilities: [44] Power Management version 2
+
+05:01.3 Class 0805: Texas Instruments: Unknown device 803c (prog-if 01)
+	Subsystem: QUANTA Computer Inc: Unknown device 0753
+	Flags: medium devsel, IRQ 10
+	Memory at de005800 (32-bit, non-prefetchable) [disabled] [size=256]
+	Capabilities: [80] Power Management version 2
+
+
+--=-QP9hF2iE0ApiBLO7g6Bo
+Content-Disposition: attachment; filename=proc.txt
+Content-Type: text/plain; name=proc.txt; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Codec: Generic 14f1 ID 5045
+Address: 0
+Vendor Id: 0x14f15045
+Subsystem Id: 0x152d0753
+Revision Id: 0x100100
+Default PCM: rates 0x140, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x10 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x2b 0x2b]
+  Pincap 0x0810014: OUT
+  Pin Default 0x92170010: [Fixed] Speaker at Int Front
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 2
+     0x19* 0x17
+Node 0x11 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08113c: IN OUT HP
+  Pin Default 0x01214020: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Power: 0x0
+  Connection: 2
+     0x19* 0x17
+Node 0x12 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
+  Amp-Out vals:  [0xab 0xab]
+  Pincap 0x08113c: IN OUT HP
+  Pin Default 0x01813030: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x00:
+  Power: 0x0
+  Connection: 2
+     0x19* 0x17
+Node 0x13 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x21447040: [Jack] SPDIF Out at Sep Rear
+    Conn = RCA, Color = Yellow
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x18
+Node 0x14 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081124: IN
+  Pin Default 0x97a70050: [Fixed] Mic at Int Riser
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x15 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x99330060: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x07, nsteps=0x07, stepsize=0x0b, mute=1
+  Amp-Out vals:  [0x06]
+Node 0x17 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x14, nsteps=0x2b, stepsize=0x05, mute=1
+  Amp-In vals:  [0x94 0x94] [0x17 0x17] [0x94 0x94] [0x94 0x94] [0x94 0x94]
+  Power: 0x0
+  Connection: 5
+     0x19 0x14 0x12 0x11 0x15
+Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM: rates 0x040, bits 0x06, types 0x5
+Node 0x19 [Audio Output] wcaps 0xc11: Stereo
+  PCM: rates 0x540, bits 0x0e, types 0x1
+  Power: 0x0
+Node 0x1a [Audio Input] wcaps 0x100d0b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x17, stepsize=0x05, mute=1
+  Amp-In vals:  [0x17 0x17] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Power: 0x0
+  Connection: 5
+     0x17 0x14* 0x12 0x11 0x15
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+--=-QP9hF2iE0ApiBLO7g6Bo
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -66,7 +312,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1034176856==
+--=-QP9hF2iE0ApiBLO7g6Bo
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -77,4 +323,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1034176856==--
+--=-QP9hF2iE0ApiBLO7g6Bo--
