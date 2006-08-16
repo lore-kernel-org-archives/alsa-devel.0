@@ -1,12 +1,16 @@
-From: "Kyle Wooten" <tkrieman@btigroup.com>
-Subject: set your alarm and get on this at the bell
-Date: Wed, 16 Aug 2006 15:48:21 +0000 (UTC)
-Message-ID: <20060816154810.52D81269@alsa.jcu.cz>
+From: Prakash Punnoor <prakash@punnoor.de>
+Subject: Re:
+	=?iso-8859-1?q?MCP51_on_Asus_M2NPV-VM_doesn=27t_get_?=
+	=?iso-8859-1?q?correct_parameters=09set?=
+Date: Wed, 16 Aug 2006 18:25:16 +0200
+Message-ID: <200608161825.19898.prakash@punnoor.de>
+References: <200608110013.49451.prakash@punnoor.de>
+	<200608161551.40736.prakash@punnoor.de>
+	<s5hzme4wzu5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1537146912=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Wed, 16 Aug 2006 15:48:23 -0060
+In-Reply-To: <s5hzme4wzu5.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,64 +20,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This may turn out to be the most important email you will ever read in 
-your financial life."We could make another million dollars...and I want you to join us!" 
-"Each week. I tell my readers to make just 1 investment buy." 
+--===============1537146912==
+Content-Type: multipart/signed; boundary="nextPart5259073.JjLoPPiaYA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-			The Wednesday's true winner will be: CWTD
+--nextPart5259073.JjLoPPiaYA
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Company: China World Trade Corp
-Ticker: CWTD
-Current Price:  $0.99
-Target Price:  $2.28  	
-Recommendation: STRONGBUY
-			Get on CWTD First Thing on Wednesday!
+Am Mittwoch 16 August 2006 15:54 schrieb Takashi Iwai:
+> At Wed, 16 Aug 2006 15:51:40 +0200,
+>
+> Prakash Punnoor wrote:
+> > Am Mittwoch 16 August 2006 14:19 schrieb Takashi Iwai:
+> > > At Wed, 16 Aug 2006 14:04:50 +0200,
+> > >
+> > > Prakash Punnoor wrote:
+> > > > Am Mittwoch 16 August 2006 13:11 schrieb Takashi Iwai:
+> > > > > position_fix=3D1 is actually a hardware problem.  This could be f=
+ixed
+> > > > > by BIOS update (if any)...
+> > > >
+> > > > Thx for the info. But what exactly should I report to Asus?
+> > >
+> > > That the position registers (70h/74h) don't work properly.
+> > > I don't know what values are read there.  You need to try to dump the
+> > > values to check what's going on there.
+> >
+> > Well, could you point me how to do it? Im not a kernel dev...
+>
+> Just add printk arround reading azx_dev->posbuf in azx_pcm_pointer().
 
-Breaking News
+I tried again, and I think you can forget about the issue. The stack3 setti=
+ng=20
+seems to fix everything, ie position_fix=3D1 isn't needed and it seems to w=
+ork=20
+nice with 0. (I never tried stack3 alone...)
 
-ESP E-ticketing Era is Launching Over China's Airlines and Major Cities in 2006, Targets 
-an US $630 Million Market 9:31a ET August 14, 2006 (PR NewsWire)China World Trade 
-Corporation (OTC Bulletin Board: CWTD) (''CWTC'') announced today that 75% of its 
-air-ticket sales has been achieved through electronic air-ticketing by its subsidiary 
-Guangdong New Generation Commercial Management Limited (''NG''); and NG will cautiously 
-prepare for the complete implementation of electronic air-ticketing ("E-tickets") 
-by 2007 all over China.
+Sorry for the noise. :-/
+=2D-=20
+(=B0=3D                 =3D=B0)
+//\ Prakash Punnoor /\\
+V_/                 \_V
 
-Figures showed that the E-ticket sales revenue nationwide in 2005 was US $530 million, 
-which is 5 times to US $120 million as recorded in 2003. It is also estimated that 
-the E-ticket sales revenue will be reaching over US $630 million in 2006.
+--nextPart5259073.JjLoPPiaYA
+Content-Type: application/pgp-signature
 
-''We hold a positive but cautious view to E-ticketing in China, convinced by the promising 
-growth rate of the sales all over the country. 75% of our air-ticket sales through NG are 
-now in fact E-tickets," said Mr. William Tsang, President of CWTD, ''Given the lack of a 
-comprehensive electronic payment in China, however, most consumer are actually paying cash 
-off-the-line. Despite that real E-ticketing purchased online is still a dream to come true, 
-we will keep track of the technology development and stay in touch with the latest trend 
-in the ticketing area.'' 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-About the Company
-China World Trade Corporation (CWTC) has established its business in three distinct areas: 
-the club and business centers throughout major cities in China, business travel-related 
-services, and business value-added services. The Club and Business Center Division is 
-devoted to the building of the World Trade brand throughout China via the opening and 
-operating of business clubs in China's major, positioning the CWTC to act as a platform 
-to facilitate trade between China and the world markets. The acquisition of CEO Clubs 
-China Limited ("CEO Clubs") in May 2004 further complements CWTC's offerings by targeting 
-high-level corporate executives from premier companies. The Business Traveling Services 
-Division, New Generation, provides CWTC access to the rapidly growing travel-related 
-industry.
+iD8DBQBE40bvxU2n/+9+t5gRAo2qAJwOnSmvp0tBP5HTHXwyTOzXXxkq8wCfWCcu
+wd+bzW9KKaVF2iHOybjta2A=
+=bels
+-----END PGP SIGNATURE-----
+
+--nextPart5259073.JjLoPPiaYA--
 
 
-Members should pick up CWTD as early as possible on Wednesday. This news is going to send 
-CWTD off the charts! We all know that in the this business it's the big announcements that 
-makes these stocks explode!!!
-
+--===============1537146912==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1537146912==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1537146912==--
