@@ -1,15 +1,10 @@
-From: Stephen Hemminger <shemminger@osdl.org>
-Subject: [PATCH] intel_hda: MSI support
-Date: Tue, 15 Aug 2006 15:41:29 -0700
-Message-ID: <20060815154129.14f82415@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: "busytrade" <busytrade_mail@163.com>
+Subject: =?GB2312?B?ssm5utDFz6KjoQ==?=
+Date: Wed, 16 Aug 2006 16:00:00 +0800
+Message-ID: <E1GDGLD-0006NG-J5@mail.sourceforge.net>
+Reply-To: rambo.wu@busytrade.com
+Content-Type: multipart/mixed; boundary="===============1034176856=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DA62165
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Aug 2006 00:41:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,62 +14,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Simple patch to enable Message Signalled Interrupts for the HDA Intel
-audio controller.  Tested with:
- Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev 03)
+--===============1034176856==
+Content-Type: text/plain;charset="GB2312"
 
-MSI is better because it means audio doesn't end up sharing IRQ with USB.
+尊敬的男士/女士：
 
-Signed-off-by: Stephen Hemminger <shemminger@osdl.org>
+您好! 大买家采购是万国商业网专业的网上采购专区，国内外知名企业，各行业的龙头企业，采购金额大、采购数量多、采购品种广的企业和政府等等，都可以免费加入此专区。加入大买家采购专区。您可以在采购中心（http://china.busytrade.com/buyers/）免费发布采购信息，我们有专人根据您发布的信息帮助您去找相应的客户，进行一对一配对，让您在短时间内和客户达成合作。
+服务内容：
+一．我们可以为您提供更多的优质供应商供您选择。
+二．大大降低了您的采购成本。
+三．有专人为您服务，为您节省更多的时间和精力。
+四．同时您也拥有自己的特色网站，可以展示您的产品，您的需求，让客户能更快的找到您。
+万国商业网，真正做到让你的生意忙起来！
+更多详情请联系：Tel: 86-21-51752008    Fax: 86-21-51752002
+             E-mail: jj.lu@busytrade.com
 
---- linux-2.6.orig/sound/pci/hda/hda_intel.c	2006-07-13 12:53:49.000000000 -0700
-+++ linux-2.6/sound/pci/hda/hda_intel.c	2006-08-15 15:24:12.000000000 -0700
-@@ -55,6 +55,7 @@
- static int position_fix;
- static int probe_mask = -1;
- static int single_cmd;
-+static int disable_msi;
+致礼！
  
- module_param(index, int, 0444);
- MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
-@@ -68,6 +69,8 @@
- MODULE_PARM_DESC(probe_mask, "Bitmask to probe codecs (default = -1).");
- module_param(single_cmd, bool, 0444);
- MODULE_PARM_DESC(single_cmd, "Use single command to communicate with codecs (for debugging only).");
-+module_param(disable_msi, int, 0);
-+MODULE_PARM_DESC(disable_msi, "Disable Message Signaled Interrupt (MSI)");
- 
- 
- /* just for backward compatibility */
-@@ -1402,8 +1405,10 @@
- 		msleep(1);
- 	}
- 
--	if (chip->irq >= 0)
-+	if (chip->irq >= 0) {
-+		pci_disable_msi(chip->pci);
- 		free_irq(chip->irq, (void*)chip);
-+	}
- 	if (chip->remap_addr)
- 		iounmap(chip->remap_addr);
- 
-@@ -1486,6 +1491,9 @@
- 		goto errout;
- 	}
- 
-+	if (!disable_msi)
-+		pci_enable_msi(pci);
-+
- 	if (request_irq(pci->irq, azx_interrupt, IRQF_DISABLED|IRQF_SHARED,
- 			"HDA Intel", (void*)chip)) {
- 		snd_printk(KERN_ERR SFX "unable to grab IRQ %d\n", pci->irq);
+
+
+Dear Sir/Madam,
+
+Hello!Busytrade Sourcing Center is the "Professional Sourcing Consultant" making your sourcing products more simple and exciting.You can post sourcing information freely in our sourcing center as follows: （http://china.busytrade.com/buyers/）.our work team will help you to find the right suppliers according to your demand and match the supplies for you.You will get more chances to cooperate with them in short time.
+
+Our service content and advantages:
+1.	We can provice many top quality suppliers for you to choose.
+2.	Recucing your sourcing cost.
+3.	You can enjoy the service by appointed person so as to save your time and energy.
+4.	Meanwhile you will have your own website which you can post products and demand in order to attract more customers.
+More information please contact: Tel: 86-21-51752008    Fax: 86-21-51752002
+                              E-mail: joice.cai@busytrade.com
+                      
+Yours sincerely,
+
+Busytrade sourcing center
+
+Busytrade.com, Busy with trade!
+
+
+--===============1034176856==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1034176856==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1034176856==--
