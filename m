@@ -1,13 +1,16 @@
-From: "Andrew L. Neporada" <nepal@asplinux.ru>
-Subject: Re: Connexant HDA codec support
-Date: Wed, 16 Aug 2006 17:44:12 +0400
-Message-ID: <1155735852.3871.51.camel@leeloo.asplinux.ru>
-References: <1155721544.3871.43.camel@leeloo.asplinux.ru>
-	<s5hac64ygw0.wl%tiwai@suse.de>
+From: Prakash Punnoor <prakash@punnoor.de>
+Subject: Re:
+	=?iso-8859-1?q?MCP51_on_Asus_M2NPV-VM_doesn=27t_get_?=
+	=?iso-8859-1?q?correct_parameters=09set?=
+Date: Wed, 16 Aug 2006 15:51:40 +0200
+Message-ID: <200608161551.40736.prakash@punnoor.de>
+References: <200608110013.49451.prakash@punnoor.de>
+	<200608161404.50502.prakash@punnoor.de>
+	<s5hirksyisj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-n3/Oc+VRaXEcphpAWJgK"
+Content-Type: multipart/mixed; boundary="===============1789504953=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hac64ygw0.wl%tiwai@suse.de>
+In-Reply-To: <s5hirksyisj.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,75 +24,67 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
---=-n3/Oc+VRaXEcphpAWJgK
-Content-Type: text/plain
+--===============1789504953==
+Content-Type: multipart/signed; boundary="nextPart4703198.4pTmoEacOB";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
+--nextPart4703198.4pTmoEacOB
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Takashi Iwai wrote:
-> Good to hear that playback actually works on some machine.
-> How is the mixer status?  Check the generated file via "alsactl -f
-> somefile store".
-> 
-alsactl output attached
+Am Mittwoch 16 August 2006 14:19 schrieb Takashi Iwai:
+> At Wed, 16 Aug 2006 14:04:50 +0200,
+>
+> Prakash Punnoor wrote:
+> > Am Mittwoch 16 August 2006 13:11 schrieb Takashi Iwai:
+> > > position_fix=3D1 is actually a hardware problem.  This could be fixed=
+ by
+> > > BIOS update (if any)...
+> >
+> > Thx for the info. But what exactly should I report to Asus?
+>
+> That the position registers (70h/74h) don't work properly.
+> I don't know what values are read there.  You need to try to dump the
+> values to check what's going on there.
 
-> The problem looks like that the input amp value isn't raised for the
-> audio-input node 0x1a.  Could be a bug of generic parser routine.
-> 
+Well, could you point me how to do it? Im not a kernel dev...
 
-How can I help to investigate this issue?
+> > And if they don't
+> > fix it, wouldn't a quirk be user-friendly? (The kernel also applies
+> > various quirk for broken BIOSes...)
+>
+> Sure, but how could you choose the appropriate option for a certain
+> board with a certain BIOS version?  That's the biggest question.
 
-> 
-> Takashi
-> 
+IIRC, this could be done reading DMI (perhaps after checking pci ids), as I=
+=20
+think for some other quirk in the kernel this was done (or at least=20
+proposed).
 
-Andrew
+bye,
+=2D-=20
+(=B0=3D                 =3D=B0)
+//\ Prakash Punnoor /\\
+V_/                 \_V
+
+--nextPart4703198.4pTmoEacOB
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBE4yLsxU2n/+9+t5gRAnDCAJ9pp0/DF8A1f3HaaX2ekKFJxhbyegCg+DSu
+ST4+/2TOQIT1puJ0H5N8MqI=
+=Kshh
+-----END PGP SIGNATURE-----
+
+--nextPart4703198.4pTmoEacOB--
 
 
---=-n3/Oc+VRaXEcphpAWJgK
-Content-Disposition: attachment; filename=alsactl
-Content-Type: text/plain; name=alsactl; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 23'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 23
-		value.1 23
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 43'
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 0
-		value.1 0
-	}
-}
-
---=-n3/Oc+VRaXEcphpAWJgK
+--===============1789504953==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -100,7 +95,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-n3/Oc+VRaXEcphpAWJgK
+--===============1789504953==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,4 +106,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-n3/Oc+VRaXEcphpAWJgK--
+--===============1789504953==--
