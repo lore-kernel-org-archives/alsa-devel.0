@@ -1,20 +1,10 @@
-From: James C Georgas <jgeorgas@rogers.com>
-Subject: Re: disabling full duplex in oss emulation
-Date: Thu, 17 Aug 2006 12:45:28 -0400
-Message-ID: <1155833128.8201.0.camel@Rainsong>
-References: <1155504459.8241.4.camel@Rainsong>
-	<s5hveotx8zk.wl%tiwai@suse.de> <1155759499.6173.10.camel@Rainsong>
-	<s5h64grrb2s.wl%tiwai@suse.de>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: [PATCH] sparc dbri: removal of dri_desc struct
+Date: Thu, 17 Aug 2006 22:05:09 +0200
+Message-ID: <44e4cbf5eb373@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="part44e4cbf5f01cf"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp105.rog.mail.re2.yahoo.com (smtp105.rog.mail.re2.yahoo.com
-	[206.190.36.83])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CECA723F
-	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Aug 2006 18:44:52 +0200 (MEST)
-In-Reply-To: <s5h64grrb2s.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,42 +14,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-17-08 at 11:00 +0200, Takashi Iwai wrote:
-> At Wed, 16 Aug 2006 16:18:19 -0400,
-> James C Georgas wrote:
-> > 
-> > On Wed, 2006-16-08 at 12:36 +0200, Takashi Iwai wrote:
-> > > At Sun, 13 Aug 2006 17:27:39 -0400,
-> > > James C Georgas wrote:
-> > > > 
-> > > > Is there a way to disable full duplex mode at runtime for OSS emulation?
-> > > > Perhaps a writable /proc entry or an environment variable? I have a
-> > > > SBLive, which uses the emu10k1 driver.
-> > > 
-> > > Yes, see ALSA-Configuration.txt and Procfile.txt.
-> > > 
-> > Thanks for the tip.
-> > 
-> > Seems that I don't have the /proc/asound/card0/pcm#[cp]/oss entries. I'm
-> > running 1.0.11 (gentoo packages). Any thoughts?
-> > 
-> > james@Rainsong /proc/asound/card0 $ ls
-> > codec97#0/    fx8010_code       fx8010_tram_data  midi1      voices
-> > emu10k1       fx8010_gpr        id                midi2      wavetableD1
-> > fx8010_acode  fx8010_tram_addr  midi0             oss_mixer
-> > james@Rainsong /proc/asound/card0 $
-> 
-> Did you enable CONFIG_SND_VERBOSE_PROCFS?
-> 
-That did the trick. Thanks.
+This is a multi-part message in MIME format.
 
+--part44e4cbf5f01cf
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+From: Krzysztof Helt (krzysztof.h1@wp.pl)
+
+The structure is in big part redudant.
+
+Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
+---
+
+
+----------------------------------------------------
+Ogl=B1daj -> Wydarzenia.wp.pl -> Wiesz, co najwa=BFniejsze!
+Najbardziej aktualne materia=B3y filmowe - Kliknij:
+http://klik.wp.pl/?adr=3Dwww.wydarzenia.wp.pl&sid=3D848
+
+--part44e4cbf5f01cf
+Content-Type: application/octet-stream; name="dbri-patch5.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="dbri-patch5.diff"
+
+LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
+OC0xNiAyMjozMjowOS4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
+cmMvZGJyaS5jCTIwMDYtMDgtMTYgMjA6MzQ6MzEuMDAwMDAwMDAwICswMjAwCkBAIC0yNTAsNiAr
+MjUwLDcgQEAgc3RhdGljIHN0cnVjdCB7CiAjZGVmaW5lIERCUklfTk9fU1RSRUFNUwkyCiAKIC8q
+IE9uZSB0cmFuc21pdC9yZWNlaXZlIGRlc2NyaXB0b3IgKi8KKy8qIFdoZW4gYmEgIT0gMCBkZXNj
+cmlwdG9yIGlzIHVzZWQgKi8KIHN0cnVjdCBkYnJpX21lbSB7CiAJdm9sYXRpbGUgX191MzIgd29y
+ZDE7CiAJX191MzIgYmE7CS8qIFRyYW5zbWl0L1JlY2VpdmUgQnVmZmVyIEFkZHJlc3MgKi8KQEAg
+LTI4MiwxMiArMjgzLDYgQEAgc3RydWN0IGRicmlfcGlwZSB7CiAJdm9sYXRpbGUgX191MzIgKnJl
+Y3ZfZml4ZWRfcHRyOwkvKiBQdHIgdG8gcmVjZWl2ZSBmaXhlZCBkYXRhICovCiB9OwogCi1zdHJ1
+Y3QgZGJyaV9kZXNjIHsKLQlpbnQgaW51c2U7CQkvKiBCb29sZWFuIGZsYWcgKi8KLQlpbnQgbmV4
+dDsJCS8qIEluZGV4IG9mIG5leHQgZGVzYywgb3IgLTEgKi8KLQl1bnNpZ25lZCBpbnQgbGVuOwot
+fTsKLQogLyogUGVyIHN0cmVhbSAocGxheWJhY2sgb3IgcmVjb3JkKSBpbmZvcm1hdGlvbiAqLwog
+c3RydWN0IGRicmlfc3RyZWFtaW5mbyB7CiAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
+dHJlYW07CkBAIC0zMTcsNyArMzEyLDcgQEAgc3RydWN0IHNuZF9kYnJpIHsKIAlpbnQgd2FpdF9h
+Y2tkOwkJLyogc2VxdWVuY2Ugb2YgY29tbWFuZCBidWZmZXJzIGFja25vd2xlZGdlZCAqLwogCiAJ
+c3RydWN0IGRicmlfcGlwZSBwaXBlc1tEQlJJX05PX1BJUEVTXTsJLyogREJSSSdzIDMyIGRhdGEg
+cGlwZXMgKi8KLQlzdHJ1Y3QgZGJyaV9kZXNjIGRlc2NzW0RCUklfTk9fREVTQ1NdOworCWludCBu
+ZXh0X2Rlc2NbREJSSV9OT19ERVNDU107CQkvKiBJbmRleCBvZiBuZXh0IGRlc2MsIG9yIC0xICov
+CiAKIAlpbnQgY2hpX2luX3BpcGU7CiAJaW50IGNoaV9vdXRfcGlwZTsKQEAgLTgwMyw4ICs3OTgs
+OCBAQCBzdGF0aWMgdm9pZCByZXNldF9waXBlKHN0cnVjdCBzbmRfZGJyaSAqCiAKIAlkZXNjID0g
+ZGJyaS0+cGlwZXNbcGlwZV0uZmlyc3RfZGVzYzsKIAl3aGlsZSAoZGVzYyAhPSAtMSkgewotCQlk
+YnJpLT5kZXNjc1tkZXNjXS5pbnVzZSA9IDA7Ci0JCWRlc2MgPSBkYnJpLT5kZXNjc1tkZXNjXS5u
+ZXh0OworCQlkYnJpLT5kbWEtPmRlc2NbZGVzY10ubmRhID0gZGJyaS0+ZG1hLT5kZXNjW2Rlc2Nd
+LmJhID0gMDsKKwkJZGVzYyA9IGRicmktPm5leHRfZGVzY1tkZXNjXTsKIAl9CiAKIAlkYnJpLT5w
+aXBlc1twaXBlXS5kZXNjID0gLTE7CkBAIC0xMDkzLDcgKzEwODgsNyBAQCBzdGF0aWMgaW50IHNl
+dHVwX2Rlc2NzKHN0cnVjdCBzbmRfZGJyaSAqCiAJCWludCBteWxlbjsKIAogCQlmb3IgKDsgZGVz
+YyA8IERCUklfTk9fREVTQ1M7IGRlc2MrKykgewotCQkJaWYgKCFkYnJpLT5kZXNjc1tkZXNjXS5p
+bnVzZSkKKwkJCWlmICghZGJyaS0+ZG1hLT5kZXNjW2Rlc2NdLmJhKQogCQkJCWJyZWFrOwogCQl9
+CiAJCWlmIChkZXNjID09IERCUklfTk9fREVTQ1MpIHsKQEAgLTExMTAsMTkgKzExMDUsMTYgQEAg
+c3RhdGljIGludCBzZXR1cF9kZXNjcyhzdHJ1Y3Qgc25kX2RicmkgKgogCQkJbXlsZW4gPSBwZXJp
+b2Q7CiAJCX0KIAotCQlkYnJpLT5kZXNjc1tkZXNjXS5pbnVzZSA9IDE7Ci0JCWRicmktPmRlc2Nz
+W2Rlc2NdLm5leHQgPSAtMTsKKwkJZGJyaS0+bmV4dF9kZXNjW2Rlc2NdID0gLTE7CiAJCWRicmkt
+PmRtYS0+ZGVzY1tkZXNjXS5iYSA9IGR2bWFfYnVmZmVyOwogCQlkYnJpLT5kbWEtPmRlc2NbZGVz
+Y10ubmRhID0gMDsKIAogCQlpZiAoc3RyZWFtbm8gPT0gREJSSV9QTEFZKSB7Ci0JCQlkYnJpLT5k
+ZXNjc1tkZXNjXS5sZW4gPSBteWxlbjsKIAkJCWRicmktPmRtYS0+ZGVzY1tkZXNjXS53b3JkMSA9
+IERCUklfVERfQ05UKG15bGVuKTsKIAkJCWRicmktPmRtYS0+ZGVzY1tkZXNjXS53b3JkNCA9IDA7
+CiAJCQlpZiAoZmlyc3RfZGVzYyAhPSAtMSkKIAkJCQlkYnJpLT5kbWEtPmRlc2NbZGVzY10ud29y
+ZDEgfD0gREJSSV9URF9NOwogCQl9IGVsc2UgewotCQkJZGJyaS0+ZGVzY3NbZGVzY10ubGVuID0g
+MDsKIAkJCWRicmktPmRtYS0+ZGVzY1tkZXNjXS53b3JkMSA9IDA7CiAJCQlkYnJpLT5kbWEtPmRl
+c2NbZGVzY10ud29yZDQgPQogCQkJICAgIERCUklfUkRfQiB8IERCUklfUkRfQkNOVChteWxlbik7
+CkBAIC0xMTMxLDcgKzExMjMsNyBAQCBzdGF0aWMgaW50IHNldHVwX2Rlc2NzKHN0cnVjdCBzbmRf
+ZGJyaSAqCiAJCWlmIChmaXJzdF9kZXNjID09IC0xKSB7CiAJCQlmaXJzdF9kZXNjID0gZGVzYzsK
+IAkJfSBlbHNlIHsKLQkJCWRicmktPmRlc2NzW2xhc3RfZGVzY10ubmV4dCA9IGRlc2M7CisJCQlk
+YnJpLT5uZXh0X2Rlc2NbbGFzdF9kZXNjXSA9IGRlc2M7CiAJCQlkYnJpLT5kbWEtPmRlc2NbbGFz
+dF9kZXNjXS5uZGEgPQogCQkJICAgIGRicmktPmRtYV9kdm1hICsgZGJyaV9kbWFfb2ZmKGRlc2Ms
+IGRlc2MpOwogCQl9CkBAIC0xMTU0LDcgKzExNDYsNyBAQCBzdGF0aWMgaW50IHNldHVwX2Rlc2Nz
+KHN0cnVjdCBzbmRfZGJyaSAqCiAJZGJyaS0+cGlwZXNbaW5mby0+cGlwZV0uZmlyc3RfZGVzYyA9
+IGZpcnN0X2Rlc2M7CiAJZGJyaS0+cGlwZXNbaW5mby0+cGlwZV0uZGVzYyA9IGZpcnN0X2Rlc2M7
+CiAKLQlmb3IgKGRlc2MgPSBmaXJzdF9kZXNjOyBkZXNjICE9IC0xOyBkZXNjID0gZGJyaS0+ZGVz
+Y3NbZGVzY10ubmV4dCkgeworCWZvciAoZGVzYyA9IGZpcnN0X2Rlc2M7IGRlc2MgIT0gLTE7IGRl
+c2MgPSBkYnJpLT5uZXh0X2Rlc2NbZGVzY10pIHsKIAkJZHByaW50ayhEX0RFU0MsICJERVNDICVk
+OiAlMDh4ICUwOHggJTA4eCAlMDh4XG4iLAogCQkJZGVzYywKIAkJCWRicmktPmRtYS0+ZGVzY1tk
+ZXNjXS53b3JkMSwKQEAgLTE3NDcsNiArMTczOSw3IEBAIHN0YXRpYyB2b2lkIHRyYW5zbWlzc2lv
+bl9jb21wbGV0ZV9pbnRyKHMKIAlzdHJ1Y3QgZGJyaV9zdHJlYW1pbmZvICppbmZvOwogCWludCB0
+ZDsKIAlpbnQgc3RhdHVzOworCWludCBsZW47CiAKIAlpbmZvID0gJmRicmktPnN0cmVhbV9pbmZv
+W0RCUklfUExBWV07CiAKQEAgLTE3NjUsMTEgKzE3NTgsMTIgQEAgc3RhdGljIHZvaWQgdHJhbnNt
+aXNzaW9uX2NvbXBsZXRlX2ludHIocwogCQlkcHJpbnRrKERfSU5ULCAiVEQgJWQsIHN0YXR1cyAw
+eCUwMnhcbiIsIHRkLCBzdGF0dXMpOwogCiAJCWRicmktPmRtYS0+ZGVzY1t0ZF0ud29yZDQgPSAw
+OwkvKiBSZXNldCBpdCBmb3IgbmV4dCB0aW1lLiAqLwotCQlpbmZvLT5vZmZzZXQgKz0gZGJyaS0+
+ZGVzY3NbdGRdLmxlbjsKLQkJaW5mby0+bGVmdCAtPSBkYnJpLT5kZXNjc1t0ZF0ubGVuOworCQls
+ZW4gPSBEQlJJX1JEX0NOVChkYnJpLT5kbWEtPmRlc2NbdGRdLndvcmQxKTsKKwkJaW5mby0+b2Zm
+c2V0ICs9IGxlbjsKKwkJaW5mby0+bGVmdCAtPSBsZW47CiAKIAkJLyogT24gdGhlIGxhc3QgVEQs
+IHRyYW5zbWl0IHRoZW0gYWxsIGFnYWluLiAqLwotCQlpZiAoZGJyaS0+ZGVzY3NbdGRdLm5leHQg
+PT0gLTEpIHsKKwkJaWYgKGRicmktPm5leHRfZGVzY1t0ZF0gPT0gLTEpIHsKIAkJCWlmIChpbmZv
+LT5sZWZ0ID4gMCkgewogCQkJCXByaW50ayhLRVJOX1dBUk5JTkcKIAkJCQkgICAgICAgIiVkIGJ5
+dGVzIGxlZnQgYWZ0ZXIgbGFzdCB0cmFuc2Zlci5cbiIsCkBAIC0xNzc5LDcgKzE3NzMsNyBAQCBz
+dGF0aWMgdm9pZCB0cmFuc21pc3Npb25fY29tcGxldGVfaW50cihzCiAJCQl0YXNrbGV0X3NjaGVk
+dWxlKCZ4bWl0X2Rlc2NzX3Rhc2spOwogCQl9CiAKLQkJdGQgPSBkYnJpLT5kZXNjc1t0ZF0ubmV4
+dDsKKwkJdGQgPSBkYnJpLT5uZXh0X2Rlc2NbdGRdOwogCQlkYnJpLT5waXBlc1twaXBlXS5kZXNj
+ID0gdGQ7CiAJfQogCkBAIC0xODAzLDggKzE3OTcsOCBAQCBzdGF0aWMgdm9pZCByZWNlcHRpb25f
+Y29tcGxldGVfaW50cihzdHJ1CiAJCXJldHVybjsKIAl9CiAKLQlkYnJpLT5kZXNjc1tyZF0uaW51
+c2UgPSAwOwotCWRicmktPnBpcGVzW3BpcGVdLmRlc2MgPSBkYnJpLT5kZXNjc1tyZF0ubmV4dDsK
+KwlkYnJpLT5kbWEtPmRlc2NbcmRdLmJhID0gMDsKKwlkYnJpLT5waXBlc1twaXBlXS5kZXNjID0g
+ZGJyaS0+bmV4dF9kZXNjW3JkXTsKIAlzdGF0dXMgPSBkYnJpLT5kbWEtPmRlc2NbcmRdLndvcmQx
+OwogCWRicmktPmRtYS0+ZGVzY1tyZF0ud29yZDEgPSAwOwkvKiBSZXNldCBpdCBmb3IgbmV4dCB0
+aW1lLiAqLwogCkBAIC0xODE4LDcgKzE4MTIsNyBAQCBzdGF0aWMgdm9pZCByZWNlcHRpb25fY29t
+cGxldGVfaW50cihzdHJ1CiAJCXJkLCBEQlJJX1JEX1NUQVRVUyhzdGF0dXMpLCBEQlJJX1JEX0NO
+VChzdGF0dXMpKTsKIAogCS8qIE9uIHRoZSBsYXN0IFRELCB0cmFuc21pdCB0aGVtIGFsbCBhZ2Fp
+bi4gKi8KLQlpZiAoZGJyaS0+ZGVzY3NbcmRdLm5leHQgPT0gLTEpIHsKKwlpZiAoZGJyaS0+bmV4
+dF9kZXNjW3JkXSA9PSAtMSkgewogCQlpZiAoaW5mby0+bGVmdCA+IGluZm8tPnNpemUpIHsKIAkJ
+CXByaW50ayhLRVJOX1dBUk5JTkcKIAkJCSAgICAgICAiJWQgYnl0ZXMgcmVjb3JkZWQgaW4gJWQg
+c2l6ZSBidWZmZXIuXG4iLAo=
+
+--part44e4cbf5f01cf
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--part44e4cbf5f01cf
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--part44e4cbf5f01cf--
