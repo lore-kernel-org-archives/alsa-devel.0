@@ -1,10 +1,10 @@
-From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: [PATCH] sparc dbri: simplifed linking time slot
-	function
-Date: Thu, 17 Aug 2006 22:09:54 +0200
-Message-ID: <44e4cd1210af3@wp.pl>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="part44e4cd1215794"
+From: rob arnold <rob@loci.net>
+Subject: hda intel D945GNT, a few stability/latency issues
+Date: Thu, 17 Aug 2006 20:19:34 -0700
+Message-ID: <3C2001A3-6696-4F74-885D-3F07E1881B3F@loci.net>
+Mime-Version: 1.0 (Apple Message framework v752.2)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,180 +15,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi, I'm running into some stability and latency problems with the hda  
+driver, and after trying different releases, including pulling latest  
+from hg, still am not getting anywhere on a few remaining issues.   
+I'd like to report them and see if there is anything I can do to help  
+resolve them.
 
---part44e4cd1215794
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1) audio channels can "go away" over time.  By this, I mean that I've  
+seen line in and/or line out go away, though mixer settings haven't  
+changed.  There are no application errors displayed, nor errors  
+displayed in /var/log/messages (though possible I don't have logging  
+turned up enough).  Once it occurs, which can happen anytime after  
+boot to days or weeks later (we have high uptime systems), the channel 
+(s) stay dead until the machine is rebooted, or until /etc/init.d/ 
+alsasound restart is performed
 
-From: Krzysztof Helt (krzysztof.h1@wp.pl)
+2) Audio channels can develop a "crackle".  It's typically a single  
+left or right channel of line out.  The crackle doesn't necessarily  
+go away with an alsasound restart, but will with a reboot.  I've seen  
+the crackle happen immediately after a reboot.  I am not positive,  
+but think it also might develop over time, since I've walked in and  
+heard it one day, where I didn't hear it previously, without an  
+intervening reboot to my knowledge.  The crackle is only audible when  
+there is a sound playing (via any app), it's not continuous.
 
-A simplified routines to link and unlink time slots.
+3)  capture mute seems to do something odd to the driver and apps  
+connected to it.  I need to dig into our app code and get more  
+information, but from what I can tell, my read on the dsp (this would  
+be through oss emulation, though the above problems are with direct  
+alsa apps) seems to block for a lot longer than expected or  
+something.  I understand this description might be useless, and will  
+try to get more information.
 
-Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
----
+4) (this occurs only on one FC5 x86 build, whereas the above occur on  
+both FC5 x86 and x86_64 builds)  my app, which is playing audio  
+sync'd with video, both through SDL (SDL set to use alsa directly),  
+slowly looses audio sync.  The audio playback drift out longer and  
+longer.  We're not talking seconds or anything, but probably 100's of  
+milliseconds over an hour or three.  Oddly, it doesn't do this on the  
+exact same hardware, exact same app software and libraries, on an  
+almost identical FC5 x86_64 build (vs. 32bit x86 build).  The kernels  
+are different, and at this point the alsa versions are as well,  
+though I've gone through several alsa versions with the same results
 
-----------------------------------------------------
-Najnowsze odkrycie =B6wiatowej muzyki- smacznej i snobistycznej.
-Wschodz=B1ca gwiazda, wybitnie utalentowana Sophie Solomon
-wraz z zespo=B3em w Warszawie!!
-http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2Fsophie_sol=
-omon_w_fabryce_trzciny.html&sid=3D846
 
---part44e4cd1215794
-Content-Type: application/octet-stream; name="dbri-patch8.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="dbri-patch8.diff"
+System details:
+Intel D945GNT motherboards
 
-LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
-OC0xNyAyMTozNjowMC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
-cmMvZGJyaS5jCTIwMDYtMDgtMTcgMjE6NDE6MTQuMDAwMDAwMDAwICswMjAwCkBAIC0yNzQsNyAr
-Mjc0LDYgQEAgZW51bSBpbl9vcl9vdXQgeyBQSVBFaW5wdXQsIFBJUEVvdXRwdXQgfQogc3RydWN0
-IGRicmlfcGlwZSB7CiAJdTMyIHNkcDsJCS8qIFNEUCBjb21tYW5kIHdvcmQgKi8KIAlpbnQgbmV4
-dHBpcGU7CQkvKiBOZXh0IHBpcGUgaW4gbGlua2VkIGxpc3QgKi8KLQlpbnQgY3ljbGU7CQkvKiBP
-ZmZzZXQgb2YgdGltZXNsb3QgKGJpdHMpICovCiAJaW50IGxlbmd0aDsJCS8qIExlbmd0aCBvZiB0
-aW1lc2xvdCAoYml0cykgKi8KIAlpbnQgZmlyc3RfZGVzYzsJCS8qIEluZGV4IG9mIGZpcnN0IGRl
-c2NyaXB0b3IgKi8KIAlpbnQgZGVzYzsJCS8qIEluZGV4IG9mIGFjdGl2ZSBkZXNjcmlwdG9yICov
-CkBAIC0zMTIsOCArMzExLDYgQEAgc3RydWN0IHNuZF9kYnJpIHsKIAlzdHJ1Y3QgZGJyaV9waXBl
-IHBpcGVzW0RCUklfTk9fUElQRVNdOwkvKiBEQlJJJ3MgMzIgZGF0YSBwaXBlcyAqLwogCWludCBu
-ZXh0X2Rlc2NbREJSSV9OT19ERVNDU107CQkvKiBJbmRleCBvZiBuZXh0IGRlc2MsIG9yIC0xICov
-CiAKLQlpbnQgY2hpX2luX3BpcGU7Ci0JaW50IGNoaV9vdXRfcGlwZTsKIAlpbnQgY2hpX2JwZjsK
-IAogCXN0cnVjdCBjczQyMTUgbW07CS8qIG1tY29kZWMgc3BlY2lhbCBpbmZvICovCkBAIC04Mjcs
-OTIgKzgyNCw1NSBAQCBzdGF0aWMgdm9pZCBzZXR1cF9waXBlKHN0cnVjdCBzbmRfZGJyaSAqCiAJ
-cmVzZXRfcGlwZShkYnJpLCBwaXBlKTsKIH0KIAotLyogRklYTUU6IGRpcmVjdGlvbiBub3QgbmVl
-ZGVkICovCiBzdGF0aWMgdm9pZCBsaW5rX3RpbWVfc2xvdChzdHJ1Y3Qgc25kX2RicmkgKiBkYnJp
-LCBpbnQgcGlwZSwKLQkJCSAgIGVudW0gaW5fb3Jfb3V0IGRpcmVjdGlvbiwgaW50IGJhc2VwaXBl
-LAorCQkJICAgaW50IHByZXZwaXBlLCBpbnQgbmV4dHBpcGUsCiAJCQkgICBpbnQgbGVuZ3RoLCBp
-bnQgY3ljbGUpCiB7CiAJdm9sYXRpbGUgczMyICpjbWQ7CiAJaW50IHZhbDsKLQlpbnQgcHJldnBp
-cGU7Ci0JaW50IG5leHRwaXBlOwogCi0JaWYgKHBpcGUgPCAwIHx8IHBpcGUgPiBEQlJJX01BWF9Q
-SVBFIHx8IGJhc2VwaXBlIDwgMCB8fCBiYXNlcGlwZSA+IERCUklfTUFYX1BJUEUpIHsKKwlpZiAo
-cGlwZSA8IDAgfHwgcGlwZSA+IERCUklfTUFYX1BJUEUgCisJCQl8fCBwcmV2cGlwZSA8IDAgfHwg
-cHJldnBpcGUgPiBEQlJJX01BWF9QSVBFCisJCQl8fCBuZXh0cGlwZSA8IDAgfHwgbmV4dHBpcGUg
-PiBEQlJJX01BWF9QSVBFKSB7CiAJCXByaW50ayhLRVJOX0VSUiAKIAkJICAgICJEQlJJOiBsaW5r
-X3RpbWVfc2xvdCBjYWxsZWQgd2l0aCBpbGxlZ2FsIHBpcGUgbnVtYmVyXG4iKTsKIAkJcmV0dXJu
-OwogCX0KIAotCWlmIChkYnJpLT5waXBlc1twaXBlXS5zZHAgPT0gMCB8fCBkYnJpLT5waXBlc1ti
-YXNlcGlwZV0uc2RwID09IDApIHsKKwlpZiAoZGJyaS0+cGlwZXNbcGlwZV0uc2RwID09IDAgCisJ
-CQl8fCBkYnJpLT5waXBlc1twcmV2cGlwZV0uc2RwID09IDAKKwkJCXx8IGRicmktPnBpcGVzW25l
-eHRwaXBlXS5zZHAgPT0gMCkgewogCQlwcmludGsoS0VSTl9FUlIgIkRCUkk6IGxpbmtfdGltZV9z
-bG90IGNhbGxlZCBvbiB1bmluaXRpYWxpemVkIHBpcGVcbiIpOwogCQlyZXR1cm47CiAJfQogCi0J
-LyogRGVhbCB3aXRoIENISSBzcGVjaWFsIGNhc2U6Ci0JICogIklmIHRyYW5zbWlzc2lvbiBvbiBl
-ZGdlcyAwIG9yIDEgaXMgZGVzaXJlZCwgdGhlbiBjeWNsZSBuCi0JICogICh3aGVyZSBuID0gIyBv
-ZiBiaXQgdGltZXMgcGVyIGZyYW1lLi4uKSBtdXN0IGJlIHVzZWQuIgotCSAqICAgICAgICAgICAg
-ICAgICAgLSBEQlJJIGRhdGEgc2hlZXQsIHBhZ2UgMTEKLQkgKi8KLQlpZiAoYmFzZXBpcGUgPT0g
-MTYgJiYgZGlyZWN0aW9uID09IFBJUEVvdXRwdXQgJiYgY3ljbGUgPT0gMCkKLQkJY3ljbGUgPSBk
-YnJpLT5jaGlfYnBmOwotCi0JaWYgKGJhc2VwaXBlID09IHBpcGUpIHsKLQkJcHJldnBpcGUgPSBw
-aXBlOwotCQluZXh0cGlwZSA9IHBpcGU7Ci0JfSBlbHNlIHsKLQkJLyogV2UncmUgbm90IGluaXRp
-YWxpemluZyBhIG5ldyBsaW5rZWQgbGlzdCAoYmFzZXBpcGUgIT0gcGlwZSksCi0JCSAqIHNvIHJ1
-biB0aHJvdWdoIHRoZSBsaW5rZWQgbGlzdCBhbmQgZmluZCB3aGVyZSB0aGlzIHBpcGUKLQkJICog
-c2hvdWxkIGJlIHNsb3RlZCBpbiwgYmFzZWQgb24gaXRzIGN5Y2xlLiAgQ0hJIGNvbmZ1c2VzCi0J
-CSAqIHRoaW5ncyBhIGJpdCwgc2luY2UgaXQgaGFzIGEgc2luZ2xlIGFuY2hvciBmb3IgYm90aCBp
-dHMKLQkJICogdHJhbnNtaXQgYW5kIHJlY2VpdmUgbGlzdHMuCi0JCSAqLwotCQlpZiAoYmFzZXBp
-cGUgPT0gMTYpIHsKLQkJCWlmIChkaXJlY3Rpb24gPT0gUElQRWlucHV0KSB7Ci0JCQkJcHJldnBp
-cGUgPSBkYnJpLT5jaGlfaW5fcGlwZTsKLQkJCX0gZWxzZSB7Ci0JCQkJcHJldnBpcGUgPSBkYnJp
-LT5jaGlfb3V0X3BpcGU7Ci0JCQl9Ci0JCX0gZWxzZSB7Ci0JCQlwcmV2cGlwZSA9IGJhc2VwaXBl
-OwotCQl9Ci0KLQkJbmV4dHBpcGUgPSBkYnJpLT5waXBlc1twcmV2cGlwZV0ubmV4dHBpcGU7Ci0K
-LQkJd2hpbGUgKGRicmktPnBpcGVzW25leHRwaXBlXS5jeWNsZSA8IGN5Y2xlCi0JCSAgICAgICAm
-JiBkYnJpLT5waXBlc1tuZXh0cGlwZV0ubmV4dHBpcGUgIT0gYmFzZXBpcGUpIHsKLQkJCXByZXZw
-aXBlID0gbmV4dHBpcGU7Ci0JCQluZXh0cGlwZSA9IGRicmktPnBpcGVzW25leHRwaXBlXS5uZXh0
-cGlwZTsKLQkJfQotCX0KLQotCWlmIChwcmV2cGlwZSA9PSAxNikgewotCQlpZiAoZGlyZWN0aW9u
-ID09IFBJUEVpbnB1dCkgewotCQkJZGJyaS0+Y2hpX2luX3BpcGUgPSBwaXBlOwotCQl9IGVsc2Ug
-ewotCQkJZGJyaS0+Y2hpX291dF9waXBlID0gcGlwZTsKLQkJfQotCX0gZWxzZSB7Ci0JCWRicmkt
-PnBpcGVzW3ByZXZwaXBlXS5uZXh0cGlwZSA9IHBpcGU7Ci0JfQorCWRicmktPnBpcGVzW3ByZXZw
-aXBlXS5uZXh0cGlwZSA9IHBpcGU7CiAKIAlkYnJpLT5waXBlc1twaXBlXS5uZXh0cGlwZSA9IG5l
-eHRwaXBlOwotCWRicmktPnBpcGVzW3BpcGVdLmN5Y2xlID0gY3ljbGU7CiAJZGJyaS0+cGlwZXNb
-cGlwZV0ubGVuZ3RoID0gbGVuZ3RoOwogCiAJY21kID0gZGJyaV9jbWRsb2NrKGRicmksIE5vR2V0
-TG9jayk7CiAKLQlpZiAoZGlyZWN0aW9uID09IFBJUEVpbnB1dCkgewotCQl2YWwgPSBEX0RUU19W
-SSB8IERfRFRTX0lOUyB8IERfRFRTX1BSVklOKHByZXZwaXBlKSB8IHBpcGU7CisJaWYgKGRicmkt
-PnBpcGVzW3BpcGVdLnNkcCAmIERfU0RQX1RPX1NFUikgeworCQkvKiBEZWFsIHdpdGggQ0hJIHNw
-ZWNpYWwgY2FzZToKKwkJICogIklmIHRyYW5zbWlzc2lvbiBvbiBlZGdlcyAwIG9yIDEgaXMgZGVz
-aXJlZCwgdGhlbiBjeWNsZSBuCisJCSAqICAod2hlcmUgbiA9ICMgb2YgYml0IHRpbWVzIHBlciBm
-cmFtZS4uLikgbXVzdCBiZSB1c2VkLiIKKwkJICogICAgICAgICAgICAgICAgICAtIERCUkkgZGF0
-YSBzaGVldCwgcGFnZSAxMQorCQkgKi8KKwkJaWYgKHByZXZwaXBlID09IDE2ICYmIGN5Y2xlID09
-IDApCisJCQljeWNsZSA9IGRicmktPmNoaV9icGY7CisKKwkJdmFsID0gRF9EVFNfVk8gfCBEX0RU
-U19JTlMgfCBEX0RUU19QUlZPVVQocHJldnBpcGUpIHwgcGlwZTsKIAkJKihjbWQrKykgPSBEQlJJ
-X0NNRChEX0RUUywgMCwgdmFsKTsKKwkJKihjbWQrKykgPSAwOwogCQkqKGNtZCsrKSA9CiAJCSAg
-ICBEX1RTX0xFTihsZW5ndGgpIHwgRF9UU19DWUNMRShjeWNsZSkgfCBEX1RTX05FWFQobmV4dHBp
-cGUpOwotCQkqKGNtZCsrKSA9IDA7CiAJfSBlbHNlIHsKLQkJdmFsID0gRF9EVFNfVk8gfCBEX0RU
-U19JTlMgfCBEX0RUU19QUlZPVVQocHJldnBpcGUpIHwgcGlwZTsKKwkJdmFsID0gRF9EVFNfVkkg
-fCBEX0RUU19JTlMgfCBEX0RUU19QUlZJTihwcmV2cGlwZSkgfCBwaXBlOwogCQkqKGNtZCsrKSA9
-IERCUklfQ01EKERfRFRTLCAwLCB2YWwpOwotCQkqKGNtZCsrKSA9IDA7CiAJCSooY21kKyspID0K
-IAkJICAgIERfVFNfTEVOKGxlbmd0aCkgfCBEX1RTX0NZQ0xFKGN5Y2xlKSB8IERfVFNfTkVYVChu
-ZXh0cGlwZSk7CisJCSooY21kKyspID0gMDsKIAl9CiAKIAlkYnJpX2NtZHNlbmQoZGJyaSwgY21k
-KTsKQEAgLTExOTIsMjEgKzExNTIsMTggQEAgc3RhdGljIHZvaWQgcmVzZXRfY2hpKHN0cnVjdCBz
-bmRfZGJyaSAqIAogCX0gZWxzZSB7CiAJCWludCBwaXBlOwogCi0JCWZvciAocGlwZSA9IGRicmkt
-PmNoaV9pbl9waXBlOwotCQkgICAgIHBpcGUgIT0gMTY7IHBpcGUgPSBkYnJpLT5waXBlc1twaXBl
-XS5uZXh0cGlwZSkgewotCQkJdW5saW5rX3RpbWVfc2xvdChkYnJpLCBwaXBlLCBQSVBFaW5wdXQs
-Ci0JCQkJCSAxNiwgZGJyaS0+cGlwZXNbcGlwZV0ubmV4dHBpcGUpOwotCQl9Ci0JCWZvciAocGlw
-ZSA9IGRicmktPmNoaV9vdXRfcGlwZTsKLQkJICAgICBwaXBlICE9IDE2OyBwaXBlID0gZGJyaS0+
-cGlwZXNbcGlwZV0ubmV4dHBpcGUpIHsKLQkJCXVubGlua190aW1lX3Nsb3QoZGJyaSwgcGlwZSwg
-UElQRW91dHB1dCwKLQkJCQkJIDE2LCBkYnJpLT5waXBlc1twaXBlXS5uZXh0cGlwZSk7Ci0JCX0K
-LQotCQljbWQgPSBkYnJpX2NtZGxvY2soZGJyaSwgR2V0TG9jayk7CisJCWZvciAocGlwZSA9IDA7
-IHBpcGUgPCBEQlJJX05PX1BJUEVTOyBwaXBlKysgKQorCQkJaWYgKCBwaXBlICE9IDE2ICkgewor
-CQkJCWlmIChkYnJpLT5waXBlc1twaXBlXS5zZHAgJiBEX1NEUF9UT19TRVIpCisJCQkJCXVubGlu
-a190aW1lX3Nsb3QoZGJyaSwgcGlwZSwgUElQRW91dHB1dCwKKwkJCQkJCQkgMTYsIGRicmktPnBp
-cGVzW3BpcGVdLm5leHRwaXBlKTsKKwkJCQllbHNlCisJCQkJCXVubGlua190aW1lX3Nsb3QoZGJy
-aSwgcGlwZSwgUElQRWlucHV0LAorCQkJCQkJCSAxNiwgZGJyaS0+cGlwZXNbcGlwZV0ubmV4dHBp
-cGUpOworCQkJfQorICAKKyAgCQljbWQgPSBkYnJpX2NtZGxvY2soZGJyaSwgR2V0TG9jayk7CiAJ
-fQotCWRicmktPmNoaV9pbl9waXBlID0gMTY7Ci0JZGJyaS0+Y2hpX291dF9waXBlID0gMTY7CiAK
-IAlpZiAobWFzdGVyX29yX3NsYXZlID09IENISXNsYXZlKSB7CiAJCS8qIFNldHVwIERCUkkgZm9y
-IENISSBTbGF2ZSAtIHJlY2VpdmUgY2xvY2ssIGZyYW1lIHN5bmMgKEZTKQpAQCAtMTM5NywxMCAr
-MTM1NCwxMCBAQCBzdGF0aWMgdm9pZCBjczQyMTVfb3BlbihzdHJ1Y3Qgc25kX2RicmkgCiAJICov
-CiAJZGF0YV93aWR0aCA9IGRicmktPm1tLmNoYW5uZWxzICogZGJyaS0+bW0ucHJlY2lzaW9uOwog
-Ci0JbGlua190aW1lX3Nsb3QoZGJyaSwgMjAsIFBJUEVvdXRwdXQsIDE2LCAzMiwgZGJyaS0+bW0u
-b2Zmc2V0ICsgMzIpOwotCWxpbmtfdGltZV9zbG90KGRicmksIDQsIFBJUEVvdXRwdXQsIDE2LCBk
-YXRhX3dpZHRoLCBkYnJpLT5tbS5vZmZzZXQpOwotCWxpbmtfdGltZV9zbG90KGRicmksIDYsIFBJ
-UEVpbnB1dCwgMTYsIGRhdGFfd2lkdGgsIGRicmktPm1tLm9mZnNldCk7Ci0JbGlua190aW1lX3Ns
-b3QoZGJyaSwgMjEsIFBJUEVpbnB1dCwgMTYsIDE2LCBkYnJpLT5tbS5vZmZzZXQgKyA0MCk7CisJ
-bGlua190aW1lX3Nsb3QoZGJyaSwgNCwgMTYsIDE2LCBkYXRhX3dpZHRoLCBkYnJpLT5tbS5vZmZz
-ZXQpOworCWxpbmtfdGltZV9zbG90KGRicmksIDIwLCA0LCAxNiwgMzIsIGRicmktPm1tLm9mZnNl
-dCArIDMyKTsKKwlsaW5rX3RpbWVfc2xvdChkYnJpLCA2LCAxNiwgMTYsIGRhdGFfd2lkdGgsIGRi
-cmktPm1tLm9mZnNldCk7CisJbGlua190aW1lX3Nsb3QoZGJyaSwgMjEsIDYsIDE2LCAxNiwgZGJy
-aS0+bW0ub2Zmc2V0ICsgNDApOwogCiAJLyogRklYTUU6IGVuYWJsZSBDSEkgYWZ0ZXIgX3NldGRh
-dGE/ICovCiAJdG1wID0gc2J1c19yZWFkbChkYnJpLT5yZWdzICsgUkVHMCk7CkBAIC0xNDY2LDkg
-KzE0MjMsOSBAQCBzdGF0aWMgaW50IGNzNDIxNV9zZXRjdHJsKHN0cnVjdCBzbmRfZGJyCiAJICog
-UGlwZSAxOTogUmVjZWl2ZSB0aW1lc2xvdCA3ICh2ZXJzaW9uKS4gCiAJICovCiAKLQlsaW5rX3Rp
-bWVfc2xvdChkYnJpLCAxNywgUElQRW91dHB1dCwgMTYsIDMyLCBkYnJpLT5tbS5vZmZzZXQpOwot
-CWxpbmtfdGltZV9zbG90KGRicmksIDE4LCBQSVBFaW5wdXQsIDE2LCA4LCBkYnJpLT5tbS5vZmZz
-ZXQpOwotCWxpbmtfdGltZV9zbG90KGRicmksIDE5LCBQSVBFaW5wdXQsIDE2LCA4LCBkYnJpLT5t
-bS5vZmZzZXQgKyA0OCk7CisJbGlua190aW1lX3Nsb3QoZGJyaSwgMTcsIDE2LCAxNiwgMzIsIGRi
-cmktPm1tLm9mZnNldCk7CisJbGlua190aW1lX3Nsb3QoZGJyaSwgMTgsIDE2LCAxNiwgOCwgZGJy
-aS0+bW0ub2Zmc2V0KTsKKwlsaW5rX3RpbWVfc2xvdChkYnJpLCAxOSwgMTgsIDE2LCA4LCBkYnJp
-LT5tbS5vZmZzZXQgKyA0OCk7CiAKIAkvKiBXYWl0IGZvciB0aGUgY2hpcCB0byBlY2hvIGJhY2sg
-Q0xCIChDb250cm9sIExhdGNoIEJpdCkgYXMgemVybyAqLwogCWRicmktPm1tLmN0cmxbMF0gJj0g
-fkNTNDIxNV9DTEI7CkBAIC0yNDQ1LDExICsyNDAyLDExIEBAIHN0YXRpYyB2b2lkIGRicmlfZGVi
-dWdfcmVhZChzdHJ1Y3Qgc25kX2kKIAkJCXN0cnVjdCBkYnJpX3BpcGUgKnBwdHIgPSAmZGJyaS0+
-cGlwZXNbcGlwZV07CiAJCQlzbmRfaXByaW50ZihidWZmZXIsCiAJCQkJICAgICJQaXBlICVkOiAl
-cyBTRFA9MHgleCBkZXNjPSVkLCAiCi0JCQkJICAgICJsZW49JWQgQCAlZCBuZXh0ICVkXG4iLAor
-CQkJCSAgICAibGVuPSVkIG5leHQgJWRcbiIsCiAJCQkJICAgIHBpcGUsCiAJCQkJICAgKChwcHRy
-LT5zZHAgJiBEX1NEUF9UT19TRVIpID8gIm91dHB1dCIgOiAiaW5wdXQiKSwKIAkJCQkgICAgcHB0
-ci0+c2RwLCBwcHRyLT5kZXNjLAotCQkJCSAgICBwcHRyLT5sZW5ndGgsIHBwdHItPmN5Y2xlLCBw
-cHRyLT5uZXh0cGlwZSk7CisJCQkJICAgIHBwdHItPmxlbmd0aCwgcHB0ci0+bmV4dHBpcGUpOwog
-CQl9CiAJfQogfQo=
+Fedora Core 5 distributions, both x86_64 (running 2.6.16-1.2096_FC5  
+standard fedora kernel, alsa 1.0.11) and x86 (running  
+2.6.17-1.2157_FC5smp standard fedora kernel, alsa various, from  
+1.0.11 rc2 - 1.0.12rc2, rc3(drivers))
 
---part44e4cd1215794
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+the lspci -v looks a little different between the x86_64 and the x86  
+loads:
+x86_64:
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High  
+Definition Audio Controller (rev 01)
+         Subsystem: Intel Corporation Unknown device 0202
+         Flags: bus master, fast devsel, latency 0, IRQ 22
+         Memory at 52200000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+  
+Queue=0/0 Enable-
+         Capabilities: [70] Express Unknown type IRQ 0
+         Capabilities: [100] Virtual Channel
+         Capabilities: [130] Unknown (5)
+
+
+x86:
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High  
+Definition Audio Controller (rev 01)
+         Subsystem: Intel Corporation Unknown device 0202
+         Flags: bus master, fast devsel, latency 0, IRQ 66
+         Memory at 52200000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+  
+Queue=0/0 Enable-
+         Capabilities: [70] Express Unknown type IRQ 0
+
+
+It seems like I should be providing more information, but I'm not  
+sure where to go next.  I'd appreciate any suggestions, and I'm  
+willing to work at whatever level needed to get these issues  
+resolved, as it's killing my ability to rely on this particular  
+platform for long term audio use.  I have not dug into the hda code  
+itself, nor am I sure the problem necessarily lies entirely there,  
+but I'll patch and recompile as needed if there are possible fixes to  
+test.
+
+Any ideas?   Thanks all.
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---part44e4cd1215794
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---part44e4cd1215794--
