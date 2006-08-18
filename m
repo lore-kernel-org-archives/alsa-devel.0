@@ -1,13 +1,21 @@
-From: Jason Chu <jchu@xentac.net>,
-	(by way of Jason Chu <jchu@xentac.net>)
-Subject: Tested patch for "No sound with ALC260 chip"
-Date: Fri, 18 Aug 2006 07:44:37 -0700
-Message-ID: <20060818074437.3c8e0408@localhost.localdomain>
+From: "Liisi Parisi" <turpyfrancka@baker-installations.com>
+Subject: Re: zuti news
+Date: Fri, 18 Aug 2006 08:51:34 -0700
+Message-ID: <000001c6c2de$2e5f8ce0$d2dca8c0@mntdx>
+Reply-To: Liisi Parisi <turpyfrancka@baker-installations.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0326500757=="
+Content-Type: multipart/mixed; boundary="===============0319461557=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Resent-Message-ID: <20060818075436.6f9f407f@localhost.localdomain>
-Resent-To: alsa-devel@lists.sourceforge.net
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 046F2186
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 Aug 2006 17:52:17 +0200 (MEST)
+Received: from klotz.com (host20-92.pool8251.interbusiness.it [82.51.92.20])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	8B6C7997B7 for <alsa-devel@alsa-project.org>;
+	Fri, 18 Aug 2006 17:52:15 +0200 (MEST)
+Received: by 192.168.220.210 with SMTP id LUaiaw;
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2006 08:51:34 -0700
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,56 +25,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+This is a multi-part message in MIME format.
 
---===============0326500757==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=PGP-SHA1; boundary="=_mercury-25851-1155912860-0001-2"
+--===============0319461557==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6C2A3.8200B4E0"
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+This is a multi-part message in MIME format.
 
---=_mercury-25851-1155912860-0001-2
-Content-Type: text/plain; charset=US-ASCII
+------=_NextPart_000_0001_01C6C2A3.8200B4E0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-I just tested Takashi's patch in the No sound with ALC260 chip thread
-(and just added myself to the mailing list so I can't reply to it).
+Hi,
+Great news for you.
+=20
+VlvAGRA ClvALlS LEVlTvRA and 200 other directly from the manufacturer
+economize up to 50% with us http://www.qinsadefunmder.com
 
-It seems to fix the headphone problems I've been having with my Dell
-640m.  Previously plugging in my headphones either made them work, made
-them work and didn't mute the speakers, or didn't make them work and
-did mute the speakers.  In either of the last two cases the state of
-headphones/speakers would never change until I unloaded the
-snd-hda-intel module.
+,
 
-Last night I applied the polling patch and took almost a minute
-unplugging and plugging in my headphones.  Apparently the patch
-fixed the headphone problem I was having.
+,
 
-Jason
+,
 
---=_mercury-25851-1155912860-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE5dJZN9ETwWhv0TwRAk7NAJ97jXV/VfK6DXrREzcHIB0N+jD+YgCguEvu
-N+tvUIhoDWKY/vhra5+fbGw=
-=exnm
------END PGP SIGNATURE-----
-
---=_mercury-25851-1155912860-0001-2--
+operated-thats red oil not blood-to lift the apparatus above ground
+level. Remains of an optical finder there. Note the four automatic
+guns, Rapellit-binetti X-nineteens. Rate of fire twelve hundred rounds
 
 
---===============0326500757==
+
+------=_NextPart_000_0001_01C6C2A3.8200B4E0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV>
+<DIV>Great news for you.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>VlvAGRA ClvALlS LEVlTvRA and 200 other directly from the =
+manufacturer<BR>economize up to 50% with us <A =
+href=3D"http://www.qinsadefunmder.com">http://www.qinsadefunmder.com</A><=
+/DIV><P>,</P><P>,</P><P>,</P><P>operated-thats red oil not blood-to lift =
+the apparatus  above  ground<BR>
+level.  Remains  of an optical finder there. Note the  four  =
+automatic<BR>
+guns, Rapellit-binetti X-nineteens. Rate of fire twelve hundred =
+rounds<BR></P></BODY></HTML>
+------=_NextPart_000_0001_01C6C2A3.8200B4E0--
+
+
+
+
+
+--===============0319461557==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -77,7 +101,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0326500757==
+--===============0319461557==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -88,4 +112,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0326500757==--
+--===============0319461557==--
