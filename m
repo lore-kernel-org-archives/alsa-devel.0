@@ -1,9 +1,13 @@
-From: "Andrey Liakhovets" <liakh@dol.ru>
-Subject: Re: [Openchrome-users] via epia boards sound quality
-Date: Sat, 19 Aug 2006 01:02:09 +0400
-Message-ID: <web-171065599@cgp.dol.ru>
+From: =?iso-2022-jp?B?ZXJp?= <eripon@yahoo.co.jp>
+Subject: Re:
+	=?iso-2022-jp?b?GyRCOS05cEdTPXxMNU5BJWwlcyU/JWsbKEI=?=
+	=?iso-2022-jp?b?GyRCI0MjRyNJGyhC?=
+Date: Fri, 18 Aug 2006 21:42:41 -0700 (PDT)
+Message-ID: <E1GEIfO-0004Pc-G4@mail.sourceforge.net>
+Reply-To: eripon@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="_===171065599====cgp.dol.ru===_"
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,95 +21,154 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part MIME message
+:―― INFORMATION  ―――――――――――――――――――――――――:
+ 不正・悪質なサイトを一切排除しておりますので
+ 安心してご利用ください。   http://love-match.bz/pc/?010
+:――――――――――――――――――――――――――――――――――:
 
---_===171065599====cgp.dol.ru===_
-Content-Type: text/plain; charset="KOI8-R"
-Content-Transfer-Encoding: quoted-printable
+*・゜゜・*:.。. .。.:*・゜゜・*:.。..。:*・゜゜・*:.。..。:**・゜゜・*
 
-This letter is continuation of the thread in Openchrome-users:
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001193.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001199.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001247.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-July/001456.ht=
-ml
+お金と時間を持て余している人妻の間で、噂になってるあのサイト
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?010
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ 不倫・ワリキリ専門の無料出会いサイト『Love☆Match』
+　-----------------------------------------------------------------
+　　登録料・利用料　・・・・・・・・・【無料】
+　　メールの送受信　・・・・・・・・・【無料】
+　　ユーザーの検索　・・・・・・・・・【無料】
+　　掲示板の閲覧・書込み　・・・・・・【無料】
+　　画像交換・アップロード　・・・・・【無料】
+　　アドレス交換・電話番号交換　・・・【無料】
+　-----------------------------------------------------------------
+　　どれだけ使っても全て無料！　http://love-match.bz/pc/?010
 
-I am sorry for continuing this thread but there is good news.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ いつでも女性ユーザーがいっぱい。その理由は？
 
-In short, the attached 1-line patch against alsa 1.0.11 solves the proble=
-m
-(for our VIA EPIA SP8000).
+　-----------------------------------------------------------------
+　ＰＣ＆モバイルに対応！いつでもどこでも気軽に楽しめる！
+　-----------------------------------------------------------------
+　仕事中は携帯電話から、プライベートは自宅からのんびりと。
+　気になる相手といつでも繋がっているから、新密度も急速にＵＰ。
+　http://love-match.bz/pc/?010
 
-Further details:
-1) in our lab, we failed in getting bad sound on a running system,
-       despite a long and intensive heating;
-2) we have succeded in reproducing the problem at the system start (with =
-a
-       probability of about 2/3) with a pre-cooled sound codec chip;
-3) we have succeded in reproducing the problem on the system running Linu=
-x
-       by cutting analog power supply from the codec, cooling the codec a=
-nd
-       reattaching analog power;
-4) on wire, the problem looks like undervoltage of codec analog power
-       (2V or less instead of 5V): meanwhile the codec tries to consume
-       about 200mA (instead of <40mA), and the voltage regulator chip beg=
-ins
-       (from 100mA) reducing the voltage;
-5) analysis of the situation with WinXP shows that the WinXP sound driver=
- loading
-       brings the codec analog voltage (and sound) to norm, and this stat=
-e
-       is tolerant to actions described under (3);
-6) analysis of the WinXP sound driver loading allowed us to detect that v=
-ery bit,
-       the set of which normalizes the codec's analog power consumption;
-7) a check with Linux has confirmed this.
+　-----------------------------------------------------------------
+　ＰＣから簡単プロフィール作成。ネット初心者でもラクラク参加ＯＫ
+　-----------------------------------------------------------------
+　面倒な登録は一切不要。パソコンから簡単なプロフィールを作成して
+　初心者の方や女性でもすぐに参加できます。
+　http://love-match.bz/pc/?010
+　-----------------------------------------------------------------
+　自由恋愛対応！直電・直メ交換支援ツール
+　-----------------------------------------------------------------
+　基本的にメールアドレスや電話番号は非公開ですが
+　仲良くなった人だけにメールアドレスや電話番号を教える事ができます。
+　http://love-match.bz/pc/?010
 
-If necessary, I can give more details or upload them on our ftp.
+　-----------------------------------------------------------------
+　写真アップロードに対応！好みの相手を素早くＣＨＥＣＫ！
+　-----------------------------------------------------------------
+　待ち合わせ場所にイメージとまったく違う人が来たら…。
+　ピュアックスなら会う前に写真交換ができるから、そんな不安も解消。
+　http://love-match.bz/pc/?010
 
-Andrey Liakhovets
+　-----------------------------------------------------------------
+　スレッド掲示板で秘密のパートナー検索も効率ＵＰ！
+　-----------------------------------------------------------------
+　メインの掲示板のほかにスレッド型の掲示板を設置。
+　メル友から秘密のパートナーまで目的別のユーザーが集う掲示板です。
+　http://love-match.bz/pc/?010
 
---_===171065599====cgp.dol.ru===_
-Content-Type: application/octet-stream
-Content-Disposition: attachment;
-	filename="alsa-kernel-1.0.11-rover-ac97-vt1617a.patch"
-Content-Transfer-Encoding: base64
 
-ZGlmZiAtTmF1ciBhL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyBiL3BjaS9hYzk3L2FjOTdfcGF0
-Y2guYw0KLS0tIGEvcGNpL2FjOTcvYWM5N19wYXRjaC5jCTIwMDYtMDQtMTIgMDA6NDY6NDcg
-KzA0MDANCisrKyBiL3BjaS9hYzk3L2FjOTdfcGF0Y2guYwkyMDA2LTA3LTI2IDEwOjE1OjU4
-ICswNDAwDQpAQCAtMjc0Miw2ICsyNzQyLDcgQEANCiAgKi8NCiBpbnQgcGF0Y2hfdnQxNjE3
-YShzdHJ1Y3Qgc25kX2FjOTcgKiBhYzk3KQ0KIHsNCisJc25kX2FjOTdfd3JpdGVfY2FjaGUo
-YWM5NywgMHg1YywgMHgyMCk7CS8qIGJyaW5nIGFuYWxvZyBwb3dlciBjb25zdW1wdGlvbiB0
-byBub3JtYWwsIGxpa2UgV2luWFAgZHJpdmVyIGZvciBFUElBIFNQICovDQogCWFjOTctPmV4
-dF9pZCB8PSBBQzk3X0VJX1NQRElGOwkvKiBmb3JjZSB0aGUgZGV0ZWN0aW9uIG9mIHNwZGlm
-ICovDQogCWFjOTctPnJhdGVzW0FDOTdfUkFURVNfU1BESUZdID0gU05EUlZfUENNX1JBVEVf
-NDQxMDAgfCBTTkRSVl9QQ01fUkFURV80ODAwMDsNCiAJcmV0dXJuIDA7DQoNCg0KDQo=
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ 毎日500人近くのユーザーが続々参加中！！
 
---_===171065599====cgp.dol.ru===_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+□-----------------------------------------------------------------
+
+　リエ（２１歳/会社員）
+　いつも１人でエッチなことを考えてます。
+　メールだといろいろ話せるんだけど、実際に会うとあまりしゃべれなく
+　なっちゃうので、盛り上げてくれるような楽しい男の人いないかな？
+　引っ込み思案のせいか、男性経験はあまり無いんです。
+　優しく＆楽しくリードしてくれる男性からのメール待ってます。
+　[写真有り] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　真菜（２４歳/フリーター）
+　彼氏が浮気してて超アタマきたっ！まなだって遊びたい盛りだし、ずっと
+　ガマンしてたのにさ！かっこいい人見つけて思いっきりふってやるつもりで
+　登録してみた（笑）
+　[写真有り] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　みさ（３４歳/専業主婦）
+　殆ど家に帰ってこない仕事人間のだんなさまと二人きりの毎日で、ほんと
+　寂しい思いをしています。年下の男の子がいれば仲良くなりたいな。
+　年下の人とは付き合ったことがないので興味津々です(^^)
+　[写真無し] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　恭子（２８歳/会社員）
+　彼氏とはいつも同じようなセックスばかりでかなり冷め気味です。
+　誰かあたしと熱いセックスを楽しみませんか？めんどくさい事は
+　言いません。ただ、いつもと違うドキドキするような事がしたい
+　だけなんです。
+　[写真無し] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　ななこ（２８歳/主婦）
+　半年前にだんなと別れて今は×1です。
+　夜のお仕事なので、昼間まったりと過ごしませんか？
+　心身ともに疲れ気味で、今、激しく癒されたいです。
+　[写真有り] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　祥子（３１歳/クリエイター）
+　平日は18時くらいまでは大体仕事してるので、その後に食事したり
+　楽しく飲んだりできるパートナー希望です。年上でも年下でも
+　かまいませんので気軽にメールを送って頂けると嬉しいです。
+　[写真有り] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+　ゅヵ`（２０歳/学生）
+　まずゎ会ってみないとはじまらなぃょね？！
+　横浜近辺の人で、いろんな意味でオトナな人は
+　プロフ付きでめぇる送って☆
+　[写真有り] http://love-match.bz/pc/?010
+
+□-----------------------------------------------------------------
+
+
+   出会いサイトのサクラに騙されないように↓
+　┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+　　【裏】無料の出会い情報
+　　-------------------------------------------------------------
+　　お金と時間を持て余している人妻の間で、噂になってるあのサイト
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?010
+　　-------------------------------------------------------------
+　　彼女達が求めているのはこんな男性です。
+　　?年上女性にリードしてもらいたい、経験少なめの男性
+　　?体力・テクニックに自信が有る男性
+　　男性会員が不足しています。我こそは、と思う方は今すぐ参加！
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?010
+　┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+広東省茂名市人民大街3-6-4-533
+友誼網絡公司
+139-3668-7892
+
+
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---_===171065599====cgp.dol.ru===_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---_===171065599====cgp.dol.ru===_--
