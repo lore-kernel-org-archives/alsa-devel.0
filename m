@@ -1,22 +1,14 @@
-From: Peter Oehry <peter.oehry@gmx.li>
-Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
-Date: Sun, 20 Aug 2006 14:19:09 +0200
-Message-ID: <20060820121909.817D6818B4E@zeus.olymp.home>
-References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
-	<1155056548.23266.267914050@webmail.messagingengine.com>
-	<20060808184722.6627D55E2E7@zeus.olymp.home>
-	<20060808222250.kgpv3965ss0oowoo@webmail.supelec.fr>
-	<20060808214138.419D4DE279@zeus.olymp.home>
-	<20060809000741.7zournuj4c0wcwc8@webmail.supelec.fr>
-	<20060810213340.A53144FA617@zeus.olymp.home>
-	<20060811112018.8j3chcuqg4c444w4@webmail.supelec.fr>
-	<20060813214825.5654969E159@zeus.olymp.home>
-	<1155554196.1617.268317929@webmail.messagingengine.com>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: Re: dmix problems/kernel
+Date: Sun, 20 Aug 2006 15:27:58 +0200
+Message-ID: <d9def9db0608200627o587dca8et79f81cedd5bce4cf@mail.gmail.com>
+References: <d9def9db0608200416g66ae7d48q39e85cfeab30a8c1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1155554196.1617.268317929@webmail.messagingengine.com>
+In-Reply-To: <d9def9db0608200416g66ae7d48q39e85cfeab30a8c1@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,213 +18,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net, Thibault.LeMeur@supelec.fr
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Problem solved the .page method of the snd_pcm_ops_t struct was
+missing. I simply copied it over from usbaudio.c
 
---Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Markus
 
-On Mon, 14 Aug 2006 13:16:36 +0200
-"Clemens Ladisch" <cladisch@fastmail.net> wrote:
+On 8/20/06, Markus Rechberger <mrechberger@gmail.com> wrote:
+> When I try to use dmix with my driver I get a problem with my kernel...
+> This only happens if I use the entry in the .asoundrc file, if I use
+> hw:2,0 playback works fine without any errors.. any idea what could be
+> wrong here?
+>
+> Syslog:
+> Aug 20 09:40:56 debian kernel: ************************ OPEN
+> **********************
+> Aug 20 09:40:56 debian kernel: snd_au600_playback_open
+> Aug 20 09:40:56 debian kernel: hwparmas format: S16_LE
+> Aug 20 09:40:56 debian kernel: snd_au600_hw_playback_params
+> Aug 20 09:40:56 debian kernel: snd_au600_prepare
+> Aug 20 09:40:56 debian kernel: PCM PLAYBACK TRIGGER START!
+> Aug 20 09:40:56 debian kernel: 1
+> Aug 20 09:40:56 debian kernel: 2
+> Aug 20 09:40:56 debian kernel: 4
+> Aug 20 09:40:56 debian kernel: USERS: 1, ARG: 1, STATUS: 0
+> Aug 20 09:40:56 debian kernel: 5
+> Aug 20 09:40:56 debian kernel: au600.c: initiating IRQ
+> Aug 20 09:40:56 debian kernel: 6
+> Aug 20 09:40:56 debian kernel: 7
+> Aug 20 09:40:56 debian kernel: 3
+> -- theoretically playback should start here, but I don't even hear anything,
+> -- when the file is done it starts with following entries:
+> Aug 20 09:43:10 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7fcd000
+> Aug 20 09:43:10 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:43:10 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:43:10 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:43:10 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:43:10 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:43:10 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:43:12 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7f9b000
+> Aug 20 09:43:12 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:43:12 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:43:12 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:43:12 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:43:12 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:43:12 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:43:40 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7f8e000
+> Aug 20 09:43:40 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:43:40 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:43:40 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:43:40 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:43:40 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:43:40 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:44:29 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7fbf000
+> Aug 20 09:44:29 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:44:29 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:44:29 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:44:29 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:44:29 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:44:29 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:44:43 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7f92000
+> Aug 20 09:44:43 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:44:43 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:44:43 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:44:43 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:44:43 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:44:43 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:45:01 debian /USR/SBIN/CRON[15344]: (root) CMD ([ -x
+> /usr/lib/sysstat/sa1 ] && { [ -r "$DEFAULT" ] && . "$DEFAULT" ; [
+> "$ENABLED" = "true" ] && exec /usr/lib/sysstat/sa1; })
+> Aug 20 09:45:09 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7f4f000
+> Aug 20 09:45:09 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:45:09 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:45:09 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:45:09 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:45:09 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:45:09 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:45:18 debian kernel: Bad pte = 1fc7b067, process = aplay,
+> vm_flags = 800fb, vaddr = b7fd9000
+> Aug 20 09:45:18 debian kernel:  [vm_normal_page+67/93]
+> vm_normal_page+0x43/0x5d
+> Aug 20 09:45:18 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+> Aug 20 09:45:18 debian kernel:  [unmap_region+119/246]
+> unmap_region+0x77/0xf6
+> Aug 20 09:45:18 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+> Aug 20 09:45:18 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+> Aug 20 09:45:18 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+> Aug 20 09:47:33 debian kernel: PCM PLAYBACK TRIGGER STOP!
+> Aug 20 09:47:33 debian kernel: snd_au600_hw_playback_free
+> Aug 20 09:47:33 debian kernel: USERS: 1
+> Aug 20 09:47:33 debian kernel: 1
+> Aug 20 09:47:33 debian kernel: SWITCHING OFF STREAM!
+> Aug 20 09:47:33 debian kernel: 4
+> Aug 20 09:47:33 debian kernel: USERS: 0, ARG: 0, STATUS: 1
+> ----
+>
+> afterwards I'm unable to start anything on my host anymore.
+>
+> ----
+>
+> .asoundrc
+> pcm.rateconvertin {
+>         type dmix
+>         ipc_key 1024
+>         ipc_perm 0777
+>         slave {
+>                 pcm "hw:2,0"
+>                 period_time 0
+>                 period_size 192
+>                 buffer_size 384
+>                 format S16_LE
+>                 periods 255
+>                 rate 9600
+>         }
+> }
+>
+> ----
+>
+> current driver sources:
+> http://kurzlink.de/0qUcA3gX8
+>
+> thanks,
+> Markus
+>
 
-> Peter Oehry wrote:
-> > Thibault Le Meur <Thibault.LeMeur@supelec.fr> wrote:
-> > 2. Another interesting thing is that in fact the device sensds the data
-> > little endian in 16-Bit mode and big endian in 24-Bit mode.
-> 
-> IIRC other M-Audio devices to that, too.  The reasons seems to be that
-> the device is basically big-endian, but the 16-bit interfaces are
-> designed to work with Windows' usbaudio.sys.
-> 
-> > For what I think it should be possible to switch modes without restarting
-> > the kernel module and switch on and off the device. It should be possible
-> > to switch the mode by resetting all interfaces and setting up the new
-> > altsets like the windows driver does. This would eventually need a new
-> > proc interace
-> 
-> Why proc?
-> 
-> If the configuration needs to be changed at runtime, and if the driver
-> cannot do this automatically, a mixer control would be the best solution.
 
-I have some questions to the idea of mixer control:
-- Which controls would be appropriate to select either 16 or 24 Bit?
-- Is it possible to make the restriction that controls can only be changed when the interface is not used?
-
-The windows driver has the following controls:
-- Check or uncheck each interface [AnIn DigIn AnOut DigOut]
-- Selection of either 16Bit or 24Bit
-
-These controls can only be changed if the card is not used. If the settings are applied all enpoints are set to altsetting 0 and then the used endpoints are configured to the desired altsetting. Is such a behaviour possible with alsa mixer controls?
-
-> 
-> > How do I know if I also need a quirk for the midi devices?
-> 
-> You need a quirk when there aren't any class-specific descriptors for
-> the MIDI port.
-> 
-
-I could also test the MIDI interface and it works fine without any changes. So I submit a patch that makes all basic functions of the Fast Track Pro available. I've chosen the same concept as for the Audiophile.
-
-The boot quirk can only be used as soon as the usb_driver_set_configuration() is made available in the <linux/usb.h> header. If this function is not available the driver will only work with 16-Bit by default. But the user can change the device configuration to config #2 by a UDEV or hotplug rule.
-
-Peter Oehry
-
---Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q
-Content-Type: text/x-patch;
- name="FastTrackPro.patch"
-Content-Disposition: attachment;
- filename="FastTrackPro.patch"
-Content-Transfer-Encoding: 7bit
-
-diff -urN alsa-driver-1.0.12rc3/alsa-kernel/usb/usbaudio.c alsa-driver-1.0.12rc3_patch/alsa-kernel/usb/usbaudio.c
---- alsa-driver-1.0.12rc3/alsa-kernel/usb/usbaudio.c	2006-08-14 12:55:28.000000000 +0200
-+++ alsa-driver-1.0.12rc3_patch/alsa-kernel/usb/usbaudio.c	2006-08-20 12:46:30.000000000 +0200
-@@ -2306,7 +2306,15 @@
- 		break;
- 	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
- 		return 1;
--	}
-+		
-+	case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro */
-+		/* it depends on altsetting wether the device is big-endian or not */
-+		if(fp->altsetting==2 || fp->altsetting==3 || 
-+			 fp->altsetting==5 || fp->altsetting==6)
-+			return 1;
-+		break;
-+		
-+	}	
- 	return 0;
- }
- 
-@@ -2551,6 +2559,8 @@
- 
- static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
- 					 int iface, int altno);
-+static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
-+					 int iface, int altno);
- static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- {
- 	struct usb_device *dev;
-@@ -2592,6 +2602,11 @@
- 		    audiophile_skip_setting_quirk(chip, iface_no, altno))
- 			continue;
- 
-+		/* M-Audio Fast Track Pro: skip alsets incompatible with device_setup */
-+		if (chip->usb_id == USB_ID(0x0763, 0x2012) && 
-+		    fasttrackpro_skip_setting_quirk(chip, iface_no, altno))
-+			continue;
-+
- 		/* get audio formats */
- 		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, AS_GENERAL);
- 		if (!fmt) {
-@@ -3118,6 +3133,28 @@
- 	return snd_usb_cm106_write_int_reg(dev, 2, 0x8004);
- }
- 
-+static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev, int ifnum)
-+{
-+	int err;
-+	
-+	if(dev->actconfig->desc.bConfigurationValue==1) {
-+		if(ifnum==0) {
-+			snd_printk(KERN_INFO "Switching to config #2\n");
-+			/* This function has to be available by the usb core module. 
-+			   if it is not avialable the boot quirk has to be left out and the
-+			   configuration has to be set by udev or hotplug rules */
-+			err=usb_driver_set_configuration(dev,2);
-+			if(err < 0) {
-+				snd_printdd("error usb_driver_set_configuration: %d\n", err);
-+				return -ENODEV;
-+			}
-+		}
-+	} else {
-+		snd_printk(KERN_INFO "Fast Track Pro config OK\n");
-+	}
-+	
-+	return 0;
-+}
- 
- /*
-  * Setup quirks
-@@ -3159,6 +3196,39 @@
- 	return 0; /* keep this altsetting */
- }
- 
-+static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
-+					 int iface, int altno)
-+{
-+	
-+	/* possible configuration where both inputs and only one output is
-+	   used is not supported by the current setup */
-+	
-+	if (device_setup[chip->index] & (AUDIOPHILE_SET | AUDIOPHILE_SET_24B)) {
-+		if(device_setup[chip->index] & AUDIOPHILE_SET_96K){
-+			if((altno != 3) && (altno != 6))
-+				return 1;
-+		}else if(device_setup[chip->index] & AUDIOPHILE_SET_DI){
-+			if(iface == 4) 
-+				return 1; /* no analog input */
-+			
-+			if((altno != 2) && (altno != 5))
-+				return 1; /* enable only altsets 2 and 5 */
-+		}else{
-+			if(iface == 5) 
-+				return 1; /* disable digialt input */
-+			
-+			if((altno != 2) && (altno != 5))
-+				return 1; /* enalbe only altsets 2 and 5 */
-+		}
-+	}else{
-+		/* keep only 16-Bit mode */
-+		if(altno !=1) 
-+			return 1;
-+	}
-+	
-+	return 0; /* keep this altsetting */
-+}
-+
- /*
-  * audio-interface quirks
-  *
-@@ -3394,6 +3464,12 @@
- 		if (snd_usb_cm106_boot_quirk(dev) < 0)
- 			goto __err_val;
- 	}
-+	
-+	/* M-Audio Fast Track Pro */
-+	if (id == USB_ID(0x0763, 0x2012)) { 
-+		if (snd_usb_fasttrackpro_boot_quirk(dev, ifnum) < 0)
-+			goto __err_val;
-+	}
- 
- 	/*
- 	 * found a config.  now register to ALSA
-
---Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Markus Rechberger
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---Multipart=_Sun__20_Aug_2006_14_19_09_+0200_QCFuVMO=iO/J_S_Q--
