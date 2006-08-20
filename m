@@ -1,15 +1,10 @@
-From: "Richard Fish" <bigfish@asmallpond.org>
-Subject: Re: [PATCH]: improvements to hda-intel sigmatel codec
-	S3 resume
-Date: Sun, 20 Aug 2006 00:23:54 -0700
-Message-ID: <7573e9640608200023u6b67c3dah41a6ccb836be0735@mail.gmail.com>
-References: <7573e9640608130201y734832f1ob3db66bae2f2c581@mail.gmail.com>
-	<s5hsljxx8am.wl%tiwai@suse.de>
+From: "Andrey Liakhovets" <liakh@dol.ru>
+Subject: Re: [Openchrome-users] via epia boards sound quality
+Date: Sun, 20 Aug 2006 12:02:39 +0400
+Message-ID: <web-171768144@cgp.dol.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_23215_25361268.1156058634238"
+Content-Type: multipart/mixed; boundary="_===171768144====cgp.dol.ru===_"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hsljxx8am.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,129 +15,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_23215_25361268.1156058634238
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is a multi-part MIME message
 
-On 8/16/06, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 13 Aug 2006 02:01:53 -0700,
-> Richard Fish wrote:
-> >
-> > Hi all,
-> >
-> > I noticed a problem with S3 resume and my STAC9200 Intel HDA chip.  If
-> > I restart alsa after resuming, the pin configurations are wrong.  My
+--_===171768144====cgp.dol.ru===_
+Content-Type: text/plain; charset="KOI8-R"
+Content-Transfer-Encoding: quoted-printable
+
+James Courtier-Dutton wrote:
+> Andrey Liakhovets wrote:
+>>
+>> In short, the attached 1-line patch against alsa 1.0.11 solves the pro=
+blem
+>>
+>> If necessary, I can give more details or upload them on our ftp.
+>>
+>> Andrey Liakhovets
 >
-> Care to rewrite the patch in that manner, and provide a proper
-> changelog and a signed-off-by line?
+>
+> Would you be able to provide 2 things?
+>
+> 1) Please add a "Signed-off-by:" entry.
+> 2) Do you have the VT1616A datasheet?
+>
+> I can find the VT1616 datasheet online, but not the VT1616A.
+>
+> James
 
-Updated patch attached.  This one dynamically allocates memory for the
-bios pin configs.
+No, I have only the VT1616 datasheet.
 
-Regards,
--Richard
+Below I repeat the references, info and patch with my Signed-off-by.
 
-------=_Part_23215_25361268.1156058634238
-Content-Type: application/octet-stream; name=rjf-alsa-20060819.patch
+http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001193.htm=
+l
+http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001199.htm=
+l
+http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001247.htm=
+l
+http://wiki.openchrome.org/pipermail/openchrome-users/2006-July/001456.ht=
+ml
+
+1) in our lab, we failed in getting bad sound on a running system,
+        despite a long and intensive heating;
+2) we have succeded in reproducing the problem at the system start (with =
+a
+        probability of about 2/3) with a pre-cooled sound codec chip;
+3) we have succeded in reproducing the problem on the system running Linu=
+x
+        by cutting analog power supply from the codec, cooling the codec =
+and
+        reattaching analog power;
+4) on wire, the problem looks like undervoltage of codec analog power
+        (2V or less instead of 5V): meanwhile the codec tries to consume
+        about 200mA (instead of <40mA), and the voltage regulator chip be=
+gins
+        (from 100mA) reducing the voltage;
+5) analysis of the situation with WinXP shows that the WinXP sound driver=
+ loading
+        brings the codec analog voltage (and sound) to norm, and this sta=
+te
+        is tolerant to actions described under (3);
+6) analysis of the WinXP sound driver loading allowed us to detect that v=
+ery bit,
+        the set of which normalizes the codec's analog power consumption;
+7) a check with Linux has confirmed this.
+
+The attached 1-line patch against alsa 1.0.11 solves the problem
+(for our VIA EPIA SP8000).
+
+Signed-off-by: Andrey Liakhovets <liakh@dol.ru>
+
+--_===171768144====cgp.dol.ru===_
+Content-Type: application/octet-stream
+Content-Disposition: attachment;
+	filename="alsa-kernel-1.0.11-rover-ac97-vt1617a.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_er33ew7z
-Content-Disposition: attachment; filename="rjf-alsa-20060819.patch"
 
-W3NuZC1pbnRlbC1oZGFdIHJlc3RvcmUgSERBIHNpZ21hdGVsIHBpbiBjb25maWdzIG9uIHJlc3Vt
-ZQoKVGhpcyBwYXRjaCByZXN0b3JlcyB0aGUgSW50ZWwgSERBIFNpZ21hdGVsIGNvZGVjIHBpbiBj
-b25maWd1cmF0aW9uIG9uCnJlc3VtZS4gIE1vc3Qgb2YgaXQgaXMgZGVkaWNhdGVkIHRvIHNhdmlu
-ZyB0aGUgQklPUyBwaW4gY29uZmlndXJhdGlvbiAKaWYgbmVjZXNzYXJ5LCBzbyB0aGF0IGV2ZW4g
-dW5yZWNvZ25pemVkIGNoaXBzIGNhbiBiZSByZXN1bWVkIGNvcnJlY3RseS4KClNpZ25lZC1vZmYt
-Ynk6IFJpY2hhcmQgRmlzaCA8YmlnZmlzaEBhc21hbGxwb25kLm9yZz4KCi0tLSBhbHNhLWtlcm5l
-bC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMub3JpZwkyMDA2LTA4LTE3IDEwOjAwOjA1LjAwMDAw
-MDAwMCAtMDcwMAorKysgYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCTIwMDYt
-MDgtMTkgMjM6NDc6MjkuODQ1MzQ2NTQ3IC0wNzAwCkBAIC03Myw2ICs3Myw3IEBACiAJaGRhX25p
-ZF90ICpwaW5fbmlkczsKIAl1bnNpZ25lZCBpbnQgbnVtX3BpbnM7CiAJdW5zaWduZWQgaW50ICpw
-aW5fY29uZmlnczsKKwl1bnNpZ25lZCBpbnQgKmJpb3NfcGluX2NvbmZpZ3M7CiAKIAkvKiBjb2Rl
-YyBzcGVjaWZpYyBzdHVmZiAqLwogCXN0cnVjdCBoZGFfdmVyYiAqaW5pdDsKQEAgLTQ2OSw2ICs0
-NzAsMzIgQEAKIAl7fSAvKiB0ZXJtaW5hdG9yICovCiB9OwogCitzdGF0aWMgaW50IHN0YWM5Mnh4
-X3NhdmVfYmlvc19jb25maWdfcmVncyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKK3sKKwlpbnQg
-aTsKKwlzdHJ1Y3Qgc2lnbWF0ZWxfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCQorCWlmICgh
-IHNwZWMtPmJpb3NfcGluX2NvbmZpZ3MpIHsKKwkJc3BlYy0+Ymlvc19waW5fY29uZmlncyA9IGtj
-YWxsb2Moc3BlYy0+bnVtX3BpbnMsCisJCSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHNpemVvZigqc3BlYy0+Ymlvc19waW5fY29uZmlncyksIEdGUF9LRVJORUwpOworCQlpZiAoISBz
-cGVjLT5iaW9zX3Bpbl9jb25maWdzKQorCQkJcmV0dXJuIC1FTk9NRU07CisJfQorCQorCWZvciAo
-aSA9IDA7IGkgPCBzcGVjLT5udW1fcGluczsgaSsrKSB7CisJCWhkYV9uaWRfdCBuaWQgPSBzcGVj
-LT5waW5fbmlkc1tpXTsKKwkJdW5zaWduZWQgaW50IHBpbl9jZmc7CisJCQorCQlwaW5fY2ZnID0g
-c25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCBuaWQsIDAsIAorCQkJQUNfVkVSQl9HRVRfQ09ORklH
-X0RFRkFVTFQsIDB4MDApOwkKKwkJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJoZGFfY29kZWM6IHBp
-biBuaWQgJTIuMnggYmlvcyBwaW4gY29uZmlnICU4Ljh4XG4iLAorCQkJCQluaWQsIHBpbl9jZmcp
-OworCQlzcGVjLT5iaW9zX3Bpbl9jb25maWdzW2ldID0gcGluX2NmZzsKKwl9CisJCisJcmV0dXJu
-IDA7Cit9CisKIHN0YXRpYyB2b2lkIHN0YWM5Mnh4X3NldF9jb25maWdfcmVncyhzdHJ1Y3QgaGRh
-X2NvZGVjICpjb2RlYykKIHsKIAlpbnQgaTsKQEAgLTExODUsNiArMTIxMiw5IEBACiAJCWtmcmVl
-KHNwZWMtPmtjdGxfYWxsb2MpOwogCX0KIAorCWlmIChzcGVjLT5iaW9zX3Bpbl9jb25maWdzKQor
-CQlrZnJlZShzcGVjLT5iaW9zX3Bpbl9jb25maWdzKTsKKwogCWtmcmVlKHNwZWMpOwogfQogCkBA
-IC0xMjQyLDYgKzEyNzIsNyBAQAogCWludCBpOwogCiAJc3RhYzkyeHhfaW5pdChjb2RlYyk7CisJ
-c3RhYzkyeHhfc2V0X2NvbmZpZ19yZWdzKGNvZGVjKTsKIAlmb3IgKGkgPSAwOyBpIDwgc3BlYy0+
-bnVtX21peGVyczsgaSsrKQogCQlzbmRfaGRhX3Jlc3VtZV9jdGxzKGNvZGVjLCBzcGVjLT5taXhl
-cnNbaV0pOwogCWlmIChzcGVjLT5tdWx0aW91dC5kaWdfb3V0X25pZCkKQEAgLTEyNzQsMTIgKzEz
-MDUsMTkgQEAKIAkJcmV0dXJuIC1FTk9NRU07CiAKIAljb2RlYy0+c3BlYyA9IHNwZWM7CisJc3Bl
-Yy0+bnVtX3BpbnMgPSA4OworCXNwZWMtPnBpbl9uaWRzID0gc3RhYzkyMDBfcGluX25pZHM7CiAJ
-c3BlYy0+Ym9hcmRfY29uZmlnID0gc25kX2hkYV9jaGVja19ib2FyZF9jb25maWcoY29kZWMsIHN0
-YWM5MjAwX2NmZ190YmwpOwotCWlmIChzcGVjLT5ib2FyZF9jb25maWcgPCAwKQotICAgICAgICAg
-ICAgICAgIHNuZF9wcmludGRkKEtFUk5fSU5GTyAiaGRhX2NvZGVjOiBVbmtub3duIG1vZGVsIGZv
-ciBTVEFDOTIwMCwgdXNpbmcgQklPUyBkZWZhdWx0c1xuIik7CisJaWYgKHNwZWMtPmJvYXJkX2Nv
-bmZpZyA8IDApIHsKKwkJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJoZGFfY29kZWM6IFVua25vd24g
-bW9kZWwgZm9yIFNUQUM5MjAwLCB1c2luZyBCSU9TIGRlZmF1bHRzXG4iKTsKKwkJZXJyID0gc3Rh
-YzkyeHhfc2F2ZV9iaW9zX2NvbmZpZ19yZWdzKGNvZGVjKTsKKwkJaWYgKGVyciA8IDApIHsKKwkJ
-CXN0YWM5Mnh4X2ZyZWUoY29kZWMpOworCQkJcmV0dXJuIGVycjsKKwkJfQorCQlzcGVjLT5waW5f
-Y29uZmlncyA9IHNwZWMtPmJpb3NfcGluX2NvbmZpZ3M7CisJfQogCWVsc2UgewotCQlzcGVjLT5u
-dW1fcGlucyA9IDg7Ci0JCXNwZWMtPnBpbl9uaWRzID0gc3RhYzkyMDBfcGluX25pZHM7CiAJCXNw
-ZWMtPnBpbl9jb25maWdzID0gc3RhYzkyMDBfYnJkX3RibFtzcGVjLT5ib2FyZF9jb25maWddOwog
-CQlzdGFjOTJ4eF9zZXRfY29uZmlnX3JlZ3MoY29kZWMpOwogCX0KQEAgLTEzMTUsMTMgKzEzNTMs
-MjAgQEAKIAkJcmV0dXJuIC1FTk9NRU07CiAKIAljb2RlYy0+c3BlYyA9IHNwZWM7CisJc3BlYy0+
-bnVtX3BpbnMgPSAxMDsKKwlzcGVjLT5waW5fbmlkcyA9IHN0YWM5MjJ4X3Bpbl9uaWRzOwogCXNw
-ZWMtPmJvYXJkX2NvbmZpZyA9IHNuZF9oZGFfY2hlY2tfYm9hcmRfY29uZmlnKGNvZGVjLCBzdGFj
-OTIyeF9jZmdfdGJsKTsKLQlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnIDwgMCkKLSAgICAgICAgICAg
-ICAgICBzbmRfcHJpbnRkZChLRVJOX0lORk8gImhkYV9jb2RlYzogVW5rbm93biBtb2RlbCBmb3Ig
-U1RBQzkyMngsICIKLQkJCSAgICAidXNpbmcgQklPUyBkZWZhdWx0c1xuIik7CisJaWYgKHNwZWMt
-PmJvYXJkX2NvbmZpZyA8IDApIHsKKwkJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJoZGFfY29kZWM6
-IFVua25vd24gbW9kZWwgZm9yIFNUQUM5MjJ4LCAiCisJCQkidXNpbmcgQklPUyBkZWZhdWx0c1xu
-Iik7CisJCWVyciA9IHN0YWM5Mnh4X3NhdmVfYmlvc19jb25maWdfcmVncyhjb2RlYyk7CisJCWlm
-IChlcnIgPCAwKSB7CisJCQlzdGFjOTJ4eF9mcmVlKGNvZGVjKTsKKwkJCXJldHVybiBlcnI7CisJ
-CX0KKwkJc3BlYy0+cGluX2NvbmZpZ3MgPSBzcGVjLT5iaW9zX3Bpbl9jb25maWdzOworCX0KIAll
-bHNlIGlmIChzdGFjOTIyeF9icmRfdGJsW3NwZWMtPmJvYXJkX2NvbmZpZ10gIT0gTlVMTCkgewot
-CQlzcGVjLT5udW1fcGlucyA9IDEwOwotCQlzcGVjLT5waW5fbmlkcyA9IHN0YWM5MjJ4X3Bpbl9u
-aWRzOwogCQlzcGVjLT5waW5fY29uZmlncyA9IHN0YWM5MjJ4X2JyZF90Ymxbc3BlYy0+Ym9hcmRf
-Y29uZmlnXTsKIAkJc3RhYzkyeHhfc2V0X2NvbmZpZ19yZWdzKGNvZGVjKTsKIAl9CkBAIC0xMzc4
-LDEyICsxNDIzLDE5IEBACiAJCXJldHVybiAtRU5PTUVNOwogCiAJY29kZWMtPnNwZWMgPSBzcGVj
-OworCXNwZWMtPm51bV9waW5zID0gMTQ7CisJc3BlYy0+cGluX25pZHMgPSBzdGFjOTI3eF9waW5f
-bmlkczsKIAlzcGVjLT5ib2FyZF9jb25maWcgPSBzbmRfaGRhX2NoZWNrX2JvYXJkX2NvbmZpZyhj
-b2RlYywgc3RhYzkyN3hfY2ZnX3RibCk7Ci0JaWYgKHNwZWMtPmJvYXJkX2NvbmZpZyA8IDApCi0g
-ICAgICAgICAgICAgICAgc25kX3ByaW50ZGQoS0VSTl9JTkZPICJoZGFfY29kZWM6IFVua25vd24g
-bW9kZWwgZm9yIFNUQUM5Mjd4LCB1c2luZyBCSU9TIGRlZmF1bHRzXG4iKTsKKwlpZiAoc3BlYy0+
-Ym9hcmRfY29uZmlnIDwgMCkgeworCQlzbmRfcHJpbnRkZChLRVJOX0lORk8gImhkYV9jb2RlYzog
-VW5rbm93biBtb2RlbCBmb3IgU1RBQzkyN3gsIHVzaW5nIEJJT1MgZGVmYXVsdHNcbiIpOworCQll
-cnIgPSBzdGFjOTJ4eF9zYXZlX2Jpb3NfY29uZmlnX3JlZ3MoY29kZWMpOworCQlpZiAoZXJyIDwg
-MCkgeworCQkJc3RhYzkyeHhfZnJlZShjb2RlYyk7CisJCQlyZXR1cm4gZXJyOworCQl9CisJCXNw
-ZWMtPnBpbl9jb25maWdzID0gc3BlYy0+Ymlvc19waW5fY29uZmlnczsKKwl9CiAJZWxzZSB7Ci0J
-CXNwZWMtPm51bV9waW5zID0gMTQ7Ci0JCXNwZWMtPnBpbl9uaWRzID0gc3RhYzkyN3hfcGluX25p
-ZHM7CiAJCXNwZWMtPnBpbl9jb25maWdzID0gc3RhYzkyN3hfYnJkX3RibFtzcGVjLT5ib2FyZF9j
-b25maWddOwogCQlzdGFjOTJ4eF9zZXRfY29uZmlnX3JlZ3MoY29kZWMpOwogCX0KQEAgLTE0MTgs
-MTIgKzE0NzAsMTkgQEAKIAkJcmV0dXJuIC1FTk9NRU07CiAKIAljb2RlYy0+c3BlYyA9IHNwZWM7
-CisJc3BlYy0+bnVtX3BpbnMgPSAxNDsKKwlzcGVjLT5waW5fbmlkcyA9IHN0YWM5MjA1X3Bpbl9u
-aWRzOwogCXNwZWMtPmJvYXJkX2NvbmZpZyA9IHNuZF9oZGFfY2hlY2tfYm9hcmRfY29uZmlnKGNv
-ZGVjLCBzdGFjOTIwNV9jZmdfdGJsKTsKLQlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnIDwgMCkKLSAg
-ICAgICAgICAgICAgICBzbmRfcHJpbnRkZChLRVJOX0lORk8gImhkYV9jb2RlYzogVW5rbm93biBt
-b2RlbCBmb3IgU1RBQzkyMDUsIHVzaW5nIEJJT1MgZGVmYXVsdHNcbiIpOworCWlmIChzcGVjLT5i
-b2FyZF9jb25maWcgPCAwKSB7CisJCXNuZF9wcmludGRkKEtFUk5fSU5GTyAiaGRhX2NvZGVjOiBV
-bmtub3duIG1vZGVsIGZvciBTVEFDOTIwNSwgdXNpbmcgQklPUyBkZWZhdWx0c1xuIik7CisJCWVy
-ciA9IHN0YWM5Mnh4X3NhdmVfYmlvc19jb25maWdfcmVncyhjb2RlYyk7CisJCWlmIChlcnIgPCAw
-KSB7CisJCQlzdGFjOTJ4eF9mcmVlKGNvZGVjKTsKKwkJCXJldHVybiBlcnI7CisJCX0KKwkJc3Bl
-Yy0+cGluX2NvbmZpZ3MgPSBzcGVjLT5iaW9zX3Bpbl9jb25maWdzOworCX0KIAllbHNlIHsKLQkJ
-c3BlYy0+bnVtX3BpbnMgPSAxNDsKLQkJc3BlYy0+cGluX25pZHMgPSBzdGFjOTIwNV9waW5fbmlk
-czsKIAkJc3BlYy0+cGluX2NvbmZpZ3MgPSBzdGFjOTIwNV9icmRfdGJsW3NwZWMtPmJvYXJkX2Nv
-bmZpZ107CiAJCXN0YWM5Mnh4X3NldF9jb25maWdfcmVncyhjb2RlYyk7CiAJfQo=
-------=_Part_23215_25361268.1156058634238
+ZGlmZiAtTmF1ciBhL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyBiL3BjaS9hYzk3L2FjOTdfcGF0
+Y2guYwotLS0gYS9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMJMjAwNi0wNC0xMiAwMDo0Njo0NyAr
+MDQwMAorKysgYi9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMJMjAwNi0wNy0yNiAxMDoxNTo1OCAr
+MDQwMApAQCAtMjc0Miw2ICsyNzQyLDcgQEAKICAqLwogaW50IHBhdGNoX3Z0MTYxN2Eoc3Ry
+dWN0IHNuZF9hYzk3ICogYWM5NykKIHsKKwlzbmRfYWM5N193cml0ZV9jYWNoZShhYzk3LCAw
+eDVjLCAweDIwKTsJLyogYnJpbmcgYW5hbG9nIHBvd2VyIGNvbnN1bXB0aW9uIHRvIG5vcm1h
+bCwgbGlrZSBXaW5YUCBkcml2ZXIgZm9yIEVQSUEgU1AgKi8KIAlhYzk3LT5leHRfaWQgfD0g
+QUM5N19FSV9TUERJRjsJLyogZm9yY2UgdGhlIGRldGVjdGlvbiBvZiBzcGRpZiAqLwogCWFj
+OTctPnJhdGVzW0FDOTdfUkFURVNfU1BESUZdID0gU05EUlZfUENNX1JBVEVfNDQxMDAgfCBT
+TkRSVl9QQ01fUkFURV80ODAwMDsKIAlyZXR1cm4gMDsK
+
+--_===171768144====cgp.dol.ru===_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -153,7 +114,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------=_Part_23215_25361268.1156058634238
+--_===171768144====cgp.dol.ru===_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -164,4 +125,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------=_Part_23215_25361268.1156058634238--
+--_===171768144====cgp.dol.ru===_--
