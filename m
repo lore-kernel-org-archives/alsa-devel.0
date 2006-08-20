@@ -1,11 +1,17 @@
-From: "Andrey Liakhovets" <liakh@dol.ru>
-Subject: Re: [Openchrome-users] via epia boards sound quality
-Date: Mon, 21 Aug 2006 00:15:32 +0400
-Message-ID: <web-172094039@cgp.dol.ru>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] make
+	sound/pci/emu10k1/emu10k1.c:snd_emu10k1_resume() static
+Date: Mon, 21 Aug 2006 00:59:24 +0200
+Message-ID: <20060820225924.GV7813@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EFDAE165
+	for <alsa-devel@alsa-project.org>;
+	Mon, 21 Aug 2006 00:59:23 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,53 +21,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Andrey Liakhovets wrote:
->> James Courtier-Dutton wrote:
->>> Andrey Liakhovets wrote:
->>>> In short, the attached 1-line patch against alsa 1.0.11 solves the problem
->>>>
->>>> If necessary, I can give more details or upload them on our ftp.
->>>>
->>>> Andrey Liakhovets
->>>
->>> Would you be able to provide 2 things?
->>>
->>> 1) Please add a "Signed-off-by:" entry.
->>> 2) Do you have the VT1616A datasheet?
->>>
->>> I can find the VT1616 datasheet online, but not the VT1616A.
->>>
->>> James
->>
->> No, I have only the VT1616 datasheet.
->>
->> Below I repeat the references, info and patch with my Signed-off-by.
->>
->
-> So, with the absence of the VT1617A datasheet, we effectively have no
-> documentation for that AC97 register touched in your patch.
+This patch makes the needlessly global snd_emu10k1_resume() static.
 
-Yes.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-> Could I ask you to raise an alsa bug at
-> https://bugtrack.alsa-project.org/alsa-bug/
->
-> Enter into the bug everything from your updated email, with the sign off
-> and attached patch.
+--- linux-2.6.18-rc4-mm2/sound/pci/emu10k1/emu10k1.c.old	2006-08-20 23:20:05.000000000 +0200
++++ linux-2.6.18-rc4-mm2/sound/pci/emu10k1/emu10k1.c	2006-08-20 23:21:09.000000000 +0200
+@@ -232,7 +232,7 @@
+ 	return 0;
+ }
+ 
+-int snd_emu10k1_resume(struct pci_dev *pci)
++static int snd_emu10k1_resume(struct pci_dev *pci)
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+ 	struct snd_emu10k1 *emu = card->private_data;
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2381
-
-> I will then check the patch into the HG repository, but I will add a
-> comment next to it pointing to the bug information. That way, future
-> developers will know why it has been put there.
->
-> James
-
-Andrey Liakhovets
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
