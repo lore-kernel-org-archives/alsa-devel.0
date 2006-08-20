@@ -1,12 +1,15 @@
-From: "Markus Rechberger" <mrechberger@gmail.com>
-Subject: dmix problems/kernel
-Date: Sun, 20 Aug 2006 13:16:03 +0200
-Message-ID: <d9def9db0608200416g66ae7d48q39e85cfeab30a8c1@mail.gmail.com>
+From: Haakon Riiser <haakon.riiser@fys.uio.no>
+Subject: Re: SysEx overflow when using the MIDI sequencer event
+	interface
+Date: Sun, 20 Aug 2006 13:19:38 +0200
+Message-ID: <20060820111938.GA1577@fox>
+References: <20060819102421.GA1991@fox> <20060819200154.GA1054@fox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <20060819200154.GA1054@fox>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,125 +22,37 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When I try to use dmix with my driver I get a problem with my kernel...
-This only happens if I use the entry in the .asoundrc file, if I use
-hw:2,0 playback works fine without any errors.. any idea what could be
-wrong here?
+> [...] I'm having trouble getting the big picture of how the MIDI
+> parts in ALSA works, so a little help would be appreciated. :-)
 
-Syslog:
-Aug 20 09:40:56 debian kernel: ************************ OPEN
-**********************
-Aug 20 09:40:56 debian kernel: snd_au600_playback_open
-Aug 20 09:40:56 debian kernel: hwparmas format: S16_LE
-Aug 20 09:40:56 debian kernel: snd_au600_hw_playback_params
-Aug 20 09:40:56 debian kernel: snd_au600_prepare
-Aug 20 09:40:56 debian kernel: PCM PLAYBACK TRIGGER START!
-Aug 20 09:40:56 debian kernel: 1
-Aug 20 09:40:56 debian kernel: 2
-Aug 20 09:40:56 debian kernel: 4
-Aug 20 09:40:56 debian kernel: USERS: 1, ARG: 1, STATUS: 0
-Aug 20 09:40:56 debian kernel: 5
-Aug 20 09:40:56 debian kernel: au600.c: initiating IRQ
-Aug 20 09:40:56 debian kernel: 6
-Aug 20 09:40:56 debian kernel: 7
-Aug 20 09:40:56 debian kernel: 3
--- theoretically playback should start here, but I don't even hear anything,
--- when the file is done it starts with following entries:
-Aug 20 09:43:10 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7fcd000
-Aug 20 09:43:10 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:43:10 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:43:10 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:43:10 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:43:10 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:43:10 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:43:12 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7f9b000
-Aug 20 09:43:12 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:43:12 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:43:12 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:43:12 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:43:12 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:43:12 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:43:40 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7f8e000
-Aug 20 09:43:40 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:43:40 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:43:40 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:43:40 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:43:40 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:43:40 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:44:29 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7fbf000
-Aug 20 09:44:29 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:44:29 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:44:29 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:44:29 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:44:29 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:44:29 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:44:43 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7f92000
-Aug 20 09:44:43 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:44:43 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:44:43 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:44:43 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:44:43 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:44:43 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:45:01 debian /USR/SBIN/CRON[15344]: (root) CMD ([ -x
-/usr/lib/sysstat/sa1 ] && { [ -r "$DEFAULT" ] && . "$DEFAULT" ; [
-"$ENABLED" = "true" ] && exec /usr/lib/sysstat/sa1; })
-Aug 20 09:45:09 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7f4f000
-Aug 20 09:45:09 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:45:09 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:45:09 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:45:09 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:45:09 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:45:09 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:45:18 debian kernel: Bad pte = 1fc7b067, process = aplay,
-vm_flags = 800fb, vaddr = b7fd9000
-Aug 20 09:45:18 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
-Aug 20 09:45:18 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
-Aug 20 09:45:18 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
-Aug 20 09:45:18 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
-Aug 20 09:45:18 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
-Aug 20 09:45:18 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Aug 20 09:47:33 debian kernel: PCM PLAYBACK TRIGGER STOP!
-Aug 20 09:47:33 debian kernel: snd_au600_hw_playback_free
-Aug 20 09:47:33 debian kernel: USERS: 1
-Aug 20 09:47:33 debian kernel: 1
-Aug 20 09:47:33 debian kernel: SWITCHING OFF STREAM!
-Aug 20 09:47:33 debian kernel: 4
-Aug 20 09:47:33 debian kernel: USERS: 0, ARG: 0, STATUS: 1
-----
+Never mind, I finally sucked it up, and forced myself to do the
+tedious task of tracking the MIDI events all the way from user
+space to hardware, and discovered what the problem was:
 
-afterwards I'm unable to start anything on my host anymore.
+Turns out that the buffer that overflows isn't a hardware buffer
+in the CM-32L -- it's a software buffer in ALSA that is fixed to
+a single page of memory (4096 bytes on x86).
 
-----
+This wouldn't be a problem if there were a mechanism that allowed
+incoming events to wait until there's room in the output buffer,
+or at least to fail with EAGAIN, allowing the application to retry.
 
-.asoundrc
-pcm.rateconvertin {
-        type dmix
-        ipc_key 1024
-        ipc_perm 0777
-        slave {
-                pcm "hw:2,0"
-                period_time 0
-                period_size 192
-                buffer_size 384
-                format S16_LE
-                periods 255
-                rate 9600
-        }
-}
+What happens here is that the function in question returns ENOMEM
+and prints a warning (but only if you enable ALSA debugging,
+which, of course, I had not) saying that events are lost due to
+buffer overflow.  Unfortunately, the return code is ignored by
+the calling function, so the error is silently ignored.
 
-----
+I _really_ hope this isn't intentional, because it makes the
+event interface too fragile to be useful.  I can fix this, but
+there are many ways to go about doing it (for example waiting
+for the buffer to drain, dynamically increasing buffer size,
+or getting the error code propagated up the stack).  I'd like to
+know what the authors think is the best solution, so that I can
+get the fix into the official sources.
 
-current driver sources:
-http://kurzlink.de/0qUcA3gX8
-
-thanks,
-Markus
+-- 
+ Haakon
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
