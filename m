@@ -1,15 +1,13 @@
-From: Haakon Riiser <haakon.riiser@fys.uio.no>
-Subject: Re: SysEx overflow when using the MIDI sequencer event
-	interface
-Date: Sun, 20 Aug 2006 13:19:38 +0200
-Message-ID: <20060820111938.GA1577@fox>
-References: <20060819102421.GA1991@fox> <20060819200154.GA1054@fox>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [Openchrome-users] via epia boards sound quality
+Date: Sun, 20 Aug 2006 13:14:22 +0100
+Message-ID: <44E8521E.40309@superbug.co.uk>
+References: <web-171768144@cgp.dol.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20060819200154.GA1054@fox>
+In-Reply-To: <web-171768144@cgp.dol.ru>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,40 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Andrey Liakhovets <liakh@dol.ru>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> [...] I'm having trouble getting the big picture of how the MIDI
-> parts in ALSA works, so a little help would be appreciated. :-)
+Andrey Liakhovets wrote:
+> James Courtier-Dutton wrote:
+>> Andrey Liakhovets wrote:
+>>> In short, the attached 1-line patch against alsa 1.0.11 solves the problem
+>>>
+>>> If necessary, I can give more details or upload them on our ftp.
+>>>
+>>> Andrey Liakhovets
+>>
+>> Would you be able to provide 2 things?
+>>
+>> 1) Please add a "Signed-off-by:" entry.
+>> 2) Do you have the VT1616A datasheet?
+>>
+>> I can find the VT1616 datasheet online, but not the VT1616A.
+>>
+>> James
+> 
+> No, I have only the VT1616 datasheet.
+> 
+> Below I repeat the references, info and patch with my Signed-off-by.
+> 
 
-Never mind, I finally sucked it up, and forced myself to do the
-tedious task of tracking the MIDI events all the way from user
-space to hardware, and discovered what the problem was:
+So, with the absence of the VT1617A datasheet, we effectively have no
+documentation for that AC97 register touched in your patch.
+Could I ask you to raise an alsa bug at
+https://bugtrack.alsa-project.org/alsa-bug/
 
-Turns out that the buffer that overflows isn't a hardware buffer
-in the CM-32L -- it's a software buffer in ALSA that is fixed to
-a single page of memory (4096 bytes on x86).
+Enter into the bug everything from your updated email, with the sign off
+and attached patch.
+I will then check the patch into the HG repository, but I will add a
+comment next to it pointing to the bug information. That way, future
+developers will know why it has been put there.
 
-This wouldn't be a problem if there were a mechanism that allowed
-incoming events to wait until there's room in the output buffer,
-or at least to fail with EAGAIN, allowing the application to retry.
-
-What happens here is that the function in question returns ENOMEM
-and prints a warning (but only if you enable ALSA debugging,
-which, of course, I had not) saying that events are lost due to
-buffer overflow.  Unfortunately, the return code is ignored by
-the calling function, so the error is silently ignored.
-
-I _really_ hope this isn't intentional, because it makes the
-event interface too fragile to be useful.  I can fix this, but
-there are many ways to go about doing it (for example waiting
-for the buffer to drain, dynamically increasing buffer size,
-or getting the error code propagated up the stack).  I'd like to
-know what the authors think is the best solution, so that I can
-get the fix into the official sources.
-
--- 
- Haakon
+James
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
