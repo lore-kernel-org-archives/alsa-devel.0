@@ -1,10 +1,12 @@
-From: "Andrey Liakhovets" <liakh@dol.ru>
-Subject: Re: [Openchrome-users] via epia boards sound quality
-Date: Sun, 20 Aug 2006 12:02:39 +0400
-Message-ID: <web-171768144@cgp.dol.ru>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: dmix problems/kernel
+Date: Sun, 20 Aug 2006 13:16:03 +0200
+Message-ID: <d9def9db0608200416g66ae7d48q39e85cfeab30a8c1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="_===171768144====cgp.dol.ru===_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,112 +19,128 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part MIME message
+When I try to use dmix with my driver I get a problem with my kernel...
+This only happens if I use the entry in the .asoundrc file, if I use
+hw:2,0 playback works fine without any errors.. any idea what could be
+wrong here?
 
---_===171768144====cgp.dol.ru===_
-Content-Type: text/plain; charset="KOI8-R"
-Content-Transfer-Encoding: quoted-printable
+Syslog:
+Aug 20 09:40:56 debian kernel: ************************ OPEN
+**********************
+Aug 20 09:40:56 debian kernel: snd_au600_playback_open
+Aug 20 09:40:56 debian kernel: hwparmas format: S16_LE
+Aug 20 09:40:56 debian kernel: snd_au600_hw_playback_params
+Aug 20 09:40:56 debian kernel: snd_au600_prepare
+Aug 20 09:40:56 debian kernel: PCM PLAYBACK TRIGGER START!
+Aug 20 09:40:56 debian kernel: 1
+Aug 20 09:40:56 debian kernel: 2
+Aug 20 09:40:56 debian kernel: 4
+Aug 20 09:40:56 debian kernel: USERS: 1, ARG: 1, STATUS: 0
+Aug 20 09:40:56 debian kernel: 5
+Aug 20 09:40:56 debian kernel: au600.c: initiating IRQ
+Aug 20 09:40:56 debian kernel: 6
+Aug 20 09:40:56 debian kernel: 7
+Aug 20 09:40:56 debian kernel: 3
+-- theoretically playback should start here, but I don't even hear anything,
+-- when the file is done it starts with following entries:
+Aug 20 09:43:10 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7fcd000
+Aug 20 09:43:10 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:43:10 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:43:10 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:43:10 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:43:10 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:43:10 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:43:12 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7f9b000
+Aug 20 09:43:12 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:43:12 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:43:12 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:43:12 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:43:12 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:43:12 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:43:40 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7f8e000
+Aug 20 09:43:40 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:43:40 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:43:40 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:43:40 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:43:40 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:43:40 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:44:29 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7fbf000
+Aug 20 09:44:29 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:44:29 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:44:29 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:44:29 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:44:29 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:44:29 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:44:43 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7f92000
+Aug 20 09:44:43 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:44:43 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:44:43 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:44:43 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:44:43 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:44:43 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:45:01 debian /USR/SBIN/CRON[15344]: (root) CMD ([ -x
+/usr/lib/sysstat/sa1 ] && { [ -r "$DEFAULT" ] && . "$DEFAULT" ; [
+"$ENABLED" = "true" ] && exec /usr/lib/sysstat/sa1; })
+Aug 20 09:45:09 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7f4f000
+Aug 20 09:45:09 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:45:09 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:45:09 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:45:09 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:45:09 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:45:09 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:45:18 debian kernel: Bad pte = 1fc7b067, process = aplay,
+vm_flags = 800fb, vaddr = b7fd9000
+Aug 20 09:45:18 debian kernel:  [vm_normal_page+67/93] vm_normal_page+0x43/0x5d
+Aug 20 09:45:18 debian kernel:  [unmap_vmas+379/1114] unmap_vmas+0x17b/0x45a
+Aug 20 09:45:18 debian kernel:  [unmap_region+119/246] unmap_region+0x77/0xf6
+Aug 20 09:45:18 debian kernel:  [do_munmap+347/432] do_munmap+0x15b/0x1b0
+Aug 20 09:45:18 debian kernel:  [sys_munmap+52/78] sys_munmap+0x34/0x4e
+Aug 20 09:45:18 debian kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Aug 20 09:47:33 debian kernel: PCM PLAYBACK TRIGGER STOP!
+Aug 20 09:47:33 debian kernel: snd_au600_hw_playback_free
+Aug 20 09:47:33 debian kernel: USERS: 1
+Aug 20 09:47:33 debian kernel: 1
+Aug 20 09:47:33 debian kernel: SWITCHING OFF STREAM!
+Aug 20 09:47:33 debian kernel: 4
+Aug 20 09:47:33 debian kernel: USERS: 0, ARG: 0, STATUS: 1
+----
 
-James Courtier-Dutton wrote:
-> Andrey Liakhovets wrote:
->>
->> In short, the attached 1-line patch against alsa 1.0.11 solves the pro=
-blem
->>
->> If necessary, I can give more details or upload them on our ftp.
->>
->> Andrey Liakhovets
->
->
-> Would you be able to provide 2 things?
->
-> 1) Please add a "Signed-off-by:" entry.
-> 2) Do you have the VT1616A datasheet?
->
-> I can find the VT1616 datasheet online, but not the VT1616A.
->
-> James
+afterwards I'm unable to start anything on my host anymore.
 
-No, I have only the VT1616 datasheet.
+----
 
-Below I repeat the references, info and patch with my Signed-off-by.
+.asoundrc
+pcm.rateconvertin {
+        type dmix
+        ipc_key 1024
+        ipc_perm 0777
+        slave {
+                pcm "hw:2,0"
+                period_time 0
+                period_size 192
+                buffer_size 384
+                format S16_LE
+                periods 255
+                rate 9600
+        }
+}
 
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001193.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001199.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-May/001247.htm=
-l
-http://wiki.openchrome.org/pipermail/openchrome-users/2006-July/001456.ht=
-ml
+----
 
-1) in our lab, we failed in getting bad sound on a running system,
-        despite a long and intensive heating;
-2) we have succeded in reproducing the problem at the system start (with =
-a
-        probability of about 2/3) with a pre-cooled sound codec chip;
-3) we have succeded in reproducing the problem on the system running Linu=
-x
-        by cutting analog power supply from the codec, cooling the codec =
-and
-        reattaching analog power;
-4) on wire, the problem looks like undervoltage of codec analog power
-        (2V or less instead of 5V): meanwhile the codec tries to consume
-        about 200mA (instead of <40mA), and the voltage regulator chip be=
-gins
-        (from 100mA) reducing the voltage;
-5) analysis of the situation with WinXP shows that the WinXP sound driver=
- loading
-        brings the codec analog voltage (and sound) to norm, and this sta=
-te
-        is tolerant to actions described under (3);
-6) analysis of the WinXP sound driver loading allowed us to detect that v=
-ery bit,
-        the set of which normalizes the codec's analog power consumption;
-7) a check with Linux has confirmed this.
+current driver sources:
+http://kurzlink.de/0qUcA3gX8
 
-The attached 1-line patch against alsa 1.0.11 solves the problem
-(for our VIA EPIA SP8000).
-
-Signed-off-by: Andrey Liakhovets <liakh@dol.ru>
-
---_===171768144====cgp.dol.ru===_
-Content-Type: application/octet-stream
-Content-Disposition: attachment;
-	filename="alsa-kernel-1.0.11-rover-ac97-vt1617a.patch"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtTmF1ciBhL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyBiL3BjaS9hYzk3L2FjOTdfcGF0
-Y2guYwotLS0gYS9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMJMjAwNi0wNC0xMiAwMDo0Njo0NyAr
-MDQwMAorKysgYi9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMJMjAwNi0wNy0yNiAxMDoxNTo1OCAr
-MDQwMApAQCAtMjc0Miw2ICsyNzQyLDcgQEAKICAqLwogaW50IHBhdGNoX3Z0MTYxN2Eoc3Ry
-dWN0IHNuZF9hYzk3ICogYWM5NykKIHsKKwlzbmRfYWM5N193cml0ZV9jYWNoZShhYzk3LCAw
-eDVjLCAweDIwKTsJLyogYnJpbmcgYW5hbG9nIHBvd2VyIGNvbnN1bXB0aW9uIHRvIG5vcm1h
-bCwgbGlrZSBXaW5YUCBkcml2ZXIgZm9yIEVQSUEgU1AgKi8KIAlhYzk3LT5leHRfaWQgfD0g
-QUM5N19FSV9TUERJRjsJLyogZm9yY2UgdGhlIGRldGVjdGlvbiBvZiBzcGRpZiAqLwogCWFj
-OTctPnJhdGVzW0FDOTdfUkFURVNfU1BESUZdID0gU05EUlZfUENNX1JBVEVfNDQxMDAgfCBT
-TkRSVl9QQ01fUkFURV80ODAwMDsKIAlyZXR1cm4gMDsK
-
---_===171768144====cgp.dol.ru===_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+thanks,
+Markus
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---_===171768144====cgp.dol.ru===_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---_===171768144====cgp.dol.ru===_--
