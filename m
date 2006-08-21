@@ -1,13 +1,17 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Sample rate errors (sample rate conversion quality) in
-	ALSA
-Date: Mon, 21 Aug 2006 11:08:55 -0700 (PDT)
-Message-ID: <20060821180855.74467.qmail@web60813.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: "Marc Brooker" <marcbrooker@gmail.com>
+Subject: Re: Sample Rate Conversion Quality in ALSA
+Date: Mon, 21 Aug 2006 21:07:31 +0200
+Message-ID: <b5ee41f40608211207o165b7e20qb40625ad17065d18@mail.gmail.com>
+References: <b5ee41f40608210316t562c803eye73701c75904627@mail.gmail.com>
+	<44E9AAFA.2060400@superbug.co.uk>
+	<b5ee41f40608210602q4c4ae45eo5be8392be7e96099@mail.gmail.com>
+	<20060821150338.GA3360@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20060821150338.GA3360@localhost.localdomain>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,7 +24,7 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 21 Aug 2006 16:03:38 +0100, John Rigg wrote:
+On 8/21/06, John Rigg <ad@sound-man.co.uk> wrote:
 > On Mon, Aug 21, 2006 at 03:02:07PM +0200, Marc Brooker wrote:
 > > Let me see if I understand you correctly. In the scenario that you
 > > presented the application is told that there are 940 samples per
@@ -28,49 +32,32 @@ On Mon, 21 Aug 2006 16:03:38 +0100, John Rigg wrote:
 > > 48kHz sample rate. So the material (sampled at 44100Hz) is played back
 > > at a rate of 44062Hz? I don't know enough about the field to know if
 > > this error (0.08%) will be audible.
-> 
+>
 > To put that in perspective, a semitone is around 6% change in pitch.
 > The error here looks small at 0.08% but it's enough to make a musical
 > note sound out of tune.
-> 
+>
 > John
+>
 
-Yes, you can hear the small differences in pitch, even an "untrained" ear.
+Would it not be possible to abuse the SRC algorithm to fix this pitch
+shift when it does the rate convertion. Instead of setting the source
+rate to 44100Hz (the real rate of the material), you set it to the
+rate that ALSA's rounding off causes (44062Hz, unless I am mistaken).
+In this way, as far as I can see, the SRC algorithm would fix the
+pitch shift. Or is this a stupid idea?
 
-It turns out that while few people have "absolute perfect pitch", most of
-the general public has "relative perfect pitch".  This means that if one
-can compare things, it can be easily detected as being "off".  The motion
-picture industry found out about this LONG ago, when "talkies" started.  In
-the "silent" days, the film speed varied considerably when "sampled" (the
-film was exposed).  The rate was highly dependent on the operators skill
-of maintaining a consistent crank speed.  When projected, the human eye
-can easily interpolate and "gloss over" small differences in the frame
-speed.  Not so in audio.  The recording of audio and its reproduction
-need to be very precise, or the audience will detect the SLIGHTEST difference
-in pitch from "norm".  They won't know exactly how to correct it, but
-it will be perceived as being "bad".
+On a related note, on an Athlon64 3200+ running Ubuntu Dapper for i386
+with backported alsa-libs 1.0.11 and alsa-plugins 1.0.11 (with
+samplerate plugin) cpu usage figures (while playing a VBR mp3 using
+gstreamer):
+standard ALSA linear: 2%
+samplerate: 6%
+samplerate_medium: 9%
+samplerate_best: 20%
 
->From this, it was extrapolated that one could compress (with loss) more
-in the video area, than the audio area, and get results that are
-"acceptable" to the general public.  Compression in general is not good,
-but that is another topic for great debate.
-
-Experiment to try (if you have the equipment):
-Record on a reel-reel recorder a song, then playback the same song and see
-how much you can alter the speed (thumb on capstan) before you can hear
-a difference.  You will be surprised at the results.
-
-We now return you to your regularly scheduled mailing list to discuss
-further sample rate conversion software.  :-)
-
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+>From this it seems that samplerate_best is too costly, but samplerate
+and samplerate_medium would be usable on most modern hardware.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
