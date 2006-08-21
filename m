@@ -1,17 +1,12 @@
-From: Haakon Riiser <haakon.riiser@fys.uio.no>
-Subject: Re: SysEx overflow when using the MIDI sequencer event
-	interface
-Date: Mon, 21 Aug 2006 11:34:14 +0200
-Message-ID: <20060821093414.GA25757@bigboss.venod.com>
-References: <20060819102421.GA1991@fox> <20060819200154.GA1054@fox>
-	<20060820111938.GA1577@fox>
-	<1156149858.23278.269020232@webmail.messagingengine.com>
+From: "Marc Brooker" <marcbrooker@gmail.com>
+Subject: Sample Rate Conversion Quality in ALSA
+Date: Mon, 21 Aug 2006 12:16:04 +0200
+Message-ID: <b5ee41f40608210316t562c803eye73701c75904627@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1156149858.23278.269020232@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,23 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-[Clemens Ladisch]
+Hello,
 
-> The sequencer interface is designed to send small messages
-> asynchronously in real time (or at specified scheduled times).  Not
-> doing any bandwidth management is part of the current design.
-> 
-> The rawmidi interface is better suited to send big SysEx messages.
+I am new to the ALSA development, and would be interested in
+contributing in future.
 
-Right, but is it possible to use rawmidi while the sequencer is opened?
-I tried, but open() blocks until I close the sequencer.
+After installing the latest Ubuntu on my home machine, I noticed that
+dmix is enabled by default. This is a very good move in my opinion, as
+it makes Linux sound much more transparent to the end user. However, I
+was concerned with the quality of the mixing algorithm and sample rate
+conversion used by dmix.
 
--- 
- Haakon
+The conclusions I came to after reading the source were the following
+(please correct me if I am wrong).
+
+1) The algorithm used by dmix looks to be fairly good. While my x86
+assembler is rusty (I read the version in pcm_dmix_i386.h) it seems to
+keep 24 bits of significant audio data and is unlikely to cause any
+major sound quality problems.
+
+2) The sample rate conversion algorithm (linear) is very poor. I did
+some loopback measurements with both real sample material and
+synthetic waveforms and it seems to add several percent harmonic
+distortion in some cases.
+
+The rate module (pcm_rate.c) from alsa-plugins adresses problem
+effectively by using high quality SRC from libsamplerate. The only
+problem here is that it is fairly tricky to enable (it requires adding
+defaults.pcm.rate_converter "samplerate" to .asoundrc) and it isn't
+distributed by default in Ubuntu or Debian unstable (I don't know
+about other distributions). While this is a distribution issue and not
+an ALSA bug, users are likely to blame it on ALSA.
+
+Is any consideration being given to the quality of SRC in ALSA? I
+understand that the tradeoff between quality and performance is an
+important one. In my mind, however, it would make sense to make it
+easier for the end user to enable higher quality SRC on fast machines.
+The low quality (but fast) SRC algorithm currently used will degrade
+sound quality for some users and is likely to reflect badly on the
+sound experience in Linux.
+
+I would be happy to take part in the improvement of the current
+situation but would be interesting in hearing developers opinions
+before writing a patch.
+
+Cheers
+
+Marc Brooker
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
