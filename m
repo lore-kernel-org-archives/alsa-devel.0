@@ -1,22 +1,14 @@
-From: "Clemens Ladisch" <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] alsa-kernel: fm801: move
- CONFIG_VIDEO_DEV dependency to CONFIG_SND_FM801_TEA575X_BOOL
-Date: Mon, 21 Aug 2006 09:52:05 +0200
-Message-ID: <1156146725.19545.269017711@webmail.messagingengine.com>
-References: <ALOGGER1155885865.57@alsa-project.org>
-	<s5hveoqzcz6.wl%tiwai@suse.de>
-	<1155891382.17094.268669006@webmail.messagingengine.com>
-	<s5hr6zez9xb.wl%tiwai@suse.de>
-	<1155893106.18755.268671127@webmail.messagingengine.com>
-	<s5hoduiz8j3.wl%tiwai@suse.de>
-	<1155911750.14091.268690972@webmail.messagingengine.com>
-	<s5h4pwa14xu.wl%tiwai@suse.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: S/PDIF ac3-passthrough problem
+Date: Mon, 21 Aug 2006 10:24:08 +0200
+Message-ID: <1156148648.21723.269019688@webmail.messagingengine.com>
+References: <20060818180241.GB8513@knm.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5h4pwa14xu.wl%tiwai@suse.de>
+In-Reply-To: <20060818180241.GB8513@knm.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,53 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: mark@knm.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> [...]
-> I meant CONFIG_SND_FM801_TEA575X in the external alsa-driver tree is
-> never set to y or m.  It's always n.  This is because
-> CONFIG_SND_FM801_TEA575X is evaluated before *_TEA575X_BOOL.
+Mark Lehrer wrote:
+> Hello there.  I have been having a weird problem for the past few
+> months, and I think I am going to have to dive into source code to
+> figure it out.  The problem: mplayer can play digital audio through
+> the S/PDIF connector, but VLC and Mythtv cannot.  Here is the error
+> from VLC:
+> 
+> [00000311] a52 decoder: A/52 channels:6 samplerate:48000 bitrate:448000
+> [00000314] alsa audio output error: internal: can't find audio-device (10)
+> 
+> Could someone please help me to decipher this error a bit?  VLC has a
+> device auto-detect, and it set the output device to hw:0,1.
 
-Okay, I reverted my Kconfig change.
+This is wrong.
 
-I tried to use this patch to manually evaluate the TEA575X symbols:
-
---- alsa.orig/alsa-driver/configure.in	2006-08-20 11:38:22.000000000 +0200
-+++ alsa/alsa-driver/configure.in	2006-08-21 01:04:13.000000000 +0200
-@@ -2548,6 +2548,14 @@
- CONFIG_SOUND=m
- ALSA_TOPLEVEL_SELECT
- 
-+dnl Workaround for module->option dependency
-+if ( test "$CONFIG_SND_FM801_TEA575X_BOOL" = "y" ) &&
-+   ( test "$CONFIG_VIDEO_DEV" = "y" ); then
-+  CONFIG_SND_FM801_TEA575X="m"
-+else
-+  CONFIG_SND_FM801_TEA575X_BOOL=""
-+fi
-+
- dnl OSS emulations
- if test "$CONFIG_SND_OSSEMUL" = "y"; then
-   CONFIG_SND_MIXER_OSS="$CONFIG_SND"
+Look at the mplayer output (probably with -v) to see which device it opens.
+It should be something like "iec958:{CARD 0 .....}".
 
 
-However, this results in include/config1.h and toplevel.config being
-inconsistent.  Apparently, autoconf writes the symbols to config1.h when
-AC_DEFINE is called, but writes to toplevel.config when AC_SUBST is
-called.  This means that the above workaround gets applied after
-config1.h was written.
-
-The obvious solution would be to move the AC_DEFINE()s out of
-ALSA_TOPLEVEL_SELECT into a new macro or into ALSA_TOPLEVEL_OUTPUT.
-However, this may also change the values of the OSS symbols that are
-written to config1.h (which is done before the assignments under "OSS
-emulations"), and I'm not sure if this change might break anything.
-
-
-Regards,
+HTH
 Clemens
 
 -------------------------------------------------------------------------
