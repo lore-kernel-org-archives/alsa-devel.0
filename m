@@ -1,7 +1,7 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: John Rigg <ad@sound-man.co.uk>
 Subject: Re: Sample Rate Conversion Quality in ALSA
-Date: Mon, 21 Aug 2006 15:15:03 -0400
-Message-ID: <1156187703.10565.117.camel@mindpipe>
+Date: Mon, 21 Aug 2006 21:15:06 +0100
+Message-ID: <20060821201506.GA3729@localhost.localdomain>
 References: <b5ee41f40608210316t562c803eye73701c75904627@mail.gmail.com>
 	<44E9AAFA.2060400@superbug.co.uk>
 	<b5ee41f40608210602q4c4ae45eo5be8392be7e96099@mail.gmail.com>
@@ -11,6 +11,7 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 In-Reply-To: <b5ee41f40608211207o165b7e20qb40625ad17065d18@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,7 +26,7 @@ To: Marc Brooker <marcbrooker@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-08-21 at 21:07 +0200, Marc Brooker wrote:
+On Mon, Aug 21, 2006 at 09:07:31PM +0200, Marc Brooker wrote:
 > On a related note, on an Athlon64 3200+ running Ubuntu Dapper for i386
 > with backported alsa-libs 1.0.11 and alsa-plugins 1.0.11 (with
 > samplerate plugin) cpu usage figures (while playing a VBR mp3 using
@@ -35,16 +36,14 @@ On Mon, 2006-08-21 at 21:07 +0200, Marc Brooker wrote:
 > samplerate_medium: 9%
 > samplerate_best: 20%
 > 
-> >From this it seems that samplerate_best is too costly, but samplerate
+> From this it seems that samplerate_best is too costly, but samplerate
 > and samplerate_medium would be usable on most modern hardware.
-> 
 
-It would be useful to have the same numbers for the low end of "modern
-hardware", like a 1Ghz fanless Via C3 board, or a Geode - the type of
-thing people use for MythTV boxes and what not.
+If you're running an i386 distro you're only using half of the
+Athlon64's registers. It would be interesting to see if that
+samplerate_best CPU load is reduced in 64-bit mode.
 
-Lee
-
+John
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
