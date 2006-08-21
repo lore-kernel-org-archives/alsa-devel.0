@@ -1,15 +1,13 @@
-From: "Marc Brooker" <marcbrooker@gmail.com>
-Subject: Re: Sample Rate Conversion Quality in ALSA
-Date: Mon, 21 Aug 2006 17:05:04 +0200
-Message-ID: <b5ee41f40608210805i1a4ba369sd4a3eb0d2b49176@mail.gmail.com>
-References: <b5ee41f40608210316t562c803eye73701c75904627@mail.gmail.com>
-	<44E9AAFA.2060400@superbug.co.uk> <s5hy7tiqmf7.wl%tiwai@suse.de>
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Sample rate errors (sample rate conversion quality) in
+	ALSA
+Date: Mon, 21 Aug 2006 11:08:55 -0700 (PDT)
+Message-ID: <20060821180855.74467.qmail@web60813.mail.yahoo.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hy7tiqmf7.wl%tiwai@suse.de>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,85 +17,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 8/21/06, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 21 Aug 2006 13:45:46 +0100,
-> James Courtier-Dutton wrote:
-> >
-> > Marc Brooker wrote:
-> > > Hello,
-> > >
-> > > I am new to the ALSA development, and would be interested in
-> > > contributing in future.
-> > >
-> > > After installing the latest Ubuntu on my home machine, I noticed that
-> > > dmix is enabled by default. This is a very good move in my opinion, as
-> > > it makes Linux sound much more transparent to the end user. However, I
-> > > was concerned with the quality of the mixing algorithm and sample rate
-> > > conversion used by dmix.
-> > >
-> > >
-> > > Cheers
-> > >
-> > > Marc Brooker
-> > >
-> > The problem is actually far more complicated than you described. A fair
-> > amount of ALSA core will have to be modified to really fix the problem.
-> > The main problem is the buffer and period sized as they pass through dmix.
-> > For example, if the sound card hardware is running with 1024 samples per
-> > period at 48000, and an application wished to use a sample rate of
-> > 44100, the application should really get 940.8 samples per period. That
-> > is nor possible, so the application gets 940. dmix then tries to convert
-> > 940 samples to 1024 samples ready for the hardware. So, even if the dmix
-> > algorithm used the super high quality sample rate conversion function,
-> > the actual rate change applied would still be slightly off.
->
-> Well, the problem raised in the original post is rather the usability
-> issue.  As mentioned there, the quality issue can be solved by using
-> rate plugin in alsa-plugins package.  The question is how easily one
-> can set it up.
->
-> IMO, it's just a problem of lack of (so-called user-friendly)
-> configuration tool.
->
->
-> Takashi
->
+On Mon, 21 Aug 2006 16:03:38 +0100, John Rigg wrote:
+> On Mon, Aug 21, 2006 at 03:02:07PM +0200, Marc Brooker wrote:
+> > Let me see if I understand you correctly. In the scenario that you
+> > presented the application is told that there are 940 samples per
+> > period. ALSA, internally, converts these to 1024 samples per period at
+> > 48kHz sample rate. So the material (sampled at 44100Hz) is played back
+> > at a rate of 44062Hz? I don't know enough about the field to know if
+> > this error (0.08%) will be audible.
+> 
+> To put that in perspective, a semitone is around 6% change in pitch.
+> The error here looks small at 0.08% but it's enough to make a musical
+> note sound out of tune.
+> 
+> John
 
-Takashi,
+Yes, you can hear the small differences in pitch, even an "untrained" ear.
 
-You are right that the original problem is a usability one. The reason
-I posted it here (instead of on the -users list) is that, in my
-opinion, the current behaviour of alsa is not optimal for desktop
-machines. While the extreme quality-speed tradeoff that alsa takes
-would make sense on low-power desktops and embedded systems, in my
-opinion a higher quality default would be better on desktops. That's
-only my opinion, though, and it's clear the original developer had a
-different (and possibly more valid) one.
+It turns out that while few people have "absolute perfect pitch", most of
+the general public has "relative perfect pitch".  This means that if one
+can compare things, it can be easily detected as being "off".  The motion
+picture industry found out about this LONG ago, when "talkies" started.  In
+the "silent" days, the film speed varied considerably when "sampled" (the
+film was exposed).  The rate was highly dependent on the operators skill
+of maintaining a consistent crank speed.  When projected, the human eye
+can easily interpolate and "gloss over" small differences in the frame
+speed.  Not so in audio.  The recording of audio and its reproduction
+need to be very precise, or the audience will detect the SLIGHTEST difference
+in pitch from "norm".  They won't know exactly how to correct it, but
+it will be perceived as being "bad".
 
-In terms of a terse bug report, I would write "Dmix sound quality is
-poor" rather than "Configuration of sample rate plugin is difficult".
+>From this, it was extrapolated that one could compress (with loss) more
+in the video area, than the audio area, and get results that are
+"acceptable" to the general public.  Compression in general is not good,
+but that is another topic for great debate.
 
-There are, it seems to me, two ways to fix this for desktop users. The
-first is to change the defaults to use the rate plugin. This would
-also involve convincing distros to include this plugin in their
-packages (which Debian and Ubuntu don't do by default, at the moment).
-Another solution would be to change the alsa-lib code to a better
-algorithm. This would probably involve either linking against
-libsamplerate, so it isn't optimal either.
+Experiment to try (if you have the equipment):
+Record on a reel-reel recorder a song, then playback the same song and see
+how much you can alter the speed (thumb on capstan) before you can hear
+a difference.  You will be surprised at the results.
 
-On a side note: A while ago I started writing a graphical setup
-utility for .asoundrc (see www.sourceforge.net/projects/kasound) which
-supported many of alsa's features and made them easier to set up. It's
-less useful for the majority of people now that alsa uses dmix by
-default.
+We now return you to your regularly scheduled mailing list to discuss
+further sample rate conversion software.  :-)
 
-Regards, and thanks for your responses
+-- 
+Tom Watson
+tsw@johana.com
 
-Marc Brooker
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
