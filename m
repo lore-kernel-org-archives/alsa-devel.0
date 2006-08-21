@@ -1,14 +1,16 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: S/PDIF ac3-passthrough problem
-Date: Mon, 21 Aug 2006 10:24:08 +0200
-Message-ID: <1156148648.21723.269019688@webmail.messagingengine.com>
-References: <20060818180241.GB8513@knm.org>
+Subject: Re: SysEx overflow when using the MIDI sequencer event
+ interface
+Date: Mon, 21 Aug 2006 10:44:18 +0200
+Message-ID: <1156149858.23278.269020232@webmail.messagingengine.com>
+References: <20060819102421.GA1991@fox> <20060819200154.GA1054@fox>
+	<20060820111938.GA1577@fox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20060818180241.GB8513@knm.org>
+In-Reply-To: <20060820111938.GA1577@fox>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,29 +20,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: mark@knm.org, alsa-devel@lists.sourceforge.net
+To: Haakon Riiser <haakon.riiser@fys.uio.no>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Mark Lehrer wrote:
-> Hello there.  I have been having a weird problem for the past few
-> months, and I think I am going to have to dive into source code to
-> figure it out.  The problem: mplayer can play digital audio through
-> the S/PDIF connector, but VLC and Mythtv cannot.  Here is the error
-> from VLC:
+Haakon Riiser wrote:
+> Turns out that the buffer that overflows isn't a hardware buffer
+> in the CM-32L -- it's a software buffer in ALSA that is fixed to
+> a single page of memory (4096 bytes on x86).
 > 
-> [00000311] a52 decoder: A/52 channels:6 samplerate:48000 bitrate:448000
-> [00000314] alsa audio output error: internal: can't find audio-device (10)
-> 
-> Could someone please help me to decipher this error a bit?  VLC has a
-> device auto-detect, and it set the output device to hw:0,1.
+> This wouldn't be a problem if there were a mechanism that allowed
+> incoming events to wait until there's room in the output buffer,
+> or at least to fail with EAGAIN, allowing the application to retry.
 
-This is wrong.
+The sequencer interface is designed to send small messages
+asynchronously in real time (or at specified scheduled times).  Not
+doing any bandwidth management is part of the current design.
 
-Look at the mplayer output (probably with -v) to see which device it opens.
-It should be something like "iec958:{CARD 0 .....}".
+The rawmidi interface is better suited to send big SysEx messages.
+
+You said you're trying to fix DOSBox.  If it emulates a hardware MIDI
+interface, it shouldn't accept MIDI data at a faster rate than a real
+MIDI interface would.
 
 
-HTH
+Regards,
 Clemens
 
 -------------------------------------------------------------------------
