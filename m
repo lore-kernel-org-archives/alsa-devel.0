@@ -1,17 +1,10 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [RFC: 2.6 patch] build sound/sound_firmware.c only for
-	OSS
-Date: Tue, 22 Aug 2006 16:46:20 +0200
-Message-ID: <20060822144620.GY11651__4156.0034420856$1156258052$gmane$org@stusta.de>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: [PATCH] sparc dbri: hardware constrains added
+Date: Tue, 22 Aug 2006 19:52:17 +0200
+Message-ID: <44eb445108302@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="part44eb44510a9ed"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2B351231
-	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Aug 2006 16:46:19 +0200 (MEST)
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,75 +14,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-All sound/sound_firmware.c contains is mod_firmware_load() that is a 
-legacy API only used by some OSS drivers.
+This is a multi-part message in MIME format.
 
-This patch builds it into an own sound_firmware module that is only 
-built depending on CONFIG_SOUND_PRIME making the kernel slightly smaller 
-for ALSA users.
+--part44eb44510a9ed
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+From: Krzysztof Helt (krzysztof.h1@wp.pl)
 
----
+This patch adds ALSA hardware constrains so stereo is possible
+only with 16-bit format. It contains small cleanups to ring
+buffered code as well.
 
- sound/Makefile         |    3 ++-
- sound/sound_core.c     |    4 ----
- sound/sound_firmware.c |    3 +++
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
 
---- linux-2.6.18-rc4-mm2/sound/Makefile.old	2006-08-22 00:07:41.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/Makefile	2006-08-22 00:10:41.000000000 +0200
-@@ -2,6 +2,7 @@
- #
- 
- obj-$(CONFIG_SOUND) += soundcore.o
-+obj-$(CONFIG_SOUND_PRIME) += sound_firmware.o
- obj-$(CONFIG_SOUND_PRIME) += oss/
- obj-$(CONFIG_DMASOUND) += oss/
- obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ sparc/ parisc/ pcmcia/ mips/
-@@ -11,4 +12,4 @@
-   obj-y += last.o
- endif
- 
--soundcore-objs  := sound_core.o sound_firmware.o
-+soundcore-objs  := sound_core.o
---- linux-2.6.18-rc4-mm2/sound/sound_core.c.old	2006-08-22 00:09:13.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/sound_core.c	2006-08-22 00:12:10.000000000 +0200
-@@ -517,10 +517,6 @@
- 	return -ENODEV;
- }
- 
--extern int mod_firmware_load(const char *, char **);
--EXPORT_SYMBOL(mod_firmware_load);
--
--
- MODULE_DESCRIPTION("Core sound module");
- MODULE_AUTHOR("Alan Cox");
- MODULE_LICENSE("GPL");
---- linux-2.6.18-rc4-mm2/sound/sound_firmware.c.old	2006-08-22 00:10:53.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/sound_firmware.c	2006-08-22 00:26:03.000000000 +0200
-@@ -4,6 +4,7 @@
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <asm/uaccess.h>
-+#include "oss/sound_firmware.h"
- 
- static int do_mod_firmware_load(const char *fn, char **fp)
- {
-@@ -73,4 +74,6 @@
- 	set_fs(fs);
- 	return r;
- }
-+EXPORT_SYMBOL(mod_firmware_load);
- 
-+MODULE_LICENSE("GPL");
+----------------------------------------------------
+Najlepsze siatkarki pla=BFowe =B6wiata w Warszawie!
+Mi=EAdzynarodowy turniej GE Money Bank Warsaw Open 2006=20
+Agrykola 30.08-03.09.2006 -> Wst=EAp wolny -> Szczeg=F3=B3y:
+http://klik.wp.pl/?adr=3Dwww.warsaw-beachvolley.pl&sid=3D850
 
+--part44eb44510a9ed
+Content-Type: application/octet-stream; name="dbri-patch10.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="dbri-patch10.diff"
+
+LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
+OC0yMSAyMDowMjozMi4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
+cmMvZGJyaS5jCTIwMDYtMDgtMjEgMjE6MzM6MDQuMDAwMDAwMDAwICswMjAwCkBAIC04NSw3ICs4
+NSw3IEBAIE1PRFVMRV9QQVJNX0RFU0MoaWQsICJJRCBzdHJpbmcgZm9yIFN1biAKIG1vZHVsZV9w
+YXJhbV9hcnJheShlbmFibGUsIGJvb2wsIE5VTEwsIDA0NDQpOwogTU9EVUxFX1BBUk1fREVTQyhl
+bmFibGUsICJFbmFibGUgU3VuIERCUkkgc291bmRjYXJkLiIpOwogCi0jZGVmaW5lIERCUklfREVC
+VUcKKyN1bmRlZiBEQlJJX0RFQlVHCiAKICNkZWZpbmUgRF9JTlQJKDE8PDApCiAjZGVmaW5lIERf
+R0VOCSgxPDwxKQpAQCAtMTYwLDcgKzE2MCw3IEBAIHN0YXRpYyBzdHJ1Y3QgewogICAgICAvKiB7
+ICAgIE5BLCAoMSA8PCA0KSwgKDUgPDwgMykgfSwgKi8KIAl7IDQ4MDAwLCAoMSA8PCA0KSwgKDYg
+PDwgMykgfSwKIAl7ICA5NjAwLCAoMSA8PCA0KSwgKDcgPDwgMykgfSwKLQl7ICA1NTEzLCAoMiA8
+PCA0KSwgKDAgPDwgMykgfSwJLyogQWN0dWFsbHkgNTUxMi41ICovCisJeyAgNTUxMiwgKDIgPDwg
+NCksICgwIDw8IDMpIH0sCS8qIEFjdHVhbGx5IDU1MTIuNSAqLwogCXsgMTEwMjUsICgyIDw8IDQp
+LCAoMSA8PCAzKSB9LAogCXsgMTg5MDAsICgyIDw8IDQpLCAoMiA8PCAzKSB9LAogCXsgMjIwNTAs
+ICgyIDw8IDQpLCAoMyA8PCAzKSB9LApAQCAtNjI4LDggKzYyOCw2IEBAIHRvIHNlbmQgdGhlbSB0
+byB0aGUgREJSSS4KIAogKi8KIAotc3RhdGljIHZvaWQgZGJyaV9wcm9jZXNzX2ludGVycnVwdF9i
+dWZmZXIoc3RydWN0IHNuZF9kYnJpICogZGJyaSk7Ci0KICNkZWZpbmUgTUFYTE9PUFMgMTAKIC8q
+CiAgKiBXYWl0IGZvciB0aGUgY3VycmVudCBjb21tYW5kIHN0cmluZyB0byBleGVjdXRlCkBAIC02
+NjksMTUgKzY2NywxNSBAQCBzdGF0aWMgczMyICpkYnJpX2NtZGxvY2soc3RydWN0IHNuZF9kYnJp
+CiB9CiAKIC8qCi0gKiBTZW5kIHByZXBhcmVkIGNtZCBzdHJpbmcuIEl0IHdvcmtzIGJ5IHdyaXR0
+aW5nIGEgSk1QIGNtZCBpbnRvCisgKiBTZW5kIHByZXBhcmVkIGNtZCBzdHJpbmcuIEl0IHdvcmtz
+IGJ5IHdyaXR0aW5nIGEgSlVNUCBjbWQgaW50bwogICogdGhlIGxhc3QgV0FJVCBjbWQgYW5kIGZv
+cmNlIERCUkkgdG8gcmVyZWFkIHRoZSBjbWQuCi0gKiBUaGUgSk1QIGNtZCBwb2ludHMgdG8gdGhl
+IG5ldyBjbWQgc3RyaW5nLgorICogVGhlIEpVTVAgY21kIHBvaW50cyB0byB0aGUgbmV3IGNtZCBz
+dHJpbmcuCiAgKiBJdCBhbHNvIHJlbGVhc2VzIHRoZSBjbWRsb2NrIHNwaW5sb2NrLgogICovCiBz
+dGF0aWMgdm9pZCBkYnJpX2NtZHNlbmQoc3RydWN0IHNuZF9kYnJpICogZGJyaSwgczMyICogY21k
+LGludCBsZW4pCiB7Ci0JczMyICpwdHI7CiAJczMyIHRtcCwgYWRkcjsKKwl1bnNpZ25lZCBsb25n
+IGZsYWdzOwogCXN0YXRpYyBpbnQgd2FpdF9pZCA9IDA7CiAKIAl3YWl0X2lkKys7CkBAIC02OTIs
+MTMgKzY5MCwxNiBAQCBzdGF0aWMgdm9pZCBkYnJpX2NtZHNlbmQoc3RydWN0IHNuZF9kYnJpCiAK
+ICNpZmRlZiBEQlJJX0RFQlVHCiAJaWYgKGNtZCA+IGRicmktPmNtZHB0ciApCisJCXMzMiAqcHRy
+OworCiAJCWZvciAocHRyID0gZGJyaS0+Y21kcHRyOyBwdHIgPCBjbWQrMjsgcHRyKyspIHsKIAkJ
+CWRwcmludGsoRF9DTUQsICJjbWQ6ICVseDolMDh4XG4iLCAodW5zaWduZWQgbG9uZylwdHIsICpw
+dHIpOwogCQl9CiAJZWxzZSB7Ci0JCXB0ciA9IGRicmktPmNtZHB0cjsKKwkJczMyICpwdHIgPSBk
+YnJpLT5jbWRwdHI7CisKIAkJZHByaW50ayhEX0NNRCwgImNtZDogJWx4OiUwOHhcbiIsICh1bnNp
+Z25lZCBsb25nKXB0ciwgKnB0cik7Ci0JCXB0ciA9IGRicmktPmNtZHB0cisxOworCQlwdHIrKzsK
+IAkJZHByaW50ayhEX0NNRCwgImNtZDogJWx4OiUwOHhcbiIsICh1bnNpZ25lZCBsb25nKXB0ciwg
+KnB0cik7CiAJCWZvciAocHRyID0gZGJyaS0+ZG1hLT5jbWQ7IHB0ciA8IGNtZCsyOyBwdHIrKykg
+ewogCQkJZHByaW50ayhEX0NNRCwgImNtZDogJWx4OiUwOHhcbiIsICh1bnNpZ25lZCBsb25nKXB0
+ciwgKnB0cik7CkBAIC03MDYsMTAgKzcwNywxMiBAQCBzdGF0aWMgdm9pZCBkYnJpX2NtZHNlbmQo
+c3RydWN0IHNuZF9kYnJpCiAJfQogI2VuZGlmCiAKKwlzcGluX2xvY2tfaXJxc2F2ZSgmZGJyaS0+
+bG9jaywgZmxhZ3MpOwogCS8qIFJlcmVhZCB0aGUgbGFzdCBjb21tYW5kICovCiAJdG1wID0gc2J1
+c19yZWFkbChkYnJpLT5yZWdzICsgUkVHMCk7CiAJdG1wIHw9IERfUDsKIAlzYnVzX3dyaXRlbCh0
+bXAsIGRicmktPnJlZ3MgKyBSRUcwKTsKKwlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkYnJpLT5s
+b2NrLCBmbGFncyk7CiAKIAlkYnJpLT5jbWRwdHIgPSBjbWQ7CiAJc3Bpbl91bmxvY2soJmRicmkt
+PmNtZGxvY2spOwpAQCAtMTU0OSw4ICsxNTUyLDcgQEAgc3RhdGljIGludCBjczQyMTVfcHJlcGFy
+ZShzdHJ1Y3Qgc25kX2RicgogCSAgICBDUzQyMTVfQlNFTF8xMjggfCBDUzQyMTVfRlJFUVtmcmVx
+X2lkeF0ueHRhbDsKIAogCWRicmktPm1tLmNoYW5uZWxzID0gY2hhbm5lbHM7Ci0JLyogU3RlcmVv
+IGJpdDogOCBiaXQgc3RlcmVvIG5vdCB3b3JraW5nIHlldC4gKi8KLQlpZiAoKGNoYW5uZWxzID4g
+MSkgJiYgKGRicmktPm1tLnByZWNpc2lvbiA9PSAxNikpCisJaWYgKGNoYW5uZWxzID09IDIpCiAJ
+CWRicmktPm1tLmN0cmxbMV0gfD0gQ1M0MjE1X0RGUl9TVEVSRU87CiAKIAlyZXQgPSBjczQyMTVf
+c2V0Y3RybChkYnJpKTsKQEAgLTE2MjQsNyArMTYyNiw3IEBAIGludGVycnVwdHMgYXJlIGRpc2Fi
+bGVkLgogCiAvKiB4bWl0X2Rlc2NzKCkKICAqCi0gKiBUcmFuc21pdCB0aGUgY3VycmVudCBURCdz
+IGZvciByZWNvcmRpbmcvcGxheWluZywgaWYgbmVlZGVkLgorICogU3RhcnRzIHRyYW5zbWl0aW5n
+IHRoZSBjdXJyZW50IFREJ3MgZm9yIHJlY29yZGluZy9wbGF5aW5nLgogICogRm9yIHBsYXliYWNr
+LCBBTFNBIGhhcyBmaWxsZWQgdGhlIERNQSBtZW1vcnkgd2l0aCBuZXcgZGF0YSAod2UgaG9wZSku
+CiAgKi8KIHN0YXRpYyB2b2lkIHhtaXRfZGVzY3Moc3RydWN0IHNuZF9kYnJpICpkYnJpKQpAQCAt
+MTY5OSw5ICsxNzAxLDkgQEAgcGxheToKICAqIHRoZW0gYXMgYXZhaWxhYmxlLiBTdG9wcyB3aGVu
+IHRoZSBmaXJzdCBkZXNjcmlwdG9yIGlzIGZvdW5kIHdpdGhvdXQKICAqIFRCQyAoVHJhbnNtaXQg
+QnVmZmVyIENvbXBsZXRlKSBzZXQsIG9yIHdlJ3ZlIHJ1biB0aHJvdWdoIHRoZW0gYWxsLgogICoK
+LSAqIFRoZSBETUEgYnVmZmVycyBhcmUgbm90IHJlbGVhc2VkLCBidXQgcmUtdXNlZC4gU2luY2Ug
+dGhlIHRyYW5zbWl0IGJ1ZmZlcgotICogZGVzY3JpcHRvcnMgYXJlIG5vdCBjbG9iYmVyZWQsIHRo
+ZXkgY2FuIGJlIHJlLXN1Ym1pdHRlZCBhcyBpcy4gVGhpcyBpcwotICogZG9uZSBieSB0aGUgeG1p
+dF9kZXNjcygpIHRhc2tsZXQgYWJvdmUgc2luY2UgdGhhdCBjb3VsZCB0YWtlIGxvbmdlci4KKyAq
+IFRoZSBETUEgYnVmZmVycyBhcmUgbm90IHJlbGVhc2VkLiBUaGV5IGZvcm0gYSByaW5nIGJ1ZmZl
+ciBhbmQKKyAqIHRoZXkgYXJlIGZpbGxlZCBieSBBTFNBIHdoaWxlIG90aGVycyBhcmUgdHJhbnNt
+aXR0ZWQgYnkgRE1BLgorICoKICAqLwogCiBzdGF0aWMgdm9pZCB0cmFuc21pc3Npb25fY29tcGxl
+dGVfaW50cihzdHJ1Y3Qgc25kX2RicmkgKiBkYnJpLCBpbnQgcGlwZSkKQEAgLTE5NDQsOCArMTk0
+Niw4IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSBzbmRfZGJyaV8KIAkJCQkgIFNO
+RFJWX1BDTV9GTVRCSVRfQV9MQVcgfAogCQkJCSAgU05EUlZfUENNX0ZNVEJJVF9VOCB8CiAJCQkJ
+ICBTTkRSVl9QQ01fRk1UQklUX1MxNl9CRSwKLQkucmF0ZXMJCQk9IFNORFJWX1BDTV9SQVRFXzgw
+MDBfNDgwMDAsCi0JLnJhdGVfbWluCQk9IDgwMDAsCisJLnJhdGVzCQkJPSBTTkRSVl9QQ01fUkFU
+RV84MDAwXzQ4MDAwIHwgU05EUlZfUENNX1JBVEVfNTUxMiwKKwkucmF0ZV9taW4JCT0gNTUxMiwK
+IAkucmF0ZV9tYXgJCT0gNDgwMDAsCiAJLmNoYW5uZWxzX21pbgkJPSAxLAogCS5jaGFubmVsc19t
+YXgJCT0gMiwKQEAgLTE5NTYsNiArMTk1OCwzOSBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY21faGFy
+ZHdhcmUgc25kX2RicmlfCiAJLnBlcmlvZHNfbWF4CQk9IDEwMjQsCiB9OwogCitzdGF0aWMgaW50
+IHNuZF9od19ydWxlX2Zvcm1hdChzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywKKwkJ
+CSAgICAgIHN0cnVjdCBzbmRfcGNtX2h3X3J1bGUgKnJ1bGUpCit7CisJc3RydWN0IHNuZF9pbnRl
+cnZhbCAqYyA9IGh3X3BhcmFtX2ludGVydmFsKHBhcmFtcywKKwkJCQlTTkRSVl9QQ01fSFdfUEFS
+QU1fQ0hBTk5FTFMpOworCXN0cnVjdCBzbmRfbWFzayAqZiA9IGh3X3BhcmFtX21hc2socGFyYW1z
+LCBTTkRSVl9QQ01fSFdfUEFSQU1fRk9STUFUKTsKKwlzdHJ1Y3Qgc25kX21hc2sgZm10OworCisJ
+c25kX21hc2tfYW55KCZmbXQpOworCWlmIChjLT5taW4gPiAxKSB7CisJCWZtdC5iaXRzWzBdICY9
+IFNORFJWX1BDTV9GTVRCSVRfUzE2X0JFOworCQlyZXR1cm4gc25kX21hc2tfcmVmaW5lKGYsICZm
+bXQpOworCX0KKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBzbmRfaHdfcnVsZV9jaGFubmVs
+cyhzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywKKwkJCQlzdHJ1Y3Qgc25kX3BjbV9o
+d19ydWxlICpydWxlKQoreworCXN0cnVjdCBzbmRfaW50ZXJ2YWwgKmMgPSBod19wYXJhbV9pbnRl
+cnZhbChwYXJhbXMsCisJCQkJU05EUlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTKTsKKwlzdHJ1Y3Qg
+c25kX21hc2sgKmYgPSBod19wYXJhbV9tYXNrKHBhcmFtcywgU05EUlZfUENNX0hXX1BBUkFNX0ZP
+Uk1BVCk7CisJc3RydWN0IHNuZF9pbnRlcnZhbCBjaDsKKworCXNuZF9pbnRlcnZhbF9hbnkoJmNo
+KTsKKwlpZiAoIShmLT5iaXRzWzBdICYgU05EUlZfUENNX0ZNVEJJVF9TMTZfQkUpKSB7CisJCWNo
+Lm1pbiA9IGNoLm1heCA9IDE7CisJCWNoLmludGVnZXIgPSAxOworCQlyZXR1cm4gc25kX2ludGVy
+dmFsX3JlZmluZShjLCAmY2gpOworCX0KKwlyZXR1cm4gMDsKK30KKwogc3RhdGljIGludCBzbmRf
+ZGJyaV9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogewogCXN0cnVj
+dCBzbmRfZGJyaSAqZGJyaSA9IHNuZF9wY21fc3Vic3RyZWFtX2NoaXAoc3Vic3RyZWFtKTsKQEAg
+LTE5NzMsNiArMjAwOCwxNCBAQCBzdGF0aWMgaW50IHNuZF9kYnJpX29wZW4oc3RydWN0IHNuZF9w
+Y21fCiAJaW5mby0+cGlwZSA9IC0xOwogCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRicmktPmxv
+Y2ssIGZsYWdzKTsKIAorCXNuZF9wY21faHdfcnVsZV9hZGQocnVudGltZSwwLFNORFJWX1BDTV9I
+V19QQVJBTV9DSEFOTkVMUywKKwkJCSAgICBzbmRfaHdfcnVsZV9mb3JtYXQsIDAsIFNORFJWX1BD
+TV9IV19QQVJBTV9GT1JNQVQsCisJCQkgICAgLTEpOworCXNuZF9wY21faHdfcnVsZV9hZGQocnVu
+dGltZSwwLFNORFJWX1BDTV9IV19QQVJBTV9GT1JNQVQsCisJCQkgICAgc25kX2h3X3J1bGVfY2hh
+bm5lbHMsIDAsIAorCQkJICAgIFNORFJWX1BDTV9IV19QQVJBTV9DSEFOTkVMUywKKwkJCSAgICAt
+MSk7CisJCQkJCiAJY3M0MjE1X29wZW4oZGJyaSk7CiAKIAlyZXR1cm4gMDsK
+
+--part44eb44510a9ed
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--part44eb44510a9ed
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--part44eb44510a9ed--
