@@ -1,14 +1,19 @@
-From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: Re: [PATCH] sparc dbri: hardware constrains added
-Date: Wed, 23 Aug 2006 12:53:48 +0200
-Message-ID: <44ec33bc0f4e0@wp.pl>
-References: <44eb445108302@wp.pl> <s5hhd03ssdo.wl%tiwai@suse.de>
+From: "Andrew L. Neporada" <nepal@asplinux.ru>
+Subject: Re: Connexant HDA codec support
+Date: Wed, 23 Aug 2006 16:29:04 +0400
+Message-ID: <1156336144.25148.14.camel@leeloo.asplinux.ru>
+References: <1155721544.3871.43.camel@leeloo.asplinux.ru>
+	<s5hac64ygw0.wl%tiwai@suse.de> <s5h3bbwyez3.wl%tiwai@suse.de>
+	<1155812567.25618.9.camel@leeloo.asplinux.ru>
+	<s5hk657zjb4.wl%tiwai@suse.de>
+	<1155815287.25618.13.camel@leeloo.asplinux.ru>
+	<s5h3bbvza3v.wl%tiwai@suse.de>
+	<1155885471.27393.13.camel@leeloo.asplinux.ru>
+	<s5hk656z7ly.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="=-04wB5nUdpGE0x+IeL7x5"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <44eb445108302@wp.pl> <s5hhd03ssdo.wl%tiwai@suse.de>
-Content-Disposition: inline
+In-Reply-To: <s5hk656z7ly.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,52 +24,217 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dnia 23-08-2006 o godz. 11:39 Takashi Iwai napisa=B3(a):
-> Missing braces in debug prints of dbri_cmdsend(), but others look
-> fine.  I queued the fixed patch on my tree.  Will be committed
-to the
-> upstream soon.
-> =
 
-> BTW, dprintk() should use "do { } while (0)" so that it can be
-used =
+--=-04wB5nUdpGE0x+IeL7x5
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-> safely without extra blocks.
-> =
+Hi!
 
+It seems that I've fixed mic problem by adjusting VRef setting on
+Pin Complex node #0x14.
 
-I haven't catched it because debug prints are disabled by the
-patch. It will be fixed in the next one.
+I am unsure if this is a bug in generic code part or something
+codec-specific. Patch is attached.
 
-I started testing the OSS layer and it does not work on sparc32.
-Is it something broken in the OSS layer for sparc or it is likely
-a driver issue?
+--=-04wB5nUdpGE0x+IeL7x5
+Content-Disposition: attachment; filename=alsa-1.0.12rc3-connexant.patch
+Content-Type: text/x-patch; name=alsa-1.0.12rc3-connexant.patch; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Before my series of patches, I got no sound through the OSS
-layer. With the patches I got sound but it is played too fast and
-deformed (random jumps in music play).  I found the OSS layer
-works by continously starting and stoping sound after each block
-to send. Is it normal behaviour?
+diff -ruNp a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+--- a/sound/pci/hda/hda_generic.c	2006-08-14 14:55:26.000000000 +0400
++++ b/sound/pci/hda/hda_generic.c	2006-08-23 16:13:06.000000000 +0400
+@@ -551,11 +551,35 @@ static int parse_adc_sub_nodes(struct hd
+ 	/* unmute the PIN external input */
+ 	unmute_input(codec, node, 0); /* index = 0? */
+ 	/* set PIN-In enable */
+-	snd_hda_codec_write(codec, node->nid, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, pinctl);
++	snd_hda_codec_write(codec, node->nid, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
++	                    node->nid == 0x14 ? 0x24 : pinctl);
+ 
+ 	return 1; /* found */
+ }
+ 
++/* add a capture source element */
++static void add_cap_src(struct hda_gspec *spec, int idx)
++{
++	struct hda_input_mux_item *csrc;
++	char *buf;
++	int num, ocap;
++
++	num = spec->input_mux.num_items;
++	csrc = &spec->input_mux.items[num];
++	buf = spec->cap_labels[num];
++	for (ocap = 0; ocap < num; ocap++) {
++		if (! strcmp(buf, spec->cap_labels[ocap])) {
++			/* same label already exists,
++			 * put the index number to be unique
++			 */
++			sprintf(buf, "%s %d", spec->cap_labels[ocap], num);
++			break;
++		}
++	}
++	csrc->index = idx;
++	spec->input_mux.num_items++;
++}
++
+ /*
+  * parse input
+  */
+@@ -576,28 +600,26 @@ static int parse_input_path(struct hda_c
+ 	 * if it reaches to a proper input PIN, add the path as the
+ 	 * input path.
+ 	 */
++	/* first, check the direct connections to PIN widgets */
+ 	for (i = 0; i < adc_node->nconns; i++) {
+ 		node = hda_get_node(spec, adc_node->conn_list[i]);
+-		if (! node)
+-			continue;
+-		err = parse_adc_sub_nodes(codec, spec, node);
+-		if (err < 0)
+-			return err;
+-		else if (err > 0) {
+-			struct hda_input_mux_item *csrc = &spec->input_mux.items[spec->input_mux.num_items];
+-			char *buf = spec->cap_labels[spec->input_mux.num_items];
+-			int ocap;
+-			for (ocap = 0; ocap < spec->input_mux.num_items; ocap++) {
+-				if (! strcmp(buf, spec->cap_labels[ocap])) {
+-					/* same label already exists,
+-					 * put the index number to be unique
+-					 */
+-					sprintf(buf, "%s %d", spec->cap_labels[ocap],
+-						spec->input_mux.num_items);
+-				}
+-			}
+-			csrc->index = i;
+-			spec->input_mux.num_items++;
++		if (node && node->type == AC_WID_PIN) {
++			err = parse_adc_sub_nodes(codec, spec, node);
++			if (err < 0)
++				return err;
++			else if (err > 0)
++				add_cap_src(spec, i);
++		}
++	}
++	/* ... then check the rests, more complicated connections */
++	for (i = 0; i < adc_node->nconns; i++) {
++		node = hda_get_node(spec, adc_node->conn_list[i]);
++		if (node && node->type != AC_WID_PIN) {
++			err = parse_adc_sub_nodes(codec, spec, node);
++			if (err < 0)
++				return err;
++			else if (err > 0)
++				add_cap_src(spec, i);
+ 		}
+ 	}
+ 
+@@ -647,9 +669,6 @@ static int parse_input(struct hda_codec 
+ /*
+  * create mixer controls if possible
+  */
+-#define DIR_OUT		0x1
+-#define DIR_IN		0x2
+-
+ static int create_mixer(struct hda_codec *codec, struct hda_gnode *node,
+ 			unsigned int index, const char *type, const char *dir_sfx)
+ {
+@@ -743,28 +762,57 @@ static int build_input_controls(struct h
+ {
+ 	struct hda_gspec *spec = codec->spec;
+ 	struct hda_gnode *adc_node = spec->adc_node;
+-	int err;
++	int i, err;
++	static struct snd_kcontrol_new cap_sel = {
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Capture Source",
++		.info = capture_source_info,
++		.get = capture_source_get,
++		.put = capture_source_put,
++	};
+ 
+-	if (! adc_node)
++	if (! adc_node || ! spec->input_mux.num_items)
+ 		return 0; /* not found */
+ 
++	spec->cur_cap_src = 0;
++	select_input_connection(codec, adc_node,
++				spec->input_mux.items[0].index);
++
+ 	/* create capture volume and switch controls if the ADC has an amp */
+-	err = create_mixer(codec, adc_node, 0, NULL, "Capture");
++	/* do we have only a single item? */
++	if (spec->input_mux.num_items == 1) {
++		err = create_mixer(codec, adc_node,
++				   spec->input_mux.items[0].index,
++				   NULL, "Capture");
++		if (err < 0)
++			return err;
++		return 0;
++	}
+ 
+ 	/* create input MUX if multiple sources are available */
+-	if (spec->input_mux.num_items > 1) {
+-		static struct snd_kcontrol_new cap_sel = {
+-			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-			.name = "Capture Source",
+-			.info = capture_source_info,
+-			.get = capture_source_get,
+-			.put = capture_source_put,
+-		};
+-		if ((err = snd_ctl_add(codec->bus->card, snd_ctl_new1(&cap_sel, codec))) < 0)
++	if ((err = snd_ctl_add(codec->bus->card,
++			       snd_ctl_new1(&cap_sel, codec))) < 0)
++		return err;
++
++	/* no volume control? */
++	if (! (adc_node->wid_caps & AC_WCAP_IN_AMP) ||
++	    ! (adc_node->amp_in_caps & AC_AMPCAP_NUM_STEPS))
++		return 0;
++
++	for (i = 0; i < spec->input_mux.num_items; i++) {
++		struct snd_kcontrol_new knew;
++		char name[32];
++		sprintf(name, "%s Capture Volume",
++			spec->input_mux.items[i].label);
++		knew = (struct snd_kcontrol_new)
++			HDA_CODEC_VOLUME(name, adc_node->nid,
++					 spec->input_mux.items[i].index,
++					 HDA_INPUT);
++		if ((err = snd_ctl_add(codec->bus->card,
++				       snd_ctl_new1(&knew, codec))) < 0)
+ 			return err;
+-		spec->cur_cap_src = 0;
+-		select_input_connection(codec, adc_node, spec->input_mux.items[0].index);
+ 	}
++
+ 	return 0;
+ }
+ 
 
-There is no problem with the same file played through the aplay.
-
-Regards,
-Krzysztof
-
-----------------------------------------------------
-Games Convention Lipsk 23-27.08.2006 - Nie mo=BFesz tam by=E6?
-Zobacz relacje na =BFywo:
-http://klik.wp.pl/?adr=3Dwww.gc2006.gry.wp.pl&sid=3D852
-
-
+--=-04wB5nUdpGE0x+IeL7x5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--=-04wB5nUdpGE0x+IeL7x5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-04wB5nUdpGE0x+IeL7x5--
