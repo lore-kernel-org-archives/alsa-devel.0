@@ -1,13 +1,14 @@
-From: Jochen Voss <voss@seehuhn.de>
-Subject: Re: [PATCH] fix volume control for the AK4358 DAC
-Date: Wed, 23 Aug 2006 11:45:45 +0100
-Message-ID: <20060823104544.GC17791@localhost.localdomain>
-References: <20060822200009.GC3025@tarte.seehuhn.de>
-	<s5hfyfnss4j.wl%tiwai@suse.de>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: Re: [PATCH] sparc dbri: hardware constrains added
+Date: Wed, 23 Aug 2006 12:53:48 +0200
+Message-ID: <44ec33bc0f4e0@wp.pl>
+References: <44eb445108302@wp.pl> <s5hhd03ssdo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0510952215=="
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfyfnss4j.wl%tiwai@suse.de>
+In-reply-to: <44eb445108302@wp.pl> <s5hhd03ssdo.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,79 +18,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Dnia 23-08-2006 o godz. 11:39 Takashi Iwai napisa=B3(a):
+> Missing braces in debug prints of dbri_cmdsend(), but others look
+> fine.  I queued the fixed patch on my tree.  Will be committed
+to the
+> upstream soon.
+> =
 
---===============0510952215==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c3bfwLpm8qysLVxt"
-Content-Disposition: inline
+> BTW, dprintk() should use "do { } while (0)" so that it can be
+used =
 
-
---c3bfwLpm8qysLVxt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Takashi,
-
-On Wed, Aug 23, 2006 at 11:45:00AM +0200, Takashi Iwai wrote:
-> >  #define AK_GET_CHIP(val)		(((val) >> 8) & 0xff)
-> >  #define AK_GET_ADDR(val)		((val) & 0xff)
-> >  #define AK_GET_SHIFT(val)		(((val) >> 16) & 0x7f)
->=20
-> Shouldn't this be (((val) >> 16) & 0x3f) to exclude bit 22?
->=20
-> > +#define AK_GET_NEEDSMSB(val)		(((val) >> 22) & 1)
-
-Yes, I think you are right.  Currently there is no problem, since
-shift is never used simultaneously with needsmsb, but this should be
-fixed anyway.  I will check all users of shift to see whether they are
-all fine with a 6 bit value.  If so, I will try to prepare another
-patch until tomorrow or so.
-
-All the best,
-Jochen
---=20
-http://seehuhn.de/
-
---c3bfwLpm8qysLVxt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE7DHYf+iD8yEbECURAm7IAKCVXzOJSF9o7QyX3Hi56+D6eUPwsgCgyz+r
-tEy5iuvV/CiHqO6BS1VGqog=
-=eoqp
------END PGP SIGNATURE-----
-
---c3bfwLpm8qysLVxt--
+> safely without extra blocks.
+> =
 
 
---===============0510952215==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I haven't catched it because debug prints are disabled by the
+patch. It will be fixed in the next one.
+
+I started testing the OSS layer and it does not work on sparc32.
+Is it something broken in the OSS layer for sparc or it is likely
+a driver issue?
+
+Before my series of patches, I got no sound through the OSS
+layer. With the patches I got sound but it is played too fast and
+deformed (random jumps in music play).  I found the OSS layer
+works by continously starting and stoping sound after each block
+to send. Is it normal behaviour?
+
+There is no problem with the same file played through the aplay.
+
+Regards,
+Krzysztof
+
+----------------------------------------------------
+Games Convention Lipsk 23-27.08.2006 - Nie mo=BFesz tam by=E6?
+Zobacz relacje na =BFywo:
+http://klik.wp.pl/?adr=3Dwww.gc2006.gry.wp.pl&sid=3D852
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0510952215==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0510952215==--
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
