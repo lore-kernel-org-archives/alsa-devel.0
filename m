@@ -1,15 +1,14 @@
-From: "Markus Rechberger" <mrechberger@gmail.com>
-Subject: Re: Bug: aplay/alsa-lib problem on mips (openwrt,
-	uclibc)
-Date: Wed, 23 Aug 2006 22:00:56 +0200
-Message-ID: <d9def9db0608231300m5a87c902q911d2309f5eb3fc2@mail.gmail.com>
-References: <eciaah$qi9$1@ultimate100.geggus.net>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [RFC] TLV entry for linear volume
+Date: Thu, 24 Aug 2006 00:48:25 +0100
+Message-ID: <44ECE949.9010207@superbug.co.uk>
+References: <s5h8xlfzhhu.wl%tiwai@suse.de>	<44EC6F16.6090807@superbug.co.uk>	<s5hhd03xydd.wl%tiwai@suse.de>	<s5hwt8zwf96.wl%tiwai@suse.de>	<44EC9CED.8040408@superbug.co.uk>
+	<s5hejv7wbbk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <eciaah$qi9$1@ultimate100.geggus.net>
-Content-Disposition: inline
+In-Reply-To: <s5hejv7wbbk.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,93 +18,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Sven Geggus <sven@geggus.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sven,
+Takashi Iwai wrote:
+> At Wed, 23 Aug 2006 19:22:37 +0100,
+> James Courtier-Dutton wrote:
+>> Takashi Iwai wrote:
+>>> At Wed, 23 Aug 2006 17:31:10 +0200,
+>>> I wrote:
+>>>   
+>>>>> So, 0 dB is when (volume - rec->min) / (max - min) == 1
+>>>>> So, for +6 dB gain, the volume will need to be higher than max?
+>>>>> Does this sound right? In that case, maybe "max" is not a good name for 
+>>>>> it because volume can be greater than max.
+>>>>>       
+>>>> Hm, right, I didn't think of overload case with a linear volume
+>>>> codec.  By min and max, I thought of a "segment" between mute and
+>>>> 0dB (although not implemented rightly in alsa-lib).
+>>>>
+>>>> Maybe min and max should be in (0.01) dB expressions since the min and
+>>>> max "values" are known from snd_ctl_elem_info.  The only problem is
+>>>> that we have no standard definition of "mute" in dB expression.
+>>>> In alsa-lib, -9999999 indicates mute.  But it should be defined as a
+>>>> constant in a public header.
+>>>>     
+>>> It turned out that minimal dB makes the computation too complicated,
+>>> and chips are very likely from mute to a certain dB.  So, I decided to
+>>> drop the min dB there.
+>>>
+>>> The below are the revised patches.
+>>>
+>>>
+>>> Takashi
+>>>   
+>> I think you will find that your second approach is still wrong.
+>> You need to first identify the 0dB point, and then the scale factor and 
+>> offset value for the linear component before the log10 conversion.
+>> So, linear to log should be something like:
+>> 20log10 ((linear / scale) - offset)
+> 
+> What is linear and scale here?
+I explain that in the rest of my email.
+but I will repeat differently:
+"linear" is your X value that the hardware requires, that you say is a
+linear scale and not a log10 scale.
+"scale" is some multiplier to convert the integer X value into some
+floating point value. Together with an offset value to reach the correct
+0db, +6dB and -6dB gain points.
 
-I'd try to adjust some settings there..
+> 
+> In my case, the calculation is so simple as below.
+> 
+> The value y at x [0,max] is
+> 
+>    y = (x / max) * maxVal
+> 
+> where maxVal = 10^(maxdB/20)
+> 
+> so, in dB expression,
+> 
+>   Y = 20 * log10(y) = 20 * log10((x / max) * 10^(maxdB/20))
+>     = 20 * log10(x/max) + maxdB
+> 
+> 
+> Takashi
 
---buffer-size (by default it tried to allocate the max possible one,
-maybe this is too much for that small embedded box)
+It is unclear from your equation where the 0dB point is.
+>From your equation, when x = max( i.e. what I would expect to be the 0dB
+point as a result of comments by you in previous emails), one reaches
+the maxdB point, and not the 0dB point. Getting the 0dB point on the
+log10 curve is very important, otherwise the conversion from linear to
+dB occurs at the wrong point on the log10 curve, resulting in the dB
+values all being wrong.
+Remember, these dB values are dB GAIN, not absolute dB levels.
 
-just have a look at man aplay maybe it helps a bit
-
-Markus
-
-On 8/23/06, Sven Geggus <sven@geggus.net> wrote:
-> Dear alsa developers,
->
-> I almost succeeded in running alsa (1.0.11/snd-usb-audio) on openwrt (Kernel
-> 2.4.32, uClibc-0.9.28). While OSS emulation is working aplay just
-> generates an error:
->
-> root@(none):/# /usr/local/bin/aplay -f cd -t raw </dev/urandom
-> Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 44100
-> Hz, Stereo
-> aplay: set_params:1012: unable to install sw params:
-> start_mode: EXPLICIT
-> xrun_mode: NONE
-> tstamp_mode: NONE
-> period_step: 1
-> sleep_min: 0
-> avail_min: 0
-> xfer_align: 718523216
-> silence_threshold: 0
-> silence_size: 0
-> boundary: 1073741824
->
-> speaker-test is generating a very simular error:
->
-> root@(none):/# /usr/local/bin/speaker-test -r 44100
->
-> speaker-test 1.0.11
->
-> Playback device is default
-> Stream parameters are 44100Hz, S16_LE, 1 channels
-> Using 16 octaves of pink noise
-> Rate set to 44100Hz (requested 44100Hz)
-> Buffer size range from 90 to 262144
-> Period size range from 45 to 131072
-> Using max buffer size 262144
-> Periods = 4
-> was set period_size = 0
-> was set buffer_size = 262144
-> Unable to set sw params for playback: Invalid argument
-> Setting of swparams failed: Invalid argument
->
-> Can you tell me how I could further debug this?
->
-> Regards
->
-> Sven
->
-> P.S.: The Soundcard is working fine on my desktop PC
->
-> --
-> "Thinking of using NT for your critical apps?
->                                   Isn't there enough suffering in the
-> world?"
->                    (Advertisement of Sun Microsystems in Wall Street
-> Journal)
-> /me is giggls@ircnet, http://sven.gegg.us/ on the Web
->
-> -------------------------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job
-> easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+James
 
 
--- 
-Markus Rechberger
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
