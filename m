@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [RFC] TLV entry for linear volume
-Date: Thu, 24 Aug 2006 00:48:25 +0100
-Message-ID: <44ECE949.9010207@superbug.co.uk>
-References: <s5h8xlfzhhu.wl%tiwai@suse.de>	<44EC6F16.6090807@superbug.co.uk>	<s5hhd03xydd.wl%tiwai@suse.de>	<s5hwt8zwf96.wl%tiwai@suse.de>	<44EC9CED.8040408@superbug.co.uk>
-	<s5hejv7wbbk.wl%tiwai@suse.de>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: Re: [PATCH] sparc dbri: recording is back
+Date: Thu, 24 Aug 2006 08:09:26 +0200
+Message-ID: <44ed42960731f@wp.pl>
+References: <44ec9a1bf3034@wp.pl> <s5hirkjwc4w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hejv7wbbk.wl%tiwai@suse.de>
+In-reply-to: <44ec9a1bf3034@wp.pl> <s5hirkjwc4w.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,87 +19,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 23 Aug 2006 19:22:37 +0100,
-> James Courtier-Dutton wrote:
->> Takashi Iwai wrote:
->>> At Wed, 23 Aug 2006 17:31:10 +0200,
->>> I wrote:
->>>   
->>>>> So, 0 dB is when (volume - rec->min) / (max - min) == 1
->>>>> So, for +6 dB gain, the volume will need to be higher than max?
->>>>> Does this sound right? In that case, maybe "max" is not a good name for 
->>>>> it because volume can be greater than max.
->>>>>       
->>>> Hm, right, I didn't think of overload case with a linear volume
->>>> codec.  By min and max, I thought of a "segment" between mute and
->>>> 0dB (although not implemented rightly in alsa-lib).
->>>>
->>>> Maybe min and max should be in (0.01) dB expressions since the min and
->>>> max "values" are known from snd_ctl_elem_info.  The only problem is
->>>> that we have no standard definition of "mute" in dB expression.
->>>> In alsa-lib, -9999999 indicates mute.  But it should be defined as a
->>>> constant in a public header.
->>>>     
->>> It turned out that minimal dB makes the computation too complicated,
->>> and chips are very likely from mute to a certain dB.  So, I decided to
->>> drop the min dB there.
->>>
->>> The below are the revised patches.
->>>
->>>
->>> Takashi
->>>   
->> I think you will find that your second approach is still wrong.
->> You need to first identify the 0dB point, and then the scale factor and 
->> offset value for the linear component before the log10 conversion.
->> So, linear to log should be something like:
->> 20log10 ((linear / scale) - offset)
-> 
-> What is linear and scale here?
-I explain that in the rest of my email.
-but I will repeat differently:
-"linear" is your X value that the hardware requires, that you say is a
-linear scale and not a log10 scale.
-"scale" is some multiplier to convert the integer X value into some
-floating point value. Together with an offset value to reach the correct
-0db, +6dB and -6dB gain points.
 
-> 
-> In my case, the calculation is so simple as below.
-> 
-> The value y at x [0,max] is
-> 
->    y = (x / max) * maxVal
-> 
-> where maxVal = 10^(maxdB/20)
-> 
-> so, in dB expression,
-> 
->   Y = 20 * log10(y) = 20 * log10((x / max) * 10^(maxdB/20))
->     = 20 * log10(x/max) + maxdB
-> 
-> 
-> Takashi
 
-It is unclear from your equation where the 0dB point is.
->From your equation, when x = max( i.e. what I would expect to be the 0dB
-point as a result of comments by you in previous emails), one reaches
-the maxdB point, and not the 0dB point. Getting the 0dB point on the
-log10 curve is very important, otherwise the conversion from linear to
-dB occurs at the wrong point on the log10 curve, resulting in the dB
-values all being wrong.
-Remember, these dB values are dB GAIN, not absolute dB levels.
+Dnia 23-08-2006 o godz. 20:16 Takashi Iwai napisa=B3(a):
+> At Wed, 23 Aug 2006 20:10:35 +0200,
+> Krzysztof Helt wrote:
+> > =
 
-James
+> > @@ -2159,7 +2139,7 @@ static snd_pcm_uframes_t snd_dbri_pointe
+> >  	snd_pcm_uframes_t ret;
+> >  =
+
+> >  	ret =3D bytes_to_frames(substream->runtime, info->offset)
+> > -		% substream->runtime->buffer_size;
+>  >+		% (substream->runtime->buffer_size + 1);
+> >  	dprintk(D_USR, "I/O pointer: %ld frames of %ld.\n",
+> >  		ret, substream->runtime->buffer_size);
+> >  	return ret;
+> =
+
+> What is the reason of this change?  The original code looks OK
+to me.
+> The pointer callback must return a value between 0 and
+> (buffer_size-1).
+> =
+
+> =
+
+
+I will recheck if recording works without this change. The last
+returned pointer value is equal to buffer_size. Your email
+implies that 0 means "I have full buffer filled with data".
+
+Regards,
+Krzysztof
+
+----------------------------------------------------
+Ogl=B1daj -> Wydarzenia.wp.pl -> Wiesz, co najwa=BFniejsze!
+Najbardziej aktualne materia=B3y filmowe - Kliknij:
+http://klik.wp.pl/?adr=3Dwww.wydarzenia.wp.pl&sid=3D848
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
