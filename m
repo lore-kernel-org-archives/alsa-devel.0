@@ -1,12 +1,14 @@
-From: Jochen Voss <voss@seehuhn.de>
-Subject: Re: ALSA 1.0.12 release
-Date: Thu, 24 Aug 2006 15:25:38 +0100
-Message-ID: <20060824142538.GB20458@localhost.localdomain>
-References: <Pine.LNX.4.61.0608241545170.5772@tm8103-a.perex-int.cz>
+From: Sven Geggus <sven@geggus.net>
+Subject: Re: Bug: aplay/alsa-lib problem on mips (openwrt,
+	uclibc)
+Date: Thu, 24 Aug 2006 15:41:22 +0000 (UTC)
+Message-ID: <eckhb2$g43$1@ultimate100.geggus.net>
+References: <eciaah$qi9$1@ultimate100.geggus.net>
+	<1156408442.3263.269301419@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1716147072=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0608241545170.5772@tm8103-a.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,75 +21,42 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch <cladisch@fastmail.net> wrote:
 
---===============1716147072==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K8nIJk4ghYZn606h"
-Content-Disposition: inline
+> I would guess that the kernel and alsa-lib have not been compiled with the
+> same compiler or compiler options, i.e., some structure layouts are
+> different.
 
+I have been using the same compiler, as I don't have more than one cross
+development toolkit installed.
 
---K8nIJk4ghYZn606h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+compiler options are different, however.
 
-Hi Jaroslav,
+Openwrt is using the following for compiling alsa-driver:
+-Os -G 0 -mno-abicalls -fno-pic -finline-limit=100000 -mabi=32 -march=mips32
+--Wa,-32 -Wa,-march=mips32 -Wa,-mips32 -Wa,--trap -mlong-calls -Wall
+--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+--fno-strict-aliasing -fno-common -pipe
 
-On Thu, Aug 24, 2006 at 03:48:46PM +0200, Jaroslav Kysela wrote:
-> I am happy to announce the ALSA 1.0.12 release.
-Great news!
+I added the "-mlong-calls" Option myself, to get the alsa modules to insmod
+correctly and to work (at least in oss compatible mode).
 
-> The changelogs are here:
-The following entries look a bit strange:
+For compiling alsa-lib I just use what configure suggests which basically
+leads to no special compiler Options at all.
 
-  + ALSA Version
-    - release 1.0.12rc2a
-    - snd-ca0106: Fix dB gain TLVs.
+Which options of the above do you suspect that I would need for alsa lib to
+be able to talk to the alsa driver in a correct way?
 
-Maybe there is "release 1.0.12" one missing, and the "snd-ca0106" one
-is misplaced?
+Sven
 
-All the best,
-Jochen
---=20
-http://seehuhn.de/
+-- 
+"In the land of the brave and the free, we defend our freedom
+with the GNU GPL" (Richard M. Stallman on www.gnu.org)
 
---K8nIJk4ghYZn606h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE7bbif+iD8yEbECURAqb+AKCCAP44QXO6vAT5hNczeiMJHF2pqwCfWY+I
-p06nuyRQzZ1HMMrBWOPra8o=
-=pcgs
------END PGP SIGNATURE-----
-
---K8nIJk4ghYZn606h--
-
-
---===============1716147072==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+/me is giggls@ircnet, http://sven.gegg.us/ on the Web
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1716147072==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1716147072==--
