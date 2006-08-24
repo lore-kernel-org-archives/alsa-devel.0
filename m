@@ -1,9 +1,9 @@
 From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: [PATCH] sparc dbri: info->offset is now zeroed
-Date: Thu, 24 Aug 2006 20:55:38 +0200
-Message-ID: <44edf62ae7198@wp.pl>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="part44edf62aebeac"
+Subject: Re: [PATCH] sparc dbri: hardware constrains added
+Date: Thu, 24 Aug 2006 21:05:37 +0200
+Message-ID: <44edf881a7bf1@wp.pl>
+References: <44eb445108302@wp.pl>
+Content-Type: multipart/mixed; boundary="===============1958279788=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,60 +14,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============1958279788==
 
---part44edf62aebeac
+<s5hhd03ssdo.wl%tiwai@suse.de>
+<44ec33bc0f4e0@wp.pl> <s5hhd03wc1p.wl%tiwai@suse.de>
+In-reply-to: <44eb445108302@wp.pl>
+<s5hhd03ssdo.wl%tiwai@suse.de>
+<44ec33bc0f4e0@wp.pl> <s5hhd03wc1p.wl%tiwai@suse.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Interfejs WWW poczty Wirtualnej Polski
+Organization: Poczta Wirtualnej Polski S.A. http://www.wp.pl/
+X-User-Agent: Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4a) Gecko/20030401
+X-WP-IP: 213.76.88.67
+X-WP-AV: skaner antywirusowy poczty Wirtualnej Polski S. A.
+X-WP-SPAM: NO AS1=NO AS2=NO(0.500004) AS3=NO AS4=NO AS5=NO                                                             
 
-From: Krzysztof Helt (krzysztof.h1@wp.pl)
 
-This patch fixes two issues:
-1. The info->offset is not zeroed when new stream is prepared to
-be played or recorded.
-2. Incorrect modulo value used in pointer function (pointed out
-by Takashi Iwai).
 
-Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
----
+Dnia 23-08-2006 o godz. 20:18 Takashi Iwai napisa³(a):
+> At Wed, 23 Aug 2006 12:53:48 +0200,
+> Krzysztof Helt wrote:
+> > I started testing the OSS layer and it does not work on sparc32.
+> > Is it something broken in the OSS layer for sparc or it is likely
+> > a driver issue?
+> > 
+> > Before my series of patches, I got no sound through the OSS
+> > layer. With the patches I got sound but it is played too fast and
+> > deformed (random jumps in music play).  I found the OSS layer
+> > works by continously starting and stoping sound after each block
+> > to send. Is it normal behaviour?
+> 
+> Doesn't look so.
+> 
+> Perhaps the PCM middle layer detected XRUN (e.g. due to invalid DMA
+> pointer) and automatically restarted? 
+> Is prepare called between the frequent triggers?
+> 
+> 
+With the patch I have posted today it is easy to find the pattern
+with OSS layer:
+1. prepare is called.
+2. sound start trigger is called.
+3. The driver issues a proper command to a DMA controller.
+4. The intterrupt comes which says that DMA controller processed
+the sent command.
+5. pointer is called and return 0
+6. sound stop trigger is called
+7. The driver issues a command to stop the DMA controller.
+8. The step 1 repeats.
+
+The only difference using the aplay command is that it ignores 0
+pointer returned in step 5 and a moment later an interrupt comes
+which reports the first period sent by the DMA controller.
+
+Any thoughts whats is wrong with the OSS layer or driver?
+
+Regards,
+Krzysztof
 
 
 ----------------------------------------------------
-Nic nie musisz zamawia=E6, nic nie musisz kupowa=E6!
-Po prostu odszukaj obrazek i wygraj nagrody:
-http://klik.wp.pl/?adr=3Dwww.pasaz.wp.pl%2Fkonkurs.html&sid=3D853
+Najlepsze siatkarki pla¿owe ¶wiata w Warszawie!
+Miêdzynarodowy turniej GE Money Bank Warsaw Open 2006 
+Agrykola 30.08-03.09.2006 -> Wstêp wolny -> Szczegó³y:
+http://klik.wp.pl/?adr=www.warsaw-beachvolley.pl&sid=850
 
---part44edf62aebeac
-Content-Type: application/octet-stream; name="dbri-patch13.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="dbri-patch13.diff"
 
-LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
-OC0yNCAyMDozMzozNS4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
-cmMvZGJyaS5jCTIwMDYtMDgtMjQgMjA6MjE6NDAuMDAwMDAwMDAwICswMjAwCkBAIC02MjgsNyAr
-NjI4LDcgQEAgdG8gc2VuZCB0aGVtIHRvIHRoZSBEQlJJLgogCiAqLwogCi0jZGVmaW5lIE1BWExP
-T1BTIDEwCisjZGVmaW5lIE1BWExPT1BTIDIwCiAvKgogICogV2FpdCBmb3IgdGhlIGN1cnJlbnQg
-Y29tbWFuZCBzdHJpbmcgdG8gZXhlY3V0ZQogICovCkBAIC0yMTEwLDEyICsyMTE4LDEzIEBAIHN0
-YXRpYyBpbnQgc25kX2RicmlfcHJlcGFyZShzdHJ1Y3Qgc25kX3AKIAkgKi8KIAlyZXQgPSBzZXR1
-cF9kZXNjcyhkYnJpLCBEQlJJX1NUUkVBTU5PKHN1YnN0cmVhbSksCiAJCQkgIHNuZF9wY21fbGli
-X3BlcmlvZF9ieXRlcyhzdWJzdHJlYW0pKTsKKwlpbmZvLT5vZmZzZXQgPSAwOwogCiAJcnVudGlt
-ZS0+c3RvcF90aHJlc2hvbGQgPSBEQlJJX1REX01BWENOVCAvIHJ1bnRpbWUtPmNoYW5uZWxzOwog
-CiAJc3Bpbl91bmxvY2tfaXJxKCZkYnJpLT5sb2NrKTsKIAotCWRwcmludGsoRF9VU1IsICJwcmVw
-YXJlIGF1ZGlvIG91dHB1dC4gJWQgYnl0ZXNcbiIsIGluZm8tPnNpemUpOworCWRwcmludGsoRF9V
-U1IsICJwcmVwYXJlIGF1ZGlvIG91dHB1dC4gcGlwZSAlZCwgJWQgYnl0ZXNcbiIsIGluZm8tPnBp
-cGUsIGluZm8tPnNpemUpOwogCXJldHVybiByZXQ7CiB9CiAKQEAgLTIxNTAsNyArMjE1OSw3IEBA
-IHN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBzbmRfZGJyaV9wb2ludGUKIAlzbmRfcGNtX3VmcmFt
-ZXNfdCByZXQ7CiAKIAlyZXQgPSBieXRlc190b19mcmFtZXMoc3Vic3RyZWFtLT5ydW50aW1lLCBp
-bmZvLT5vZmZzZXQpCi0JCSUgKHN1YnN0cmVhbS0+cnVudGltZS0+YnVmZmVyX3NpemUgKyAxKTsK
-KwkJJSBzdWJzdHJlYW0tPnJ1bnRpbWUtPmJ1ZmZlcl9zaXplOwogCWRwcmludGsoRF9VU1IsICJJ
-L08gcG9pbnRlcjogJWxkIGZyYW1lcyBvZiAlbGQuXG4iLAogCQlyZXQsIHN1YnN0cmVhbS0+cnVu
-dGltZS0+YnVmZmVyX3NpemUpOwogCXJldHVybiByZXQ7Cg==
 
---part44edf62aebeac
+
+--===============1958279788==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -78,7 +100,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---part44edf62aebeac
+--===============1958279788==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -89,4 +111,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---part44edf62aebeac--
+--===============1958279788==--
