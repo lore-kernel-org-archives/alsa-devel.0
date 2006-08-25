@@ -1,15 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: problem linking pcm timer to midi timer at SB
-	Audigy
-Date: Fri, 25 Aug 2006 17:34:38 +0200
-Message-ID: <1156520078.7520.269417316@webmail.messagingengine.com>
-References: <44EF14F5.5000304@gmx.net>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [RFC] TLV entry for linear volume
+Date: Fri, 25 Aug 2006 17:27:12 +0100
+Message-ID: <44EF24E0.3080802@superbug.co.uk>
+References: <s5h8xlfzhhu.wl%tiwai@suse.de>	<44EC6F16.6090807@superbug.co.uk>	<s5hhd03xydd.wl%tiwai@suse.de>	<s5hwt8zwf96.wl%tiwai@suse.de>	<44EC9CED.8040408@superbug.co.uk>	<s5hejv7wbbk.wl%tiwai@suse.de>	<44ECE949.9010207@superbug.co.uk>	<s5hirkiv6gy.wl%tiwai@suse.de>
+	<s5hsljl866g.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <44EF14F5.5000304@gmx.net>
+In-Reply-To: <s5hsljl866g.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,41 +18,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Gerald Grabner <gerald.grabner@gmx.net>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gerald Grabner wrote:
-> I'm having troubles with linking the pcm timer to the midi timer for a
-> SB Audigy. I slightly adapted the code of Steve deRosier
-> [http://thread.gmane.org/gmane.linux.alsa.devel/22156/focus=22160], my
-> function is listed below. While it works with an ES1938 card, it
-> doesn't with a SB Audigy: If I'm trying to record audio (generated
-> from a midi signal I'm sending from the same card), I only hear the
-> first note sent. Obviously the timing is completely wrong. The problem
-> doesn't occur for pcm playback.
+Takashi Iwai wrote:
+> At Thu, 24 Aug 2006 11:16:45 +0200,
+> I wrote:
+>   
+>> The difference between us is just how to express and pass the
+>> coefficeints.  My suggestion is to pass the values given in the
+>> datasheet as they are, min and max dB.
+>>     
+>
+> The below is the latest version I have on my local tree.
+> It's against HG tree.
+>
+>
+> Takashi
+>   
++#ifndef HAVE_SOFT_FLOAT
++    case SND_CTL_TLVT_DB_LINEAR: {
++        int mindb = rec->db_info[2];
++        int maxdb = rec->db_info[3];
+Maybe I am unclear about what rec->min is, but I though that it was the 
+lowest value the volume(old % scale) could be.
+So, what exactly is this section trying to do? Just handling error cases?
++        if (volume <= rec->min || rec->max <= rec->min)
++            *db_gain = mindb;
++        else if (volume >= rec->max)
++            *db_gain = maxdb;
++        else {
 
-Look into /proc/asound/seq/queues and /proc/asound/seq/timers to see
-what's going on.
+This makes sense. (part A), when combined with (part B)
++            double val = (double)(volume - rec->min) /
++                (double)(rec->max - rec->min);
 
-> Unfortunatly, I didn't find much documentation about cards, devices
-> and subdevices.
-> Do I have to choose a particular one for the Audigy?
+This special case is for when mindb = negative infinity.
++            if (mindb <= SND_CTL_TLV_DB_GAIN_MUTE)
++                *db_gain = (long)(100.0 * 20.0 * log10(val)) +
++                    maxdb;
++            else {
 
-Yes.  See "arecord -l" for a list of recording devices.  You have to
-choose the same device that you're using for recording.
+This makes sense. (Part B) when combined with (Part A)
+It covers a good general case of mapping (linear_min...linear_max) onto 
+(dB_min...dB_max)
++                /* FIXME: precalculate and cache these values */
++                double lmin = pow(10.0, mindb/20.0);
++                double lmax = pow(10.0, maxdb/20.0);
++                val = (lmax - lmin) * val + lmin;
++                *db_gain = (long)(100.0 * 20.0 * log10(val));
++            }
++        }
++        return 0;
++    }
++#endif
 
-> Why the "SDevice = SDevice << 1;" statement?
 
-The subdevice number of the timer is not the same as the PCM subdevice
-number, see /proc/asound/timers.
+Summary, I am happy with this now.
 
-> Where can I find documentation on this topic?
+James
 
-This stuff is basically undocumented.
-
-
-Regards,
-Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
