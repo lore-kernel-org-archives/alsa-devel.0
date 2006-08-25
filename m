@@ -1,11 +1,16 @@
-From: "Nydia Horsley" <buswell@eir.com>
-Subject: Re: new ei
-Date: Fri, 25 Aug 2006 06:02:50 -0700
-Message-ID: <000001c6c846$c50dce00$1797a8c0@idlt>
-Reply-To: Nydia Horsley <buswell@eir.com>
+From: =?iso-2022-jp?B?GyRCMkYwKSQkO3ZMMzZJGyhC?= <syoukaioubo@natuai_jimukyoku.info>
+Subject: =?iso-2022-jp?b?GyRCIXoyRjApJCQ7dkwzNkkkaCRqJS0bKEI=?=
+	=?iso-2022-jp?b?GyRCJWMlcyVaITwlcyROJCpDTiRpJDshehsoQg==?=
+Date: Fri, 25 Aug 2006 22:22:32 +0900
+Message-ID: <20060825133111.A5B8F197@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0100486572=="
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from osugi2.com (OFSfa-04p4-48.ppp11.odn.ad.jp [211.131.247.48])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A5B8F197
+	for <alsa-devel@alsa-project.org>;
+	Fri, 25 Aug 2006 15:31:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,85 +20,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+【　夏逢い　】
 
---===============0100486572==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6C80C.18AEF600"
+夏限定の特別キャンペーン！！
+暑い夏ですが、暑さに負けず出逢いは大盛り上がり！！
+一夏の経験したい方多数！！
+当方もうれしい限りですが、男性不足！！
+今回ご紹介の方と連絡なんて取ってみては？
 
-This is a multi-part message in MIME format.
+http://ooi.staticcling.org/natu_ai/index2.html
 
-------=_NextPart_000_0001_01C6C80C.18AEF600
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+当たり前な話だけど、今年の夏は今年限り！！
+来年はまた別の出逢いがあるかもしれませんが。。。
+とりあえず今年の夏は思い出作ってみませんか？
+出逢い希望者続出！週間アクセス当社１位獲得！
+お盆前の今からのアポ取りがお勧めです！！
 
-Hi,
-=20
-PHRMACY , economize up to 50 % with us http://zasadeviontertun.com
+http://ooi.staticcling.org/natu_ai/index2.html
 
-=20
+今回ご紹介の方以外にも多種多様な方が続々登録中！
+貴方様もご参加してみませんか？
+その他詳細は下記URLから！
+まずはご確認だけでもお願いします！！
 
-=20
-
-=20
-
-I spun about and glared at Steengo who was buffing his fingernails on
-his shirt, then admiring his image in their shining surfaces.
-You said that? I accused. He nodded sagely. Why?
-
-
-
-------=_NextPart_000_0001_01C6C80C.18AEF600
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>PHRMACY , economize up to 50 % with us <A =
-href=3D"http://zasadeviontertun.com">http://zasadeviontertun.com</A></DIV=
-><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P> I spun about and glared at =
-Steengo who was buffing his fingernails on<BR>
-his shirt, then admiring his image in their shining surfaces.<BR>
- You said that? I accused. He nodded sagely. Why?<BR></P></BODY></HTML>
-------=_NextPart_000_0001_01C6C80C.18AEF600--
-
-
-
-
-
---===============0100486572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://ooi.staticcling.org/natu_ai/index2.html
+＿＿＿＿＿＿
+夏逢い事務局
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0100486572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0100486572==--
