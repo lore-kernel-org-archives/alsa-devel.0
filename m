@@ -1,16 +1,11 @@
-From: =?iso-2022-jp?B?GyRCMkYwKSQkO3ZMMzZJGyhC?= <syoukaioubo@natuai_jimukyoku.info>
-Subject: =?iso-2022-jp?b?GyRCIXoyRjApJCQ7dkwzNkkkaCRqJS0bKEI=?=
-	=?iso-2022-jp?b?GyRCJWMlcyVaITwlcyROJCpDTiRpJDshehsoQg==?=
-Date: Fri, 25 Aug 2006 22:22:32 +0900
-Message-ID: <20060825133111.A5B8F197@alsa.jcu.cz>
+From: Gerald Grabner <gerald.grabner@gmx.net>
+Subject: problem linking pcm timer to midi timer at SB Audigy
+Date: Fri, 25 Aug 2006 17:19:17 +0200
+Message-ID: <44EF14F5.5000304@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from osugi2.com (OFSfa-04p4-48.ppp11.odn.ad.jp [211.131.247.48])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A5B8F197
-	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Aug 2006 15:31:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,35 +15,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-【　夏逢い　】
+Hi there,
 
-夏限定の特別キャンペーン！！
-暑い夏ですが、暑さに負けず出逢いは大盛り上がり！！
-一夏の経験したい方多数！！
-当方もうれしい限りですが、男性不足！！
-今回ご紹介の方と連絡なんて取ってみては？
+I'm having troubles with linking the pcm timer to the midi timer for a
+SB Audigy. I slightly adapted the code of Steve deRosier
+[http://thread.gmane.org/gmane.linux.alsa.devel/22156/focus=22160], my
+function is listed below. While it works with an ES1938 card, it
+doesn't with a SB Audigy: If I'm trying to record audio (generated
+from a midi signal I'm sending from the same card), I only hear the
+first note sent. Obviously the timing is completely wrong. The problem
+doesn't occur for pcm playback.
 
-http://ooi.staticcling.org/natu_ai/index2.html
+Unfortunatly, I didn't find much documentation about cards, devices
+and subdevices.
+Do I have to choose a particular one for the Audigy?
+Why the "SDevice = SDevice << 1;" statement?
+Where can I find documentation on this topic?
 
-当たり前な話だけど、今年の夏は今年限り！！
-来年はまた別の出逢いがあるかもしれませんが。。。
-とりあえず今年の夏は思い出作ってみませんか？
-出逢い希望者続出！週間アクセス当社１位獲得！
-お盆前の今からのアポ取りがお勧めです！！
+My system: alsa 1.0.11, openSuSE 10.1
 
-http://ooi.staticcling.org/natu_ai/index2.html
+Any hints are highly welcome!
+Thx a lot,
+Gerald
 
-今回ご紹介の方以外にも多種多様な方が続々登録中！
-貴方様もご参加してみませんか？
-その他詳細は下記URLから！
-まずはご確認だけでもお願いします！！
 
-http://ooi.staticcling.org/natu_ai/index2.html
-＿＿＿＿＿＿
-夏逢い事務局
+bool SmSeq::LinkPCMTimer( snd_pcm_t* pcm )
+{
+   // get pcm info
+   snd_pcm_info_t* PCMInfo;
+   snd_pcm_info_alloca( &PCMInfo );
+   int err = snd_pcm_info( pcm, PCMInfo );
+   if( err < 0 )  return false ;
+
+   // get the info we need
+   int             Card = snd_pcm_info_get_card     ( PCMInfo );
+   unsigned int  Device = snd_pcm_info_get_device   ( PCMInfo );
+   unsigned int SDevice = snd_pcm_info_get_subdevice( PCMInfo );
+   SDevice = SDevice << 1;  // ?
+   if( ( Card < 0 ) )  return false;
+
+   // setup the data that links us to the PCM
+   snd_timer_id_t* QTID;
+   snd_timer_id_alloca( &QTID );
+   snd_timer_id_set_class    ( QTID, SND_TIMER_CLASS_PCM );
+   snd_timer_id_set_sclass   ( QTID, SND_TIMER_SCLASS_NONE );
+   snd_timer_id_set_card     ( QTID, Card );
+   snd_timer_id_set_device   ( QTID, Device );
+   snd_timer_id_set_subdevice( QTID, SDevice );
+
+   // setup the actual timer
+   snd_seq_queue_timer_t* QueueTimer;
+   snd_seq_queue_timer_alloca( &QueueTimer );
+   if( snd_seq_get_queue_timer( seq, queue, QueueTimer ) < 0 )
+     return false;
+   snd_seq_queue_timer_set_type( QueueTimer, SND_SEQ_TIMER_ALSA );
+   snd_seq_queue_timer_set_id  ( QueueTimer, QTID );
+   snd_seq_set_queue_timer( seq, queue, QueueTimer );
+
+   return true;
+}
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
