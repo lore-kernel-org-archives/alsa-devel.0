@@ -1,10 +1,13 @@
-From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: [PATCH] sparc dbri: OSS layer fix
-Date: Sat, 26 Aug 2006 07:27:13 +0200
-Message-ID: <44efdbb1ab1ce@wp.pl>
+From: Michael Gerdau <mgd@technosis.de>
+Subject: Re: Algorithm Development Manager (Full-Time)
+Date: Sat, 26 Aug 2006 10:16:53 +0200
+Message-ID: <200608261017.05459.mgd@technosis.de>
+References: <001001c6c889$3fbc7d30$0502a8c0@SERVER>
+Reply-To: mgd@technosis.de
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="part44efdbb1ad8c7"
+Content-Type: multipart/mixed; boundary="===============1027495495=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <001001c6c889$3fbc7d30$0502a8c0@SERVER>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,48 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============1027495495==
+Content-Type: multipart/signed; boundary="nextPart3587195.pFQLOCdzDW";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
---part44efdbb1ad8c7
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+--nextPart3587195.pFQLOCdzDW
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-From: Krzysztof Helt (krzysztof.h1@wp.pl)
+This is the 3rd or 4th time we see this advert on this list.
+Can't it be filtered out ?
 
-This patch removes setting of incorrect stop_threshold value
-inside the driver. After the change, playback through the OSS
-layer works correctly.
+Best,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
 
-Signed-off-by: Krzysztof Helt (krzysztof.h1@wp.pl)
----
+--nextPart3587195.pFQLOCdzDW
+Content-Type: application/pgp-signature
 
-----------------------------------------------------
-Radio Zet Platinum - Blue Eyes to dwup=B3ytowy zestaw=20
-utwor=F3w przywo=B3uj=B1cy nastr=F3j wakacyjnego lenistwa.
-Ju=BF w sprzeda=BFy!!
-http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2Fradio_zet_=
-platinum.html&sid=3D855
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
---part44efdbb1ad8c7
-Content-Type: application/octet-stream; name="dbri-patch14.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="dbri-patch14.diff"
+iD8DBQBE8AOBUYYhyuxDQc4RAlcJAJ9u5PgTxryuVzxWCxPA/XmoZ0lHsQCfZDzL
+EB6XbeEnwxGbPznjIQCGmKM=
+=Xban
+-----END PGP SIGNATURE-----
 
-LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
-OC0yNSAyMzo1Nzo0OS4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
-cmMvZGJyaS5jCTIwMDYtMDgtMjUgMjM6NTE6NTAuMDAwMDAwMDAwICswMjAwCkBAIC0yMTExLDgg
-KzIxMTEsNiBAQCBzdGF0aWMgaW50IHNuZF9kYnJpX3ByZXBhcmUoc3RydWN0IHNuZF9wCiAJcmV0
-ID0gc2V0dXBfZGVzY3MoZGJyaSwgREJSSV9TVFJFQU1OTyhzdWJzdHJlYW0pLAogCQkJICBzbmRf
-cGNtX2xpYl9wZXJpb2RfYnl0ZXMoc3Vic3RyZWFtKSk7CiAKLQlydW50aW1lLT5zdG9wX3RocmVz
-aG9sZCA9IERCUklfVERfTUFYQ05UIC8gcnVudGltZS0+Y2hhbm5lbHM7Ci0KIAlzcGluX3VubG9j
-a19pcnEoJmRicmktPmxvY2spOwogCiAJZHByaW50ayhEX1VTUiwgInByZXBhcmUgYXVkaW8gb3V0
-cHV0LiAlZCBieXRlc1xuIiwgaW5mby0+c2l6ZSk7Cg==
+--nextPart3587195.pFQLOCdzDW--
 
---part44efdbb1ad8c7
+
+--===============1027495495==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -66,7 +66,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---part44efdbb1ad8c7
+--===============1027495495==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -77,4 +77,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---part44efdbb1ad8c7--
+--===============1027495495==--
