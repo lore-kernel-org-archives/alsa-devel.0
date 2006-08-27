@@ -1,16 +1,13 @@
-From: =?ISO-2022-JP?B?dV93YWt1XzE5NDY3OEBva3VzYW1hLW5vLXl1dXdha3UuaW5mbw==?=@th2.mtkk.net
-Subject: =?iso-2022-jp?b?GyRCQUdFKCRKMXxNTSRPTTZPRyQ3JEEbKEI=?=
-	=?iso-2022-jp?b?GyRCJGMkJkdLTndDUTF8TU0hKhsoQg==?=
-Date: 26 Aug 2006 10:43:44 -0000
-Message-ID: <20060826104344.5692.qmail@th2.mtkk.net>
+From: "Graciela Terrell" <cruz@au.yr.com>
+Subject: Your home credit
+Date: Sun, 27 Aug 2006 09:21:53 +0000 (UTC)
+Message-ID: <676608873.20060827092125@au.yr.com>
+Reply-To: Graciela Terrell <cruz@au.yr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from th2.mtkk.net (th2.mtkk.net [203.155.216.151])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 062E0223
-	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Aug 2006 12:58:22 +0200 (MEST)
+Date: Sun, 27 Aug 2006 09:21:25 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,28 +20,28 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-＝＝＝＝＝＝＝＝＝奥様の誘惑＝＝＝＝＝＝＝＝＝
+Dear Home Owner.
 
-◆奥様はお好きでしょうか？
-◆誘惑したい、破廉恥な奥様よりご連絡。
-◆奥様に誘惑されて楽しい思いをしましょう！
+Your credit doesn't matter to us!
+If you OWN real estate and want IMMEDIATE cash to spend ANY way you like, or simply wish
+to LOWER your monthly payments by a third or more, here are the deals we have TODAY:
 
-http://ooi.staticcling.org/u-waku-oku/index.html
+$488,000.00 at a 3.67% fixed-rate
+$372,000.00 at a 3.90% variable-rate
+$492,000.00 at a 3.21% interest-only
+$248,000.00 at a 3.36% fixed-rate
+$198,000.00 at a 3.55% variable-rate
 
-◆只今奥様は貴方様のご連絡をお待ちです。
-◆お早めに誘惑されましょう。
-◆イキナリ食べられたりする訳ではございません。
-◆まずは誘惑奥様とお会いしてみましょう！
+Hurry, we have requests limits, so when these deals are gone, they are gone!
 
-http://ooi.staticcling.org/u-waku-oku/index.html
+We have one-mimute form to apply the request, 
+please follow the link:http://I1WM.home-credit-request.us /?ncache=101689
 
-◆破廉恥奥様はいつでも男性を探しています。
-◆そんな奥様は日本全国に500万人はございます。
-◆貴方様のご近所の奥様もきっといるはずです。
+Don't worry about approval, your credit will not disqualify you!
 
-http://ooi.staticcling.org/u-waku-oku/index.html
+Express Home Credit,
+Advertising & Approval dept.
 
-＝＝＝＝＝＝＝＝＝奥様の誘惑＝＝＝＝＝＝＝＝＝
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
