@@ -1,13 +1,12 @@
-From: "Graciela Terrell" <cruz@au.yr.com>
-Subject: Your home credit
-Date: Sun, 27 Aug 2006 09:21:53 +0000 (UTC)
-Message-ID: <676608873.20060827092125@au.yr.com>
-Reply-To: Graciela Terrell <cruz@au.yr.com>
+From: Jonas Grote <jonas@jonasgrote.de>
+Subject: Computer freezing when connecting midi ports
+Date: Sun, 27 Aug 2006 19:44:04 +0000
+Message-ID: <20060827191117.GA3765@tux>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Sun, 27 Aug 2006 09:21:25 -0060
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,31 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Alsa-devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Home Owner.
+Hello alsa-dev list,
 
-Your credit doesn't matter to us!
-If you OWN real estate and want IMMEDIATE cash to spend ANY way you like, or simply wish
-to LOWER your monthly payments by a third or more, here are the deals we have TODAY:
+I'm using Gentoo Linux, kernel 2.6.16-gentoo-r11, and I have a "Trident
+Microsystems 4DWave DX" soundcard, alsa and drivers compiled as modules.
 
-$488,000.00 at a 3.67% fixed-rate
-$372,000.00 at a 3.90% variable-rate
-$492,000.00 at a 3.21% interest-only
-$248,000.00 at a 3.36% fixed-rate
-$198,000.00 at a 3.55% variable-rate
+When I try to connect two ports of the soundcard with aconnect, my
+computer freezes, if sound was running the last miliseconds are repeated
+over and over again. There is nothing I can do except pressing the reset
+button to get back access to my system.
 
-Hurry, we have requests limits, so when these deals are gone, they are gone!
+I guess if I could fix the aconnect-problem, there would be no more
+problems with rosegarden and other programs that try to access my midi
+port.
+Until I installed timidity, solfege created the same error.
 
-We have one-mimute form to apply the request, 
-please follow the link:http://I1WM.home-credit-request.us /?ncache=101689
+This is the output of "aconnect -o" after "aconnect -x":
 
-Don't worry about approval, your credit will not disqualify you!
+--
+j@tux:~$ aconnect -o
+client 16: 'Trident TRID4DWAVEDX MIDI' [type=kernel]
+    0 'Trident TRID4DWAVEDX MIDI'
+client 17: 'Trident 4DWave-DX' [type=kernel]
+    0 'Trident 4DWave-DX port 0'
+    1 'Trident 4DWave-DX port 1'
+    2 'Trident 4DWave-DX port 2'
+    3 'Trident 4DWave-DX port 3'
+--
 
-Express Home Credit,
-Advertising & Approval dept.
+In #gentoo.de on freenode someone said it could be a interrupt problem,
+so I rearranged my cards, this is "cat /proc/interrupts":
 
+--
+j@tux:~$ cat /proc/interrupts 
+           CPU0       
+  0:    3191058          XT-PIC  timer
+  1:      48298          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  8:          2          XT-PIC  rtc
+ 10:     402996          XT-PIC  ohci_hcd:usb1, eth0
+ 11:     867160          XT-PIC  nvidia
+ 12:     246248          XT-PIC  Trident Audio
+ 14:    1052225          XT-PIC  ide0
+ 15:         27          XT-PIC  ide1
+--
+
+I think the problem cannot be that there is no midi-instrument connected
+to the soundcard.
+
+I have no idea what to do to get this working. I would like to try
+rosegarden, and maybe even use some midi-keyboard or -guitar at some
+time. I'd buy a new soundcard at some day anyway, but why should I
+acquiesce that it doesn't work with this one?
+
+I hope I am not wrong at this list, but I thought alsa-main would not
+have been better.
+
+It might also be a hardware problem, but then the alsa driver maybe
+could catch that. I know that I had this problem with debian as well.
+
+Another application I just remeber creating the same "error" is wine. I
+think it uses midi as well?
+
+Anyway, I first want to get aconnect working / not freezing my whole
+computer.
+
+Thank you for your attention, I'll send you any output you request and
+I'll try to do everything that you ask me for (if it's related to this
+problem of course ;-) ).
+
+Jonas
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
