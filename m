@@ -1,11 +1,14 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: blocking snd_rawmidi_read and usb device disconnection
-Date: Mon, 28 Aug 2006 04:15:08 +0400
-Message-ID: <70a871c80608271715i339b2695i87e920e3c34b75da@mail.gmail.com>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: [PATCH] Remove stray Polypaudio strings
+Date: Mon, 28 Aug 2006 08:28:27 +0200
+Message-ID: <44F28D0B.7060609@cendio.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_7684_28800360.1156724108975"
+Content-Type: multipart/mixed; boundary="===============2083959373=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5149A271
+	for <alsa-devel@alsa-project.org>;
+	Mon, 28 Aug 2006 08:28:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,57 +18,113 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_7684_28800360.1156724108975
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============2083959373==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigC23D360D3BD187B00B6E5F49"
 
-Hello!
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC23D360D3BD187B00B6E5F49
+Content-Type: multipart/mixed; boundary="------------070108070708040109010906"
 
-If program is blocked on snd_rawmidi_read and device is disconnected,
-it waits infinitely.
-Is this an intentional behaviour?
+This is a multi-part message in MIME format.
+--------------070108070708040109010906
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Trying to read ctl device with read() yeilds the same results.
+Some stray mentions of the old Polypaudio name was still present in the
+PulseAudio plug-in.
 
-Test programs attached.
-
-Regards,
-Dmitry.
+Signed-off-by: Pierre Ossman <ossman@cendio.se>
 
 
-P.S. I'm not a subscrber, please cc me in your replies.
+--------------070108070708040109010906
+Content-Type: text/x-patch;
+ name="polyp.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline;
+ filename="polyp.patch"
 
-------=_Part_7684_28800360.1156724108975
-Content-Type: text/x-csrc; name=read_rawmidi.c; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ere3n811
-Content-Disposition: attachment; filename="read_rawmidi.c"
+diff -r fa66f27a1d63 pulse/ctl_pulse.c
+--- a/pulse/ctl_pulse.c	Tue Aug 22 14:40:44 2006 +0200
++++ b/pulse/ctl_pulse.c	Sun Aug 27 23:25:03 2006 +0200
+@@ -689,10 +689,10 @@ SND_CTL_PLUGIN_DEFINE_FUNC(pulse)
+     ctl->ext.version =3D SND_CTL_EXT_VERSION;
+     ctl->ext.card_idx =3D 0;
+     strncpy(ctl->ext.id, "pulse", sizeof(ctl->ext.id) - 1);
+-    strncpy(ctl->ext.driver, "Polypaudio plugin", sizeof(ctl->ext.driver=
+) - 1);
+-    strncpy(ctl->ext.name, "Polypaudio", sizeof(ctl->ext.name) - 1);
+-    strncpy(ctl->ext.longname, "Polypaudio", sizeof(ctl->ext.longname) -=
+ 1);
+-    strncpy(ctl->ext.mixername, "Polypaudio", sizeof(ctl->ext.mixername)=
+ - 1);
++    strncpy(ctl->ext.driver, "PulseAudio plugin", sizeof(ctl->ext.driver=
+) - 1);
++    strncpy(ctl->ext.name, "PulseAudio", sizeof(ctl->ext.name) - 1);
++    strncpy(ctl->ext.longname, "PulseAudio", sizeof(ctl->ext.longname) -=
+ 1);
++    strncpy(ctl->ext.mixername, "PulseAudio", sizeof(ctl->ext.mixername)=
+ - 1);
+     ctl->ext.poll_fd =3D -1;
+     ctl->ext.callback =3D &pulse_ext_callback;
+     ctl->ext.private_data =3D ctl;
+diff -r fa66f27a1d63 pulse/pcm_pulse.c
+--- a/pulse/pcm_pulse.c	Tue Aug 22 14:40:44 2006 +0200
++++ b/pulse/pcm_pulse.c	Sun Aug 27 23:25:23 2006 +0200
+@@ -471,7 +471,7 @@ static int pulse_prepare(snd_pcm_ioplug_
+=20
+     err =3D pulse_wait_stream_state(pcm->p, pcm->stream, PA_STREAM_READY=
+);
+     if (err < 0) {
+-        fprintf(stderr, "*** POLYPAUDIO: Unable to create stream.\n");
++        fprintf(stderr, "*** PULSEAUDIO: Unable to create stream.\n");
+         pa_stream_unref(pcm->stream);
+         pcm->stream =3D NULL;
+         goto finish;
+@@ -524,7 +524,7 @@ static int pulse_hw_params(snd_pcm_ioplu
+         pcm->ss.format =3D PA_SAMPLE_FLOAT32BE;
+         break;
+     default:
+-        fprintf(stderr, "*** POLYPAUDIO: unsupported format %s\n",
++        fprintf(stderr, "*** PULSEAUDIO: unsupported format %s\n",
+             snd_pcm_format_name(io->format));
+         err =3D -EINVAL;
+         goto finish;
+@@ -715,7 +715,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(pulse)
+         goto error;
+=20
+ 	pcm->io.version =3D SND_PCM_IOPLUG_VERSION;
+-	pcm->io.name =3D "ALSA <-> Polypaudio PCM I/O Plugin";
++	pcm->io.name =3D "ALSA <-> PulseAudio PCM I/O Plugin";
+ 	pcm->io.poll_fd =3D -1;
+ 	pcm->io.poll_events =3D 0;
+ 	pcm->io.mmap_rw =3D 0;
 
-I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8
-c3RkbGliLmg+CgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQp7CglpbnQgcmVzOwoJ
-Y2hhciBjOwoJc25kX3Jhd21pZGlfdCAqbSA9IE5VTEw7CgkKCXByaW50Zigib3BlbmluZyAlczog
-IiwgYXJndlsxXSk7CglyZXMgPSBzbmRfcmF3bWlkaV9vcGVuKCZtLCBOVUxMLCBhcmd2WzFdLCAw
-KTsKCXByaW50ZigiJXNcbiIsIHNuZF9zdHJlcnJvcihyZXMpKTsKCQoJcHJpbnRmKCJyZWFkaW5n
-OiAiKTsKCXJlcyA9IHNuZF9yYXdtaWRpX3JlYWQobSwgJmMsIDEpOwoJcHJpbnRmKCIlZFxuIiwg
-cmVzKTsKCglyZXR1cm4gMDsKfQo=
-------=_Part_7684_28800360.1156724108975
-Content-Type: text/x-csrc; name=read_posix.c; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ere3nlvu
-Content-Disposition: attachment; filename="read_posix.c"
+--------------070108070708040109010906--
 
-I2luY2x1ZGUgPHVuaXN0ZC5oPgojaW5jbHVkZSA8ZmNudGwuaD4KI2luY2x1ZGUgPGVycm5vLmg+
-CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3RkbGliLmg+CgppbnQgbWFpbihpbnQgYXJn
-YywgY2hhciAqYXJndltdKQp7CglpbnQgcmVzOwoJaW50IGZkOwoJY2hhciBjOwoKCXByaW50Zigi
-b3BlbmluZyAlczogIiwgYXJndlsxXSk7CglyZXMgPSBmZCA9IG9wZW4oYXJndlsxXSwgT19SRE9O
-TFkpOwoJcHJpbnRmKCIlc1xuIiwgZmQ8MCA/IHN0cmVycm9yKGVycm5vKSA6IHN0cmVycm9yKDAp
-KTsKCglwcmludGYoInJlYWRpbmc6ICIpOwoJcmVzID0gcmVhZChmZCwgJmMsIDEpOwoJcHJpbnRm
-KCIlZFxuIiwgcmVzKTsKCglyZXR1cm4gMDsKfQo=
-------=_Part_7684_28800360.1156724108975
+--------------enigC23D360D3BD187B00B6E5F49
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+
+iD8DBQFE8o0L7b8eESbyJLgRArSNAJ4pDs18sxZyPOUIRhgddcQC3bnHWACfbmFH
+/rR0pOxeGV2H78kxlqOfEyo=
+=lAW4
+-----END PGP SIGNATURE-----
+
+--------------enigC23D360D3BD187B00B6E5F49--
+
+
+--===============2083959373==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -76,7 +135,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------=_Part_7684_28800360.1156724108975
+--===============2083959373==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -87,4 +146,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------=_Part_7684_28800360.1156724108975--
+--===============2083959373==--
