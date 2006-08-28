@@ -1,24 +1,14 @@
 From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: snd-usb-audio - Driver for M-Audio Fast Track Pro
-Date: Mon, 28 Aug 2006 16:31:04 +0200
-Message-ID: <m2veodc4pj.fsf@vador.mandriva.com>
-References: <20060808181650.llg22g6lwgcs4c0s@zeus.oda.li>
-	<1155056548.23266.267914050@webmail.messagingengine.com>
-	<20060808184722.6627D55E2E7@zeus.olymp.home>
-	<20060808222250.kgpv3965ss0oowoo@webmail.supelec.fr>
-	<20060808214138.419D4DE279@zeus.olymp.home>
-	<20060809000741.7zournuj4c0wcwc8@webmail.supelec.fr>
-	<20060810213340.A53144FA617@zeus.olymp.home>
-	<20060811112018.8j3chcuqg4c444w4@webmail.supelec.fr>
-	<20060813214825.5654969E159@zeus.olymp.home>
-	<1155554196.1617.268317929@webmail.messagingengine.com>
-	<20060820121909.817D6818B4E@zeus.olymp.home>
+Subject: Re: [Openchrome-users] via epia boards sound quality
+Date: Mon, 28 Aug 2006 16:38:56 +0200
+Message-ID: <m2k64sdiwv.fsf@vador.mandriva.com>
+References: <web-171768144@cgp.dol.ru> <44E8521E.40309@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060820121909.817D6818B4E@zeus.olymp.home> (Peter Oehry's
-	message of "Sun, 20 Aug 2006 14:19:09 +0200")
+In-Reply-To: <44E8521E.40309@superbug.co.uk> (James Courtier-Dutton's message
+	of "Sun, 20 Aug 2006 13:14:22 +0100")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,32 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Peter Oehry <peter.oehry@gmx.li>
-Cc: alsa-devel@lists.sourceforge.net, Thibault.LeMeur@supelec.fr
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Peter Oehry <peter.oehry@gmx.li> writes:
+James Courtier-Dutton <James@superbug.co.uk> writes:
 
-> > If the configuration needs to be changed at runtime, and if the
-> > driver cannot do this automatically, a mixer control would be the
-> > best solution.
+> So, with the absence of the VT1617A datasheet, we effectively have
+> no documentation for that AC97 register touched in your patch.
+> Could I ask you to raise an alsa bug at
+> https://bugtrack.alsa-project.org/alsa-bug/
 > 
-> I have some questions to the idea of mixer control:
-> - Which controls would be appropriate to select either 16 or 24 Bit?
-> - Is it possible to make the restriction that controls can only be
->   changed when the interface is not used?
-> 
-> The windows driver has the following controls:
-> - Check or uncheck each interface [AnIn DigIn AnOut DigOut]
-> - Selection of either 16Bit or 24Bit
+> Enter into the bug everything from your updated email, with the sign
+> off and attached patch.
+> I will then check the patch into the HG repository, but I will add a
+> comment next to it pointing to the bug information. That way, future
+> developers will know why it has been put there.
 
-if you can do it when a mixer element is altered, cannot this be
-triggered when the app select 16 or 24bit?
- 
-> These controls can only be changed if the card is not used. If the
-> settings are applied all enpoints are set to altsetting 0 and then
-> the used endpoints are configured to the desired altsetting. Is such
-> a behaviour possible with alsa mixer controls?
+this was added into
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2381 but didn't
+make it into HG (or at least the BR wasn't closed)...
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
