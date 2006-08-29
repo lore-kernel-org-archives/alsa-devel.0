@@ -1,14 +1,17 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [Openchrome-users] via epia boards sound quality
-Date: Tue, 29 Aug 2006 13:17:26 +0100
-Message-ID: <44F43056.4080006@superbug.co.uk>
-References: <web-171768144@cgp.dol.ru>	<44E8521E.40309@superbug.co.uk>	<m2k64sdiwv.fsf@vador.mandriva.com>
-	<s5hfyfg7w2c.wl%tiwai@suse.de>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.12 breaks firmware loading
+Date: Tue, 29 Aug 2006 17:06:08 +0400
+Message-ID: <70a871c80608290606h2c16e1f6k5f92af642cddaf50@mail.gmail.com>
+References: <70a871c80608281201u7675f14fxffba5558acb0038b@mail.gmail.com>
+	<s5hfyfg7ip0.wl%tiwai@suse.de>
+	<70a871c80608281301j6106ce6bn28edf2df00f64635@mail.gmail.com>
+	<s5hac5o6iy3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfyfg7w2c.wl%tiwai@suse.de>
+In-Reply-To: <s5hac5o6iy3.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,51 +22,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Thierry Vignaud <tvignaud@mandriva.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 28 Aug 2006 16:38:56 +0200,
-> Thierry Vignaud wrote:
->   
->> James Courtier-Dutton <James@superbug.co.uk> writes:
->>
->>     
->>> So, with the absence of the VT1617A datasheet, we effectively have
->>> no documentation for that AC97 register touched in your patch.
->>> Could I ask you to raise an alsa bug at
->>> https://bugtrack.alsa-project.org/alsa-bug/
->>>
->>> Enter into the bug everything from your updated email, with the sign
->>> off and attached patch.
->>> I will then check the patch into the HG repository, but I will add a
->>> comment next to it pointing to the bug information. That way, future
->>> developers will know why it has been put there.
->>>       
->> this was added into
->> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2381 but didn't
->> make it into HG (or at least the BR wasn't closed)...
->>     
->
-> I committed now.
->
-> Thanks,
->
-> Takashi
->   
+On 8/29/06, Takashi Iwai <tiwai@suse.de> wrote:
+> OK, then what did you mean "downgrading"?  Downgrading both driver and
+> firmware?  Does alsa-driver 1.0.12 + alsa-firmware 1.0.11 work?
 
-Now that we have the datasheet, it seems that the register you touch 
-could cause hardware damage.
- From the datasheet, it disables the headphone amp thermal protection. 
-So, this fix could be counter productive. I.e. result in damage to the chip.
+I meant both driver and firmware.
 
-I suggest that we only apply it via a module option, so the user then 
-knows they are taking a risk by disabling the protection.
-If the protection is bogus, i.e. the sensor is faulty, then we need a 
-way to detect this faultiness.
+Driver 1.0.12 with firmware 1.0.11 does not work. When I tried to
+reinsert the hdsp cardbus, my machine even freezed.
+
+Driver 1.0.11 with alsa-firmware-1.0.12 does work fine.
 
 
-James
+Dmitry.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
