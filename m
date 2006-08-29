@@ -1,14 +1,21 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: Card won't accept new sample rate?
-Date: Tue, 29 Aug 2006 16:00:35 +0100
-Message-ID: <44F45693.3000205@64studio.com>
-References: <44F43EED.4090608@64studio.com>	<s5hhczv656g.wl%tiwai@suse.de>	<44F44FEA.1040301@64studio.com>
-	<s5h3bbf61w5.wl%tiwai@suse.de>
+From: =?iso-2022-jp?B?GyRCP1hGYhsoQg==?= <beraeg_2007@yahoo.co.jp>
+Subject: =?iso-2022-jp?b?GyRCIUEhaCFBODVBRDF8TU0+UjJwISYbKEI=?=
+	=?iso-2022-jp?b?GyRCJDQwJzsiIUEhaCFBGyhC?=
+Date: Tue, 29 Aug 2006 17:22:47 +0200 (MEST)
+Message-ID: <20060829152247.936C39926A@mail.perex.cz>
+Reply-To: beraeg_2007@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3bbf61w5.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01AFE2AD
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 Aug 2006 17:22:49 +0200 (MEST)
+Received: from alsa-project.org (unknown [61.47.178.249])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	936C39926A for <alsa-devel@alsa-project.org>;
+	Tue, 29 Aug 2006 17:22:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,31 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+突然のご紹介にも関わらずご覧頂いて有難うございます。
+今回の紹介担当の陣内です。
 
-> If you start JACK, usually it prefers "hw" PCM, which means the direct
-> access to the hardware without resampling, up/downmix, and format
-> conversion (also without soft-mixing).  The "default" PCM is with
-> everything, i.e. dmix, and plug layer.
+無料紹介・無料私書箱・無料待ち合わせのお知らせとなりました。
+まだ相手に恵まれていない方、こちらの女性をご確認ください。
+　http://www.pureism.net/beam
 
-Right - I just tried 'default' on my laptop, which points to the AC97 
-chipset, and JACK wouldn't even start at 44100Hz. I switched to 
-'default' at 48000Hz and it worked.
+紹介の女性のお力になって頂けることを切に願っています。
 
-However if I plug in a USB audio interface (M Audio MobilePre), used as 
-hw:2, then jack starts fine at either 44100 or 48000 and the sample rate 
-is correctly displayed in qjackctl.
+私、陣内が誠心誠意サポートさせていただきますので、
+宜しくお願いします。
 
-I think it's because of this USB interface that I believed JACK used to 
-work at 44100Hz on this particular laptop. Now I know different :-)
-
-Thanks!
-
-Daniel
 
 
 -------------------------------------------------------------------------
