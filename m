@@ -1,11 +1,28 @@
-From: Karl Grill <kgrill@chello.at>
-Subject: hdsp rpm
-Date: Wed, 30 Aug 2006 07:17:39 +0200
-Message-ID: <44F51F73.1070807@chello.at>
+From: Franck Routier <franck.routier@axege.com>
+Subject: No headphones on STAC7661
+Date: Wed, 30 Aug 2006 11:14:13 +0200
+Message-ID: <44F556E5.6010909@axege.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from axege.net (LNeuilly-152-22-82-133.w193-251.abo.wanadoo.fr
+	[193.251.23.133])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BC2728D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Aug 2006 11:41:05 +0200 (MEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by axege.net (Postfix) with ESMTP id 89C2D3C22BA
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Aug 2006 11:14:14 +0200 (CEST)
+Received: from axege.net ([127.0.0.1])
+	by localhost (tige [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 16147-07 for <alsa-devel@alsa-project.org>;
+	Wed, 30 Aug 2006 11:14:13 +0200 (CEST)
+Received: from [192.168.1.17] (unknown [192.168.1.17])
+	by axege.net (Postfix) with ESMTP id 68D053C22A6
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Aug 2006 11:14:13 +0200 (CEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,25 +32,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I got a rme hammerfall dsp rpm from ebay (not yet, actually) under the 
-wrong(?) assumption that  all of rme's  cards work under linux. looking 
-a little bit closer, i found that the rpm is not listed as a supported 
-card (well, the list on alsa-project org says it hasn't been updated in 
-more than a year), and, apparently, the only places where it is 
-mentioned are a few support requests and a Jan 2005 answer from thomas 
-charbonnel on alsa-user where he states that he might come up with 
-something within a week - but I didn't see the results.
-Has anything happened about this? If not, what can I do to make this 
-work? I'm ready to dive into a disaasembly of the windows driver (not my 
-first time) but any pointers as to where to look would be greatly 
-appreciated.
+Hi,
 
-regards
-kg
+I have problems with headphones on my Sony Viao VGN-SZ1M using alsa.
+
+Main speakers work fine, but as soon as I plug a headphone set, main 
+speakers mute (as expected), but I get no sound on headphones either...
+
+Here is my environment :
+
+Sony SZ1M
+alsamixer says :
+Card: HDA Intel
+Chip: SigmaTel STAC7661
+two items : Master and PCM.
+
+$ cat /proc/asound/modules
+0 snd_hda_intel
+
+I use Ubuntu Dapper with ubuntu kernel 2.6.15-26-686.
+
+Well, I don't know what information would be interesting to track down 
+the problem...
+
+Thanks,
+Franck
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
