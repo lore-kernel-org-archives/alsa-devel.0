@@ -1,11 +1,17 @@
-From: <varadaraj.yatirajula@wipro.com>
-Subject: Looping playback of wav files
-Date: Fri, 1 Sep 2006 12:50:26 +0530
-Message-ID: <0140B5C49461E34686783F667D9E4A537AD258@blr-k1-msg.wipro.com>
+From: Chuck Ebbert <76306.1226@compuserve.com>
+Subject: hda_intel broken on my ATI SB450
+Date: Fri, 1 Sep 2006 04:39:08 -0400
+Message-ID: <200609010443_MC3-1-C9F8-E16F@compuserve.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1929102902=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from liaag1ag.mx.compuserve.com (liaag1ag.mx.compuserve.com
+	[149.174.40.33])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 409F925A
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Sep 2006 10:45:07 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,91 +21,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Using 2.6.18-rc5 and trying to load snd-hda-intel.ko for this
+(supported) device:
 
---===============1929102902==
-Content-class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6CD96.7C3B4D4C"
+| 00:14.2 Audio device: ATI Technologies Inc Unknown device 437b (rev 01)
+|        Subsystem: Acer Incorporated [ALI] Unknown device 009f
+|        Flags: bus master, slow devsel, latency 64, IRQ 217
+|        Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
+|        Capabilities: [50] Power Management version 2
+|        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
 
-This is a multi-part message in MIME format.
+I get:
 
-------_=_NextPart_001_01C6CD96.7C3B4D4C
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+| hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+| hda_intel: azx_get_response timeout, switching to single_cmd mode...
 
-Hi,
+Followed by nearly-endless spew of:
 
-How would I implement a feature where the same wav file is played
-continuously?
+| hda-intel: get_response timeout: IRS=0x0
+| hda_codec: invalid dep_range_val 0:7fff
+| hda_codec: invalid dep_range_val 0:7fff
+| hda-intel: get_response timeout: IRS=0x0
+| hda_codec: invalid dep_range_val 0:7fff
+| hda-intel: get_response timeout: IRS=0x0
+| hda-intel: get_response timeout: IRS=0x0
 
-Regards,
-Varadaraj
+And finally:
 
-------_=_NextPart_001_01C6CD96.7C3B4D4C
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+| hda_generic: no proper input path found
+| hda_generic: no proper output path found
+| hda_generic: no PCM found
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7650.28">
-<TITLE>Looping playback of wav files</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
+How can I debug this?
 
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">Hi,</FONT></SPAN></P>
+-- 
+Chuck
 
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">How =
-would I implement a feature where the same wav file is =
-played</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">continuously</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">?</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">Regards,</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Varadaraj</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C6CD96.7C3B4D4C--
-
-
---===============1929102902==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1929102902==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1929102902==--
