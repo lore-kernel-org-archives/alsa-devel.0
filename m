@@ -1,9 +1,22 @@
-From: syrjala@sci.fi
-Subject: [PATCH] ac97: Fix AD1819 volume range (try 2)
-Date: Sun, 03 Sep 2006 05:48:25 +0300
-Message-ID: <20060903024824.957791934@proteus.korsu.shacknet.nu>
-Content-Type: multipart/mixed; boundary="===============1721673645=="
+From: "Randy.Dunlap" <rdunlap@xenotime.net>
+Subject: Re: CodingStyle (was: Re: sound/pci/hda/intel_hda:
+	small cleanups)
+Date: Sat, 2 Sep 2006 21:30:46 -0700
+Message-ID: <20060902213046.dd9bf569.rdunlap@xenotime.net>
+References: <20060831123706.GC3923@elf.ucw.cz> <s5h8xl52h52.wl%tiwai@suse.de>
+	<20060831110436.995bdf93.rdunlap@xenotime.net>
+	<20060902231509.GC13031@elf.ucw.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from xenotime.net (xenotime.net [66.160.160.81])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 621992CF
+	for <alsa-devel@alsa-project.org>;
+	Sun,  3 Sep 2006 06:27:20 +0200 (MEST)
+Received: from midway.site ([71.117.233.155]) by xenotime.net for
+	<alsa-devel@alsa-project.org>; Sat, 2 Sep 2006 21:27:16 -0700
+In-Reply-To: <20060902231509.GC13031@elf.ucw.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -13,80 +26,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Ville Syrjala <syrjala@sci.fi>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel list <linux-kernel@vger.kernel.org>, pshou@realtek.com.tw, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
---===============1721673645==
-Content-Disposition: inline; filename=ac97_fix_ad1819_volume_range.patch
+On Sun, 3 Sep 2006 01:15:10 +0200 Pavel Machek wrote:
 
-AD1819 volume registers can hold extra bits which do not affect the
-actual volume. Add a res_table to the codec patch to fix the problem.
-PCM, line and mic volume were tested.
+> Hi!
+> 
+> > > Hm, it looks rather like a personal preference.
+> > > IMHO, it's harder to read without space...
+> > 
+> > We have been tending toward not using space in cases like this
+> > (in my unscientific memory-based survey).
+> > 
+> > So, just this morning I have seen questions and opinions about
+> > the following that could (or could not) use more documentation
+> > or codification and I'm sure that we could easily find more,
+> > but do we want to codify Everything??
+> > 
+> > 
+> > 1.  Kconfig help text should be indented (it's not indented in the
+> > 	GFS2 patches)
+> > 
+> > 2.  if (!condition1)	/* no space between ! and condition1 */
+> > 
+> > 3.  don't use C99-style // comments
+> > 
+> > 4.  unsigned int bitfield :<nr_bits>;
+> 
+> Looks reasonable to me. Will you do the patch or should I ?
 
-Signed-off-by: Ville Syrjala <syrjala@sci.fi>
+Please (you) go ahead with it.
+
+Thanks,
 ---
-
- sound/pci/ac97/ac97_patch.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-Index: linux-2.6.18-rc5-vs/sound/pci/ac97/ac97_patch.c
-===================================================================
---- linux-2.6.18-rc5-vs.orig/sound/pci/ac97/ac97_patch.c
-+++ linux-2.6.18-rc5-vs/sound/pci/ac97/ac97_patch.c
-@@ -1380,6 +1380,17 @@ static void ad1888_resume(struct snd_ac9
- 
- #endif
- 
-+static const struct snd_ac97_res_table ad1819_restbl[] = {
-+	{ AC97_PHONE, 0x9f1f },
-+	{ AC97_MIC, 0x9f1f },
-+	{ AC97_LINE, 0x9f1f },
-+	{ AC97_CD, 0x9f1f },
-+	{ AC97_VIDEO, 0x9f1f },
-+	{ AC97_AUX, 0x9f1f },
-+	{ AC97_PCM, 0x9f1f },
-+	{ } /* terminator */
-+};
-+
- int patch_ad1819(struct snd_ac97 * ac97)
- {
- 	unsigned short scfg;
-@@ -1387,6 +1398,7 @@ int patch_ad1819(struct snd_ac97 * ac97)
- 	// patch for Analog Devices
- 	scfg = snd_ac97_read(ac97, AC97_AD_SERIAL_CFG);
- 	snd_ac97_write_cache(ac97, AC97_AD_SERIAL_CFG, scfg | 0x7000); /* select all codecs */
-+	ac97->res_table = ad1819_restbl;
- 	return 0;
- }
- 
-
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
-
-
---===============1721673645==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+~Randy
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1721673645==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1721673645==--
