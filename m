@@ -1,8 +1,8 @@
 From: syrjala@sci.fi
-Subject: [PATCH] ac97: Fix AD1819 PCM volume range
-Date: Sun, 03 Sep 2006 05:07:54 +0300
-Message-ID: <20060903020753.090538831@proteus.korsu.shacknet.nu>
-Content-Type: multipart/mixed; boundary="===============0170840330=="
+Subject: [PATCH] es1968: Fix hw volume
+Date: Sun, 03 Sep 2006 05:08:14 +0300
+Message-ID: <20060903020813.927109140@proteus.korsu.shacknet.nu>
+Content-Type: multipart/mixed; boundary="===============1619446385=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +17,87 @@ To: alsa-devel@lists.sourceforge.net
 Cc: Ville Syrjala <syrjala@sci.fi>
 List-Id: alsa-devel@alsa-project.org
 
---===============0170840330==
-Content-Disposition: inline; filename=ac97_fix_ad1819_pcm_volume_range.patch
+--===============1619446385==
+Content-Disposition: inline; filename=es1968_fix_hw_volume.patch
 
-AD1819 PCM volume register can hold one extra bit per channel which do
-not affect the actual volume. Add a res_table to the codec patch to fix
-the problem.
+Fix maestro2 hardware volume control. Tested on a Dell Inspiron 7000.
 
 Signed-off-by: Ville Syrjala <syrjala@sci.fi>
 ---
 
- sound/pci/ac97/ac97_patch.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/pci/es1968.c |   40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
-Index: linux-2.6.18-rc5-vs/sound/pci/ac97/ac97_patch.c
+Index: linux-2.6.18-rc5-vs/sound/pci/es1968.c
 ===================================================================
---- linux-2.6.18-rc5-vs.orig/sound/pci/ac97/ac97_patch.c
-+++ linux-2.6.18-rc5-vs/sound/pci/ac97/ac97_patch.c
-@@ -1380,6 +1380,11 @@ static void ad1888_resume(struct snd_ac9
- 
- #endif
- 
-+static const struct snd_ac97_res_table ad1819_restbl[] = {
-+	{ AC97_PCM, 0x9f1f },
-+	{ } /* terminator */
-+};
-+
- int patch_ad1819(struct snd_ac97 * ac97)
- {
- 	unsigned short scfg;
-@@ -1387,6 +1392,7 @@ int patch_ad1819(struct snd_ac97 * ac97)
- 	// patch for Analog Devices
- 	scfg = snd_ac97_read(ac97, AC97_AD_SERIAL_CFG);
- 	snd_ac97_write_cache(ac97, AC97_AD_SERIAL_CFG, scfg | 0x7000); /* select all codecs */
-+	ac97->res_table = ad1819_restbl;
- 	return 0;
+--- linux-2.6.18-rc5-vs.orig/sound/pci/es1968.c
++++ linux-2.6.18-rc5-vs/sound/pci/es1968.c
+@@ -1905,7 +1905,7 @@ static void es1968_update_hw_volume(unsi
+ 	/* Figure out which volume control button was pushed,
+ 	   based on differences from the default register
+ 	   values. */
+-	x = inb(chip->io_port + 0x1c);
++	x = inb(chip->io_port + 0x1c) & 0xee;
+ 	/* Reset the volume control registers. */
+ 	outb(0x88, chip->io_port + 0x1c);
+ 	outb(0x88, chip->io_port + 0x1d);
+@@ -1921,7 +1921,8 @@ static void es1968_update_hw_volume(unsi
+ 	/* FIXME: we can't call snd_ac97_* functions since here is in tasklet. */
+ 	spin_lock_irqsave(&chip->ac97_lock, flags);
+ 	val = chip->ac97->regs[AC97_MASTER];
+-	if (x & 1) {
++	switch (x) {
++	case 0x88:
+ 		/* mute */
+ 		val ^= 0x8000;
+ 		chip->ac97->regs[AC97_MASTER] = val;
+@@ -1929,26 +1930,31 @@ static void es1968_update_hw_volume(unsi
+ 		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
+ 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+ 			       &chip->master_switch->id);
+-	} else {
+-		val &= 0x7fff;
+-		if (((x>>1) & 7) > 4) {
+-			/* volume up */
+-			if ((val & 0xff) > 0)
+-				val--;
+-			if ((val & 0xff00) > 0)
+-				val -= 0x0100;
+-		} else {
+-			/* volume down */
+-			if ((val & 0xff) < 0x1f)
+-				val++;
+-			if ((val & 0xff00) < 0x1f00)
+-				val += 0x0100;
+-		}
++		break;
++	case 0xaa:
++		/* volume up */
++		if ((val & 0x7f) > 0)
++			val--;
++		if ((val & 0x7f00) > 0)
++			val -= 0x0100;
+ 		chip->ac97->regs[AC97_MASTER] = val;
+ 		outw(val, chip->io_port + ESM_AC97_DATA);
+ 		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
+ 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+ 			       &chip->master_volume->id);
++		break;
++	case 0x66:
++		/* volume down */
++		if ((val & 0x7f) < 0x1f)
++			val++;
++		if ((val & 0x7f00) < 0x1f00)
++			val += 0x0100;
++		chip->ac97->regs[AC97_MASTER] = val;
++		outw(val, chip->io_port + ESM_AC97_DATA);
++		outb(AC97_MASTER, chip->io_port + ESM_AC97_INDEX);
++		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       &chip->master_volume->id);
++		break;
+ 	}
+ 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
  }
- 
 
 -- 
 Ville Syrjälä
@@ -61,7 +105,7 @@ syrjala@sci.fi
 http://www.sci.fi/~syrjala/
 
 
---===============0170840330==
+--===============1619446385==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -72,7 +116,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0170840330==
+--===============1619446385==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,4 +127,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0170840330==--
+--===============1619446385==--
