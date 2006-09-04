@@ -1,22 +1,14 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [RFC: 2.6 patch] build sound/sound_firmware.c only
-	for OSS
-Date: Mon, 04 Sep 2006 13:11:04 +0100
-Message-ID: <1157371864.30801.38.camel@localhost.localdomain>
-References: <20060904114135.GO4416@stusta.de>
+From: Harald Gutmann <harald.gutmann@gmx.net>
+Subject: Re: joining 2 mixer ports with .asoundrc?
+Date: Mon, 04 Sep 2006 13:48:55 +0200
+Message-ID: <44FC12A7.2050007@gmx.net>
+References: <44F8348E.2040200@gmx.net>	<20060901174734.GA2629@localhost.localdomain>	<s5hfyfbmr4g.wl%tiwai@suse.de>	<44F8CB9E.8070108@gmx.net>
+	<s5hmz9gkjtj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B987529A
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Sep 2006 13:48:28 +0200 (MEST)
-Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	EF50D69524 for <alsa-devel@alsa-project.org>;
-	Mon,  4 Sep 2006 13:48:27 +0200 (MEST)
-In-Reply-To: <20060904114135.GO4416@stusta.de>
+In-Reply-To: <s5hmz9gkjtj.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,34 +18,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Adrian Bunk <bunk@stusta.de>
-Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ar Llu, 2006-09-04 am 13:41 +0200, ysgrifennodd Adrian Bunk:
-> All sound/sound_firmware.c contains is mod_firmware_load() that is a 
-> legacy API only used by some OSS drivers.
-> 
-> This patch builds it into an own sound_firmware module that is only 
-> built depending on CONFIG_SOUND_PRIME making the kernel slightly smaller 
-> for ALSA users.
+Takashi Iwai schrieb:
+> At Sat, 02 Sep 2006 02:09:02 +0200,
+> Harald Gutmann wrote:
+>   
+>>> Right.  But apart from that, a combined mixer is actually an
+>>> interesting topic.
+>>>
+>>> Unfortunately, there is no framework for the combined mixer elements
+>>> (unlike PCM) right now.  In theory, this could be implemented via
+>>> alsa-lib mixer plugin.
+>>>   
+>>>       
+>> is it planned to add such a framework for combining mixers per .asoundrc?
+>> i think it would be a good idea to add a similar framework like it's 
+>> used to
+>> route audio in the .asoundrc.
+>>     
+>
+> No plan, no time :-<
+>
+> Feel free to implement it by yourself...
+>   
+i'd like to do it, but i don't have the knowladge to code.
+i'm only a poor user ;).
 
-Reminds me - might as well fix this too
+but fine to know, that it isn't possible at the moment, i don't have to 
+invest time in searching. :)
 
-Signed-off-by: Alan Cox <alan@redhat.com>
+harald
 
---- sound/sound_firmware.c~	2006-09-04 12:33:08.805282488 +0100
-+++ sound/sound_firmware.c	2006-09-04 12:33:08.817280664 +0100
-@@ -59,8 +59,7 @@
-  *	value zero on a failure.
-  *
-  *	Caution: This API is not recommended. Firmware should be loaded via
-- *	an ioctl call and a setup application. This function may disappear
-- *	in future.
-+ *	request_firmware.
-  */
-  
- int mod_firmware_load(const char *fn, char **fp)
+>
+> Takashi
+>
+>
+>   
 
 
 -------------------------------------------------------------------------
