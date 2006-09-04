@@ -1,7 +1,7 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 Subject: Re: [RFC] Extra info via the TLV interface
-Date: Mon, 4 Sep 2006 15:04:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0609041455110.9339@tm8103.perex-int.cz>
+Date: Mon, 04 Sep 2006 14:14:13 +0100
+Message-ID: <1157375653.2772.61.camel@localhost.localdomain>
 References: <44FC20B0.4060501@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,30 +21,52 @@ To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 4 Sep 2006, James Courtier-Dutton wrote:
-
+On Mon, 2006-09-04 at 13:48 +0100, James Courtier-Dutton wrote:
 > Hi,
 > 
 > I would like to now pass extra info regarding the controls via the TLV
 > interface.
 > 1) Whether the control is Playback, Capture or Both.
+
+Agreed, it would also be nice to know about sidetone/bypass.
+
 > 2) Whether the control is digital or analog.
 > 3) Some description of the routing of the control. i.e. how it links to
 > other controls.
+
+Fwiw, I've created a patch for ASoC that uses the audio routing map
+(includes how controls are linked to other controls) within ASoC to
+enable easy scenario setting. This allows a route to be be automatically
+created (and powered) by specifing the source and sink e.g.
+
+"Left DAC" --> "Left Headphone"
+
+It wouldn't be difficult to add code here that could also specify the
+active controls for that route. i.e. active route controls could be
+highlighted to make using the mixer tools easier.
+
+If anyone is interested, patch is here:-
+
+http://www.rpsys.net/openzaurus/patches/alsa/asoc-scenario-v0.3.patch
+
+Atm, it's ASoC only as it requires a map of the machine audio subsystem.
+
 > 4) Both "short" and "long" mixer control names.
 > 5) Control grouping. I.e. to have mixer controls "Front" and "Surround"
 > next to each other.
+> 
+> I know (1) sort of works just by adding playback or capture to the
+> control name, but it seems to fail in some ambiguous cases. E.g.
+> "Capture feedback", "Mic Boost", "HD Source", "HD Channel"
+> 
+> Any comments?
+> 
 
-In my opinion, all these GUI hints should be elsewhere (userspace), 
-otherwise we'll end up with drivers containing digital photos of 
-sound chips in the TLV structure :-)
+I'd also like to pass in log time values for ALC/AGC.
 
-						Jaroslav
+Liam
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
