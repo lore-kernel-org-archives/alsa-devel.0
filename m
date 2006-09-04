@@ -1,17 +1,22 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [RFC: 2.6 patch] build sound/sound_firmware.c only for
-	OSS
-Date: Mon, 4 Sep 2006 13:41:35 +0200
-Message-ID: <20060904114135.GO4416@stusta.de>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [RFC: 2.6 patch] build sound/sound_firmware.c only
+	for OSS
+Date: Mon, 04 Sep 2006 13:11:04 +0100
+Message-ID: <1157371864.30801.38.camel@localhost.localdomain>
+References: <20060904114135.GO4416@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F257F29E
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B987529A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Sep 2006 13:41:37 +0200 (MEST)
-Content-Disposition: inline
+	Mon,  4 Sep 2006 13:48:28 +0200 (MEST)
+Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	EF50D69524 for <alsa-devel@alsa-project.org>;
+	Mon,  4 Sep 2006 13:48:27 +0200 (MEST)
+In-Reply-To: <20060904114135.GO4416@stusta.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,75 +26,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-All sound/sound_firmware.c contains is mod_firmware_load() that is a 
-legacy API only used by some OSS drivers.
+Ar Llu, 2006-09-04 am 13:41 +0200, ysgrifennodd Adrian Bunk:
+> All sound/sound_firmware.c contains is mod_firmware_load() that is a 
+> legacy API only used by some OSS drivers.
+> 
+> This patch builds it into an own sound_firmware module that is only 
+> built depending on CONFIG_SOUND_PRIME making the kernel slightly smaller 
+> for ALSA users.
 
-This patch builds it into an own sound_firmware module that is only 
-built depending on CONFIG_SOUND_PRIME making the kernel slightly smaller 
-for ALSA users.
+Reminds me - might as well fix this too
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Signed-off-by: Alan Cox <alan@redhat.com>
 
----
-
-This patch was already sent on:
-- 22 Aug 2006
-
- sound/Makefile         |    3 ++-
- sound/sound_core.c     |    4 ----
- sound/sound_firmware.c |    3 +++
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
---- linux-2.6.18-rc4-mm2/sound/Makefile.old	2006-08-22 00:07:41.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/Makefile	2006-08-22 00:10:41.000000000 +0200
-@@ -2,6 +2,7 @@
- #
- 
- obj-$(CONFIG_SOUND) += soundcore.o
-+obj-$(CONFIG_SOUND_PRIME) += sound_firmware.o
- obj-$(CONFIG_SOUND_PRIME) += oss/
- obj-$(CONFIG_DMASOUND) += oss/
- obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ sparc/ parisc/ pcmcia/ mips/
-@@ -11,4 +12,4 @@
-   obj-y += last.o
- endif
- 
--soundcore-objs  := sound_core.o sound_firmware.o
-+soundcore-objs  := sound_core.o
---- linux-2.6.18-rc4-mm2/sound/sound_core.c.old	2006-08-22 00:09:13.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/sound_core.c	2006-08-22 00:12:10.000000000 +0200
-@@ -517,10 +517,6 @@
- 	return -ENODEV;
- }
- 
--extern int mod_firmware_load(const char *, char **);
--EXPORT_SYMBOL(mod_firmware_load);
--
--
- MODULE_DESCRIPTION("Core sound module");
- MODULE_AUTHOR("Alan Cox");
- MODULE_LICENSE("GPL");
---- linux-2.6.18-rc4-mm2/sound/sound_firmware.c.old	2006-08-22 00:10:53.000000000 +0200
-+++ linux-2.6.18-rc4-mm2/sound/sound_firmware.c	2006-08-22 00:26:03.000000000 +0200
-@@ -4,6 +4,7 @@
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <asm/uaccess.h>
-+#include "oss/sound_firmware.h"
- 
- static int do_mod_firmware_load(const char *fn, char **fp)
- {
-@@ -73,4 +74,6 @@
- 	set_fs(fs);
- 	return r;
- }
-+EXPORT_SYMBOL(mod_firmware_load);
- 
-+MODULE_LICENSE("GPL");
+--- sound/sound_firmware.c~	2006-09-04 12:33:08.805282488 +0100
++++ sound/sound_firmware.c	2006-09-04 12:33:08.817280664 +0100
+@@ -59,8 +59,7 @@
+  *	value zero on a failure.
+  *
+  *	Caution: This API is not recommended. Firmware should be loaded via
+- *	an ioctl call and a setup application. This function may disappear
+- *	in future.
++ *	request_firmware.
+  */
+  
+ int mod_firmware_load(const char *fn, char **fp)
 
 
 -------------------------------------------------------------------------
