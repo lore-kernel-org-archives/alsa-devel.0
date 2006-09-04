@@ -1,16 +1,13 @@
-From: Jochen =?iso-8859-1?B?Vm/f?= <voss@maths.warwick.ac.uk>
-Subject: Re: [RFC] Add dB scale information to AK4xxx codec
-Date: Mon, 4 Sep 2006 13:12:32 +0100
-Message-ID: <20060904121232.GC24842@localhost.localdomain>
-References: <s5hlkp96qfm.wl%tiwai@suse.de>
-	<20060903155357.GA10408@tarte.seehuhn.de>
-	<s5hveo4kl5q.wl%tiwai@suse.de>
-	<20060904111303.GA24842@localhost.localdomain>
-	<s5hejurlv98.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [RFC] dB range compound
+Date: Mon, 04 Sep 2006 13:40:13 +0100
+Message-ID: <44FC1EAD.2010800@superbug.co.uk>
+References: <s5hd5afmqdi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1967863424=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hejurlv98.wl%tiwai@suse.de>
+In-Reply-To: <s5hd5afmqdi.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,70 +21,73 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> Hi,
+> 
+> I found that some hardwares require the combination of dB scale
+> ranges.  For example, es1938 has volume controls with two curves,
+> e.g. the volume step in the value 0-8 is 3 dB while it's 1.5 dB in the
+> values 8-15.
+> 
+> The patch below introduces a new TLV type, DB_RANGE, to implement
+> the compound dB scales.  It can contain one or more child TLVs,
+> together with min and max values for each.
+> 
+> The first patch is for the kernel and the second for alsa-lib.
+> 
+> Any comments?
+> 
+> 
+> Takashi
+> 
++static int do_convert_to_dB(unsigned int *tlv, long rangemin, long
+rangemax,
++			    long volume, long *db_gain)
++{
++	switch (tlv[0]) {
++	case SND_CTL_TLVT_DB_RANGE: {
++		unsigned int pos, len;
++		len = tlv[1] / sizeof(int);
++		pos = 2;
 
---===============1967863424==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z6Eq5LdranGa6ru8"
-Content-Disposition: inline
-
-
---z6Eq5LdranGa6ru8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Takashi,
-
-On Mon, Sep 04, 2006 at 01:35:31PM +0200, Takashi Iwai wrote:
-> Yes, the exactly same table appears in AK4524 datasheet, too.
-> The only question is whether they really behave _indenpendently_.
->=20
-> On AK4524, IPGA and IATT are actually two different values.  As I
-> wrote, 0x82 only changes IPGA value but doesn't change IATT.  0x02
-> changes only IATT but not IPGA.  And the total volume is IPGA + IATT.
-Ok, I will try to play with my card and figure this out tonight.
-
-All the best,
-Jochen
---=20
-http://www.maths.warwick.ac.uk/~voss/
-
---z6Eq5LdranGa6ru8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFE/Bgwf+iD8yEbECURAqaAAJ9NFZ0tCbDa1t5tbAUXbCk3E1u3/gCfaIqA
-B5O92nWa7D4s1CScCCTIIfw=
-=0mG7
------END PGP SIGNATURE-----
-
---z6Eq5LdranGa6ru8--
+Be careful with this len limit in the while loop. I suggest adding a
+further comparison to limit the loop to a constant size:
+e.g.
+while (pos + 4 <= len && (pos + 4 < MAX_BUFFER_SIZE) ) {
+There are similar cases elsewhere in the patch.
 
 
---===============1967863424==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
++		while (pos + 4 <= len) {
++			rangemin = (int)tlv[pos];
++			rangemax = (int)tlv[pos + 1];
++			if (volume >= rangemin && volume <= rangemax)
++				return do_convert_to_dB(tlv + pos + 2,
++							rangemin, rangemax,
++							volume, db_gain);
++			pos += tlv[pos + 3] + 4;
++		}
+ 		return -EINVAL;
+
+
+Apart from that, It looks OK to me.
+
+With regard to this control actually being to separate register in the
+chip, I think it might be nice to implement two separate controls
+between kernel and alsa-lib, but add some TLV tag to link the two
+controls together so that they appear as one. This will save code size
+in the kernel.
+For example, with the EMU DSPs one control can do 0 dB to -inf gain, and
+another can to 0 dB to X gain. I was thinking of implementing these in
+the emu10k1 module, with special code to link the two at the kernel
+module level, but it might save code duplication if we let alsa-lib do
+this task.
+We might be able to do a similar link between mic gain and mic boost
+switches.
+
+James
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1967863424==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1967863424==--
