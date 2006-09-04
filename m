@@ -1,13 +1,14 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 Subject: Re: [RFC] Extra info via the TLV interface
-Date: Mon, 04 Sep 2006 14:14:13 +0100
-Message-ID: <1157375653.2772.61.camel@localhost.localdomain>
+Date: Mon, 04 Sep 2006 14:30:19 +0100
+Message-ID: <1157376619.2772.74.camel@localhost.localdomain>
 References: <44FC20B0.4060501@superbug.co.uk>
+	<Pine.LNX.4.61.0609041455110.9339@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <44FC20B0.4060501@superbug.co.uk>
+In-Reply-To: <Pine.LNX.4.61.0609041455110.9339@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,55 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-09-04 at 13:48 +0100, James Courtier-Dutton wrote:
-> Hi,
+On Mon, 2006-09-04 at 15:04 +0200, Jaroslav Kysela wrote:
+> On Mon, 4 Sep 2006, James Courtier-Dutton wrote:
 > 
-> I would like to now pass extra info regarding the controls via the TLV
-> interface.
-> 1) Whether the control is Playback, Capture or Both.
-
-Agreed, it would also be nice to know about sidetone/bypass.
-
-> 2) Whether the control is digital or analog.
-> 3) Some description of the routing of the control. i.e. how it links to
-> other controls.
-
-Fwiw, I've created a patch for ASoC that uses the audio routing map
-(includes how controls are linked to other controls) within ASoC to
-enable easy scenario setting. This allows a route to be be automatically
-created (and powered) by specifing the source and sink e.g.
-
-"Left DAC" --> "Left Headphone"
-
-It wouldn't be difficult to add code here that could also specify the
-active controls for that route. i.e. active route controls could be
-highlighted to make using the mixer tools easier.
-
-If anyone is interested, patch is here:-
-
-http://www.rpsys.net/openzaurus/patches/alsa/asoc-scenario-v0.3.patch
-
-Atm, it's ASoC only as it requires a map of the machine audio subsystem.
-
-> 4) Both "short" and "long" mixer control names.
-> 5) Control grouping. I.e. to have mixer controls "Front" and "Surround"
-> next to each other.
+> > Hi,
+> > 
+> > I would like to now pass extra info regarding the controls via the TLV
+> > interface.
+> > 1) Whether the control is Playback, Capture or Both.
+> > 2) Whether the control is digital or analog.
+> > 3) Some description of the routing of the control. i.e. how it links to
+> > other controls.
+> > 4) Both "short" and "long" mixer control names.
+> > 5) Control grouping. I.e. to have mixer controls "Front" and "Surround"
+> > next to each other.
 > 
-> I know (1) sort of works just by adding playback or capture to the
-> control name, but it seems to fail in some ambiguous cases. E.g.
-> "Capture feedback", "Mic Boost", "HD Source", "HD Channel"
-> 
-> Any comments?
+> In my opinion, all these GUI hints should be elsewhere (userspace), 
+> otherwise we'll end up with drivers containing digital photos of 
+> sound chips in the TLV structure :-)
 > 
 
-I'd also like to pass in log time values for ALC/AGC.
+We've almost got a "digital photo" of each sound chip in ASoC atm. It's
+good for a few things (including GUI hints) :-
+
+ o Power Management. Knowing when to enable/disable individual chip and
+machine audio components (based on any active streams and current mixer
+settings).
+ o Scenario setting. Allowing a route to be set from source to sink
+within a machine. I'd like to eventually have some kind of scenario
+description in the card conf file for each use case. 
+
+Atm, the audio map is within the driver code, but it could eventually be
+moved into userspace. The only question is whether the PM will work well
+in userspace.
 
 Liam
-
 
 
 -------------------------------------------------------------------------
