@@ -1,11 +1,22 @@
-From: Cruise X Overide <cruiseoveride@gmail.com>
-Subject: M-Audio Audiophile 192 (ap192k)
-Date: Mon, 04 Sep 2006 18:57:15 -0400
-Message-ID: <1157410635.3658.17.camel@server>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.12 breaks firmware loading
+Date: Tue, 5 Sep 2006 03:04:09 +0400
+Message-ID: <70a871c80609041604w6de2916ajaf89cabeaa6eca32@mail.gmail.com>
+References: <70a871c80608281201u7675f14fxffba5558acb0038b@mail.gmail.com>
+	<70a871c80608290657x3741a388t74a6848fcb86a173@mail.gmail.com>
+	<s5hbqq363qh.wl%tiwai@suse.de> <s5hwt8r4kt4.wl%tiwai@suse.de>
+	<70a871c80608291341q1853bb0fge45dcdbb168b0962@mail.gmail.com>
+	<s5hslje5vx6.wl%tiwai@suse.de>
+	<70a871c80608300730j737aab47padfdcb37ec15d0ce@mail.gmail.com>
+	<s5hr6yy47dh.wl%tiwai@suse.de>
+	<70a871c80609032303j16ec31e8xf4fdc1c3dc5f0dac@mail.gmail.com>
+	<s5hlkozlxyg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hlkozlxyg.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,91 +26,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear All
+On 9/4/06, Takashi Iwai <tiwai@suse.de> wrote:
+> I guess the problem of firmware loading was fixed by 1.0.13rc1
+> package.  There was a problem in configure script that it resets the
+> kernel CONFIG_FW_LOADER* acciedentally, which results in the driver
+> without firmware support.
+Not tested yet, will try to test today.
 
-In the past 2 months I have been working with a FreeBSD developer and
-have got the M-Audio Audiophile 192 working on FreeBSD 6.1 .
+> Hm, could you check whether a kernel message like "Hammerfall-DSP:
+> loading firmware" appears?  This should be called when a PCM device is
+> opened, or any new PCM action is done.
 
-
-The M-Audio Audiophile 192 (ap192k) is as follows
-
-PCI IDs
-	SubVen ID -> 0x1412 
-	SubDev ID -> 0x3632
-Envy24 Controller => Envy24HT
-DAC -> AK4358
-DIT -> AK4114
-ADC -> AK5385A
-
-Here is the Wiring Info
-
-AK4358 <---> Envy24HT
-=======================
-AK4358 CCLK pin 19 <-> Envy24HT GPIO1 pin 51
-AK4358 CDTI pin 20 <-> Envy24HT GPIO3 pin 53
-? AK4358 CSN pin 21 <-> Envy24HT GPIO4 pin 56
-or
-? AK4358 CSN pin 21 <-> Envy24HT GPIO5 pin 57
-=======================
-
-AK4114 <---> Envy24HT
-=======================
-AK4114 CDTO pin 32 <-> Envy24HT GPIO2 pin 52
-AK4114 CDTI pin 33 <-> Envy24HT GPIO3 pin 53
-AK4114 CCLK pin 34 <-> Envy24HT GPIO1 pin 51
-AK4114 CSN pin 35 <-> Envy24HT GPIO7 pin 59
-=======================
-
-AK5385A <---> Envy24HT
-=======================
-AK5385A CKS0 pin 6 <-> Not Connected ? 
-AK5385A DFS0 pin 18 <-> Envy24HT GPIO10 pin 77
-AK5385A DFS1 pin 20 <-> ???
-=======================
-
-GPIO DIR, MASK, STATE
-=======================
-GPIO DIR:  0x7FFFBA
-GPIO MASK: 0x45
-GPIO STATE: 0x4000B5
-=======================
-
-E2PROM
-=======================
-SCFG:	0x68
-ACL:	0x80
-I2S:	0xf8
-SPDIF:	0xc3
-=======================
-
-AP192 E2prom Dump
-=======================
-
-    | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C OD 0E 0F
-----+-------------------------------------------------
- 00 | 36 32 14 12 13 02 68 80 f8 c3 ba ff 7f 45 00 00
- 01 | b5 00 40 ff ff ff ff ff ff ff ff ff ff ff ff ff
+Thank you. Works great!.
+One minor issue: if firmware was already uploaded, after reboot,
+firmware is not cached, since it's already present in the box. I
+suppose it is easy to fix.
 
 
-The following are the fruits of the development done in BSD
-http://xkodi.svobodno.com/xkodi/ap192/envy24ht/envy24ht.h
-http://xkodi.svobodno.com/xkodi/ap192/envy24ht/envy24ht.c
-http://xkodi.svobodno.com/xkodi/ap192/ak4358/ak4358.h
-http://xkodi.svobodno.com/xkodi/ap192/ak4358/ak4358.c
+Regards,
 
-
-I have been looking at the Juli@ code for a while now, and this card (ap192k) is 
-almost identical to the ESI. But i have absolutely no experience programming drivers at all.
-With the information i have provided, will it be possible to see support for this card in the next rc of ALSA
-pretty please??
-
-Sincerely,
-
-CruiseX
-
+Dmitry.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
