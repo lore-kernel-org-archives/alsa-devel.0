@@ -1,13 +1,11 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [RFC] dB range compound
-Date: Mon, 04 Sep 2006 13:40:13 +0100
-Message-ID: <44FC1EAD.2010800@superbug.co.uk>
-References: <s5hd5afmqdi.wl%tiwai@suse.de>
+Subject: [RFC] Extra info via the TLV interface
+Date: Mon, 04 Sep 2006 13:48:48 +0100
+Message-ID: <44FC20B0.4060501@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hd5afmqdi.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,72 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> I found that some hardwares require the combination of dB scale
-> ranges.  For example, es1938 has volume controls with two curves,
-> e.g. the volume step in the value 0-8 is 3 dB while it's 1.5 dB in the
-> values 8-15.
-> 
-> The patch below introduces a new TLV type, DB_RANGE, to implement
-> the compound dB scales.  It can contain one or more child TLVs,
-> together with min and max values for each.
-> 
-> The first patch is for the kernel and the second for alsa-lib.
-> 
-> Any comments?
-> 
-> 
-> Takashi
-> 
-+static int do_convert_to_dB(unsigned int *tlv, long rangemin, long
-rangemax,
-+			    long volume, long *db_gain)
-+{
-+	switch (tlv[0]) {
-+	case SND_CTL_TLVT_DB_RANGE: {
-+		unsigned int pos, len;
-+		len = tlv[1] / sizeof(int);
-+		pos = 2;
+Hi,
 
-Be careful with this len limit in the while loop. I suggest adding a
-further comparison to limit the loop to a constant size:
-e.g.
-while (pos + 4 <= len && (pos + 4 < MAX_BUFFER_SIZE) ) {
-There are similar cases elsewhere in the patch.
+I would like to now pass extra info regarding the controls via the TLV
+interface.
+1) Whether the control is Playback, Capture or Both.
+2) Whether the control is digital or analog.
+3) Some description of the routing of the control. i.e. how it links to
+other controls.
+4) Both "short" and "long" mixer control names.
+5) Control grouping. I.e. to have mixer controls "Front" and "Surround"
+next to each other.
 
+I know (1) sort of works just by adding playback or capture to the
+control name, but it seems to fail in some ambiguous cases. E.g.
+"Capture feedback", "Mic Boost", "HD Source", "HD Channel"
 
-+		while (pos + 4 <= len) {
-+			rangemin = (int)tlv[pos];
-+			rangemax = (int)tlv[pos + 1];
-+			if (volume >= rangemin && volume <= rangemax)
-+				return do_convert_to_dB(tlv + pos + 2,
-+							rangemin, rangemax,
-+							volume, db_gain);
-+			pos += tlv[pos + 3] + 4;
-+		}
- 		return -EINVAL;
-
-
-Apart from that, It looks OK to me.
-
-With regard to this control actually being to separate register in the
-chip, I think it might be nice to implement two separate controls
-between kernel and alsa-lib, but add some TLV tag to link the two
-controls together so that they appear as one. This will save code size
-in the kernel.
-For example, with the EMU DSPs one control can do 0 dB to -inf gain, and
-another can to 0 dB to X gain. I was thinking of implementing these in
-the emu10k1 module, with special code to link the two at the kernel
-module level, but it might save code duplication if we let alsa-lib do
-this task.
-We might be able to do a similar link between mic gain and mic boost
-switches.
+Any comments?
 
 James
 
