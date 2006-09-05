@@ -1,22 +1,12 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: CodingStyle
-Date: Tue, 05 Sep 2006 18:40:27 +0200
-Message-ID: <44FDA87B.5030902@s5r6.in-berlin.de>
-References: <20060831123706.GC3923@elf.ucw.cz> <s5h8xl52h52.wl%tiwai@suse.de>
-	<20060831110436.995bdf93.rdunlap@xenotime.net>
-	<20060902231509.GC13031@elf.ucw.cz>
-	<20060902213046.dd9bf569.rdunlap@xenotime.net>
-	<20060905080813.GE1958@elf.ucw.cz>
+From: "Stanislas Elie" <alsa@stanelie.com>
+Subject: mips problem
+Date: Tue, 5 Sep 2006 12:54:04 -0400
+Message-ID: <4a2338020609050954h2c1d55cet3ba8027ef85dbb5f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from hp3.statik.tu-cottbus.de (hp3.statik.TU-Cottbus.De
-	[141.43.120.68])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0CDB269
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Sep 2006 18:44:39 +0200 (MEST)
-In-Reply-To: <20060905080813.GE1958@elf.ucw.cz>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,40 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel list <linux-kernel@vger.kernel.org>, "Randy.Dunlap" <rdunlap@xenotime.net>, pshou@realtek.com.tw, perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Pavel Machek wrote:
-> +Avoid extra spaces around ! operator, and do not place spaces around (s.
+Hello.
 
-How about:
+I am trying to transform a netgear wgt634u wireless router into a
+wireless midi node.
 
-	Avoid extra spaces after the ! operator.
-	Do not place spaces around parentheses.
+For this to work, I need alsa with sequencer option enabled.
 
-Because "foo && !bar" is certainly OK.
+I managed to compile the driver, library and utils on my platform.
 
-Or more draconian for the former and less so for the latter rule:
+However, when I do an aconnect, I get this error message :
 
-	Do not put whitespace between any of the unary operators and
-	their operand.
+root@OpenWrt:/# aconnect
+WARNING: this snd_user_file implementation won't behave as expected.
+         set BROKEN_USERFILE_DEBUG to see all problems, or
+         set BROKEN_USERFILE_SILENT to disable all warnings.
+ALSA lib seq.c:929:(snd_seq_open_noupdate) Unknown SEQ default
+can't open sequencer
+root@OpenWrt:/#
 
-	It is usually unnecessary to have whitespace around parentheses
-	as part of expressions, around brackets, or around the operators
-	. and ->.
+Any hints about resolving this issue?
 
-Rule 1 certainly applies likewise to ++, --, unary +, unary -, !, ~,
-(typecast), unary *, unary &, sizeof.
+Thanks!
 
-Rule 2 applies to all of ( ), [ ], ., ->, except where line breaks and
-indentation warrant whitespace, or where whitespace helps to read
-expressions with more levels of braces. Although the latter should be
-avoided anyway.
--- 
-Stefan Richter
--=====-=-==- =--= --=-=
-http://arcgraph.de/sr/
+Stanislas Elie
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
