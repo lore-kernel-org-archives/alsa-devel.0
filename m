@@ -1,18 +1,22 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: ALSA patches for 2.6.16
-Date: Tue, 5 Sep 2006 21:41:36 +0200
-Message-ID: <20060905194136.GH9173@stusta.de>
-References: <20060831211756.GW18276@stusta.de> <s5h3bbbooqp.wl%tiwai@suse.de>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.12 breaks firmware loading
+Date: Wed, 6 Sep 2006 00:07:50 +0400
+Message-ID: <70a871c80609051307t5d552858pb1b202539b42d54d@mail.gmail.com>
+References: <70a871c80608281201u7675f14fxffba5558acb0038b@mail.gmail.com>
+	<s5hslje5vx6.wl%tiwai@suse.de>
+	<70a871c80608300730j737aab47padfdcb37ec15d0ce@mail.gmail.com>
+	<s5hr6yy47dh.wl%tiwai@suse.de>
+	<70a871c80609032303j16ec31e8xf4fdc1c3dc5f0dac@mail.gmail.com>
+	<s5hlkozlxyg.wl%tiwai@suse.de>
+	<70a871c80609041604w6de2916ajaf89cabeaa6eca32@mail.gmail.com>
+	<s5hbqpuk7af.wl%tiwai@suse.de> <s5hd5aaigus.wl%tiwai@suse.de>
+	<s5hlkoyxume.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 33FC2236
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Sep 2006 21:41:43 +0200 (MEST)
+In-Reply-To: <s5hlkoyxume.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <s5h3bbbooqp.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,46 +27,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 01, 2006 at 12:38:54PM +0200, Takashi Iwai wrote:
-> At Thu, 31 Aug 2006 23:17:56 +0200,
-> Adrian Bunk wrote:
-> > 
-> > The following 8 patches that were included in 2.6.17.7 seem to also make 
-> > sense in 2.6.16:
-> > 
-> > ALSA: Suppress irq handler mismatch messages in ALSA ISA drivers
-> 
-> This one can't be applied.  2.6.16 has no SA_PROBEIRQ flag.
-> 
-> > ALSA: RME HDSP - fixed proc interface (missing {})
-> > ALSA: hda-intel - Fix race in remove
-> > ALSA: Fix workaround for AD1988A rev2 codec
-> > ALSA: Fix model for HP dc7600
-> > ALSA: Fix missing array terminators in AD1988 codec support
-> > ALSA: Fix a deadlock in snd-rtctimer
-> > ALSA: au88x0 - Fix 64bit address of MPU401 MMIO port
-> 
-> The others are good to apply.
+On 9/5/06, Takashi Iwai <tiwai@suse.de> wrote:
+> > The newer patch is below.
+> Grrr, a wrong patch.  Use the below one instead.
 
-Thanks for the review, I've applied the latter 7 patches.
+Works perfectly.
 
-> Thanks,
-> 
-> Takashi
+Thank you,
 
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Dmitry.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
