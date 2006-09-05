@@ -1,13 +1,12 @@
-From: Andreas Hartmann <andihartmann@freenet.de>
-Subject: Re: [Realtek ALC260] Can't enable SPDIF out
-Date: Tue, 05 Sep 2006 20:12:32 +0200
-Message-ID: <44FDBE10.50008@p54A1A9D3.dip0.t-ipconnect.de>
-References: <200609050321.k853L2l2031398@auster.physics.adelaide.edu.au>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: Re: sparc dbri: SMP fixes
+Date: Tue, 05 Sep 2006 20:14:11 +0200
+Message-ID: <44fdbe73e9a3e@wp.pl>
+References: <44f7dd09db938@wp.pl> <s5h4pvrop4h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="part44fdbe73ec100"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200609050321.k853L2l2031398@auster.physics.adelaide.edu.au>
+In-reply-to: <44f7dd09db938@wp.pl> <s5h4pvrop4h.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,82 +16,226 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jonathan,
+This is a multi-part message in MIME format.
 
-first of all, thank you for your explanations!
+--part44fdbe73ec100
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Dnia 1-09-2006 o godz. 12:30 Takashi Iwai napisa=B3(a):
+>=20
+> There is only one place that calls dbri_cmdsend(lock=3D0), namely
+> xmit_fixed().  Hence, I suggest not to add this argument but
+just add
+> spin_lock_irqsave()/spin_unlock_irqrestore() around the calling
+side
+> in xmit_fixed().  The spinlock per argument is hard to trace
+whether
+> the lock is really needed or not.
+>=20
 
-Jonathan Woithe wrote:
+This is a corrected patch.
 
-[...]
+Regards,
+Krzysztof
 
-> The "pcm" control in alsamixer is not necessarily the same as the "pcm"
-> interfaces I've been talking about.  Sorry for any confusion I've caused - I
-> forgot about the alsamixer control labelled "pcm".  By pcm interface I'm
-> referring to the "hw:0"/"hw:1"/"default"/"spdif"/etc designators one can use
-> when specifying the output device for things like aplay.
+----------------------------------------------------
+Dzieci.wp.pl - Wydrukuj sobie plan lekcji - kliknij:
+http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2Fd1.html&si=
+d=3D860
 
-Good to know :-). That's what I did last the latter. But now I know what
-you meant by pcm.
+--part44fdbe73ec100
+Content-Type: application/octet-stream; name="dbri-patch15.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="dbri-patch15.diff"
 
-> 
->> Now, I tested with aplay.
->> 
->> andreas@notebook1:~> aplay -l
->> **** List of PLAYBACK Hardware Devices ****
->> card 0: Intel [HDA Intel], device 0: ALC260 Analog [ALC260 Analog]
->>   Subdevices: 1/1
->>   Subdevice #0: subdevice #0
->> card 0: Intel [HDA Intel], device 1: ALC260 Digital [ALC260 Digital]
->>   Subdevices: 1/1
->>   Subdevice #0: subdevice #0
-> 
-> This is interesting.  Those on the list more knowledgeable than I might
-> be able to correct me here, but I would interpret this to mean that
-> "device 0" (ie: hw:0) is your analog output while device 1 (ie: hw:1)
-> sends direct to the SPDIF channel on the ALC260.
-> 
->> If I'm using aplay -D default, the output is analog. If I'm using -D
->> iec958 or spdif, there isn't any output. Btw.: using -D spdif or iec958
->> switches on the spdif switch in the mixer.
-> 
-> Right, so my interpretation of that is that in terms of the software,
-> the "-D spdif" is probably doing the right thing in that the data is being
-> sent to the SPDIF portion of the chip.  The fact that no SPDIF bitstream
-> appears probably has something to do with external switching employed
-> by your laptop which ALSA currently doesn't know about.
-> 
-> How are you testing for the existance of an SPDIF bitstream by the way?
+LS0tIGFsc2EtZHJpdmVyLTEuMC4xMnJjMi9hbHNhLWtlcm5lbC9zcGFyYy9kYnJpLmMJMjAwNi0w
+OS0wNCAxOTozMDoyOC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4xN2Evc291bmQvc3Bh
+cmMvZGJyaS5jCTIwMDYtMDktMDQgMTk6MzY6NDUuMDAwMDAwMDAwICswMjAwCkBAIC02MzUsMTAg
+KzYzNSwxNiBAQCB0byBzZW5kIHRoZW0gdG8gdGhlIERCUkkuCiBzdGF0aWMgdm9pZCBkYnJpX2Nt
+ZHdhaXQoc3RydWN0IHNuZF9kYnJpICpkYnJpKQogewogCWludCBtYXhsb29wcyA9IE1BWExPT1BT
+OworCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAKIAkvKiBEZWxheSBpZiBwcmV2aW91cyBjb21tYW5k
+cyBhcmUgc3RpbGwgYmVpbmcgcHJvY2Vzc2VkICovCi0Jd2hpbGUgKCgtLW1heGxvb3BzKSA+IDAg
+JiYgKHNidXNfcmVhZGwoZGJyaS0+cmVncyArIFJFRzApICYgRF9QKSkKKwlzcGluX2xvY2tfaXJx
+c2F2ZSgmZGJyaS0+bG9jaywgZmxhZ3MpOworCXdoaWxlICgoLS1tYXhsb29wcykgPiAwICYmIChz
+YnVzX3JlYWRsKGRicmktPnJlZ3MgKyBSRUcwKSAmIERfUCkpIHsKKwkJc3Bpbl91bmxvY2tfaXJx
+cmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCQltc2xlZXBfaW50ZXJydXB0aWJsZSgxKTsK
+KwkJc3Bpbl9sb2NrX2lycXNhdmUoJmRicmktPmxvY2ssIGZsYWdzKTsKKwl9CisJc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCiAJaWYgKG1heGxvb3BzID09IDAp
+IHsKIAkJcHJpbnRrKEtFUk5fRVJSICJEQlJJOiBDaGlwIG5ldmVyIGNvbXBsZXRlZCBjb21tYW5k
+IGJ1ZmZlclxuIik7CkBAIC02NzEsMTEgKzY3NywxMiBAQCBzdGF0aWMgczMyICpkYnJpX2NtZGxv
+Y2soc3RydWN0IHNuZF9kYnJpCiAgKiB0aGUgbGFzdCBXQUlUIGNtZCBhbmQgZm9yY2UgREJSSSB0
+byByZXJlYWQgdGhlIGNtZC4KICAqIFRoZSBKVU1QIGNtZCBwb2ludHMgdG8gdGhlIG5ldyBjbWQg
+c3RyaW5nLgogICogSXQgYWxzbyByZWxlYXNlcyB0aGUgY21kbG9jayBzcGlubG9jay4KKyAqCisg
+KiBMb2NrIG11c3Qgbm90IGJlIGhlbGQgYmVmb3JlIGNhbGxpbmcgdGhpcy4KICAqLwogc3RhdGlj
+IHZvaWQgZGJyaV9jbWRzZW5kKHN0cnVjdCBzbmRfZGJyaSAqIGRicmksIHMzMiAqIGNtZCxpbnQg
+bGVuKQogewogCXMzMiB0bXAsIGFkZHI7Ci0JdW5zaWduZWQgbG9uZyBmbGFnczsKIAlzdGF0aWMg
+aW50IHdhaXRfaWQgPSAwOwogCiAJd2FpdF9pZCsrOwpAQCAtNzA2LDEyICs3MTMsMTAgQEAgc3Rh
+dGljIHZvaWQgZGJyaV9jbWRzZW5kKHN0cnVjdCBzbmRfZGJyaQogCX0KICNlbmRpZgogCi0Jc3Bp
+bl9sb2NrX2lycXNhdmUoJmRicmktPmxvY2ssIGZsYWdzKTsKIAkvKiBSZXJlYWQgdGhlIGxhc3Qg
+Y29tbWFuZCAqLwogCXRtcCA9IHNidXNfcmVhZGwoZGJyaS0+cmVncyArIFJFRzApOwogCXRtcCB8
+PSBEX1A7CiAJc2J1c193cml0ZWwodG1wLCBkYnJpLT5yZWdzICsgUkVHMCk7Ci0Jc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCiAJZGJyaS0+Y21kcHRyID0gY21k
+OwogCXNwaW5fdW5sb2NrKCZkYnJpLT5jbWRsb2NrKTsKQEAgLTc3Nyw5ICs3ODIsOSBAQCBzdGF0
+aWMgdm9pZCBkYnJpX2luaXRpYWxpemUoc3RydWN0IHNuZF9kCiAJZG1hX2FkZHIgPSBkYnJpLT5k
+bWFfZHZtYSArIGRicmlfZG1hX29mZihjbWQsIDApOwogCXNidXNfd3JpdGVsKGRtYV9hZGRyLCBk
+YnJpLT5yZWdzICsgUkVHOCk7CiAJc3Bpbl91bmxvY2soJmRicmktPmNtZGxvY2spOwotCWRicmlf
+Y21kd2FpdChkYnJpKTsKIAogCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRicmktPmxvY2ssIGZs
+YWdzKTsKKwlkYnJpX2NtZHdhaXQoZGJyaSk7CiB9CiAKIC8qCkBAIC04NDAsNiArODQ1LDkgQEAg
+c3RhdGljIHZvaWQgcmVzZXRfcGlwZShzdHJ1Y3Qgc25kX2RicmkgKgogCWRicmktPnBpcGVzW3Bp
+cGVdLmZpcnN0X2Rlc2MgPSAtMTsKIH0KIAorLyoKKyAqIExvY2sgbXVzdCBiZSBoZWxkIGJlZm9y
+ZSBjYWxsaW5nIHRoaXMuCisgKi8KIHN0YXRpYyB2b2lkIHNldHVwX3BpcGUoc3RydWN0IHNuZF9k
+YnJpICogZGJyaSwgaW50IHBpcGUsIGludCBzZHApCiB7CiAJaWYgKHBpcGUgPCAwIHx8IHBpcGUg
+PiBEQlJJX01BWF9QSVBFKSB7CkBAIC04NjYsNiArODc0LDkgQEAgc3RhdGljIHZvaWQgc2V0dXBf
+cGlwZShzdHJ1Y3Qgc25kX2RicmkgKgogCXJlc2V0X3BpcGUoZGJyaSwgcGlwZSk7CiB9CiAKKy8q
+CisgKiBMb2NrIG11c3QgYmUgaGVsZCBiZWZvcmUgY2FsbGluZyB0aGlzLgorICovCiBzdGF0aWMg
+dm9pZCBsaW5rX3RpbWVfc2xvdChzdHJ1Y3Qgc25kX2RicmkgKiBkYnJpLCBpbnQgcGlwZSwKIAkJ
+CSAgIGludCBwcmV2cGlwZSwgaW50IG5leHRwaXBlLAogCQkJICAgaW50IGxlbmd0aCwgaW50IGN5
+Y2xlKQpAQCAtOTIwLDYgKzkzMSwxMCBAQCBzdGF0aWMgdm9pZCBsaW5rX3RpbWVfc2xvdChzdHJ1
+Y3Qgc25kX2RiCiAJZGJyaV9jbWRzZW5kKGRicmksIGNtZCwgNCk7CiB9CiAKKyNpZiAwCisvKgor
+ICogTG9jayBtdXN0IGJlIGhlbGQgYmVmb3JlIGNhbGxpbmcgdGhpcy4KKyAqLwogc3RhdGljIHZv
+aWQgdW5saW5rX3RpbWVfc2xvdChzdHJ1Y3Qgc25kX2RicmkgKiBkYnJpLCBpbnQgcGlwZSwKIAkJ
+CSAgICAgZW51bSBpbl9vcl9vdXQgZGlyZWN0aW9uLCBpbnQgcHJldnBpcGUsCiAJCQkgICAgIGlu
+dCBuZXh0cGlwZSkKQEAgLTk1Miw2ICs5NjcsNyBAQCBzdGF0aWMgdm9pZCB1bmxpbmtfdGltZV9z
+bG90KHN0cnVjdCBzbmRfCiAKIAlkYnJpX2NtZHNlbmQoZGJyaSwgY21kLCA0KTsKIH0KKyNlbmRp
+ZgogCiAvKiB4bWl0X2ZpeGVkKCkgLyByZWN2X2ZpeGVkKCkKICAqCkBAIC05NjUsMTEgKzk4MSwx
+NCBAQCBzdGF0aWMgdm9pZCB1bmxpbmtfdGltZV9zbG90KHN0cnVjdCBzbmRfCiAgKiB0aGUgYWN0
+dWFsIHRpbWUgc2xvdCBpcy4gIFRoZSBpbnRlcnJ1cHQgaGFuZGxlciB0YWtlcyBjYXJlIG9mIGJp
+dAogICogb3JkZXJpbmcgYW5kIGFsaWdubWVudC4gIEFuIDgtYml0IHRpbWUgc2xvdCB3aWxsIGFs
+d2F5cyBlbmQgdXAKICAqIGluIHRoZSBsb3ctb3JkZXIgOCBiaXRzLCBmaWxsZWQgZWl0aGVyIE1T
+Qi1maXJzdCBvciBMU0ItZmlyc3QsCi0gKiBkZXBlbmRpbmcgb24gdGhlIHNldHRpbmdzIHBhc3Nl
+ZCB0byBzZXR1cF9waXBlKCkKKyAqIGRlcGVuZGluZyBvbiB0aGUgc2V0dGluZ3MgcGFzc2VkIHRv
+IHNldHVwX3BpcGUoKS4KKyAqCisgKiBMb2NrIG11c3Qgbm90IGJlIGhlbGQgYmVmb3JlIGNhbGxp
+bmcgaXQuCiAgKi8KIHN0YXRpYyB2b2lkIHhtaXRfZml4ZWQoc3RydWN0IHNuZF9kYnJpICogZGJy
+aSwgaW50IHBpcGUsIHVuc2lnbmVkIGludCBkYXRhKQogewogCXMzMiAqY21kOworCXVuc2lnbmVk
+IGxvbmcgZmxhZ3M7CiAKIAlpZiAocGlwZSA8IDE2IHx8IHBpcGUgPiBEQlJJX01BWF9QSVBFKSB7
+CiAJCXByaW50ayhLRVJOX0VSUiAiREJSSTogeG1pdF9maXhlZDogSWxsZWdhbCBwaXBlIG51bWJl
+clxuIik7CkBAIC0xMDAyLDggKzEwMjEsMTEgQEAgc3RhdGljIHZvaWQgeG1pdF9maXhlZChzdHJ1
+Y3Qgc25kX2RicmkgKgogCSooY21kKyspID0gZGF0YTsKIAkqKGNtZCsrKSA9IERCUklfQ01EKERf
+UEFVU0UsIDAsIDApOwogCisJc3Bpbl9sb2NrX2lycXNhdmUoJmRicmktPmxvY2ssIGZsYWdzKTsK
+IAlkYnJpX2NtZHNlbmQoZGJyaSwgY21kLCAzKTsKKwlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZk
+YnJpLT5sb2NrLCBmbGFncyk7CiAJZGJyaV9jbWR3YWl0KGRicmkpOworCiB9CiAKIHN0YXRpYyB2
+b2lkIHJlY3ZfZml4ZWQoc3RydWN0IHNuZF9kYnJpICogZGJyaSwgaW50IHBpcGUsIHZvbGF0aWxl
+IF9fdTMyICogcHRyKQpAQCAtMTAzOSw2ICsxMDYxLDggQEAgc3RhdGljIHZvaWQgcmVjdl9maXhl
+ZChzdHJ1Y3Qgc25kX2RicmkgKgogICogYmUgc3ByZWFkIGFjcm9zcyBtdWx0aXBsZSBkZXNjcmlw
+dG9ycy4KICAqCiAgKiBBbGwgZGVzY3JpcHRvcnMgY3JlYXRlIGEgcmluZyBidWZmZXIuCisgKgor
+ICogTG9jayBtdXN0IGJlIGhlbGQgYmVmb3JlIGNhbGxpbmcgdGhpcy4KICAqLwogc3RhdGljIGlu
+dCBzZXR1cF9kZXNjcyhzdHJ1Y3Qgc25kX2RicmkgKiBkYnJpLCBpbnQgc3RyZWFtbm8sIHVuc2ln
+bmVkIGludCBwZXJpb2QpCiB7CkBAIC0xMTg2LDYgKzEyMTAsOSBAQCBtdWx0aXBsZXhlZCBzZXJp
+YWwgaW50ZXJmYWNlIHdoaWNoIHRoZSBECiAKIGVudW0gbWFzdGVyX29yX3NsYXZlIHsgQ0hJbWFz
+dGVyLCBDSElzbGF2ZSB9OwogCisvKgorICogTG9jayBtdXN0IG5vdCBiZSBoZWxkIGJlZm9yZSBj
+YWxsaW5nIGl0LgorICovCiBzdGF0aWMgdm9pZCByZXNldF9jaGkoc3RydWN0IHNuZF9kYnJpICog
+ZGJyaSwgZW51bSBtYXN0ZXJfb3Jfc2xhdmUgbWFzdGVyX29yX3NsYXZlLAogCQkgICAgICBpbnQg
+Yml0c19wZXJfZnJhbWUpCiB7CkBAIC0xMjU4LDkgKzEyODUsMTQgQEAgc3RhdGljIHZvaWQgcmVz
+ZXRfY2hpKHN0cnVjdCBzbmRfZGJyaSAqIAogSW4gdGhlIHN0YW5kYXJkIFNQQVJDIGF1ZGlvIGNv
+bmZpZ3VyYXRpb24sIHRoZSBDUzQyMTUgY29kZWMgaXMgYXR0YWNoZWQKIHRvIHRoZSBEQlJJIHZp
+YSB0aGUgQ0hJIGludGVyZmFjZSBhbmQgZmV3IG9mIHRoZSBEQlJJJ3MgUElPIHBpbnMuCiAKKyAq
+IExvY2sgbXVzdCBub3QgYmUgaGVsZCBiZWZvcmUgY2FsbGluZyBpdC4KKwogKi8KIHN0YXRpYyB2
+b2lkIGNzNDIxNV9zZXR1cF9waXBlcyhzdHJ1Y3Qgc25kX2RicmkgKiBkYnJpKQogeworCXVuc2ln
+bmVkIGxvbmcgZmxhZ3M7CisKKwlzcGluX2xvY2tfaXJxc2F2ZSgmZGJyaS0+bG9jaywgZmxhZ3Mp
+OwogCS8qCiAJICogRGF0YSBtb2RlOgogCSAqIFBpcGUgIDQ6IFNlbmQgdGltZXNsb3RzIDEtNCAo
+YXVkaW8gZGF0YSkKQEAgLTEyODQsNiArMTMxNiw3IEBAIHN0YXRpYyB2b2lkIGNzNDIxNV9zZXR1
+cF9waXBlcyhzdHJ1Y3Qgc24KIAlzZXR1cF9waXBlKGRicmksIDE3LCBEX1NEUF9GSVhFRCB8IERf
+U0RQX1RPX1NFUiB8IERfU0RQX01TQik7CiAJc2V0dXBfcGlwZShkYnJpLCAxOCwgRF9TRFBfRklY
+RUQgfCBEX1NEUF9GUk9NX1NFUiB8IERfU0RQX01TQik7CiAJc2V0dXBfcGlwZShkYnJpLCAxOSwg
+RF9TRFBfRklYRUQgfCBEX1NEUF9GUk9NX1NFUiB8IERfU0RQX01TQik7CisJc3Bpbl91bmxvY2tf
+aXJxcmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCiAJZGJyaV9jbWR3YWl0KGRicmkpOwog
+fQpAQCAtMTM1OCw2ICsxMzkxLDcgQEAgc3RhdGljIHZvaWQgY3M0MjE1X29wZW4oc3RydWN0IHNu
+ZF9kYnJpIAogewogCWludCBkYXRhX3dpZHRoOwogCXUzMiB0bXA7CisJdW5zaWduZWQgbG9uZyBm
+bGFnczsKIAogCWRwcmludGsoRF9NTSwgImNzNDIxNV9vcGVuOiAlZCBjaGFubmVscywgJWQgYml0
+c1xuIiwKIAkJZGJyaS0+bW0uY2hhbm5lbHMsIGRicmktPm1tLnByZWNpc2lvbik7CkBAIC0xMzgy
+LDYgKzE0MTYsNyBAQCBzdGF0aWMgdm9pZCBjczQyMTVfb3BlbihzdHJ1Y3Qgc25kX2RicmkgCiAJ
+ICogYml0cy4gIFRoZSBDUzQyMTUsIGl0IHNlZW1zLCBvYnNlcnZlcyBUU0lOICh0aGUgZGVsYXll
+ZCBzaWduYWwpCiAJICogZXZlbiBpZiBpdCdzIHRoZSBDSEkgbWFzdGVyLiAgRG9uJ3QgYXNrIG1l
+Li4uCiAJICovCisJc3Bpbl9sb2NrX2lycXNhdmUoJmRicmktPmxvY2ssIGZsYWdzKTsKIAl0bXAg
+PSBzYnVzX3JlYWRsKGRicmktPnJlZ3MgKyBSRUcwKTsKIAl0bXAgJj0gfihEX0MpOwkJLyogRGlz
+YWJsZSBDSEkgKi8KIAlzYnVzX3dyaXRlbCh0bXAsIGRicmktPnJlZ3MgKyBSRUcwKTsKQEAgLTE0
+MDksNiArMTQ0NCw3IEBAIHN0YXRpYyB2b2lkIGNzNDIxNV9vcGVuKHN0cnVjdCBzbmRfZGJyaSAK
+IAl0bXAgPSBzYnVzX3JlYWRsKGRicmktPnJlZ3MgKyBSRUcwKTsKIAl0bXAgfD0gRF9DOwkJLyog
+RW5hYmxlIENISSAqLwogCXNidXNfd3JpdGVsKHRtcCwgZGJyaS0+cmVncyArIFJFRzApOworCXNw
+aW5fdW5sb2NrX2lycXJlc3RvcmUoJmRicmktPmxvY2ssIGZsYWdzKTsKIAogCWNzNDIxNV9zZXRk
+YXRhKGRicmksIDApOwogfQpAQCAtMTQyMCw2ICsxNDU2LDcgQEAgc3RhdGljIGludCBjczQyMTVf
+c2V0Y3RybChzdHJ1Y3Qgc25kX2RicgogewogCWludCBpLCB2YWw7CiAJdTMyIHRtcDsKKwl1bnNp
+Z25lZCBsb25nIGZsYWdzOwogCiAJLyogRklYTUUgLSBsZXQgdGhlIENQVSBkbyBzb21ldGhpbmcg
+dXNlZnVsIGR1cmluZyB0aGVzZSBkZWxheXMgKi8KIApAQCAtMTQ1Niw2ICsxNDkzLDcgQEAgc3Rh
+dGljIGludCBjczQyMTVfc2V0Y3RybChzdHJ1Y3Qgc25kX2RicgogCSAqIGRvbmUgaW4gaGFyZHdh
+cmUgYnkgYSBUSSAyNDggdGhhdCBkZWxheXMgdGhlIERCUkktPjQyMTUKIAkgKiBmcmFtZSBzeW5j
+IHNpZ25hbCBieSBlaWdodCBjbG9jayBjeWNsZXMuICBBbnlib2R5IGtub3cgd2h5PwogCSAqLwor
+CXNwaW5fbG9ja19pcnFzYXZlKCZkYnJpLT5sb2NrLCBmbGFncyk7CiAJdG1wID0gc2J1c19yZWFk
+bChkYnJpLT5yZWdzICsgUkVHMCk7CiAJdG1wICY9IH5EX0M7CQkvKiBEaXNhYmxlIENISSAqLwog
+CXNidXNfd3JpdGVsKHRtcCwgZGJyaS0+cmVncyArIFJFRzApOwpAQCAtMTQ3MiwxNCArMTUxMCwx
+NyBAQCBzdGF0aWMgaW50IGNzNDIxNV9zZXRjdHJsKHN0cnVjdCBzbmRfZGJyCiAJbGlua190aW1l
+X3Nsb3QoZGJyaSwgMTcsIDE2LCAxNiwgMzIsIGRicmktPm1tLm9mZnNldCk7CiAJbGlua190aW1l
+X3Nsb3QoZGJyaSwgMTgsIDE2LCAxNiwgOCwgZGJyaS0+bW0ub2Zmc2V0KTsKIAlsaW5rX3RpbWVf
+c2xvdChkYnJpLCAxOSwgMTgsIDE2LCA4LCBkYnJpLT5tbS5vZmZzZXQgKyA0OCk7CisJc3Bpbl91
+bmxvY2tfaXJxcmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCiAJLyogV2FpdCBmb3IgdGhl
+IGNoaXAgdG8gZWNobyBiYWNrIENMQiAoQ29udHJvbCBMYXRjaCBCaXQpIGFzIHplcm8gKi8KIAlk
+YnJpLT5tbS5jdHJsWzBdICY9IH5DUzQyMTVfQ0xCOwogCXhtaXRfZml4ZWQoZGJyaSwgMTcsICoo
+aW50ICopZGJyaS0+bW0uY3RybCk7CiAKKwlzcGluX2xvY2tfaXJxc2F2ZSgmZGJyaS0+bG9jaywg
+ZmxhZ3MpOwogCXRtcCA9IHNidXNfcmVhZGwoZGJyaS0+cmVncyArIFJFRzApOwogCXRtcCB8PSBE
+X0M7CQkvKiBFbmFibGUgQ0hJICovCiAJc2J1c193cml0ZWwodG1wLCBkYnJpLT5yZWdzICsgUkVH
+MCk7CisJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGJyaS0+bG9jaywgZmxhZ3MpOwogCiAJZm9y
+IChpID0gMTA7ICgoZGJyaS0+bW0uc3RhdHVzICYgMHhlNCkgIT0gMHgyMCk7IC0taSkgewogCQlt
+c2xlZXBfaW50ZXJydXB0aWJsZSgxKTsKQEAgLTE2ODgsNiArMTcyOSw3IEBAIHN0YXRpYyB2b2lk
+IHhtaXRfZGVzY3Moc3RydWN0IHNuZF9kYnJpICoKIAkJCWRicmktPnBpcGVzW2luZm8tPnBpcGVd
+LmRlc2MgPSBmaXJzdF90ZDsKIAkJfQogCX0KKwogCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRi
+cmktPmxvY2ssIGZsYWdzKTsKIH0KIApAQCAtMjA5Myw3ICsyMTM1LDYgQEAgc3RhdGljIGludCBz
+bmRfZGJyaV9wcmVwYXJlKHN0cnVjdCBzbmRfcAogewogCXN0cnVjdCBzbmRfZGJyaSAqZGJyaSA9
+IHNuZF9wY21fc3Vic3RyZWFtX2NoaXAoc3Vic3RyZWFtKTsKIAlzdHJ1Y3QgZGJyaV9zdHJlYW1p
+bmZvICppbmZvID0gREJSSV9TVFJFQU0oZGJyaSwgc3Vic3RyZWFtKTsKLQlzdHJ1Y3Qgc25kX3Bj
+bV9ydW50aW1lICpydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwogCWludCByZXQ7CiAKIAlp
+bmZvLT5zaXplID0gc25kX3BjbV9saWJfYnVmZmVyX2J5dGVzKHN1YnN0cmVhbSk7CkBAIC0yMjMy
+LDcgKzIyNzMsNiBAQCBzdGF0aWMgaW50IHNuZF9jczQyMTVfcHV0X3ZvbHVtZShzdHJ1Y3QgCiB7
+CiAJc3RydWN0IHNuZF9kYnJpICpkYnJpID0gc25kX2tjb250cm9sX2NoaXAoa2NvbnRyb2wpOwog
+CXN0cnVjdCBkYnJpX3N0cmVhbWluZm8gKmluZm8gPSAmZGJyaS0+c3RyZWFtX2luZm9ba2NvbnRy
+b2wtPnByaXZhdGVfdmFsdWVdOwotCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAJaW50IGNoYW5nZWQg
+PSAwOwogCiAJaWYgKGluZm8tPmxlZnRfZ2FpbiAhPSB1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52
+YWx1ZVswXSkgewpAQCAtMjI0NywxMyArMjI4Nyw5IEBAIHN0YXRpYyBpbnQgc25kX2NzNDIxNV9w
+dXRfdm9sdW1lKHN0cnVjdCAKIAkJLyogRmlyc3QgbXV0ZSBvdXRwdXRzLCBhbmQgd2FpdCAxLzgw
+MDAgc2VjICgxMjUgdXMpCiAJCSAqIHRvIG1ha2Ugc3VyZSB0aGlzIHRha2VzLiAgVGhpcyBhdm9p
+ZHMgY2xpY2tpbmcgbm9pc2VzLgogCQkgKi8KLQkJc3Bpbl9sb2NrX2lycXNhdmUoJmRicmktPmxv
+Y2ssIGZsYWdzKTsKLQogCQljczQyMTVfc2V0ZGF0YShkYnJpLCAxKTsKIAkJdWRlbGF5KDEyNSk7
+CiAJCWNzNDIxNV9zZXRkYXRhKGRicmksIDApOwotCi0JCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUo
+JmRicmktPmxvY2ssIGZsYWdzKTsKIAl9CiAJcmV0dXJuIGNoYW5nZWQ7CiB9CkBAIC0yMzAwLDcg
+KzIzMzYsNiBAQCBzdGF0aWMgaW50IHNuZF9jczQyMTVfcHV0X3NpbmdsZShzdHJ1Y3QgCiAJCQkJ
+IHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQogewogCXN0cnVjdCBzbmRfZGJy
+aSAqZGJyaSA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsKLQl1bnNpZ25lZCBsb25nIGZs
+YWdzOwogCWludCBlbGVtID0ga2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgJiAweGZmOwogCWludCBz
+aGlmdCA9IChrY29udHJvbC0+cHJpdmF0ZV92YWx1ZSA+PiA4KSAmIDB4ZmY7CiAJaW50IG1hc2sg
+PSAoa2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgPj4gMTYpICYgMHhmZjsKQEAgLTIzMzMsMTMgKzIz
+NjgsOSBAQCBzdGF0aWMgaW50IHNuZF9jczQyMTVfcHV0X3NpbmdsZShzdHJ1Y3QgCiAJCS8qIEZp
+cnN0IG11dGUgb3V0cHV0cywgYW5kIHdhaXQgMS84MDAwIHNlYyAoMTI1IHVzKQogCQkgKiB0byBt
+YWtlIHN1cmUgdGhpcyB0YWtlcy4gIFRoaXMgYXZvaWRzIGNsaWNraW5nIG5vaXNlcy4KIAkJICov
+Ci0JCXNwaW5fbG9ja19pcnFzYXZlKCZkYnJpLT5sb2NrLCBmbGFncyk7Ci0KIAkJY3M0MjE1X3Nl
+dGRhdGEoZGJyaSwgMSk7CiAJCXVkZWxheSgxMjUpOwogCQljczQyMTVfc2V0ZGF0YShkYnJpLCAw
+KTsKLQotCQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkYnJpLT5sb2NrLCBmbGFncyk7CiAJfQog
+CXJldHVybiBjaGFuZ2VkOwogfQo=
 
-Three ways:
-
-1. Digital multimeter AC 200 mV - it always shows 0,0 V when the
-S/PDIF-device is used. I'm expecting a nearly constant output.
-2. external high end DA converter, which receives nothing.
-3. an own small microprocessor, which is a gateway between coax and
-optical output (in both directions) among other things.
-
-[...]
-
-> I didn't get a chance to look into this in greater detail over the weekend.
-> However, given the extra information now provided I'll see about doing up
-> a small test patch to test the GPIO theory.  If that turns out to work
-> we can look into doing a permanent fix.
-
-I would be very glad to test this patch! If you need more information,
-please ask - I will try to provide them!
-
-
-Thank you very much for your help,
-kind regards,
-Andreas Hartmann
+--part44fdbe73ec100
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--part44fdbe73ec100
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--part44fdbe73ec100--
