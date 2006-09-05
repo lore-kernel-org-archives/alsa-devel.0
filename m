@@ -1,22 +1,12 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.12 breaks firmware loading
-Date: Wed, 6 Sep 2006 00:07:50 +0400
-Message-ID: <70a871c80609051307t5d552858pb1b202539b42d54d@mail.gmail.com>
-References: <70a871c80608281201u7675f14fxffba5558acb0038b@mail.gmail.com>
-	<s5hslje5vx6.wl%tiwai@suse.de>
-	<70a871c80608300730j737aab47padfdcb37ec15d0ce@mail.gmail.com>
-	<s5hr6yy47dh.wl%tiwai@suse.de>
-	<70a871c80609032303j16ec31e8xf4fdc1c3dc5f0dac@mail.gmail.com>
-	<s5hlkozlxyg.wl%tiwai@suse.de>
-	<70a871c80609041604w6de2916ajaf89cabeaa6eca32@mail.gmail.com>
-	<s5hbqpuk7af.wl%tiwai@suse.de> <s5hd5aaigus.wl%tiwai@suse.de>
-	<s5hlkoyxume.wl%tiwai@suse.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: =?iso-8859-1?q?=5BPATCH=5D_echoaudio=2C_fix_=A3=24?=
+	=?iso-8859-1?q?=26*=23_typo?=
+Date: Tue, 5 Sep 2006 22:31:16 +0200
+Message-ID: <20060905223116.627df2a0.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hlkoyxume.wl%tiwai@suse.de>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,19 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 9/5/06, Takashi Iwai <tiwai@suse.de> wrote:
-> > The newer patch is below.
-> Grrr, a wrong patch.  Use the below one instead.
 
-Works perfectly.
+This patch fixes a stupid typo that prevents a very important peice of
+firmware from being installed.
 
-Thank you,
 
-Dmitry.
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+--- alsa-firmware/echoaudio/Makefile.am__orig	2006-09-05 22:14:50.000000000 +0200
++++ alsa-firmware/echoaudio/Makefile.am	2006-09-05 22:18:07.000000000 +0200
+@@ -1,5 +1,6 @@
+ # # Process this file with automake to produce Makefile.in.
+ firmware_files =	\
++		loader_dsp.fw \
+ 		darla20_dsp.fw \
+ 		gina20_dsp.fw \
+ 		layla20_dsp.fw \
+@@ -70,6 +71,7 @@ hotplugfw_DATA = 
+ endif
+ 
+ $(firmware_files): fw_writer
++	./fw_writer DSP/LoaderDSP.c loader_dsp.fw
+ 	./fw_writer DSP/Darla20DSP.c darla20_dsp.fw
+ 	./fw_writer DSP/Gina20DSP.c gina20_dsp.fw
+ 	./fw_writer DSP/Layla20DSP.c layla20_dsp.fw
+
+
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
