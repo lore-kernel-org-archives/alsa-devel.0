@@ -1,9 +1,9 @@
 From: "littertiger" <tiger_zsch@163.com>
 Subject: not for embedded?
-Date: Tue, 5 Sep 2006 10:22:56 +0800
-Message-ID: <19277.4468953305$1157422847@news.gmane.org>
+Date: Tue, 5 Sep 2006 10:58:54 +0800
+Message-ID: <24314.6209548742$1157425009@news.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0251484686=="
+Content-Type: multipart/mixed; boundary="===============0527805384=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,7 +17,7 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============0251484686==
+--===============0527805384==
 Content-Type: text/plain;
 	charset="gb2312"
 Content-Transfer-Encoding: base64
@@ -43,7 +43,7 @@ oaGhoaGhoaGhoTIwMDYtMDktMDUNCg==
 
 
 
---===============0251484686==
+--===============0527805384==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -54,7 +54,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0251484686==
+--===============0527805384==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -65,4 +65,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0251484686==--
+--===============0527805384==--
