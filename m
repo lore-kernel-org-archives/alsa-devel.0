@@ -1,18 +1,16 @@
-From: Marcos Guglielmetti <marcospcmusica@gmail.com>
-Subject: Musix 0.59, released
-Date: Wed, 6 Sep 2006 15:14:02 +0200
-Message-ID: <200609061514.02676.marcospcmusica@gmail.com>
-Reply-To: marcospcmusica@gmail.com
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: 2.6.18-rc5-mm1: BUG in pci_disable_msi on attempts to
+	rmmod snd_hda_intel (64-bit kernel)
+Date: Wed, 6 Sep 2006 22:59:53 +0200
+Message-ID: <200609062259.53465.rjw@sisk.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.238])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3B24258
+Received: from ogre.sisk.pl (ogre.sisk.pl [217.79.144.158])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC1E824B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Sep 2006 20:11:55 +0200 (MEST)
-Received: by wx-out-0506.google.com with SMTP id t15so2640429wxc
-	for <alsa-devel@alsa-project.org>; Wed, 06 Sep 2006 11:11:54 -0700 (PDT)
+	Wed,  6 Sep 2006 22:57:52 +0200 (MEST)
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,124 +21,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Andrew Morton <akpm@osdl.org>
+Cc: alsa-devel@alsa-project.org, Andi Kleen <ak@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-PT0gRG93bmxvYWQgPT0KCmh0dHA6Ly93d3cubXVzaXgub3JnLmFyL2VuL2Rvd25sb2FkLmh0bWwK
-ClRoYW5rcyB0byB0aGUgc3VwcG9ydCBvZiB0aGUgVXR1dG8gUHJveWVjdCwgRlNGLCBPdXJwcm9q
-ZWN0LCBhbmQgdG8gdGhlIHVzdWFsIApjb2xsYWJvcmF0b3JzLCB0aGUgTXVzaXggcHJvamVjdCBo
-YXMganVzdCByZWxlYXNlZCBNdXNpeCAwLjU5LCB3aXRoIG1vcmUgdGhlbiAKNjUwIHBhY2thZ2Vz
-IHVwZ3JhZGVkLCBhIDEwMCUgZ3JhcGhpYyBzdGFydHVwIHByb2Nlc3MsIG5ldyBhdWRpbyBhbmQg
-dmlkZW8gCmhhcmR3YXJlIGRldGVjdGlvbiwgTlRGUyB3cml0ZSBzdXBwb3J0LCBzYW1iYSwgQW1h
-cm9rIGFuZCBtdWNoIG1vcmUuCgo9PSBNdXNpeCBHTlUvTGludXgsIHJlbGVhc2UgYW5ub3VuY2Vt
-ZW50ID09CgpUaGUgTXVzaXggcHJvamVjdCBpcyBwbGVhc2VkIHRvIGFubm91bmNlIHRoZSBuZXcg
-dmVyc2lvbiBvZiB0aGlzIDEwMCUgZnJlZWRvbSAKc29mdHdhcmUgb3BlcmF0aW5nIHN5c3RlbSBm
-b3IgYXJ0aXN0cyBhbmQgZ2VuZXJhbCBwdXJwb3NlIHVzZXJzLiBNb3JlIHRoYW4gCjY1MCBwYWNr
-YWdlcyB3ZXJlIHVwZ3JhZGVkIGFuZCBtYW55IG90aGVycyB3ZXJlIGluY2x1ZGVkLCBmb3IgaW5z
-dGFuY2UgdGhlIAp1ZGV2IHN5c3RlbSwgdGhlIGF3ZXNvbWUgbXVsdGltZWRpYSBwbGF5ZXIgQW1h
-cm9rLCB3cml0aW5nIHN1cHBvcnQgZm9yIE5URlMgCnBhcnRpdGlvbnMsIHNhbWJhIGFuZCBtcDMg
-Y29kZWMgZm9yIGF1ZGFjaXR5LgoKPT09IFN5c3RlbSBhbmQgRGVza3RvcCBTdGFydHVwID09PQoK
-VGhlIHN5c3RlbSdzIHN0YXJ0dXAgcHJvY2VzcyBub3cgaXMgdG90YWxseSBncmFwaGljLCB3ZSBh
-ZGRlZCBhIHNwbGFzaCBzY3JlZW4gCnRvIGF2b2lkIGhpIHZlcmJvc2l0eSwgYW5kIHRoZSAoaWNl
-d20rcm94LWZpbGVyKSBEZXNrdG9wIG5vdyBzdGFydHMgd2l0aG91dCAKdXNlciBpbnRlcmFjdGlv
-bi4gSWYgaXQgZmFpbHMsIHlvdSBjYW4gdHlwZSB2aWRlb2NvbmZpZy5zaCBhbmQgdHJ5IGFub3Ro
-ZXIgCnZpZGVvY2FyZC9tb25pdG9yIGNvbmZpZ3VyYXRpb24sIHRoZW4gcmVzdGFydCB5b3VyIGRl
-c2t0b3AuCgo9PT0gSGFyZCBkaXNrcyA9PT0KCldlIGhvcGUgTXVzaXggMC41OSBjb3VsZCBmaXgg
-c29tZSBkZXRlY3Rpb24gcHJvYmxlbXMgcmVsYXRlZCB0byBoYXJkIGRpc2sgCmRldGVjdGlvbiBh
-bmQgY29uZmlndXJhdGlvbi4KCj09PSBWaWRlbyA9PT0KClRoZSBuZXcgdmlkZW8gbWFuYWdlbWVu
-dCBzaG91bGQgd29yayBiZXR0ZXIgZm9yIHlvdXIgaGFyZHdhcmUuLi4gbm93IHRoZXJlIGFyZSAK
-MyBhdXRvZGV0ZWN0aW9uIG1ldGhvZHMgdG8gY2hvb3NlIGZyb206IDApICJNdXNpeCIsIHRoYXQg
-d29ya3MgdXNpbmcgYSBuZXcgClhvcmcncyBhYmlsaXR5LCAxKSB0aGUgZGVmYXVsdCAiS25vcHBp
-eCIgbWV0aG9kLCBhbmQgMikgdGhlIEdlbnRvbyBMaXZlLUNEIAptZXRob2QuIFdlIGFkdmljZSB5
-b3UgdG8gdHJ5IHRoZSAiTXVzaXgiIG1ldGhvZDogaXQgc2hvdWxkIGdpdmUgeW91IHRoZSBiZXN0
-IApwb3NzaWJsZSBjb25maWd1cmF0aW9uIGZvciB5b3VyIHZpZGVvY2FyZC9tb25pdG9yLgoKPT09
-IFNvdW5kID09PQoKVGhlIGF1dG9kZXRlY3Rpb24gbWV0aG9kIGZvciBzb3VuZGNhcmRzIHdhcyBj
-aGFuZ2VkIGJlY2F1c2UgaG90cGx1ZyB3YXMgCnJlcGxhY2VkIGJ5IHVkZXYuIE5vdyB0aGUgc291
-bmRjYXJkIGF1dG9kZXRlY3Rpb24gaXMgZG9uZSBieSBhIG1vZGlmaWVkIAphbHNhY29uZiBzY3Jp
-cHQuCgo9PT0gVXBncmFkaW5nIHdpdGhvdXQgcmVpbnN0YWxsYXRpb24gPT09CgpNdXNpeCAwLjU5
-IHNob3VsZCBiZSBhYmxlIHRvIHVwZ3JhZGUgYW4gb2xkIGluc3RhbGxlZCB2ZXJzaW9uIHVzaW5n
-IAp0aGUgIlBhY2thZ2UgVXBncmFkZXIiIHRvb2wgZnJvbSB0aGUgbmV3IGtub3BwaXgncyBpbnN0
-YWxsZXIuIE5vbmV0aGVsZXNzLCB3ZSAKYWR2aWNlIHRvIHVzZSB0aGUgdHJhZGl0aW9uYWwgaW5z
-dGFsbGF0aW9uIHdheSwgYmVjYXVzZSB0aGlzIHVwZ3JhZGluZyBzeXN0ZW0gCmlzIHRvbyBleHBl
-cmltZW50YWwgZm9yIG5vdy4gQWxzbywgIlBhY2thZ2UgVXBncmFkZXIiIGNvdWxkIHRyYW5zZm9y
-bSBhIApLbm9wcGl4IChvciBzaW1pbGFyKSBpbnN0YWxsYXRpb24gdG8gYSBNdXNpeCBzeXN0ZW0u
-IAoKCj09PSBTdW1tYXJpemUgPT09CgpJbiBzaG9ydDogTXVzaXggMC41OSBpdCdzIGEgbmVjZXNz
-YXJ5IHN0ZXAgdG93YXJkcyB0aGUgMS4wIHN0YWJsZSB2ZXJzaW9uIHRoYXQgCnNob3VsZCBiZSBy
-ZWFkeSBpbiB0aGUgZmlyc3QgbW9udGhzIG9mIDIwMDcsIHdoZW4gRGViaWFuIEV0Y2ggd2lsbCBi
-ZSBzdGFibGUsIApidXQgdGhlcmUgaXMgYSBsb25nIHdheSB0byBnby4uLgoKCj09IENoYW5nZWxv
-ZyAwLjU5ICA9PQoKPT0gVXBkYXRlZCBwYWNrYWdlcyA9PQoKT3ZlciA2NTAgcGFja2FnZXMgd2Vy
-ZSB1cGRhdGVkLCBmb3IgZXhhbXBsZToKCmtkZWJhc2UtZGF0YTogMy41LjQtMgoKbGliZ3RrMi4w
-LWJpbjogMi44LjE4LTEKCnJvc2VnYXJkZW40OiAxLjIuMy0yCgpqYWNrZDogMC4xMDEuMS0xCgo9
-PSBOZXcgcGFja2FnZXMgPT0KCiogdWRldiAoaXMgYSBkYWVtb24gd2hpY2ggZHluYW1pY2FsbHkg
-Y3JlYXRlcyBhbmQgcmVtb3ZlcyBkZXZpY2Ugbm9kZXMgCmZyb20gL2Rldi8sIGhhbmRsZXMgaG90
-cGx1ZyBldmVudHMgYW5kIGxvYWRzIGRyaXZlcnMgYXQgYm9vdCB0aW1lLikKCiogTGFzaGQgKGlz
-IGEgc2Vzc2lvbiBtYW5hZ2VtZW50IHN5c3RlbSBmb3IgSkFDSyBhbmQgQUxTQSBhdWRpbyBhcHBs
-aWNhdGlvbnMgCm9uIEdOVS9MaW51eC4pCgoqIEFtYXJvayAodmVyc2F0aWxlIGFuZCBlYXN5IHRv
-IHVzZSBhdWRpbyBwbGF5ZXIuIEl0IHRyaWVzIHRvIGJlIGEgbGl0dGxlIApkaWZmZXJlbnQsIHBy
-b3ZpZGluZyBhIHNpbXBsZSBkcmFnIGFuZCBkcm9wIGludGVyZmFjZSB0aGF0IHJlYWxseSBtYWtl
-cyAKcGxheWxpc3QgaGFuZGxpbmcgZWFzeS4pCgoqIEZvb2JpbGxhcmQgKGlzIGEgYmlsbGlhcmRz
-IGdhbWUgd2l0aCBhIHRocmVlIGRpbWVuc2lvbmFsIGRpc3BsYXkpCgoqIG11c2l4LWZyZWVwYXRz
-LWV4dHJhcyAKCiogbXVzaXgtYmluLXNjcmlwdHMgCgoqIGVxLXhtbXMtbXVzaXgKCiogbXVzaXgt
-ZGVza3RvcC11cGdyYWRlIAoKKiBtdXNpeC1jb2xvbWJvLWRydW1raXQgCgoqIG11c2l4LWRvY3Mg
-CgoqIG11c2l4LXNvdW5kZm9udHMKCiogc2FtYmEgMy4wLjIyLTEgKGEgTGFuTWFuYWdlci1saWtl
-IGZpbGUgYW5kIHByaW50ZXIgc2VydmVyIGZvciBVbml4KQoKKiBudGZzLTNnIChJdCBwcm92aWRl
-cyBmdWxsIHJlYWQtd3JpdGUgYWNjZXNzIHRvIE5URlMsICBleGNsdWRpbmcgYWNjZXNzIHRvIApl
-bmNyeXB0ZWQgZmlsZXMsIHdyaXRpbmcgY29tcHJlc3NlZCBmaWxlcywgY2hhbmdpbmcgIGZpbGUg
-b3duZXJzaGlwLCBhY2Nlc3MgCnJpZ2h0KQoKKiB0aW1lbWFjaGluZS1sYW5jaGVyIGZyb20gQWRy
-aWFuIFBhcmRpbmkKCiogbXAzIGVuY29kZXIgZm9yIEF1ZGFjaXR5CgoqIEFkZGVkIHNwZWNpYWwg
-Z3JhcGhpY2FsIGVmZmVjdHMgKHhjb21wbWdyKSBhcyBhbiBvcHRpb24KCj09IE5ldyBmZWF0dXJl
-cyBpbiAwLjU5ID09CgoqIENyZWF0ZWQgbnRmc211c2l4LnNoOiBhc3Npc3RhbnQgZm9yIE5URlMg
-cGFydGl0aW9uIGNvbmZpZ3VyYXRpb24uCgoqIE1vZGlmaWVkIGFsc2Fjb25mIHRvIHdvcmsgd2l0
-aCBtdWx0aXBsZSBzb3VuZCBjYXJkcy4KCiogL2Jpbi92aWRlb2NvbmZpZy5zaCBhbmQgL2Jpbi9t
-ZW51IGltcHJvdmVkLgoKKiBOZXcgbWV0aG9kIGZvciB2aWRlbyBkZXRlY3Rpb24gKHdvcmtzIG9u
-bHkgd2l0aCBYb3JnID49IGEgCjcuMCksIC9iaW4veG9yZ211c2l4LnNoCgoqIEF1dG9zdGFydCBz
-eXN0ZW0gb2YgYXBwbGljYXRpb25zIGluIHRoZSBkZXNrdG9wOiB+L0Rlc2t0b3AvQXV0b3N0YXJ0
-CgoqIE1vc3Qgb2YgTXVzaXggb3duIGNoYXJhY3RlcmlzdGljcyB3ZXJlIHBhY2tlZCBpbiAuZGVi
-IGZpbGVzIHdpdGggdGhlIApvYmplY3RpdmUgdG8gdXBkYXRlIG9sZCAgaGFyZCBkaXNrIGluc3Rh
-bGxhdGlvbnMgZnJvbSBhIG5ldyBMaXZlLUNEIGFuZCBhbHNvIAp0byBjb252ZXJ0IG9yIERlYmlh
-bi9ldGNoIGludG8gTXVzaXguCgo9PSBPdGhlciBjaGFuZ2VzID09CgoKPT0gVG8gZG8gPT0KCiog
-QWRkIGh0dHA6Ly9kaXJlY3RvcnkuZnNmLm9yZy9kdmRyaXAuaHRtbAoqIE1ha2Ugc3BsYXNoeSB0
-byB0YWtlIGltYWdlcyBmcm9tIHRoZSBsYXN0IGRlc2t0b3AgKG1heWJlIHdpdGggeGR1bXApCm9y
-IGFueSBzY3JlZW4gY2FwdHVyZXIuIEl0IGNhbiBiZSB1c2VmdWwgdG8gbWFrZSB0aGUgc2h1dGRv
-d24gb3IgZXZlbiB0aGUgCmJvb3QuLi4gKGNhbid0IG1ha2UgaXQgd2l0aCB4d2Qgb3Iga3NuYXBz
-aG90IGJlY2F1c2UgdGhleSdyZSBub3QgYXV0b21hdGljKQoqRW5oYW5jZSBhbHNhY29uZiB0byBm
-b3JjZSBpdCB0byBpbnN0YWxsIEVWRVJZIHNvdW5kY2FyZCBmb3VuZC4KKiBDcmVhdGUgYSBLREUg
-YXBwbGljYXRpb24gcmVzZXR0ZXI6IChraWxsYWxsIGRjb3BzZXJ2ZXIsIHJtIH4vLklDRSogfi8u
-RE9DKikgCmFuZCBwbGFjZSBhIHNob3J0Y3V0IGluIEljZVdNIG1lbnUKKiBEaXNhYmxlIHNvdW5k
-Y2FyZCBhdXRvZGV0ZWN0aW9uIHByb2Nlc3MgaW4gb2xkIGNvbXB1dGVycyAodXNlIGJvZ29pbXBz
-KQoqIEJ1aWxkIGFuIGFkYXB0YWJsZSBzeXN0ZW0gZm9yIGNhcGFjaXR5IHByb2Nlc3MgKGJvZ29p
-bXBzKSBmb3IgdGltaWRpdHkKKiBQYWNrYWdlIE55RiBhbmQgbm4gaW4gLmRlYiBmaWxlcwoqIElu
-c3RhbGwgR2lsYmVydG8gQm9yZ2UncyBjb250cm9sIHBhbmVsIChuZWVkcyBjaGFuZ2VzKQoqIEFk
-ZCBSb3NlZ2FyZGVuIDEuMi40IGZyb20gUlBNcz8KKiBGaW5kIG91dCBwb3NzaWJsZSBSUE1zIHRv
-IGFkZAoqIEluc3RhbGwgbXVsdGltZWRpYSBrZXJuZWwgMi42LjE3PwoqIEFkZCBhIGxpbmUgaW4g
-ZnN0YWIgd2l0aCB0bXBmcyBmb3IgZGV2L3NobSBpZiB3b3JraW5nIHdpdGggcmVhbHRpbWUga2Vy
-bmVsCiogRmluZCBvdXQgc29sdXRpb24gZm9yIGFtc24gYW5kIHh0ZXJtCgo9PSBLbm93biBwcm9i
-bGVtcyBpbiAwLjU5ID09CgoqIElmIGFmdGVyIGluc3RhbGxhdGlvbiB0aGUgc291bmQgY2FyZCBp
-cyBub3QgY29ycmVjdGx5IGNvbmZpZ3VyZWQgaW4gZWFjaCAKc3lzdGVtIGJvb3QsIGlzIG5lY2Vz
-c2FyeSB0byB3cml0ZSB0aGlzIGNvbW1hbmQgaW4gYSB0ZXh0IGNvbnNvbGUgYXMgcm9vdCAKdXNl
-cjoKCiBsbiAtcyAvYmluL3NuZGNvbmYtbXVzaXguc2ggL2V0Yy9yY1MuZC9TNTBzbmQKCiogQWZ0
-ZXIgaW5zdGFsbGF0aW9uOiBpZiB0aGUg4oCcY3JpdGljYWwgRXJyb3LigJ0gd2FybmluZyB3aGVu
-IGluaXRpYXRpbmcgdGhlIApkZXNrdG9wIGZvciB0aGUgS25vcHBpeCB1c2VyIGJvdGhlcnMgeW91
-LCBpdCBjYW4gYmUgZGlzYWJsZWQgZnJvbToKCiBNdXNpeCAtLT4gU2V0dGluZ3MgLS0+IEtERSBD
-b250cm9sIFBhbmVsIC0tPiBTeXN0ZW0gQWRtaW5pc3RyYXRpb24gLS0+IExvZ2luIApNYW5hZ2Vy
-IC0tPiBDb252ZW5pZW5jZQoKVGhlcmUsIGRpc2FibGUgdGhlICcnJyJFbmFibGUgQXV0by1sb2dp
-biInJycgb3B0aW9uLgoKKiBTaGFrZXRyYWNrZXIgMC40LjYtNStiMSBkb2Vzbid0IHN0YXJ0LgoK
-KiBBTVNOIGRvZXMgbm90IHN0YXJ0IGR1ZSB0byBhIGNvbG9yIGRlZmluaXRpb24gcHJvYmxlbSwg
-d2hpY2ggaXQncyByZWxhdGVkIAp0aGUgYXBwbGljYXRpb24gbXJ4dnQuIEl0IGNhbiBiZSByZXBs
-YWNlZCBieSB1c2luZyBHQUlNCgotLSAKTWFyY29zIEd1Z2xpZWxtZXR0aSAgCiogRGlyZWN0b3Ig
-ZGVsIGRlc2Fycm9sbG8gZGUgTXVzaXggR05VK0xpbnV4LCAxMDAlIFNvZnR3YXJlIExpYnJlCiog
-Q0QgRG9ud2xvYWQ6IChodHRwOi8vd3d3Lm11c2l4Lm9yZy5hci9lbi8pICh3d3cucGMtbXVzaWNh
-LmNvbS5hci9tdXNpeCkKKiBWaWRlb3MsIHByb2dyYW1hcyB5IG90cmFzIGNvc2FzIGVuOiBmdHA6
-Ly9tdXNpeC5vdXJwcm9qZWN0Lm9yZy9wdWIvbXVzaXgvCiogUmVwb3J0ZSBkZSBlcnJvcmVzIGE6
-IApodHRwczovL3d3dy5tdXNpeC5vcmcuYXIvd2lraS9pbmRleC5waHA/dGl0bGU9UHJvYmxlbWFz
-LUJ1Z3MKKklSQzogI211c2l4IGNoYW5uZWwgb24gZnJlZW5vZGUKCgotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-ClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNl
-cnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3Jh
-dGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNw
-aGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8K
-aHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2
-MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Hi,
+
+I get the appended BUG when I try to rmmod snd_hda_intel on 2.6.18-rc5-mm1
+(the box is an HPC nx6325).
+
+The driver also breaks the suspend to disk (causes an oops to appear during
+the suspend phase, but I haven't been able to catch it yet).
+
+Greetings,
+Rafael
+
+
+Kernel BUG at drivers/pci/msi.c:910
+invalid opcode: 0000 [1] SMP 
+last sysfs file: /power/disk
+CPU 0 
+Modules linked in: cpufreq_ondemand cpufreq_userspace cpufreq_powersave powernow_k8 freq_table af_packet button edd snd_pcm_oss snd_mixer_oss battery snd_seq snd_seq_device ac ip6t_REJECT xt_tcpudp ipt_REJECT xt_state iptable_mangle iptable_nat ip_nat iptable_filter ip6table_mangle ip_conntrack nfnetlink ip_tables ip6table_filter ip6_tables x_tables ipv6 loop dm_mod usbhid ff_memless hci_usb bluetooth snd_hda_intel bcm43xx shpchp snd_hda_codec pcmcia pci_hotplug snd_pcm firmware_class ieee80211softmac ohci1394 sdhci snd_timer snd soundcore snd_page_alloc ieee1394 mmc_core ohci_hcd i2c_piix4 yenta_socket rsrc_nonstatic pcmcia_core ide_cd i2c_core cdrom k8temp hwmon ehci_hcd usbcore ieee80211 ieee80211_crypt tg3 ext3 jbd fan thermal processor atiixp ide_disk ide_core sg
+Pid: 3684, comm: rmmod Tainted: G   M  2.6.18-rc5-mm1 #14
+RIP: 0010:[<ffffffff80326c7b>]  [<ffffffff80326c7b>] pci_disable_msi+0xdf/0x11a
+RSP: 0018:ffff810035559c68  EFLAGS: 00010202
+RAX: 0000000000000052 RBX: ffff810037145620 RCX: ffffffff804e7048
+RDX: ffff810035559a78 RSI: 0000000000000092 RDI: ffffffff804e7040
+RBP: ffff810035559c88 R08: ffffffff804e7048 R09: 0000000000000002
+R10: ffff810035559938 R11: 0000000000000000 R12: ffff810037ba7678
+R13: 0000000000000008 R14: 0000000000000880 R15: 00007fff6dc093c0
+FS:  00002ba63d1ea6d0(0000) GS:ffffffff8064e000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+CR2: 00002ba63d0c6e40 CR3: 000000002f1f1000 CR4: 00000000000006e0
+Process rmmod (pid: 3684, threadinfo ffff810035558000, task ffff810034552790)
+Stack:  ffff810035559c78 0081ffff8025e80c ffff810035588b50 0000000000000280
+ ffff810035559cb8 ffffffff882f4405 ffff810035559cc8 ffff810034a25878
+ 0000000000002000 0000000000002fff ffff810035559cc8 ffffffff882f449a
+Call Trace:
+ [<ffffffff882f4405>] :snd_hda_intel:azx_free+0xc3/0x14b
+ [<ffffffff882f449a>] :snd_hda_intel:azx_dev_free+0xd/0xf
+ [<ffffffff881a688b>] :snd:snd_device_free+0xea/0x157
+ [<ffffffff881a696b>] :snd:snd_device_free_all+0x73/0x98
+ [<ffffffff881a1735>] :snd:snd_card_do_free+0x7f/0x10f
+ [<ffffffff881a21ef>] :snd:snd_card_free+0xa4/0xb4
+ [<ffffffff882f4321>] :snd_hda_intel:azx_remove+0x18/0x27
+ [<ffffffff80320610>] pci_device_remove+0x25/0x3c
+ [<ffffffff80377671>] __device_release_driver+0x80/0x9c
+ [<ffffffff80377acb>] driver_detach+0xac/0xee
+ [<ffffffff80376b74>] bus_remove_driver+0x75/0x97
+ [<ffffffff80377b4a>] driver_unregister+0x15/0x21
+ [<ffffffff803207be>] pci_unregister_driver+0x13/0x8e
+ [<ffffffff882f5988>] :snd_hda_intel:alsa_card_azx_exit+0x10/0x12
+ [<ffffffff8029ada1>] sys_delete_module+0x1b5/0x1e6
+ [<ffffffff8025910e>] system_call+0x7e/0x83
+DWARF2 unwinder stuck at system_call+0x7e/0x83
+
+Leftover inexact backtrace:
+
+
+
+Code: 0f 0b 68 9e c3 42 80 c2 8e 03 eb 27 48 c7 c7 44 98 50 80 8b 
+RIP  [<ffffffff80326c7b>] pci_disable_msi+0xdf/0x11a
+ RSP <ffff810035559c68>
+ 
+
+
+-- 
+You never change things by fighting the existing reality.
+		R. Buckminster Fuller
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
