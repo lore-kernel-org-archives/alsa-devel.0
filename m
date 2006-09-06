@@ -1,10 +1,19 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
-Subject: Returned mail: Service unavailable
-Date: Wed, 6 Sep 2006 11:52:19 -0400 (EDT)
-Message-ID: <200609061552.LAA17891@rly-xn06.mx.aol.com>
+From: Marcos Guglielmetti <marcospcmusica@gmail.com>
+Subject: Musix 0.59, released
+Date: Wed, 6 Sep 2006 15:14:02 +0200
+Message-ID: <200609061514.02676.marcospcmusica@gmail.com>
+Reply-To: marcospcmusica@gmail.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0240281153=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.238])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3B24258
+	for <alsa-devel@alsa-project.org>;
+	Wed,  6 Sep 2006 20:11:55 +0200 (MEST)
+Received: by wx-out-0506.google.com with SMTP id t15so2640429wxc
+	for <alsa-devel@alsa-project.org>; Wed, 06 Sep 2006 11:11:54 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,109 +23,124 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
-
---===============0240281153==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="LAA17891.1157557939/rly-xn06.mx.aol.com"
-
-This is a MIME-encapsulated message
-
---LAA17891.1157557939/rly-xn06.mx.aol.com
-
-The original message was received at Wed, 6 Sep 2006 11:51:18 -0400 (EDT)
-from ppp117-217.dsl.hol.gr [89.210.117.217]
-
-
-*** ATTENTION ***
-
-Your e-mail is being returned to you because there was a problem with its
-delivery.  The address which was undeliverable is listed in the section
-labeled: "----- The following addresses had permanent fatal errors -----".
-
-The reason your mail is being returned to you is listed in the section
-labeled: "----- Transcript of Session Follows -----".
-
-The line beginning with "<<<" describes the specific reason your e-mail could
-not be delivered.  The next line contains a second error message which is a
-general translation for other e-mail servers.
-
-Please direct further questions regarding this message to your e-mail
-administrator.
-
---AOL Postmaster
-
-
-
-   ----- The following addresses had permanent fatal errors -----
-<robert@aol.com>
-
-   ----- Transcript of session follows -----
-... while talking to air-xn03.mail.aol.com.:
->>> DATA
-<<< 554 TRANSACTION FAILED - Unrepairable Virus Detected. Your mail has not been sent.
-554 <robert@aol.com>... Service unavailable
-
---LAA17891.1157557939/rly-xn06.mx.aol.com
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; rly-xn06.mx.aol.com
-Arrival-Date: Wed, 6 Sep 2006 11:51:18 -0400 (EDT)
-
-Final-Recipient: RFC822; robert@aol.com
-Action: failed
-Status: 5.0.0
-Remote-MTA: DNS; air-xn03.mail.aol.com
-Diagnostic-Code: SMTP;
-	554 TRANSACTION FAILED - Unrepairable Virus Detected. Your
-	mail has not been sent.
-Last-Attempt-Date: Wed, 6 Sep 2006 11:52:19 -0400 (EDT)
-
---LAA17891.1157557939/rly-xn06.mx.aol.com
-Content-Type: text/rfc822-headers
-
-Received: from  lists.sourceforge.net (ppp117-217.dsl.hol.gr [89.210.117.217]) by rly-xn06.mx.aol.com (v112.5) with ESMTP id MAILRELAYINXN64-75644feee723e1; Wed, 06 Sep 2006 11:51:15 -0400
-From: alsa-devel@lists.sourceforge.net
-To: robert@aol.com
-Subject: Something for you
-Date: Wed, 6 Sep 2006 06:51:26 +0300
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0005_A84B0898.E3C02153"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-AOL-IP: 89.210.117.217
-X-AOL-SCOLL-SCORE: 0:2:259187274:10468982
-X-AOL-SCOLL-URL_COUNT: 0
-Message-ID: <200609061151.75644feee723e1@rly-xn06.mx.aol.com>
-
---LAA17891.1157557939/rly-xn06.mx.aol.com--
-
-
-
---===============0240281153==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0240281153==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0240281153==--
+PT0gRG93bmxvYWQgPT0KCmh0dHA6Ly93d3cubXVzaXgub3JnLmFyL2VuL2Rvd25sb2FkLmh0bWwK
+ClRoYW5rcyB0byB0aGUgc3VwcG9ydCBvZiB0aGUgVXR1dG8gUHJveWVjdCwgRlNGLCBPdXJwcm9q
+ZWN0LCBhbmQgdG8gdGhlIHVzdWFsIApjb2xsYWJvcmF0b3JzLCB0aGUgTXVzaXggcHJvamVjdCBo
+YXMganVzdCByZWxlYXNlZCBNdXNpeCAwLjU5LCB3aXRoIG1vcmUgdGhlbiAKNjUwIHBhY2thZ2Vz
+IHVwZ3JhZGVkLCBhIDEwMCUgZ3JhcGhpYyBzdGFydHVwIHByb2Nlc3MsIG5ldyBhdWRpbyBhbmQg
+dmlkZW8gCmhhcmR3YXJlIGRldGVjdGlvbiwgTlRGUyB3cml0ZSBzdXBwb3J0LCBzYW1iYSwgQW1h
+cm9rIGFuZCBtdWNoIG1vcmUuCgo9PSBNdXNpeCBHTlUvTGludXgsIHJlbGVhc2UgYW5ub3VuY2Vt
+ZW50ID09CgpUaGUgTXVzaXggcHJvamVjdCBpcyBwbGVhc2VkIHRvIGFubm91bmNlIHRoZSBuZXcg
+dmVyc2lvbiBvZiB0aGlzIDEwMCUgZnJlZWRvbSAKc29mdHdhcmUgb3BlcmF0aW5nIHN5c3RlbSBm
+b3IgYXJ0aXN0cyBhbmQgZ2VuZXJhbCBwdXJwb3NlIHVzZXJzLiBNb3JlIHRoYW4gCjY1MCBwYWNr
+YWdlcyB3ZXJlIHVwZ3JhZGVkIGFuZCBtYW55IG90aGVycyB3ZXJlIGluY2x1ZGVkLCBmb3IgaW5z
+dGFuY2UgdGhlIAp1ZGV2IHN5c3RlbSwgdGhlIGF3ZXNvbWUgbXVsdGltZWRpYSBwbGF5ZXIgQW1h
+cm9rLCB3cml0aW5nIHN1cHBvcnQgZm9yIE5URlMgCnBhcnRpdGlvbnMsIHNhbWJhIGFuZCBtcDMg
+Y29kZWMgZm9yIGF1ZGFjaXR5LgoKPT09IFN5c3RlbSBhbmQgRGVza3RvcCBTdGFydHVwID09PQoK
+VGhlIHN5c3RlbSdzIHN0YXJ0dXAgcHJvY2VzcyBub3cgaXMgdG90YWxseSBncmFwaGljLCB3ZSBh
+ZGRlZCBhIHNwbGFzaCBzY3JlZW4gCnRvIGF2b2lkIGhpIHZlcmJvc2l0eSwgYW5kIHRoZSAoaWNl
+d20rcm94LWZpbGVyKSBEZXNrdG9wIG5vdyBzdGFydHMgd2l0aG91dCAKdXNlciBpbnRlcmFjdGlv
+bi4gSWYgaXQgZmFpbHMsIHlvdSBjYW4gdHlwZSB2aWRlb2NvbmZpZy5zaCBhbmQgdHJ5IGFub3Ro
+ZXIgCnZpZGVvY2FyZC9tb25pdG9yIGNvbmZpZ3VyYXRpb24sIHRoZW4gcmVzdGFydCB5b3VyIGRl
+c2t0b3AuCgo9PT0gSGFyZCBkaXNrcyA9PT0KCldlIGhvcGUgTXVzaXggMC41OSBjb3VsZCBmaXgg
+c29tZSBkZXRlY3Rpb24gcHJvYmxlbXMgcmVsYXRlZCB0byBoYXJkIGRpc2sgCmRldGVjdGlvbiBh
+bmQgY29uZmlndXJhdGlvbi4KCj09PSBWaWRlbyA9PT0KClRoZSBuZXcgdmlkZW8gbWFuYWdlbWVu
+dCBzaG91bGQgd29yayBiZXR0ZXIgZm9yIHlvdXIgaGFyZHdhcmUuLi4gbm93IHRoZXJlIGFyZSAK
+MyBhdXRvZGV0ZWN0aW9uIG1ldGhvZHMgdG8gY2hvb3NlIGZyb206IDApICJNdXNpeCIsIHRoYXQg
+d29ya3MgdXNpbmcgYSBuZXcgClhvcmcncyBhYmlsaXR5LCAxKSB0aGUgZGVmYXVsdCAiS25vcHBp
+eCIgbWV0aG9kLCBhbmQgMikgdGhlIEdlbnRvbyBMaXZlLUNEIAptZXRob2QuIFdlIGFkdmljZSB5
+b3UgdG8gdHJ5IHRoZSAiTXVzaXgiIG1ldGhvZDogaXQgc2hvdWxkIGdpdmUgeW91IHRoZSBiZXN0
+IApwb3NzaWJsZSBjb25maWd1cmF0aW9uIGZvciB5b3VyIHZpZGVvY2FyZC9tb25pdG9yLgoKPT09
+IFNvdW5kID09PQoKVGhlIGF1dG9kZXRlY3Rpb24gbWV0aG9kIGZvciBzb3VuZGNhcmRzIHdhcyBj
+aGFuZ2VkIGJlY2F1c2UgaG90cGx1ZyB3YXMgCnJlcGxhY2VkIGJ5IHVkZXYuIE5vdyB0aGUgc291
+bmRjYXJkIGF1dG9kZXRlY3Rpb24gaXMgZG9uZSBieSBhIG1vZGlmaWVkIAphbHNhY29uZiBzY3Jp
+cHQuCgo9PT0gVXBncmFkaW5nIHdpdGhvdXQgcmVpbnN0YWxsYXRpb24gPT09CgpNdXNpeCAwLjU5
+IHNob3VsZCBiZSBhYmxlIHRvIHVwZ3JhZGUgYW4gb2xkIGluc3RhbGxlZCB2ZXJzaW9uIHVzaW5n
+IAp0aGUgIlBhY2thZ2UgVXBncmFkZXIiIHRvb2wgZnJvbSB0aGUgbmV3IGtub3BwaXgncyBpbnN0
+YWxsZXIuIE5vbmV0aGVsZXNzLCB3ZSAKYWR2aWNlIHRvIHVzZSB0aGUgdHJhZGl0aW9uYWwgaW5z
+dGFsbGF0aW9uIHdheSwgYmVjYXVzZSB0aGlzIHVwZ3JhZGluZyBzeXN0ZW0gCmlzIHRvbyBleHBl
+cmltZW50YWwgZm9yIG5vdy4gQWxzbywgIlBhY2thZ2UgVXBncmFkZXIiIGNvdWxkIHRyYW5zZm9y
+bSBhIApLbm9wcGl4IChvciBzaW1pbGFyKSBpbnN0YWxsYXRpb24gdG8gYSBNdXNpeCBzeXN0ZW0u
+IAoKCj09PSBTdW1tYXJpemUgPT09CgpJbiBzaG9ydDogTXVzaXggMC41OSBpdCdzIGEgbmVjZXNz
+YXJ5IHN0ZXAgdG93YXJkcyB0aGUgMS4wIHN0YWJsZSB2ZXJzaW9uIHRoYXQgCnNob3VsZCBiZSBy
+ZWFkeSBpbiB0aGUgZmlyc3QgbW9udGhzIG9mIDIwMDcsIHdoZW4gRGViaWFuIEV0Y2ggd2lsbCBi
+ZSBzdGFibGUsIApidXQgdGhlcmUgaXMgYSBsb25nIHdheSB0byBnby4uLgoKCj09IENoYW5nZWxv
+ZyAwLjU5ICA9PQoKPT0gVXBkYXRlZCBwYWNrYWdlcyA9PQoKT3ZlciA2NTAgcGFja2FnZXMgd2Vy
+ZSB1cGRhdGVkLCBmb3IgZXhhbXBsZToKCmtkZWJhc2UtZGF0YTogMy41LjQtMgoKbGliZ3RrMi4w
+LWJpbjogMi44LjE4LTEKCnJvc2VnYXJkZW40OiAxLjIuMy0yCgpqYWNrZDogMC4xMDEuMS0xCgo9
+PSBOZXcgcGFja2FnZXMgPT0KCiogdWRldiAoaXMgYSBkYWVtb24gd2hpY2ggZHluYW1pY2FsbHkg
+Y3JlYXRlcyBhbmQgcmVtb3ZlcyBkZXZpY2Ugbm9kZXMgCmZyb20gL2Rldi8sIGhhbmRsZXMgaG90
+cGx1ZyBldmVudHMgYW5kIGxvYWRzIGRyaXZlcnMgYXQgYm9vdCB0aW1lLikKCiogTGFzaGQgKGlz
+IGEgc2Vzc2lvbiBtYW5hZ2VtZW50IHN5c3RlbSBmb3IgSkFDSyBhbmQgQUxTQSBhdWRpbyBhcHBs
+aWNhdGlvbnMgCm9uIEdOVS9MaW51eC4pCgoqIEFtYXJvayAodmVyc2F0aWxlIGFuZCBlYXN5IHRv
+IHVzZSBhdWRpbyBwbGF5ZXIuIEl0IHRyaWVzIHRvIGJlIGEgbGl0dGxlIApkaWZmZXJlbnQsIHBy
+b3ZpZGluZyBhIHNpbXBsZSBkcmFnIGFuZCBkcm9wIGludGVyZmFjZSB0aGF0IHJlYWxseSBtYWtl
+cyAKcGxheWxpc3QgaGFuZGxpbmcgZWFzeS4pCgoqIEZvb2JpbGxhcmQgKGlzIGEgYmlsbGlhcmRz
+IGdhbWUgd2l0aCBhIHRocmVlIGRpbWVuc2lvbmFsIGRpc3BsYXkpCgoqIG11c2l4LWZyZWVwYXRz
+LWV4dHJhcyAKCiogbXVzaXgtYmluLXNjcmlwdHMgCgoqIGVxLXhtbXMtbXVzaXgKCiogbXVzaXgt
+ZGVza3RvcC11cGdyYWRlIAoKKiBtdXNpeC1jb2xvbWJvLWRydW1raXQgCgoqIG11c2l4LWRvY3Mg
+CgoqIG11c2l4LXNvdW5kZm9udHMKCiogc2FtYmEgMy4wLjIyLTEgKGEgTGFuTWFuYWdlci1saWtl
+IGZpbGUgYW5kIHByaW50ZXIgc2VydmVyIGZvciBVbml4KQoKKiBudGZzLTNnIChJdCBwcm92aWRl
+cyBmdWxsIHJlYWQtd3JpdGUgYWNjZXNzIHRvIE5URlMsICBleGNsdWRpbmcgYWNjZXNzIHRvIApl
+bmNyeXB0ZWQgZmlsZXMsIHdyaXRpbmcgY29tcHJlc3NlZCBmaWxlcywgY2hhbmdpbmcgIGZpbGUg
+b3duZXJzaGlwLCBhY2Nlc3MgCnJpZ2h0KQoKKiB0aW1lbWFjaGluZS1sYW5jaGVyIGZyb20gQWRy
+aWFuIFBhcmRpbmkKCiogbXAzIGVuY29kZXIgZm9yIEF1ZGFjaXR5CgoqIEFkZGVkIHNwZWNpYWwg
+Z3JhcGhpY2FsIGVmZmVjdHMgKHhjb21wbWdyKSBhcyBhbiBvcHRpb24KCj09IE5ldyBmZWF0dXJl
+cyBpbiAwLjU5ID09CgoqIENyZWF0ZWQgbnRmc211c2l4LnNoOiBhc3Npc3RhbnQgZm9yIE5URlMg
+cGFydGl0aW9uIGNvbmZpZ3VyYXRpb24uCgoqIE1vZGlmaWVkIGFsc2Fjb25mIHRvIHdvcmsgd2l0
+aCBtdWx0aXBsZSBzb3VuZCBjYXJkcy4KCiogL2Jpbi92aWRlb2NvbmZpZy5zaCBhbmQgL2Jpbi9t
+ZW51IGltcHJvdmVkLgoKKiBOZXcgbWV0aG9kIGZvciB2aWRlbyBkZXRlY3Rpb24gKHdvcmtzIG9u
+bHkgd2l0aCBYb3JnID49IGEgCjcuMCksIC9iaW4veG9yZ211c2l4LnNoCgoqIEF1dG9zdGFydCBz
+eXN0ZW0gb2YgYXBwbGljYXRpb25zIGluIHRoZSBkZXNrdG9wOiB+L0Rlc2t0b3AvQXV0b3N0YXJ0
+CgoqIE1vc3Qgb2YgTXVzaXggb3duIGNoYXJhY3RlcmlzdGljcyB3ZXJlIHBhY2tlZCBpbiAuZGVi
+IGZpbGVzIHdpdGggdGhlIApvYmplY3RpdmUgdG8gdXBkYXRlIG9sZCAgaGFyZCBkaXNrIGluc3Rh
+bGxhdGlvbnMgZnJvbSBhIG5ldyBMaXZlLUNEIGFuZCBhbHNvIAp0byBjb252ZXJ0IG9yIERlYmlh
+bi9ldGNoIGludG8gTXVzaXguCgo9PSBPdGhlciBjaGFuZ2VzID09CgoKPT0gVG8gZG8gPT0KCiog
+QWRkIGh0dHA6Ly9kaXJlY3RvcnkuZnNmLm9yZy9kdmRyaXAuaHRtbAoqIE1ha2Ugc3BsYXNoeSB0
+byB0YWtlIGltYWdlcyBmcm9tIHRoZSBsYXN0IGRlc2t0b3AgKG1heWJlIHdpdGggeGR1bXApCm9y
+IGFueSBzY3JlZW4gY2FwdHVyZXIuIEl0IGNhbiBiZSB1c2VmdWwgdG8gbWFrZSB0aGUgc2h1dGRv
+d24gb3IgZXZlbiB0aGUgCmJvb3QuLi4gKGNhbid0IG1ha2UgaXQgd2l0aCB4d2Qgb3Iga3NuYXBz
+aG90IGJlY2F1c2UgdGhleSdyZSBub3QgYXV0b21hdGljKQoqRW5oYW5jZSBhbHNhY29uZiB0byBm
+b3JjZSBpdCB0byBpbnN0YWxsIEVWRVJZIHNvdW5kY2FyZCBmb3VuZC4KKiBDcmVhdGUgYSBLREUg
+YXBwbGljYXRpb24gcmVzZXR0ZXI6IChraWxsYWxsIGRjb3BzZXJ2ZXIsIHJtIH4vLklDRSogfi8u
+RE9DKikgCmFuZCBwbGFjZSBhIHNob3J0Y3V0IGluIEljZVdNIG1lbnUKKiBEaXNhYmxlIHNvdW5k
+Y2FyZCBhdXRvZGV0ZWN0aW9uIHByb2Nlc3MgaW4gb2xkIGNvbXB1dGVycyAodXNlIGJvZ29pbXBz
+KQoqIEJ1aWxkIGFuIGFkYXB0YWJsZSBzeXN0ZW0gZm9yIGNhcGFjaXR5IHByb2Nlc3MgKGJvZ29p
+bXBzKSBmb3IgdGltaWRpdHkKKiBQYWNrYWdlIE55RiBhbmQgbm4gaW4gLmRlYiBmaWxlcwoqIElu
+c3RhbGwgR2lsYmVydG8gQm9yZ2UncyBjb250cm9sIHBhbmVsIChuZWVkcyBjaGFuZ2VzKQoqIEFk
+ZCBSb3NlZ2FyZGVuIDEuMi40IGZyb20gUlBNcz8KKiBGaW5kIG91dCBwb3NzaWJsZSBSUE1zIHRv
+IGFkZAoqIEluc3RhbGwgbXVsdGltZWRpYSBrZXJuZWwgMi42LjE3PwoqIEFkZCBhIGxpbmUgaW4g
+ZnN0YWIgd2l0aCB0bXBmcyBmb3IgZGV2L3NobSBpZiB3b3JraW5nIHdpdGggcmVhbHRpbWUga2Vy
+bmVsCiogRmluZCBvdXQgc29sdXRpb24gZm9yIGFtc24gYW5kIHh0ZXJtCgo9PSBLbm93biBwcm9i
+bGVtcyBpbiAwLjU5ID09CgoqIElmIGFmdGVyIGluc3RhbGxhdGlvbiB0aGUgc291bmQgY2FyZCBp
+cyBub3QgY29ycmVjdGx5IGNvbmZpZ3VyZWQgaW4gZWFjaCAKc3lzdGVtIGJvb3QsIGlzIG5lY2Vz
+c2FyeSB0byB3cml0ZSB0aGlzIGNvbW1hbmQgaW4gYSB0ZXh0IGNvbnNvbGUgYXMgcm9vdCAKdXNl
+cjoKCiBsbiAtcyAvYmluL3NuZGNvbmYtbXVzaXguc2ggL2V0Yy9yY1MuZC9TNTBzbmQKCiogQWZ0
+ZXIgaW5zdGFsbGF0aW9uOiBpZiB0aGUg4oCcY3JpdGljYWwgRXJyb3LigJ0gd2FybmluZyB3aGVu
+IGluaXRpYXRpbmcgdGhlIApkZXNrdG9wIGZvciB0aGUgS25vcHBpeCB1c2VyIGJvdGhlcnMgeW91
+LCBpdCBjYW4gYmUgZGlzYWJsZWQgZnJvbToKCiBNdXNpeCAtLT4gU2V0dGluZ3MgLS0+IEtERSBD
+b250cm9sIFBhbmVsIC0tPiBTeXN0ZW0gQWRtaW5pc3RyYXRpb24gLS0+IExvZ2luIApNYW5hZ2Vy
+IC0tPiBDb252ZW5pZW5jZQoKVGhlcmUsIGRpc2FibGUgdGhlICcnJyJFbmFibGUgQXV0by1sb2dp
+biInJycgb3B0aW9uLgoKKiBTaGFrZXRyYWNrZXIgMC40LjYtNStiMSBkb2Vzbid0IHN0YXJ0LgoK
+KiBBTVNOIGRvZXMgbm90IHN0YXJ0IGR1ZSB0byBhIGNvbG9yIGRlZmluaXRpb24gcHJvYmxlbSwg
+d2hpY2ggaXQncyByZWxhdGVkIAp0aGUgYXBwbGljYXRpb24gbXJ4dnQuIEl0IGNhbiBiZSByZXBs
+YWNlZCBieSB1c2luZyBHQUlNCgotLSAKTWFyY29zIEd1Z2xpZWxtZXR0aSAgCiogRGlyZWN0b3Ig
+ZGVsIGRlc2Fycm9sbG8gZGUgTXVzaXggR05VK0xpbnV4LCAxMDAlIFNvZnR3YXJlIExpYnJlCiog
+Q0QgRG9ud2xvYWQ6IChodHRwOi8vd3d3Lm11c2l4Lm9yZy5hci9lbi8pICh3d3cucGMtbXVzaWNh
+LmNvbS5hci9tdXNpeCkKKiBWaWRlb3MsIHByb2dyYW1hcyB5IG90cmFzIGNvc2FzIGVuOiBmdHA6
+Ly9tdXNpeC5vdXJwcm9qZWN0Lm9yZy9wdWIvbXVzaXgvCiogUmVwb3J0ZSBkZSBlcnJvcmVzIGE6
+IApodHRwczovL3d3dy5tdXNpeC5vcmcuYXIvd2lraS9pbmRleC5waHA/dGl0bGU9UHJvYmxlbWFz
+LUJ1Z3MKKklSQzogI211c2l4IGNoYW5uZWwgb24gZnJlZW5vZGUKCgotLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+ClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNl
+cnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3Jh
+dGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNw
+aGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8K
+aHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2
+MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
