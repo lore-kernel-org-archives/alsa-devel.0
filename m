@@ -1,20 +1,17 @@
-From: "Houston Rock" <IOZDIWCKKRFL@abrera.sas-automotive.com>
-Subject: Update on contact details
-Date: Mon, 11 Sep 2006 23:57:37 +0500
-Message-ID: <E4A4nm6-9008Yt-00@mail.nitros4.org>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: 2.6.18-rc6-mm1: endless loop in snd_hda_intel on HPC
+	6325, sometimes
+Date: Mon, 11 Sep 2006 22:20:04 +0200
+Message-ID: <200609112220.04753.rjw@sisk.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A98826C
+Received: from ogre.sisk.pl (ogre.sisk.pl [217.79.144.158])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C827527D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Sep 2006 20:00:42 +0200 (MEST)
-Received: from 121.97.181.60.broad.wz.zj.dynamic.cndata.com
-	(121.97.181.60.broad.wz.zj.dynamic.cndata.com [60.181.97.121])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	5A2B99947D for <alsa-devel@alsa-project.org>;
-	Mon, 11 Sep 2006 20:00:39 +0200 (MEST)
+	Mon, 11 Sep 2006 22:19:58 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,24 +21,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Sensationall revoolution in medicine!
+Hi,
 
-E'''nlarge your p''enis up to 10 cm or up to 4 i'c'h'e's!
+On the HPC 6325 I'm currently using snd_hda_intel sometimes goes into an
+endless loop in wich it plays the same chunk of sound (< 1 sec.) repeatedly
+forever.
 
-Its h'erbal solution what hasnt side effect, but has 100% guaranted results!
+It helps to reload the snd_hda_intel module.
 
-Dont lose your chance and but know wihtout doubts, you will be impressed with results!
-
-Cli here: http://sellitquebec.info
-
+Greetings,
+Rafael
 
 
-digress olga keys amaze cryostat teetotal polytypy briton
-depressant consistent bergamot mule aides byproduct apothegm continual
-
+-- 
+You never change things by fighting the existing reality.
+		R. Buckminster Fuller
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
