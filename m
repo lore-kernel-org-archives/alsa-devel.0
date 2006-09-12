@@ -1,18 +1,18 @@
-From: "Takashi Iwai" <tiwai@novell.com>
-Subject: Re: 2.6.18-rc6-mm1: endless loop in snd_hda_intel on
-	HPC 6325, sometimes
-Date: Tue, 12 Sep 2006 14:30:44 +0100
-Message-ID: <4506D2A4020000C800009336@emea1-mh.id2.novell.com>
+From: "Chrystie Terry" <cterry@nww.com>
+Subject: Co-Branding Opportunity with LinuxWorld
+Date: Tue, 12 Sep 2006 10:38:28 -0400
+Message-ID: <200609121438.k8CEcIMc018627@hestia.nww.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from emea1-mh.id2.novell.com
-	(public.id2-vpn.continvity.gns.novell.com [195.33.99.129])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6604C271
+Received: from hestia.nww.com (hestia.nww.com [198.3.122.6])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0182271
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Sep 2006 15:30:51 +0200 (MEST)
-Content-Disposition: inline
+	Tue, 12 Sep 2006 16:38:42 +0200 (MEST)
+Received: from cterryWINXP ([172.17.22.92])
+	by hestia.nww.com (8.13.1/8.13.1) with ESMTP id k8CEcIMc018627
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2006 10:38:35 -0400
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,27 +22,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: rjw@sisk.pl
-Cc: akpm@osdl.org, alsa-devel@alsa-project.org, LKML@sc8-sf-spam2.sourceforge.net, linux-kernel@vger.kernel.org, AndrewMorton@sc8-sf-spam2.sourceforge.net
+To: Jaroslav Kysela <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>> "Rafael J. Wysocki" <rjw@sisk.pl> 09/11/06 10:20 PM >>>
-> 
-> On the HPC 6325 I'm currently using snd_hda_intel sometimes goes into an
-> endless loop in wich it plays the same chunk of sound (< 1 sec.) repeatedly
-> forever.
-> 
-> It helps to reload the snd_hda_intel module.
+I would like to speak with you about a co-branding opportunity between 
+Advanced Linux Sound Architecture and LinuxWorld.com.   Our Partnership 
+Program allows you to include LinuxWorld's award-winning news content n 
+your Web site. The LinuxWorld syndicated news partnership program is 
+strictly a co-branding trade that anyone with a relevant website can 
+apply to join for FREE!
 
-Does this happen with disable_msi=1 or without?
-Any relevant kernel messages?
+Please review the program overview at 
+http://www.linuxworld.com/partners/partnerprogram.html.  If you have 
+any questions please feel free to contact me at 508-490-6594 or 
+cterry@nww.com.  
 
-The symptom indicates either an irq problem or a problem of
-DMA position reading.  The latter could be fixed via position_fix
-module option as Lee suggested...
+I look forward to speaking with you and to hopefully working with you 
+on a mutually beneficial marketing partnership! 
 
-
-Takashi
+Chrystie Terry
+Manager of Online Audience Development
+LinuxWorld.com
+PH: (508) 490-6594
+FX: (508) 490-6400
+cterry@nww.com 
 
 
 -------------------------------------------------------------------------
