@@ -1,18 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 2.6.18-rc6-mm1: endless loop in snd_hda_intel on
-	HPC 6325, sometimes
-Date: Mon, 11 Sep 2006 18:52:00 -0400
-Message-ID: <1158015120.5076.228.camel@mindpipe>
-References: <200609112220.04753.rjw@sisk.pl>
+From: "Vishwas P S" <vishwas.ps@gmail.com>
+Subject: Help req rgd ALSA configuration scripts
+Date: Tue, 12 Sep 2006 17:55:49 +0530
+Message-ID: <64cf23610609120525m390b4df3xdd62ff87e71b1828@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0950887476=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DFEF5181
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Sep 2006 00:51:20 +0200 (MEST)
-In-Reply-To: <200609112220.04753.rjw@sisk.pl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,28 +14,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "Rafael J. Wysocki" <rjw@sisk.pl>
-Cc: Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-09-11 at 22:20 +0200, Rafael J. Wysocki wrote:
-> Hi,
-> 
-> On the HPC 6325 I'm currently using snd_hda_intel sometimes goes into an
-> endless loop in wich it plays the same chunk of sound (< 1 sec.) repeatedly
-> forever.
-> 
-> It helps to reload the snd_hda_intel module.
-> 
+--===============0950887476==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_75746_11994874.1158063949523"
 
-Does position_fix help?  See
-Documentation/sound/alsa/ALSA-Configuration.txt.
+------=_Part_75746_11994874.1158063949523
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Lee
+Hi,
 
+Could somebody pl help me in ths regard. I would like to know why alsa.conf,
+asoundrc etc are required and are they useful in ALSA-native and OSS
+emulation modes. Can a simple system without spl features work without
+asoundrc or is it absolutely required?
+Where can I find these scripts and edit them?
+
+I'm new to ALSA and currently working on porting ALSA on an ARM based custom
+platform with a custom audio card.
+
+Pl help out.
+
+Regards
+Vishwas
+
+------=_Part_75746_11994874.1158063949523
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<div>Hi,</div>
+<div>&nbsp;</div>
+<div>Could somebody pl help me in ths regard. I would like to know why alsa.conf, asoundrc etc are required and are they useful in ALSA-native and OSS emulation modes. Can a simple system without spl features work without asoundrc or is it absolutely required?
+</div>
+<div>Where can I find these scripts and edit them?</div>
+<div>&nbsp;</div>
+<div>I'm new to ALSA and currently working on porting ALSA on an ARM based custom platform with a custom audio card.</div>
+<div>&nbsp;</div>
+<div>Pl help out.</div>
+<div>&nbsp;</div>
+<div>Regards</div>
+<div>Vishwas</div>
+
+------=_Part_75746_11994874.1158063949523--
+
+
+--===============0950887476==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0950887476==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0950887476==--
