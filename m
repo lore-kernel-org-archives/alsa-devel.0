@@ -1,10 +1,18 @@
-From: "Vishwas P S" <vishwas.ps@gmail.com>
-Subject: Help req rgd ALSA configuration scripts
-Date: Tue, 12 Sep 2006 17:55:49 +0530
-Message-ID: <64cf23610609120525m390b4df3xdd62ff87e71b1828@mail.gmail.com>
+From: "Takashi Iwai" <tiwai@novell.com>
+Subject: Re: 2.6.18-rc6-mm1: endless loop in snd_hda_intel on
+	HPC 6325, sometimes
+Date: Tue, 12 Sep 2006 14:30:44 +0100
+Message-ID: <4506D2A4020000C800009336@emea1-mh.id2.novell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0950887476=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from emea1-mh.id2.novell.com
+	(public.id2-vpn.continvity.gns.novell.com [195.33.99.129])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6604C271
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Sep 2006 15:30:51 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,75 +22,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: rjw@sisk.pl
+Cc: akpm@osdl.org, alsa-devel@alsa-project.org, LKML@sc8-sf-spam2.sourceforge.net, linux-kernel@vger.kernel.org, AndrewMorton@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0950887476==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_75746_11994874.1158063949523"
+>>> "Rafael J. Wysocki" <rjw@sisk.pl> 09/11/06 10:20 PM >>>
+> 
+> On the HPC 6325 I'm currently using snd_hda_intel sometimes goes into an
+> endless loop in wich it plays the same chunk of sound (< 1 sec.) repeatedly
+> forever.
+> 
+> It helps to reload the snd_hda_intel module.
 
-------=_Part_75746_11994874.1158063949523
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Does this happen with disable_msi=1 or without?
+Any relevant kernel messages?
 
-Hi,
-
-Could somebody pl help me in ths regard. I would like to know why alsa.conf,
-asoundrc etc are required and are they useful in ALSA-native and OSS
-emulation modes. Can a simple system without spl features work without
-asoundrc or is it absolutely required?
-Where can I find these scripts and edit them?
-
-I'm new to ALSA and currently working on porting ALSA on an ARM based custom
-platform with a custom audio card.
-
-Pl help out.
-
-Regards
-Vishwas
-
-------=_Part_75746_11994874.1158063949523
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<div>Hi,</div>
-<div>&nbsp;</div>
-<div>Could somebody pl help me in ths regard. I would like to know why alsa.conf, asoundrc etc are required and are they useful in ALSA-native and OSS emulation modes. Can a simple system without spl features work without asoundrc or is it absolutely required?
-</div>
-<div>Where can I find these scripts and edit them?</div>
-<div>&nbsp;</div>
-<div>I'm new to ALSA and currently working on porting ALSA on an ARM based custom platform with a custom audio card.</div>
-<div>&nbsp;</div>
-<div>Pl help out.</div>
-<div>&nbsp;</div>
-<div>Regards</div>
-<div>Vishwas</div>
-
-------=_Part_75746_11994874.1158063949523--
+The symptom indicates either an irq problem or a problem of
+DMA position reading.  The latter could be fixed via position_fix
+module option as Lee suggested...
 
 
---===============0950887476==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Takashi
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0950887476==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0950887476==--
