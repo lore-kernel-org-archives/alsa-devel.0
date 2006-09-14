@@ -1,7 +1,7 @@
-From: "Takashi Iwai" <tiwai@novell.com>
-Subject: Re: Driver design question
-Date: Thu, 14 Sep 2006 12:29:04 +0100
-Message-ID: <45095921020000C80000961F@emea1-mh.id2.novell.com>
+From: Pavel Dedik <palo@pd.sk>
+Subject: alsa_ctl_set_power_state()
+Date: Thu, 14 Sep 2006 15:24:10 +0200
+Message-ID: <200609141524.11214.palo@pd.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,67 +16,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>> Lee Revell <rlrevell@joe-job.com> 09/12/06 10:27 PM >>>
-> I have a device here that can play PCM, but it's a weird implementation.
-> Only 2 periods of 0x2000 words per buffer are supported, and there is no
-> DMA - the driver must poll a status register, and when the chip is
-> ready, deliver all 0x2000 words using outw() then send an end xfer
-> command.
-> 
-> I think I need to use an intermediate buffer, and implement copy/silence
-> callbacks that write to this.  Then I plan to use a tasklet or workqueue
-> to do the actual xfer of PCM data to the hardware.  A timer callback
-> will periodically check whether at least 0x2000 words are in the buffer
-> and if so, schedule the tasklet to drain it.
+Hi all,
 
-You can implement it in two ways, at least.
+i have a promlem with alsa 1.0.12
+Function alsa_ctl_set_power_state() always returns error "Protocol not 
+available", On the same hardware and OS (debian linux, 2.6.10) but with alsa 
+1.0.8 alsa_ctl_set_power_state() working properly.
+Can anyone to help me?
 
-One is to use copy and silent callbacks.  This is pretty straightforward,
-doesn't need extra buffer, but it cannot use the native mmap.  (alsa-lib
-provides the mmap emulation mode, but it seems not so stable.)
-Also, the buffer and period sizes are very restricitve (in your case, 0x2000
-x 2 words), so many apps might not work well.
-An exampleof this type is isa/sb/emu8000_pcm.c (and some of gus pcm,
-IIRC).
-
-Another is to use an intermediate buffer as you suggsted.
-In this case, you do _not_ need copy and silent callbacks.  These callbacks
-are the operations to copy and silent the hardware buffers.  WIth an
-intermediate buffer, the copy and silent are done on this buffer, i.e. on
-normal RAM.  What you need instead is the background-running copy
-operation from this intermediate buffer to the hardware via outw.
-
-This copy task could be done in the interrupt handler (or timer in your case)
-if it's minimum.  If not, it'd be better to take a workq since it can sleep and
-much preemptive.
-
-> I presume this implementation cannot support mmap() as there's no random
-> access to the hardware buffer.  Is this correct?
-
-Mmap works in practice.  The driver simply shares the intermediate
-buffer with user-space.
-
-> Do I call snd_pcm_period_elapsed() from the timer, immediately before
-> scheduling the tasklet, or from the tasklet, after the data has been
-> transferred to the hw?
-
-Yes, by calling snd_pcm_period_elapsed(), the actual hwptr is updated.
-Then schedule workq to run copy-task from the buffer to h/w for the
-appropriate size.  
-
-> In general, does this seem like a reasonable implementation?
-
-I don't see other possibilities.
-
-
-BTW, I'll be less communicative (and don't read MLs) for a while until
-the next Tuesday since I'm in a conference.
-
-
-Takashi
+Palo
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
