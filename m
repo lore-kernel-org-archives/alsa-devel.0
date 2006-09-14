@@ -1,12 +1,11 @@
-From: Pavel Dedik <palo@pd.sk>
-Subject: alsa_ctl_set_power_state()
-Date: Thu, 14 Sep 2006 15:24:10 +0200
-Message-ID: <200609141524.11214.palo@pd.sk>
+From: Zephiris <zephiris@gmail.com>
+Subject: ATI IXP hardware mixing
+Date: Thu, 14 Sep 2006 07:19:45 -0700
+Message-ID: <eeboe2$4r0$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,15 +18,14 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Since people in ALSA devel channel won't answer, I'll have to ask on
+mailing-list/newsgroup. I'm trying to get the ATI IXP driver to use
+hardware mixing. The hardware supports it, FreeBSD and Windows support it,
+and all I want is to know is what to change in the source that needs to
+support it, since several glances through the source and brief API docs, as
+well as mailing lists, etc, don't reveal effectively nothing supporting
+hardware mixing at all.
 
-i have a promlem with alsa 1.0.12
-Function alsa_ctl_set_power_state() always returns error "Protocol not 
-available", On the same hardware and OS (debian linux, 2.6.10) but with alsa 
-1.0.8 alsa_ctl_set_power_state() working properly.
-Can anyone to help me?
-
-Palo
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
