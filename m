@@ -1,13 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Wall Clock Counter
-Date: Fri, 15 Sep 2006 12:28:13 -0400
-Message-ID: <1158337693.18762.16.camel@mindpipe>
+Date: Fri, 15 Sep 2006 12:40:49 -0400
+Message-ID: <1158338450.18762.18.camel@mindpipe>
 References: <705aa3f00609150906r56f1bda5nefea0fbe3251dee7@mail.gmail.com>
+	<1158337693.18762.16.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <705aa3f00609150906r56f1bda5nefea0fbe3251dee7@mail.gmail.com>
+In-Reply-To: <1158337693.18762.16.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,27 +22,13 @@ To: shane michael matthews <shane.michael.matthews@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-15 at 09:06 -0700, shane michael matthews wrote:
-> Hello group,
-> 
-> What I want to do is read the value stored in the wall clock counter
-> on my sound card.  Searching through the alsa documentation and source
-> it appears that snd_timer_read is the function I want to use.  From
-> timer.c:
-> 
-> "The timer implementation uses ring buffer to store information about
-> timing events. In this buffer is recorded count of ticks and current
-> tick resolution in nanoseconds."  Is the 'ticks' referred to here the
-> value in the wall clock counter (It seems to always be set to 5 on my
-> system)?  If anyone could point me to more documentation I would
-> greatly appreciate it. 
+On Fri, 2006-09-15 at 12:28 -0400, Lee Revell wrote:
+> to work 
 
-The answer to this will be hardware-specific.  In order for
-snd_timer_read() to work there must be a low level ALSA timer
-implementation for your sound device.  What soundcard do you use?
+By "to work" I meant "to read the wall clock counter" - snd_timer_read
+will work for other classes of timers like the system clock and per-PCM.
 
 Lee
-
 
 
 -------------------------------------------------------------------------
