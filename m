@@ -1,12 +1,11 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: ice1724/Audiotrak Prodigy 7.1 HiFi
-Date: Fri, 15 Sep 2006 21:11:03 +0200
-Message-ID: <200609152111.03266.julian@jusst.de>
+From: Ken Smith <kens@kensnet.org>
+Subject: ICE1712 SPDIF Output format
+Date: Fri, 15 Sep 2006 22:38:14 +0100
+Message-ID: <450B1D46.3010906@kensnet.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,22 +18,27 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I just got a Audiotrak Prodigy 7.1 HiFi card, which is baed upon a Envy24HT 
-chipset in combination with one WM8776 codec for front out and a WM8766 for 
-channel 3-8.
-I made the front out working, taking the code from pontis.c - Now I'd like to 
-add support for the other channels, therefore I need to figure out the 
-I2C-base-address for the WM8766 registers.
-Can you provide me with some help on how to figure that out? I'm a newbie to 
-alsa/soundcard driver development.
-Reading the envy24ht-specs didn't help me, yet.
+Hi, Is there a problem with the SPDIF output format with the ice1712 
+driver? I'm using FC5, CCRMA, Ardour etc...
 
-One more question: Should I merge my code into pontis.c, which would blow it a 
-bit up, but would avoid duplicate code, or should I open a new 
-prodigy_hifi.c/h?
+I have a M-Audio Delta1010 whose SPDIF output is routed to a Yamaha 
+Surround AMP, in turn the Yamaha's SPDIF output is also routed to a 
+M-Audio DAC. I get sound output from the M-Audio DAC (via the Yamaha) 
+but no output from the Yamaha itself. I have noticed that using the 
+M-Audio Windows driver the Yamaha only produces output when I select 
+"consumer" format output and it mutes when I select "Pro" format in the 
+Windows M-Audio 1010 control panel. Trying these settings in 
+envy24control does not influence the output.
 
-Cheers,
-Julian
+Is this an ice1712 driver  or a envy24control problem or something else?
+
+Any suggestions?
+
+Thanks
+
+Ken
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
