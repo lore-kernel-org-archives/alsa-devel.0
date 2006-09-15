@@ -1,13 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Driver design question
-Date: Fri, 15 Sep 2006 10:47:59 -0400
-Message-ID: <1158331680.7948.156.camel@mindpipe>
-References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
+From: "Vishwas P S" <vishwas.ps@gmail.com>
+Subject: Re: Recording problem
+Date: Fri, 15 Sep 2006 20:38:46 +0530
+Message-ID: <64cf23610609150808s10735a2chaa87442b74c35c7a@mail.gmail.com>
+References: <64cf23610609150319n190d4005sf78af65dc7159e5f@mail.gmail.com>
+	<1158318061.22950.43.camel@localhost.localdomain>
+	<64cf23610609150416k477d2d2cl4a080cddd22cfb7a@mail.gmail.com>
+	<1158327548.22950.86.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1887425532=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45095921020000C80000961F@emea1-mh.id2.novell.com>
+In-Reply-To: <1158327548.22950.86.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,59 +19,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@novell.com>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-09-14 at 12:29 +0100, Takashi Iwai wrote:
-> >>> Lee Revell <rlrevell@joe-job.com> 09/12/06 10:27 PM >>>
-> > I have a device here that can play PCM, but it's a weird implementation.
-> > Only 2 periods of 0x2000 words per buffer are supported, and there is no
-> > DMA - the driver must poll a status register, and when the chip is
-> > ready, deliver all 0x2000 words using outw() then send an end xfer
-> > command.
-> > 
-> > I think I need to use an intermediate buffer, and implement copy/silence
-> > callbacks that write to this.  Then I plan to use a tasklet or workqueue
-> > to do the actual xfer of PCM data to the hardware.  A timer callback
-> > will periodically check whether at least 0x2000 words are in the buffer
-> > and if so, schedule the tasklet to drain it.
-> 
-> You can implement it in two ways, at least.
-> 
-> One is to use copy and silent callbacks.  This is pretty straightforward,
-> doesn't need extra buffer, but it cannot use the native mmap.  (alsa-lib
-> provides the mmap emulation mode, but it seems not so stable.)
-> Also, the buffer and period sizes are very restricitve (in your case, 0x2000
-> x 2 words), so many apps might not work well.
-> An exampleof this type is isa/sb/emu8000_pcm.c (and some of gus pcm,
-> IIRC).
-> 
-> Another is to use an intermediate buffer as you suggsted.
-> In this case, you do _not_ need copy and silent callbacks.  These callbacks
-> are the operations to copy and silent the hardware buffers.  WIth an
-> intermediate buffer, the copy and silent are done on this buffer, i.e. on
-> normal RAM.  What you need instead is the background-running copy
-> operation from this intermediate buffer to the hardware via outw.
-> 
-> This copy task could be done in the interrupt handler (or timer in your case)
-> if it's minimum.  If not, it'd be better to take a workq since it can sleep and
-> much preemptive.
+--===============1887425532==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_5051_29342587.1158332926248"
 
-Thanks very much for the information.
+------=_Part_5051_29342587.1158332926248
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-So if I use an intermediate buffer but no copy and silence callbacks, I
-must copy the data to the hardware in a workqueue (I have no interrupt
-ability and the copy to hardware must be able to sleep).  Where do I
-copy the data from, and how do I know when 0x2000 words are available?
-By directly accessing runtime->dma_area and the software pointer?  IOW
-how do I get the information that would be passed to the copy callback?
+Liam,
 
-Lee
+Thanks for those inputs.
+I'll give it a try and let you know what happens.
 
+Thanks again
+Vishwas
+
+
+On 9/15/06, Liam Girdwood <liam.girdwood@wolfsonmicro.com> wrote:
+>
+> On Fri, 2006-09-15 at 16:46 +0530, Vishwas P S wrote:
+> > Hi Liam,
+> >
+> > Thanks for the quick response.
+> > I've checked that audio path and there are no programmable amps. The
+> > audio chip has only one set of register bits for gain control and I've
+> > kept it at a minimum. (Also the gain knob in the Mic at a minimum)
+> > But still the problems exist
+> > (For the same config and same hardware OSS produces very feeble sound)
+> >
+> > Is there any configuration that I need to edit in asla.conf or
+> > asoundrc
+> > Is there any place in software where the recorded stream could be
+> > getting boosted or mixed??
+>
+> A software gain can be ruled out by recording from the hardware directly
+> i.e.
+>
+> arecord -f cd -Dhw:0,0 > file.wav
+>
+> This will record directly from the hardware without any pcm plugins. If
+> the clipping is still audible, then I would compare a hardware register
+> dump between your OSS and ALSA drivers.
+>
+> Another possibility is that your digital audio interface (DAI) is
+> incorrectly configured between your codec and controller. This could
+> cause the audio MSB to be shifted wrt the controller by 1 bit to the
+> left. This would cause high gain and a lot of clipping.
+>
+> Liam
+>
+>
+>
+>
+
+------=_Part_5051_29342587.1158332926248
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<div>Liam,</div>
+<div>&nbsp;</div>
+<div>Thanks for those inputs.</div>
+<div>I'll give it a try and let you know what happens.</div>
+<div>&nbsp;</div>
+<div>Thanks again</div>
+<div>Vishwas<br><br>&nbsp;</div>
+<div><span class="gmail_quote">On 9/15/06, <b class="gmail_sendername">Liam Girdwood</b> &lt;<a href="mailto:liam.girdwood@wolfsonmicro.com">liam.girdwood@wolfsonmicro.com</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">On Fri, 2006-09-15 at 16:46 +0530, Vishwas P S wrote:<br>&gt; Hi Liam,<br>&gt;<br>&gt; Thanks for the quick response.
+<br>&gt; I've checked that audio path and there are no programmable amps. The<br>&gt; audio chip has only one set of register bits for gain control and I've<br>&gt; kept it at a minimum. (Also the gain knob in the Mic at a minimum)
+<br>&gt; But still the problems exist<br>&gt; (For the same config and same hardware OSS produces very feeble sound)<br>&gt;<br>&gt; Is there any configuration that I need to edit in asla.conf or<br>&gt; asoundrc<br>&gt; Is there any place in software where the recorded stream could be
+<br>&gt; getting boosted or mixed??<br><br>A software gain can be ruled out by recording from the hardware directly<br>i.e.<br><br>arecord -f cd -Dhw:0,0 &gt; file.wav<br><br>This will record directly from the hardware without any pcm plugins. If
+<br>the clipping is still audible, then I would compare a hardware register<br>dump between your OSS and ALSA drivers.<br><br>Another possibility is that your digital audio interface (DAI) is<br>incorrectly configured between your codec and controller. This could
+<br>cause the audio MSB to be shifted wrt the controller by 1 bit to the<br>left. This would cause high gain and a lot of clipping.<br><br>Liam<br><br><br><br></blockquote></div><br>
+
+------=_Part_5051_29342587.1158332926248--
+
+
+--===============1887425532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1887425532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1887425532==--
