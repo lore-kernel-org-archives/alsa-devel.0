@@ -1,13 +1,10 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: ALSA compatibility to WM8750 codec and MPlayer!
-Date: Fri, 15 Sep 2006 11:17:10 +0100
-Message-ID: <1158315430.22950.17.camel@localhost.localdomain>
-References: <20060915100651.98020.qmail@web8505.mail.in.yahoo.com>
+From: "Vishwas P S" <vishwas.ps@gmail.com>
+Subject: Recording problem
+Date: Fri, 15 Sep 2006 15:50:00 +0530
+Message-ID: <64cf23610609150319n190d4005sf78af65dc7159e5f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2038238784=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060915100651.98020.qmail@web8505.mail.in.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,44 +14,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "D. Krishna Mohan" <krishna_danim@yahoo.co.in>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-15 at 11:06 +0100, D. Krishna Mohan wrote:
-> Hi i am presently working with WM8750 Audio codec. My query is
-> wheather or not ALSA support WM8750 Audio Codec. If yes what are the
-> interfaces ALSA provides for this codec.
+--===============2038238784==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_613_17528824.1158315600076"
 
-WM8750 is supported under ALSA. It's available as as part of ASoC and is
-available here:-
+------=_Part_613_17528824.1158315600076
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-http://www.rpsys.net/openzaurus/patches/alsa/
+Hi group,
 
-More info here:-
+I have a noise problem whenever I record sound with arecord.
+The sound seems to be very loud and it often gets clipped .. looks like the
+signal gets overloaded and gets clipped often.\
+I've ensured that the Mic gain is kept at a minimum and still it happens.
+(For the same config OSS gives a very low volume)
 
-http://www.rpsys.net/openzaurus/patches/alsa/info.html
+What could be the problem. Pl help out
 
->    Also How MPlayer communicates with kernel(or ALSA) and to driver
-> finally to control audio.How should i proceed with this task. I donot
-> know anything about ALSA and MPlayer's interfaces.Please help me!
->  
+Rgds
+Vishwas
 
-Alsa and Mplayer get on just fine. Mplayer uses alsa-lib for
-communication with the alsa-kernel core (including the drivers and audio
-hardware).
- 
-mplayer -ao alsa file.mp3
+------=_Part_613_17528824.1158315600076
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Will make mplayer use the alsa interface instead of OSS.
+<div>Hi group,</div>
+<div>&nbsp;</div>
+<div>I have a noise problem whenever I record sound with arecord.</div>
+<div>The sound seems to be very loud and it often gets clipped .. looks like the signal gets overloaded and gets clipped often.\</div>
+<div>I've ensured that the Mic gain is kept at a minimum and still it happens.</div>
+<div>(For the same config OSS gives a very low volume)</div>
+<div>&nbsp;</div>
+<div>What could be the problem. Pl help out</div>
+<div>&nbsp;</div>
+<div>Rgds</div>
+<div>Vishwas</div>
 
-Liam
+------=_Part_613_17528824.1158315600076--
 
 
-
+--===============2038238784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============2038238784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2038238784==--
