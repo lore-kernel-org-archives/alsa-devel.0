@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: core code
-Date: Fri, 15 Sep 2006 14:19:39 +0100
-Message-ID: <1158326380.22950.70.camel@localhost.localdomain>
+Subject: [PATCH 4/5] ASoC: dynamic audio power management (DAPM)
+Date: Fri, 15 Sep 2006 14:22:12 +0100
+Message-ID: <1158326532.22950.74.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-xuB88ZfC+7N1UVNlX6T0"
+Content-Type: multipart/mixed; boundary="=-+3zM+2NdgxQVMEmYOx1T"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,61 +18,67 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-xuB88ZfC+7N1UVNlX6T0
+--=-+3zM+2NdgxQVMEmYOx1T
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch is the core of ASoC functionality.
+This patch adds Dynamic Audio Power Management (DAPM) to ASoC.
 
-The ASoC core is designed to provide the following features :-
+Dynamic Audio Power Management (DAPM) is designed to allow portable and
+handheld Linux devices to use the minimum amount of power within the
+audio subsystem at all times. It is independent of other kernel PM and
+as such, can easily co-exist with the other PM systems.
 
-o  Codec independence. Allows reuse of codec drivers on other platforms
-and machines.
+DAPM is also completely transparent to all user space applications as
+all power switching is done within the ASoC core. No code changes or
+recompiling are required for user space applications. DAPM makes power
+switching decisions based upon any audio stream (capture/playback)
+activity and audio mixer settings within the device.
 
-o Platform driver code reuse. Reuse of platform specific audio DMA and
-DAI drivers on different machines.
+DAPM spans the whole machine. It covers power control within the entire
+audio subsystem, this includes internal codec power blocks and machine
+level power systems.
 
-o Easy I2S/PCM digital audio interface configuration between codec and
-SoC. Each SoC interface and codec registers their audio interface
-capabilities with the core at initialisation. The capabilities are
-subsequently matched and configured at run time for best power and
-performance when the application hw params are known.
+There are 4 power domains within DAPM:-
 
- o Machine specific controls/operations: Allow machines to add controls
-and operations to the audio subsystem. e.g. volume control for speaker
-amp.
- 
-To achieve all this, ASoC splits an embedded audio system into 3
-components :-
+1. Codec domain - VREF, VMID (core codec and audio power)
+Usually controlled at codec probe/remove and suspend/resume, although
+can be set at stream time if power is not needed for sidetone, etc.
 
-1. Codec driver: The codec driver is platform independent and contains
-audio controls, audio interface capabilities, codec dapm and codec IO
-functions.
+2. Platform/Machine domain - physically connected inputs and outputs
+Is platform/machine and user action specific, is configured by the
+machine driver and responds to asynchronous events e.g when HP are
+inserted
 
-2. Platform driver: The platform driver contains the audio dma engine
-and audio interface drivers (e.g. I2S, AC97, PCM) for that platform.
+3. Path domain - audio subsystem signal paths
+Automatically set when mixer and mux settings are changed by the user.
+e.g. alsamixer, amixer.
 
-3. Machine driver: The machine driver handles any machine specific
-controls and audio events. i.e. turning on an amp at start of playback.
+4. Stream domain - DAC's and ADC's.
+Enabled and disabled when stream playback/capture is started and stopped
+respectively. e.g. aplay, arecord.
 
+All DAPM power switching decisions are made automatically by consulting
+an audio routing map of the whole machine. This map is specific to each
+machine and consists of the interconnections between every audio
+component (including internal codec components).
 
-Signed-off-by: Frank Mandarino <fmandarino@endrelia.com> 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
-Signed-off-by: Liam Girdwood <liam.Girdwood@wolfsonmicro.com>
+Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
 
---=-xuB88ZfC+7N1UVNlX6T0
-Content-Disposition: attachment; filename=asoc-core.patch
-Content-Type: text/x-patch; name=asoc-core.patch; charset=UTF-8
+--=-+3zM+2NdgxQVMEmYOx1T
+Content-Disposition: attachment; filename=asoc-dapm.patch
+Content-Type: text/x-patch; name=asoc-dapm.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/soc-core.c
+Index: alsa-kernel/soc/soc-dapm.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/soc-core.c
-@@ -0,0 +1,1825 @@
++++ alsa-kernel/soc/soc-dapm.c
+@@ -0,0 +1,1360 @@
 +/*
-+ * soc-core.c  --  ALSA SoC Audio Layer
++ * soc-dapm.c  --  ALSA SoC Dynamic Audio Power Management
 + *
 + * Copyright 2005 Wolfson Microelectronics PLC.
 + * Author: Liam Girdwood
@@ -85,13 +91,26 @@ Index: alsa-kernel/soc/soc-core.c
 + *
 + *  Revision history
 + *    12th Aug 2005   Initial version.
-+ *    25th Oct 2005   Working Codec, Interface and Platform registration.
++ *    25th Oct 2005   Implemented path power domain.
++ *    18th Dec 2005   Implemented machine and stream level power domain.
 + *
-+ *  TODO:
-+ *   o Add hw rules to enforce rates, etc.
-+ *   o More testing with other codecs/machines.
-+ *   o Add more codecs and platforms to ensure good API coverage.
-+ *   o Support TDM on PCM and I2S
++ *  Features:
++ *    o Changes power status of internal codec blocks depending on the
++ *      dynamic configuration of codec internal audio paths and active
++ *      DAC's/ADC's.
++ *    o Platform power domain - can support external components i.e. amps and
++ *      mic/meadphone insertion events.
++ *    o Automatic Mic Bias support
++ *    o Jack insertion power event initiation - e.g. hp insertion will enable
++ *      sinks, dacs, etc
++ *    o Delayed powerdown of audio susbsytem to reduce pops between a quick
++ *      device reopen.
++ *
++ *  Todo:
++ *    o DPM power change sequencing - allow for configurable per codec sequences
++ *    o Support for analogue bias optimisation.
++ *    o Support for reduced codec oversampling rates.
++ *    o Support for reduced codec bias currents.
 + */
 +
 +#include <linux/module.h>
@@ -101,1673 +120,1068 @@ Index: alsa-kernel/soc/soc-core.c
 +#include <linux/pm.h>
 +#include <linux/bitops.h>
 +#include <linux/platform_device.h>
++#include <linux/jiffies.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
 +#include <sound/initval.h>
 +
 +/* debug */
-+#define SOC_DEBUG 0
-+#if SOC_DEBUG
++#define DAPM_DEBUG 0
++#if DAPM_DEBUG
++#define dump_dapm(codec, action) dbg_dump_dapm(codec, action)
 +#define dbg(format, arg...) printk(format, ## arg)
 +#else
++#define dump_dapm(codec, action)
 +#define dbg(format, arg...)
 +#endif
-+/* debug DAI capabilities matching */
-+#define SOC_DEBUG_DAI 0
-+#if SOC_DEBUG_DAI
-+#define dbgc(format, arg...) printk(format, ## arg)
++
++#define POP_DEBUG 0
++#if POP_DEBUG
++#define POP_TIME 500
++#define pop_wait(time) schedule_timeout_interruptible(msecs_to_jiffies(time))
++#define pop_dbg(format, arg...) printk(format, ## arg); pop_wait(POP_TIME)
 +#else
-+#define dbgc(format, arg...)
++#define pop_dbg(format, arg...)
++#define pop_wait(time)
 +#endif
 +
-+/* supported DAI types */
-+#define cpu_dai_name(x) \
-+	(((x) == SND_SOC_DAI_AC97) ? "AC97" : \
-+	((x) == SND_SOC_DAI_I2S) ? "I2S" : \
-+	((x) == SND_SOC_DAI_PCM) ? "PCM" : NULL)
-+
-+static DEFINE_MUTEX(pcm_mutex);
-+static DEFINE_MUTEX(io_mutex);
-+static struct workqueue_struct *soc_workq = NULL;
-+static struct work_struct soc_stream_work;
-+static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
-+
-+/* supported sample rates */
-+/* ATTENTION: these values depend on the definition in pcm.h! */
-+static const unsigned int rates[] = {
-+	5512, 8000, 11025, 16000, 22050, 32000, 44100,
-+	48000, 64000, 88200, 96000, 176400, 192000
++/* dapm power sequences - make this per codec in the future */
++static int dapm_up_seq[] = {
++	snd_soc_dapm_pre, snd_soc_dapm_micbias, snd_soc_dapm_mic, snd_soc_dapm_mux,
++	snd_soc_dapm_dac, snd_soc_dapm_mixer, snd_soc_dapm_pga, snd_soc_dapm_adc,
++	snd_soc_dapm_hp, snd_soc_dapm_spk, snd_soc_dapm_post
++};
++static int dapm_down_seq[] = {
++	snd_soc_dapm_pre, snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk,
++	snd_soc_dapm_pga, snd_soc_dapm_mixer, snd_soc_dapm_dac, snd_soc_dapm_mic,
++	snd_soc_dapm_micbias, snd_soc_dapm_mux, snd_soc_dapm_post
 +};
 +
-+/*
-+ * This is a timeout to do a DAPM powerdown after a stream is closed().
-+ * It can be used to eliminate pops between different playback streams, e.g.
-+ * between two audio tracks.
-+ */
-+static int pmdown_time = 5000;
-+module_param(pmdown_time, int, 0);
-+MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
++static int dapm_status = 1;
++module_param(dapm_status, int, 0);
++MODULE_PARM_DESC(dapm_status, "enable DPM sysfs entries");
 +
-+#ifdef CONFIG_SND_AC97_BUS
-+/* unregister ac97 codec */
-+static int soc_ac97_dev_unregister(struct snd_soc_codec *codec)
++/* create a new dapm widget */
++static struct snd_soc_dapm_widget *dapm_cnew_widget(
++	const struct snd_soc_dapm_widget *_widget)
 +{
-+	if (codec->ac97->dev.bus)
-+		device_unregister(&codec->ac97->dev);
-+	return 0;
++	struct snd_soc_dapm_widget* widget;
++	widget = kmalloc(sizeof(struct snd_soc_dapm_widget), GFP_KERNEL);
++	if (!widget)
++		return NULL;
++
++	memcpy(widget, _widget, sizeof(struct snd_soc_dapm_widget));
++	return widget;
 +}
 +
-+/* stop no dev release warning */
-+static void soc_ac97_device_release(struct device *dev){}
-+
-+/* register ac97 codec to bus */
-+static int soc_ac97_dev_register(struct snd_soc_codec *codec)
++/* set up initial codec paths */
++static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
++	struct snd_soc_dapm_path *p, int i)
 +{
-+	int err;
++	switch (w->id) {
++	case snd_soc_dapm_switch:
++	case snd_soc_dapm_mixer: {
++		int val;
++		int reg = w->kcontrols[i].private_value & 0xff;
++		int shift = (w->kcontrols[i].private_value >> 8) & 0x0f;
++		int mask = (w->kcontrols[i].private_value >> 16) & 0xff;
++		int invert = (w->kcontrols[i].private_value >> 24) & 0x01;
 +
-+	codec->ac97->dev.bus = &ac97_bus_type;
-+	codec->ac97->dev.parent = NULL;
-+	codec->ac97->dev.release = soc_ac97_device_release;
++		val = snd_soc_read(w->codec, reg);
++		val = (val >> shift) & mask;
 +
-+	snprintf(codec->ac97->dev.bus_id, BUS_ID_SIZE, "%d-%d:%s",
-+		 codec->card->number, 0, codec->name);
-+	if ((err = device_register(&codec->ac97->dev)) < 0) {
-+		snd_printk(KERN_ERR "Can't register ac97 bus\n");
-+		codec->ac97->dev.bus = NULL;
-+		return err;
++		if((invert && !val) || (!invert && val))
++			p->connect = 1;
++		else
++			p->connect = 0;
 +	}
-+	return 0;
-+}
-+#endif
++	break;
++	case snd_soc_dapm_mux: {
++		struct soc_enum *e = (struct soc_enum *)w->kcontrols[i].private_value;
++		int val, item, bitmask;
 +
-+/* get rate format from rate */
-+static inline int soc_get_rate_format(int rate)
++		for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
++		;
++		val = snd_soc_read(w->codec, e->reg);
++		item = (val >> e->shift_l) & (bitmask - 1);
++
++		p->connect = 0;
++		for (i = 0; i < e->mask; i++) {
++			if (!(strcmp(p->name, e->texts[i])) && item == i)
++				p->connect = 1;
++		}
++	}
++	break;
++	/* does not effect routing - always connected */
++	case snd_soc_dapm_pga:
++	case snd_soc_dapm_output:
++	case snd_soc_dapm_adc:
++	case snd_soc_dapm_input:
++	case snd_soc_dapm_dac:
++	case snd_soc_dapm_micbias:
++	case snd_soc_dapm_vmid:
++		p->connect = 1;
++	/* does effect routing - dynamically connected */
++	case snd_soc_dapm_hp:
++	case snd_soc_dapm_mic:
++	case snd_soc_dapm_spk:
++	case snd_soc_dapm_line:
++	case snd_soc_dapm_pre:
++	case snd_soc_dapm_post:
++		p->connect = 0;
++	break;
++	}
++}
++
++/* connect mux widget to it's interconnecting audio paths */
++static int dapm_connect_mux(struct snd_soc_codec *codec,
++	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
++	struct snd_soc_dapm_path *path, const char *control_name,
++	const struct snd_kcontrol_new *kcontrol)
 +{
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
 +	int i;
 +
-+	for (i = 0; i < ARRAY_SIZE(rates); i++) {
-+		if(rates[i] == rate)
-+			return 1 << i;
-+	}
-+	return 0;
-+}
-+
-+/* gets the audio system mclk/sysclk for the given parameters */
-+static unsigned inline int soc_get_mclk(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_soc_clock_info *info)
-+{
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	int i;
-+
-+	/* find the matching machine config and get it's mclk for the given
-+	 * sample rate and hardware format */
-+	for(i = 0; i < machine->num_links; i++) {
-+		if(machine->dai_link[i].cpu_dai == rtd->cpu_dai &&
-+			machine->dai_link[i].config_sysclk)
-+			return machine->dai_link[i].config_sysclk(rtd, info);
-+	}
-+	return 0;
-+}
-+
-+/* changes a bitclk multiplier mask to a divider mask */
-+static u16 soc_bfs_mult_to_div(u16 bfs, int rate, unsigned int mclk,
-+	unsigned int pcmfmt, unsigned int chn)
-+{
-+	int i, j;
-+	u16 bfs_ = 0;
-+	int size = snd_pcm_format_physical_width(pcmfmt), min = 0;
-+
-+	if(size <= 0)
-+		return 0;
-+
-+	/* the minimum bit clock that has enough bandwidth */
-+	min = size * rate * chn;
-+	dbgc("mult --> div min bclk %d with mclk %d\n", min, mclk);
-+
-+	for (i = 0; i < 16; i++) {
-+		if((bfs >> i) & 0x1) {
-+			j = rate * SND_SOC_FSB_REAL(1<<i);
-+
-+			if(j >= min) {
-+				bfs_ |= SND_SOC_FSBD(mclk/j);
-+				dbgc("mult --> div support mult %d\n", SND_SOC_FSB_REAL(1<<i));
-+			}
++	for (i = 0; i < e->mask; i++) {
++		if (!(strcmp(control_name, e->texts[i]))) {
++			list_add(&path->list, &codec->dapm_paths);
++			list_add(&path->list_sink, &dest->sources);
++			list_add(&path->list_source, &src->sinks);
++			path->name = (char*)e->texts[i];
++			dapm_set_path_status(dest, path, 0);
++			return 0;
 +		}
 +	}
 +
-+	return bfs_;
++	return -ENODEV;
 +}
 +
-+/* changes a bitclk divider mask to a multiplier mask */
-+static u16 soc_bfs_div_to_mult(u16 bfs, int rate, unsigned int mclk,
-+	unsigned int pcmfmt, unsigned int chn)
++/* connect mixer widget to it's interconnecting audio paths */
++static int dapm_connect_mixer(struct snd_soc_codec *codec,
++	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
++	struct snd_soc_dapm_path *path, const char *control_name)
 +{
-+	int i, j;
-+	u16 bfs_ = 0;
++	int i;
 +
-+	int size = snd_pcm_format_physical_width(pcmfmt), min = 0;
-+
-+	if(size <= 0)
-+		return 0;
-+
-+	/* the minimum bit clock that has enough bandwidth */
-+	min = size * rate * chn;
-+	dbgc("div to mult min bclk %d with mclk %d\n", min, mclk);
-+
-+	for (i = 0; i < 16; i++) {
-+		if((bfs >> i) & 0x1) {
-+			j = mclk / (SND_SOC_FSBD_REAL(1<<i));
-+			if(j >= min) {
-+				bfs_ |= SND_SOC_FSB(j/rate);
-+				dbgc("div --> mult support div %d\n", SND_SOC_FSBD_REAL(1<<i));
-+			}
++	/* search for mixer kcontrol */
++	for (i = 0; i < dest->num_kcontrols; i++) {
++		if(!strcmp(control_name, dest->kcontrols[i].name)) {
++			list_add(&path->list, &codec->dapm_paths);
++			list_add(&path->list_sink, &dest->sources);
++			list_add(&path->list_source, &src->sinks);
++			path->name = dest->kcontrols[i].name;
++			dapm_set_path_status(dest, path, i);
++			return 0;
 +		}
 +	}
-+
-+	return bfs_;
++	return -ENODEV;
 +}
 +
-+/* Matches codec DAI and SoC CPU DAI hardware parameters */
-+static int soc_hw_match_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
++/* update dapm codec register bits */
++static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai_mode *codec_dai_mode = NULL;
-+	struct snd_soc_dai_mode *cpu_dai_mode = NULL;
-+	struct snd_soc_clock_info clk_info;
-+	unsigned int fs, mclk, codec_bfs, cpu_bfs, rate = params_rate(params),
-+		chn, j, k, cpu_bclk, codec_bclk, pcmrate;
-+	u16 fmt = 0;
++	int change, power;
++	unsigned short old, new;
++	struct snd_soc_codec *codec = widget->codec;
 +
-+	dbg("asoc: match version %s\n", SND_SOC_VERSION);
-+	clk_info.rate = rate;
-+	pcmrate = soc_get_rate_format(rate);
++	/* check for valid widgets */
++	if(widget->reg < 0 || widget->id == snd_soc_dapm_input ||
++		widget->id == snd_soc_dapm_output ||
++		widget->id == snd_soc_dapm_hp ||
++		widget->id == snd_soc_dapm_mic ||
++		widget->id == snd_soc_dapm_line ||
++		widget->id == snd_soc_dapm_spk)
++		return 0;
 +
-+	/* try and find a match from the codec and cpu DAI capabilities */
-+	for (j = 0; j < rtd->codec_dai->caps.num_modes; j++) {
-+		for (k = 0; k < rtd->cpu_dai->caps.num_modes; k++) {
-+			codec_dai_mode = &rtd->codec_dai->caps.mode[j];
-+			cpu_dai_mode = &rtd->cpu_dai->caps.mode[k];
++	power = widget->power;
++	if(widget->invert)
++		power = (power ? 0:1);
 +
-+			if(!(codec_dai_mode->pcmrate & cpu_dai_mode->pcmrate &
-+					pcmrate)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match rate\n", j, k);
-+				continue;
-+			}
++	old = snd_soc_read(codec, widget->reg);
++	new = (old & ~(0x1 << widget->shift)) | (power << widget->shift);
 +
-+			fmt = codec_dai_mode->fmt & cpu_dai_mode->fmt;
-+			if (!(fmt & SND_SOC_DAIFMT_FORMAT_MASK)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match format\n", j, k);
-+				continue;
-+			}
++	change = old != new;
++	if (change) {
++		pop_dbg("pop test %s : %s in %d ms\n", widget->name,
++			widget->power ? "on" : "off", POP_TIME);
++		snd_soc_write(codec, widget->reg, new);
++		pop_wait(POP_TIME);
++	}
++	dbg("reg old %x new %x change %d\n", old, new, change);
++	return change;
++}
 +
-+			if (!(fmt & SND_SOC_DAIFMT_CLOCK_MASK)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match clock masters\n", j, k);
-+				continue;
-+			}
++/* ramps the volume up or down to minimise pops before or after a power event */
++static int dapm_set_pga(struct snd_soc_dapm_widget *widget, int power)
++{
++	const struct snd_kcontrol_new *k = widget->kcontrols;
 +
-+			if (!(fmt & SND_SOC_DAIFMT_INV_MASK)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match invert\n", j, k);
-+				continue;
-+			}
++	if(widget->muted && !power)
++		return 0;
++	if(!widget->muted && power)
++		return 0;
 +
-+			if (!(codec_dai_mode->pcmfmt & cpu_dai_mode->pcmfmt)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match pcm format\n", j, k);
-+				continue;
-+			}
++	if(widget->num_kcontrols && k) {
++		int reg = k->private_value & 0xff;
++		int shift = (k->private_value >> 8) & 0x0f;
++		int mask = (k->private_value >> 16) & 0xff;
++		int invert = (k->private_value >> 24) & 0x01;
 +
-+			if(!(codec_dai_mode->pcmdir & cpu_dai_mode->pcmdir)) {
-+				dbgc("asoc: DAI[%d:%d] failed to match direction\n", j, k);
-+				continue;
-+			}
-+
-+			/* todo - still need to add tdm selection */
-+			rtd->cpu_dai->dai_runtime.fmt =
-+			rtd->codec_dai->dai_runtime.fmt =
-+				1 << (ffs(fmt & SND_SOC_DAIFMT_FORMAT_MASK) -1) |
-+				1 << (ffs(fmt & SND_SOC_DAIFMT_CLOCK_MASK) - 1) |
-+				1 << (ffs(fmt & SND_SOC_DAIFMT_INV_MASK) - 1);
-+			clk_info.bclk_master =
-+				rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CLOCK_MASK;
-+
-+			/* make sure the ratio between rate and master clock is acceptable*/
-+			if((fs = (cpu_dai_mode->fs & codec_dai_mode->fs)) == 0) {
-+				dbgc("asoc: DAI[%d:%d] failed to match FS\n", j, k);
-+				continue;
-+			}
-+			clk_info.fs = rtd->cpu_dai->dai_runtime.fs =
-+				rtd->codec_dai->dai_runtime.fs = fs;
-+
-+			/* calculate audio system clocking useing slowest clocks possible */
-+			if((mclk = soc_get_mclk(rtd, &clk_info)) == 0) {
-+				dbgc("asoc: DAI[%d:%d] configuration not clockable\n", j, k);
-+				dbgc("asoc: rate %d fs %d master %x\n", rate, fs,
-+					clk_info.bclk_master);
-+				continue;
-+			}
-+
-+			/* calculate word size (per channel) and frame size */
-+			rtd->codec_dai->dai_runtime.pcmfmt =
-+				rtd->cpu_dai->dai_runtime.pcmfmt =
-+				1 << params_format(params);
-+
-+			chn = params_channels(params);
-+			/* i2s always has left and right */
-+			if(params_channels(params) == 1 && rtd->cpu_dai->dai_runtime.fmt &
-+				(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_LEFT_J))
-+				chn <<= 1;
-+
-+			/* Calculate bfs - the ratio between bitclock and the sample rate
-+			 * We must take into consideration the dividers and multipliers
-+			 * used in the codec and cpu DAI modes. We always choose the
-+			 * lowest possible clocks to reduce power.
-+			 */
-+			if(codec_dai_mode->flags & cpu_dai_mode->flags &
-+				SND_SOC_DAI_BFS_DIV) {
-+				/* cpu & codec bfs dividers */
-+				rtd->cpu_dai->dai_runtime.bfs =
-+					rtd->codec_dai->dai_runtime.bfs =
-+					1 << (fls(codec_dai_mode->bfs & cpu_dai_mode->bfs) - 1);
-+			} else if (codec_dai_mode->flags & SND_SOC_DAI_BFS_DIV) {
-+				/* normalise bfs codec divider & cpu mult */
-+				codec_bfs = soc_bfs_div_to_mult(codec_dai_mode->bfs, rate, mclk,
-+						rtd->codec_dai->dai_runtime.pcmfmt, chn);
-+				rtd->cpu_dai->dai_runtime.bfs =
-+					1 << (ffs(codec_bfs & cpu_dai_mode->bfs) - 1);
-+				cpu_bfs = soc_bfs_mult_to_div(cpu_dai_mode->bfs, rate, mclk,
-+						rtd->codec_dai->dai_runtime.pcmfmt, chn);
-+				rtd->codec_dai->dai_runtime.bfs =
-+					1 << (fls(codec_dai_mode->bfs & cpu_bfs) - 1);
-+			} else if (cpu_dai_mode->flags & SND_SOC_DAI_BFS_DIV) {
-+				/* normalise bfs codec mult & cpu divider */
-+				codec_bfs = soc_bfs_mult_to_div(codec_dai_mode->bfs, rate, mclk,
-+						rtd->codec_dai->dai_runtime.pcmfmt, chn);
-+				rtd->cpu_dai->dai_runtime.bfs =
-+					1 << (fls(codec_bfs & cpu_dai_mode->bfs) -1);
-+				cpu_bfs = soc_bfs_div_to_mult(cpu_dai_mode->bfs, rate, mclk,
-+						rtd->codec_dai->dai_runtime.pcmfmt, chn);
-+				rtd->codec_dai->dai_runtime.bfs =
-+					1 << (ffs(codec_dai_mode->bfs & cpu_bfs) -1);
++		if (power) {
++			int i;
++			/* power up has happended, increase volume to last level */
++			if(invert) {
++				for (i = mask; i > widget->saved_value; i--)
++					snd_soc_update_bits(widget->codec, reg, mask, i);
 +			} else {
-+				/* codec & cpu bfs rate multipliers */
-+				rtd->cpu_dai->dai_runtime.bfs =
-+					rtd->codec_dai->dai_runtime.bfs =
-+					1 << (ffs(codec_dai_mode->bfs & cpu_dai_mode->bfs) -1);
++				for (i = 0; i < widget->saved_value; i++)
++					snd_soc_update_bits(widget->codec, reg, mask, i);
 +			}
++			widget->muted = 0;
++		} else {
++			/* power down is about to occur, decrease volume to mute */
++			int val = snd_soc_read(widget->codec, reg);
++			int i = widget->saved_value = (val >> shift) & mask;
++			if(invert) {
++				for (; i < mask; i++)
++					snd_soc_update_bits(widget->codec, reg, mask, i);
++			} else {
++				for (; i > 0; i--)
++					snd_soc_update_bits(widget->codec, reg, mask, i);
++			}
++			widget->muted = 1;
++		}
++	}
++	return 0;
++}
 +
-+			/* make sure the bit clock speed is acceptable */
-+			if(!rtd->cpu_dai->dai_runtime.bfs ||
-+				!rtd->codec_dai->dai_runtime.bfs) {
-+				dbgc("asoc: DAI[%d:%d] failed to match BFS\n", j, k);
-+				dbgc("asoc: cpu_dai %x codec %x\n",
-+					rtd->cpu_dai->dai_runtime.bfs,
-+					rtd->codec_dai->dai_runtime.bfs);
-+				dbgc("asoc: mclk %d hwfmt %x\n", mclk, fmt);
++/* create new dapm mixer control */
++static int dapm_new_mixer(struct snd_soc_codec *codec,
++	struct snd_soc_dapm_widget *w)
++{
++	int i, ret = 0;
++	char name[32];
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path;
++
++	/* add kcontrol */
++	for (i = 0; i < w->num_kcontrols; i++) {
++
++		/* match name */
++		list_for_each(lp, &w->sources)
++		{
++			path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++
++			/* mixer/mux paths name must match control name */
++			if (path->name != (char*)w->kcontrols[i].name)
++				continue;
++
++			/* add dapm control with long name */
++			snprintf(name, 32, "%s %s", w->name, w->kcontrols[i].name);
++			path->long_name = kstrdup (name, GFP_KERNEL);
++			if(path->long_name == NULL)
++				return -ENOMEM;
++
++			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w, path->long_name);
++			if ((ret = snd_ctl_add(codec->card, path->kcontrol)) < 0) {
++				printk(KERN_ERR "asoc: failed to add dapm kcontrol %s\n",
++						path->long_name);
++				kfree(path->long_name);
++				path->long_name = NULL;
++				return ret;
++			}
++		}
++	}
++	return ret;
++}
++
++/* create new dapm mux control */
++static int dapm_new_mux(struct snd_soc_codec *codec, struct snd_soc_dapm_widget *w)
++{
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path = NULL;
++	struct snd_kcontrol *kcontrol;
++	int ret = 0;
++
++	if(!w->num_kcontrols) {
++		printk(KERN_ERR "asoc: mux %s has no controls\n", w->name);
++		return -EINVAL;
++	}
++
++	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
++	if ((ret = snd_ctl_add(codec->card, kcontrol)) < 0) {
++		printk(KERN_ERR "asoc: failed to add kcontrol %s\n", w->name);
++		return ret;
++	}
++
++	list_for_each(lp, &w->sources)
++	{
++		path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++		path->kcontrol = kcontrol;
++	}
++
++	return ret;
++}
++
++/* create new dapm volume control */
++static int dapm_new_pga(struct snd_soc_codec *codec,
++	struct snd_soc_dapm_widget *w)
++{
++	struct snd_kcontrol *kcontrol;
++	int ret = 0;
++
++	if(!w->num_kcontrols)
++		return -EINVAL;
++
++	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
++	if ((ret = snd_ctl_add(codec->card, kcontrol)) < 0) {
++		printk(KERN_ERR "asoc: failed to add kcontrol %s\n", w->name);
++		return ret;
++	}
++
++	return ret;
++}
++
++/* reset 'walked' bit for each dapm path */
++static void dapm_clear_walk(struct snd_soc_codec *codec)
++{
++	struct snd_soc_dapm_path *p = NULL;
++	struct list_head *l = NULL;
++
++	list_for_each(l, &codec->dapm_paths)
++	{
++		p = list_entry(l, struct snd_soc_dapm_path, list);
++		p->walked = 0;
++	}
++}
++
++/*
++ * Recursively check for a completed path to an active or physically connected
++ * output widget. Returns number of complete paths.
++ */
++static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
++{
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path = NULL;
++	int con = 0;
++
++	if(widget->id == snd_soc_dapm_adc && widget->active)
++		return 1;
++
++	if(widget->connected) {
++		/* connected pin ? */
++		if(widget->id == snd_soc_dapm_output && !widget->ext)
++			return 1;
++
++		/* connected jack or spk ? */
++		if(widget->id == snd_soc_dapm_hp || widget->id == snd_soc_dapm_spk ||
++			widget->id == snd_soc_dapm_line)
++			return 1;
++	}
++
++	list_for_each(lp, &widget->sinks)
++	{
++		path = list_entry(lp, struct snd_soc_dapm_path, list_source);
++		if(path->walked)
++			continue;
++
++		if (path->sink && path->connect) {
++			path->walked = 1;
++			con += is_connected_output_ep(path->sink);
++		}
++	}
++
++	return con;
++}
++
++/*
++ * Recursively check for a completed path to an active or physically connected
++ * input widget. Returns number of complete paths.
++ */
++static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
++{
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path = NULL;
++	int con = 0;
++
++	/* active stream ? */
++	if(widget->id == snd_soc_dapm_dac && widget->active)
++		return 1;
++
++	if(widget->connected) {
++		/* connected pin ? */
++		if(widget->id == snd_soc_dapm_input && !widget->ext)
++			return 1;
++
++		/* connected VMID/Bias for lower pops */
++		if(widget->id == snd_soc_dapm_vmid)
++			return 1;
++
++		/* connected jack ? */
++		if(widget->id == snd_soc_dapm_mic || widget->id == snd_soc_dapm_line)
++			return 1;
++	}
++
++	list_for_each(lp, &widget->sources)
++	{
++		path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++		if(path->walked)
++			continue;
++
++		if (path->source && path->connect) {
++			path->walked = 1;
++			con += is_connected_input_ep(path->source);
++		}
++	}
++
++	return con;
++}
++
++/*
++ * Scan each dapm widget for complete audio path.
++ * A complete path is a route that has valid endpoints i.e.:-
++ *
++ *  o DAC to output pin.
++ *  o Input Pin to ADC.
++ *  o Input pin to Output pin (bypass, sidetone)
++ *  o DAC to ADC (loopback).
++ */
++int dapm_power_widgets(struct snd_soc_codec *codec, int event)
++{
++	struct snd_soc_dapm_widget *w;
++	struct list_head *l;
++	int in, out, i, c = 1, *seq = NULL, ret = 0, power_change, power;
++
++	/* do we have a sequenced stream event */
++	if(event == SND_SOC_DAPM_STREAM_START) {
++		c = ARRAY_SIZE(dapm_up_seq);
++		seq = dapm_up_seq;
++	} else if (event == SND_SOC_DAPM_STREAM_STOP) {
++		c = ARRAY_SIZE(dapm_down_seq);
++		seq = dapm_down_seq;
++	}
++
++	for(i = 0; i < c; i++){
++		list_for_each(l, &codec->dapm_widgets)
++		{
++			w = list_entry(l, struct snd_soc_dapm_widget, list);
++
++			/* is widget in stream order */
++			if(seq && seq[i] && w->id != seq[i])
++				continue;
++
++			/* vmid - no action */
++			if(w->id == snd_soc_dapm_vmid)
++				continue;
++
++			/* active ADC */
++			if(w->id == snd_soc_dapm_adc && w->active) {
++				in = is_connected_input_ep(w);
++				dapm_clear_walk(w->codec);
++				w->power = (in != 0) ? 1 : 0;
++				dapm_update_bits(w);
 +				continue;
 +			}
 +
-+			goto found;
-+		}
-+	}
-+	printk(KERN_ERR "asoc: no matching DAI found between codec and CPU\n");
-+	return -EINVAL;
++			/* active DAC */
++			if(w->id == snd_soc_dapm_dac && w->active) {
++				out = is_connected_output_ep(w);
++				dapm_clear_walk(w->codec);
++				w->power = (out != 0) ? 1 : 0;
++				dapm_update_bits(w);
++				continue;
++			}
 +
-+found:
-+	/* we have matching DAI's, so complete the runtime info */
-+	rtd->codec_dai->dai_runtime.pcmrate =
-+		rtd->cpu_dai->dai_runtime.pcmrate =
-+		soc_get_rate_format(rate);
++			/* programmable gain/attenuation */
++			if(w->id == snd_soc_dapm_pga) {
++				int on;
++				in = is_connected_input_ep(w);
++				dapm_clear_walk(w->codec);
++				out = is_connected_output_ep(w);
++				dapm_clear_walk(w->codec);
++				w->power = on = (out != 0 && in != 0) ? 1 : 0;
 +
-+	rtd->codec_dai->dai_runtime.priv = codec_dai_mode->priv;
-+	rtd->cpu_dai->dai_runtime.priv = cpu_dai_mode->priv;
-+	rtd->codec_dai->dai_runtime.flags = codec_dai_mode->flags;
-+	rtd->cpu_dai->dai_runtime.flags = cpu_dai_mode->flags;
++				if(!on)
++					dapm_set_pga(w, on); /* lower volume to reduce pops */
++				dapm_update_bits(w);
++				if(on)
++					dapm_set_pga(w, on); /* restore volume from zero */
 +
-+	/* for debug atm */
-+	dbg("asoc: DAI[%d:%d] Match OK\n", j, k);
-+	if(rtd->codec_dai->dai_runtime.flags == SND_SOC_DAI_BFS_DIV) {
-+		codec_bclk = (rtd->codec_dai->dai_runtime.fs * params_rate(params)) /
-+			SND_SOC_FSBD_REAL(rtd->codec_dai->dai_runtime.bfs);
-+		dbg("asoc: codec fs %d mclk %d bfs div %d bclk %d\n",
-+			rtd->codec_dai->dai_runtime.fs, mclk,
-+			SND_SOC_FSBD_REAL(rtd->codec_dai->dai_runtime.bfs),	codec_bclk);
-+	} else {
-+		codec_bclk = params_rate(params) *
-+			SND_SOC_FSB_REAL(rtd->codec_dai->dai_runtime.bfs);
-+		dbg("asoc: codec fs %d mclk %d bfs mult %d bclk %d\n",
-+			rtd->codec_dai->dai_runtime.fs, mclk,
-+			SND_SOC_FSB_REAL(rtd->codec_dai->dai_runtime.bfs), codec_bclk);
-+	}
-+	if(rtd->cpu_dai->dai_runtime.flags == SND_SOC_DAI_BFS_DIV) {
-+		cpu_bclk = (rtd->cpu_dai->dai_runtime.fs * params_rate(params)) /
-+			SND_SOC_FSBD_REAL(rtd->cpu_dai->dai_runtime.bfs);
-+		dbg("asoc: cpu fs %d mclk %d bfs div %d bclk %d\n",
-+			rtd->cpu_dai->dai_runtime.fs, mclk,
-+			SND_SOC_FSBD_REAL(rtd->cpu_dai->dai_runtime.bfs), cpu_bclk);
-+	} else {
-+		cpu_bclk = params_rate(params) *
-+			SND_SOC_FSB_REAL(rtd->cpu_dai->dai_runtime.bfs);
-+		dbg("asoc: cpu fs %d mclk %d bfs mult %d bclk %d\n",
-+			rtd->cpu_dai->dai_runtime.fs, mclk,
-+			SND_SOC_FSB_REAL(rtd->cpu_dai->dai_runtime.bfs), cpu_bclk);
-+	}
++				continue;
++			}
 +
-+	/*
-+	 * Check we have matching bitclocks. If we don't then it means the sysclock
-+	 * returned by either the codec or cpu DAI (selected by the machine sysclock
-+	 * function) is wrong compared with supported the DAI modes for the codec or
-+	 * cpu DAI.
-+	 */
-+	if(cpu_bclk != codec_bclk){
-+		printk(KERN_ERR "asoc: codec and cpu bitclocks differ, audio may be wrong speed\n");
-+		printk(KERN_ERR "asoc: codec %d != cpu %d\n", codec_bclk, cpu_bclk);
-+	}
++			/* pre and post event widgets */
++			if(w->id == snd_soc_dapm_pre) {
++				if(!w->event)
++					continue;
 +
-+	switch(rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		dbg("asoc: DAI codec BCLK master, LRC master\n");
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		dbg("asoc: DAI codec BCLK slave, LRC master\n");
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		dbg("asoc: DAI codec BCLK master, LRC slave\n");
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		dbg("asoc: DAI codec BCLK slave, LRC slave\n");
-+		break;
-+	}
-+	dbg("asoc: mode %x, invert %x\n",
-+		rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_FORMAT_MASK,
-+		rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_INV_MASK);
-+	dbg("asoc: audio rate %d chn %d fmt %x\n", params_rate(params),
-+		params_channels(params), params_format(params));
++				if(event == SND_SOC_DAPM_STREAM_START) {
++					if((ret = w->event(w, SND_SOC_DAPM_PRE_PMU)) < 0)
++								return ret;
++				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
++					if((ret = w->event(w, SND_SOC_DAPM_PRE_PMD)) < 0)
++								return ret;
++				}
++				continue;
++			}
++			if(w->id == snd_soc_dapm_post) {
++				if(!w->event)
++					continue;
 +
-+	return 0;
-+}
++				if(event == SND_SOC_DAPM_STREAM_START) {
++					if((ret = w->event(w, SND_SOC_DAPM_POST_PMU)) < 0)
++								return ret;
++				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
++					if((ret = w->event(w, SND_SOC_DAPM_POST_PMD)) < 0)
++								return ret;
++				}
++				continue;
++			}
 +
-+static inline u32 get_rates(struct snd_soc_dai_mode *modes, int nmodes)
-+{
-+	int i;
-+	u32 rates = 0;
++			/* all other widgets */
++			in = is_connected_input_ep(w);
++			dapm_clear_walk(w->codec);
++			out = is_connected_output_ep(w);
++			dapm_clear_walk(w->codec);
++			power = (out != 0 && in != 0) ? 1 : 0;
++			power_change = (w->power == power) ? 0: 1;
++			w->power = power;
 +
-+	for(i = 0; i < nmodes; i++)
-+		rates |= modes[i].pcmrate;
-+
-+	return rates;
-+}
-+
-+static inline u64 get_formats(struct snd_soc_dai_mode *modes, int nmodes)
-+{
-+	int i;
-+	u64 formats = 0;
-+
-+	for(i = 0; i < nmodes; i++)
-+		formats |= modes[i].pcmfmt;
-+
-+	return formats;
-+}
-+
-+/*
-+ * Called by ALSA when a PCM substream is opened, the runtime->hw record is
-+ * then initialized and any private data can be allocated. This also calls
-+ * startup for the cpu DAI, platform, machine and codec DAI.
-+ */
-+static int soc_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_cpu_dai *cpu_dai = rtd->cpu_dai;
-+	int ret = 0;
-+
-+	mutex_lock(&pcm_mutex);
-+
-+	/* startup the audio subsystem */
-+	if(rtd->cpu_dai->ops.startup) {
-+		if((ret = rtd->cpu_dai->ops.startup(substream)) < 0) {
-+			printk(KERN_ERR "asoc: can't open interface %s\n", rtd->cpu_dai->name);
-+			goto out;
-+		}
-+	}
-+
-+	if(platform->pcm_ops->open) {
-+		if((ret = platform->pcm_ops->open(substream)) < 0) {
-+			printk(KERN_ERR "asoc: can't open platform %s\n", platform->name);
-+			goto platform_err;
-+		}
-+	}
-+
-+	if(machine->ops && machine->ops->startup) {
-+		if((ret = machine->ops->startup(substream)) < 0) {
-+			printk(KERN_ERR "asoc: %s startup failed\n", machine->name);
-+			goto machine_err;
-+		}
-+	}
-+
-+	if(rtd->codec_dai->ops.startup) {
-+		if((ret = rtd->codec_dai->ops.startup(substream)) < 0) {
-+			printk(KERN_ERR "asoc: can't open codec %s\n", rtd->codec_dai->name);
-+			goto codec_dai_err;
-+		}
-+	}
-+
-+	/* create runtime params from DMA, codec and cpu DAI */
-+	if(runtime->hw.rates)
-+		runtime->hw.rates &=
-+			get_rates(codec_dai->caps.mode, codec_dai->caps.num_modes) &
-+			get_rates(cpu_dai->caps.mode, cpu_dai->caps.num_modes);
-+	else
-+		runtime->hw.rates =
-+			get_rates(codec_dai->caps.mode, codec_dai->caps.num_modes) &
-+			get_rates(cpu_dai->caps.mode, cpu_dai->caps.num_modes);
-+	if(runtime->hw.formats)
-+		runtime->hw.formats &=
-+			get_formats(codec_dai->caps.mode, codec_dai->caps.num_modes) &
-+			get_formats(cpu_dai->caps.mode, cpu_dai->caps.num_modes);
-+	else
-+		runtime->hw.formats =
-+			get_formats(codec_dai->caps.mode, codec_dai->caps.num_modes) &
-+			get_formats(cpu_dai->caps.mode, cpu_dai->caps.num_modes);
-+
-+	/* Check that the codec and cpu DAI's are compatible */
-+	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		runtime->hw.rate_min =
-+			max(rtd->codec_dai->playback.rate_min, rtd->cpu_dai->playback.rate_min);
-+		runtime->hw.rate_max =
-+			min(rtd->codec_dai->playback.rate_max, rtd->cpu_dai->playback.rate_max);
-+		runtime->hw.channels_min =
-+			max(rtd->codec_dai->playback.channels_min, rtd->cpu_dai->playback.channels_min);
-+		runtime->hw.channels_max =
-+			min(rtd->codec_dai->playback.channels_max, rtd->cpu_dai->playback.channels_max);
-+	} else {
-+		runtime->hw.rate_min =
-+			max(rtd->codec_dai->capture.rate_min, rtd->cpu_dai->capture.rate_min);
-+		runtime->hw.rate_max =
-+			min(rtd->codec_dai->capture.rate_max, rtd->cpu_dai->capture.rate_max);
-+		runtime->hw.channels_min =
-+			max(rtd->codec_dai->capture.channels_min, rtd->cpu_dai->capture.channels_min);
-+		runtime->hw.channels_max =
-+			min(rtd->codec_dai->capture.channels_max, rtd->cpu_dai->capture.channels_max);
-+	}
-+
-+	snd_pcm_limit_hw_rates(runtime);
-+	if (!runtime->hw.rates) {
-+		printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
-+			rtd->codec_dai->name, rtd->cpu_dai->name);
-+		mutex_unlock(&pcm_mutex);
-+		return -ENODEV;
-+	}
-+	if(!runtime->hw.formats) {
-+		printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
-+			rtd->codec_dai->name, rtd->cpu_dai->name);
-+		mutex_unlock(&pcm_mutex);
-+		return -ENODEV;
-+	}
-+	if(!runtime->hw.channels_min || !runtime->hw.channels_max) {
-+		printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
-+			rtd->codec_dai->name, rtd->cpu_dai->name);
-+		mutex_unlock(&pcm_mutex);
-+		return -ENODEV;
-+	}
-+
-+	dbg("asoc: %s <-> %s info:\n", rtd->codec_dai->name, rtd->cpu_dai->name);
-+	dbg("asoc: rate mask 0x%x \nasoc: min ch %d max ch %d\nasoc: min rate %d max rate %d\n",
-+		runtime->hw.rates, runtime->hw.channels_min,
-+		runtime->hw.channels_max, runtime->hw.rate_min, runtime->hw.rate_max);
-+
-+
-+	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->playback.active = rtd->codec_dai->playback.active = 1;
-+	else
-+		rtd->cpu_dai->capture.active = rtd->codec_dai->capture.active = 1;
-+	rtd->cpu_dai->active = rtd->codec_dai->active = 1;
-+	rtd->cpu_dai->runtime = runtime;
-+	socdev->codec->active++;
-+	mutex_unlock(&pcm_mutex);
-+	return ret;
-+
-+codec_dai_err:
-+	if(machine->ops && machine->ops->shutdown)
-+		machine->ops->shutdown(substream);
-+
-+machine_err:
-+	if(platform->pcm_ops->close)
-+		platform->pcm_ops->close(substream);
-+
-+platform_err:
-+	if(rtd->cpu_dai->ops.shutdown)
-+		rtd->cpu_dai->ops.shutdown(substream);
-+out:
-+	mutex_unlock(&pcm_mutex);
-+	return ret;
-+}
-+
-+/*
-+ * Power down the audio subsytem pmdown_time msecs after close is called.
-+ * This is to ensure there are no pops or clicks in between any music tracks due
-+ * to DAPM power cycling.
-+ */
-+static void close_delayed_work(void *data)
-+{
-+	struct snd_soc_device *socdev = data;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_codec_dai *codec_dai;
-+	int i;
-+
-+	mutex_lock(&pcm_mutex);
-+	for(i = 0; i < codec->num_dai; i++) {
-+		codec_dai = &codec->dai[i];
-+
-+		dbg("pop wq checking: %s status: %s waiting: %s\n",
-+			codec_dai->playback.stream_name,
-+			codec_dai->playback.active ? "active" : "inactive",
-+			codec_dai->pop_wait ? "yes" : "no");
-+
-+		/* are we waiting on this codec DAI stream */
-+		if(codec_dai->pop_wait == 1) {
-+
-+			codec_dai->pop_wait = 0;
-+			snd_soc_dapm_stream_event(codec, codec_dai->playback.stream_name,
-+				SND_SOC_DAPM_STREAM_STOP);
-+
-+			/* power down the codec power domain if no longer active */
-+			if(codec->active == 0) {
-+				dbg("pop wq D3 %s %s\n", codec->name,
-+					codec_dai->playback.stream_name);
-+		 		if(codec->dapm_event)
-+					codec->dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++			/* call any power change event handlers */
++			if(power_change) {
++				if(w->event) {
++					dbg("power %s event for %s flags %x\n",
++						w->power ? "on" : "off", w->name, w->event_flags);
++					if (power) {
++						/* power up event */
++						if(w->event_flags & SND_SOC_DAPM_PRE_PMU)
++							if((ret = w->event(w, SND_SOC_DAPM_PRE_PMU)) < 0)
++								return ret;
++						dapm_update_bits(w);
++						if(w->event_flags & SND_SOC_DAPM_POST_PMU)
++							if((ret = w->event(w, SND_SOC_DAPM_POST_PMU)) < 0)
++								return ret;
++					} else {
++						/* power down event */
++						if(w->event_flags & SND_SOC_DAPM_PRE_PMD)
++							if((ret = w->event(w, SND_SOC_DAPM_PRE_PMD)) < 0)
++								return ret;
++						dapm_update_bits(w);
++						if(w->event_flags & SND_SOC_DAPM_POST_PMD)
++							if((ret = w->event(w, SND_SOC_DAPM_POST_PMD)) < 0)
++								return ret;
++					}
++				} else
++					/* no event handler */
++					dapm_update_bits(w);
 +			}
 +		}
 +	}
-+	mutex_unlock(&pcm_mutex);
-+}
 +
-+/*
-+ * Called by ALSA when a PCM substream is closed. Private data can be
-+ * freed here. The cpu DAI, codec DAI, machine and platform are also
-+ * shutdown.
-+ */
-+static int soc_codec_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	mutex_lock(&pcm_mutex);
-+
-+	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->playback.active = rtd->codec_dai->playback.active = 0;
-+	else
-+		rtd->cpu_dai->capture.active = rtd->codec_dai->capture.active = 0;
-+
-+	if(rtd->codec_dai->playback.active == 0 &&
-+		rtd->codec_dai->capture.active == 0) {
-+		rtd->cpu_dai->active = rtd->codec_dai->active = 0;
-+	}
-+	codec->active--;
-+
-+	if(rtd->cpu_dai->ops.shutdown)
-+		rtd->cpu_dai->ops.shutdown(substream);
-+
-+	if(rtd->codec_dai->ops.shutdown)
-+		rtd->codec_dai->ops.shutdown(substream);
-+
-+	if(machine->ops && machine->ops->shutdown)
-+		machine->ops->shutdown(substream);
-+
-+	if(platform->pcm_ops->close)
-+		platform->pcm_ops->close(substream);
-+	rtd->cpu_dai->runtime = NULL;
-+
-+	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		/* start delayed pop wq here for playback streams */
-+		rtd->codec_dai->pop_wait = 1;
-+		queue_delayed_work(soc_workq, &soc_stream_work,
-+			msecs_to_jiffies(pmdown_time));
-+	} else {
-+		/* capture streams can be powered down now */
-+		snd_soc_dapm_stream_event(codec, rtd->codec_dai->capture.stream_name,
-+			SND_SOC_DAPM_STREAM_STOP);
-+
-+		if (codec->active == 0 && rtd->codec_dai->pop_wait == 0){
-+			if(codec->dapm_event)
-+				codec->dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+		}
-+	}
-+
-+	mutex_unlock(&pcm_mutex);
-+	return 0;
-+}
-+
-+/*
-+ * Called by ALSA when the PCM substream is prepared, can set format, sample
-+ * rate, etc.  This function is non atomic and can be called multiple times,
-+ * it can refer to the runtime info.
-+ */
-+static int soc_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int ret = 0;
-+
-+	mutex_lock(&pcm_mutex);
-+	if(platform->pcm_ops->prepare)
-+		if((ret = platform->pcm_ops->prepare(substream)) < 0)
-+			goto out;
-+
-+	if(rtd->codec_dai->ops.prepare)
-+		if((ret = rtd->codec_dai->ops.prepare(substream)) < 0)
-+			goto out;
-+
-+	if(rtd->cpu_dai->ops.prepare)
-+		ret = rtd->cpu_dai->ops.prepare(substream);
-+
-+	/* we only want to start a DAPM playback stream if we are not waiting
-+	 * on an existing one stopping */
-+	if(rtd->codec_dai->pop_wait) {
-+		/* we are waiting for the delayed work to start */
-+		if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+				snd_soc_dapm_stream_event(codec, rtd->codec_dai->capture.stream_name,
-+					SND_SOC_DAPM_STREAM_START);
-+		else {
-+			rtd->codec_dai->pop_wait = 0;
-+			cancel_delayed_work(&soc_stream_work);
-+			if(rtd->codec_dai->digital_mute)
-+				rtd->codec_dai->digital_mute(codec, rtd->codec_dai, 0);
-+		}
-+	} else {
-+		/* no delayed work - do we need to power up codec */
-+		if(codec->dapm_state != SNDRV_CTL_POWER_D0) {
-+
-+			if(codec->dapm_event)
-+				codec->dapm_event(codec, SNDRV_CTL_POWER_D1);
-+
-+			if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+				snd_soc_dapm_stream_event(codec, rtd->codec_dai->playback.stream_name,
-+					SND_SOC_DAPM_STREAM_START);
-+			else
-+				snd_soc_dapm_stream_event(codec, rtd->codec_dai->capture.stream_name,
-+					SND_SOC_DAPM_STREAM_START);
-+
-+			if(codec->dapm_event)
-+				codec->dapm_event(codec, SNDRV_CTL_POWER_D0);
-+			if(rtd->codec_dai->digital_mute)
-+				rtd->codec_dai->digital_mute(codec, rtd->codec_dai, 0);
-+
-+		} else {
-+			/* codec already powered - power on widgets */
-+			if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+				snd_soc_dapm_stream_event(codec, rtd->codec_dai->playback.stream_name,
-+					SND_SOC_DAPM_STREAM_START);
-+			else
-+				snd_soc_dapm_stream_event(codec, rtd->codec_dai->capture.stream_name,
-+					SND_SOC_DAPM_STREAM_START);
-+			if(rtd->codec_dai->digital_mute)
-+				rtd->codec_dai->digital_mute(codec, rtd->codec_dai, 0);
-+		}
-+	}
-+
-+out:
-+	mutex_unlock(&pcm_mutex);
 +	return ret;
 +}
 +
-+/*
-+ * Called by ALSA when the hardware params are set by application. This
-+ * function can also be called multiple times and can allocate buffers
-+ * (using snd_pcm_lib_* ). It's non-atomic.
-+ */
-+static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
++#if DAPM_DEBUG
++static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	int ret = 0;
++	struct snd_soc_dapm_widget *w = NULL;
++	struct snd_soc_dapm_path *p = NULL;
++	struct list_head *l = NULL, *lp = NULL;
++	int in, out;
 +
-+	mutex_lock(&pcm_mutex);
++	printk("DAPM %s %s\n", codec->name, action);
 +
-+	/* we don't need to match any AC97 params */
-+	if(rtd->cpu_dai->type != SND_SOC_DAI_AC97) {
-+		if((ret = soc_hw_match_params(substream, params)) < 0)
-+			goto out;
-+	} else {
-+		struct snd_soc_clock_info clk_info;
-+		clk_info.rate = params_rate(params);
-+		if((ret = soc_get_mclk(rtd, &clk_info)) < 0)
-+			goto out;
-+	}
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
 +
-+	if(rtd->codec_dai->ops.hw_params) {
-+		if((ret = rtd->codec_dai->ops.hw_params(substream, params)) < 0) {
-+			printk(KERN_ERR "asoc: can't set codec %s hw params\n", rtd->codec_dai->name);
-+			goto out;
++		/* only display widgets that effect routing */
++		switch (w->id) {
++		case snd_soc_dapm_pre:
++		case snd_soc_dapm_post:
++		case snd_soc_dapm_vmid:
++			continue;
++		case snd_soc_dapm_mux:
++		case snd_soc_dapm_output:
++		case snd_soc_dapm_input:
++		case snd_soc_dapm_switch:
++		case snd_soc_dapm_hp:
++		case snd_soc_dapm_mic:
++		case snd_soc_dapm_spk:
++		case snd_soc_dapm_line:
++		case snd_soc_dapm_micbias:
++		case snd_soc_dapm_dac:
++		case snd_soc_dapm_adc:
++		case snd_soc_dapm_pga:
++		case snd_soc_dapm_mixer:
++			if(w->name) {
++				in = is_connected_input_ep(w);
++				dapm_clear_walk(w->codec);
++				out = is_connected_output_ep(w);
++				dapm_clear_walk(w->codec);
++				printk("%s: %s  in %d out %d\n", w->name,
++					w->power ? "On":"Off",in, out);
++
++				list_for_each(lp, &w->sources)
++				{
++					p = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++					if (p->connect)
++						printk(" in  %s %s\n", p->name ? p->name : "static",
++							p->source->name);
++				}
++				list_for_each(lp, &w->sinks)
++				{
++					p = list_entry(lp, struct snd_soc_dapm_path, list_source);
++					if (p->connect)
++						printk(" out %s %s\n", p->name ? p->name : "static",
++							p->sink->name);
++				}
++			}
++		break;
 +		}
 +	}
-+
-+	if(rtd->cpu_dai->ops.hw_params) {
-+		if((ret = rtd->cpu_dai->ops.hw_params(substream, params)) < 0) {
-+			printk(KERN_ERR "asoc: can't set interface %s hw params\n", rtd->cpu_dai->name);
-+			goto interface_err;
-+		}
-+	}
-+
-+	if(platform->pcm_ops->hw_params) {
-+		if((ret = platform->pcm_ops->hw_params(substream, params)) < 0) {
-+			printk(KERN_ERR "asoc: can't set platform %s hw params\n", platform->name);
-+			goto platform_err;
-+		}
-+	}
-+
-+	if(machine->ops && machine->ops->hw_params) {
-+		if((ret = machine->ops->hw_params(substream, params)) < 0) {
-+			printk(KERN_ERR "asoc: machine hw_params failed\n");
-+			goto machine_err;
-+		}
-+	}
-+
-+out:
-+	mutex_unlock(&pcm_mutex);
-+	return ret;
-+
-+machine_err:
-+	if(platform->pcm_ops->hw_free)
-+		platform->pcm_ops->hw_free(substream);
-+
-+platform_err:
-+	if(rtd->cpu_dai->ops.hw_free)
-+		rtd->cpu_dai->ops.hw_free(substream);
-+
-+interface_err:
-+	if(rtd->codec_dai->ops.hw_free)
-+		rtd->codec_dai->ops.hw_free(substream);
-+
-+	mutex_unlock(&pcm_mutex);
-+	return ret;
 +}
-+
-+/*
-+ * Free's resources allocated by hw_params, can be called multiple times
-+ */
-+static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_machine *machine = socdev->machine;
-+
-+	mutex_lock(&pcm_mutex);
-+
-+	/* apply codec digital mute */
-+	if(!codec->active && rtd->codec_dai->digital_mute)
-+		rtd->codec_dai->digital_mute(codec, rtd->codec_dai, 1);
-+
-+	/* free any machine hw params */
-+	if(machine->ops && machine->ops->hw_free)
-+		machine->ops->hw_free(substream);
-+
-+	/* free any DMA resources */
-+	if(platform->pcm_ops->hw_free)
-+		platform->pcm_ops->hw_free(substream);
-+
-+	/* now free hw params for the DAI's  */
-+	if(rtd->codec_dai->ops.hw_free)
-+		rtd->codec_dai->ops.hw_free(substream);
-+
-+	if(rtd->cpu_dai->ops.hw_free)
-+		rtd->cpu_dai->ops.hw_free(substream);
-+
-+	mutex_unlock(&pcm_mutex);
-+	return 0;
-+}
-+
-+static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	int ret;
-+
-+	if(rtd->codec_dai->ops.trigger)
-+		if((ret = rtd->codec_dai->ops.trigger(substream, cmd)) < 0)
-+			return ret;
-+
-+	if(platform->pcm_ops->trigger)
-+		if((ret = platform->pcm_ops->trigger(substream, cmd)) < 0)
-+			return ret;
-+
-+	if(rtd->cpu_dai->ops.trigger)
-+		if((ret = rtd->cpu_dai->ops.trigger(substream, cmd)) < 0)
-+			return ret;
-+
-+	return 0;
-+}
-+
-+/* ASoC PCM operations */
-+static struct snd_pcm_ops soc_pcm_ops = {
-+	.open		= soc_pcm_open,
-+	.close		= soc_codec_close,
-+	.hw_params	= soc_pcm_hw_params,
-+	.hw_free	= soc_pcm_hw_free,
-+	.prepare	= soc_pcm_prepare,
-+	.trigger	= soc_pcm_trigger,
-+};
-+
-+#ifdef CONFIG_PM
-+/* powers down audio subsystem for suspend */
-+static int soc_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+ 	struct snd_soc_machine *machine = socdev->machine;
-+ 	struct snd_soc_platform *platform = socdev->platform;
-+ 	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int i;
-+
-+	/* mute any active DAC's */
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_codec_dai *dai = machine->dai_link[i].codec_dai;
-+		if(dai->digital_mute && dai->playback.active)
-+			dai->digital_mute(codec, dai, 1);
-+	}
-+
-+	if (machine->suspend_pre)
-+		machine->suspend_pre(pdev, state);
-+
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai  *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->suspend && cpu_dai->type != SND_SOC_DAI_AC97)
-+			cpu_dai->suspend(pdev, cpu_dai);
-+		if (platform->suspend)
-+			platform->suspend(pdev, cpu_dai);
-+	}
-+
-+	/* close any waiting streams and save state */
-+	flush_workqueue(soc_workq);
-+	codec->suspend_dapm_state = codec->dapm_state;
-+
-+	for(i = 0; i < codec->num_dai; i++) {
-+		char *stream = codec->dai[i].playback.stream_name;
-+		if(stream != NULL)
-+			snd_soc_dapm_stream_event(codec, stream, SND_SOC_DAPM_STREAM_SUSPEND);
-+		stream = codec->dai[i].capture.stream_name;
-+		if(stream != NULL)
-+			snd_soc_dapm_stream_event(codec, stream, SND_SOC_DAPM_STREAM_SUSPEND);
-+	}
-+
-+	if (codec_dev->suspend)
-+		codec_dev->suspend(pdev, state);
-+
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->suspend && cpu_dai->type == SND_SOC_DAI_AC97)
-+			cpu_dai->suspend(pdev, cpu_dai);
-+	}
-+
-+	if (machine->suspend_post)
-+		machine->suspend_post(pdev, state);
-+
-+	return 0;
-+}
-+
-+/* powers up audio subsystem after a suspend */
-+static int soc_resume(struct platform_device *pdev)
-+{
-+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+ 	struct snd_soc_machine *machine = socdev->machine;
-+ 	struct snd_soc_platform *platform = socdev->platform;
-+ 	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int i;
-+
-+	if (machine->resume_pre)
-+		machine->resume_pre(pdev);
-+
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->resume && cpu_dai->type == SND_SOC_DAI_AC97)
-+			cpu_dai->resume(pdev, cpu_dai);
-+	}
-+
-+	if (codec_dev->resume)
-+		codec_dev->resume(pdev);
-+
-+	for(i = 0; i < codec->num_dai; i++) {
-+		char* stream = codec->dai[i].playback.stream_name;
-+		if(stream != NULL)
-+			snd_soc_dapm_stream_event(codec, stream, SND_SOC_DAPM_STREAM_RESUME);
-+		stream = codec->dai[i].capture.stream_name;
-+		if(stream != NULL)
-+			snd_soc_dapm_stream_event(codec, stream, SND_SOC_DAPM_STREAM_RESUME);
-+	}
-+
-+	/* unmute any active DAC's */
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_codec_dai *dai = machine->dai_link[i].codec_dai;
-+		if(dai->digital_mute && dai->playback.active)
-+			dai->digital_mute(codec, dai, 0);
-+	}
-+
-+	for(i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->resume && cpu_dai->type != SND_SOC_DAI_AC97)
-+			cpu_dai->resume(pdev, cpu_dai);
-+		if (platform->resume)
-+			platform->resume(pdev, cpu_dai);
-+	}
-+
-+	if (machine->resume_post)
-+		machine->resume_post(pdev);
-+
-+	return 0;
-+}
-+
-+#else
-+#define soc_suspend	NULL
-+#define soc_resume	NULL
 +#endif
 +
-+/* probes a new socdev */
-+static int soc_probe(struct platform_device *pdev)
++/* test and update the power status of a mux widget */
++int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
++	struct snd_kcontrol *kcontrol, int mask, int val, struct soc_enum* e)
 +{
-+	int ret = 0, i;
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_machine *machine = socdev->machine;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
++	struct list_head *l;
++	struct snd_soc_dapm_path *path;
++	int found = 0;
 +
-+	if (machine->probe && ((ret = machine->probe(pdev)) < 0))
-+		return ret;
++	if(widget->id != snd_soc_dapm_mux)
++		return -ENODEV;
 +
-+	for (i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->probe && ((ret = cpu_dai->probe(pdev)) < 0))
-+			goto cpu_dai_err;
++	if (!snd_soc_test_bits(widget->codec, e->reg, mask, val))
++		return 0;
++
++	/* find dapm widget path assoc with kcontrol */
++	list_for_each(l, &widget->codec->dapm_paths)
++	{
++		path = list_entry(l, struct snd_soc_dapm_path, list);
++		if (path->kcontrol != kcontrol)
++			continue;
++
++		if(!path->name || ! e->texts[val])
++			continue;
++
++		found = 1;
++		/* we now need to match the string in the enum to the path */
++		if (!(strcmp(path->name, e->texts[val])))
++			path->connect = 1; /* new connection */
++		else
++			path->connect = 0; /* old connection must be powered down */
 +	}
 +
-+	if (codec_dev->probe && ((ret = codec_dev->probe(pdev)) < 0))
-+		goto cpu_dai_err;
-+
-+	if (platform->probe && ((ret = platform->probe(pdev)) < 0))
-+		goto platform_err;
-+
-+	/* DAPM stream work */
-+	if((soc_workq = create_workqueue("kdapm")) == NULL)
-+		goto work_err;
-+	INIT_WORK(&soc_stream_work, close_delayed_work, socdev);
-+	return 0;
-+
-+work_err:
-+	if (platform->remove)
-+		platform->remove(pdev);
-+
-+platform_err:
-+	if (codec_dev->remove)
-+		codec_dev->remove(pdev);
-+
-+cpu_dai_err:
-+	for (i--; i > 0; i--) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->remove)
-+			cpu_dai->remove(pdev);
-+	}
-+
-+	if (machine->remove)
-+		machine->remove(pdev);
-+
-+	return ret;
-+}
-+
-+/* removes a socdev */
-+static int soc_remove(struct platform_device *pdev)
-+{
-+	int i;
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_machine *machine = socdev->machine;
-+	struct snd_soc_platform *platform = socdev->platform;
-+	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
-+
-+	if(soc_workq)
-+		destroy_workqueue(soc_workq);
-+
-+	if (platform->remove)
-+		platform->remove(pdev);
-+
-+	if (codec_dev->remove)
-+		codec_dev->remove(pdev);
-+
-+	for (i = 0; i < machine->num_links; i++) {
-+		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		if (cpu_dai->remove)
-+			cpu_dai->remove(pdev);
-+	}
-+
-+	if (machine->remove)
-+		machine->remove(pdev);
++	if (found)
++		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(dapm_mux_update_power);
 +
-+/* ASoC platform driver */
-+static struct platform_driver soc_driver = {
-+	.driver		= {
-+		.name		= "soc-audio",
-+	},
-+	.probe		= soc_probe,
-+	.remove		= soc_remove,
-+	.suspend	= soc_suspend,
-+	.resume		= soc_resume,
-+};
-+
-+/* create a new pcm */
-+static int soc_new_pcm(struct snd_soc_device *socdev,
-+	struct snd_soc_dai_link *dai_link, int num)
++/* test and update the power status of a mixer widget */
++int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
++	struct snd_kcontrol *kcontrol, int reg, int val_mask, int val, int invert)
 +{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_codec_dai *codec_dai = dai_link->codec_dai;
-+	struct snd_soc_cpu_dai *cpu_dai = dai_link->cpu_dai;
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_pcm *pcm;
-+	char new_name[64];
-+	int ret = 0, playback = 0, capture = 0;
++	struct list_head *l;
++	struct snd_soc_dapm_path *path;
++	int found = 0;
 +
-+	if((rtd = kzalloc(sizeof(struct snd_soc_pcm_runtime), GFP_KERNEL)) == NULL)
-+		return -ENOMEM;
-+	rtd->cpu_dai = cpu_dai;
-+	rtd->codec_dai = codec_dai;
-+	rtd->socdev = socdev;
++	if(widget->id != snd_soc_dapm_mixer)
++		return -ENODEV;
 +
-+	/* check client and interface hw capabilities */
-+	sprintf(new_name, "%s %s-%s-%d",dai_link->stream_name, codec_dai->name,
-+		cpu_dai_name(cpu_dai->type), num);
++	if (!snd_soc_test_bits(widget->codec, reg, val_mask, val))
++		return 0;
 +
-+	if(codec_dai->playback.channels_min)
-+		playback = 1;
-+	if(codec_dai->capture.channels_min)
-+		capture = 1;
-+	if((ret = snd_pcm_new(codec->card, new_name, codec->pcm_devs++,
-+			playback, capture, &pcm)) < 0) {
-+		printk(KERN_ERR "asoc: can't create pcm for codec %s\n", codec->name);
-+		return ret;
++	/* find dapm widget path assoc with kcontrol */
++	list_for_each(l, &widget->codec->dapm_paths)
++	{
++		path = list_entry(l, struct snd_soc_dapm_path, list);
++		if (path->kcontrol != kcontrol)
++			continue;
++
++		/* found, now check type */
++		found = 1;
++		if (val)
++			path->connect = invert ? 0:1; /* new connection */
++		else
++			path->connect = invert ? 1:0; /* old connection must be powered down */
++		break;
 +	}
 +
-+	pcm->private_data = rtd;
-+	soc_pcm_ops.mmap = socdev->platform->pcm_ops->mmap;
-+	soc_pcm_ops.pointer = socdev->platform->pcm_ops->pointer;
-+	soc_pcm_ops.ioctl = socdev->platform->pcm_ops->ioctl;
-+	soc_pcm_ops.copy = socdev->platform->pcm_ops->copy;
-+	soc_pcm_ops.silence = socdev->platform->pcm_ops->silence;
-+	soc_pcm_ops.ack = socdev->platform->pcm_ops->ack;
-+	soc_pcm_ops.page = socdev->platform->pcm_ops->page;
++	if (found)
++		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
 +
-+	if (playback)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
-+
-+	if (capture)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
-+
-+	if((ret = socdev->platform->pcm_new(codec->card, codec_dai, pcm)) < 0) {
-+		printk(KERN_ERR "asoc: platform pcm constructor failed\n");
-+		return ret;
-+	}
-+
-+	pcm->private_free = socdev->platform->pcm_free;
-+	printk(KERN_INFO "asoc: %s <-> %s mapping ok\n", codec_dai->name, cpu_dai->name);
-+	return ret;
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(dapm_mixer_update_power);
 +
-+/* codec register dump */
-+static ssize_t codec_reg_show(struct device *dev,
++/* show dapm widget status in sys fs */
++static ssize_t dapm_widget_show(struct device *dev,
 +	struct device_attribute *attr, char *buf)
 +{
 +	struct snd_soc_device *devdata = dev_get_drvdata(dev);
 +	struct snd_soc_codec *codec = devdata->codec;
-+	int i, step = 1, count = 0;
++	struct snd_soc_dapm_widget *w = NULL;
++	struct list_head *l = NULL;
++	int count = 0;
++	char *state = "not set";
 +
-+	if(!codec->reg_cache_size)
-+		return 0;
-+
-+	if(codec->reg_cache_step)
-+		step = codec->reg_cache_step;
-+
-+	count += sprintf(buf, "%s registers\n", codec->name);
-+	for(i = 0; i < codec->reg_cache_size; i += step) {
-+		count += sprintf(buf + count, "%2x: %4x\n", i, codec->read(codec, i));
-+	}
-+
-+	return count;
-+}
-+static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
-+
-+/**
-+ * snd_soc_new_ac97_codec - initailise AC97 device
-+ * @codec: audio codec
-+ * @ops: AC97 bus operations
-+ * @num: AC97 codec number
-+ *
-+ * Initialises AC97 codec resources for use by ad-hoc devices only.
-+ */
-+int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
-+	struct snd_ac97_bus_ops *ops, int num)
-+{
-+	mutex_lock(&codec->mutex);
-+
-+	if((codec->ac97 = kzalloc(sizeof(struct snd_ac97), GFP_KERNEL)) == NULL) {
-+		mutex_unlock(&codec->mutex);
-+		return -ENOMEM;
-+	}
-+
-+	if((codec->ac97->bus = kzalloc(sizeof(struct snd_ac97_bus), GFP_KERNEL)) == NULL) {
-+		kfree(codec->ac97);
-+		codec->ac97 = NULL;
-+		mutex_unlock(&codec->mutex);
-+		return -ENOMEM;
-+	}
-+
-+	codec->ac97->bus->ops = ops;
-+	codec->ac97->num = num;
-+	mutex_unlock(&codec->mutex);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_new_ac97_codec);
-+
-+/**
-+ * snd_soc_free_ac97_codec - free AC97 codec device
-+ * @codec: audio codec
-+ *
-+ * Frees AC97 codec device resources.
-+ */
-+void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
-+{
-+	mutex_lock(&codec->mutex);
-+	kfree(codec->ac97->bus);
-+	kfree(codec->ac97);
-+	codec->ac97 = NULL;
-+	mutex_unlock(&codec->mutex);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_free_ac97_codec);
-+
-+/**
-+ * snd_soc_update_bits - update codec register bits
-+ * @codec: audio codec
-+ * @reg: codec register
-+ * @mask: register mask
-+ * @value: new value
-+ *
-+ * Writes new register value.
-+ *
-+ * Returns 1 for change else 0.
-+ */
-+int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
-+				unsigned short mask, unsigned short value)
-+{
-+	int change;
-+	unsigned short old, new;
-+
-+	mutex_lock(&io_mutex);
-+	old = snd_soc_read(codec, reg);
-+	new = (old & ~mask) | value;
-+	change = old != new;
-+	if (change)
-+		snd_soc_write(codec, reg, new);
-+
-+	mutex_unlock(&io_mutex);
-+	return change;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_update_bits);
-+
-+/**
-+ * snd_soc_test_bits - test register for change
-+ * @codec: audio codec
-+ * @reg: codec register
-+ * @mask: register mask
-+ * @value: new value
-+ *
-+ * Tests a register with a new value and checks if the new value is
-+ * different from the old value.
-+ *
-+ * Returns 1 for change else 0.
-+ */
-+int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned short reg,
-+				unsigned short mask, unsigned short value)
-+{
-+	int change;
-+	unsigned short old, new;
-+
-+	mutex_lock(&io_mutex);
-+	old = snd_soc_read(codec, reg);
-+	new = (old & ~mask) | value;
-+	change = old != new;
-+	mutex_unlock(&io_mutex);
-+
-+	return change;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_test_bits);
-+
-+/**
-+ * snd_soc_get_rate - get int sample rate
-+ * @hwpcmrate: the hardware pcm rate
-+ *
-+ * Returns the audio rate integaer value, else 0.
-+ */
-+int snd_soc_get_rate(int hwpcmrate)
-+{
-+	int rate = ffs(hwpcmrate) - 1;
-+
-+	if (rate > ARRAY_SIZE(rates))
-+		return 0;
-+	return rates[rate];
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_rate);
-+
-+/**
-+ * snd_soc_new_pcms - create new sound card and pcms
-+ * @socdev: the SoC audio device
-+ *
-+ * Create a new sound card based upon the codec and interface pcms.
-+ *
-+ * Returns 0 for success, else error.
-+ */
-+int snd_soc_new_pcms(struct snd_soc_device *socdev)
-+{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	int ret = 0, i;
-+
-+	mutex_lock(&codec->mutex);
-+
-+	/* register a sound card */
-+	codec->card = snd_card_new(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1, codec->owner, 0);
-+	if (!codec->card) {
-+		printk(KERN_ERR "asoc: can't create sound card for codec %s\n", codec->name);
-+		mutex_unlock(&codec->mutex);
-+		return -ENODEV;
-+	}
-+
-+	codec->card->dev = socdev->dev;
-+	codec->card->private_data = codec;
-+	strncpy(codec->card->driver, codec->name, sizeof(codec->card->driver));
-+
-+	/* create the pcms */
-+	for(i = 0; i < machine->num_links; i++) {
-+		if((ret = soc_new_pcm(socdev, &machine->dai_link[i], i)) < 0) {
-+			printk(KERN_ERR "asoc: can't create pcm %s\n", machine->dai_link[i].stream_name);
-+			mutex_unlock(&codec->mutex);
-+			return ret;
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
++		/* only display widgets that burnm power */
++		switch (w->id) {
++		case snd_soc_dapm_switch:
++		case snd_soc_dapm_pre:
++		case snd_soc_dapm_post:
++		case snd_soc_dapm_mux:
++		case snd_soc_dapm_output:
++		case snd_soc_dapm_input:
++		case snd_soc_dapm_vmid:
++			continue;
++		case snd_soc_dapm_hp:
++		case snd_soc_dapm_mic:
++		case snd_soc_dapm_spk:
++		case snd_soc_dapm_line:
++		case snd_soc_dapm_micbias:
++		case snd_soc_dapm_dac:
++		case snd_soc_dapm_adc:
++		case snd_soc_dapm_pga:
++		case snd_soc_dapm_mixer:
++		if (w->name)
++			count += sprintf(buf + count, "%s: %s\n", w->name, w->power ? "On":"Off");
 +		}
 +	}
 +
-+	mutex_unlock(&codec->mutex);
++	switch(codec->dapm_state){
++	case SNDRV_CTL_POWER_D0:
++		state = "D0";
++		break;
++	case SNDRV_CTL_POWER_D1:
++		state = "D1";
++		break;
++	case SNDRV_CTL_POWER_D2:
++		state = "D2";
++		break;
++	case SNDRV_CTL_POWER_D3hot:
++		state = "D3hot";
++		break;
++	case SNDRV_CTL_POWER_D3cold:
++		state = "D3cold";
++		break;
++	}
++	count += sprintf(buf + count, "PM State: %s\n", state);
++
++	return count;
++}
++
++static DEVICE_ATTR(dapm_widget, 0444, dapm_widget_show, NULL);
++
++int snd_soc_dapm_sys_add(struct device *dev)
++{
++	int ret;
++
++	if (dapm_status) {
++		if((ret = device_create_file(dev, &dev_attr_dapm_widget)) < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static void snd_soc_dapm_sys_remove(struct device *dev)
++{
++	if (dapm_status)
++		device_remove_file(dev, &dev_attr_dapm_widget);
++}
++
++/* free all dapm widgets and resources */
++void dapm_free_widgets(struct snd_soc_codec *codec)
++{
++	struct snd_soc_dapm_widget *w, *lw = NULL;
++	struct snd_soc_dapm_path *p, *lp = NULL;
++	struct list_head *l;
++
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w =  list_entry(l, struct snd_soc_dapm_widget, list);
++		if (lw)
++			kfree(lw);
++		lw = w;
++	}
++	kfree(lw);
++
++	list_for_each(l, &codec->dapm_paths)
++	{
++		p =  list_entry(l, struct snd_soc_dapm_path, list);
++		if(p->long_name)
++			kfree(p->long_name);
++		if (lp)
++			kfree(lp);
++		lp = p;
++	}
++	kfree(lp);
++}
++
++/**
++ * snd_soc_dapm_sync_endpoints - scan and power dapm paths
++ * @codec: audio codec
++ *
++ * Walks all dapm audio paths and powers widgets according to their
++ * stream or path usage.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_dapm_sync_endpoints(struct snd_soc_codec *codec)
++{
++	return dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_sync_endpoints);
++
++/**
++ * snd_soc_dapm_connect_input - connect dapm widgets
++ * @codec: audio codec
++ * @sink: name of target widget
++ * @control: mixer control name
++ * @source: name of source name
++ *
++ * Connects 2 dapm widgets together via a named audio path. The sink is
++ * the widget receiving the audio signal, whilst the source is the sender
++ * of the audio signal.
++ *
++ * Returns 0 for success else error.
++ */
++int snd_soc_dapm_connect_input(struct snd_soc_codec *codec, const char *sink,
++	const char * control, const char *source)
++{
++	struct snd_soc_dapm_path *path;
++	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
++	struct list_head *l;
++	int ret = 0;
++
++	/* find src and dest widgets */
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
++
++		if(!wsink && !(strcmp(w->name, sink))) {
++			wsink = w;
++			continue;
++		}
++		if(!wsource && !(strcmp(w->name, source))) {
++			wsource = w;
++		}
++	}
++
++	if(wsource == NULL || wsink == NULL)
++		return -ENODEV;
++
++	path = kzalloc(sizeof(struct snd_soc_dapm_path), GFP_KERNEL);
++	if (!path)
++		return -ENOMEM;
++
++	path->source = wsource;
++	path->sink = wsink;
++	INIT_LIST_HEAD(&path->list);
++	INIT_LIST_HEAD(&path->list_source);
++	INIT_LIST_HEAD(&path->list_sink);
++
++	/* check for external widgets */
++	if(wsink->id == snd_soc_dapm_input) {
++		if (wsource->id == snd_soc_dapm_micbias ||
++			wsource->id == snd_soc_dapm_mic ||
++			wsink->id == snd_soc_dapm_line)
++			wsink->ext = 1;
++	}
++	if(wsource->id == snd_soc_dapm_output) {
++		if (wsink->id == snd_soc_dapm_spk ||
++			wsink->id == snd_soc_dapm_hp ||
++			wsink->id == snd_soc_dapm_line)
++			wsource->ext = 1;
++	}
++
++	/* connect static paths */
++	if(control == NULL) {
++		list_add(&path->list, &codec->dapm_paths);
++		list_add(&path->list_sink, &wsink->sources);
++		list_add(&path->list_source, &wsource->sinks);
++		path->connect = 1;
++		return 0;
++	}
++
++	/* connect dynamic paths */
++	switch(wsink->id) {
++	case snd_soc_dapm_adc:
++	case snd_soc_dapm_dac:
++	case snd_soc_dapm_pga:
++	case snd_soc_dapm_input:
++	case snd_soc_dapm_output:
++	case snd_soc_dapm_micbias:
++	case snd_soc_dapm_vmid:
++	case snd_soc_dapm_pre:
++	case snd_soc_dapm_post:
++		list_add(&path->list, &codec->dapm_paths);
++		list_add(&path->list_sink, &wsink->sources);
++		list_add(&path->list_source, &wsource->sinks);
++		path->connect = 1;
++		return 0;
++	case snd_soc_dapm_mux:
++		if((ret = dapm_connect_mux(codec, wsource, wsink, path, control,
++			&wsink->kcontrols[0])) != 0)
++			goto err;
++		break;
++	case snd_soc_dapm_switch:
++	case snd_soc_dapm_mixer:
++		if((ret = dapm_connect_mixer(codec, wsource, wsink, path, control)) != 0)
++			goto err;
++		break;
++	case snd_soc_dapm_hp:
++	case snd_soc_dapm_mic:
++	case snd_soc_dapm_line:
++	case snd_soc_dapm_spk:
++		list_add(&path->list, &codec->dapm_paths);
++		list_add(&path->list_sink, &wsink->sources);
++		list_add(&path->list_source, &wsource->sinks);
++		path->connect = 0;
++		return 0;
++	}
++	return 0;
++
++err:
++	printk(KERN_WARNING "asoc: no dapm match for %s --> %s --> %s\n", source,
++		control, sink);
++	kfree(path);
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_new_pcms);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_connect_input);
 +
 +/**
-+ * snd_soc_register_card - register sound card
-+ * @socdev: the SoC audio device
++ * snd_soc_dapm_new_widgets - add new dapm widgets
++ * @codec: audio codec
 + *
-+ * Register a SoC sound card. Also registers an AC97 device if the
-+ * codec is AC97 for ad hoc devices.
++ * Checks the codec for any new dapm widgets and creates them if found.
 + *
-+ * Returns 0 for success, else error.
++ * Returns 0 for success.
 + */
-+int snd_soc_register_card(struct snd_soc_device *socdev)
++int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
 +{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_machine *machine = socdev->machine;
-+	int ret = 0, i, ac97 = 0;
++	struct snd_soc_dapm_widget *w = NULL;
++	struct list_head *lw;
 +
 +	mutex_lock(&codec->mutex);
-+	for(i = 0; i < machine->num_links; i++) {
-+		if(socdev->machine->dai_link[i].init)
-+			socdev->machine->dai_link[i].init(codec);
-+		if(socdev->machine->dai_link[i].cpu_dai->type == SND_SOC_DAI_AC97)
-+			ac97 = 1;
++	list_for_each(lw, &codec->dapm_widgets)
++	{
++		w = list_entry(lw, struct snd_soc_dapm_widget, list);
++
++		if(w->new)
++			continue;
++
++		switch(w->id) {
++		case snd_soc_dapm_switch:
++		case snd_soc_dapm_mixer:
++			dapm_new_mixer(codec, w);
++			break;
++		case snd_soc_dapm_mux:
++			dapm_new_mux(codec, w);
++			break;
++		case snd_soc_dapm_adc:
++		case snd_soc_dapm_dac:
++		case snd_soc_dapm_pga:
++			dapm_new_pga(codec, w);
++			break;
++		case snd_soc_dapm_input:
++		case snd_soc_dapm_output:
++		case snd_soc_dapm_micbias:
++		case snd_soc_dapm_spk:
++		case snd_soc_dapm_hp:
++		case snd_soc_dapm_mic:
++		case snd_soc_dapm_line:
++		case snd_soc_dapm_vmid:
++		case snd_soc_dapm_pre:
++		case snd_soc_dapm_post:
++			break;
++		}
++		w->new = 1;
 +	}
-+	snprintf(codec->card->shortname, sizeof(codec->card->shortname),
-+		 "%s", machine->name);
-+	snprintf(codec->card->longname, sizeof(codec->card->longname),
-+		 "%s (%s)", machine->name, codec->name);
 +
-+	if((ret = snd_card_register(codec->card)) < 0) {
-+		printk(KERN_ERR "asoc: failed to register soundcard for codec %s\n",
-+				codec->name);
-+		mutex_unlock(&codec->mutex);
-+		return ret;
-+	}
-+
-+#ifdef CONFIG_SND_AC97_BUS
-+	if(ac97)
-+		soc_ac97_dev_register(codec);
-+#endif
-+
-+	snd_soc_dapm_sys_add(socdev->dev);
-+	device_create_file(socdev->dev, &dev_attr_codec_reg);
++	dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
 +	mutex_unlock(&codec->mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_register_card);
-+
-+/**
-+ * snd_soc_free_pcms - free sound card and pcms
-+ * @socdev: the SoC audio device
-+ *
-+ * Frees sound card and pcms associated with the socdev.
-+ * Also unregister the codec if it is an AC97 device.
-+ */
-+void snd_soc_free_pcms(struct snd_soc_device *socdev)
-+{
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	mutex_lock(&codec->mutex);
-+#ifdef CONFIG_SND_AC97_BUS
-+	if(codec->ac97)
-+		soc_ac97_dev_unregister(codec);
-+#endif
-+
-+	if(codec->card)
-+		snd_card_free(codec->card);
-+	device_remove_file(socdev->dev, &dev_attr_codec_reg);
-+	mutex_unlock(&codec->mutex);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_free_pcms);
-+
-+/**
-+ * snd_soc_set_runtime_hwparams - set the runtime hardware parameters
-+ * @substream: the pcm substream
-+ * @hw: the hardware parameters
-+ *
-+ * Sets the substream runtime hardware parameters.
-+ */
-+int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
-+	const struct snd_pcm_hardware *hw)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	runtime->hw.info = hw->info;
-+	runtime->hw.formats = hw->formats;
-+	runtime->hw.period_bytes_min = hw->period_bytes_min;
-+	runtime->hw.period_bytes_max = hw->period_bytes_max;
-+	runtime->hw.periods_min = hw->periods_min;
-+	runtime->hw.periods_max = hw->periods_max;
-+	runtime->hw.buffer_bytes_max = hw->buffer_bytes_max;
-+	runtime->hw.fifo_size = hw->fifo_size;
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
 +
 +/**
-+ * snd_soc_cnew - create new control
-+ * @_template: control template
-+ * @data: control private data
-+ * @lnng_name: control long name
-+ *
-+ * Create a new mixer control from a template control.
-+ *
-+ * Returns 0 for success, else error.
-+ */
-+struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
-+	void *data, char *long_name)
-+{
-+	struct snd_kcontrol_new template;
-+
-+	memcpy(&template, _template, sizeof(template));
-+	if(long_name)
-+		template.name = long_name;
-+	template.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
-+	template.index = 0;
-+
-+	return snd_ctl_new1(&template, data);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_cnew);
-+
-+/**
-+ * snd_soc_info_enum_double - enumerated double mixer info callback
++ * snd_soc_dapm_get_volsw - dapm mixer get callback
 + * @kcontrol: mixer control
 + * @uinfo: control element information
 + *
-+ * Callback to provide information about a double enumerated
-+ * mixer control.
++ * Callback to get the value of a dapm mixer control.
 + *
 + * Returns 0 for success.
 + */
-+int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = e->shift_l == e->shift_r ? 1 : 2;
-+	uinfo->value.enumerated.items = e->mask;
-+
-+	if (uinfo->value.enumerated.item > e->mask - 1)
-+		uinfo->value.enumerated.item = e->mask - 1;
-+	strcpy(uinfo->value.enumerated.name, e->texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_enum_double);
-+
-+/**
-+ * snd_soc_get_enum_double - enumerated double mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to get the value of a double enumerated mixer.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
++int snd_soc_dapm_get_volsw(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned short val, bitmask;
-+
-+	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
-+		;
-+	val = snd_soc_read(codec, e->reg);
-+	ucontrol->value.enumerated.item[0] = (val >> e->shift_l) & (bitmask - 1);
-+	if (e->shift_l != e->shift_r)
-+		ucontrol->value.enumerated.item[1] = (val >> e->shift_r) & (bitmask - 1);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_enum_double);
-+
-+/**
-+ * snd_soc_put_enum_double - enumerated double mixer put callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to set the value of a double enumerated mixer.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned short val;
-+	unsigned short mask, bitmask;
-+
-+	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
-+		;
-+	if (ucontrol->value.enumerated.item[0] > e->mask - 1)
-+		return -EINVAL;
-+	val = ucontrol->value.enumerated.item[0] << e->shift_l;
-+	mask = (bitmask - 1) << e->shift_l;
-+	if (e->shift_l != e->shift_r) {
-+		if (ucontrol->value.enumerated.item[1] > e->mask - 1)
-+			return -EINVAL;
-+		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
-+		mask |= (bitmask - 1) << e->shift_r;
-+	}
-+
-+	return snd_soc_update_bits(codec, e->reg, mask, val);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_put_enum_double);
-+
-+/**
-+ * snd_soc_info_enum_ext - external enumerated single mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information about an external enumerated
-+ * single mixer.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = e->mask;
-+
-+	if (uinfo->value.enumerated.item > e->mask - 1)
-+		uinfo->value.enumerated.item = e->mask - 1;
-+	strcpy(uinfo->value.enumerated.name, e->texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_enum_ext);
-+
-+/**
-+ * snd_soc_info_volsw_ext - external single mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information about a single external mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_volsw_ext(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	int mask = kcontrol->private_value;
-+
-+	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = mask;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_ext);
-+
-+/**
-+ * snd_soc_info_bool_ext - external single boolean mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information about a single boolean external mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_bool_ext(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_bool_ext);
-+
-+/**
-+ * snd_soc_info_volsw - single mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information about a single mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0x0f;
-+	int rshift = (kcontrol->private_value >> 12) & 0x0f;
-+
-+	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = shift == rshift ? 1 : 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = mask;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw);
-+
-+/**
-+ * snd_soc_get_volsw - single mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to get the value of a single mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
 +	int reg = kcontrol->private_value & 0xff;
 +	int shift = (kcontrol->private_value >> 8) & 0x0f;
 +	int rshift = (kcontrol->private_value >> 12) & 0x0f;
 +	int mask = (kcontrol->private_value >> 16) & 0xff;
 +	int invert = (kcontrol->private_value >> 24) & 0x01;
 +
-+	ucontrol->value.integer.value[0] = (snd_soc_read(codec, reg) >> shift) & mask;
++	/* return the saved value if we are powered down */
++	if(widget->id == snd_soc_dapm_pga && !widget->power) {
++		ucontrol->value.integer.value[0] = widget->saved_value;
++		return 0;
++	}
++
++	ucontrol->value.integer.value[0] =
++		(snd_soc_read(widget->codec, reg) >> shift) & mask;
 +	if (shift != rshift)
-+		ucontrol->value.integer.value[1] = (snd_soc_read(codec, reg) >> rshift) & mask;
++		ucontrol->value.integer.value[1] =
++			(snd_soc_read(widget->codec, reg) >> rshift) & mask;
 +	if (invert) {
-+		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
++		ucontrol->value.integer.value[0] =
++			mask - ucontrol->value.integer.value[0];
 +		if (shift != rshift)
-+			ucontrol->value.integer.value[1] = mask - ucontrol->value.integer.value[1];
++			ucontrol->value.integer.value[1] =
++				mask - ucontrol->value.integer.value[1];
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_get_volsw);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_get_volsw);
 +
 +/**
-+ * snd_soc_put_volsw - single mixer put callback
++ * snd_soc_dapm_put_volsw - dapm mixer set callback
 + * @kcontrol: mixer control
 + * @uinfo: control element information
 + *
-+ * Callback to set the value of a single mixer control.
++ * Callback to set the value of a dapm mixer control.
 + *
 + * Returns 0 for success.
 + */
-+int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
++int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
 +	int reg = kcontrol->private_value & 0xff;
 +	int shift = (kcontrol->private_value >> 8) & 0x0f;
 +	int rshift = (kcontrol->private_value >> 12) & 0x0f;
 +	int mask = (kcontrol->private_value >> 16) & 0xff;
 +	int invert = (kcontrol->private_value >> 24) & 0x01;
-+	int err;
 +	unsigned short val, val2, val_mask;
++	int ret;
 +
 +	val = (ucontrol->value.integer.value[0] & mask);
++
 +	if (invert)
 +		val = mask - val;
 +	val_mask = mask << shift;
@@ -1779,125 +1193,252 @@ Index: alsa-kernel/soc/soc-core.c
 +		val_mask |= mask << rshift;
 +		val |= val2 << rshift;
 +	}
-+	err = snd_soc_update_bits(codec, reg, val_mask, val);
-+	return err;
++
++	mutex_lock(&widget->codec->mutex);
++	widget->value = val;
++
++	/* save volume value if the widget is powered down */
++	if(widget->id == snd_soc_dapm_pga && !widget->power) {
++		widget->saved_value = val;
++		mutex_unlock(&widget->codec->mutex);
++		return 1;
++	}
++
++	dapm_mixer_update_power(widget, kcontrol, reg, val_mask, val, invert);
++	if(widget->event) {
++		if(widget->event_flags & SND_SOC_DAPM_PRE_REG)
++			if ((ret = widget->event(widget, SND_SOC_DAPM_PRE_REG )) < 0) {
++				mutex_unlock(&widget->codec->mutex);
++				return ret;
++			}
++		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
++		if(widget->event_flags & SND_SOC_DAPM_POST_REG)
++			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
++	} else
++		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
++
++	mutex_unlock(&widget->codec->mutex);
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_put_volsw);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
 +
 +/**
-+ * snd_soc_info_volsw_2r - double mixer info callback
++ * snd_soc_dapm_get_enum_double - dapm enumerated double mixer get callback
 + * @kcontrol: mixer control
 + * @uinfo: control element information
 + *
-+ * Callback to provide information about a double mixer control that
-+ * spans 2 codec registers.
++ * Callback to get the value of a dapm enumerated double mixer control.
 + *
 + * Returns 0 for success.
 + */
-+int snd_soc_info_volsw_2r(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	int mask = (kcontrol->private_value >> 12) & 0xff;
-+
-+	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = mask;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_2r);
-+
-+/**
-+ * snd_soc_get_volsw_2r - double mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to get the value of a double mixer control that spans 2 registers.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_get_volsw_2r(struct snd_kcontrol *kcontrol,
++int snd_soc_dapm_get_enum_double(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int reg2 = (kcontrol->private_value >> 24) & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0x0f;
-+	int mask = (kcontrol->private_value >> 12) & 0xff;
-+	int invert = (kcontrol->private_value >> 20) & 0x01;
++	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	unsigned short val, bitmask;
 +
-+	ucontrol->value.integer.value[0] = (snd_soc_read(codec, reg) >> shift) & mask;
-+	ucontrol->value.integer.value[1] = (snd_soc_read(codec, reg2) >> shift) & mask;
-+	if (invert) {
-+		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
-+		ucontrol->value.integer.value[1] = mask - ucontrol->value.integer.value[1];
++	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
++		;
++	val = snd_soc_read(widget->codec, e->reg);
++	ucontrol->value.enumerated.item[0] = (val >> e->shift_l) & (bitmask - 1);
++	if (e->shift_l != e->shift_r)
++		ucontrol->value.enumerated.item[1] = (val >> e->shift_r) & (bitmask - 1);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_double);
++
++/**
++ * snd_soc_dapm_put_enum_double - dapm enumerated double mixer set callback
++ * @kcontrol: mixer control
++ * @uinfo: control element information
++ *
++ * Callback to set the value of a dapm enumerated double mixer control.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
++	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	unsigned short val, mux;
++	unsigned short mask, bitmask;
++	int ret = 0;
++
++	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
++		;
++	if (ucontrol->value.enumerated.item[0] > e->mask - 1)
++		return -EINVAL;
++	mux = ucontrol->value.enumerated.item[0];
++	val = mux << e->shift_l;
++	mask = (bitmask - 1) << e->shift_l;
++	if (e->shift_l != e->shift_r) {
++		if (ucontrol->value.enumerated.item[1] > e->mask - 1)
++			return -EINVAL;
++		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
++		mask |= (bitmask - 1) << e->shift_r;
++	}
++
++	mutex_lock(&widget->codec->mutex);
++	widget->value = val;
++	dapm_mux_update_power(widget, kcontrol, mask, mux, e);
++	if(widget->event) {
++		if(widget->event_flags & SND_SOC_DAPM_PRE_REG)
++			if((ret = widget->event(widget, SND_SOC_DAPM_PRE_REG)) < 0) {
++				mutex_unlock(&widget->codec->mutex);
++				return ret;
++			}
++		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
++		if(widget->event_flags & SND_SOC_DAPM_POST_REG)
++			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
++	} else
++		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
++
++	mutex_unlock(&widget->codec->mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
++
++/**
++ * snd_soc_dapm_new_control - create new dapm control
++ * @codec: audio codec
++ * @widget: widget template
++ *
++ * Creates a new dapm control based upon the template.
++ *
++ * Returns 0 for success else error.
++ */
++int snd_soc_dapm_new_control(struct snd_soc_codec *codec,
++	const struct snd_soc_dapm_widget *widget)
++{
++	struct snd_soc_dapm_widget *w;
++
++	if ((w = dapm_cnew_widget(widget)) == NULL)
++		return -ENOMEM;
++
++	w->codec = codec;
++	INIT_LIST_HEAD(&w->sources);
++	INIT_LIST_HEAD(&w->sinks);
++	INIT_LIST_HEAD(&w->list);
++	list_add(&w->list, &codec->dapm_widgets);
++
++	/* machine layer set ups unconnected pins and insertions */
++	w->connected = 1;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_new_control);
++
++/**
++ * snd_soc_dapm_stream_event - send a stream event to the dapm core
++ * @codec: audio codec
++ * @stream: stream name
++ * @event: stream event
++ *
++ * Sends a stream event to the dapm core. The core then makes any
++ * necessary widget power changes.
++ *
++ * Returns 0 for success else error.
++ */
++int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
++	char *stream, int event)
++{
++	struct snd_soc_dapm_widget *w;
++	struct list_head *l = NULL;
++
++	mutex_lock(&codec->mutex);
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
++
++		if (!w->sname)
++			continue;
++		dbg("widget %s\n %s stream %s event %d\n",w->name, w->sname, stream, event);
++		if (strstr(w->sname, stream)) {
++			switch(event) {
++			case SND_SOC_DAPM_STREAM_START:
++				w->active = 1;
++				break;
++			case SND_SOC_DAPM_STREAM_STOP:
++				w->active = 0;
++				break;
++			case SND_SOC_DAPM_STREAM_SUSPEND:
++				if (w->active)
++					w->suspend = 1;
++				w->active = 0;
++				break;
++			case SND_SOC_DAPM_STREAM_RESUME:
++				if(w->suspend) {
++					w->active = 1;
++					w->suspend = 0;
++				}
++				break;
++			case SND_SOC_DAPM_STREAM_PAUSE_PUSH:
++				break;
++			case SND_SOC_DAPM_STREAM_PAUSE_RELEASE:
++				break;
++			}
++		}
++	}
++	mutex_unlock(&codec->mutex);
++
++	dapm_power_widgets(codec, event);
++	dump_dapm(codec, __FUNCTION__);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_event);
++
++/**
++ * snd_soc_dapm_set_endpoint - set audio endpoint status
++ * @codec: audio codec
++ * @endpoint: audio signal endpoint (or start point)
++ * @status: point status
++ *
++ * Set audio endpoint status - connected or disconnected.
++ *
++ * Returns 0 for success else error.
++ */
++int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
++	char *endpoint, int status)
++{
++	struct snd_soc_dapm_widget *w;
++	struct list_head *l = NULL;
++
++	list_for_each(l, &codec->dapm_widgets)
++	{
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
++
++		if(!strcmp(w->name, endpoint)) {
++			w->connected = status;
++		}
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_set_endpoint);
 +
 +/**
-+ * snd_soc_put_volsw_2r - double mixer set callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
++ * snd_soc_dapm_free - free dapm resources
++ * @socdev: SoC device
 + *
-+ * Callback to set the value of a double mixer control that spans 2 registers.
-+ *
-+ * Returns 0 for success.
++ * Free all dapm widgets and resources.
 + */
-+int snd_soc_put_volsw_2r(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++void snd_soc_dapm_free(struct snd_soc_device *socdev)
 +{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int reg2 = (kcontrol->private_value >> 24) & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0x0f;
-+	int mask = (kcontrol->private_value >> 12) & 0xff;
-+	int invert = (kcontrol->private_value >> 20) & 0x01;
-+	int err;
-+	unsigned short val, val2, val_mask;
++	struct snd_soc_codec *codec = socdev->codec;
 +
-+	val_mask = mask << shift;
-+	val = (ucontrol->value.integer.value[0] & mask);
-+	val2 = (ucontrol->value.integer.value[1] & mask);
-+
-+	if (invert) {
-+		val = mask - val;
-+		val2 = mask - val2;
-+	}
-+
-+	val = val << shift;
-+	val2 = val2 << shift;
-+
-+	if((err = snd_soc_update_bits(codec, reg, val_mask, val)) < 0)
-+		return err;
-+
-+	err = snd_soc_update_bits(codec, reg2, val_mask, val2);
-+	return err;
++	snd_soc_dapm_sys_remove(socdev->dev);
++	dapm_free_widgets(codec);
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r);
-+
-+static int __devinit snd_soc_init(void)
-+{
-+	printk(KERN_INFO "ASoC version %s\n", SND_SOC_VERSION);
-+	return platform_driver_register(&soc_driver);
-+}
-+
-+static void snd_soc_exit(void)
-+{
-+ 	platform_driver_unregister(&soc_driver);
-+}
-+
-+module_init(snd_soc_init);
-+module_exit(snd_soc_exit);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
 +
 +/* Module information */
 +MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_DESCRIPTION("ALSA SoC Core");
++MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
 +MODULE_LICENSE("GPL");
 
---=-xuB88ZfC+7N1UVNlX6T0
+--=-+3zM+2NdgxQVMEmYOx1T
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1908,7 +1449,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-xuB88ZfC+7N1UVNlX6T0
+--=-+3zM+2NdgxQVMEmYOx1T
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1919,4 +1460,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-xuB88ZfC+7N1UVNlX6T0--
+--=-+3zM+2NdgxQVMEmYOx1T--
