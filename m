@@ -1,16 +1,13 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: ATI IXP hardware mixing
-Date: Fri, 15 Sep 2006 09:28:33 +0200
-Message-ID: <1158305313.19232.270994168@webmail.messagingengine.com>
-References: <eeboe2$4r0$1@sea.gmane.org> <1158245895.7948.69.camel@mindpipe>
-	<eebrns$i2v$1@sea.gmane.org> <1158247753.7948.77.camel@mindpipe>
-	<eebtj7$qrn$1@sea.gmane.org>
+From: Junji Umeno <umeno@elwsc.co.jp>
+Subject: Re: Does it need full-duplex to use snd_pcm_link ?
+Date: Fri, 15 Sep 2006 16:33:08 +0900
+Message-ID: <20060915163308.40523955@localhost.localdomain>
+References: <20060915145400.57815d0c@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <eebtj7$qrn$1@sea.gmane.org>
+In-Reply-To: <20060915145400.57815d0c@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,35 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Zephiris <zephiris@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Zephiris wrote:
-> I'm trying to get the ATI IXP driver to use hardware mixing.
-> [...] all I want is to know is what to change in the source that needs
-> to support it, since several glances through the source and brief API
-> docs, as well as mailing lists, etc, don't reveal effectively nothing
-> supporting hardware mixing at all.
-
-It's documented in the description of snd_pcm_new() in the section
-"Constructors":
-| The fourth and fifth arguments are the number of substreams for
-| playback and capture, respectively. [...]
-| If a chip supports multiple playbacks or captures, you can specify
-| more numbers, but they must be handled properly in open/close, etc.
-| callbacks. When you need to know which substream you are referring to,
-| then it can be obtained from struct snd_pcm_substream data passed to
-| each callback as follows:
-| 
-|   struct snd_pcm_substream *substream;
-|   int index = substream->number;
-
-Then you have to use that index to access the corresponding DMA engine
-of the hardware.
 
 
-Regards,
-Clemens
+On Fri, 15 Sep 2006 14:54:00 +0900
+Junji Umeno <umeno@elwsc.co.jp> wrote:
+
+> I failed to record with the example code 'latency.c' written in the doxygen manual.
+> When it plays back and records at the same time, using snd_pcm_link,
+> should the hardware be implemented as full-duplex of i/o?
+> As previous comments pointed in this lists,
+> some buffer length data are written into a playback handler,
+> and then reading starts.
+> They said, it should be needed to have 4096 bytes written in the write buffer.
+> But in my case, 
+> 'writei' continues to return EAGAIN if more than 64byte are to be written.
+> 
+> Any comment is welcom.
+> -- 
+> UMENO, Junji
+> ElmicWescom, Inc.
+> 
+
+Does it depend on the device's read/write buffer size, wchich is set by 'snd_pcm_hw_params_set_rate' ?
+
+-- 
+UMENO, Junji
+ElmicWescom, Inc.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
