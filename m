@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 4/5] ASoC: dynamic audio power management (DAPM)
-Date: Fri, 15 Sep 2006 14:22:12 +0100
-Message-ID: <1158326532.22950.74.camel@localhost.localdomain>
+Subject: [PATCH 5/5] ASoC: documentation & maintainer
+Date: Fri, 15 Sep 2006 14:24:58 +0100
+Message-ID: <1158326698.22950.77.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-+3zM+2NdgxQVMEmYOx1T"
+Content-Type: multipart/mixed; boundary="=-EOzIhaMn6OzUzgdaEyzr"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,1427 +18,1628 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-+3zM+2NdgxQVMEmYOx1T
+--=-EOzIhaMn6OzUzgdaEyzr
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds Dynamic Audio Power Management (DAPM) to ASoC.
+This patch adds documentation describing the ASoC architecture and a
+maintainer entry for ASoC.
 
-Dynamic Audio Power Management (DAPM) is designed to allow portable and
-handheld Linux devices to use the minimum amount of power within the
-audio subsystem at all times. It is independent of other kernel PM and
-as such, can easily co-exist with the other PM systems.
+The documentation includes the following files:-
 
-DAPM is also completely transparent to all user space applications as
-all power switching is done within the ASoC core. No code changes or
-recompiling are required for user space applications. DAPM makes power
-switching decisions based upon any audio stream (capture/playback)
-activity and audio mixer settings within the device.
+codec.txt: Codec driver internals.
 
-DAPM spans the whole machine. It covers power control within the entire
-audio subsystem, this includes internal codec power blocks and machine
-level power systems.
+DAI.txt: Description of Digital Audio Interface standards and how to
+configure a DAI within your codec and CPU DAI drivers.
 
-There are 4 power domains within DAPM:-
+dapm.txt: Dynamic Audio Power Management.
 
-1. Codec domain - VREF, VMID (core codec and audio power)
-Usually controlled at codec probe/remove and suspend/resume, although
-can be set at stream time if power is not needed for sidetone, etc.
+platform.txt: Platform audio DMA and DAI.
 
-2. Platform/Machine domain - physically connected inputs and outputs
-Is platform/machine and user action specific, is configured by the
-machine driver and responds to asynchronous events e.g when HP are
-inserted
+machine.txt: Machine driver internals.
 
-3. Path domain - audio subsystem signal paths
-Automatically set when mixer and mux settings are changed by the user.
-e.g. alsamixer, amixer.
+pop_clicks.txt: How to minimise audio artifacts.
 
-4. Stream domain - DAC's and ADC's.
-Enabled and disabled when stream playback/capture is started and stopped
-respectively. e.g. aplay, arecord.
+clocking.txt: ASoC clocking for best power performance.
 
-All DAPM power switching decisions are made automatically by consulting
-an audio routing map of the whole machine. This map is specific to each
-machine and consists of the interconnections between every audio
-component (including internal codec components).
 
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
+
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
 
---=-+3zM+2NdgxQVMEmYOx1T
-Content-Disposition: attachment; filename=asoc-dapm.patch
-Content-Type: text/x-patch; name=asoc-dapm.patch; charset=UTF-8
+
+--=-EOzIhaMn6OzUzgdaEyzr
+Content-Disposition: attachment; filename=asoc-docs.patch
+Content-Type: text/x-patch; name=asoc-docs.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/soc-dapm.c
+
+Index: alsa-kernel/Documentation/soc/DAI.txt
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/soc-dapm.c
-@@ -0,0 +1,1360 @@
-+/*
-+ * soc-dapm.c  --  ALSA SoC Dynamic Audio Power Management
-+ *
-+ * Copyright 2005 Wolfson Microelectronics PLC.
-+ * Author: Liam Girdwood
-+ *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    12th Aug 2005   Initial version.
-+ *    25th Oct 2005   Implemented path power domain.
-+ *    18th Dec 2005   Implemented machine and stream level power domain.
-+ *
-+ *  Features:
-+ *    o Changes power status of internal codec blocks depending on the
-+ *      dynamic configuration of codec internal audio paths and active
-+ *      DAC's/ADC's.
-+ *    o Platform power domain - can support external components i.e. amps and
-+ *      mic/meadphone insertion events.
-+ *    o Automatic Mic Bias support
-+ *    o Jack insertion power event initiation - e.g. hp insertion will enable
-+ *      sinks, dacs, etc
-+ *    o Delayed powerdown of audio susbsytem to reduce pops between a quick
-+ *      device reopen.
-+ *
-+ *  Todo:
-+ *    o DPM power change sequencing - allow for configurable per codec sequences
-+ *    o Support for analogue bias optimisation.
-+ *    o Support for reduced codec oversampling rates.
-+ *    o Support for reduced codec bias currents.
-+ */
++++ alsa-kernel/Documentation/soc/DAI.txt
+@@ -0,0 +1,380 @@
++ASoC currently supports the three main Digital Audio Interfaces (DAI) found on
++SoC controllers and portable audio CODECS today, namely AC97, I2S and PCM.
 +
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/bitops.h>
-+#include <linux/platform_device.h>
-+#include <linux/jiffies.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
 +
-+/* debug */
-+#define DAPM_DEBUG 0
-+#if DAPM_DEBUG
-+#define dump_dapm(codec, action) dbg_dump_dapm(codec, action)
-+#define dbg(format, arg...) printk(format, ## arg)
-+#else
-+#define dump_dapm(codec, action)
-+#define dbg(format, arg...)
-+#endif
++AC97
++====
 +
-+#define POP_DEBUG 0
-+#if POP_DEBUG
-+#define POP_TIME 500
-+#define pop_wait(time) schedule_timeout_interruptible(msecs_to_jiffies(time))
-+#define pop_dbg(format, arg...) printk(format, ## arg); pop_wait(POP_TIME)
-+#else
-+#define pop_dbg(format, arg...)
-+#define pop_wait(time)
-+#endif
++  AC97 is a five wire interface commonly found on many PC sound cards. It is
++now also popular in many portable devices. This DAI has a reset line and time
++multiplexes its data on its SDATA_OUT (playback) and SDATA_IN (capture) lines.
++The bit clock (BCLK) is always driven by the CODEC (usually 12.288MHz) and the
++frame (FRAME) (usually 48kHz) is always driven by the controller. Each AC97
++frame is 21uS long and is divided into 13 time slots.
 +
-+/* dapm power sequences - make this per codec in the future */
-+static int dapm_up_seq[] = {
-+	snd_soc_dapm_pre, snd_soc_dapm_micbias, snd_soc_dapm_mic, snd_soc_dapm_mux,
-+	snd_soc_dapm_dac, snd_soc_dapm_mixer, snd_soc_dapm_pga, snd_soc_dapm_adc,
-+	snd_soc_dapm_hp, snd_soc_dapm_spk, snd_soc_dapm_post
++The AC97 specification can be found at http://intel.com/
++
++
++I2S
++===
++
++ I2S is a common 4 wire DAI used in HiFi, STB and portable devices. The Tx and
++Rx lines are used for audio transmision, whilst the bit clock (BCLK) and
++left/right clock (LRC) synchronise the link. I2S is flexible in that either the
++controller or CODEC can drive (master) the BCLK and LRC clock lines. Bit clock
++usually varies depending on the sample rate and the master system clock
++(SYSCLK). LRCLK is the same as the sample rate. A few devices support separate
++ADC and DAC LRCLK's, this allows for similtanious capture and playback at
++different sample rates.
++
++I2S has several different operating modes:-
++
++ o I2S - MSB is transmitted on the falling edge of the first BCLK after LRC
++         transition.
++
++ o Left Justified - MSB is transmitted on transition of LRC.
++
++ o Right Justified - MSB is transmitted sample size BCLK's before LRC
++                     transition.
++
++PCM
++===
++
++PCM is another 4 wire interface, very similar to I2S, that can support a more
++flexible protocol. It has bit clock (BCLK) and sync (SYNC) lines that are used
++to synchronise the link whilst the Tx and Rx lines are used to transmit and
++receive the audio data. Bit clock usually varies depending on sample rate
++whilst sync runs at the sample rate. PCM also supports Time Division
++Multiplexing (TDM) in that several devices can use the bus similtaniuosly (This
++is sometimes referred to as network mode).
++
++Common PCM operating modes:-
++
++ o Mode A - MSB is transmitted on falling edge of first BCLK after FRAME/SYNC.
++
++ o Mode B - MSB is transmitted on rising edge of FRAME/SYNC.
++
++
++ASoC DAI Configuration
++======================
++
++Every CODEC DAI and SoC DAI must have their capabilities defined in order to
++be configured together at runtime when the audio and clocking parameters are
++known. This is achieved by creating an array of struct snd_soc_hw_mode in the
++the CODEC and SoC interface drivers. Each element in the array describes a DAI
++mode and each mode is usually based upon the DAI system clock to sample rate
++ratio (FS).
++
++i.e. 48k sample rate @ 256 FS = sytem clock of 12.288 MHz
++     48000 * 256 = 12288000
++
++The CPU and Codec DAI modes are then ANDed together at runtime to determine the
++rutime DAI configuration for both the Codec and CPU.
++
++When creating a new codec or SoC DAI it's probably best to start of with a few
++sample rates first and then test your interface.
++
++struct snd_soc_dai_mode is defined (in soc.h) as:-
++
++/* SoC DAI mode */
++struct snd_soc_hw_mode {
++	unsigned int fmt:16;		/* SND_SOC_DAIFMT_* */
++	unsigned int tdm:16;		/* SND_SOC_DAITDM_* */
++	unsigned int pcmfmt:6; 		/* SNDRV_PCM_FORMAT_* */
++	unsigned int pcmrate:16;	/* SND_SOC_DAIRATE_* */
++	unsigned int pcmdir:2;		/* SND_SOC_DAIDIR_* */
++	unsigned int flags:8;		/* hw flags */
++	unsigned int fs:32;			/* mclk to rate dividers */
++	unsigned int bfs:16;		/* mclk to bclk dividers */
++	unsigned long priv;	        /* private mode data */
 +};
-+static int dapm_down_seq[] = {
-+	snd_soc_dapm_pre, snd_soc_dapm_adc, snd_soc_dapm_hp, snd_soc_dapm_spk,
-+	snd_soc_dapm_pga, snd_soc_dapm_mixer, snd_soc_dapm_dac, snd_soc_dapm_mic,
-+	snd_soc_dapm_micbias, snd_soc_dapm_mux, snd_soc_dapm_post
-+};
 +
-+static int dapm_status = 1;
-+module_param(dapm_status, int, 0);
-+MODULE_PARM_DESC(dapm_status, "enable DPM sysfs entries");
++fmt:
++----
++This field defines the DAI mode hardware format (e.g. I2S settings) and
++supports the following settings:-
 +
-+/* create a new dapm widget */
-+static struct snd_soc_dapm_widget *dapm_cnew_widget(
-+	const struct snd_soc_dapm_widget *_widget)
-+{
-+	struct snd_soc_dapm_widget* widget;
-+	widget = kmalloc(sizeof(struct snd_soc_dapm_widget), GFP_KERNEL);
-+	if (!widget)
-+		return NULL;
++ 1) hardware DAI formats
 +
-+	memcpy(widget, _widget, sizeof(struct snd_soc_dapm_widget));
-+	return widget;
-+}
++#define SND_SOC_DAIFMT_I2S        (1 << 0)	/* I2S mode */
++#define SND_SOC_DAIFMT_RIGHT_J    (1 << 1)	/* Right justified mode */
++#define SND_SOC_DAIFMT_LEFT_J     (1 << 2)	/* Left Justified mode */
++#define SND_SOC_DAIFMT_DSP_A      (1 << 3)	/* L data msb after FRM */
++#define SND_SOC_DAIFMT_DSP_B      (1 << 4)	/* L data msb during FRM */
++#define SND_SOC_DAIFMT_AC97       (1 << 5)	/* AC97 */
 +
-+/* set up initial codec paths */
-+static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
-+	struct snd_soc_dapm_path *p, int i)
-+{
-+	switch (w->id) {
-+	case snd_soc_dapm_switch:
-+	case snd_soc_dapm_mixer: {
-+		int val;
-+		int reg = w->kcontrols[i].private_value & 0xff;
-+		int shift = (w->kcontrols[i].private_value >> 8) & 0x0f;
-+		int mask = (w->kcontrols[i].private_value >> 16) & 0xff;
-+		int invert = (w->kcontrols[i].private_value >> 24) & 0x01;
++ 2) hw DAI signal inversions
 +
-+		val = snd_soc_read(w->codec, reg);
-+		val = (val >> shift) & mask;
++#define SND_SOC_DAIFMT_NB_NF		(1 << 8)	/* normal bit clock + frame */
++#define SND_SOC_DAIFMT_NB_IF		(1 << 9)	/* normal bclk + inv frm */
++#define SND_SOC_DAIFMT_IB_NF		(1 << 10)	/* invert bclk + nor frm */
++#define SND_SOC_DAIFMT_IB_IF		(1 << 11)	/* invert bclk + frm */
 +
-+		if((invert && !val) || (!invert && val))
-+			p->connect = 1;
-+		else
-+			p->connect = 0;
-+	}
-+	break;
-+	case snd_soc_dapm_mux: {
-+		struct soc_enum *e = (struct soc_enum *)w->kcontrols[i].private_value;
-+		int val, item, bitmask;
++ 3) hw clock masters
++    This is wrt the codec, the inverse is true for the interface
++    i.e. if the codec is clk and frm master then the interface is
++    clk and frame slave.
 +
-+		for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
-+		;
-+		val = snd_soc_read(w->codec, e->reg);
-+		item = (val >> e->shift_l) & (bitmask - 1);
++#define SND_SOC_DAIFMT_CBM_CFM		(1 << 12)	/* codec clk & frm master */
++#define SND_SOC_DAIFMT_CBS_CFM		(1 << 13)	/* codec clk slave & frm master */
++#define SND_SOC_DAIFMT_CBM_CFS		(1 << 14)	/* codec clk master & frame slave */
++#define SND_SOC_DAIFMT_CBS_CFS		(1 << 15)	/* codec clk & frm slave */
 +
-+		p->connect = 0;
-+		for (i = 0; i < e->mask; i++) {
-+			if (!(strcmp(p->name, e->texts[i])) && item == i)
-+				p->connect = 1;
-+		}
-+	}
-+	break;
-+	/* does not effect routing - always connected */
-+	case snd_soc_dapm_pga:
-+	case snd_soc_dapm_output:
-+	case snd_soc_dapm_adc:
-+	case snd_soc_dapm_input:
-+	case snd_soc_dapm_dac:
-+	case snd_soc_dapm_micbias:
-+	case snd_soc_dapm_vmid:
-+		p->connect = 1;
-+	/* does effect routing - dynamically connected */
-+	case snd_soc_dapm_hp:
-+	case snd_soc_dapm_mic:
-+	case snd_soc_dapm_spk:
-+	case snd_soc_dapm_line:
-+	case snd_soc_dapm_pre:
-+	case snd_soc_dapm_post:
-+		p->connect = 0;
-+	break;
-+	}
-+}
++At least one option from each section must be selected. Multiple selections are
++also supported e.g.
 +
-+/* connect mux widget to it's interconnecting audio paths */
-+static int dapm_connect_mux(struct snd_soc_codec *codec,
-+	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
-+	struct snd_soc_dapm_path *path, const char *control_name,
-+	const struct snd_kcontrol_new *kcontrol)
-+{
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	int i;
++ .fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_RIGHT_J | \
++	SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_NB_IF | SND_SOC_DAIFMT_IB_NF | \
++	SND_SOC_DAIFMT_IB_IF
 +
-+	for (i = 0; i < e->mask; i++) {
-+		if (!(strcmp(control_name, e->texts[i]))) {
-+			list_add(&path->list, &codec->dapm_paths);
-+			list_add(&path->list_sink, &dest->sources);
-+			list_add(&path->list_source, &src->sinks);
-+			path->name = (char*)e->texts[i];
-+			dapm_set_path_status(dest, path, 0);
-+			return 0;
-+		}
-+	}
 +
-+	return -ENODEV;
-+}
++tdm:
++------
++This field defines the Time Division Multiplexing left and right word
++positions for the DAI mode if applicable. Set to SND_SOC_DAITDM_LRDW(0,0) for
++no TDM.
 +
-+/* connect mixer widget to it's interconnecting audio paths */
-+static int dapm_connect_mixer(struct snd_soc_codec *codec,
-+	struct snd_soc_dapm_widget *src, struct snd_soc_dapm_widget *dest,
-+	struct snd_soc_dapm_path *path, const char *control_name)
-+{
-+	int i;
 +
-+	/* search for mixer kcontrol */
-+	for (i = 0; i < dest->num_kcontrols; i++) {
-+		if(!strcmp(control_name, dest->kcontrols[i].name)) {
-+			list_add(&path->list, &codec->dapm_paths);
-+			list_add(&path->list_sink, &dest->sources);
-+			list_add(&path->list_source, &src->sinks);
-+			path->name = dest->kcontrols[i].name;
-+			dapm_set_path_status(dest, path, i);
-+			return 0;
-+		}
-+	}
-+	return -ENODEV;
-+}
++pcmfmt:
++---------
++The hardware PCM format. This describes the PCM formats supported by the DAI
++mode e.g.
 +
-+/* update dapm codec register bits */
-+static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
-+{
-+	int change, power;
-+	unsigned short old, new;
-+	struct snd_soc_codec *codec = widget->codec;
++ .hwpcmfmt = SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S20_3LE | \
++ 	SNDRV_PCM_FORMAT_S24_3LE
 +
-+	/* check for valid widgets */
-+	if(widget->reg < 0 || widget->id == snd_soc_dapm_input ||
-+		widget->id == snd_soc_dapm_output ||
-+		widget->id == snd_soc_dapm_hp ||
-+		widget->id == snd_soc_dapm_mic ||
-+		widget->id == snd_soc_dapm_line ||
-+		widget->id == snd_soc_dapm_spk)
-+		return 0;
++pcmrate:
++----------
++The PCM sample rates supported by the DAI mode. e.g.
 +
-+	power = widget->power;
-+	if(widget->invert)
-+		power = (power ? 0:1);
++ .hwpcmrate = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000
 +
-+	old = snd_soc_read(codec, widget->reg);
-+	new = (old & ~(0x1 << widget->shift)) | (power << widget->shift);
 +
-+	change = old != new;
-+	if (change) {
-+		pop_dbg("pop test %s : %s in %d ms\n", widget->name,
-+			widget->power ? "on" : "off", POP_TIME);
-+		snd_soc_write(codec, widget->reg, new);
-+		pop_wait(POP_TIME);
-+	}
-+	dbg("reg old %x new %x change %d\n", old, new, change);
-+	return change;
-+}
++pcmdir:
++---------
++The stream directions supported by this mode. e.g. playback and capture
 +
-+/* ramps the volume up or down to minimise pops before or after a power event */
-+static int dapm_set_pga(struct snd_soc_dapm_widget *widget, int power)
-+{
-+	const struct snd_kcontrol_new *k = widget->kcontrols;
 +
-+	if(widget->muted && !power)
-+		return 0;
-+	if(!widget->muted && power)
-+		return 0;
++flags:
++--------
++The DAI hardware flags supported by the mode.
 +
-+	if(widget->num_kcontrols && k) {
-+		int reg = k->private_value & 0xff;
-+		int shift = (k->private_value >> 8) & 0x0f;
-+		int mask = (k->private_value >> 16) & 0xff;
-+		int invert = (k->private_value >> 24) & 0x01;
++SND_SOC_DAI_BFS_DIV
++This flag states that bit clock is generated by dividing MCLK in this mode, if
++this flag is absent the bitclock generated by mulitiplying sample rate.
 +
-+		if (power) {
-+			int i;
-+			/* power up has happended, increase volume to last level */
-+			if(invert) {
-+				for (i = mask; i > widget->saved_value; i--)
-+					snd_soc_update_bits(widget->codec, reg, mask, i);
-+			} else {
-+				for (i = 0; i < widget->saved_value; i++)
-+					snd_soc_update_bits(widget->codec, reg, mask, i);
-+			}
-+			widget->muted = 0;
-+		} else {
-+			/* power down is about to occur, decrease volume to mute */
-+			int val = snd_soc_read(widget->codec, reg);
-+			int i = widget->saved_value = (val >> shift) & mask;
-+			if(invert) {
-+				for (; i < mask; i++)
-+					snd_soc_update_bits(widget->codec, reg, mask, i);
-+			} else {
-+				for (; i > 0; i--)
-+					snd_soc_update_bits(widget->codec, reg, mask, i);
-+			}
-+			widget->muted = 1;
-+		}
-+	}
-+	return 0;
-+}
++NOTE: Bitclock division and mulitiplication modes can be safely matched by the
++core logic.
 +
-+/* create new dapm mixer control */
-+static int dapm_new_mixer(struct snd_soc_codec *codec,
-+	struct snd_soc_dapm_widget *w)
-+{
-+	int i, ret = 0;
-+	char name[32];
-+	struct list_head *lp;
-+	struct snd_soc_dapm_path *path;
 +
-+	/* add kcontrol */
-+	for (i = 0; i < w->num_kcontrols; i++) {
++fs:
++-----
++The FS supported by this DAI mode FS is the ratio between the system clock and
++the sample rate. See above
 +
-+		/* match name */
-+		list_for_each(lp, &w->sources)
-+		{
-+			path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++bfs:
++------
++BFS is the ratio of BCLK to MCLK or the ratio of BCLK to sample rate (this
++depends on the codec or CPU DAI).
 +
-+			/* mixer/mux paths name must match control name */
-+			if (path->name != (char*)w->kcontrols[i].name)
-+				continue;
++The BFS supported by the DAI mode. This can either be the ratio between the
++bitclock (BCLK) and the sample rate OR the ratio between the system clock and
++the sample rate. Depends on the SND_SOC_DAI_BFS_DIV flag above.
 +
-+			/* add dapm control with long name */
-+			snprintf(name, 32, "%s %s", w->name, w->kcontrols[i].name);
-+			path->long_name = kstrdup (name, GFP_KERNEL);
-+			if(path->long_name == NULL)
-+				return -ENOMEM;
++priv:
++-----
++private codec mode data.
 +
-+			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w, path->long_name);
-+			if ((ret = snd_ctl_add(codec->card, path->kcontrol)) < 0) {
-+				printk(KERN_ERR "asoc: failed to add dapm kcontrol %s\n",
-+						path->long_name);
-+				kfree(path->long_name);
-+				path->long_name = NULL;
-+				return ret;
-+			}
-+		}
-+	}
-+	return ret;
-+}
 +
-+/* create new dapm mux control */
-+static int dapm_new_mux(struct snd_soc_codec *codec, struct snd_soc_dapm_widget *w)
-+{
-+	struct list_head *lp;
-+	struct snd_soc_dapm_path *path = NULL;
-+	struct snd_kcontrol *kcontrol;
-+	int ret = 0;
 +
-+	if(!w->num_kcontrols) {
-+		printk(KERN_ERR "asoc: mux %s has no controls\n", w->name);
-+		return -EINVAL;
-+	}
++Examples
++========
 +
-+	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
-+	if ((ret = snd_ctl_add(codec->card, kcontrol)) < 0) {
-+		printk(KERN_ERR "asoc: failed to add kcontrol %s\n", w->name);
-+		return ret;
-+	}
++Note that Codec DAI and CPU DAI examples are interchangeable in these examples
++as long as the bus master is reversed. i.e.
 +
-+	list_for_each(lp, &w->sources)
++  SND_SOC_DAIFMT_CBM_CFM would become SND_SOC_DAIFMT_CBS_CFS
++  and vice versa.
++
++This applies to all SND_SOC_DAIFMT_CB*_CF*.
++
++Example 1
++---------
++
++Simple codec that only runs at 8k & 48k @ 256FS in master mode, can generate a
++BCLK of either MCLK/2 or MCLK/4.
++
++	/* codec master */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_48000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	256, SND_SOC_FSBD(2) | SND_SOC_FSBD(4)},
++
++
++Example 2
++---------
++Simple codec that only runs at 8k & 48k @ 256FS in master mode, can generate a
++BCLK of either Rate * 32 or Rate * 64.
++
++	/* codec master */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_48000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, 0,
++	256, SND_SOC_FSB(32) | SND_SOC_FSB(64)},
++
++
++Example 3
++---------
++Codec that only runs at 8k & 48k @ 256FS in master mode, can generate a
++BCLK of either Rate * 32 or Rate * 64. Codec can also run in slave mode as long
++as BCLK is rate * 32 or rate * 64.
++
++	/* codec master */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_48000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, 0,
++	256, SND_SOC_FSB(32) | SND_SOC_FSB(64)},
++
++	/* codec slave */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_48000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, 0,
++	SND_SOC_FS_ALL, SND_SOC_FSB(32) | SND_SOC_FSB(64)},
++
++
++Example 4
++---------
++Codec that only runs at 8k, 16k, 32k, 48k, 96k @ 128FS, 192FS & 256FS in master
++mode and can generate a BCLK of MCLK / (1,2,4,8,16). Codec can also run in slave
++mode as and does not care about FS or BCLK (as long as there is enough bandwidth).
++
++	#define CODEC_FSB \
++	(SND_SOC_FSBD(1) | SND_SOC_FSBD(2) | SND_SOC_FSBD(4) | \
++	SND_SOC_FSBD(8) | SND_SOC_FSBD(16))
++
++	#define CODEC_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_32000 |\
++	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
++
++	/* codec master @ 128, 192 & 256 FS */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, CODEC_RATES,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	128, CODEC_FSB},
++
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, CODEC_RATES,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	192, CODEC_FSB},
++
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, CODEC_RATES,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	256, CODEC_FSB},
++
++	/* codec slave */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, CODEC_RATES,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, 0,
++	SND_SOC_FS_ALL, SND_SOC_FSB_ALL},
++
++
++Example 5
++---------
++Codec that only runs at 8k, 44.1k, 48k @ different FS in master mode (for use
++with a fixed MCLK) and can generate a BCLK of MCLK / (1,2,4,8,16).
++Codec can also run in slave mode as and does not care about FS or BCLK (as long
++as there is enough bandwidth). Codec can support 16, 24 and 32 bit PCM sample
++sizes.
++
++	#define CODEC_FSB \
++	(SND_SOC_FSBD(1) | SND_SOC_FSBD(2) | SND_SOC_FSBD(4) | \
++	SND_SOC_FSBD(8) | SND_SOC_FSBD(16))
++
++	#define CODEC_PCM_FORMATS \
++	(SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S20_3LE | \
++	SNDRV_PCM_FORMAT_S24_3LE | SNDRV_PCM_FORMAT_S24_LE | SNDRV_PCM_FORMAT_S32_LE)
++
++	/* codec master */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_8000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	1536, CODEC_FSB},
++
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_44100,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	272, CODEC_FSB},
++
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, SNDRV_PCM_RATE_48000,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, SND_SOC_DAI_BFS_DIV,
++	256, CODEC_FSB},
++
++	/* codec slave */
++	{SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++	SNDRV_PCM_FORMAT_S16_LE, CODEC_RATES,
++	SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE, 0,
++	SND_SOC_FS_ALL, SND_SOC_FSB_ALL},
++
++
++Example 6
++---------
++AC97 Codec that does not support VRA (i.e only runs at 48k).
++
++	#define AC97_DIR \
++	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++
++
++	#define AC97_PCM_FORMATS \
++	(SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S18_3LE | \
++	SNDRV_PCM_FORMAT_S20_3LE)
++
++	/* AC97 with no VRA */
++	{0, 0,	AC97_PCM_FORMATS,	SNDRV_PCM_RATE_48000},
++
++
++Example 7
++---------
++
++CPU DAI that supports 8k - 48k @ 256FS and BCLK = MCLK / 4 in master mode.
++Slave mode (CPU DAI is FRAME master) supports 8k - 96k at any FS as long as
++BCLK = 64 * rate. (Intel XScale I2S controller).
++
++	#define PXA_I2S_DAIFMT \
++	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF)
++
++	#define PXA_I2S_DIR \
++	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++
++	#define PXA_I2S_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++
++	/* pxa2xx I2S frame and clock master modes */
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_8000, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0x48},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_11025, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0x34},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_16000, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0x24},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_22050, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0x1a},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_44100, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0xd},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		SNDRV_PCM_RATE_48000, PXA_I2S_DIR, SND_SOC_DAI_BFS_DIV, 256,
++		SND_SOC_FSBD(4), 0xc},
++
++	/* pxa2xx I2S frame master and clock slave mode */
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBM_CFS, SND_SOC_DAITDM_LRDW(0,0), SNDRV_PCM_FORMAT_S16_LE,
++		PXA_I2S_RATES, PXA_I2S_DIR, 0, SND_SOC_FS_ALL, SND_SOC_FSB(64)},
++
+Index: alsa-kernel/Documentation/soc/clocking.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/clocking.txt
+@@ -0,0 +1,309 @@
++Audio Clocking
++==============
++
++This text describes the audio clocking terms in ASoC and digital audio in
++general. Note: Audio clocking can be complex !
++
++
++Master Clock
++------------
++
++Every audio subsystem is driven by a master clock (sometimes refered to as MCLK
++or SYSCLK). This audio master clock can be derived from a number of sources
++(e.g. crystal, PLL, CPU clock) and is responsible for producing the correct
++audio playback and capture sample rates.
++
++Some master clocks (e.g. PLL's and CPU based clocks) are configuarble in that
++their speed can be altered by software (depending on the system use and to save
++power). Other master clocks are fixed at at set frequency (i.e. crystals).
++
++
++DAI Clocks
++----------
++The Digital Audio Interface is usually driven by a Bit Clock (often referred to
++as BCLK). This clock is used to drive the digital audio data across the link
++between the codec and CPU.
++
++The DAI also has a frame clock to signal the start of each audio frame. This
++clock is sometimes referred to as LRC (left right clock) or FRAME. This clock
++runs at exactly the sample rate.
++
++Bit Clock is usually always a ratio of MCLK or a multiple of LRC. i.e.
++
++BCLK = MCLK / x
++
++ or
++
++BCLK = LRC * x
++
++This relationship depends on the codec or SoC CPU in particular. ASoC can quite
++easily match a codec that generates BCLK by division (FSBD) with a CPU that
++generates BCLK by multiplication (FSB).
++
++
++ASoC Clocking
++-------------
++
++The ASoC core determines the clocking for each particular configuration at
++runtime. This is to allow for dynamic audio clocking wereby the audio clock is
++variable and depends on the system state or device usage scenario. i.e. a voice
++call requires slower clocks (and hence less power) than MP3 playback.
++
++ASoC will call the config_sysclock() function for the target machine during the
++audio parameters configuration. The function is responsible for then clocking
++the machine audio subsytem and returning the audio clock speed to the core.
++This function should also call the codec and cpu DAI clock_config() functions
++to configure their respective internal clocking if required.
++
++
++ASoC Clocking Control Flow
++--------------------------
++
++The ASoC core will call the machine drivers config_sysclock() when most of the
++DAI capabilities are known. The machine driver is then responsible for calling
++the codec and/or CPU DAI drivers with the selected capabilities and the current
++MCLK. Note that the machine driver is also resonsible for setting the MCLK (and
++enabling it).
++
++   (1) Match Codec and CPU DAI capabilities. At this point we have
++       matched the majority of the DAI fields and now need to make sure this
++       mode is currently clockable.
++
++   (2) machine->config_sysclk() is now called with the matched DAI FS, sample
++       rate and BCLK master. This function then gets/sets the current audio
++       clock (depening on usage) and calls the codec and CPUI DAI drivers with
++       the FS, rate, BCLK master and MCLK.
++
++   (3) Codec/CPU DAI config_sysclock(). This function checks that the FS, rate,
++       BCLK master and MCLK are acceptable for the codec or CPU DAI. It also
++       sets the DAI internal state to work with said clocks.
++
++The config_sysclk() functions for CPU, codec and machine should return the MCLK
++on success and 0 on failure.
++
++
++Examples (b = BCLK, l = LRC)
++============================
++
++Example 1
++---------
++
++Simple codec that only runs at 48k @ 256FS in master mode.
++
++CPU only runs as slave DAI, however it generates a variable MCLK.
++
++             --------                 ---------
++            |        | <----mclk---  |         |
++            | Codec  |b -----------> |  CPU    |
++            |        |l -----------> |         |
++            |        |               |         |
++             --------                 ---------
++
++The codec driver has the following config_sysclock()
++
++	static unsigned int config_sysclk(struct snd_soc_codec_dai *dai,
++		struct snd_soc_clock_info *info, unsigned int clk)
 +	{
-+		path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
-+		path->kcontrol = kcontrol;
-+	}
-+
-+	return ret;
-+}
-+
-+/* create new dapm volume control */
-+static int dapm_new_pga(struct snd_soc_codec *codec,
-+	struct snd_soc_dapm_widget *w)
-+{
-+	struct snd_kcontrol *kcontrol;
-+	int ret = 0;
-+
-+	if(!w->num_kcontrols)
-+		return -EINVAL;
-+
-+	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
-+	if ((ret = snd_ctl_add(codec->card, kcontrol)) < 0) {
-+		printk(KERN_ERR "asoc: failed to add kcontrol %s\n", w->name);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+/* reset 'walked' bit for each dapm path */
-+static void dapm_clear_walk(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct list_head *l = NULL;
-+
-+	list_for_each(l, &codec->dapm_paths)
-+	{
-+		p = list_entry(l, struct snd_soc_dapm_path, list);
-+		p->walked = 0;
-+	}
-+}
-+
-+/*
-+ * Recursively check for a completed path to an active or physically connected
-+ * output widget. Returns number of complete paths.
-+ */
-+static int is_connected_output_ep(struct snd_soc_dapm_widget *widget)
-+{
-+	struct list_head *lp;
-+	struct snd_soc_dapm_path *path = NULL;
-+	int con = 0;
-+
-+	if(widget->id == snd_soc_dapm_adc && widget->active)
-+		return 1;
-+
-+	if(widget->connected) {
-+		/* connected pin ? */
-+		if(widget->id == snd_soc_dapm_output && !widget->ext)
-+			return 1;
-+
-+		/* connected jack or spk ? */
-+		if(widget->id == snd_soc_dapm_hp || widget->id == snd_soc_dapm_spk ||
-+			widget->id == snd_soc_dapm_line)
-+			return 1;
-+	}
-+
-+	list_for_each(lp, &widget->sinks)
-+	{
-+		path = list_entry(lp, struct snd_soc_dapm_path, list_source);
-+		if(path->walked)
-+			continue;
-+
-+		if (path->sink && path->connect) {
-+			path->walked = 1;
-+			con += is_connected_output_ep(path->sink);
++		/* make sure clock is 256 * rate */
++		if(info->rate << 8 == clk) {
++			dai->mclk = clk;
++			return clk;
 +		}
-+	}
 +
-+	return con;
-+}
-+
-+/*
-+ * Recursively check for a completed path to an active or physically connected
-+ * input widget. Returns number of complete paths.
-+ */
-+static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
-+{
-+	struct list_head *lp;
-+	struct snd_soc_dapm_path *path = NULL;
-+	int con = 0;
-+
-+	/* active stream ? */
-+	if(widget->id == snd_soc_dapm_dac && widget->active)
-+		return 1;
-+
-+	if(widget->connected) {
-+		/* connected pin ? */
-+		if(widget->id == snd_soc_dapm_input && !widget->ext)
-+			return 1;
-+
-+		/* connected VMID/Bias for lower pops */
-+		if(widget->id == snd_soc_dapm_vmid)
-+			return 1;
-+
-+		/* connected jack ? */
-+		if(widget->id == snd_soc_dapm_mic || widget->id == snd_soc_dapm_line)
-+			return 1;
-+	}
-+
-+	list_for_each(lp, &widget->sources)
-+	{
-+		path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
-+		if(path->walked)
-+			continue;
-+
-+		if (path->source && path->connect) {
-+			path->walked = 1;
-+			con += is_connected_input_ep(path->source);
-+		}
-+	}
-+
-+	return con;
-+}
-+
-+/*
-+ * Scan each dapm widget for complete audio path.
-+ * A complete path is a route that has valid endpoints i.e.:-
-+ *
-+ *  o DAC to output pin.
-+ *  o Input Pin to ADC.
-+ *  o Input pin to Output pin (bypass, sidetone)
-+ *  o DAC to ADC (loopback).
-+ */
-+int dapm_power_widgets(struct snd_soc_codec *codec, int event)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct list_head *l;
-+	int in, out, i, c = 1, *seq = NULL, ret = 0, power_change, power;
-+
-+	/* do we have a sequenced stream event */
-+	if(event == SND_SOC_DAPM_STREAM_START) {
-+		c = ARRAY_SIZE(dapm_up_seq);
-+		seq = dapm_up_seq;
-+	} else if (event == SND_SOC_DAPM_STREAM_STOP) {
-+		c = ARRAY_SIZE(dapm_down_seq);
-+		seq = dapm_down_seq;
-+	}
-+
-+	for(i = 0; i < c; i++){
-+		list_for_each(l, &codec->dapm_widgets)
-+		{
-+			w = list_entry(l, struct snd_soc_dapm_widget, list);
-+
-+			/* is widget in stream order */
-+			if(seq && seq[i] && w->id != seq[i])
-+				continue;
-+
-+			/* vmid - no action */
-+			if(w->id == snd_soc_dapm_vmid)
-+				continue;
-+
-+			/* active ADC */
-+			if(w->id == snd_soc_dapm_adc && w->active) {
-+				in = is_connected_input_ep(w);
-+				dapm_clear_walk(w->codec);
-+				w->power = (in != 0) ? 1 : 0;
-+				dapm_update_bits(w);
-+				continue;
-+			}
-+
-+			/* active DAC */
-+			if(w->id == snd_soc_dapm_dac && w->active) {
-+				out = is_connected_output_ep(w);
-+				dapm_clear_walk(w->codec);
-+				w->power = (out != 0) ? 1 : 0;
-+				dapm_update_bits(w);
-+				continue;
-+			}
-+
-+			/* programmable gain/attenuation */
-+			if(w->id == snd_soc_dapm_pga) {
-+				int on;
-+				in = is_connected_input_ep(w);
-+				dapm_clear_walk(w->codec);
-+				out = is_connected_output_ep(w);
-+				dapm_clear_walk(w->codec);
-+				w->power = on = (out != 0 && in != 0) ? 1 : 0;
-+
-+				if(!on)
-+					dapm_set_pga(w, on); /* lower volume to reduce pops */
-+				dapm_update_bits(w);
-+				if(on)
-+					dapm_set_pga(w, on); /* restore volume from zero */
-+
-+				continue;
-+			}
-+
-+			/* pre and post event widgets */
-+			if(w->id == snd_soc_dapm_pre) {
-+				if(!w->event)
-+					continue;
-+
-+				if(event == SND_SOC_DAPM_STREAM_START) {
-+					if((ret = w->event(w, SND_SOC_DAPM_PRE_PMU)) < 0)
-+								return ret;
-+				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
-+					if((ret = w->event(w, SND_SOC_DAPM_PRE_PMD)) < 0)
-+								return ret;
-+				}
-+				continue;
-+			}
-+			if(w->id == snd_soc_dapm_post) {
-+				if(!w->event)
-+					continue;
-+
-+				if(event == SND_SOC_DAPM_STREAM_START) {
-+					if((ret = w->event(w, SND_SOC_DAPM_POST_PMU)) < 0)
-+								return ret;
-+				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
-+					if((ret = w->event(w, SND_SOC_DAPM_POST_PMD)) < 0)
-+								return ret;
-+				}
-+				continue;
-+			}
-+
-+			/* all other widgets */
-+			in = is_connected_input_ep(w);
-+			dapm_clear_walk(w->codec);
-+			out = is_connected_output_ep(w);
-+			dapm_clear_walk(w->codec);
-+			power = (out != 0 && in != 0) ? 1 : 0;
-+			power_change = (w->power == power) ? 0: 1;
-+			w->power = power;
-+
-+			/* call any power change event handlers */
-+			if(power_change) {
-+				if(w->event) {
-+					dbg("power %s event for %s flags %x\n",
-+						w->power ? "on" : "off", w->name, w->event_flags);
-+					if (power) {
-+						/* power up event */
-+						if(w->event_flags & SND_SOC_DAPM_PRE_PMU)
-+							if((ret = w->event(w, SND_SOC_DAPM_PRE_PMU)) < 0)
-+								return ret;
-+						dapm_update_bits(w);
-+						if(w->event_flags & SND_SOC_DAPM_POST_PMU)
-+							if((ret = w->event(w, SND_SOC_DAPM_POST_PMU)) < 0)
-+								return ret;
-+					} else {
-+						/* power down event */
-+						if(w->event_flags & SND_SOC_DAPM_PRE_PMD)
-+							if((ret = w->event(w, SND_SOC_DAPM_PRE_PMD)) < 0)
-+								return ret;
-+						dapm_update_bits(w);
-+						if(w->event_flags & SND_SOC_DAPM_POST_PMD)
-+							if((ret = w->event(w, SND_SOC_DAPM_POST_PMD)) < 0)
-+								return ret;
-+					}
-+				} else
-+					/* no event handler */
-+					dapm_update_bits(w);
-+			}
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+#if DAPM_DEBUG
-+static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
-+{
-+	struct snd_soc_dapm_widget *w = NULL;
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct list_head *l = NULL, *lp = NULL;
-+	int in, out;
-+
-+	printk("DAPM %s %s\n", codec->name, action);
-+
-+	list_for_each(l, &codec->dapm_widgets)
-+	{
-+		w = list_entry(l, struct snd_soc_dapm_widget, list);
-+
-+		/* only display widgets that effect routing */
-+		switch (w->id) {
-+		case snd_soc_dapm_pre:
-+		case snd_soc_dapm_post:
-+		case snd_soc_dapm_vmid:
-+			continue;
-+		case snd_soc_dapm_mux:
-+		case snd_soc_dapm_output:
-+		case snd_soc_dapm_input:
-+		case snd_soc_dapm_switch:
-+		case snd_soc_dapm_hp:
-+		case snd_soc_dapm_mic:
-+		case snd_soc_dapm_spk:
-+		case snd_soc_dapm_line:
-+		case snd_soc_dapm_micbias:
-+		case snd_soc_dapm_dac:
-+		case snd_soc_dapm_adc:
-+		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_mixer:
-+			if(w->name) {
-+				in = is_connected_input_ep(w);
-+				dapm_clear_walk(w->codec);
-+				out = is_connected_output_ep(w);
-+				dapm_clear_walk(w->codec);
-+				printk("%s: %s  in %d out %d\n", w->name,
-+					w->power ? "On":"Off",in, out);
-+
-+				list_for_each(lp, &w->sources)
-+				{
-+					p = list_entry(lp, struct snd_soc_dapm_path, list_sink);
-+					if (p->connect)
-+						printk(" in  %s %s\n", p->name ? p->name : "static",
-+							p->source->name);
-+				}
-+				list_for_each(lp, &w->sinks)
-+				{
-+					p = list_entry(lp, struct snd_soc_dapm_path, list_source);
-+					if (p->connect)
-+						printk(" out %s %s\n", p->name ? p->name : "static",
-+							p->sink->name);
-+				}
-+			}
-+		break;
-+		}
-+	}
-+}
-+#endif
-+
-+/* test and update the power status of a mux widget */
-+int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
-+	struct snd_kcontrol *kcontrol, int mask, int val, struct soc_enum* e)
-+{
-+	struct list_head *l;
-+	struct snd_soc_dapm_path *path;
-+	int found = 0;
-+
-+	if(widget->id != snd_soc_dapm_mux)
-+		return -ENODEV;
-+
-+	if (!snd_soc_test_bits(widget->codec, e->reg, mask, val))
-+		return 0;
-+
-+	/* find dapm widget path assoc with kcontrol */
-+	list_for_each(l, &widget->codec->dapm_paths)
-+	{
-+		path = list_entry(l, struct snd_soc_dapm_path, list);
-+		if (path->kcontrol != kcontrol)
-+			continue;
-+
-+		if(!path->name || ! e->texts[val])
-+			continue;
-+
-+		found = 1;
-+		/* we now need to match the string in the enum to the path */
-+		if (!(strcmp(path->name, e->texts[val])))
-+			path->connect = 1; /* new connection */
-+		else
-+			path->connect = 0; /* old connection must be powered down */
-+	}
-+
-+	if (found)
-+		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dapm_mux_update_power);
-+
-+/* test and update the power status of a mixer widget */
-+int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
-+	struct snd_kcontrol *kcontrol, int reg, int val_mask, int val, int invert)
-+{
-+	struct list_head *l;
-+	struct snd_soc_dapm_path *path;
-+	int found = 0;
-+
-+	if(widget->id != snd_soc_dapm_mixer)
-+		return -ENODEV;
-+
-+	if (!snd_soc_test_bits(widget->codec, reg, val_mask, val))
-+		return 0;
-+
-+	/* find dapm widget path assoc with kcontrol */
-+	list_for_each(l, &widget->codec->dapm_paths)
-+	{
-+		path = list_entry(l, struct snd_soc_dapm_path, list);
-+		if (path->kcontrol != kcontrol)
-+			continue;
-+
-+		/* found, now check type */
-+		found = 1;
-+		if (val)
-+			path->connect = invert ? 0:1; /* new connection */
-+		else
-+			path->connect = invert ? 1:0; /* old connection must be powered down */
-+		break;
-+	}
-+
-+	if (found)
-+		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dapm_mixer_update_power);
-+
-+/* show dapm widget status in sys fs */
-+static ssize_t dapm_widget_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	struct snd_soc_device *devdata = dev_get_drvdata(dev);
-+	struct snd_soc_codec *codec = devdata->codec;
-+	struct snd_soc_dapm_widget *w = NULL;
-+	struct list_head *l = NULL;
-+	int count = 0;
-+	char *state = "not set";
-+
-+	list_for_each(l, &codec->dapm_widgets)
-+	{
-+		w = list_entry(l, struct snd_soc_dapm_widget, list);
-+		/* only display widgets that burnm power */
-+		switch (w->id) {
-+		case snd_soc_dapm_switch:
-+		case snd_soc_dapm_pre:
-+		case snd_soc_dapm_post:
-+		case snd_soc_dapm_mux:
-+		case snd_soc_dapm_output:
-+		case snd_soc_dapm_input:
-+		case snd_soc_dapm_vmid:
-+			continue;
-+		case snd_soc_dapm_hp:
-+		case snd_soc_dapm_mic:
-+		case snd_soc_dapm_spk:
-+		case snd_soc_dapm_line:
-+		case snd_soc_dapm_micbias:
-+		case snd_soc_dapm_dac:
-+		case snd_soc_dapm_adc:
-+		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_mixer:
-+		if (w->name)
-+			count += sprintf(buf + count, "%s: %s\n", w->name, w->power ? "On":"Off");
-+		}
-+	}
-+
-+	switch(codec->dapm_state){
-+	case SNDRV_CTL_POWER_D0:
-+		state = "D0";
-+		break;
-+	case SNDRV_CTL_POWER_D1:
-+		state = "D1";
-+		break;
-+	case SNDRV_CTL_POWER_D2:
-+		state = "D2";
-+		break;
-+	case SNDRV_CTL_POWER_D3hot:
-+		state = "D3hot";
-+		break;
-+	case SNDRV_CTL_POWER_D3cold:
-+		state = "D3cold";
-+		break;
-+	}
-+	count += sprintf(buf + count, "PM State: %s\n", state);
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR(dapm_widget, 0444, dapm_widget_show, NULL);
-+
-+int snd_soc_dapm_sys_add(struct device *dev)
-+{
-+	int ret;
-+
-+	if (dapm_status) {
-+		if((ret = device_create_file(dev, &dev_attr_dapm_widget)) < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void snd_soc_dapm_sys_remove(struct device *dev)
-+{
-+	if (dapm_status)
-+		device_remove_file(dev, &dev_attr_dapm_widget);
-+}
-+
-+/* free all dapm widgets and resources */
-+void dapm_free_widgets(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_dapm_widget *w, *lw = NULL;
-+	struct snd_soc_dapm_path *p, *lp = NULL;
-+	struct list_head *l;
-+
-+	list_for_each(l, &codec->dapm_widgets)
-+	{
-+		w =  list_entry(l, struct snd_soc_dapm_widget, list);
-+		if (lw)
-+			kfree(lw);
-+		lw = w;
-+	}
-+	kfree(lw);
-+
-+	list_for_each(l, &codec->dapm_paths)
-+	{
-+		p =  list_entry(l, struct snd_soc_dapm_path, list);
-+		if(p->long_name)
-+			kfree(p->long_name);
-+		if (lp)
-+			kfree(lp);
-+		lp = p;
-+	}
-+	kfree(lp);
-+}
-+
-+/**
-+ * snd_soc_dapm_sync_endpoints - scan and power dapm paths
-+ * @codec: audio codec
-+ *
-+ * Walks all dapm audio paths and powers widgets according to their
-+ * stream or path usage.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_sync_endpoints(struct snd_soc_codec *codec)
-+{
-+	return dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_sync_endpoints);
-+
-+/**
-+ * snd_soc_dapm_connect_input - connect dapm widgets
-+ * @codec: audio codec
-+ * @sink: name of target widget
-+ * @control: mixer control name
-+ * @source: name of source name
-+ *
-+ * Connects 2 dapm widgets together via a named audio path. The sink is
-+ * the widget receiving the audio signal, whilst the source is the sender
-+ * of the audio signal.
-+ *
-+ * Returns 0 for success else error.
-+ */
-+int snd_soc_dapm_connect_input(struct snd_soc_codec *codec, const char *sink,
-+	const char * control, const char *source)
-+{
-+	struct snd_soc_dapm_path *path;
-+	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
-+	struct list_head *l;
-+	int ret = 0;
-+
-+	/* find src and dest widgets */
-+	list_for_each(l, &codec->dapm_widgets)
-+	{
-+		w = list_entry(l, struct snd_soc_dapm_widget, list);
-+
-+		if(!wsink && !(strcmp(w->name, sink))) {
-+			wsink = w;
-+			continue;
-+		}
-+		if(!wsource && !(strcmp(w->name, source))) {
-+			wsource = w;
-+		}
-+	}
-+
-+	if(wsource == NULL || wsink == NULL)
-+		return -ENODEV;
-+
-+	path = kzalloc(sizeof(struct snd_soc_dapm_path), GFP_KERNEL);
-+	if (!path)
-+		return -ENOMEM;
-+
-+	path->source = wsource;
-+	path->sink = wsink;
-+	INIT_LIST_HEAD(&path->list);
-+	INIT_LIST_HEAD(&path->list_source);
-+	INIT_LIST_HEAD(&path->list_sink);
-+
-+	/* check for external widgets */
-+	if(wsink->id == snd_soc_dapm_input) {
-+		if (wsource->id == snd_soc_dapm_micbias ||
-+			wsource->id == snd_soc_dapm_mic ||
-+			wsink->id == snd_soc_dapm_line)
-+			wsink->ext = 1;
-+	}
-+	if(wsource->id == snd_soc_dapm_output) {
-+		if (wsink->id == snd_soc_dapm_spk ||
-+			wsink->id == snd_soc_dapm_hp ||
-+			wsink->id == snd_soc_dapm_line)
-+			wsource->ext = 1;
-+	}
-+
-+	/* connect static paths */
-+	if(control == NULL) {
-+		list_add(&path->list, &codec->dapm_paths);
-+		list_add(&path->list_sink, &wsink->sources);
-+		list_add(&path->list_source, &wsource->sinks);
-+		path->connect = 1;
 +		return 0;
 +	}
 +
-+	/* connect dynamic paths */
-+	switch(wsink->id) {
-+	case snd_soc_dapm_adc:
-+	case snd_soc_dapm_dac:
-+	case snd_soc_dapm_pga:
-+	case snd_soc_dapm_input:
-+	case snd_soc_dapm_output:
-+	case snd_soc_dapm_micbias:
-+	case snd_soc_dapm_vmid:
-+	case snd_soc_dapm_pre:
-+	case snd_soc_dapm_post:
-+		list_add(&path->list, &codec->dapm_paths);
-+		list_add(&path->list_sink, &wsink->sources);
-+		list_add(&path->list_source, &wsource->sinks);
-+		path->connect = 1;
-+		return 0;
-+	case snd_soc_dapm_mux:
-+		if((ret = dapm_connect_mux(codec, wsource, wsink, path, control,
-+			&wsink->kcontrols[0])) != 0)
-+			goto err;
-+		break;
-+	case snd_soc_dapm_switch:
-+	case snd_soc_dapm_mixer:
-+		if((ret = dapm_connect_mixer(codec, wsource, wsink, path, control)) != 0)
-+			goto err;
-+		break;
-+	case snd_soc_dapm_hp:
-+	case snd_soc_dapm_mic:
-+	case snd_soc_dapm_line:
-+	case snd_soc_dapm_spk:
-+		list_add(&path->list, &codec->dapm_paths);
-+		list_add(&path->list_sink, &wsink->sources);
-+		list_add(&path->list_source, &wsource->sinks);
-+		path->connect = 0;
-+		return 0;
-+	}
-+	return 0;
++The CPU I2S DAI driver has the following config_sysclk()
 +
-+err:
-+	printk(KERN_WARNING "asoc: no dapm match for %s --> %s --> %s\n", source,
-+		control, sink);
-+	kfree(path);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_connect_input);
-+
-+/**
-+ * snd_soc_dapm_new_widgets - add new dapm widgets
-+ * @codec: audio codec
-+ *
-+ * Checks the codec for any new dapm widgets and creates them if found.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_dapm_widget *w = NULL;
-+	struct list_head *lw;
-+
-+	mutex_lock(&codec->mutex);
-+	list_for_each(lw, &codec->dapm_widgets)
++	static unsigned int config_sysclk(struct snd_soc_codec_dai *dai,
++		struct snd_soc_clock_info *info, unsigned int clk)
 +	{
-+		w = list_entry(lw, struct snd_soc_dapm_widget, list);
-+
-+		if(w->new)
-+			continue;
-+
-+		switch(w->id) {
-+		case snd_soc_dapm_switch:
-+		case snd_soc_dapm_mixer:
-+			dapm_new_mixer(codec, w);
-+			break;
-+		case snd_soc_dapm_mux:
-+			dapm_new_mux(codec, w);
-+			break;
-+		case snd_soc_dapm_adc:
-+		case snd_soc_dapm_dac:
-+		case snd_soc_dapm_pga:
-+			dapm_new_pga(codec, w);
-+			break;
-+		case snd_soc_dapm_input:
-+		case snd_soc_dapm_output:
-+		case snd_soc_dapm_micbias:
-+		case snd_soc_dapm_spk:
-+		case snd_soc_dapm_hp:
-+		case snd_soc_dapm_mic:
-+		case snd_soc_dapm_line:
-+		case snd_soc_dapm_vmid:
-+		case snd_soc_dapm_pre:
-+		case snd_soc_dapm_post:
-+			break;
-+		}
-+		w->new = 1;
-+	}
-+
-+	dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
-+	mutex_unlock(&codec->mutex);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
-+
-+/**
-+ * snd_soc_dapm_get_volsw - dapm mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to get the value of a dapm mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_get_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0x0f;
-+	int rshift = (kcontrol->private_value >> 12) & 0x0f;
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+	int invert = (kcontrol->private_value >> 24) & 0x01;
-+
-+	/* return the saved value if we are powered down */
-+	if(widget->id == snd_soc_dapm_pga && !widget->power) {
-+		ucontrol->value.integer.value[0] = widget->saved_value;
-+		return 0;
-+	}
-+
-+	ucontrol->value.integer.value[0] =
-+		(snd_soc_read(widget->codec, reg) >> shift) & mask;
-+	if (shift != rshift)
-+		ucontrol->value.integer.value[1] =
-+			(snd_soc_read(widget->codec, reg) >> rshift) & mask;
-+	if (invert) {
-+		ucontrol->value.integer.value[0] =
-+			mask - ucontrol->value.integer.value[0];
-+		if (shift != rshift)
-+			ucontrol->value.integer.value[1] =
-+				mask - ucontrol->value.integer.value[1];
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_get_volsw);
-+
-+/**
-+ * snd_soc_dapm_put_volsw - dapm mixer set callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to set the value of a dapm mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
-+	int reg = kcontrol->private_value & 0xff;
-+	int shift = (kcontrol->private_value >> 8) & 0x0f;
-+	int rshift = (kcontrol->private_value >> 12) & 0x0f;
-+	int mask = (kcontrol->private_value >> 16) & 0xff;
-+	int invert = (kcontrol->private_value >> 24) & 0x01;
-+	unsigned short val, val2, val_mask;
-+	int ret;
-+
-+	val = (ucontrol->value.integer.value[0] & mask);
-+
-+	if (invert)
-+		val = mask - val;
-+	val_mask = mask << shift;
-+	val = val << shift;
-+	if (shift != rshift) {
-+		val2 = (ucontrol->value.integer.value[1] & mask);
-+		if (invert)
-+			val2 = mask - val2;
-+		val_mask |= mask << rshift;
-+		val |= val2 << rshift;
-+	}
-+
-+	mutex_lock(&widget->codec->mutex);
-+	widget->value = val;
-+
-+	/* save volume value if the widget is powered down */
-+	if(widget->id == snd_soc_dapm_pga && !widget->power) {
-+		widget->saved_value = val;
-+		mutex_unlock(&widget->codec->mutex);
-+		return 1;
-+	}
-+
-+	dapm_mixer_update_power(widget, kcontrol, reg, val_mask, val, invert);
-+	if(widget->event) {
-+		if(widget->event_flags & SND_SOC_DAPM_PRE_REG)
-+			if ((ret = widget->event(widget, SND_SOC_DAPM_PRE_REG )) < 0) {
-+				mutex_unlock(&widget->codec->mutex);
-+				return ret;
-+			}
-+		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
-+		if(widget->event_flags & SND_SOC_DAPM_POST_REG)
-+			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
-+	} else
-+		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
-+
-+	mutex_unlock(&widget->codec->mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
-+
-+/**
-+ * snd_soc_dapm_get_enum_double - dapm enumerated double mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to get the value of a dapm enumerated double mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_get_enum_double(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned short val, bitmask;
-+
-+	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
-+		;
-+	val = snd_soc_read(widget->codec, e->reg);
-+	ucontrol->value.enumerated.item[0] = (val >> e->shift_l) & (bitmask - 1);
-+	if (e->shift_l != e->shift_r)
-+		ucontrol->value.enumerated.item[1] = (val >> e->shift_r) & (bitmask - 1);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_double);
-+
-+/**
-+ * snd_soc_dapm_put_enum_double - dapm enumerated double mixer set callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to set the value of a dapm enumerated double mixer control.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned short val, mux;
-+	unsigned short mask, bitmask;
-+	int ret = 0;
-+
-+	for (bitmask = 1; bitmask < e->mask; bitmask <<= 1)
-+		;
-+	if (ucontrol->value.enumerated.item[0] > e->mask - 1)
-+		return -EINVAL;
-+	mux = ucontrol->value.enumerated.item[0];
-+	val = mux << e->shift_l;
-+	mask = (bitmask - 1) << e->shift_l;
-+	if (e->shift_l != e->shift_r) {
-+		if (ucontrol->value.enumerated.item[1] > e->mask - 1)
++		/* can we support this clk */
++		if(set_audio_clk(clk) < 0)
 +			return -EINVAL;
-+		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
-+		mask |= (bitmask - 1) << e->shift_r;
++
++		dai->mclk = clk;
++		return dai->clk;
 +	}
 +
-+	mutex_lock(&widget->codec->mutex);
-+	widget->value = val;
-+	dapm_mux_update_power(widget, kcontrol, mask, mux, e);
-+	if(widget->event) {
-+		if(widget->event_flags & SND_SOC_DAPM_PRE_REG)
-+			if((ret = widget->event(widget, SND_SOC_DAPM_PRE_REG)) < 0) {
-+				mutex_unlock(&widget->codec->mutex);
-+				return ret;
-+			}
-+		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
-+		if(widget->event_flags & SND_SOC_DAPM_POST_REG)
-+			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
-+	} else
-+		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
++The machine driver config_sysclk() in this example is as follows:-
 +
-+	mutex_unlock(&widget->codec->mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
-+
-+/**
-+ * snd_soc_dapm_new_control - create new dapm control
-+ * @codec: audio codec
-+ * @widget: widget template
-+ *
-+ * Creates a new dapm control based upon the template.
-+ *
-+ * Returns 0 for success else error.
-+ */
-+int snd_soc_dapm_new_control(struct snd_soc_codec *codec,
-+	const struct snd_soc_dapm_widget *widget)
-+{
-+	struct snd_soc_dapm_widget *w;
-+
-+	if ((w = dapm_cnew_widget(widget)) == NULL)
-+		return -ENOMEM;
-+
-+	w->codec = codec;
-+	INIT_LIST_HEAD(&w->sources);
-+	INIT_LIST_HEAD(&w->sinks);
-+	INIT_LIST_HEAD(&w->list);
-+	list_add(&w->list, &codec->dapm_widgets);
-+
-+	/* machine layer set ups unconnected pins and insertions */
-+	w->connected = 1;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_new_control);
-+
-+/**
-+ * snd_soc_dapm_stream_event - send a stream event to the dapm core
-+ * @codec: audio codec
-+ * @stream: stream name
-+ * @event: stream event
-+ *
-+ * Sends a stream event to the dapm core. The core then makes any
-+ * necessary widget power changes.
-+ *
-+ * Returns 0 for success else error.
-+ */
-+int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
-+	char *stream, int event)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct list_head *l = NULL;
-+
-+	mutex_lock(&codec->mutex);
-+	list_for_each(l, &codec->dapm_widgets)
++	unsigned int machine_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++		struct snd_soc_clock_info *info)
 +	{
-+		w = list_entry(l, struct snd_soc_dapm_widget, list);
++		int clk = info->rate * info->fs;
 +
-+		if (!w->sname)
-+			continue;
-+		dbg("widget %s\n %s stream %s event %d\n",w->name, w->sname, stream, event);
-+		if (strstr(w->sname, stream)) {
-+			switch(event) {
-+			case SND_SOC_DAPM_STREAM_START:
-+				w->active = 1;
-+				break;
-+			case SND_SOC_DAPM_STREAM_STOP:
-+				w->active = 0;
-+				break;
-+			case SND_SOC_DAPM_STREAM_SUSPEND:
-+				if (w->active)
-+					w->suspend = 1;
-+				w->active = 0;
-+				break;
-+			case SND_SOC_DAPM_STREAM_RESUME:
-+				if(w->suspend) {
-+					w->active = 1;
-+					w->suspend = 0;
++		/* check that CPU can deliver clock */
++		if(rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info, clk) < 0)
++			return -EINVAL;
++
++		/* can codec work with this clock */
++		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info, clk);
++	}
++
++
++Example 2
++---------
++
++Codec that can master at 8k and 48k at various FS (and hence supports a fixed
++set of input MCLK's) and can also be slave at various FS .
++
++The CPU can master at 8k and 48k @256 FS and can be slave at any FS.
++
++MCLK is a 12.288MHz crystal on this machine.
++
++             --------                 ---------
++            |        |  <---xtal---> |         |
++            | Codec  |b <----------> |  CPU    |
++            |        |l <----------> |         |
++            |        |               |         |
++             --------                 ---------
++
++
++The codec driver has the following config_sysclock()
++
++	/* supported input clocks */
++	const static int hifi_clks[] = {11289600, 12000000, 12288000,
++		16934400, 18432000};
++
++	static unsigned int config_hsysclk(struct snd_soc_codec_dai *dai,
++		struct snd_soc_clock_info *info, unsigned int clk)
++	{
++		int i;
++
++		/* is clk supported  */
++		for(i = 0; i < ARRAY_SIZE(hifi_clks); i++) {
++			if(clk == hifi_clks[i]) {
++				dai->mclk = clk;
++				return clk;
++			}
++		}
++
++		/* this clk is not supported */
++		return 0;
++	}
++
++The CPU I2S DAI driver has the following config_sysclk()
++
++	static unsigned int config_sysclk(struct snd_soc_codec_dai *dai,
++		struct snd_soc_clock_info *info, unsigned int clk)
++	{
++		/* are we master or slave */
++		if (info->bclk_master &
++			(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_CBM_CFS)) {
++
++			/* we can only master @ 256FS */
++			if(info->rate << 8 == clk) {
++				dai->mclk = clk;
++				return dai->mclk;
++			}
++		} else {
++			/* slave we can run at any FS */
++			dai->mclk = clk;
++			return dai->mclk;
++		}
++
++		/* not supported */
++		return dai->clk;
++	}
++
++The machine driver config_sysclk() in this example is as follows:-
++
++	unsigned int machine_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++		struct snd_soc_clock_info *info)
++	{
++		int clk = 12288000; /* 12.288MHz */
++
++		/* who's driving the link */
++		if (info->bclk_master &
++			(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_CBM_CFS)) {
++			/* codec master */
++
++			/* check that CPU can work with clock */
++			if(rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info, clk) < 0)
++				return -EINVAL;
++
++			/* can codec work with this clock */
++			return rtd->codec_dai->config_sysclk(rtd->codec_dai, info, clk);
++		} else {
++			/* cpu master */
++
++			/* check that codec can work with clock */
++			if(rtd->codec_dai->config_sysclk(rtd->codec_dai, info, clk) < 0)
++				return -EINVAL;
++
++			/* can CPU work with this clock */
++			return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info, clk);
++		}
++	}
++
++
++
++Example 3
++---------
++
++Codec that masters at 8k ... 48k @256 FS. Codec can also be slave and
++doesn't care about FS. The codec has an internal PLL and dividers to generate
++the necessary internal clocks (for 256FS).
++
++CPU can only be slave and doesn't care about FS.
++
++MCLK is a non controllable 13MHz clock from the CPU.
++
++
++             --------                 ---------
++            |        | <----mclk---  |         |
++            | Codec  |b <----------> |  CPU    |
++            |        |l <----------> |         |
++            |        |               |         |
++             --------                 ---------
++
++The codec driver has the following config_sysclock()
++
++	/* valid PCM clock dividers * 2 */
++	static int pcm_divs[] = {2, 6, 11, 4, 8, 12, 16};
++
++	static unsigned int config_vsysclk(struct snd_soc_codec_dai *dai,
++		struct snd_soc_clock_info *info, unsigned int clk)
++	{
++		int i, j, best_clk = info->fs * info->rate;
++
++		/* can we run at this clk without the PLL ? */
++		for (i = 0; i < ARRAY_SIZE(pcm_divs); i++) {
++			if ((best_clk >> 1) * pcm_divs[i] == clk) {
++				dai->pll_in = 0;
++				dai->clk_div = pcm_divs[i];
++				dai->mclk = best_clk;
++				return dai->mclk;
++			}
++		}
++
++		/* now check for PLL support */
++		for (i = 0; i < ARRAY_SIZE(pll_div); i++) {
++			if (pll_div[i].pll_in == clk) {
++				for (j = 0; j < ARRAY_SIZE(pcm_divs); j++) {
++					if (pll_div[i].pll_out == pcm_divs[j] * (best_clk >> 1)) {
++						dai->pll_in = clk;
++						dai->pll_out = pll_div[i].pll_out;
++						dai->clk_div = pcm_divs[j];
++						dai->mclk = best_clk;
++						return dai->mclk;
++					}
 +				}
-+				break;
-+			case SND_SOC_DAPM_STREAM_PAUSE_PUSH:
-+				break;
-+			case SND_SOC_DAPM_STREAM_PAUSE_RELEASE:
-+				break;
 +			}
 +		}
++
++		/* this clk is not supported */
++		return 0;
 +	}
-+	mutex_unlock(&codec->mutex);
 +
-+	dapm_power_widgets(codec, event);
-+	dump_dapm(codec, __FUNCTION__);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_event);
 +
-+/**
-+ * snd_soc_dapm_set_endpoint - set audio endpoint status
-+ * @codec: audio codec
-+ * @endpoint: audio signal endpoint (or start point)
-+ * @status: point status
-+ *
-+ * Set audio endpoint status - connected or disconnected.
-+ *
-+ * Returns 0 for success else error.
-+ */
-+int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
-+	char *endpoint, int status)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct list_head *l = NULL;
++The CPU I2S DAI driver has the does not need a config_sysclk() as it can slave
++at any FS.
 +
-+	list_for_each(l, &codec->dapm_widgets)
++	unsigned int config_sysclk(struct snd_soc_pcm_runtime *rtd,
++		struct snd_soc_clock_info *info)
 +	{
-+		w = list_entry(l, struct snd_soc_dapm_widget, list);
-+
-+		if(!strcmp(w->name, endpoint)) {
-+			w->connected = status;
-+		}
++		/* codec has pll that generates mclk from 13MHz xtal */
++		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info, 13000000);
 +	}
+Index: alsa-kernel/Documentation/soc/codec.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/codec.txt
+@@ -0,0 +1,232 @@
++ASoC Codec Driver
++=================
++
++The codec driver is generic and hardware independent code that configures the
++codec to provide audio capture and playback. It should contain no code that is
++specific to the target platform or machine. All platform and machine specific
++code should be added to the platform and machine drivers respectively.
++
++Each codec driver must provide the following features:-
++
++ 1) Digital audio interface (DAI) description
++ 2) Digital audio interface configuration
++ 3) PCM's description
++ 4) Codec control IO - using I2C, 3 Wire(SPI) or both API's
++ 5) Mixers and audio controls
++ 6) Sysclk configuration
++ 7) Codec audio operations
++
++Optionally, codec drivers can also provide:-
++
++ 8) DAPM description.
++ 9) DAPM event handler.
++10) DAC Digital mute control.
++
++It's probably best to use this guide in conjuction with the existing codec
++driver code in sound/soc/codecs/
++
++ASoC Codec driver breakdown
++===========================
++
++1 - Digital Audio Interface (DAI) description
++---------------------------------------------
++The DAI is a digital audio data transfer link between the codec and host SoC
++CPU. It typically has data transfer capabilities in both directions
++(playback and capture) and can run at a variety of different speeds.
++Supported interfaces currently include AC97, I2S and generic PCM style links.
++Please read DAI.txt for implementation information.
++
++
++2 - Digital Audio Interface (DAI) configuration
++-----------------------------------------------
++DAI configuration is handled by the codec_pcm_prepare function and is
++responsible for configuring and starting the DAI on the codec. This can be
++called multiple times and is atomic. It can access the runtime parameters.
++
++This usually consists of a large function with numerous switch statements to
++set up each configuration option. These options are set by the core at runtime.
++
++
++3 - Codec PCM's
++---------------
++Each codec must have it's PCM's defined. This defines the number of channels,
++stream names, callbacks and codec name. It is also used to register the DAI
++with the ASoC core. The PCM structure also associates the DAI capabilities with
++the ALSA PCM.
++
++e.g.
++
++static struct snd_soc_pcm_codec wm8731_pcm_client = {
++	.name = "WM8731",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++	},
++	.config_sysclk = wm8731_config_sysclk,
++	.ops = {
++		.prepare = wm8731_pcm_prepare,
++	},
++	.caps = {
++		.num_modes = ARRAY_SIZE(wm8731_hwfmt),
++		.modes = &wm8731_hwfmt[0],
++	},
++};
++
++
++4 - Codec control IO
++--------------------
++The codec can ususally be controlled via an I2C or SPI style interface (AC97
++combines control with data in the DAI). The codec drivers will have to provide
++functions to read and write the codec registers along with supplying a register
++cache:-
++
++	/* IO control data and register cache */
++    void *control_data; /* codec control (i2c/3wire) data */
++    void *reg_cache;
++
++Codec read/write should do any data formatting and call the hardware read write
++below to perform the IO. These functions are called by the core and alsa when
++performing DAPM or changing the mixer:-
++
++    unsigned int (*read)(struct snd_soc_codec *, unsigned int);
++    int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
++
++Codec hardware IO functions - usually points to either the I2C, SPI or AC97
++read/write:-
++
++	hw_write_t hw_write;
++	hw_read_t hw_read;
++
++
++5 - Mixers and audio controls
++-----------------------------
++All the codec mixers and audio controls can be defined using the convenience
++macros defined in soc.h.
++
++    #define SOC_SINGLE(xname, reg, shift, mask, invert)
++
++Defines a single control as follows:-
++
++  xname = Control name e.g. "Playback Volume"
++  reg = codec register
++  shift = control bit(s) offset in register
++  mask = control bit size(s) e.g. mask of 7 = 3 bits
++  invert = the control is inverted
++
++Other macros include:-
++
++    #define SOC_DOUBLE(xname, reg, shift_left, shift_right, mask, invert)
++
++A stereo control
++
++    #define SOC_DOUBLE_R(xname, reg_left, reg_right, shift, mask, invert)
++
++A stereo control spanning 2 registers
++
++    #define SOC_ENUM_SINGLE(xreg, xshift, xmask, xtexts)
++
++Defines an single enumerated control as follows:-
++
++   xreg = register
++   xshift = control bit(s) offset in register
++   xmask = control bit(s) size
++   xtexts = pointer to array of strings that describe each setting
++
++   #define SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, xtexts)
++
++Defines a stereo enumerated control
++
++
++6 - System clock configuration.
++-------------------------------
++The system clock that drives the audio subsystem can change depending on sample
++rate and the system power state. i.e.
++
++o Higher sample rates sometimes need a higher system clock.
++o Low system power states can sometimes limit the available clocks.
++
++This function is a callback that the machine driver can call to set and
++determine if the clock and sample rate combination is supported by the codec at
++the present time (and system state).
++
++NOTE: If the codec has a PLL then it has a lot more flexability wrt clock and
++sample rate combinations.
++
++Your config_sysclock function should return the MCLK if it's a valid
++combination for your codec else 0;
++
++Please read clocking.txt now.
++
++
++7 - Codec Audio Operations
++--------------------------
++The codec driver also supports the following alsa operations:-
++
++/* SoC audio ops */
++struct snd_soc_ops {
++	int (*startup)(snd_pcm_substream_t *);
++	void (*shutdown)(snd_pcm_substream_t *);
++	int (*hw_params)(snd_pcm_substream_t *, snd_pcm_hw_params_t *);
++	int (*hw_free)(snd_pcm_substream_t *);
++	int (*prepare)(snd_pcm_substream_t *);
++};
++
++Please refer to the alsa driver PCM documentation for details.
++http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c436.htm
++
++
++8 - DAPM description.
++---------------------
++The Dynamic Audio Power Management description describes the codec's power
++components, their relationships and registers to the ASoC core. Please read
++dapm.txt for details of building the description.
++
++Please also see the examples in other codec drivers.
++
++
++9 - DAPM event handler
++----------------------
++This function is a callback that handles codec domain PM calls and system
++domain PM calls (e.g. suspend and resume). It's used to put the codec to sleep
++when not in use.
++
++Power states:-
++
++	SNDRV_CTL_POWER_D0: /* full On */
++	/* vref/mid, clk and osc on, active */
++
++	SNDRV_CTL_POWER_D1: /* partial On */
++	SNDRV_CTL_POWER_D2: /* partial On */
++
++	SNDRV_CTL_POWER_D3hot: /* Off, with power */
++	/* everything off except vref/vmid, inactive */
++
++	SNDRV_CTL_POWER_D3cold: /* Everything Off, without power */
++
++
++10 - Codec DAC digital mute control.
++------------------------------------
++Most codecs have a digital mute before the DAC's that can be used to minimise
++any system noise.  The mute stops any digital data from entering the DAC.
++
++A callback can be created that is called by the core for each codec DAI when the
++mute is applied or freed.
++
++i.e.
++
++static int wm8974_mute(struct snd_soc_codec *codec,
++	struct snd_soc_codec_dai *dai, int mute)
++{
++	u16 mute_reg = wm8974_read_reg_cache(codec, WM8974_DAC) & 0xffbf;
++	if(mute)
++		wm8974_write(codec, WM8974_DAC, mute_reg | 0x40);
++	else
++		wm8974_write(codec, WM8974_DAC, mute_reg);
++	return 0;
++}
+Index: alsa-kernel/Documentation/soc/dapm.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/dapm.txt
+@@ -0,0 +1,297 @@
++Dynamic Audio Power Management for Portable Devices
++===================================================
++
++1. Description
++==============
++
++Dynamic Audio Power Management (DAPM) is designed to allow portable Linux devices
++to use the minimum amount of power within the audio subsystem at all times. It
++is independent of other kernel PM and as such, can easily co-exist with the
++other PM systems.
++
++DAPM is also completely transparent to all user space applications as all power
++switching is done within the ASoC core. No code changes or recompiling are
++required for user space applications. DAPM makes power switching descisions based
++upon any audio stream (capture/playback) activity and audio mixer settings
++within the device.
++
++DAPM spans the whole machine. It covers power control within the entire audio
++subsystem, this includes internal codec power blocks and machine level power
++systems.
++
++There are 4 power domains within DAPM
++
++   1. Codec domain - VREF, VMID (core codec and audio power)
++      Usually controlled at codec probe/remove and suspend/resume, although
++      can be set at stream time if power is not needed for sidetone, etc.
++
++   2. Platform/Machine domain - physically connected inputs and outputs
++      Is platform/machine and user action specific, is configured by the
++      machine driver and responds to asynchronous events e.g when HP
++      are inserted
++
++   3. Path domain - audio susbsystem signal paths
++      Automatically set when mixer and mux settings are changed by the user.
++      e.g. alsamixer, amixer.
++
++   4. Stream domain - DAC's and ADC's.
++      Enabled and disabled when stream playback/capture is started and
++      stopped respectively. e.g. aplay, arecord.
++
++All DAPM power switching descisons are made automatically by consulting an audio
++routing map of the whole machine. This map is specific to each machine and
++consists of the interconnections between every audio component (including
++internal codec components). All audio components that effect power are called
++widgets hereafter.
++
++
++2. DAPM Widgets
++===============
++
++Audio DAPM widgets fall into a number of types:-
++
++ o Mixer      - Mixes several analog signals into a single analog signal.
++ o Mux        - An analog switch that outputs only 1 of it's inputs.
++ o PGA        - A programmable gain amplifier or attenuation widget.
++ o ADC        - Analog to Digital Converter
++ o DAC        - Digital to Analog Converter
++ o Switch     - An analog switch
++ o Input      - A codec input pin
++ o Output     - A codec output pin
++ o Headphone  - Headphone (and optional Jack)
++ o Mic        - Mic (and optional Jack)
++ o Line       - Line Input/Output (and optional Jack)
++ o Speaker    - Speaker
++ o Pre        - Special PRE widget (exec before all others)
++ o Post       - Special POST widget (exec after all others)
++
++(Widgets are defined in include/sound/soc-dapm.h)
++
++Widgets are usually added in the codec driver and the machine driver. There are
++convience macros defined in soc-dapm.h that can be used to quickly build a
++list of widgets of the codecs and machines DAPM widgets.
++
++Most widgets have a name, register, shift and invert. Some widgets have extra
++parameters for stream name and kcontrols.
++
++
++2.1 Stream Domain Widgets
++-------------------------
++
++Stream Widgets relate to the stream power domain and only consist of ADC's
++(analog to digital converters) and DAC's (digital to analog converters).
++
++Stream widgets have the following format:-
++
++SND_SOC_DAPM_DAC(name, stream name, reg, shift, invert),
++
++NOTE: the stream name must match the corresponding stream name in your codecs
++snd_soc_codec_dai.
++
++e.g. stream widgets for HiFi playback and capture
++
++SND_SOC_DAPM_DAC("HiFi DAC", "HiFi Playback", REG, 3, 1),
++SND_SOC_DAPM_ADC("HiFi ADC", "HiFi Capture", REG, 2, 1),
++
++
++2.2 Path Domain Widgets
++-----------------------
++
++Path domain widgets have a ability to control or effect the audio signal or
++audio paths within the audio subsystem. They have the following form:-
++
++SND_SOC_DAPM_PGA(name, reg, shift, invert, controls, num_controls)
++
++Any widget kcontrols can be set using the controls and num_controls members.
++
++e.g. Mixer widget (the kcontrols are declared first)
++
++/* Output Mixer */
++static const snd_kcontrol_new_t wm8731_output_mixer_controls[] = {
++SOC_DAPM_SINGLE("Line Bypass Switch", WM8731_APANA, 3, 1, 0),
++SOC_DAPM_SINGLE("Mic Sidetone Switch", WM8731_APANA, 5, 1, 0),
++SOC_DAPM_SINGLE("HiFi Playback Switch", WM8731_APANA, 4, 1, 0),
++};
++
++SND_SOC_DAPM_MIXER("Output Mixer", WM8731_PWR, 4, 1, wm8731_output_mixer_controls,
++	ARRAY_SIZE(wm8731_output_mixer_controls)),
++
++
++2.3 Platform/Machine domain Widgets
++-----------------------------------
++
++Machine widgets are different from codec widgets in that they don't have a
++codec register bit associated with them. A machine widget is assigned to each
++machine audio component (non codec) that can be independently powered. e.g.
++
++ o Speaker Amp
++ o Microphone Bias
++ o Jack connectors
++
++A machine widget can have an optional call back.
++
++e.g. Jack connector widget for an external Mic that enables Mic Bias
++when the Mic is inserted:-
++
++static int spitz_mic_bias(struct snd_soc_dapm_widget* w, int event)
++{
++	if(SND_SOC_DAPM_EVENT_ON(event))
++		set_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
++	else
++		reset_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_set_endpoint);
 +
-+/**
-+ * snd_soc_dapm_free - free dapm resources
-+ * @socdev: SoC device
-+ *
-+ * Free all dapm widgets and resources.
-+ */
-+void snd_soc_dapm_free(struct snd_soc_device *socdev)
++SND_SOC_DAPM_MIC("Mic Jack", spitz_mic_bias),
++
++
++2.4 Codec Domain
++----------------
++
++The Codec power domain has no widgets and is handled by the codecs DAPM event
++handler. This handler is called when the codec powerstate is changed wrt to any
++stream event or by kernel PM events.
++
++
++2.5 Virtual Widgets
++-------------------
++
++Sometimes widgets exist in the codec or machine audio map that don't have any
++corresponding register bit for power control. In this case it's necessary to
++create a virtual widget - a widget with no control bits e.g.
++
++SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_DAPM_NOPM, 0, 0, NULL, 0),
++
++This can be used to merge to signal paths together in software.
++
++After all the widgets have been defined, they can then be added to the DAPM
++subsystem individually with a call to snd_soc_dapm_new_control().
++
++
++3. Codec Widget Interconnections
++================================
++
++Widgets are connected to each other within the codec and machine by audio
++paths (called interconnections). Each interconnection must be defined in order
++to create a map of all audio paths between widgets.
++This is easiest with a diagram of the codec (and schematic of the machine audio
++system), as it requires joining widgets together via their audio signal paths.
++
++i.e. from the WM8731 codec's output mixer (wm8731.c)
++
++The WM8731 output mixer has 3 inputs (sources)
++
++ 1. Line Bypass Input
++ 2. DAC (HiFi playback)
++ 3. Mic Sidetone Input
++
++Each input in this example has a kcontrol associated with it (defined in example
++above) and is connected to the output mixer via it's kcontrol name. We can now
++connect the destination widget (wrt audio signal) with it's source widgets.
++
++	/* output mixer */
++	{"Output Mixer", "Line Bypass Switch", "Line Input"},
++	{"Output Mixer", "HiFi Playback Switch", "DAC"},
++	{"Output Mixer", "Mic Sidetone Switch", "Mic Bias"},
++
++So we have :-
++
++	Destination Widget  <=== Path Name <=== Source Widget
++
++Or:-
++
++	Sink, Path, Source
++
++Or :-
++
++	"Output Mixer" is connected to the "DAC" via the "HiFi Playback Switch".
++
++When there is no path name connecting widgets (e.g. a direct connection) we
++pass NULL for the path name.
++
++Interconnections are created with a call to:-
++
++snd_soc_dapm_connect_input(codec, sink, path, source);
++
++Finally, snd_soc_dapm_new_widgets(codec) must be called after all widgets and
++interconnections have been registered with the core. This causes the core to
++scan the codec and machine so that the internal DAPM state matches the
++physical state of the machine.
++
++
++3.1 Machine Widget Interconnections
++-----------------------------------
++Machine widget interconnections are created in the same way as codec ones and
++directly connect the codec pins to machine level widgets.
++
++e.g. connects the speaker out codec pins to the internal speaker.
++
++	/* ext speaker connected to codec pins LOUT2, ROUT2  */
++	{"Ext Spk", NULL , "ROUT2"},
++	{"Ext Spk", NULL , "LOUT2"},
++
++This allows the DAPM to power on and off pins that are connected (and in use)
++and pins that are NC respectively.
++
++
++4 Endpoint Widgets
++===================
++An endpoint is a start or end point (widget) of an audio signal within the
++machine and includes the codec. e.g.
++
++ o Headphone Jack
++ o Internal Speaker
++ o Internal Mic
++ o Mic Jack
++ o Codec Pins
++
++When a codec pin is NC it can be marked as not used with a call to
++
++snd_soc_dapm_set_endpoint(codec, "Widget Name", 0);
++
++The last argument is 0 for inactive and 1 for active. This way the pin and its
++input widget will never be powered up and consume power.
++
++This also applies to machine widgets. e.g. if a headphone is connected to a
++jack then the jack can be marked active. If the headphone is removed, then
++the headphone jack can be marked inactive.
++
++
++5 DAPM Widget Events
++====================
++
++Some widgets can register their interest with the DAPM core in PM events.
++e.g. A Speaker with an amplifier registers a widget so the amplifier can be
++powered only when the spk is in use.
++
++/* turn speaker amplifier on/off depending on use */
++static int corgi_amp_event(struct snd_soc_dapm_widget *w, int event)
 +{
-+	struct snd_soc_codec *codec = socdev->codec;
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
++	else
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
 +
-+	snd_soc_dapm_sys_remove(socdev->dev);
-+	dapm_free_widgets(codec);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
 +
-+/* Module information */
-+MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_DESCRIPTION("Dynamic Audio Power Management core for ALSA SoC");
-+MODULE_LICENSE("GPL");
++/* corgi machine dapm widgets */
++static const struct snd_soc_dapm_widget wm8731_dapm_widgets =
++	SND_SOC_DAPM_SPK("Ext Spk", corgi_amp_event);
++
++Please see soc-dapm.h for all other widgets that support events.
++
++
++5.1 Event types
++---------------
++
++The following event types are supported by event widgets.
++
++/* dapm event types */
++#define SND_SOC_DAPM_PRE_PMU	0x1 	/* before widget power up */
++#define SND_SOC_DAPM_POST_PMU	0x2		/* after widget power up */
++#define SND_SOC_DAPM_PRE_PMD	0x4 	/* before widget power down */
++#define SND_SOC_DAPM_POST_PMD	0x8		/* after widget power down */
++#define SND_SOC_DAPM_PRE_REG	0x10	/* before audio path setup */
++#define SND_SOC_DAPM_POST_REG	0x20	/* after audio path setup */
+Index: alsa-kernel/Documentation/soc/machine.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/machine.txt
+@@ -0,0 +1,114 @@
++ASoC Machine Driver
++===================
++
++The ASoC machine (or board) driver is the code that glues together the platform
++and codec drivers.
++
++The machine driver can contain codec and platform specific code. It registers
++the audio subsystem with the kernel as a platform device and is represented by
++the following struct:-
++
++/* SoC machine */
++struct snd_soc_machine {
++	char *name;
++
++	int (*probe)(struct platform_device *pdev);
++	int (*remove)(struct platform_device *pdev);
++
++	/* the pre and post PM functions are used to do any PM work before and
++	 * after the codec and DAI's do any PM work. */
++	int (*suspend_pre)(struct platform_device *pdev, pm_message_t state);
++	int (*suspend_post)(struct platform_device *pdev, pm_message_t state);
++	int (*resume_pre)(struct platform_device *pdev);
++	int (*resume_post)(struct platform_device *pdev);
++
++	/* machine stream operations */
++	struct snd_soc_ops *ops;
++
++	/* CPU <--> Codec DAI links  */
++	struct snd_soc_dai_link *dai_link;
++	int num_links;
++};
++
++probe()/remove()
++----------------
++probe/remove are optional. Do any machine specific probe here.
++
++
++suspend()/resume()
++------------------
++The machine driver has pre and post versions of suspend and resume to take care
++of any machine audio tasks that have to be done before or after the codec, DAI's
++and DMA is suspended and resumed. Optional.
++
++
++Machine operations
++------------------
++The machine specific audio operations can be set here. Again this is optional.
++
++
++Machine DAI Configuration
++-------------------------
++The machine DAI configuration glues all the codec and CPU DAI's together. It can
++also be used to set up the DAI system clock and for any machine related DAI
++initialisation e.g. the machine audio map can be connected to the codec audio
++map, unconnnected codec pins can be set as such. Please see corgi.c, spitz.c
++for examples.
++
++struct snd_soc_dai_link is used to set up each DAI in your machine. e.g.
++
++/* corgi digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link corgi_dai = {
++	.name = "WM8731",
++	.stream_name = "WM8731",
++	.cpu_dai = &pxa_i2s_dai,
++	.codec_dai = &wm8731_dai,
++	.init = corgi_wm8731_init,
++	.config_sysclk = corgi_config_sysclk,
++};
++
++struct snd_soc_machine then sets up the machine with it's DAI's. e.g.
++
++/* corgi audio machine driver */
++static struct snd_soc_machine snd_soc_machine_corgi = {
++	.name = "Corgi",
++	.dai_link = &corgi_dai,
++	.num_links = 1,
++	.ops = &corgi_ops,
++};
++
++
++Machine Audio Subsystem
++-----------------------
++
++The machine soc device glues the platform, machine and codec driver together.
++Private data can also be set here. e.g.
++
++/* corgi audio private data */
++static struct wm8731_setup_data corgi_wm8731_setup = {
++	.i2c_address = 0x1b,
++};
++
++/* corgi audio subsystem */
++static struct snd_soc_device corgi_snd_devdata = {
++	.machine = &snd_soc_machine_corgi,
++	.platform = &pxa2xx_soc_platform,
++	.codec_dev = &soc_codec_dev_wm8731,
++	.codec_data = &corgi_wm8731_setup,
++};
++
++
++Machine Power Map
++-----------------
++
++The machine driver can optionally extend the codec power map and to become an
++audio power map of the audio subsystem. This allows for automatic power up/down
++of speaker/HP amplifiers, etc. Codec pins can be connected to the machines jack
++sockets in the machine init function. See soc/pxa/spitz.c and dapm.txt for
++details.
++
++
++Machine Controls
++----------------
++
++Machine specific audio mixer controls can be added in the dai init function.
+\ No newline at end of file
+Index: alsa-kernel/Documentation/soc/overview.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/overview.txt
+@@ -0,0 +1,83 @@
++ALSA SoC Layer
++==============
++
++The overall project goal of the ALSA System on Chip (ASoC) layer is to provide
++better ALSA support for embedded system on chip procesors (e.g. pxa2xx, au1x00,
++iMX, etc) and portable audio codecs. Currently there is some support in the
++kernel for SoC audio, however it has some limitations:-
++
++  * Currently, codec drivers are often tightly coupled to the underlying SoC
++    cpu. This is not ideal and leads to code duplication i.e. Linux now has 4
++    different wm8731 drivers for 4 different SoC platforms.
++
++  * There is no standard method to signal user initiated audio events.
++    e.g. Headphone/Mic insertion, Headphone/Mic detection after an insertion
++    event. These are quite common events on portable devices and ofter require
++    machine specific code to re route audio, enable amps etc after such an event.
++
++  * Current drivers tend to power up the entire codec when playing
++    (or recording) audio. This is fine for a PC, but tends to waste a lot of
++    power on portable devices. There is also no support for saving power via
++    changing codec oversampling rates, bias currents, etc.
++
++
++ASoC Design
++===========
++
++The ASoC layer is designed to address these issues and provide the following
++features :-
++
++  * Codec independence. Allows reuse of codec drivers on other platforms
++    and machines.
++
++  * Easy I2S/PCM audio interface setup between codec and SoC. Each SoC interface
++    and codec registers it's audio interface capabilities with the core and are
++    subsequently matched and configured when the application hw params are known.
++
++  * Dynamic Audio Power Management (DAPM). DAPM automatically sets the codec to
++    it's minimum power state at all times. This includes powering up/down
++    internal power blocks depending on the internal codec audio routing and any
++    active streams.
++
++  * Pop and click reduction. Pops and clicks can be reduced by powering the
++    codec up/down in the correct sequence (including using digital mute). ASoC
++    signals the codec when to change power states.
++
++  * Machine specific controls: Allow machines to add controls to the sound card
++    e.g. volume control for speaker amp.
++
++To achieve all this, ASoC basically splits an embedded audio system into 3
++components :-
++
++  * Codec driver: The codec driver is platform independent and contains audio
++    controls, audio interface capabilities, codec dapm definition and codec IO
++    functions.
++
++  * Platform driver: The platform driver contains the audio dma engine and audio
++    interface drivers (e.g. I2S, AC97, PCM) for that platform.
++
++  * Machine driver: The machine driver handles any machine specific controls and
++    audio events. i.e. turing on an amp at start of playback.
++
++
++Documentation
++=============
++
++The documentation is spilt into the following sections:-
++
++overview.txt: This file.
++
++codec.txt: Codec driver internals.
++
++DAI.txt: Description of Digital Audio Interface standards and how to configure
++a DAI within your codec and CPU DAI drivers.
++
++dapm.txt: Dynamic Audio Power Management
++
++platform.txt: Platform audio DMA and DAI.
++
++machine.txt: Machine driver internals.
++
++pop_clicks.txt: How to minimise audio artifacts.
++
++clocking.txt: ASoC clocking for best power performance.
+\ No newline at end of file
+Index: alsa-kernel/Documentation/soc/platform.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/platform.txt
+@@ -0,0 +1,58 @@
++ASoC Platform Driver
++====================
++
++An ASoC platform driver can be divided into audio DMA and SoC DAI configuration
++and control. The platform drivers only target the SoC CPU and must have no board
++specific code.
++
++Audio DMA
++=========
++
++The platform DMA driver optionally supports the following alsa operations:-
++
++/* SoC audio ops */
++struct snd_soc_ops {
++	int (*startup)(snd_pcm_substream_t *);
++	void (*shutdown)(snd_pcm_substream_t *);
++	int (*hw_params)(snd_pcm_substream_t *, snd_pcm_hw_params_t *);
++	int (*hw_free)(snd_pcm_substream_t *);
++	int (*prepare)(snd_pcm_substream_t *);
++	int (*trigger)(snd_pcm_substream_t *, int);
++};
++
++The platform driver exports it's DMA functionailty via struct snd_soc_platform:-
++
++struct snd_soc_platform {
++	char *name;
++
++	int (*probe)(struct platform_device *pdev);
++	int (*remove)(struct platform_device *pdev);
++	int (*suspend)(struct platform_device *pdev, struct snd_soc_cpu_dai *cpu_dai);
++	int (*resume)(struct platform_device *pdev, struct snd_soc_cpu_dai *cpu_dai);
++
++	/* pcm creation and destruction */
++	int (*pcm_new)(snd_card_t *, struct snd_soc_codec_dai *, snd_pcm_t *);
++	void (*pcm_free)(snd_pcm_t *);
++
++	/* platform stream ops */
++	snd_pcm_ops_t *pcm_ops;
++};
++
++Please refer to the alsa driver documentation for details of audio DMA.
++http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c436.htm
++
++An example DMA driver is soc/pxa/pxa2xx-pcm.c
++
++
++SoC DAI Drivers
++===============
++
++Each SoC DAI driver must provide the following features:-
++
++ 1) Digital audio interface (DAI) description
++ 2) Digital audio interface configuration
++ 3) PCM's description
++ 4) Sysclk configuration
++ 5) Suspend and resume (optional)
++
++Please see codec.txt for a description of items 1 - 4.
+Index: alsa-kernel/Documentation/soc/pops_clicks.txt
+===================================================================
+--- /dev/null
++++ alsa-kernel/Documentation/soc/pops_clicks.txt
+@@ -0,0 +1,52 @@
++Audio Pops and Clicks
++=====================
++
++Pops and clicks are unwanted audio artifacts caused by the powering up and down
++of components within the audio subsystem. This is noticable on PC's when an audio
++module is either loaded or unloaded (at module load time the sound card is
++powered up and causes a popping noise on the speakers).
++
++Pops and clicks can be more frequent on portable systems with DAPM. This is because
++the components within the subsystem are being dynamically powered depending on
++the audio usage and this can subsequently cause a small pop or click every time a
++component power state is changed.
++
++
++Minimising Playback Pops and Clicks
++===================================
++
++Playback pops in portable audio subsystems cannot be completely eliminated atm,
++however future audio codec hardware will have better pop and click supression.
++Pops can be reduced within playback by powering the audio components in a
++specific order. This order is different for startup and shutdown and follows
++some basic rules:-
++
++ Startup Order :- DAC --> Mixers --> Output PGA --> Digital Unmute
++
++ Shutdown Order :- Digital Mute --> Output PGA --> Mixers --> DAC
++
++This assumes that the codec PCM output path from the DAC is via a mixer and then
++a PGA (programmable gain amplifier) before being output to the speakers.
++
++
++Minimising Capture Pops and Clicks
++==================================
++
++Capture artifacts are somewhat easier to get rid as we can delay activating the
++ADC until all the pops have occured. This follows similar power rules to
++playback in that components are powered in a sequence depending upon stream
++startup or shutdown.
++
++ Startup Order - Input PGA --> Mixers --> ADC
++
++ Shutdown Order - ADC --> Mixers --> Input PGA
++
++
++Zipper Noise
++============
++An unwanted zipper noise can occur within the audio playback or capture stream
++when a volume control is changed near its maximum gain value. The zipper noise
++is heard when the gain increase or decrease changes the mean audio signal
++amplitude too quickly. It can be minimised by enabling the zero cross setting
++for each volume control. The ZC forces the gain change to occur when the signal
++crosses the zero amplitude line.
+Index: alsa-kernel/kernel/MAINTAINERS
+===================================================================
+--- alsa-kernel.orig/kernel/MAINTAINERS
++++ alsa-kernel/kernel/MAINTAINERS
+@@ -2642,6 +2642,12 @@ M:	perex@suse.cz
+ L:	alsa-devel@alsa-project.org
+ S:	Maintained
+ 
++SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT
++P:	Liam Girdwood
++M:	liam.girdwood@wolfsonmicro.com
++L:	alsa-devel@alsa-project.org
++S:	Supported
++
+ SPI SUBSYSTEM
+ P:	David Brownell
+ M:	dbrownell@users.sourceforge.net
 
---=-+3zM+2NdgxQVMEmYOx1T
+--=-EOzIhaMn6OzUzgdaEyzr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1449,7 +1650,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-+3zM+2NdgxQVMEmYOx1T
+--=-EOzIhaMn6OzUzgdaEyzr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1460,4 +1661,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-+3zM+2NdgxQVMEmYOx1T--
+--=-EOzIhaMn6OzUzgdaEyzr--
