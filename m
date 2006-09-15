@@ -1,15 +1,11 @@
-From: "shane michael matthews" <shane.michael.matthews@gmail.com>
-Subject: Re: Wall Clock Counter
-Date: Fri, 15 Sep 2006 10:38:50 -0700
-Message-ID: <705aa3f00609151038r7b800cfet7135c09a3c236c1c@mail.gmail.com>
-References: <705aa3f00609150906r56f1bda5nefea0fbe3251dee7@mail.gmail.com>
-	<1158337693.18762.16.camel@mindpipe>
-	<705aa3f00609151034j5a408668lf34cb095dbae582d@mail.gmail.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: ice1724/Audiotrak Prodigy 7.1 HiFi
+Date: Fri, 15 Sep 2006 21:11:03 +0200
+Message-ID: <200609152111.03266.julian@jusst.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <705aa3f00609151034j5a408668lf34cb095dbae582d@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,36 +19,22 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 9/15/06, shane michael matthews <shane.michael.matthews@gmail.com> wrote:
-> On 9/15/06, Lee Revell <rlrevell@joe-job.com> wrote:
-> >  On Fri, 2006-09-15 at 09:06 -0700, shane michael matthews wrote:
-> > > Hello group,
-> > >
-> > > What I want to do is read the value stored in the wall clock counter
-> > > on my sound card.  Searching through the alsa documentation and source
-> > > it appears that snd_timer_read is the function I want to use.  From
-> > > timer.c:
-> > >
-> > > "The timer implementation uses ring buffer to store information about
-> > > timing events. In this buffer is recorded count of ticks and current
-> > > tick resolution in nanoseconds."  Is the 'ticks' referred to here the
-> > > value in the wall clock counter (It seems to always be set to 5 on my
-> > > system)?  If anyone could point me to more documentation I would
-> > > greatly appreciate it.
-> >
-> > The answer to this will be hardware-specific.  In order for
-> > snd_timer_read() to work there must be a low level ALSA timer
-> > implementation for your sound device.  What soundcard do you use?
-> >
-> > Lee
+I just got a Audiotrak Prodigy 7.1 HiFi card, which is baed upon a Envy24HT 
+chipset in combination with one WM8776 codec for front out and a WM8766 for 
+channel 3-8.
+I made the front out working, taking the code from pontis.c - Now I'd like to 
+add support for the other channels, therefore I need to figure out the 
+I2C-base-address for the WM8766 registers.
+Can you provide me with some help on how to figure that out? I'm a newbie to 
+alsa/soundcard driver development.
+Reading the envy24ht-specs didn't help me, yet.
 
-The device is:
-# lspci
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 01)
+One more question: Should I merge my code into pontis.c, which would blow it a 
+bit up, but would avoid duplicate code, or should I open a new 
+prodigy_hifi.c/h?
 
-I found a manual at:   http://www.intel.com/design/chipsets/manuals/307017.htm
-On page 47 it discusses the wall clock.
+Cheers,
+Julian
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
