@@ -1,13 +1,13 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: ALSA compatibility to WM8750 codec and MPlayer!
-Date: Fri, 15 Sep 2006 11:46:21 +0100
-Message-ID: <1158317181.22950.36.camel@localhost.localdomain>
-References: <20060915104019.63026.qmail@web8512.mail.in.yahoo.com>
+Subject: Re: Recording problem
+Date: Fri, 15 Sep 2006 12:01:01 +0100
+Message-ID: <1158318061.22950.43.camel@localhost.localdomain>
+References: <64cf23610609150319n190d4005sf78af65dc7159e5f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060915104019.63026.qmail@web8512.mail.in.yahoo.com>
+In-Reply-To: <64cf23610609150319n190d4005sf78af65dc7159e5f@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,69 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "D. Krishna Mohan" <krishna_danim@yahoo.co.in>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Vishwas P S <vishwas.ps@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Seems I missed my previous reply to the list.
-
-On Fri, 2006-09-15 at 11:40 +0100, D. Krishna Mohan wrote:
-> Hi,
->    Ok my understanding from what u said is that MPlayer will be
-> interacting with alsa-lib part of ALSA and alsa-kernel will inturn
-> interact with Device Drivers (i2c that will operate on WM8750) .
-> Considering ALSA is divided into 2 parts alsa-lib and alsa-kernel.
+On Fri, 2006-09-15 at 15:50 +0530, Vishwas P S wrote:
+> Hi group,
 >  
-
-Yes.
-
-> Also suggest me a tutorial that can give me best understanding of
-> MPlayer's interfaces to alsa-lib and ALSA interfaces to both MPlayer
-> and DD.
+> I have a noise problem whenever I record sound with arecord.
+> The sound seems to be very loud and it often gets clipped .. looks
+> like the signal gets overloaded and gets clipped often.\
+> I've ensured that the Mic gain is kept at a minimum and still it
+> happens.
+> (For the same config OSS gives a very low volume)
 >  
+> What could be the problem. Pl help out
 
-Alsa documentation and tutorials can be found here:-
+Your correct in that your input signal is being clipped because the gain
+is too high. 
 
-http://alsa-project.org/documentation.php
+It's worth checking the audio path between your mic and ADC to make sure
+that there an no other amplifiers increasing the input gain. Please note
+that some ADC's can also increase gain.
 
-
-Btw, what is DD ?
+It's also possible that your hardware has ALC/AGC (Automatic Level|Gain
+control). This automatically changes the gain depending on the volume of
+the input signal so that the volume captured is constant. This will also
+cause clipping if the settings are too high.
 
 Liam
 
-> -KM
-> 
-> Liam Girdwood <liam.girdwood@wolfsonmicro.com> wrote:
->         On Fri, 2006-09-15 at 11:24 +0100, D. Krishna Mohan wrote:
->         > Hi,
->         > That was very much of the information,Thanx.
->         > Do we really need ALSA to bring audio out from WM8750 Audio
->         codec. My
->         > requirement is i have to use MPlayer to play audio and get
->         the audio
->         > and its control from WM8750 Audio Codec. Is it possible
->         without ALSA??
->         > 
->         
->         ALSA _is_ required to get audio playback, capture and control
->         of the
->         WM8750 mixers. Mplayer cannot do this directly to the
->         hardware.
->         
->         Liam
->         
-> 
-> 
-> 
-> 
-> ______________________________________________________________________
-> Find out what India is talking about on - Yahoo! Answers India 
-> Send FREE SMS to your friend's mobile from Yahoo! Messenger Version 8.
-> Get it NOW 
-> ________________________________________________________________________
-> This email has been scanned for all viruses by the MessageLabs Email
-> Security System. 
-> ________________________________________________________________________
+
 
 
 -------------------------------------------------------------------------
