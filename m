@@ -1,13 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Document for ALSA Architecture.
-Date: Fri, 15 Sep 2006 09:52:26 -0400
-Message-ID: <1158328346.7948.149.camel@mindpipe>
-References: <6df8d16a0609150250n192d9bb5uf679f3f6af50f5f5@mail.gmail.com>
+Subject: Re: Driver design question
+Date: Fri, 15 Sep 2006 10:47:59 -0400
+Message-ID: <1158331680.7948.156.camel@mindpipe>
+References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <6df8d16a0609150250n192d9bb5uf679f3f6af50f5f5@mail.gmail.com>
+In-Reply-To: <45095921020000C80000961F@emea1-mh.id2.novell.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,22 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "H. Chauhan" <hs.chauhan@gmail.com>
-Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@novell.com>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-15 at 15:20 +0530, H. Chauhan wrote:
-> Dear all,
+On Thu, 2006-09-14 at 12:29 +0100, Takashi Iwai wrote:
+> >>> Lee Revell <rlrevell@joe-job.com> 09/12/06 10:27 PM >>>
+> > I have a device here that can play PCM, but it's a weird implementation.
+> > Only 2 periods of 0x2000 words per buffer are supported, and there is no
+> > DMA - the driver must poll a status register, and when the chip is
+> > ready, deliver all 0x2000 words using outw() then send an end xfer
+> > command.
+> > 
+> > I think I need to use an intermediate buffer, and implement copy/silence
+> > callbacks that write to this.  Then I plan to use a tasklet or workqueue
+> > to do the actual xfer of PCM data to the hardware.  A timer callback
+> > will periodically check whether at least 0x2000 words are in the buffer
+> > and if so, schedule the tasklet to drain it.
 > 
-> I am looking for a document that discusses over all the architecture
-> of ALSA. The link on the main project site which points
-> to a german site is not working. And I cannot find any other document
-> for the same. 
+> You can implement it in two ways, at least.
 > 
-> Could you please point out some information source?
+> One is to use copy and silent callbacks.  This is pretty straightforward,
+> doesn't need extra buffer, but it cannot use the native mmap.  (alsa-lib
+> provides the mmap emulation mode, but it seems not so stable.)
+> Also, the buffer and period sizes are very restricitve (in your case, 0x2000
+> x 2 words), so many apps might not work well.
+> An exampleof this type is isa/sb/emu8000_pcm.c (and some of gus pcm,
+> IIRC).
 > 
+> Another is to use an intermediate buffer as you suggsted.
+> In this case, you do _not_ need copy and silent callbacks.  These callbacks
+> are the operations to copy and silent the hardware buffers.  WIth an
+> intermediate buffer, the copy and silent are done on this buffer, i.e. on
+> normal RAM.  What you need instead is the background-running copy
+> operation from this intermediate buffer to the hardware via outw.
+> 
+> This copy task could be done in the interrupt handler (or timer in your case)
+> if it's minimum.  If not, it'd be better to take a workq since it can sleep and
+> much preemptive.
 
-Such a document does not exist.
+Thanks very much for the information.
+
+So if I use an intermediate buffer but no copy and silence callbacks, I
+must copy the data to the hardware in a workqueue (I have no interrupt
+ability and the copy to hardware must be able to sleep).  Where do I
+copy the data from, and how do I know when 0x2000 words are available?
+By directly accessing runtime->dma_area and the software pointer?  IOW
+how do I get the information that would be passed to the copy callback?
 
 Lee
 
