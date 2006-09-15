@@ -1,15 +1,13 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Recording problem
-Date: Fri, 15 Sep 2006 14:39:08 +0100
-Message-ID: <1158327548.22950.86.camel@localhost.localdomain>
-References: <64cf23610609150319n190d4005sf78af65dc7159e5f@mail.gmail.com>
-	<1158318061.22950.43.camel@localhost.localdomain>
-	<64cf23610609150416k477d2d2cl4a080cddd22cfb7a@mail.gmail.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Document for ALSA Architecture.
+Date: Fri, 15 Sep 2006 09:52:26 -0400
+Message-ID: <1158328346.7948.149.camel@mindpipe>
+References: <6df8d16a0609150250n192d9bb5uf679f3f6af50f5f5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <64cf23610609150416k477d2d2cl4a080cddd22cfb7a@mail.gmail.com>
+In-Reply-To: <6df8d16a0609150250n192d9bb5uf679f3f6af50f5f5@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,42 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Vishwas P S <vishwas.ps@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: "H. Chauhan" <hs.chauhan@gmail.com>
+Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-15 at 16:46 +0530, Vishwas P S wrote:
-> Hi Liam,
->  
-> Thanks for the quick response.
-> I've checked that audio path and there are no programmable amps. The
-> audio chip has only one set of register bits for gain control and I've
-> kept it at a minimum. (Also the gain knob in the Mic at a minimum)
-> But still the problems exist
-> (For the same config and same hardware OSS produces very feeble sound)
->  
-> Is there any configuration that I need to edit in asla.conf or
-> asoundrc
-> Is there any place in software where the recorded stream could be
-> getting boosted or mixed??
+On Fri, 2006-09-15 at 15:20 +0530, H. Chauhan wrote:
+> Dear all,
+> 
+> I am looking for a document that discusses over all the architecture
+> of ALSA. The link on the main project site which points
+> to a german site is not working. And I cannot find any other document
+> for the same. 
+> 
+> Could you please point out some information source?
+> 
 
-A software gain can be ruled out by recording from the hardware directly
-i.e.
+Such a document does not exist.
 
-arecord -f cd -Dhw:0,0 > file.wav
-
-This will record directly from the hardware without any pcm plugins. If
-the clipping is still audible, then I would compare a hardware register
-dump between your OSS and ALSA drivers. 
-
-Another possibility is that your digital audio interface (DAI) is
-incorrectly configured between your codec and controller. This could
-cause the audio MSB to be shifted wrt the controller by 1 bit to the
-left. This would cause high gain and a lot of clipping.
-
-Liam   
-
-
+Lee
 
 
 -------------------------------------------------------------------------
