@@ -1,13 +1,14 @@
-From: Junji Umeno <umeno@elwsc.co.jp>
-Subject: Re: Does it need full-duplex to use snd_pcm_link ?
-Date: Fri, 15 Sep 2006 16:33:08 +0900
-Message-ID: <20060915163308.40523955@localhost.localdomain>
-References: <20060915145400.57815d0c@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: How to count PCM frames captured?
+Date: Fri, 15 Sep 2006 09:36:05 +0200
+Message-ID: <1158305765.19680.270995073@webmail.messagingengine.com>
+References: <20060915072730.78504.qmail@web55402.mail.re4.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060915145400.57815d0c@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <20060915072730.78504.qmail@web55402.mail.re4.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,35 +18,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Agata Ma <ga0ata0912@yahoo.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Agata Ma wrote:
+> So, my question is: does exist an ALSA function to count the PCM
+> frames captured and moved to buffer?
+
+The function snd_pcm_avail_update() returns how many frames are
+available in the device's buffer.
+
+The function snd_pcm_readi() returns how many frames it has copied to
+your buffer.
 
 
-On Fri, 15 Sep 2006 14:54:00 +0900
-Junji Umeno <umeno@elwsc.co.jp> wrote:
-
-> I failed to record with the example code 'latency.c' written in the doxygen manual.
-> When it plays back and records at the same time, using snd_pcm_link,
-> should the hardware be implemented as full-duplex of i/o?
-> As previous comments pointed in this lists,
-> some buffer length data are written into a playback handler,
-> and then reading starts.
-> They said, it should be needed to have 4096 bytes written in the write buffer.
-> But in my case, 
-> 'writei' continues to return EAGAIN if more than 64byte are to be written.
-> 
-> Any comment is welcom.
-> -- 
-> UMENO, Junji
-> ElmicWescom, Inc.
-> 
-
-Does it depend on the device's read/write buffer size, wchich is set by 'snd_pcm_hw_params_set_rate' ?
-
--- 
-UMENO, Junji
-ElmicWescom, Inc.
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
