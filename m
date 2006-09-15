@@ -1,23 +1,10 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: ALSA 1.0.13rc2 release
-Date: Fri, 15 Sep 2006 17:58:46 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0609151756270.7856@tm8103.perex-int.cz>
+From: "shane michael matthews" <shane.michael.matthews@gmail.com>
+Subject: Wall Clock Counter
+Date: Fri, 15 Sep 2006 09:06:51 -0700
+Message-ID: <705aa3f00609150906r56f1bda5nefea0fbe3251dee7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0747822828=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E3E5198
-	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Sep 2006 17:58:48 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	B87419942A for <alsa-devel@alsa-project.org>;
-	Fri, 15 Sep 2006 17:58:47 +0200 (MEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	8C378E9479 for <alsa-devel@alsa-project.org>;
-	Fri, 15 Sep 2006 17:58:47 +0200 (CEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,25 +14,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============0747822828==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_182026_1087644.1158336411276"
 
-	almost all ALSA packages were released with version number 
-1.0.13rc2. The changelog can be obtained here:
+------=_Part_182026_1087644.1158336411276
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-http://www.alsa-project.org/changes/v1-0-13rc1--v1-0-13rc2.txt
+Hello group,
 
-						Jaroslav
+What I want to do is read the value stored in the wall clock counter on my
+sound card.  Searching through the alsa documentation and source it appears
+that snd_timer_read is the function I want to use.  From timer.c:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+"The timer implementation uses ring buffer to store information about timing
+events. In this buffer is recorded count of ticks and current tick
+resolution in nanoseconds."  Is the 'ticks' referred to here the value in
+the wall clock counter (It seems to always be set to 5 on my system)?  If
+anyone could point me to more documentation I would greatly appreciate it.
+
+Help is greatly appreciated,
+Shane
+
+------=_Part_182026_1087644.1158336411276
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hello group,<br><br>What I want to do is read the value stored in the wall clock counter on my sound card.&nbsp; Searching through the alsa documentation and source it appears that snd_timer_read is the function I want to use.&nbsp; From 
+timer.c:<br><br>&quot;The timer implementation uses ring buffer to store information about timing events. In this buffer is recorded count of ticks and current tick resolution in nanoseconds.&quot;&nbsp; Is the 'ticks' referred to here the value in the wall clock counter (It seems to always be set to 5 on my system)?&nbsp; If anyone could point me to more documentation I would greatly appreciate it.
+<br><br>Help is greatly appreciated,<br>Shane<br>
+
+------=_Part_182026_1087644.1158336411276--
+
+
+--===============0747822828==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0747822828==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0747822828==--
