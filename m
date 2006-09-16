@@ -1,7 +1,7 @@
-From: Ken Smith <kens@kensnet.org>
-Subject: ICE1712 SPDIF Output format
-Date: Fri, 15 Sep 2006 22:38:14 +0100
-Message-ID: <450B1D46.3010906@kensnet.org>
+From: Agata Ma <ga0ata0912@yahoo.com>
+Subject: Re: How to count PCM frames captured?
+Date: Sat, 16 Sep 2006 01:57:41 -0700 (PDT)
+Message-ID: <20060916085741.82471.qmail@web55414.mail.re4.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,27 +18,44 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Is there a problem with the SPDIF output format with the ice1712 
-driver? I'm using FC5, CCRMA, Ardour etc...
+Clemens Ladisch wrote:
+> Agata Ma wrote:
+>> So, my question is: does exist an ALSA function to
+count the PCM
+>> frames captured and moved to buffer?
+> 
+> The function snd_pcm_avail_update() returns how many
+frames are
+> available in the device's buffer.
+> 
+> The function snd_pcm_readi() returns how many frames
+it has copied to
+> your buffer.
+> 
+> 
+> HTH
+> Clemens
+> 
+> 
+Hi Clemens,
 
-I have a M-Audio Delta1010 whose SPDIF output is routed to a Yamaha 
-Surround AMP, in turn the Yamaha's SPDIF output is also routed to a 
-M-Audio DAC. I get sound output from the M-Audio DAC (via the Yamaha) 
-but no output from the Yamaha itself. I have noticed that using the 
-M-Audio Windows driver the Yamaha only produces output when I select 
-"consumer" format output and it mutes when I select "Pro" format in the 
-Windows M-Audio 1010 control panel. Trying these settings in 
-envy24control does not influence the output.
+Thanks for your suggestion, I have wrote a simple C
+code using
+snd_pcm_readi() and it work..I can count the frames..
 
-Is this an ice1712 driver  or a envy24control problem or something else?
-
-Any suggestions?
+Now, a new "problem" arise...but I'm going to open a
+new thread to be
+more precise.
 
 Thanks
+Agata
 
-Ken
 
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
