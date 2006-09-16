@@ -1,11 +1,18 @@
-From: Agata Ma <ga0ata0912@yahoo.com>
-Subject: Re: How to count PCM frames captured?
-Date: Sat, 16 Sep 2006 01:57:41 -0700 (PDT)
-Message-ID: <20060916085741.82471.qmail@web55414.mail.re4.yahoo.com>
+From: Olaf Hering <olaf@aepfle.de>
+Subject: Re: oops in snd-powermac due to snd-aoa
+Date: Sat, 16 Sep 2006 11:56:03 +0200
+Message-ID: <20060916095603.GA5447@aepfle.de>
+References: <20060907124256.GA22928@aepfle.de> <s5h64fzltyg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from natlemon.rzone.de (natlemon.rzone.de [81.169.145.170])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C103C17C
+	for <alsa-devel@alsa-project.org>;
+	Sat, 16 Sep 2006 11:56:03 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5h64fzltyg.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,47 +22,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Agata Ma wrote:
->> So, my question is: does exist an ALSA function to
-count the PCM
->> frames captured and moved to buffer?
-> 
-> The function snd_pcm_avail_update() returns how many
-frames are
-> available in the device's buffer.
-> 
-> The function snd_pcm_readi() returns how many frames
-it has copied to
-> your buffer.
-> 
-> 
-> HTH
-> Clemens
-> 
-> 
-Hi Clemens,
+On Thu, Sep 07, Takashi Iwai wrote:
 
-Thanks for your suggestion, I have wrote a simple C
-code using
-snd_pcm_readi() and it work..I can count the frames..
+> At Thu, 7 Sep 2006 14:42:56 +0200,
+> Olaf Hering wrote:
+> > 
+> > I was playing with snd-aoa, maybe the driver would work on a G4/466.
+> > mv /lib/modules/*/kernel/sound/ppc/snd-powermac.ko .
+> > reboot
+> > $insmod /lib/modules/*/kernel/sound/aoa/*/*.ko
+> > alsamixer finds nothing.
+> > mv snd-powermac.ko /lib/modules/*/kernel/sound/ppc/
+> > $insmod snd-powermac.ko -> oops
+> > 
+> > Using PowerMac machine description
+> (snip)
+> > ALSA sound/ppc/keywest.c:82: tumbler: cannot attach i2c client
+> > read_audio_gpio addr 67 ret 2 av 4
+> > headphone: 0, lineout: 0
+> > check_audio_gpio addr 70 ret 4 av 4
+> > check_audio_gpio addr 6f ret 7 av 4
+> > Unable to handle kernel paging request for data at address 0x00000002
+> 
+> Does the patch below work?
 
-Now, a new "problem" arise...but I'm going to open a
-new thread to be
-more precise.
+Yes, no oops, but also no sound without reboot. Thats ok.
 
-Thanks
-Agata
+...
+ALSA sound/ppc/keywest.c:82: tumbler: cannot attach i2c client
+read_audio_gpio addr 67 ret 2 av 4
+headphone: 0, lineout: 0
+check_audio_gpio addr 70 ret 4 av 4
+check_audio_gpio addr 6f ret 7 av 4
+date:~ # 
+date:~ # alsamixer 
 
+alsamixer: function snd_ctl_open failed for default: No such device
+...
 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
