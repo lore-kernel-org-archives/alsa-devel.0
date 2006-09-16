@@ -1,12 +1,21 @@
-From: =?iso-2022-jp?B?eXVraWhhbmE=?= <yukihana@yahoo.co.jp>
-Subject: Re: (no subject)
-Date: Sat, 16 Sep 2006 05:15:35 -0700 (PDT)
-Message-ID: <E1GOZ50-00086I-MS@mail.sourceforge.net>
-Reply-To: yukihana@yahoo.co.jp
+From: Nicolas GRAZIANO <nicolas.graziano@wanadoo.fr>
+Subject: [PATCH] hda_intel prefer 24bit instead of 20bit
+Date: Sat, 16 Sep 2006 23:03:04 +0200
+Message-ID: <450C6688.10507@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070708020508050008030800"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from smtp5-g19.free.fr (smtp5-g19.free.fr [212.27.42.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88CEB16A
+	for <alsa-devel@alsa-project.org>;
+	Sat, 16 Sep 2006 23:03:08 +0200 (MEST)
+Received: from grazy (rob92-2-82-66-38-107.fbx.proxad.net [82.66.38.107])
+	by smtp5-g19.free.fr (Postfix) with ESMTP id 1B835255E7
+	for <alsa-devel@alsa-project.org>;
+	Sat, 16 Sep 2006 23:03:08 +0200 (CEST)
+Received: from grazy ([127.0.0.1]) by grazy with esmtp (Exim 4.63)
+	(envelope-from <nicolas.graziano@wanadoo.fr>) id 1GOhJZ-0002Q1-BA
+	for alsa-devel@alsa-project.org; Sat, 16 Sep 2006 23:03:05 +0200
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,158 +25,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-:―― INFORMATION  ―――――――――――――――――――――――――:
- 不正・悪質なサイトを一切排除しておりますので
- 安心してご利用ください。   http://love-match.bz/pc/?02
-:――――――――――――――――――――――――――――――――――:
+This is a multi-part message in MIME format.
+--------------070708020508050008030800
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-*・゜゜・*:.。. .。.:*・゜゜・*:.。..。:*・゜゜・*:.。..。:**・゜゜・*
+If I understand the hda_intel code, for format > 20bit it only advertise
+the SNDRV_PCM_FMTBIT_S32_LE format and play it at 32 bit, 20 bit or 24 bit.
 
+But if the 20bit and 24bit are available, actually it prefer the 20bit
+format. This path is to prefer the 24bit format instead of 20bit.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 不倫・ワリキリ専門の無料出会いサイト『Love☆Match』
-　-----------------------------------------------------------------
-　　登録料・利用料　・・・・・・・・・【無料】
-　　メールの送受信　・・・・・・・・・【無料】
-　　ユーザーの検索　・・・・・・・・・【無料】
-　　掲示板の閲覧・書込み　・・・・・・【無料】
-　　画像交換・アップロード　・・・・・【無料】
-　　アドレス交換・電話番号交換　・・・【無料】
-　-----------------------------------------------------------------
-　　どれだけ使っても全て無料！　http://love-match.bz/pc/?02
+Signed-off-by: Nicolas Graziano <nicolas.graziano@wanadoo.fr>
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ いつでも女性ユーザーがいっぱい。その理由は？
+Nicolas
 
-　-----------------------------------------------------------------
-　ＰＣ＆モバイルに対応！いつでもどこでも気軽に楽しめる！
-　-----------------------------------------------------------------
-　仕事中は携帯電話から、プライベートは自宅からのんびりと。
-　気になる相手といつでも繋がっているから、新密度も急速にＵＰ。
-　http://love-match.bz/pc/?02
+--------------070708020508050008030800
+Content-Type: text/x-patch;
+ name="prefer24bitto20bit.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="prefer24bitto20bit.patch"
 
-　-----------------------------------------------------------------
-　ＰＣから簡単プロフィール作成。ネット初心者でもラクラク参加ＯＫ
-　-----------------------------------------------------------------
-　面倒な登録は一切不要。パソコンから簡単なプロフィールを作成して
-　初心者の方や女性でもすぐに参加できます。
-　http://love-match.bz/pc/?02
-　-----------------------------------------------------------------
-　自由恋愛対応！直電・直メ交換支援ツール
-　-----------------------------------------------------------------
-　基本的にメールアドレスや電話番号は非公開ですが
-　仲良くなった人だけにメールアドレスや電話番号を教える事ができます。
-　http://love-match.bz/pc/?02
+diff -r b641fc7ea072 pci/hda/hda_codec.c
+--- a/pci/hda/hda_codec.c	Tue Sep 12 15:35:35 2006 +0200
++++ b/pci/hda/hda_codec.c	Sat Sep 16 18:11:58 2006 +0200
+@@ -1503,10 +1503,10 @@ int snd_hda_query_supported_pcm(struct h
+ 				formats |= SNDRV_PCM_FMTBIT_S32_LE;
+ 				if (val & AC_SUPPCM_BITS_32)
+ 					bps = 32;
++				else if (val & AC_SUPPCM_BITS_24)
++					bps = 24;
+ 				else if (val & AC_SUPPCM_BITS_20)
+ 					bps = 20;
+-				else if (val & AC_SUPPCM_BITS_24)
+-					bps = 24;
+ 			}
+ 		}
+ 		else if (streams == AC_SUPFMT_FLOAT32) { /* should be exclusive */
 
-　-----------------------------------------------------------------
-　写真アップロードに対応！好みの相手を素早くＣＨＥＣＫ！
-　-----------------------------------------------------------------
-　待ち合わせ場所にイメージとまったく違う人が来たら…。
-　ピュアックスなら会う前に写真交換ができるから、そんな不安も解消。
-　http://love-match.jp/pc/?06
-
-　-----------------------------------------------------------------
-　スレッド掲示板で秘密のパートナー検索も効率ＵＰ！
-　-----------------------------------------------------------------
-　メインの掲示板のほかにスレッド型の掲示板を設置。
-　メル友から秘密のパートナーまで目的別のユーザーが集う掲示板です。
-　http://love-match.jp/pc/?06
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 毎日500人近くのユーザーが続々参加中！！
-
-□-----------------------------------------------------------------
-
-　リエ（２１歳/会社員）
-　いつも１人でエッチなことを考えてます。
-　メールだといろいろ話せるんだけど、実際に会うとあまりしゃべれなく
-　なっちゃうので、盛り上げてくれるような楽しい男の人いないかな？
-　引っ込み思案のせいか、男性経験はあまり無いんです。
-　優しく＆楽しくリードしてくれる男性からのメール待ってます。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　真菜（２４歳/フリーター）
-　彼氏が浮気してて超アタマきたっ！まなだって遊びたい盛りだし、ずっと
-　ガマンしてたのにさ！かっこいい人見つけて思いっきりふってやるつもりで
-　登録してみた（笑）
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　みさ（３４歳/専業主婦）
-　殆ど家に帰ってこない仕事人間のだんなさまと二人きりの毎日で、ほんと
-　寂しい思いをしています。年下の男の子がいれば仲良くなりたいな。
-　年下の人とは付き合ったことがないので興味津々です(^^)
-　[写真無し] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　恭子（２８歳/会社員）
-　彼氏とはいつも同じようなセックスばかりでかなり冷め気味です。
-　誰かあたしと熱いセックスを楽しみませんか？めんどくさい事は
-　言いません。ただ、いつもと違うドキドキするような事がしたい
-　だけなんです。
-　[写真無し] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　ななこ（２８歳/主婦）
-　半年前にだんなと別れて今は×1です。
-　夜のお仕事なので、昼間まったりと過ごしませんか？
-　心身ともに疲れ気味で、今、激しく癒されたいです。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　祥子（３１歳/クリエイター）
-　平日は18時くらいまでは大体仕事してるので、その後に食事したり
-　楽しく飲んだりできるパートナー希望です。年上でも年下でも
-　かまいませんので気軽にメールを送って頂けると嬉しいです。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　ゅヵ`（２０歳/学生）
-　まずゎ会ってみないとはじまらなぃょね？！
-　横浜近辺の人で、いろんな意味でオトナな人は
-　プロフ付きでめぇる送って☆
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-
-   出会いサイトのサクラに騙されないように↓
-　┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-　　【裏】無料の出会い情報
-　　-------------------------------------------------------------
-　　お金と時間を持て余している人妻の間で、噂になってるあのサイト
-　　[登録・利用料全て無料]　http://love-match.bz/pc/?02
-　　-------------------------------------------------------------
-　　彼女達が求めているのはこんな男性です。
-　　?年上女性にリードしてもらいたい、経験少なめの男性
-　　?体力・テクニックに自信が有る男性
-　　男性会員が不足しています。我こそは、と思う方は今すぐ参加！
-　　[登録・利用料全て無料]　http://love-match.bz/pc/?02
-　┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-お問い合わせ先はこちら↓
-広東省茂名市人民大街3-6-4-533
-友誼網絡公司
-139-3668-7892
-
-
-
-
-
+--------------070708020508050008030800
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--------------070708020508050008030800
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--------------070708020508050008030800--
