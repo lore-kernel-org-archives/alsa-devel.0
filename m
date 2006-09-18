@@ -1,17 +1,10 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Wall Clock Counter
-Date: Mon, 18 Sep 2006 12:28:14 +0200
-Message-ID: <1158575294.27553.271179033@webmail.messagingengine.com>
-References: <705aa3f00609150906r56f1bda5nefea0fbe3251dee7@mail.gmail.com>   
-	<1158337693.18762.16.camel@mindpipe>   
-	<705aa3f00609151034j5a408668lf34cb095dbae582d@mail.gmail.com>   
-	<705aa3f00609151038r7b800cfet7135c09a3c236c1c@mail.gmail.com>
+From: "YongLi" <sdshliyong@163.com>
+Subject: snd_pcm_hw_params and hw_params function call
+Date: Mon, 18 Sep 2006 18:34:14 +0800
+Message-ID: <000901c6db0d$ff25c140$9b01a8c0@LiYong>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1290435774=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <705aa3f00609151038r7b800cfet7135c09a3c236c1c@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,26 +17,43 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-shane michael matthews wrote:
-> > > > What I want to do is read the value stored in the wall clock counter
-> > > > on my sound card.  Searching through the alsa documentation and source
-> > > > it appears that snd_timer_read is the function I want to use.
-> 
-> The device is:
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-> Definition Audio Controller (rev 01)
+--===============1290435774==
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-ALSA timers require that the device can issue interrupts after some
-specified interval.  Your HDA controller cannot.
+SGVsbG8gQWxsLA0KDQpJIGFtIHBvcnRpbmcgdGhlIGxpbnV4IDIuNi4xNiB0byBteSBBUk0gYm9h
+cmQuIEkgZm91bmQgYSBwcm9ibGVtIHJlbGF0ZWQgdG8gdGhlIHNvdW5kIGNvZGVjIGRyaXZlci4N
+Cg0KSW4gdGhlIHNvdW5kIGNvZGVjIGRyaXZlciwgSSBkZWZpbmVkIGEgLmh3X3BhcmFtcyBmdW5j
+dGlvbiB0byBzZXQgdGhlIElJUyByZWxhdGVkIERNQSBidWZmZXIuIEhvd2V2ZXIsDQoNCkkgY2Fu
+bm90IGdldCB0aGUgcnVudGltZS0+cGVyaW9kX3NpemUgYW5kIHJ1bnRpbWUtPmZyYW1lX2JpdHMg
+dmFsdWUuIFRoZXNlIHZhbHVlcyBhcmUgYXNzaWduZWQgaW4gdGhlICANCnNuZF9wY21faHdfcGFy
+YW1zIGZ1bmN0aW9uIGFmdGVyIGh3X3BhcmFtcyBjYWxsLiANCg0KSG93IHRvIHJlc29sdmUgdGhp
+cyBwcm9ibGVtPw0KDQpUaGFuayB5b3UhDQoNClR5bGVyIExpDQoNCg==
 
-What do you want to use the wall clock counter for?
 
 
-Regards,
-Clemens
+
+--===============1290435774==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1290435774==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1290435774==--
