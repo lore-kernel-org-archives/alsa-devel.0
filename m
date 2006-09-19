@@ -1,14 +1,11 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: ice1724/Audiotrak Prodigy 7.1 HiFi
-Date: Tue, 19 Sep 2006 11:40:17 +0200
-Message-ID: <200609191140.18077.julian@jusst.de>
-References: <200609152111.03266.julian@jusst.de> <s5hlkogw6ip.wl%tiwai@suse.de>
+From: Agata Ma <ga0ata0912@yahoo.com>
+Subject: Timer.c does not compile?
+Date: Tue, 19 Sep 2006 03:36:56 -0700 (PDT)
+Message-ID: <20060919103656.75906.qmail@web55402.mail.re4.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hlkogw6ip.wl%tiwai@suse.de>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,30 +15,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, 19. September 2006 11:27 schrieb Takashi Iwai:
-> At Fri, 15 Sep 2006 21:11:03 +0200,
-> First you should make clear whether the codec chip is connected via
-> the vt1724's standard connection or 3-wired SPI connection via GPIO.
-> The most boards use the latter method while pontis board uses the
-> former.  In the latter case, the address is usually 2 bit, so you can
-> do a wild guess more easily.
+Hi,
 
-I figured out that the WM8766 is connected through a 3-wired SPI-connection. I 
-also figured out that the GPIOs 16,17,18 are used.
-pontis.c already includes a SPI-implementation, but according to the WM8766 
-specs (look at wolfsonmico.com) this device does not await an address, but 
-only 2 bytes of data: register address/values.
-Actually trying to initializing the chip leads to silence, in comparison to 
-the noise coming out before, when the chip was in default mode.
-I assume that there must be some timing problem with the data-transmission or 
-similiar. I will do some more testing today.
-Maybe I'll send in a patch if I can't find a problem, anyway.
+I'm trying to understand what is the right functions
+to get the time
+stamp related to the PCM frames.
 
--Julian
+Searching in Alsa code I found the file "timer.c"
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2timer_8c-example.html
+
+and I suppose it is related to what I need to do.
+
+So I tried to compile it, but I get an error, it seem
+to me, the
+compiler can't find the
+"snd_async_add_timer_handler"..
+The output:
+
+dhcp78:~# gcc -Wall -lasound test_timer.c -o
+test_timer
+test_timer.c: In function `async_callback':
+test_timer.c:60: warning: implicit declaration of
+function
+`snd_async_handler_get_timer'
+test_timer.c:60: warning: initialization makes pointer
+from integer
+without a cast
+test_timer.c: In function `main':
+test_timer.c:171: warning: implicit declaration of
+function
+`snd_async_add_timer_handler'
+/tmp/ccw926SP.o(.text 0x285): In function
+`async_callback':
+: undefined reference to `snd_async_handler_get_timer'
+/tmp/ccw926SP.o(.text 0x9e3): In function `main':
+: undefined reference to `snd_async_add_timer_handler'
+collect2: ld returned 1 exit status
+dhcp78:~#
+
+
+I tried to perform a grep into Alsa source code but I
+did not found the
+function "snd_async_add_timer_handler"...
+
+Can someone help me...it is not trivial try to look
+into Alsa code for a
+newb like me..
+
+Thanks a lot
+Agata
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
