@@ -1,12 +1,14 @@
-From: Pablo Yaggi <pyaggi@alsurdelsur.com>
-Subject: C-Media / usb device bug ?
-Date: Mon, 18 Sep 2006 19:21:10 -0300
-Message-ID: <200609181921.10510.pyaggi@alsurdelsur.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: C-Media / usb device bug ?
+Date: Tue, 19 Sep 2006 08:36:43 +0200
+Message-ID: <1158647803.13410.271265867@webmail.messagingengine.com>
+References: <200609181921.10510.pyaggi@alsurdelsur.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <200609181921.10510.pyaggi@alsurdelsur.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,45 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Pablo Yaggi <pyaggi@alsurdelsur.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(sorry if this come twice, i think i miss posted first one)
+Pablo Yaggi wrote:
+>  I'm working in a multi-capture application with alsa and i discovered
+> if i attach two "c-media usb headphone set" adapters to an usb hub which
+> is attached to my computer when i try to read from the two devices the
+> first one read (also open) errors with (-77) bad file descriptor status
+> and the other one keep working. When i attach the two devices directly to
+> the usb connectors (without hub) all works fine, the two devices can be
+> read at the same time.
 
-Hi,
- I'm working in a multi-capture application with alsa and i discovered
-if i attach two "c-media usb headphone set" adapters to an usb hub which
-is attached to my computer when i try to read from the two devices the
-first one read (also open) errors with (-77) bad file descriptor status
-and the other one keep working. When i attach the two devices directly to
-the usb connectors (without hub) all works fine, the two devices can be
-read at the same time. I proved Hubs version 1.0 and 2.0 .
+What kernel version are you using?
 
-Regards
-Pablo
+The EHCI transaction translator code (which is responsible for moving
+audio data through an high speed hub) got a bugfix in 2.6.17, but still
+artificially limits the bandwidth.  It will be rewritten in 2.6.18.
 
 
- This is the /proc/asound/cards when i attach them to the hub:
-(yes i also have an intel device)
-
-0 [ICH6           ]: ICH4 - Intel ICH6
-                      Intel ICH6 with AD1980 at 0xd0201000, irq 20
- 1 [default        ]: USB-Audio - C-Media USB Headphone Set
-                      C-Media USB Headphone Set   at usb-0000:00:1d.1-1.3,
-full speed
- 2 [default_1      ]: USB-Audio - C-Media USB Headphone Set
-                      C-Media USB Headphone Set   at usb-0000:00:1d.1-1.2,
-full speed
-
-and this is when i attach them directly to the computer:
-0 [ICH6           ]: ICH4 - Intel ICH6
-                      Intel ICH6 with AD1980 at 0xd0201000, irq 20
- 1 [default        ]: USB-Audio - C-Media USB Headphone Set
-                      C-Media USB Headphone Set   at usb-0000:00:1d.0-1,
-full speed
- 2 [default_1      ]: USB-Audio - C-Media USB Headphone Set
-                      C-Media USB Headphone Set   at usb-0000:00:1d.3-2,
-full speed
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
