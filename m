@@ -1,14 +1,14 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: is there ioctl compat issues on x86_64?
-Date: Tue, 19 Sep 2006 11:38:20 +0200
-Message-ID: <m2odtc19ir.fsf@vador.mandriva.com>
-References: <m2bqpjtw67.fsf@vador.mandriva.com> <s5hpsdsw6y5.wl%tiwai@suse.de>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: ice1724/Audiotrak Prodigy 7.1 HiFi
+Date: Tue, 19 Sep 2006 11:40:17 +0200
+Message-ID: <200609191140.18077.julian@jusst.de>
+References: <200609152111.03266.julian@jusst.de> <s5hlkogw6ip.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hpsdsw6y5.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
-	19 Sep 2006 11:18:10 +0200")
+In-Reply-To: <s5hlkogw6ip.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,19 +22,26 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+Am Dienstag, 19. September 2006 11:27 schrieb Takashi Iwai:
+> At Fri, 15 Sep 2006 21:11:03 +0200,
+> First you should make clear whether the codec chip is connected via
+> the vt1724's standard connection or 3-wired SPI connection via GPIO.
+> The most boards use the latter method while pontis board uses the
+> former.  In the latter case, the address is usually 2 bit, so you can
+> do a wild guess more easily.
 
-> > I just found out that running alsamixer from alsa-utils-1.0.12
-> > with a 2.6.17 kernel with alsa-kernel-1.0.12 results in the
-> > following kernel messages: ioctl32(alsamixer:5014): Unknown cmd
-> > fd(3) cmd(c008551a){00} arg(08075f70) on /dev/snd/controlC0
-> (snip)
-> 
-> Fixed on the current HG tree (not in rc2 though).
-> 
-> Thanks.
+I figured out that the WM8766 is connected through a 3-wired SPI-connection. I 
+also figured out that the GPIOs 16,17,18 are used.
+pontis.c already includes a SPI-implementation, but according to the WM8766 
+specs (look at wolfsonmico.com) this device does not await an address, but 
+only 2 bytes of data: register address/values.
+Actually trying to initializing the chip leads to silence, in comparison to 
+the noise coming out before, when the chip was in default mode.
+I assume that there must be some timing problem with the data-transmission or 
+similiar. I will do some more testing today.
+Maybe I'll send in a patch if I can't find a problem, anyway.
 
-thanks you for fixing it
+-Julian
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
