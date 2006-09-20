@@ -1,11 +1,13 @@
-From: Sampo Savolainen <v2@iki.fi>
-Subject: Intel HDA recording
-Date: Thu, 21 Sep 2006 20:14:49 +0300
-Message-ID: <1158858889.6991.31.camel@mustis>
+From: Luke Ross <luke@lukeross.name>
+Subject: "Unable to handle kernel paging request" panic in
+	snd-usb-audio on x86_64
+Date: Wed, 20 Sep 2006 23:51:28 +0100
+Message-ID: <20060920225128.GG19215@lukeross.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,23 +22,40 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I understand there has been some discussion about the hda-intel driver
-with jackd. I have a new laptop and I ran into similar issues: jackd
-doesn't start in full-duplex mode.
+Last month I submitted a patch adding support for non-standard sample 
+rates to the snd-usb-audio driver [1], which was added to the ALSA GIT 
+tree.
 
-But I think I figured out what's wrong with the driver. The driver
-doesn't give any samples to applications capturing with it if the
-"Capture" element in the mixer is not enabled for capturing.
+This works fine with 2.6.16 on i386 on one of my machines, but causes a 
+kernel panic on opening the sound device on my other machine (dual AMD 
+Opterton with x86_64 kernel).
 
-Everything, including jackd works well when the element is enabled for
-capturing (i used the terminal program alsamixer to test this). If it
-isn't enabled even arecord doesn't work.
+I need to go and hook up a serial cable to get the full panic, but the 
+gist of it is:
 
-(tested on 2.6.17.13 and alsa 1.0.13rc2)
+Unable to handle kernel paging request
 
+snd_pcm_hw_refine+658
+snd_pcm_common_ioctl+423
+snd_pcm_hw_constraint_list+31
+snd_usb_pcm_open+976
+snd_pcm_hw_constraint_minmax+39
 
- Sampo Savolainen
+RIP: snd_pcm_hw_params_any
 
+I've had this on both 2.6.17 with only the above patch (which seems to 
+compile cleanly), and also on 2.6.18-rc7 with the MM patches whih 
+includes a git-alsa pull.
+
+Before I dig out the serial cable to get a full panic trace, is there 
+anything which I ought to be looking at as a first port of call, which 
+would explain why this happens on x86_64 bit not i386?
+
+Thanks,
+
+Luke
+
+[1] http://www.spinics.net/lists/alsa-devel/msg03536.html
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
