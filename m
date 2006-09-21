@@ -1,15 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Can't set less than 48k rate in the Intel-ICH4
- (AD1981B)
-Date: Thu, 21 Sep 2006 09:39:42 +0200
-Message-ID: <1158824382.14818.271465641@webmail.messagingengine.com>
-References: <20060921130546.02f871fe@localhost.localdomain>
+From: "Content-filter at mx3.sidi.istruzione.it" <postmaster@mx3.sidi.istruzione.it>
+Subject: VIRUS (Worm.Mydoom.M): IN UNA E-MAIL DA LEI INVIATA
+Date: Thu, 21 Sep 2006 09:50:28 +0200 (CEST)
+Message-ID: <VS02160-03@mx3.sidi.istruzione.it>
+References: <20060921075025.D761A5033F@mx3.sidi.istruzione.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1242615937=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20060921130546.02f871fe@localhost.localdomain>
+In-Reply-To: <20060921075025.D761A5033F@mx3.sidi.istruzione.it>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,31 +16,116 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Junji Umeno <umeno@elwsc.co.jp>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
-Junji Umeno wrote:
-> I can't set less than 48kHz rate for capture sampling.
-> In my case,
-> Alsa prepares 4 pcm devices, 
-> and I use the first 0-0 and the 4th 0-3, each playback and capture.
+This is a multi-part message in MIME format...
 
-So your system has more than one codec?
+--===============1242615937==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="----------=_1158825028-2160-1"
+Content-Transfer-Encoding: 7bit
 
-> But when I set to the 3rd less than 48k rate, 
-> Alsa shows error,"cannot set sample rate".
-> On the other way, 
-> the 1st can be set less than 48k rate as a capture port. 
+This is a multi-part message in MIME format...
 
-I'd guess the codec connected to the ICH4's 4th DMA input is another
-model.
+------------=_1158825028-2160-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+
+VIRUS ALERT
+
+Il sistema di scansione ha rilevato un problema
+in una email presumibilmente inviata da Lei
+-> (<alsa-devel@alsa.jcu.cz>),
+per il seguente destinatario:
+-> czrh02000e@istruzione.it
+
+La consegna del messaggio non e' potuta avvenire
+
+Di seguito i riferimenti della e-Mail inviata:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <alsa-devel@alsa.jcu.cz>
+Received: from alsa.jcu.cz (unknown [81.121.97.169])
+	by mx3.sidi.istruzione.it (Mail Service) with ESMTP id D761A5033F
+	for <czrh02000e@istruzione.it>; Thu, 21 Sep 2006 09:50:25 +0200 (CEST)
+From: alsa-devel@alsa.jcu.cz
+To: czrh02000e@istruzione.it
+Subject: Ikzcddacb
+Date: Thu, 21 Sep 2006 10:05:00 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0012_E8AEFC32.3D9DD076"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20060921075025.D761A5033F@mx3.sidi.istruzione.it>
+-------------------------- END HEADERS ------------------------------
+
+------------=_1158825028-2160-1
+Content-Type: message/delivery-status; name="dsn_status"
+Content-Disposition: inline; filename="dsn_status"
+Content-Transfer-Encoding: 7bit
+Content-Description: Delivery error report
+
+Reporting-MTA: dns; mx3.sidi.istruzione.it
+Received-From-MTA: smtp; mx.sidi.istruzione.it ([127.0.0.1])
+Arrival-Date: Thu, 21 Sep 2006 09:50:28 +0200 (CEST)
+
+Original-Recipient: rfc822;czrh02000e@istruzione.it
+Final-Recipient: rfc822;czrh02000e@istruzione.it
+Action: failed
+Status: 5.7.1
+Diagnostic-Code: smtp; 550 5.7.1 Rejected, id=02160-03 - VIRUS: Worm.Mydoom.M
+Last-Attempt-Date: Thu, 21 Sep 2006 09:50:28 +0200 (CEST)
+
+------------=_1158825028-2160-1
+Content-Type: text/rfc822-headers; name="header"
+Content-Disposition: inline; filename="header"
+Content-Transfer-Encoding: 7bit
+Content-Description: Message headers
+
+Return-Path: <alsa-devel@alsa.jcu.cz>
+Received: from alsa.jcu.cz (unknown [81.121.97.169])
+	by mx3.sidi.istruzione.it (Mail Service) with ESMTP id D761A5033F
+	for <czrh02000e@istruzione.it>; Thu, 21 Sep 2006 09:50:25 +0200 (CEST)
+From: alsa-devel@alsa.jcu.cz
+To: czrh02000e@istruzione.it
+Subject: Ikzcddacb
+Date: Thu, 21 Sep 2006 10:05:00 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0012_E8AEFC32.3D9DD076"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20060921075025.D761A5033F@mx3.sidi.istruzione.it>
+
+------------=_1158825028-2160-1--
 
 
-Regards,
-Clemens
+--===============1242615937==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1242615937==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1242615937==--
