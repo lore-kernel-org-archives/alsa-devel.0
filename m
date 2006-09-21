@@ -1,14 +1,12 @@
 From: Junji Umeno <umeno@elwsc.co.jp>
-Subject: Can't set less than 48k rate in the Intel-ICH4
-	(AD1981B)
-Date: Thu, 21 Sep 2006 11:37:19 +0900
-Message-ID: <20060921113719.54e998d0@localhost.localdomain>
-References: <0b2fce9ae18b088cb0ffadb5211068c7@localhost.localdomain>
+Subject: Can't set less than 48k rate in the
+	Intel-ICH4	(AD1981B)
+Date: Thu, 21 Sep 2006 13:05:46 +0900
+Message-ID: <20060921130546.02f871fe@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <0b2fce9ae18b088cb0ffadb5211068c7@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,11 +16,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
+I can't set less than 48kHz rate for capture sampling.
 In my case,
 Alsa prepares 4 pcm devices, 
 and I use the first 0-0 and the 4th 0-3, each playback and capture.
