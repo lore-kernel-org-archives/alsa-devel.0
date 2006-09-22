@@ -1,14 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Rawmidi device naming
-Date: Fri, 22 Sep 2006 20:04:19 +0200
-Message-ID: <1158948259.1036.271601876@webmail.messagingengine.com>
+Date: Fri, 22 Sep 2006 14:13:37 -0400
+Message-ID: <1158948818.1097.99.camel@mindpipe>
 References: <1158946723.1097.90.camel@mindpipe>
+	<1158948259.1036.271601876@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1158946723.1097.90.camel@mindpipe>
+In-Reply-To: <1158948259.1036.271601876@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,24 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
->  # aplaymidi -l
->  Port    Client name                      Port name
->  64:0    Dreamchip MPU interface 1        Dreamchip MPU interface 1
->  64:32   Dreamchip MPU interface 1        Dreamchip MPU interface 2
+On Fri, 2006-09-22 at 20:04 +0200, Clemens Ladisch wrote:
+> Lee Revell wrote:
+> >  # aplaymidi -l
+> >  Port    Client name                      Port name
+> >  64:0    Dreamchip MPU interface 1        Dreamchip MPU interface 1
+> >  64:32   Dreamchip MPU interface 1        Dreamchip MPU interface 2
+> > 
+> > Why do both ports get "Dreamchip MPU interface 1" for the client name? 
 > 
-> Why do both ports get "Dreamchip MPU interface 1" for the client name? 
+> Because there is only one client.
+> 
+> The client name comes from the card's shortname.
 
-Because there is only one client.
+I don't think so.  The card's shortname is just "Dream".  The only place
+I use "Dreamchip MPU interface %i" is in the code I posted.
 
-The client name comes from the card's shortname.
+Lee
 
-
-HTH
-Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
