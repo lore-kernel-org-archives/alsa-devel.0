@@ -1,14 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Rawmidi device naming
-Date: Fri, 22 Sep 2006 14:13:37 -0400
-Message-ID: <1158948818.1097.99.camel@mindpipe>
-References: <1158946723.1097.90.camel@mindpipe>
-	<1158948259.1036.271601876@webmail.messagingengine.com>
+From: Luke Ross <luke@lukeross.name>
+Subject: Re: "Unable to handle kernel paging request" panic
+	in	snd-usb-audio on x86_64
+Date: Fri, 22 Sep 2006 11:48:50 +0100
+Message-ID: <20060922104850.GA20850@lukeross.name>
+References: <20060920225128.GG19215@lukeross.name>
+	<s5hvenhcb8v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1158948259.1036.271601876@webmail.messagingengine.com>
+Content-Disposition: inline
+In-Reply-To: <s5hvenhcb8v.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,28 +20,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-22 at 20:04 +0200, Clemens Ladisch wrote:
-> Lee Revell wrote:
-> >  # aplaymidi -l
-> >  Port    Client name                      Port name
-> >  64:0    Dreamchip MPU interface 1        Dreamchip MPU interface 1
-> >  64:32   Dreamchip MPU interface 1        Dreamchip MPU interface 2
+Hi,
+
+On Thu, Sep 21, 2006 at 08:42:24PM +0200, Takashi Iwai wrote:
+> At Wed, 20 Sep 2006 23:51:28 +0100,
+> Luke Ross wrote:
 > > 
-> > Why do both ports get "Dreamchip MPU interface 1" for the client name? 
+> > Last month I submitted a patch adding support for non-standard sample 
+> > rates to the snd-usb-audio driver [1], which was added to the ALSA GIT 
+> > tree.
+> > 
+> > This works fine with 2.6.16 on i386 on one of my machines, but causes a 
+> > kernel panic on opening the sound device on my other machine (dual AMD 
+> > Opterton with x86_64 kernel).
 > 
-> Because there is only one client.
+> Try to build with debug option.  Maybe it comes from OSS emulation?
 > 
-> The client name comes from the card's shortname.
+> Or are you using dmix?
 
-I don't think so.  The card's shortname is just "Dream".  The only place
-I use "Dreamchip MPU interface %i" is in the code I posted.
+At the moment I'm using neither. I'm using an alsa-enabled mpg123:
 
-Lee
+mpg123 -a hw:1,0 sound.mp3
 
+I've built the kernel with CONFIG_SND_DEBUG, which I assume is what you 
+mean, but I didn't get any further output. Do you need to enable the 
+debug at runtime as well?
+
+Luke
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
