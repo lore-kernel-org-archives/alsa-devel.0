@@ -1,13 +1,11 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: patches ... submit to mailing list or bug tracker ?
-Date: Fri, 22 Sep 2006 17:12:54 -0400
-Message-ID: <200609221712.55426.vapier@gentoo.org>
-References: <200609221658.32779.vapier@gentoo.org>
-	<1158959192.1097.109.camel@mindpipe>
+Subject: [patch] remove unneeded headers from src/names.c
+Date: Fri, 22 Sep 2006 17:14:50 -0400
+Message-ID: <200609221714.51381.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0643663222=="
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_LJFFFkjCIVVkUYB"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1158959192.1097.109.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,62 +15,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0643663222==
-Content-Type: multipart/signed; boundary="nextPart1449439.bfWDsT1H1d";
+--Boundary-00=_LJFFFkjCIVVkUYB
+Content-Type: multipart/signed; boundary="nextPart1203983.61iWjfyao8";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1449439.bfWDsT1H1d
+--nextPart1203983.61iWjfyao8
 Content-Type: text/plain;
-  charset="iso-8859-6"
+  charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Friday 22 September 2006 17:06, Lee Revell wrote:
-> On Fri, 2006-09-22 at 16:58 -0400, Mike Frysinger wrote:
-> > just wondering how i should be submitting patches ... for example, these
-> > two simple fixes:
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2425
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2426
->
-> Fixes should be submitted to the mailing list, not the bug tracker.
-> Provide Signed-Off-By line and reference the bug ID# in the patch
-> description.
+the src/names.c file includes many more headers than it actually needs ...=
+=20
+this causes troubles when porting to a target that lacks those headers :)
 
-ok, i'll resubmit those two to the list ... seems that as reporter of the b=
-ugs=20
-though, i dont have privileges to close them ...
+patch attached to scrub said headers
 =2Dmike
 
---nextPart1449439.bfWDsT1H1d
+--nextPart1203983.61iWjfyao8
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iQIVAwUARRRR10FjO5/oN/WBAQKrdw/9E+p57gu77MgP8GntVM/vvPwDXhsKcoR8
-QuowCn+49yaPH7HMR7e3gHj3tm4qKZ4mQqbMVAMHtLyHjLpaLg9b2oS2Txg+8ukj
-eewa2xfxEujOiGe5lltxNLNhaNXmZh5jWCatQ0Oo0FhVFELCjybmNC52xlXpaBOH
-uN1lgz8LwhoNNPJU/JbkxpCJRqC0k4Ssb0FYgLkm+UP1dmmJd+7ngBKHYpL2uA8+
-hdn5kejUpm22PC6SciRCQSE+EqYP7/vVU4mBHZsLfRf3ALWham6oaj3pbXREOMvW
-//mtiMQk/nXja7X/gJJSWrcYLatIxhOMMbJsaglHcwnOBXvJxIWgflstnKBokSgx
-atoSQTMq7LYr+viktFXhCyINtTnAiukGHyZNKiGBqyIuZdsIb0sZJSwAla3bKFUF
-H5Qk+0MiiWaYKzr4f/cZN4+m7hXdJHyK5lf7sP5UusgIRWA6pWjpM5sStGFRbVWr
-RUHD7SXo6h6EhQhZvYZFHxFw4Xqi5ZOoGU+p6UI6CC7nYDKTQjWdSD+qjyoM8Foi
-gWwOtqV24gQqEN21DK6jjo2LvLSRqjr73iWdd8H1lvSqs+eQLxiVKPIhVgrxOjP/
-fPHYENVjz4AZ4bRfnqpoSlh4QWtSqImJWGZ1aThnyuDezqOEyRxnjuptTi2SAnGN
-9gzw+KugbIA=
-=UJJa
+iQIVAwUARRRSS0FjO5/oN/WBAQJgYBAA0ufB6IFPL9BGr1hvWiDhkJnIRmKc69to
+vaZVwj6/4PTaOdtLGZtO4MnD1QdyLOHHCRlmf+1o/uuZbdnl6z82snpcrAZe/nC7
+duRzY+L/3ZfrbRxhE7cNqSOatQyvNV3yIpenZYnMAqVK2bQr7wmwIpevRoZoTpXn
+yHBsFNEjyIwayvOT5pQMw05tWqXJir36pNKwXpA6jySBz1cR0DSPgytrwhnpVQjD
+SPAwgwUlfbtupFlF0zNIv6Y5I+tYMWpxC24UslWevPym+J0M5L6RnlmJ6LMgEQiP
+zKpZjELxvd0d6aD2AKrfcShZ00mDPoTash+NCc5fO4My4ZYM49uR3YAt4GQ2Xaz1
+Fwo8lfkVbYrPeLlcHP+o9CX5Ou03ezWV5i3l4EHCkBzFbtXAyk1eb+bz0s/IshVw
+gEe1GJ4w1R5hyKYEDQGUJbfn10QyxJJRA6gvGl7I4Pd7xTC5GIsAJRkTFNM5s3ZR
+T9WY4W5BGjxDp6vtYLRYP6vX5JWXPh/0UzEMjya8J1VerVplznSXH9t/tinuZ0se
+neQLX2WOrc2PigyJa7demh5GcrjyKbNAm3r8sz2gczHL6umAuNec7L9KOWJ74wqc
+wp0V4vAzHiavKjkuKd+lMnQ/op14AI2k66BdLUdrC+aJ8EnuoRWYPJk8PT91gUu6
+JtOF80a9e2I=
+=YRzc
 -----END PGP SIGNATURE-----
 
---nextPart1449439.bfWDsT1H1d--
+--nextPart1203983.61iWjfyao8--
 
+--Boundary-00=_LJFFFkjCIVVkUYB
+Content-Type: text/x-diff; charset="us-ascii";
+	name="alsa-lib-names-include-less.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="alsa-lib-names-include-less.patch"
 
---===============0643663222==
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+
+ names.c |    4 ----
+ 1 file changed, 4 deletions(-)
+
+diff -r 46221e609f45 src/names.c
+--- a/src/names.c	Wed Sep 06 14:39:01 2006 +0200
++++ b/src/names.c	Thu Sep 07 14:39:43 2006 -0400
+@@ -31,12 +31,8 @@
+  */
+ 
+ #include <stdarg.h>
+-#include <wordexp.h>
+-#include <dlfcn.h>
+ #include <limits.h>
+ #include <sys/stat.h>
+-#include <pthread.h>
+-#include <locale.h>
+ #include "local.h"
+ 
+ #ifndef DOC_HIDDEN
+
+--Boundary-00=_LJFFFkjCIVVkUYB
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,7 +99,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0643663222==
+--Boundary-00=_LJFFFkjCIVVkUYB
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,4 +110,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0643663222==--
+--Boundary-00=_LJFFFkjCIVVkUYB--
