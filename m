@@ -1,11 +1,10 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [patch] remove unneeded headers from
-	alsa-lib/src/alisp/alisp.c
-Date: Fri, 22 Sep 2006 17:16:17 -0400
-Message-ID: <200609221716.17673.vapier@gentoo.org>
+Subject: [patch] allow building out of tree (sort of)
+Date: Fri, 22 Sep 2006 17:24:35 -0400
+Message-ID: <200609221724.35846.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_hKFFFYYGlwZGbqw"
+  boundary="Boundary-00=_TSFFFY5ErvwG6/2"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,73 +18,111 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_hKFFFYYGlwZGbqw
-Content-Type: multipart/signed; boundary="nextPart1273186.1TH3sbIqkD";
+--Boundary-00=_TSFFFY5ErvwG6/2
+Content-Type: multipart/signed; boundary="nextPart3406657.XLaeMEHXSi";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1273186.1TH3sbIqkD
+--nextPart3406657.XLaeMEHXSi
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-the alisp.c file includes wordexp.h even though it doesnt actually use any=
-=20
-wordexp functions ... causes trouble when target doesnt have wordexp=20
-support :)
+the current configure script assumes that it will be run in the srcdir ... =
+i=20
+often build things out of tree so you can quickly punt all the generated=20
+files:
+mkdir build
+cd build
+=2E./configure
+cd ..
+rm -r build
+clean!
 
-patch attached to scrub said headers
+this tweaks the configure script in a few places to use the correct variabl=
+e=20
+instead of assuming that configure is always in $PWD ...
+
+i say "sort of" in the subject because there is still the issues of the pcm=
+=20
+symbols list being generated in $builddir instead of $srcdir and the alsa=20
+include symlink, but these doesnt really concern me for what i need ;)
 =2Dmike
 
---nextPart1273186.1TH3sbIqkD
+--nextPart3406657.XLaeMEHXSi
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iQIUAwUARRRSoUFjO5/oN/WBAQKsAg/4zuIK8vqWoCv9XyVwwnEqP4gR/vc68gAq
-0HL48NTJF3traFy+xseeOOg8IC+4ftAvW+Aao7XFC9NbtVH/HtSM6gsSSA/yNJEc
-9vfkDA2nB6Bjd0UYXnkQMLFIAVJ7M8MWsBAx8CSHHMOyOdXh/xw0ppFZHi9Jn/52
-TsazMrgdAgb5Ne/7YDi3R2g/dQE3jv/bZDJZqhlOxUbsikgWDXc9BJOhLhbkyRZe
-tRfFd3J8R6rzw9fIw+kgKtbSaDQFOS/Nqfo0pkr1dHxymf8pnLhH1UeTwCd5m919
-YxHq2HyMDEQKgNtQ1uB0San4wuUN8koPGjRC/BANfitpqnPf3pDXtt3kdoWe/v6w
-1vrJNJTw/7MqzxsDLjX0VAIAzteuUuSmGHO8juAcnzHg2FWsRjHAQt5OaxX0YeXu
-DXMKQLf9RBfn2/A2fYOiEETxW+takXkwUroNQpdN5zeTUg5JMXPj1c3ur6bE52Mx
-oUET4Td2xN2GwbMmeFtDkk5F8pJO550N4nxJ+ZIC+/8QfzpGqdRP4Yz4ayUftHJQ
-ENLtLPAcs+2zdZq/PTlk/D9R6q8FVWxMix/ttH7OD5fUI7eUV2wbQ+zhWvI001Bc
-+rQ0MiTxvh3e2q3/zt2bPOq/DA7fSAgwHOVIA6iNQVkB7W3mJO/c1golNNtTmuc2
-QYnm/cIZBQ==
-=apUS
+iQIVAwUARRRUk0FjO5/oN/WBAQIrEg/9FpyKb+8Sn65ELJDqtV1GUmCwxWkp09o2
+5Acans0Sy2BKe7K7QjAOiE0cw1a/wEl/YlOyMZVIj+SXyk3cG/IgS1w6/YQkOtta
++QUhKxopMVhkfwRAdPQKHQHKKuyKVy5za1FCOke+3qS7dBykTBOinMzmh2itLHaU
+hMgDj//8n0aIVInTaeMaRxXsMiyzER2xkHUBrQRyx834Fr6IF+5YQTU+j7as50Wa
+OS/xDUp5JXofRLYpL2+W4aF/dlxE8QwYjtWhhF72Q49RkOY1J7xT7i3citBpxC7M
+dj8EmKm2NKaAl26HEKPp2BIWYXWwx9rIFee7XJmRmveu4XvZIkmYn0yxad8OyFvK
+KNXpS+QAktrkv+wstUn6O9aLG4ON4j8g6fByj/2dEoOfIIfhSfpytv9hLdFK4TcG
+sk2NJaJfGWwbv1i67a66/oRSmC5DdBoNBFFVi/HkHnhE8ZXrKesP/1pyTvn5s9C0
+DIekf6uOvM3ib4lvaytg2jRRfqtbgz752DdCyVNCAgIbITdA48syyxBT11cUmSN9
+O+rY7cg8PTZJZF1LUIhqfOUB5fN//hUqOOqiiBoPh/o/djSuhigyTPQmywxI3SpT
+pQUOpIzk+9xulYzC5y5eOJeghWusgydVhO+E7jQY8+yfWM2muehE8nM4XJbKM3RK
+MpfiyX64dz4=
+=dyLB
 -----END PGP SIGNATURE-----
 
---nextPart1273186.1TH3sbIqkD--
+--nextPart3406657.XLaeMEHXSi--
 
---Boundary-00=_hKFFFYYGlwZGbqw
+--Boundary-00=_TSFFFY5ErvwG6/2
 Content-Type: text/x-diff; charset="us-ascii";
-	name="alsa-lib-alisp-include-less.patch"
+	name="alsa-lib-build-out-of-tree.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
-	filename="alsa-lib-alisp-include-less.patch"
+	filename="alsa-lib-build-out-of-tree.patch"
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
- alisp.c |    1 -
- 1 file changed, 1 deletion(-)
+ configure.in |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff -r 46221e609f45 src/alisp/alisp.c
---- a/src/alisp/alisp.c	Wed Sep 06 14:39:01 2006 +0200
-+++ b/src/alisp/alisp.c	Thu Sep 07 14:42:21 2006 -0400
-@@ -30,7 +30,6 @@
- #include <ctype.h>
- #include <math.h>
- #include <err.h>
--#include <wordexp.h>
+diff -r 8bdd68608788 configure.in
+--- a/configure.in	Mon Sep 18 17:57:58 2006 +0200
++++ b/configure.in	Fri Sep 22 17:07:13 2006 -0400
+@@ -83,7 +84,7 @@ AC_ARG_WITH(versioned,
+   versioned="$withval", versioned="yes")
+ if test "$versioned" = "yes"; then
+   # it seems that GNU ld versions since 2.10 are not broken
+-  xres=`grep '^VERSION=' $ac_aux_dir/libtool | cut -d = -f 2`
++  xres=`grep '^VERSION=' libtool | cut -d = -f 2`
+   major=`echo $xres | cut -d . -f 1`
+   minor=`echo $xres | cut -d . -f 2`
+   pass=0
+@@ -357,18 +368,18 @@ fi
  
- #define alisp_seq_iterator alisp_object
  
+ dnl Create PCM plugin symbol list for static library
+-rm -f src/pcm/pcm_symbols_list.c
++rm -f "$srcdir"/src/pcm/pcm_symbols_list.c
+ for t in $PCM_PLUGIN_LIST; do
+   if eval test \$build_pcm_$t = yes; then
+-    echo \&_snd_module_pcm_$t, >> src/pcm/pcm_symbols_list.c
++    echo \&_snd_module_pcm_$t, >> "$srcdir"/src/pcm/pcm_symbols_list.c
+   fi
+ done
+ 
+ dnl Make a symlink for inclusion of alsa/xxx.h
+-if test ! -L include/alsa ; then
++if test ! -L "$srcdir"/include/alsa ; then
+   echo "Making a symlink include/alsa"
+-  rm -f include/alsa
+-  ln -sf . include/alsa
++  rm -f "$srcdir"/include/alsa
++  ln -sf . "$srcdir"/include/alsa
+ fi
+ 
+ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile include/Makefile
 
---Boundary-00=_hKFFFYYGlwZGbqw
+--Boundary-00=_TSFFFY5ErvwG6/2
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -96,7 +133,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---Boundary-00=_hKFFFYYGlwZGbqw
+--Boundary-00=_TSFFFY5ErvwG6/2
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,4 +144,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---Boundary-00=_hKFFFYYGlwZGbqw--
+--Boundary-00=_TSFFFY5ErvwG6/2--
