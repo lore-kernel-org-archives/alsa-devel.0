@@ -1,18 +1,13 @@
-From: Olaf Hering <olaf@aepfle.de>
-Subject: Re: control.c: BUG info->access == 0
-Date: Fri, 22 Sep 2006 16:57:05 +0200
-Message-ID: <20060922145705.GA28375@aepfle.de>
-References: <20060921204804.GA20477@aepfle.de> <s5hk63wcjr3.wl%tiwai@suse.de>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: Resent: [RFC] More power-saving for HD-audio	driver
+Date: Fri, 22 Sep 2006 16:09:23 +0100
+Message-ID: <1158937763.18071.62.camel@localhost.localdomain>
+References: <s5h3bak9o48.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from natlemon.rzone.de (natlemon.rzone.de [81.169.145.170])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48D32223
-	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Sep 2006 16:57:07 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5hk63wcjr3.wl%tiwai@suse.de>
+In-Reply-To: <s5h3bak9o48.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,30 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 22, Takashi Iwai wrote:
-
-> At Thu, 21 Sep 2006 22:48:04 +0200,
-> Olaf Hering wrote:
-> > 
-> > 
-> > I get this on an unconfigured G5 (PowerMac11,2) during boot:
-> > 
-> > ALSA sound/core/control.c:660: BUG? (info->access == 0)
-> > Call Trace:
-> > [C00000007B0C3B60] [C00000000000F5E8] .show_stack+0x68/0x1b0 (unreliable)
-> > [C00000007B0C3C00] [D00000000013AB9C] .snd_ctl_elem_info+0xd0/0x1d8 [snd]
-> > [C00000007B0C3CB0] [D00000000013CCA0] .snd_ctl_ioctl_compat+0x2c8/0x638 [snd]
-> > [C00000007B0C3D70] [C0000000001160F4] .compat_sys_ioctl+0x158/0x3b4
-> > [C00000007B0C3E30] [C00000000000871C] syscall_exit+0x0/0x40
+On Fri, 2006-09-22 at 12:44 +0200, Takashi Iwai wrote:
 > 
-> The patch below should fix it.
+> the patch below is an experimental patch to achieve more aggressive
+> power-saving on HD-audio.  With the patch, the device is disabled
+> after a certain timeout when no apps are using the PCM and no loopback
+> channels are being used.  (According to Pavel Machek, sound chips
+> consume significant powers.)
 > 
-> Let me know if it works, then I'll send it to stable@kernel.
+> For some reasons, the patch is a bit intrusive and touches many
+> places.  But the change is pretty straightforward: add power-up/down
+> calls in appropriate place (e.g. mixer changes, PCM open/close).
+> 
+> For the power-up/down control, a damn simple way is chosen in this
+> version.  The driver does basically a same job like suspend/resume.
+> We can tune up this later if the perfomance matters.
+> 
+> The default timeout value is 30 seconds.  This is adjustable via
+> power_save module option of snd-hda-intel driver.  You can change this
+> value dynamically via writing to
+> /sys/modules/snd_hda_intel/parameters/power_save.  The value changed
+> isn't propagated immediately, and you have to do something (like
+> change a mixer value or open/close PCM) to activate the new value,
+> though.
 
-It works.
+I'd be interested to know if there are any pops or clicks associated
+with the HD-audio power up/down events (I don't have an HD PC or laptop
+to test). Pops and clicks are an unwanted side effect of audio power
+management atm and occur when the audio subsystems analog circuits are
+power switched. 
+
+If the pops are bad then it may be more desirable to disable the digital
+components in the audio subsystem (e.g. PLL's, DAI, digital filters,
+core) and selectively (per machine/codec) disable certain analog
+components.
+
+Liam  
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
