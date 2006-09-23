@@ -1,16 +1,12 @@
-From: "Marcia Grove" <ciotoyjtdbcw@interpharm.cc>
-Subject: ComSyspert wants to talk to you!
-Date: Sat, 23 Sep 2006 07:44:03 -0400
-Message-ID: <NCBBK179ALMIN988IOENFKEPFE252.loudspeaking.Hampson@sproul.Com>
+From: David =?iso-8859-1?Q?H=E4rdeman?= <david@hardeman.nu>
+Subject: snd-usb-audio problems with 2.6.18
+Date: Sat, 23 Sep 2006 14:54:56 +0200
+Message-ID: <20060923125456.GA7757@hardeman.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 62.183.3.93.modem-pool.kuban.ru
-	(62.183.3.93.modem-pool.kuban.ru [62.183.3.93])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9D3DA23B
-	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Sep 2006 12:47:10 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,37 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I`crease Your S''exual Desire and S''perm volume by 500%
-L'onger o''`rgasms - The longest most intense o''rgasms of your life
-Multiple o''`rgasms - Cum again and again
-S'`PUR-M is The Newest and The Safest Way
-100% N''atural and No Side Effects - in contrast to well-known brands.
-Experience three times longer o''rgasms
-World Wide shipping within 24 hours
- 
- Cli here http://mvsuedu.info
+A recent 2.6.18 kernel upgrade on one of my machines broke usb audio.
 
+I'm using a TerraTec Aureon 5.1 USB MKII to feed ac3 audio to a =
 
+receiver, but after the upgrade, trying to play any audio (tried aplay, =
 
+mplayer, xine, etc...using both oss and alsa audio) results in the =
 
+kernel log being filled with the message:
 
+"cannot submit datapipe for urb 5, error -28: not enough bandwidth"
 
+Unfortunately the upgrade was from 2.6.14 (yes, it's old but the machine =
 
+has no network connection usually) so there is quite a lot of =
 
+differences to the snd-usb-audio driver in the meantime.
 
+Unless someone has suggestions as to a simple fix, I guess I'll =
 
+start testing kernels in the 2.6.14 <-> 2.6.18 range soon to try to pin =
 
+down a certain changeset...
 
+-- =
 
-" This time when he pushed the tongue there was a flat click from inside the lock and the jut of metal slid a quarter of an inch into the door.
-She'll just think they're pistachio nuts and gobble them right down.
-But Shinny's examination of Geoffrey's broken ribs and sprained shoulder had seemed purely perfunctory, and he had spoken barely a word to Ian, in spite of the man's deep grief and frequent incoherent cries.
+David H=E4rdeman
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
