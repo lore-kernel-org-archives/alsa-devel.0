@@ -1,18 +1,11 @@
-From: Mauro Sacchetto <mauro.sacchetto@alice.it>
-Subject: Re: Troubles with hda_intel
-Date: Sun, 24 Sep 2006 13:58:14 +0200
-Message-ID: <200609241358.14627.mauro.sacchetto@alice.it>
-References: <200609231519.53947.mauro.sacchetto@alice.it>
-	<1159025098.1097.137.camel@mindpipe>
+From: NosyMan <nosyman@gmail.com>
+Subject: snd-bt87x Unknown card
+Date: Sun, 24 Sep 2006 15:19:27 +0300
+Message-ID: <200609241519.27873.nosyman@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp-out13.alice.it (smtp-out13.alice.it [85.33.2.18])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 246EB234
-	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Sep 2006 13:58:05 +0200 (MEST)
-In-Reply-To: <1159025098.1097.137.camel@mindpipe>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,27 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
-Cc: Lee Revell <rlrevell@joe-job.com>
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Alle 17:24, sabato 23 settembre 2006, Lee Revell ha scritto:
-> Check whether KDE is still using the obsolete OSS API:
-> # fuser /dev/dsp
+Hi there,
 
-I wrote to Bugzilla KDE (BUG no. 134480), 
-but the only conclusive aswer I had was:
-===========================================
-------- Additional Comment #6 From Stephan Kulow 2006-09-24 11:07 -------
-it just means your kernel module is buggy indeed
-===========================================
-I wrote too to Kernel Bug Tracker (bog no. 7195).
-Note that I have the same problem is I use the kernel alsa support
-and the driver of alsa-driver package.
-I hope that someone will be able to understand
-the very reason of that trouble...
+I tried to use the snd-bt87x module with my TV Tunner (bttv: Typhoon TView RDS 
++ FM 
+Stereo / KNC1 TV Station RDS [card=53] ):
 
-MS
+lspci output:
+01:0a.0 Multimedia video controller: Brooktree Corporation Bt878 Video Capture 
+(rev 11)
+01:0a.1 Multimedia controller: Brooktree Corporation Bt878 Audio Capture (rev 
+11)
+
+module loading output:
+bt87x.c:845: unknown card 0x878-0x00:0x00, using default rate 32000
+bt87x.c:848: please mail id, board name, and, if it works, the correct 
+digital_rate option to <alsa-devel@lists.sf.net>
+
+The modules refuses to load unless the load_all=1 option is passed.
+
+I'm not an audio freak and I don't know how to use this device. There is only 
+a 'capture' feature on my mixer.  Some help will be appreciated. 
+
+Thanks,
+NosyMan
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
