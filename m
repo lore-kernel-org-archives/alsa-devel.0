@@ -1,15 +1,16 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: hda_intel ATI SB450 - unknown subsystem
-	ID	1025:009f
-Date: Sun, 24 Sep 2006 11:01:33 -0700
-Message-ID: <1159120893.7201.202.camel@razman>
+From: "=?ISO-8859-2?Q?Stanis=B3aw_Raczy=F1ski?=" <sutashu@gmail.com>
+Subject: Re: hda_intel ATI SB450 - unknown subsystem ID
+	1025:009f
+Date: Sun, 24 Sep 2006 21:36:23 +0200
+Message-ID: <ab3226c20609241236mcc402d7xc87a1eb5d90e747a@mail.gmail.com>
 References: <ab3226c20609240702q16d4a4f1x2c88fd9faf983b75@mail.gmail.com>
 	<1159112890.7201.191.camel@razman>
 	<ab3226c20609241022p5b237197v17ab0f0f493896a0@mail.gmail.com>
+	<1159120893.7201.202.camel@razman>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0518124929=="
+Content-Type: multipart/mixed; boundary="===============1784381675=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <ab3226c20609241022p5b237197v17ab0f0f493896a0@mail.gmail.com>
+In-Reply-To: <1159120893.7201.202.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,134 +20,125 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?iso-8859-2?Q?Stanis=B3aw_Raczy=F1ski?= <sutashu@gmail.com>
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--===============1784381675==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_15507_26943091.1159126583518"
 
---===============0518124929==
-Content-Type: multipart/alternative; boundary="=-n1TU2xJ9Jjoa9PA+Z58i"
+------=_Part_15507_26943091.1159126583518
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
+QWZ0ZXIgc29tZSBzdHJ1Z2dsaW5nIEkgZmluYWxseSBnb3QgaXQgd29ya2luZyAod2l0aCBtb2Rl
+bD1hY2VyKSB3aXRoIHlvdXIKdGlwcy4gVGhhbmtzIGEgbG90LiBJIGhvcGUgdGhlIGluZm9ybWF0
+aW9uIEkgcHJvdmlkZWQgd2lsbCBiZSBzb21ld2hhdAp1c2VmdWwgLS0geW91IG1pZ2h0IHdhbnQg
+dG8gcHV0IHRoaXMgZGV2aWNlIElEIGluIHRoZSBzb3VyY2VzIGZvciBmdXR1cmUKZ2VuZXJhdGlv
+bnMuCgoyMDA2LzkvMjQsIFRvYmluIERhdmlzIDx0ZGF2aXNAZHNsLW9ubHkubmV0PjoKPgo+IE9u
+IFN1biwgMjAwNi0wOS0yNCBhdCAxOToyMiArMDIwMCwgU3Rhbmlzs2F3IFJhY3p58XNraSB3cm90
+ZToKPgo+IEknbSB1c2luZyBhbHNhIDEuMC4xMSByaWdodCBub3csIGJ1dCBJIGFsc28gaGF2ZSB0
+cmllZCAxLjAuMTIgYW5kCj4gMS4wLjEzLXJjMi4gSSB0cmllZCBtb2RlbD1hY2VyLCBidXQgaXQg
+ZG9lc24ndCB3b3JrIGVpdGhlci4KPgo+ICMgY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMw
+Cj4gQ29kZWM6IFJlYWx0ZWsgQUxDODgzCj4gQWRkcmVzczogMAo+IFZlbmRvciBJZDogMHgxMGVj
+MDg4Mwo+IFN1YnN5c3RlbSBJZDogMHgxMDI1MTQwZAo+IFJldmlzaW9uIElkOiAweDEwMDAwMgo+
+Cj4gVGhpcyBpcyBzdXBwb3J0ZWQgaW4gMS4wLjEzcmMyLiAgSSBjYW4gYWRkIHlvdXIgc3BlY2lm
+aWMgZGV2aWNlIElELgo+IFJlbWVtYmVyLCB5b3UgbmVlZCB0aGUgZHJpdmVyLCBsaWJzLCBhbmQg
+dXRpbHMgdG8gYmUgaW4gc3luYyB0byBwcm9wZXJseQo+IHdvcmsuICBkcml2ZXIgMS4wLjEzcmMy
+IHdvbid0IHdvcmsgcHJvcGVybHkgd2l0aCBsaWJzIDEuMC4xMSwgYW5kIHV0aWxzCj4gc2hvdWxk
+IGJlIHJlYnVpbHQgYWdhaW5zdCB0aGUgbGF0ZXN0IGxpYnMgdG8gcHJvcGVybHkgd29yayBhcyB3
+ZWxsLiAgVHJ5Cj4gYnVpbGRpbmcgYW5kIGluc3RhbGxpbmcgdGhlIGRyaXZlciwgbGliLCBhbmQg
+dXRpbHMgcGFja2FnZXMgZnJvbSAxLjAuMTNyYzJhZ2Fpbi4gIEJ1aWxkIGFuZCBpbnN0YWxsIGVh
+Y2ggaW4gdGhhdCBvcmRlciB0byBzYXRpc2Z5IGRlcGVuZGVuY2llcy4KPgo+IEFsc28sIGZvciB0
+aGUgZHJpdmVyLCB0cnkgY29uZmlndXJpbmcgbGlrZSB0aGlzICIuL2NvbmZpZ3VyZQo+IC0td2l0
+aC1kZWJ1Zz1kZXRlY3QgLS13aXRoLWNhcmRzPWhkYS1pbnRlbCIuICBUaGlzIHdpbGwgdHVybiBv
+biBoZGEtaW50ZWwncwo+IGRlYnVnZ2luZyBtZXNzYWdlcy4gIExvYWQgaXQgd2l0aCAibW9kZWw9
+YWNlciIgb3IgIm1vZGVsPWF1dG8iIGlmIGFjZXIKPiBkb2Vzbid0IHdvcmsuICBJbiB0aGUgbWVh
+biB0aW1lLCBJJ2xsIHBhcnNlIHRocm91Z2ggdGhlIHJlc3Qgb2YgeW91ciBjb2RlYyMxCj4gb3V0
+cHV0IHRvIHNlZSBpZiBJIHNlZSBhbnl0aGluZyByZWxldmFudC4KPgo+Cj4gIyBjYXQgL3Byb2Mv
+YXNvdW5kL2NhcmQwL2NvZGVjIzEKPiBDb2RlYzogR2VuZXJpYyAxNGYxIElEIDJiZmEKPiBBZGRy
+ZXNzOiAxCj4gVmVuZG9yIElkOiAweDE0ZjEyYmZhCj4gU3Vic3lzdGVtIElkOiAweDEwMjUwMDlm
+Cj4gUmV2aXNpb24gSWQ6IDB4OTAwMDAKPgo+IFRoaXMgbG9va3MgbGlrZSBhIENvbmV4YW50IG1v
+ZGVtLiAgVG8gZ2V0IHN1cHBvcnQgZm9yIGl0LCB5b3UnbGwgaGF2ZSB0bwo+IGdvIHRvIGxpbnV4
+YW50LmNvbSBhbmQgYnV5IHRoZWlyIGRyaXZlci4KPgo+IGxvY2FsaG9zdCB+ICMgY2F0IC9wcm9j
+L2Fzb3VuZC9jYXJkMC9jb2RlYyMzCj4gQ29kZWM6IEdlbmVyaWMgZmZmZiBJRCBmZmZmCj4gQWRk
+cmVzczogMwo+IFZlbmRvciBJZDogMHhmZmZmZmZmZgo+IFN1YnN5c3RlbSBJZDogMHhmZmZmZmZm
+Zgo+IFJldmlzaW9uIElkOiAweGZmZmZmZmZmCj4KPiBUaGlzIGxvb2tzIGxpa2UgZ2FyYmFnZS4g
+IE5vdCBzdXJlIHdoZXJlIGl0J3MgY29taW5nIGZyb20uCj4KPiAtLQo+IFRvYmluIERhdmlzIDx0
+ZGF2aXNAZHNsLW9ubHkubmV0Pgo+Cg==
+------=_Part_15507_26943091.1159126583518
+Content-Type: text/html; charset=ISO-8859-2
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
---=-n1TU2xJ9Jjoa9PA+Z58i
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, 2006-09-24 at 19:22 +0200, Stanis=B3aw Raczy=F1ski wrote:
-
-> I'm using alsa 1.0.11 right now, but I also have tried 1.0.12 and
-> 1.0.13-rc2. I tried model=3Dacer, but it doesn't work either.
->=20
-> # cat /proc/asound/card0/codec#0
-> Codec: Realtek ALC883
-> Address: 0
-> Vendor Id: 0x10ec0883=20
-> Subsystem Id: 0x1025140d
-> Revision Id: 0x100002
-
-This is supported in 1.0.13rc2.  I can add your specific device ID.
-Remember, you need the driver, libs, and utils to be in sync to properly
-work.  driver 1.0.13rc2 won't work properly with libs 1.0.11, and utils
-should be rebuilt against the latest libs to properly work as well.  Try
-building and installing the driver, lib, and utils packages from
-1.0.13rc2 again.  Build and install each in that order to satisfy
-dependencies.
-
-Also, for the driver, try configuring like this "./configure
---with-debug=3Ddetect --with-cards=3Dhda-intel".  This will turn on
-hda-intel's debugging messages.  Load it with "model=3Dacer" or
-"model=3Dauto" if acer doesn't work.  In the mean time, I'll parse throug=
-h
-the rest of your codec#1 output to see if I see anything relevant.
-
-
->=20
-> # cat /proc/asound/card0/codec#1
-> Codec: Generic 14f1 ID 2bfa
-> Address: 1
-> Vendor Id: 0x14f12bfa
-> Subsystem Id: 0x1025009f
-> Revision Id: 0x90000
-
-This looks like a Conexant modem.  To get support for it, you'll have to
-go to linuxant.com and buy their driver.
-
-
-> localhost ~ # cat /proc/asound/card0/codec#3=20
-> Codec: Generic ffff ID ffff
-> Address: 3
-> Vendor Id: 0xffffffff
-> Subsystem Id: 0xffffffff
-> Revision Id: 0xffffffff
-
-This looks like garbage.  Not sure where it's coming from. =20
-
---=20
-Tobin Davis <tdavis@dsl-only.net>
-
---=-n1TU2xJ9Jjoa9PA+Z58i
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
-</HEAD>
-<BODY>
-On Sun, 2006-09-24 at 19:22 +0200, Stanis&#322;aw Raczy&#324;ski wrote:<BR>
-<BLOCKQUOTE TYPE=CITE>
-    <FONT COLOR="#000000">I'm&nbsp;using alsa 1.0.11 right now, but I also have tried 1.0.12 and 1.0.13-rc2. I tried model=acer, but it doesn't work either.</FONT><BR>
-    <BR>
-    <FONT COLOR="#000000"># cat /proc/asound/card0/codec#0</FONT><BR>
-    <FONT COLOR="#000000">Codec: Realtek ALC883</FONT><BR>
-    <FONT COLOR="#000000">Address: 0</FONT><BR>
-    <FONT COLOR="#000000">Vendor Id: 0x10ec0883 </FONT><BR>
-    <FONT COLOR="#000000">Subsystem Id: 0x1025140d</FONT><BR>
-    <FONT COLOR="#000000">Revision Id: 0x100002</FONT><BR>
-</BLOCKQUOTE>
-This is supported in 1.0.13rc2.&nbsp; I can add your specific device ID.&nbsp; Remember, you need the driver, libs, and utils to be in sync to properly work.&nbsp; driver 1.0.13rc2 won't work properly with libs 1.0.11, and utils should be rebuilt against the latest libs to properly work as well.&nbsp; Try building and installing the driver, lib, and utils packages from 1.0.13rc2 again.&nbsp; Build and install each in that order to satisfy dependencies.<BR>
-<BR>
-Also, for the driver, try configuring like this &quot;./configure --with-debug=detect --with-cards=hda-intel&quot;.&nbsp; This will turn on hda-intel's debugging messages.&nbsp; Load it with &quot;model=acer&quot; or &quot;model=auto&quot; if acer doesn't work.&nbsp; In the mean time, I'll parse through the rest of your codec#1 output to see if I see anything relevant.<BR>
-<BR>
-<BLOCKQUOTE TYPE=CITE>
-    <BR>
-    <FONT COLOR="#000000"># cat /proc/asound/card0/codec#1</FONT><BR>
-    <FONT COLOR="#000000">Codec: Generic 14f1 ID 2bfa</FONT><BR>
-    <FONT COLOR="#000000">Address: 1</FONT><BR>
-    <FONT COLOR="#000000">Vendor Id: 0x14f12bfa</FONT><BR>
-    <FONT COLOR="#000000">Subsystem Id: 0x1025009f</FONT><BR>
-    <FONT COLOR="#000000">Revision Id: 0x90000</FONT><BR>
-</BLOCKQUOTE>
-This looks like a Conexant modem.&nbsp; To get support for it, you'll have to go to linuxant.com and buy their driver.<BR>
-<BR>
-<BLOCKQUOTE TYPE=CITE>
-    <FONT COLOR="#000000">localhost ~ # cat /proc/asound/card0/codec#3 </FONT><BR>
-    <FONT COLOR="#000000">Codec: Generic ffff ID ffff</FONT><BR>
-    <FONT COLOR="#000000">Address: 3</FONT><BR>
-    <FONT COLOR="#000000">Vendor Id: 0xffffffff</FONT><BR>
-    <FONT COLOR="#000000">Subsystem Id: 0xffffffff</FONT><BR>
-    <FONT COLOR="#000000">Revision Id: 0xffffffff</FONT><BR>
-</BLOCKQUOTE>
-This looks like garbage.&nbsp; Not sure where it's coming from.&nbsp; <BR>
-<BR>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
-</BODY>
-</HTML>
-
---=-n1TU2xJ9Jjoa9PA+Z58i--
+QWZ0ZXIgc29tZSBzdHJ1Z2dsaW5nIEkgZmluYWxseSBnb3QgaXQgd29ya2luZyAod2l0aCBtb2Rl
+bD1hY2VyKSB3aXRoIHlvdXIgdGlwcy4gVGhhbmtzIGEgbG90LiBJIGhvcGUgdGhlIGluZm9ybWF0
+aW9uIEkgcHJvdmlkZWQgd2lsbCBiZSZuYnNwO3NvbWV3aGF0IHVzZWZ1bCAtLSB5b3UgbWlnaHQm
+bmJzcDt3YW50Jm5ic3A7dG8gcHV0IHRoaXMgZGV2aWNlIElEIGluIHRoZSBzb3VyY2VzIGZvciBm
+dXR1cmUgZ2VuZXJhdGlvbnMuCjxicj48YnI+PGRpdj48c3BhbiBjbGFzcz0iZ21haWxfcXVvdGUi
+PjIwMDYvOS8yNCwgVG9iaW4gRGF2aXMgJmx0OzxhIGhyZWY9Im1haWx0bzp0ZGF2aXNAZHNsLW9u
+bHkubmV0Ij50ZGF2aXNAZHNsLW9ubHkubmV0PC9hPiZndDs6PC9zcGFuPjxibG9ja3F1b3RlIGNs
+YXNzPSJnbWFpbF9xdW90ZSIgc3R5bGU9Im1hcmdpbi10b3A6IDA7IG1hcmdpbi1yaWdodDogMDsg
+bWFyZ2luLWJvdHRvbTogMDsgbWFyZ2luLWxlZnQ6IDA7IG1hcmdpbi1sZWZ0OiAwLjgwZXg7IGJv
+cmRlci1sZWZ0LWNvbG9yOiAjY2NjY2NjOyBib3JkZXItbGVmdC13aWR0aDogMXB4OyBib3JkZXIt
+bGVmdC1zdHlsZTogc29saWQ7IHBhZGRpbmctbGVmdDogMWV4Ij4KPGRpdj48c3BhbiBjbGFzcz0i
+cSI+IE9uIFN1biwgMjAwNi0wOS0yNCBhdCAxOToyMiArMDIwMCwgU3Rhbmlzs2F3IFJhY3p58XNr
+aSB3cm90ZTo8YnI+PGJsb2NrcXVvdGUgdHlwZT0iQ0lURSI+PGZvbnQgY29sb3I9IiMwMDAwMDAi
+PkknbSZuYnNwO3VzaW5nIGFsc2EgMS4wLjExIHJpZ2h0IG5vdywgYnV0IEkgYWxzbyBoYXZlIHRy
+aWVkIDEuMC4xMiBhbmQgMS4wLjEzLXJjMi4gSSB0cmllZCBtb2RlbD1hY2VyLCBidXQgaXQgZG9l
+c24ndCB3b3JrIGVpdGhlci4KPC9mb250Pjxicj48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPiMg
+Y2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMwPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAw
+MDAwMCI+Q29kZWM6IFJlYWx0ZWsgQUxDODgzPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAwMDAw
+MCI+QWRkcmVzczogMDwvZm9udD48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPlZlbmRvciBJZDog
+MHgxMGVjMDg4MyAKPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAwMDAwMCI+U3Vic3lzdGVtIElk
+OiAweDEwMjUxNDBkPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAwMDAwMCI+UmV2aXNpb24gSWQ6
+IDB4MTAwMDAyPC9mb250Pjxicj48L2Jsb2NrcXVvdGU+PC9zcGFuPiBUaGlzIGlzIHN1cHBvcnRl
+ZCBpbiAxLjAuMTNyYzIuJm5ic3A7IEkgY2FuIGFkZCB5b3VyIHNwZWNpZmljIGRldmljZSBJRC4m
+bmJzcDsgUmVtZW1iZXIsIHlvdSBuZWVkIHRoZSBkcml2ZXIsIGxpYnMsIGFuZCB1dGlscyB0byBi
+ZSBpbiBzeW5jIHRvIHByb3Blcmx5IHdvcmsuJm5ic3A7IGRyaXZlciAKMS4wLjEzcmMyIHdvbid0
+IHdvcmsgcHJvcGVybHkgd2l0aCBsaWJzIDEuMC4xMSwgYW5kIHV0aWxzIHNob3VsZCBiZSByZWJ1
+aWx0IGFnYWluc3QgdGhlIGxhdGVzdCBsaWJzIHRvIHByb3Blcmx5IHdvcmsgYXMgd2VsbC4mbmJz
+cDsgVHJ5IGJ1aWxkaW5nIGFuZCBpbnN0YWxsaW5nIHRoZSBkcml2ZXIsIGxpYiwgYW5kIHV0aWxz
+IHBhY2thZ2VzIGZyb20gMS4wLjEzcmMyIGFnYWluLiZuYnNwOyBCdWlsZCBhbmQgaW5zdGFsbCBl
+YWNoIGluIHRoYXQgb3JkZXIgdG8gc2F0aXNmeSBkZXBlbmRlbmNpZXMuCjxicj48YnI+IEFsc28s
+IGZvciB0aGUgZHJpdmVyLCB0cnkgY29uZmlndXJpbmcgbGlrZSB0aGlzICZxdW90Oy4vY29uZmln
+dXJlIC0td2l0aC1kZWJ1Zz1kZXRlY3QgLS13aXRoLWNhcmRzPWhkYS1pbnRlbCZxdW90Oy4mbmJz
+cDsgVGhpcyB3aWxsIHR1cm4gb24gaGRhLWludGVsJ3MgZGVidWdnaW5nIG1lc3NhZ2VzLiZuYnNw
+OyBMb2FkIGl0IHdpdGggJnF1b3Q7bW9kZWw9YWNlciZxdW90OyBvciAmcXVvdDttb2RlbD1hdXRv
+JnF1b3Q7IGlmIGFjZXIgZG9lc24ndCB3b3JrLiZuYnNwOyBJbiB0aGUgbWVhbiB0aW1lLCBJJ2xs
+IHBhcnNlIHRocm91Z2ggdGhlIHJlc3Qgb2YgeW91ciBjb2RlYyMxIG91dHB1dCB0byBzZWUgaWYg
+SSBzZWUgYW55dGhpbmcgcmVsZXZhbnQuCjxzcGFuIGNsYXNzPSJxIj48YnI+PGJyPjxibG9ja3F1
+b3RlIHR5cGU9IkNJVEUiPjxicj48Zm9udCBjb2xvcj0iIzAwMDAwMCI+IyBjYXQgL3Byb2MvYXNv
+dW5kL2NhcmQwL2NvZGVjIzE8L2ZvbnQ+PGJyPjxmb250IGNvbG9yPSIjMDAwMDAwIj5Db2RlYzog
+R2VuZXJpYyAxNGYxIElEIDJiZmE8L2ZvbnQ+PGJyPjxmb250IGNvbG9yPSIjMDAwMDAwIj5BZGRy
+ZXNzOiAxPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAwMDAwMCI+ClZlbmRvciBJZDogMHgxNGYx
+MmJmYTwvZm9udD48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPlN1YnN5c3RlbSBJZDogMHgxMDI1
+MDA5ZjwvZm9udD48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPlJldmlzaW9uIElkOiAweDkwMDAw
+PC9mb250Pjxicj48L2Jsb2NrcXVvdGU+PC9zcGFuPiBUaGlzIGxvb2tzIGxpa2UgYSBDb25leGFu
+dCBtb2RlbS4mbmJzcDsgVG8gZ2V0IHN1cHBvcnQgZm9yIGl0LCB5b3UnbGwgaGF2ZSB0byBnbyB0
+byAKPGEgaHJlZj0iaHR0cDovL2xpbnV4YW50LmNvbSIgdGFyZ2V0PSJfYmxhbmsiIG9uY2xpY2s9
+InJldHVybiB0b3AuanMuT3BlbkV4dExpbmsod2luZG93LGV2ZW50LHRoaXMpIj5saW51eGFudC5j
+b208L2E+IGFuZCBidXkgdGhlaXIgZHJpdmVyLjxzcGFuIGNsYXNzPSJxIj48YnI+PGJyPjxibG9j
+a3F1b3RlIHR5cGU9IkNJVEUiPjxmb250IGNvbG9yPSIjMDAwMDAwIj5sb2NhbGhvc3QgfiAjIGNh
+dCAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMyAKPC9mb250Pjxicj48Zm9udCBjb2xvcj0iIzAw
+MDAwMCI+Q29kZWM6IEdlbmVyaWMgZmZmZiBJRCBmZmZmPC9mb250Pjxicj48Zm9udCBjb2xvcj0i
+IzAwMDAwMCI+QWRkcmVzczogMzwvZm9udD48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPlZlbmRv
+ciBJZDogMHhmZmZmZmZmZjwvZm9udD48YnI+PGZvbnQgY29sb3I9IiMwMDAwMDAiPlN1YnN5c3Rl
+bSBJZDogMHhmZmZmZmZmZjwvZm9udD4KPGJyPjxmb250IGNvbG9yPSIjMDAwMDAwIj5SZXZpc2lv
+biBJZDogMHhmZmZmZmZmZjwvZm9udD48YnI+PC9ibG9ja3F1b3RlPjwvc3Bhbj4gVGhpcyBsb29r
+cyBsaWtlIGdhcmJhZ2UuJm5ic3A7IE5vdCBzdXJlIHdoZXJlIGl0J3MgY29taW5nIGZyb20uJm5i
+c3A7IDxicj48YnI+PHRhYmxlIGNlbGxzcGFjaW5nPSIwIiBjZWxscGFkZGluZz0iMCIgd2lkdGg9
+IjEwMCUiPjx0Ym9keT48dHI+PHRkPiAtLSA8c3BhbiBjbGFzcz0icSI+Cjxicj4gVG9iaW4gRGF2
+aXMgJmx0OzxhIGhyZWY9Im1haWx0bzp0ZGF2aXNAZHNsLW9ubHkubmV0IiB0YXJnZXQ9Il9ibGFu
+ayIgb25jbGljaz0icmV0dXJuIHRvcC5qcy5PcGVuRXh0TGluayh3aW5kb3csZXZlbnQsdGhpcyki
+PnRkYXZpc0Bkc2wtb25seS5uZXQ8L2E+Jmd0OyA8L3NwYW4+PC90ZD48L3RyPjwvdGJvZHk+PC90
+YWJsZT48L2Rpdj48L2Jsb2NrcXVvdGU+PC9kaXY+PGJyPgo=
+------=_Part_15507_26943091.1159126583518--
 
 
-
---===============0518124929==
+--===============1784381675==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -157,7 +149,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0518124929==
+--===============1784381675==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -168,4 +160,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0518124929==--
+--===============1784381675==--
