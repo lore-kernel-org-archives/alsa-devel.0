@@ -1,15 +1,16 @@
-From: David =?iso-8859-1?Q?H=E4rdeman?= <david@hardeman.nu>
-Subject: Re: snd-usb-audio problems with 2.6.18
-Date: Sun, 24 Sep 2006 02:02:19 +0200
-Message-ID: <20060924000219.GA4679@hardeman.nu>
-References: <20060923125456.GA7757@hardeman.nu>
-	<d9def9db0609230623k6ccfedbp1cd5be8ec25d176d@mail.gmail.com>
+From: Mauro Sacchetto <mauro.sacchetto@alice.it>
+Subject: Re: Troubles with hda_intel
+Date: Sun, 24 Sep 2006 03:04:30 +0200
+Message-ID: <200609240304.30810.mauro.sacchetto@alice.it>
+References: <200609231519.53947.mauro.sacchetto@alice.it>
+	<1159025098.1097.137.camel@mindpipe>
+	<200609231754.27432.mauro.sacchetto@alice.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <200609231754.27432.mauro.sacchetto@alice.it>
 Content-Disposition: inline
-In-Reply-To: <d9def9db0609230623k6ccfedbp1cd5be8ec25d176d@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,24 +20,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Markus Rechberger <mrechberger@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 23, 2006 at 03:23:19PM +0200, Markus Rechberger wrote:
->this issue might be hidden within the usb subsystem.
->USB bandwidth allocation doesn't work 100% yet afaik, better turn off
->support for it when configuring your kernel.
+Alle 17:54, sabato 23 settembre 2006, Mauro Sacchetto ha scritto:
+> root@darkstar:~# fuser /dev/dsp
+> root@darkstar:~#
+> Nothing is shown by fuser...
+> Thanx
+> M.
 
-Thanks, turning off bandwidth allocation fixed usb-audio again
+Disabling the sound system in KDE Control Center,
+the pc turn off correctly! Is this the proof of a bug in KDE?
+Or is there anything wrong in alsa support for hda_intel?
+In any case: http://bugs.kde.org/show_bug.cgi?id=134480
 
--- =
-
-David H=E4rdeman
+MS
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
