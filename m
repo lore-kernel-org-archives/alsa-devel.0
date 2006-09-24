@@ -1,10 +1,15 @@
-From: "Dan Cyr" <rabidfly@hotmail.com>
-Subject: Patch: 1.0.13rc2 New pci id for Nvidia MCP61
-Date: Sun, 24 Sep 2006 10:56:03 -0700
-Message-ID: <BAY107-W743A12F5A5032BE1CCC3EC0270@phx.gbl>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: hda_intel ATI SB450 - unknown subsystem
+	ID	1025:009f
+Date: Sun, 24 Sep 2006 11:01:33 -0700
+Message-ID: <1159120893.7201.202.camel@razman>
+References: <ab3226c20609240702q16d4a4f1x2c88fd9faf983b75@mail.gmail.com>
+	<1159112890.7201.191.camel@razman>
+	<ab3226c20609241022p5b237197v17ab0f0f493896a0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0880263981=="
+Content-Type: multipart/mixed; boundary="===============0518124929=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <ab3226c20609241022p5b237197v17ab0f0f493896a0@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,115 +19,134 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-2?Q?Stanis=B3aw_Raczy=F1ski?= <sutashu@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0880263981==
-Content-Type: multipart/alternative;
-	boundary="_682b497b-b73f-43d4-b866-f16b50d8c501_"
 
---_682b497b-b73f-43d4-b866-f16b50d8c501_
-Content-Type: text/plain; charset="iso-8859-1"
+--===============0518124929==
+Content-Type: multipart/alternative; boundary="=-n1TU2xJ9Jjoa9PA+Z58i"
+
+
+--=-n1TU2xJ9Jjoa9PA+Z58i
+Content-Type: text/plain; charset=iso-8859-2
 Content-Transfer-Encoding: quoted-printable
 
-Please cc if replying as I'm not on this list.
-=20
-Card Type: Onboard
-Motherboard Manufacturer: Asrock
-Motherboard Model: AM2NF6G-VSTA
-Chipset: Nvidia MCP61
-LSPCI Info: 00:05.0 Audio device: nVidia Corporation Unknown device 03f0 (r=
-ev a2)
-Alsa Version: 1.0.13rc2
-Patch Info:  Works for me!
-=20
-This doesn't require a kernel level pci_ids.h patch. Just apply the patch b=
-elow to alsa, configure, make, etc and modprobe.
-=20
-=20
-diff -ruN alsa-driver-1.0.13rc2.orig/alsa-kernel/pci/hda/hda_intel.c alsa-d=
-river-1.0.13rc2/alsa-kernel/pci/hda/hda_intel.c--- alsa-driver-1.0.13rc2.or=
-ig/alsa-kernel/pci/hda/hda_intel.c  2006-09-12 06:40:56.000000000 -0700+++ =
-alsa-driver-1.0.13rc2/alsa-kernel/pci/hda/hda_intel.c       2006-09-24 10:4=
-3:37.000000000 -0700@@ -1684,6 +1684,7 @@        { 0x10b9, 0x5461, PCI_ANY_=
-ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ULI }, /* ULI M5461 */        { 0x10de, 0x=
-026c, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA 026c */ =
-       { 0x10de, 0x0371, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA },=
- /* NVIDIA 0371 */+       { 0x10de, 0x03f0, PCI_ANY_ID, PCI_ANY_ID, 0, 0, A=
-ZX_DRIVER_NVIDIA }, /* NVIDIA 03f0 */        { 0, } }; MODULE_DEVICE_TABLE(=
-pci, azx_ids);
-=20
-=20
-Thanks!Dan Cyr=FCber Linux geek, A+, Network+, i-Net+ Certified Professiona=
-l"The grand essentials of happiness: something to do, something to love, so=
-mething to hope for."=
+On Sun, 2006-09-24 at 19:22 +0200, Stanis=B3aw Raczy=F1ski wrote:
 
---_682b497b-b73f-43d4-b866-f16b50d8c501_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> I'm using alsa 1.0.11 right now, but I also have tried 1.0.12 and
+> 1.0.13-rc2. I tried model=3Dacer, but it doesn't work either.
+>=20
+> # cat /proc/asound/card0/codec#0
+> Codec: Realtek ALC883
+> Address: 0
+> Vendor Id: 0x10ec0883=20
+> Subsystem Id: 0x1025140d
+> Revision Id: 0x100002
 
-<html>=0A=
-<head>=0A=
-<style>=0A=
-P=0A=
-{=0A=
-margin:0px;=0A=
-padding:0px=0A=
-}=0A=
-body=0A=
-{=0A=
-FONT-SIZE: 10pt;=0A=
-FONT-FAMILY:Tahoma=0A=
-}=0A=
-</style>=0A=
-</head>=0A=
-<body>Please cc if replying as I'm not on this list.<BR>
-&nbsp;<BR>
-Card Type: Onboard<BR>
-Motherboard Manufacturer: Asrock<BR>
-Motherboard Model: AM2NF6G-VSTA<BR>
-Chipset: Nvidia MCP61<BR>
-LSPCI Info: 00:05.0 Audio device: nVidia Corporation Unknown device 03f0 (r=
-ev a2)<BR>
-Alsa Version: 1.0.13rc2<BR>
-Patch Info:&nbsp; Works for me!<BR>
-&nbsp;<BR>
-This doesn't require a kernel level pci_ids.h patch. Just apply the patch b=
-elow to alsa, configure, make, etc and modprobe.<BR>
-&nbsp;<BR>
-&nbsp;<BR>
-diff -ruN alsa-driver-<FONT><FONT>1.0.13rc2.orig</FONT></FONT>/alsa-kernel/=
-pci/hda/<FONT><FONT>hda_intel.c</FONT></FONT> alsa-driver-1.0.13rc2/alsa-ke=
-rnel/pci/hda/<FONT><FONT>hda_intel.c</FONT></FONT><BR>--- alsa-driver-<FONT=
-><FONT>1.0.13rc2.orig</FONT></FONT>/alsa-kernel/pci/hda/<FONT><FONT>hda_int=
-el.c</FONT></FONT>&nbsp; 2006-09-12 06:40:56.000000000 -0700<BR>+++ alsa-dr=
-iver-1.0.13rc2/alsa-kernel/pci/hda/<FONT><FONT>hda_intel.c</FONT></FONT>&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2006-09-24 10:43:37.000000000 -0700<BR>@@=
- -1684,6 +1684,7 @@<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { 0x10b9,=
- 0x5461, <FONT><FONT>PCI_ANY_ID</FONT></FONT>, <FONT><FONT>PCI_ANY_ID</FONT=
-></FONT>, 0, 0, <FONT>AZX_DRIVER_<FONT>ULI</FONT></FONT> }, /* ULI M5461 */=
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { 0x10de, 0x026c, <FONT><FON=
-T>PCI_ANY_ID</FONT></FONT>, <FONT><FONT>PCI_ANY_ID</FONT></FONT>, 0, 0, AZX=
-_DRIVER_NVIDIA }, /* NVIDIA 026c */<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp; { 0x10de, 0x0371, <FONT><FONT>PCI_ANY_ID</FONT></FONT>, <FONT><FONT>=
-PCI_ANY_ID</FONT></FONT>, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA 0371 */<BR>+=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { 0x10de, 0x03f0, <FONT><FONT>PCI_ANY_=
-ID</FONT></FONT>, <FONT><FONT>PCI_ANY_ID</FONT></FONT>, 0, 0, AZX_DRIVER_NV=
-IDIA }, /* NVIDIA 03f0 */<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { 0=
-, }<BR>&nbsp;};<BR>&nbsp;MODULE_DEVICE_TABLE(pci, azx_ids);<BR>
-&nbsp;<BR>
-&nbsp;<BR>
-Thanks!<BR><BR><BR>Dan&nbsp;Cyr<BR>=FCber&nbsp;Linux&nbsp;geek,&nbsp;A+,&nb=
-sp;Network+,&nbsp;i-Net+&nbsp;Certified&nbsp;Professional<BR><BR>"The&nbsp;=
-grand&nbsp;essentials&nbsp;of&nbsp;happiness:&nbsp;something&nbsp;to&nbsp;d=
-o,&nbsp;something&nbsp;to&nbsp;love,&nbsp;something&nbsp;to&nbsp;hope&nbsp;=
-for."<BR><BR></body>=0A=
-</html>=
+This is supported in 1.0.13rc2.  I can add your specific device ID.
+Remember, you need the driver, libs, and utils to be in sync to properly
+work.  driver 1.0.13rc2 won't work properly with libs 1.0.11, and utils
+should be rebuilt against the latest libs to properly work as well.  Try
+building and installing the driver, lib, and utils packages from
+1.0.13rc2 again.  Build and install each in that order to satisfy
+dependencies.
 
---_682b497b-b73f-43d4-b866-f16b50d8c501_--
+Also, for the driver, try configuring like this "./configure
+--with-debug=3Ddetect --with-cards=3Dhda-intel".  This will turn on
+hda-intel's debugging messages.  Load it with "model=3Dacer" or
+"model=3Dauto" if acer doesn't work.  In the mean time, I'll parse throug=
+h
+the rest of your codec#1 output to see if I see anything relevant.
 
 
---===============0880263981==
+>=20
+> # cat /proc/asound/card0/codec#1
+> Codec: Generic 14f1 ID 2bfa
+> Address: 1
+> Vendor Id: 0x14f12bfa
+> Subsystem Id: 0x1025009f
+> Revision Id: 0x90000
+
+This looks like a Conexant modem.  To get support for it, you'll have to
+go to linuxant.com and buy their driver.
+
+
+> localhost ~ # cat /proc/asound/card0/codec#3=20
+> Codec: Generic ffff ID ffff
+> Address: 3
+> Vendor Id: 0xffffffff
+> Subsystem Id: 0xffffffff
+> Revision Id: 0xffffffff
+
+This looks like garbage.  Not sure where it's coming from. =20
+
+--=20
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-n1TU2xJ9Jjoa9PA+Z58i
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
+</HEAD>
+<BODY>
+On Sun, 2006-09-24 at 19:22 +0200, Stanis&#322;aw Raczy&#324;ski wrote:<BR>
+<BLOCKQUOTE TYPE=CITE>
+    <FONT COLOR="#000000">I'm&nbsp;using alsa 1.0.11 right now, but I also have tried 1.0.12 and 1.0.13-rc2. I tried model=acer, but it doesn't work either.</FONT><BR>
+    <BR>
+    <FONT COLOR="#000000"># cat /proc/asound/card0/codec#0</FONT><BR>
+    <FONT COLOR="#000000">Codec: Realtek ALC883</FONT><BR>
+    <FONT COLOR="#000000">Address: 0</FONT><BR>
+    <FONT COLOR="#000000">Vendor Id: 0x10ec0883 </FONT><BR>
+    <FONT COLOR="#000000">Subsystem Id: 0x1025140d</FONT><BR>
+    <FONT COLOR="#000000">Revision Id: 0x100002</FONT><BR>
+</BLOCKQUOTE>
+This is supported in 1.0.13rc2.&nbsp; I can add your specific device ID.&nbsp; Remember, you need the driver, libs, and utils to be in sync to properly work.&nbsp; driver 1.0.13rc2 won't work properly with libs 1.0.11, and utils should be rebuilt against the latest libs to properly work as well.&nbsp; Try building and installing the driver, lib, and utils packages from 1.0.13rc2 again.&nbsp; Build and install each in that order to satisfy dependencies.<BR>
+<BR>
+Also, for the driver, try configuring like this &quot;./configure --with-debug=detect --with-cards=hda-intel&quot;.&nbsp; This will turn on hda-intel's debugging messages.&nbsp; Load it with &quot;model=acer&quot; or &quot;model=auto&quot; if acer doesn't work.&nbsp; In the mean time, I'll parse through the rest of your codec#1 output to see if I see anything relevant.<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE>
+    <BR>
+    <FONT COLOR="#000000"># cat /proc/asound/card0/codec#1</FONT><BR>
+    <FONT COLOR="#000000">Codec: Generic 14f1 ID 2bfa</FONT><BR>
+    <FONT COLOR="#000000">Address: 1</FONT><BR>
+    <FONT COLOR="#000000">Vendor Id: 0x14f12bfa</FONT><BR>
+    <FONT COLOR="#000000">Subsystem Id: 0x1025009f</FONT><BR>
+    <FONT COLOR="#000000">Revision Id: 0x90000</FONT><BR>
+</BLOCKQUOTE>
+This looks like a Conexant modem.&nbsp; To get support for it, you'll have to go to linuxant.com and buy their driver.<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE>
+    <FONT COLOR="#000000">localhost ~ # cat /proc/asound/card0/codec#3 </FONT><BR>
+    <FONT COLOR="#000000">Codec: Generic ffff ID ffff</FONT><BR>
+    <FONT COLOR="#000000">Address: 3</FONT><BR>
+    <FONT COLOR="#000000">Vendor Id: 0xffffffff</FONT><BR>
+    <FONT COLOR="#000000">Subsystem Id: 0xffffffff</FONT><BR>
+    <FONT COLOR="#000000">Revision Id: 0xffffffff</FONT><BR>
+</BLOCKQUOTE>
+This looks like garbage.&nbsp; Not sure where it's coming from.&nbsp; <BR>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+
+--=-n1TU2xJ9Jjoa9PA+Z58i--
+
+
+
+--===============0518124929==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -133,7 +157,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0880263981==
+--===============0518124929==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -144,4 +168,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0880263981==--
+--===============0518124929==--
