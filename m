@@ -1,113 +1,74 @@
-From: Sergei Steshenko <steshenko_sergei@list.ru>
-Subject: Re: USB card @48kHz only: at what layer to resample?
-Date: Sun, 24 Sep 2006 18:28:25 +0300
-Message-ID: <20060924182825.2230a6bf@comp.home.net>
-References: <J63PIH$040EF5CF6AFFDBCB31B65DEC3272A191@libero.it>
-	<Pine.LNX.4.61.0609240755230.27883@info.physics.ubc.ca>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: hda_intel ATI SB450 - unknown subsystem
+	ID	1025:009f
+Date: Sun, 24 Sep 2006 08:48:10 -0700
+Message-ID: <1159112890.7201.191.camel@razman>
+References: <ab3226c20609240702q16d4a4f1x2c88fd9faf983b75@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0609240755230.27883@info.physics.ubc.ca>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Bill Unruh <unruh@physics.ubc.ca>
-Cc: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <ab3226c20609240702q16d4a4f1x2c88fd9faf983b75@mail.gmail.com>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: =?iso-8859-2?Q?Stanis=B3aw_Raczy=F1ski?= <sutashu@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 24 Sep 2006 08:12:09 -0700 (PDT)
-Bill Unruh <unruh@physics.ubc.ca> wrote:
+On Sun, 2006-09-24 at 16:02 +0200, Stanis=B3aw Raczy=F1ski wrote:
+> Hello,
+> =
 
-> On Sun, 24 Sep 2006, enrico_groups@libero.it wrote:
-> 
-> > Dear All,
-> >
-> > Apologies in advance if I am asking a stupid question, I am quite new with alsa.  I posting to both lists because I am not sure about handling this issue at the application development level or at the alsa driver configuration level.
-> >
-> > I am developing an audio application using the CCRMA synthesis tool-kit (STK) in Fedora Core4 using alsa.  I recently bought a Terratec Aureon 5.1 USB MKII card, because I needed to have better sound quality than what offered by my laptop.
-> >
-> > My understanding is that the usb card only works at 48kHz -- is this correct?
-> > I manage to get aplay to work using the following plugin in /etc/asound.conf
-> > pcm.!default {
-> >    type plug
-> >    slave {
-> >        pcm "hw:2,0"
-> >        rate 48000
-> >    }
-> > }
-> >
-> > However, in SKT I can enumerate the audio cards on my machine, but this does not give me alsa plugins, only the audio cards.  If I try to open the Aureon at 44.1kHz, I get an error saying rate not supported.
-> >
-> > Is there any way to have alsa handle the rate conversion for me?  Shouldn't or couldn't the driver take care of this?  (Was it my mistake in installing the driver? I can post my /etc/modprobe.conf if it helps)
-> > Or is there any way to get STK to see the plugin?
-> 
-> This is audio card insanity. All CDs are at 44100 but for some reason many
-> card manufacturers designed their cards to run at 48000. This is a real
-> problem since this requires rate conversion. Rate conversion is in general
-> a very very noisy operation. In particular simple linear interpolation,
-> which is quick, is also really really terrible for sound quality.
-> 
-> If you want to see some tests using the sox rate conversion facilities, see
-> www.theory.physics.ubc.ca/soundcard/resample.html
-> 
-> Ie, you would be far far better off, rather than using an alsa rate
-> conversion, to use say sox to do the rate conversion for you  (using either
-> resample or polyphase) and then play that through your 48000 card. Ie, why
-> in the world would you buy a really good sound card and then feed it crap.
->   As far as I know, the alsa conversion facilities are still primative
-> although discussions are there to improve it. 
-> (I suspect the rate conversion in Windows is also crap, but do not know.)
-> 
-> 
-> See the discussion in
-> http://www.hydrogenaudio.org/forums/index.php?showtopic=47591
-> The problem with using good samplerate conversion is that it is expensive
-> in processor time.
-> 
-> 
-> 
-> >
-> > Thank you in advance,
-> > Enrico
-> >
-> >
-> >
-> >
-> >
-> > -------------------------------------------------------------------------
-> > Take Surveys. Earn Cash. Influence the Future of IT
-> > Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> > opinions on IT & business topics through brief surveys -- and earn cash
-> > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> > _______________________________________________
-> > Alsa-user mailing list
-> > Alsa-user@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-user
-> >
-> 
+> It seems to me that the Intel HDA-based audio card on my new Turion64
+> X2 laptop (Acer Aspire 5102WLMi) is not yet properly
+> supported. I can't make the alsamixer to start (I tried many different
+> model settings infor the snd-hda-intel module): =
 
-Takashi Iwai meant to include quality resampler into ALSA - I do not know
-what the status is.
+> =
 
-A LADSPA plugin can be created for the purpose.
+> alsamixer: function snd_mixer_load failed: Invalid argument
+> =
 
-Anyway, there are good quality resamplers, and they consume less than 5% CPU
-even on old CPUs.
+> I was searching through alsa-kernel/pci/hda/patch_realtek.c and
+> alsa-kernel/Documentation/ALSA-Configuration.txt files and could not
+> find my model there, but the second file instructed me to post here.
+> Here's the lspci -nv snippet: =
 
---Sergei.
+> =
 
--- 
-Visit my http://appsfromscratch.berlios.de/ open source project.
+> 00:14.2 0403: 1002:437b (rev 01)
+>   Subsystem: 1025:009f
+>   Flags: bus master, slow devsel, latency 64, IRQ 18
+>   Memory at c0000000 (64-bit, non-prefetchable) [size=3D16K]
+>   Capabilities: [50] Power Management version 2 =
+
+>   Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=3D0/0
+> Enable-
+> =
+
+> Best wishes,
+> Stanislaw Raczynski
+
+Try adding "model=3Dacer" to your modprobe.conf file.  Also, which version
+of alsa are you trying?
+
+Could you post the output from "cat /proc/asound/card0/codec*"?  This
+will help identify the exact codec that you have.
+-- =
+
+Tobin Davis <tdavis@dsl-only.net>
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
