@@ -1,14 +1,14 @@
-From: "Mariusz Domanski" <surfer.q3@gmail.com>
-Subject: Re: hda-intel,
-	ALC861 and Asus A6rp laptop - problem with headphones almost solved
-Date: Mon, 25 Sep 2006 20:25:50 +0200
-Message-ID: <b209ae1e0609251125k399f7897jcf4d33d96d55055f@mail.gmail.com>
-References: <b209ae1e0609231108i634d41fm87012983b4b9b83e@mail.gmail.com>
-	<s5hpsdjj4mp.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Driver design question
+Date: Mon, 25 Sep 2006 15:54:22 -0400
+Message-ID: <1159214063.2899.127.camel@mindpipe>
+References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
+	<1158331680.7948.156.camel@mindpipe>  <s5h64fjj3aj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1643367830=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hpsdjj4mp.wl%tiwai@suse.de>
+In-Reply-To: <s5h64fjj3aj.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,316 +22,1098 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1643367830==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_36062_16247085.1159208750945"
+On Tue, 2006-09-19 at 17:15 +0200, Takashi Iwai wrote:
+> The workq task is a pseudo-DMA engine that runs in background.
+> When it's woken up, it feeds data from intermediate buffer to hardware
+> as much as possible.  The available data can be found in
+> 
+> If all data are fed, it sleeps again (or exit
+> the task).  The timer wakes up or schedule the new workq task.
+> 
 
-------=_Part_36062_16247085.1159208750945
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I've attached our code, which actually uses a combination of the two
+(copy callback and an intermediate buffer).  It's certainly not the most
+efficient implementation but it works, at least with aplay.  However if
+we play an MP3 using madplay, the sound is OK for the first minute or so
+after which ticks or glitches are heard.  It sounds as if old parts of
+the buffer are being replayed.
 
-2006/9/25, Takashi Iwai <tiwai@suse.de>:
->
-> >> Propably the sound will appear after (x)th compilation, but why? Why it
-> is not working
-> >> all the time?
->
-> >No idea.  A weird hardware...
->
-> >> And why the ALC861 is detected to be the ALC660?
->
-> >Simply because they are almost compatible (according to Realtek).
->
-> >The patch looks broken.  Could you regenerated it?
->
->
-> >thanks,
->
-> >Takashi
+The difference in the applications seems to be that madplay writes in
+chunks of 0x480 bytes (IOW, arbitrary) while aplay always uses 0x4000
+(which matches the hardware buffer size).
 
+Here is the code - can you see anything wrong with it?  It's derived
+from the ALSA dummy driver and still uses the dummy driver's hardware
+pointer and timer scheme for calling pcm_period_elapsed() - could this
+be the problem?  My attempts to track the hardware pointer more
+accurately and call pcm_period_elapsed from the copy callback have not
+been successful.
 
- Here is patch (now I'll write it as a part of email):
-
---- hda_old/patch_realtek.c 2006-09-12 15:40:56.000000000 +0200
-+++ hda/patch_realtek.c 2006-09-23 19:25:45.000000000 +0200
-@@ -91,6 +91,7 @@
-ALC861_3ST_DIG,
-ALC861_6ST_DIG,
-ALC861_UNIWILL_M31,
-+ ALC861_ASUS_A6RP,
-ALC861_AUTO,
-ALC861_MODEL_LAST,
-};
-@@ -6070,6 +6071,45 @@
-{ 4, alc861_uniwill_m31_ch4_init },
-};
-
-+/* Set mic1 and line-in as input and unmute the mixer */
-+static struct hda_verb alc861_asus_a6rp_ch2_init[] = {
-+ /* set pin widget 1Ah (line in) for input */
-+ { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },
-+ /* set pin widget 18h (mic1/2) for input, for mic also enable the vref */
-+ { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },
-+
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c },
-+#if 0
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 << 8)) }, /*mic*/
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x02 << 8)) }, /*line-in*/
-+#endif
-+ { } /* end */
-+};
-+/* Set mic1 nad line-in as output and mute mixer */
-+static struct hda_verb alc861_asus_a6rp_ch6_init[] = {
-+ /* set pin widget 1Ah (line in) for output (Back Surround)*/
-+ { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },
-+// { 0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },
-+ /* set pin widget 18h (mic1) for output (CLFE)*/
-+ { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },
-+// { 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },
-+
-+ { 0x0c, AC_VERB_SET_CONNECT_SEL, 0x00 },
-+ { 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00 },
-+
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080 },
-+//#if 0
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x01 << 8)) }, /*mic*/
-+ { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x02 << 8)) }, /*line in*/
-+//#endif
-+ { } /* end */
-+};
-+
-+static struct hda_channel_mode alc861_asus_a6rp_modes[2] = {
-+ { 2, alc861_asus_a6rp_ch2_init },
-+ { 6, alc861_asus_a6rp_ch6_init },
-+};
-+
-/* patch-ALC861 */
-
-static struct snd_kcontrol_new alc861_base_mixer[] = {
-@@ -6188,6 +6228,48 @@
-},
-{ } /* end */
-};
-+
-+static struct snd_kcontrol_new alc861_asus_a6rp_mixer[] = {
-+ /* output mixer control */
-+ HDA_CODEC_MUTE("Front Playback Switch", 0x03, 0x0, HDA_OUTPUT),
-+ HDA_CODEC_MUTE("Surround Playback Switch", 0x06, 0x0, HDA_OUTPUT),
-+ HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x05, 1, 0x0, HDA_OUTPUT),
-+ HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x05, 2, 0x0, HDA_OUTPUT),
-+ /*HDA_CODEC_MUTE("Side Playback Switch", 0x04, 0x0, HDA_OUTPUT), */
-+
-+ /* Input mixer control */
-+ /* HDA_CODEC_VOLUME("Input Playback Volume", 0x15, 0x0, HDA_OUTPUT),
-+ HDA_CODEC_MUTE("Input Playback Switch", 0x15, 0x0, HDA_OUTPUT), */
-+ HDA_CODEC_VOLUME("CD Playback Volume", 0x15, 0x0, HDA_INPUT),
-+ HDA_CODEC_MUTE("CD Playback Switch", 0x15, 0x0, HDA_INPUT),
-+ HDA_CODEC_VOLUME("Line Playback Volume", 0x15, 0x02, HDA_INPUT),
-+ HDA_CODEC_MUTE("Line Playback Switch", 0x15, 0x02, HDA_INPUT),
-+ HDA_CODEC_VOLUME("Mic Playback Volume", 0x15, 0x01, HDA_INPUT),
-+ HDA_CODEC_MUTE("Mic Playback Switch", 0x15, 0x01, HDA_INPUT),
-+ HDA_CODEC_MUTE("Front Mic Playback Switch", 0x10, 0x01, HDA_OUTPUT),
-+ HDA_CODEC_MUTE("Headphone Playback Switch", 0x1a, 0x03, HDA_OUTPUT), //
-was HDA_INPUT(?)
-+
-+ /* Capture mixer control */
-+ HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
-+ HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
-+ {
-+ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+ .name = "Capture Source",
-+ .count = 1,
-+ .info = alc_mux_enum_info,
-+ .get = alc_mux_enum_get,
-+ .put = alc_mux_enum_put,
-+ },
-+ {
-+ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+ .name = "Channel Mode",
-+ .info = alc_ch_mode_info,
-+ .get = alc_ch_mode_get,
-+ .put = alc_ch_mode_put,
-+ .private_value = ARRAY_SIZE(alc861_asus_a6rp_modes),
-+ },
-+ { }
-+};
+Most of the work is done in the workqueue dream_handle_pcm_queue() and
+the copy callback.
 
 /*
-* generic initialization of ADC, input mixers and output mixers
-@@ -6377,6 +6459,68 @@
-{ }
+ *  Dream soundcard
+ *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
+ *  Copyright (c) by Lee Revell <rlrevell@joe-job.com>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ */
+
+#include <linux/init.h>
+#include <linux/pci.h>
+#include <linux/jiffies.h>
+#include <linux/slab.h>
+#include <linux/time.h>
+#include <linux/wait.h>
+#include <linux/moduleparam.h>
+#include <sound/dream.h>
+#include <sound/dream_codec.h>
+
+MODULE_AUTHOR("Lee Revell <rlrevell@joe-job.com>");
+MODULE_DESCRIPTION("Dream soundcard (/dev/null)");
+MODULE_LICENSE("GPL");
+MODULE_SUPPORTED_DEVICE("{{ALSA,Dream soundcard}}");
+
+static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+static int enable[SNDRV_CARDS] = {1, 1, [2 ... (SNDRV_CARDS - 1)] = 0};
+static int pcm_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
+/* Are we running on real Alchemy board?  If so create local bus driver as well as probing PCI */
+static int alchemy = 0;
+
+module_param_array(index, int, NULL, 0444);
+MODULE_PARM_DESC(index, "Index value for dream soundcard.");
+module_param_array(id, charp, NULL, 0444);
+MODULE_PARM_DESC(id, "ID string for dream soundcard.");
+module_param_array(enable, bool, NULL, 0444);
+MODULE_PARM_DESC(enable, "Enable this dream soundcard.");
+module_param_array(pcm_devs, int, NULL, 0444);
+MODULE_PARM_DESC(pcm_devs, "PCM devices # (0-4) for dream driver.");
+module_param_array(pcm_substreams, int, NULL, 0444);
+MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-16) for dream driver.");
+module_param(alchemy, int, 0);
+MODULE_PARM_DESC(alchemy, "Device is on PCI rather than local bus");
+
+#ifdef LEO_PCM_REPLAY
+#define DPCM_DBG_SIZE 0x1000L
+#define DPCM_MAX_DBG_SIZE DPCM_DBG_SIZE-128
+static unsigned char dpcm_dbg[DPCM_DBG_SIZE];
+#endif
+
+int dream_setup_firmware(struct snd_card_dream *dream)
+{
+	const char *fwfile;
+	const struct firmware *fw;
+	int err;
+
+	fwfile = "PCI9708S.BIN";
+
+#if 0
+        err = DrmcInit(1, 0, 1);
+	printk("dream codec init: %i\n", err);
+#endif
+
+	if ((err = dream_switch_uart_mode(dream, &dream->midi1, 0)) != 0) {
+		printk("dream_switch_uart_mode failed for first port: %i\n", err);
+		return -1;
+	}
+	if ((err = dream_load_boot(dream, &dream->midi1)) < 0)
+		return -1;
+
+	if ((err = dream_switch_uart_mode(dream, &dream->midi2, 0)) != 0) {
+		printk("dream_switch_uart_mode failed for first port: %i\n", err);
+		return -1;
+	}
+	if ((err = dream_load_boot(dream, &dream->midi2)) < 0)
+		return -1;
+
+	if (request_firmware(&fw, fwfile, &dream->pci->dev)) {
+		printk(KERN_ERR "Dreamchip: cannot load firmware %s\n", fwfile);
+		return -ENOENT;
+	} else {
+		printk(KERN_ERR "Dreamchip: loaded firmware %s size %i\n", fwfile, (int)fw->size);
+	}
+	err = dream_dbg_upload_xmem(dream, &dream->midi1, DREAM_FIRMWARE_ADDR, (unsigned short *) fw->data, fw->size);
+	printk("dream_dbg_upload_xmem returned %i\n", err);
+	return 0;
+}
+
+static int snd_dream_playback_copy(snd_pcm_substream_t * substream, int channel,
+				   snd_pcm_uframes_t pos,
+				   void __user *src, snd_pcm_uframes_t count)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	int retval;
+
+	if(((unsigned int)(dpcm->ptr - dpcm_dbg)) < DPCM_MAX_DBG_SIZE)
+        dpcm->ptr += sprintf(dpcm->ptr, 
+           "TS: %10.0lu snd_dream_playback_copy: pos 0x%x src 0x%p count 0x%x (0x%x bytes)\n", 
+			     jiffies, (unsigned int) pos, src, 
+              (unsigned int) count, frames_to_bytes(runtime, count));	retval=0;
+        do {
+	  unsigned int len, new_size;
+          unsigned char * new_data;
+	/* allocate necessary number of buffers and add them to buffers' list */
+        len  = frames_to_bytes(runtime, count);
+        new_size = len + dpcm->b.left + 2;
+
+	new_data = (unsigned char *) 
+                     kmalloc(new_size, GFP_KERNEL);
+	    if(new_data == NULL)
+	      {
+		retval = -ENOMEM;
+                break;
+              }
+
+	    if(dpcm->b.data)
+	      {
+		memcpy(new_data, & dpcm->b.data[dpcm->b.offset], dpcm->b.left);
+                kfree(dpcm->b.data);
+              } 
+
+            if ((retval = copy_from_user(& new_data[dpcm->b.left], src, len))) {
+		printk("copy_from_user failed: %i\n", retval);
+		retval = -EFAULT;
+                break;
+	    } else {
+	      /*		printk("copy_from_user 0x%x bytes to 0x%p from 0x%p succeeded\n", 
+			len,
+			& new_data[dpcm->b.left],
+			src);*/
+	             retval=0;
+                    }
+
+	    dpcm->b.left += len;
+            dpcm->b.size  = dpcm->b.left;
+            dpcm->b.offset= 0;
+            dpcm->b.data  = new_data;
+	} while(0);
+
+	  if(retval<0)
+            return(retval);
+
+	/* Convert to words for queue handler */ 
+	dpcm->sw_words_played += frames_to_bytes(runtime, count) / 2;
+	dpcm->sw_chunks_played++;
+	schedule_work(&dpcm->pcm_work);
+
+	return 0;
+}
+
+static int snd_dream_capture_copy(snd_pcm_substream_t * substream, int channel,
+				   snd_pcm_uframes_t pos,
+				   void __user *src, snd_pcm_uframes_t count)
+{
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+
+	dream_pcm_dma_xfer(dream, dpcm, src, frames_to_bytes(runtime, count), 1);
+	return 0;
+}
+
+static snd_card_t *snd_dream_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
+
+
+static void snd_card_dream_pcm_timer_start(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+
+	dpcm->timer.expires = 1 + jiffies;
+	add_timer(&dpcm->timer);
+}
+
+static void snd_card_dream_pcm_timer_stop(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+
+	del_timer(&dpcm->timer);
+}
+
+static int snd_card_dream_playback_trigger(snd_pcm_substream_t * substream,
+					   int cmd)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+
+	if (cmd == SNDRV_PCM_TRIGGER_START) {
+		// dbg(dream, "trigger: PCM playback start\n");
+
+		snd_card_dream_pcm_timer_start(substream);
+	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
+		// dbg(dream, "trigger: PCM playback stop\n");
+		snd_card_dream_pcm_timer_stop(substream);
+		/* Send PCM_CLOSE here - ? */
+		dpcm->stopping = 1;
+		schedule_work(&dpcm->pcm_work);
+	} else {
+		return -EINVAL;
+	}
+	return 0;
+}
+
+static int snd_card_dream_capture_trigger(snd_pcm_substream_t * substream,
+					  int cmd)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+
+	if (cmd == SNDRV_PCM_TRIGGER_START) {
+		dbg(dream, "trigger: PCM capture start\n");
+		snd_card_dream_pcm_timer_start(substream);
+		/* Send PCM_START here */
+		dream_pcm_start(dream, dpcm->channel);
+	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
+		dbg(dream, "trigger: PCM capture stop\n");
+		snd_card_dream_pcm_timer_stop(substream);
+		/* Send PCM_CLOSE here - ? */
+		dream_pcm_close(dream, dpcm->channel);
+	} else {
+		return -EINVAL;
+	}
+	return 0;
+}
+
+static int snd_card_dream_pcm_prepare(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	unsigned int bps;
+
+	bps = runtime->rate * runtime->channels;
+	bps *= snd_pcm_format_width(runtime->format);
+	bps /= 8;
+	if (bps <= 0)
+		return -EINVAL;
+	dpcm->pcm_bps = bps;
+	dpcm->pcm_jiffie = bps / HZ;
+	dpcm->pcm_size = snd_pcm_lib_buffer_bytes(substream);
+	dpcm->pcm_count = snd_pcm_lib_period_bytes(substream);
+	dpcm->pcm_irq_pos = 0;
+	dpcm->pcm_buf_pos = 0;
+	// dbg(dream, "PCM prepare: DMA buffer 0x%x bytes at 0x%p\n", runtime->dma_bytes, runtime->dma_area);
+	return 0;
+}
+
+static int snd_card_dream_playback_prepare(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+	printk("dream_pcm_open: channel 0x%x eight_bit 0x%x stereo 0x%x rate 0x%x\n", 
+		dpcm->channel, dpcm->eight_bit, dpcm->stereo, dpcm->rate);
+
+	dream_pcm_open(dream, dpcm->channel, dpcm->eight_bit, dpcm->stereo, dpcm->rate);
+	// dbg(dream, "prepare: PCM playback\n");
+	return snd_card_dream_pcm_prepare(substream);
+}
+
+static int snd_card_dream_capture_prepare(snd_pcm_substream_t * substream)
+{
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+
+	dbg(dream, "prepare: PCM capture\n");
+	return snd_card_dream_pcm_prepare(substream);
+}
+
+static void snd_card_dream_pcm_timer_function(unsigned long data)
+{
+	struct snd_card_dream_pcm *dpcm = (struct snd_card_dream_pcm *)data;
+	struct snd_card_dream *dream = snd_pcm_substream_chip(dpcm->substream);
+
+	dpcm->timer.expires = 1 + jiffies;
+	add_timer(&dpcm->timer);
+	spin_lock_irq(&dpcm->lock);
+	dpcm->pcm_irq_pos += dpcm->pcm_jiffie;
+	dpcm->pcm_buf_pos += dpcm->pcm_jiffie;
+	dpcm->pcm_buf_pos %= dpcm->pcm_size;
+	if (dpcm->pcm_irq_pos >= dpcm->pcm_count) {
+		dpcm->pcm_irq_pos %= dpcm->pcm_count;
+		// dbg(dream, "timer: PCM period elapsed\n");
+		snd_pcm_period_elapsed(dpcm->substream);
+	}
+	spin_unlock_irq(&dpcm->lock);	
+}
+
+
+static snd_pcm_uframes_t snd_card_dream_playback_pointer(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+
+#ifdef LEO_PCM_REPLAY
+#else
+	printk("pointer returned 0x%x\n", bytes_to_frames(runtime, dpcm->pcm_buf_pos));	
+#endif
+	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
+}
+
+static snd_pcm_uframes_t snd_card_dream_capture_pointer(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+
+	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
+}
+
+static snd_pcm_hardware_t snd_card_dream_playback =
+{
+	.info =			(SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_INTERLEAVED),
+	.formats =		USE_PLAYBACK_FORMATS,
+	.rates =		USE_RATE,
+	.rate_min =		USE_RATE_MIN,
+	.rate_max =		USE_RATE_MAX,
+	.channels_min =		USE_CHANNELS_MIN,
+	.channels_max =		USE_CHANNELS_MAX,
+	.buffer_bytes_max =	MAX_BUFFER_SIZE,
+	.period_bytes_min =	MAX_PERIOD_SIZE,
+	.period_bytes_max =	MAX_PERIOD_SIZE,
+	.periods_min =		USE_PERIODS_MIN,
+	.periods_max =		USE_PERIODS_MAX,
+	.fifo_size =		0,
 };
 
-+static struct hda_verb alc861_asus_a6rp_init_verbs[] = {
-+ /*
-+ * Unmute ADC0 and set the default input to mic-in
-+ */
-+ /* port-A for surround (rear panel) | according to my codec#0 this is the
-HP jack*/
-+ { 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0 }, // was 0x00
-+ /* route front PCM to HP */
-+ //{ 0x0e, AC_VERB_SET_CONNECT_SEL, 0x01 },
-+ /* port-B for mic-in (rear panel) with vref */
-+ { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },
-+ /* port-C for line-in (rear panel) */
-+ { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },
-+ /* port-D for Front */
-+ { 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },
-+ { 0x0b, AC_VERB_SET_CONNECT_SEL, 0x00 },
-+ /* port-E for HP out (front panel) */
-+ { 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 }, // this has to be set to
-VREF80
-+ /* route front PCM to HP */
-+ { 0x0f, AC_VERB_SET_CONNECT_SEL, 0x01 },
-+ /* port-F for mic-in (front panel) with vref */
-+ { 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },
-+ /* port-G for CLFE (rear panel) */
-+ { 0x1f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+ /* port-H for side (rear panel) */
-+ { 0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+ /* CD-in */
-+ { 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },
-+ /* route front mic to ADC1*/
-+ {0x08, AC_VERB_SET_CONNECT_SEL, 0x00},
-+ {0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ /* Unmute DAC0~3 & spdif out*/
-+ {0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+ {0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+ {0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+ {0x06, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+ {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+
-+ /* Unmute Mixer 14 (mic) 1c (Line in)*/
-+ {0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+
-+ /* Unmute Stereo Mixer 15 */
-+ {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
-+ {0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c }, //Output 0~12 step
-+
-+ {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ {0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ {0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)}, // hp used DAC 3
-(Front)
-+ {0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
-+ { }
-+};
-+
-/*
-* generic initialization of ADC, input mixers and output mixers
-*/
-@@ -6714,6 +6858,9 @@
-{ .modelname = "uniwill-m31", .config = ALC861_UNIWILL_M31},
-{ .pci_subvendor = 0x1584, .pci_subdevice = 0x9072,
-.config = ALC861_UNIWILL_M31 },
-+ { .modelname = "asus-a6rp", .config = ALC861_ASUS_A6RP},
-+ { .pci_subvendor = 0x1043, .pci_subdevice = 0x1393,
-+ .config = ALC861_ASUS_A6RP },
-{ .modelname = "auto", .config = ALC861_AUTO },
-{}
-};
-@@ -6781,6 +6928,19 @@
-.adc_nids = alc861_adc_nids,
-.input_mux = &alc861_capture_source,
-},
-+ [ALC861_ASUS_A6RP] = {
-+ .mixers = { alc861_asus_a6rp_mixer },
-+ .init_verbs = { alc861_asus_a6rp_init_verbs },
-+ .num_dacs = ARRAY_SIZE(alc861_dac_nids),
-+ .dac_nids = alc861_dac_nids,
-+ .dig_out_nid = ALC861_DIGOUT_NID,
-+ .num_channel_mode = ARRAY_SIZE(alc861_asus_a6rp_modes),
-+ .channel_mode = alc861_asus_a6rp_modes,
-+ .need_dac_fix = 1,
-+ .num_adc_nids = ARRAY_SIZE(alc861_adc_nids),
-+ .adc_nids = alc861_adc_nids,
-+ .input_mux = &alc861_capture_source,
-+ },
-
+static snd_pcm_hardware_t snd_card_dream_capture =
+{
+	.info =			(SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_INTERLEAVED),
+	.formats =		USE_CAPTURE_FORMATS,
+	.rates =		USE_RATE,
+	.rate_min =		USE_RATE_MIN,
+	.rate_max =		USE_RATE_MAX,
+	.channels_min =		USE_CHANNELS_MIN,
+	.channels_max =		USE_CHANNELS_MAX,
+	.buffer_bytes_max =	MAX_BUFFER_SIZE,
+	.period_bytes_min =	64,
+	.period_bytes_max =	MAX_BUFFER_SIZE,
+	.periods_min =		USE_PERIODS_MIN,
+	.periods_max =		USE_PERIODS_MAX,
+	.fifo_size =		0,
 };
 
-------=_Part_36062_16247085.1159208750945
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+static void snd_card_dream_runtime_free(snd_pcm_runtime_t *runtime)
+{
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	kfree(dpcm);
+}
 
-<br><br><div><span class="gmail_quote">2006/9/25, Takashi Iwai &lt;<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt;:</span><blockquote class="gmail_quote" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; margin-left: 0.80ex; border-left-color: #cccccc; border-left-width: 1px; border-left-style: solid; padding-left: 1ex">
-&gt;&gt; Propably the sound will appear after (x)th compilation, but why? Why it is not working<br>&gt;&gt; all the time?<br><br>&gt;No idea.&nbsp;&nbsp;A weird hardware...<br><br>&gt;&gt; And why the ALC861 is detected to be the ALC660?
-<br><br>&gt;Simply because they are almost compatible (according to Realtek).<br><br>&gt;The patch looks broken.&nbsp;&nbsp;Could you regenerated it?<br><br><br>&gt;thanks,<br><br>&gt;Takashi</blockquote><div><br>&nbsp;Here is patch (now I'll write it as a part of email):
-<br><br>--- hda_old/patch_realtek.c     2006-09-12 15:40:56.000000000 +0200<br>+++ hda/patch_realtek.c 2006-09-23 19:25:45.000000000 +0200<br>@@ -91,6 +91,7 @@<br>        ALC861_3ST_DIG,<br>        ALC861_6ST_DIG,<br>        ALC861_UNIWILL_M31,
-<br>+       ALC861_ASUS_A6RP,<br>        ALC861_AUTO,<br>        ALC861_MODEL_LAST,<br> };<br>@@ -6070,6 +6071,45 @@<br>        { 4, alc861_uniwill_m31_ch4_init },<br> };<br><br>+/* Set mic1 and line-in as input and unmute the mixer */
-<br>+static struct hda_verb alc861_asus_a6rp_ch2_init[] = {<br>+       /* set pin widget 1Ah (line in) for input */<br>+       { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },<br>+       /* set pin widget 18h (mic1/2) for input, for mic also enable the vref */
-<br>+       { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },<br>+<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c },<br>+#if 0<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 &lt;&lt; 8)) }, /*mic*/<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x02 &lt;&lt; 8)) }, /*line-in*/
-<br>+#endif<br>+       { } /* end */<br>+};<br>+/* Set mic1 nad line-in as output and mute mixer */<br>+static struct hda_verb alc861_asus_a6rp_ch6_init[] = {<br>+       /* set pin widget 1Ah (line in) for output (Back Surround)*/
-<br>+       { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },<br>+//     { 0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },<br>+       /* set pin widget 18h (mic1) for output (CLFE)*/<br>+       { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },
-<br>+//     { 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },<br>+<br>+       { 0x0c, AC_VERB_SET_CONNECT_SEL, 0x00 },<br>+       { 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00 },<br>+<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080 },
-<br>+//#if 0<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x01 &lt;&lt; 8)) }, /*mic*/<br>+       { 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x02 &lt;&lt; 8)) }, /*line in*/<br>+//#endif<br>+       { } /* end */
-<br>+};<br>+<br>+static struct hda_channel_mode alc861_asus_a6rp_modes[2] = {<br>+       { 2, alc861_asus_a6rp_ch2_init },<br>+       { 6, alc861_asus_a6rp_ch6_init },<br>+};<br>+<br> /* patch-ALC861 */<br><br> static struct snd_kcontrol_new alc861_base_mixer[] = {
-<br>@@ -6188,6 +6228,48 @@<br>        },<br>        { } /* end */<br> };<br>+<br>+static struct snd_kcontrol_new alc861_asus_a6rp_mixer[] = {<br>+        /* output mixer control */<br>+       HDA_CODEC_MUTE(&quot;Front Playback Switch&quot;, 0x03, 0x0, HDA_OUTPUT),
-<br>+       HDA_CODEC_MUTE(&quot;Surround Playback Switch&quot;, 0x06, 0x0, HDA_OUTPUT),<br>+       HDA_CODEC_MUTE_MONO(&quot;Center Playback Switch&quot;, 0x05, 1, 0x0, HDA_OUTPUT),<br>+       HDA_CODEC_MUTE_MONO(&quot;LFE Playback Switch&quot;, 0x05, 2, 0x0, HDA_OUTPUT),
-<br>+       /*HDA_CODEC_MUTE(&quot;Side Playback Switch&quot;, 0x04, 0x0, HDA_OUTPUT), */<br>+<br>+       /* Input mixer control */<br>+       /* HDA_CODEC_VOLUME(&quot;Input Playback Volume&quot;, 0x15, 0x0, HDA_OUTPUT),
-<br>+          HDA_CODEC_MUTE(&quot;Input Playback Switch&quot;, 0x15, 0x0, HDA_OUTPUT), */<br>+       HDA_CODEC_VOLUME(&quot;CD Playback Volume&quot;, 0x15, 0x0, HDA_INPUT),<br>+       HDA_CODEC_MUTE(&quot;CD Playback Switch&quot;, 0x15, 0x0, HDA_INPUT),
-<br>+       HDA_CODEC_VOLUME(&quot;Line Playback Volume&quot;, 0x15, 0x02, HDA_INPUT),<br>+       HDA_CODEC_MUTE(&quot;Line Playback Switch&quot;, 0x15, 0x02, HDA_INPUT),<br>+       HDA_CODEC_VOLUME(&quot;Mic Playback Volume&quot;, 0x15, 0x01, HDA_INPUT),
-<br>+       HDA_CODEC_MUTE(&quot;Mic Playback Switch&quot;, 0x15, 0x01, HDA_INPUT),<br>+       HDA_CODEC_MUTE(&quot;Front Mic Playback Switch&quot;, 0x10, 0x01, HDA_OUTPUT),<br>+       HDA_CODEC_MUTE(&quot;Headphone Playback Switch&quot;, 0x1a, 0x03, HDA_OUTPUT), // was HDA_INPUT(?)
-<br>+<br>+       /* Capture mixer control */<br>+       HDA_CODEC_VOLUME(&quot;Capture Volume&quot;, 0x08, 0x0, HDA_INPUT),<br>+       HDA_CODEC_MUTE(&quot;Capture Switch&quot;, 0x08, 0x0, HDA_INPUT),<br>+       {<br>+               .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-<br>+               .name = &quot;Capture Source&quot;,<br>+               .count = 1,<br>+               .info = alc_mux_enum_info,<br>+               .get = alc_mux_enum_get,<br>+               .put = alc_mux_enum_put,<br>
-+       },<br>+       {<br>+               .iface = SNDRV_CTL_ELEM_IFACE_MIXER,<br>+               .name = &quot;Channel Mode&quot;,<br>+               .info = alc_ch_mode_info,<br>+               .get = alc_ch_mode_get,<br>
-+               .put = alc_ch_mode_put,<br>+                .private_value = ARRAY_SIZE(alc861_asus_a6rp_modes),<br>+       },<br>+       { }<br>+};<br><br> /*<br>  * generic initialization of ADC, input mixers and output mixers
-<br>@@ -6377,6 +6459,68 @@<br>        { }<br> };<br><br>+static struct hda_verb alc861_asus_a6rp_init_verbs[] = {<br>+       /*<br>+        * Unmute ADC0 and set the default input to mic-in<br>+        */<br>+       /* port-A for surround (rear panel) | according to&nbsp;my codec#0 this is the HP jack*/
-<br>+       { 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0 }, // was 0x00<br>+       /* route front PCM to HP */<br>+       //{ 0x0e, AC_VERB_SET_CONNECT_SEL, 0x01 },<br>+       /* port-B for mic-in (rear panel) with vref */
-<br>+       { 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },<br>+       /* port-C for line-in (rear panel) */<br>+       { 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },<br>+       /* port-D for Front */<br>+       { 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },
-<br>+       { 0x0b, AC_VERB_SET_CONNECT_SEL, 0x00 },<br>+       /* port-E for HP out (front panel) */<br>+       { 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 }, // this has to be set to VREF80<br>+       /* route front PCM to HP */
-<br>+       { 0x0f, AC_VERB_SET_CONNECT_SEL, 0x01 },<br>+       /* port-F for mic-in (front panel) with vref */<br>+       { 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },<br>+       /* port-G for CLFE (rear panel) */<br>+       { 0x1f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-<br>+       /* port-H for side (rear panel) */<br>+       { 0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },<br>+       /* CD-in */<br>+       { 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },<br>+       /* route front mic to ADC1*/
-<br>+       {0x08, AC_VERB_SET_CONNECT_SEL, 0x00},<br>+       {0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       /* Unmute DAC0~3 &amp; spdif out*/<br>+       {0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-<br>+       {0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},<br>+       {0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},<br>+       {0x06, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},<br>+       {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-<br>+<br>+       /* Unmute Mixer 14 (mic) 1c (Line in)*/<br>+       {0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+        {0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},<br>+       {0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-<br>+        {0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},<br>+<br>+       /* Unmute Stereo Mixer 15 */<br>+       {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-<br>+       {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},<br>+       {0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c          }, //Output 0~12 step<br>+<br>+       {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-<br>+       {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},<br>+       {0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       {0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-<br>+       {0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},<br>+       {0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},<br>+       {0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)}, // hp used DAC 3 (Front)<br>
-+       {0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},<br>+       { }<br>+};<br>+<br> /*<br>  * generic initialization of ADC, input mixers and output mixers<br>  */<br>@@ -6714,6 +6858,9 @@<br>        { .modelname = &quot;uniwill-m31&quot;, .config = ALC861_UNIWILL_M31},
-<br>        { .pci_subvendor = 0x1584, .pci_subdevice = 0x9072,<br>          .config = ALC861_UNIWILL_M31 },<br>+       { .modelname = &quot;asus-a6rp&quot;, .config = ALC861_ASUS_A6RP},<br>+       { .pci_subvendor = 0x1043, .pci_subdevice = 0x1393,
-<br>+         .config = ALC861_ASUS_A6RP },<br>        { .modelname = &quot;auto&quot;, .config = ALC861_AUTO },<br>        {}<br> };<br>@@ -6781,6 +6928,19 @@<br>                .adc_nids = alc861_adc_nids,<br>                .input_mux = &amp;alc861_capture_source,
-<br>        },<br>+       [ALC861_ASUS_A6RP] = {<br>+               .mixers = { alc861_asus_a6rp_mixer },<br>+               .init_verbs = { alc861_asus_a6rp_init_verbs },<br>+               .num_dacs = ARRAY_SIZE(alc861_dac_nids),
-<br>+               .dac_nids = alc861_dac_nids,<br>+               .dig_out_nid = ALC861_DIGOUT_NID,<br>+               .num_channel_mode = ARRAY_SIZE(alc861_asus_a6rp_modes),<br>+               .channel_mode = alc861_asus_a6rp_modes,
-<br>+               .need_dac_fix = 1,<br>+               .num_adc_nids = ARRAY_SIZE(alc861_adc_nids),<br>+               .adc_nids = alc861_adc_nids,<br>+               .input_mux = &amp;alc861_capture_source,<br>+       },
-<br><br> };<br></div></div><br>
+static int snd_card_dream_hw_params(snd_pcm_substream_t * substream,
+				    snd_pcm_hw_params_t * hw_params)
+{
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm = runtime->private_data;
+	int err;
+	
+	/* W_OPEN: channels 0 if mono, 1 if stereo */ 
+	dpcm->stereo = params_channels(hw_params) == 2;
+	/* W_OPEN: format 0 if 16bit, 1 if 8bit */
+	dpcm->eight_bit = params_format(hw_params) == SNDRV_PCM_FORMAT_U8;
+	dpcm->rate = params_rate(hw_params);
 
-------=_Part_36062_16247085.1159208750945--
+	printk("hw_params: stereo %s, format %s\n, rate %i",
+			dpcm->stereo ? "yes" : "no",
+			dpcm->eight_bit ? "8bit" : "16bit",
+			dpcm->rate);
+	
+	if (( err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0)
+		return err;
+
+	return 0;
+}
+
+static int snd_card_dream_hw_free(snd_pcm_substream_t * substream)
+{
+	return snd_pcm_lib_free_pages(substream);
+}
+
+static void dream_handle_pcm_queue(void * data)
+{
+	struct snd_card_dream_pcm *dpcm = (struct snd_card_dream_pcm *) data;
+	int res, sample;
+	int samples = 0x2000;
+
+	if (! dpcm->running) {
+		printk("dream_handle_pcm_queue: invoked before trigger!\n");
+		/* Send PCM_START */
+		dream_pcm_start(dpcm->dream, dpcm->channel);
+		dpcm->running = 1;
+	}
+
+	if (dpcm->stopping) { /* Play buffer of any size, but at least 1 and
+                                 never 0x2000 */
+          if(dpcm->b.left)
+            samples = (dpcm->b.left < DREAM_PCM_HALF_BUFFER_LEN_BYTES) ? dpcm->b.left/2 :
+	                              DREAM_PCM_HALF_BUFFER_LEN-1; 
+          else
+            samples = 1;
+        } else if(dpcm->b.left >= DREAM_PCM_HALF_BUFFER_LEN_BYTES)
+	          samples = DREAM_PCM_HALF_BUFFER_LEN;
+	       else
+		 samples = 0; /* Don't play partial half buffer unless is stopping */
+ 
+	if(((unsigned int)(dpcm->ptr - dpcm_dbg)) < DPCM_MAX_DBG_SIZE)
+        dpcm->ptr += sprintf(dpcm->ptr, 
+     "TS: %10.0lu %s pcm_queue: app 0x%x words hw 0x%x samples 0x%x off 0x%x left 0x%x\n", 
+			     jiffies, dpcm->stopping ? "STOP" : "RUN ", 
+                             dpcm->sw_words_played, dpcm->hw_words_played,
+                             samples, dpcm->b.offset, dpcm->b.left);
+	if(samples > 0)
+	  {
+	    res = dream_get_mpu_data_poll_status_byte(dpcm->dream, 
+                                                      &dpcm->dream->midi2, 
+                                                       MPU401_IT_MASK, 
+                                                       MPU401_IT_VALUE, 100); 
+            
+	    if(res >= 0)
+	      {
+                unsigned int play_size = samples*2;
+		unsigned short * pcm_word = (unsigned short *) & dpcm->b.data[dpcm->b.offset];
+            /* Write buffer to Dream chip */
+		for (sample = 0; sample <  samples; sample++, pcm_word++)
+		  mpu_write16(dpcm->dream, &dpcm->dream->midi2, 
+                   cpu_to_le16(*pcm_word), 0); /* TBD: don't swap for 8 bits WAV */
+
+	      dream_pcm_end_xfer(dpcm->dream, dpcm->channel);
+	      /* move offset */
+              dpcm->b.offset +=  play_size;
+              dpcm->b.left   -=  play_size;
+	      dpcm->hw_words_played += samples;
+              }
+             else
+	       printk("dream_handle_pcm_queue: polling status byte returned %i\n", res);
+
+          } /* if(samples > 0) */
+	if (dpcm->stopping) {
+	  int l = strlen(dpcm_dbg), ii=0;
+          unsigned char buf[120];
+	  while(ii < l)
+	    {
+	      strncpy(buf, & dpcm_dbg[ii], 100);
+              buf[100] = 0;
+             printk(buf);
+             ii += 100;
+            }
+              
+      	        mdelay(100);
+		dream_pcm_close(dpcm->dream, dpcm->channel);
+		dpcm->running = 0;
+                if(dpcm->b.data)
+                  kfree(dpcm->b.data);
+		printk("handle_queue: stopping.  %i chunks\n", dpcm->sw_chunks_played);
+	}
+
+	return;
+}
+
+static int snd_card_dream_playback_open(snd_pcm_substream_t * substream)
+{
+	struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm;
+	int err;
+
+	dpcm = kcalloc(1, sizeof(*dpcm), GFP_KERNEL);
+	if (dpcm == NULL)
+		return -ENOMEM;
+#ifdef LEO_PCM_REPLAY
+        memset(dpcm, 0, sizeof(*dpcm));
+        dpcm->channel = 0; /* not necessary because of previous memset, but just in case */
+        dpcm->ptr = dpcm_dbg;
+#endif
+	dpcm->dream = dream;
+	init_timer(&dpcm->timer);
+	dpcm->timer.data = (unsigned long) dpcm;
+	dpcm->timer.function = snd_card_dream_pcm_timer_function;
+	spin_lock_init(&dpcm->lock);
+	dpcm->substream = substream;
+	runtime->private_data = dpcm;
+	runtime->private_free = snd_card_dream_runtime_free;
+	runtime->hw = snd_card_dream_playback;
+
+	if ((err = add_playback_constraints(runtime)) < 0) {
+		kfree(dpcm);
+		return err;
+	}
+
+	/* initialize the workqueue that will be triggered from copy callback
+	 * to write PCM samples to the hardware */
+	INIT_WORK(&dpcm->pcm_work, dream_handle_pcm_queue, (void *)dpcm);
+
+	return 0;
+}
+
+static int snd_card_dream_capture_open(snd_pcm_substream_t * substream)
+{
+	snd_pcm_runtime_t *runtime = substream->runtime;
+	struct snd_card_dream_pcm *dpcm;
+	int err;
+
+	dpcm = kcalloc(1, sizeof(*dpcm), GFP_KERNEL);
+	if (dpcm == NULL)
+		return -ENOMEM;
+	init_timer(&dpcm->timer);
+	dpcm->timer.data = (unsigned long) dpcm;
+	dpcm->timer.function = snd_card_dream_pcm_timer_function;
+	spin_lock_init(&dpcm->lock);
+	dpcm->substream = substream;
+	runtime->private_data = dpcm;
+	runtime->private_free = snd_card_dream_runtime_free;
+	runtime->hw = snd_card_dream_capture;
+
+	if ((err = add_capture_constraints(runtime)) < 0) {
+		kfree(dpcm);
+		return err;
+	}
+
+	return 0;
+}
+
+static int snd_card_dream_playback_close(snd_pcm_substream_t * substream)
+{
+	return 0;
+}
+
+static int snd_card_dream_capture_close(snd_pcm_substream_t * substream)
+{
+	return 0;
+}
+
+static snd_pcm_ops_t snd_card_dream_playback_ops = {
+	.open =			snd_card_dream_playback_open,
+	.close =		snd_card_dream_playback_close,
+	.ioctl =		snd_pcm_lib_ioctl,
+	.hw_params =		snd_card_dream_hw_params,
+	.hw_free =		snd_card_dream_hw_free,
+	.prepare =		snd_card_dream_playback_prepare,
+	.trigger =		snd_card_dream_playback_trigger,
+	.pointer =		snd_card_dream_playback_pointer,
+	.copy =			snd_dream_playback_copy,
+};
+
+static snd_pcm_ops_t snd_card_dream_capture_ops = {
+	.open =			snd_card_dream_capture_open,
+	.close =		snd_card_dream_capture_close,
+	.ioctl =		snd_pcm_lib_ioctl,
+	.hw_params =		snd_card_dream_hw_params,
+	.hw_free =		snd_card_dream_hw_free,
+	.prepare =		snd_card_dream_capture_prepare,
+	.trigger =		snd_card_dream_capture_trigger,
+	.pointer =		snd_card_dream_capture_pointer,
+	.copy =			snd_dream_capture_copy,
+};
+
+static int __init snd_card_dream_pcm(struct snd_card_dream *dream, int device, int substreams)
+{
+	snd_pcm_t *pcm;
+	int err;
+
+	if ((err = snd_pcm_new(dream->card, "Dream PCM", device, substreams, substreams, &pcm)) < 0)
+		return err;
+	pcm->private_data = dream;
+
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_dream_playback_ops);
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_dream_capture_ops);
+
+	pcm->info_flags = 0;
+	strcpy(pcm->name, "Dream PCM");
+	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+					      snd_dma_continuous_data(GFP_KERNEL),
+					      0, 64*1024);
+	dream->pcm = pcm;
+	return 0;
+}
+
+static int snd_dream_hwdep_open(snd_hwdep_t * hw, struct file *file)
+{
+	return 0;
+}
+
+static int snd_dream_hwdep_release(snd_hwdep_t * hw, struct file *file)
+{
+	return 0;
+}
+
+irqreturn_t snd_dream_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+{
+	struct snd_card_dream *dream = dev_id;
+	printk("interrupt - dream is 0x%p\n", dream);
+	return IRQ_HANDLED;
+}
+
+static int snd_dream_hwdep_ioctl(snd_hwdep_t * hw, struct file *file, unsigned int cmd, unsigned long arg)
+{
+	struct snd_card_dream *dream = hw->private_data;
+	struct snd_dream_midi_msg *midi_msg;
+        struct snd_dream_codec_msg * codec_msg;
+	//unsigned int addr;
+	void __user *argp = (void __user *)arg;
+	int res, sample, i;
+	int samples = 0x2000;
+	signed short * buffer;
+	
+	switch (cmd) {
+	case SNDRV_DREAM_IOCTL_MIDI_MSG:
+		midi_msg = (struct snd_dream_midi_msg *)kmalloc(sizeof(*midi_msg), GFP_KERNEL);
+		if (midi_msg == NULL)
+			return -ENOMEM;
+		if (copy_from_user(midi_msg, argp, sizeof(*midi_msg))) {
+			kfree(midi_msg);
+			return -EFAULT;
+		}
+		if(midi_msg->dbg_prn)
+		printk("MIDI message chip %i mpu_port %i offset %i direction %i 16bit %i data 0x%x\n", 
+			midi_msg->chip, 
+			midi_msg->mpu_port, 
+			midi_msg->offset, 
+			midi_msg->direction, 
+			midi_msg->size, 
+			midi_msg->data);
+		if (midi_msg->size == SND_DREAM_MSG_8BIT) {
+			if (midi_msg->direction == SND_DREAM_WRITE) {
+				mpu_write(dream, 
+					  (midi_msg->mpu_port ? &dream->midi2 : &dream->midi1),
+					  midi_msg->data,
+					  midi_msg->offset,
+					  midi_msg->dbg_prn);
+			} else {
+				midi_msg->data = mpu_read(dream, 
+							  (midi_msg->mpu_port ? 
+							  &dream->midi2 : &dream->midi1),
+							  midi_msg->offset,
+							  midi_msg->dbg_prn);
+			}
+		} else { /* 16 bit */
+			if (midi_msg->direction == SND_DREAM_WRITE) {
+				mpu_write16(dream, 
+					    (midi_msg->mpu_port ? &dream->midi2 : &dream->midi1),
+					    midi_msg->data,
+					    midi_msg->dbg_prn);
+			} else {
+				midi_msg->data = mpu_read16(dream, 
+							  (midi_msg->mpu_port ? 
+							  &dream->midi2 : &dream->midi1),
+							  midi_msg->offset,
+							  midi_msg->dbg_prn);
+			}
+
+		}
+
+		if (copy_to_user(argp, midi_msg, sizeof(*midi_msg))) {
+			kfree(midi_msg);
+			return -EFAULT;
+		}
+		
+		kfree(midi_msg);
+		return 0;
+	case SNDRV_DREAM_IOCTL_REQUEST_IRQ:
+		res = request_irq(dream->pci->irq, snd_dream_interrupt, SA_INTERRUPT|SA_SHIRQ, "Dreamchip", (void *)dream);
+		printk("IOCTL_REQUEST_IRQ returned %i\n", res);
+	        return res;	
+
+	case SNDRV_DREAM_IOCTL_FW_LOAD:
+	        res = dream_setup_firmware(dream);
+		printk("IOCTL_FW_LOAD returned %i\n", res);
+	        return res;	
+	/* send random data to PCM for testing */
+	case SNDRV_DREAM_IOCTL_PCM_TEST:
+		printk(KERN_ERR "IOCTL_PCM_TEST: start\n");
+		/* allocate a buffer and fill it with random data */
+		buffer = (signed short *) kmalloc((samples * sizeof(signed short)), GFP_KERNEL);
+		if (buffer == NULL)
+			return -ENOMEM;
+		get_random_bytes(buffer, (samples * sizeof(signed short)));
+
+		printk(KERN_ERR "IOCTL_PCM_TEST: filled buffer with random data\n");
+
+		/* 9708 channel 0, 16 bit, stereo, 48000Hz */
+		dream_pcm_open(dream, 0, 0, 1, 48000);
+		dream_pcm_set_vol_fl(dream, 0, 0xFFFF);
+		dream_pcm_set_vol_fr(dream, 0, 0xFFFF);
+		dream_pcm_start(dream, 0);
+
+		/* Send first half buffer */
+		res = dream_get_mpu_data_poll_status_byte(dream, &dream->midi2, MPU401_IT_MASK, MPU401_IT_VALUE, 100); 
+		printk(KERN_ERR "IOCTL_PCM_TEST: iter 0 polling status byte returned %i\n", res);
+
+		for (sample = 0; sample < samples; sample++)
+			mpu_write16(dream, &dream->midi2, buffer[sample], 0);
+
+		dream_pcm_end_xfer(dream, 0);
+
+		/* Send 10 more half buffers */
+		for (i = 0; i < 10; i++) {
+			res = dream_get_mpu_data_poll_status_byte(dream, &dream->midi2, MPU401_IT_MASK, MPU401_IT_VALUE, 100); 
+			printk(KERN_ERR "IOCTL_PCM_TEST: iter %i polling status byte returned %i\n", i+1, res);
+
+			for (sample = 0; sample < samples; sample++)
+				mpu_write16(dream, &dream->midi2, buffer[sample], 0);
+
+			dream_pcm_end_xfer(dream, 0);
+		}
+
+		/* Finally send incomplete half buffer */
+		res = dream_get_mpu_data_poll_status_byte(dream, &dream->midi2, MPU401_IT_MASK, MPU401_IT_VALUE, 100); 
+		printk(KERN_ERR "IOCTL_PCM_TEST: iter 0 polling status byte returned %i\n", res);
+
+		for (sample = 0; sample < samples-1; sample++)
+			mpu_write16(dream, &dream->midi2, buffer[sample], 0);
+
+		dream_pcm_end_xfer(dream, 0);
+
+		res = dream_pcm_close(dream, 0);
+
+		printk(KERN_ERR "IOCTL_PCM_TEST returned %i\n", res);
+	        return res;
+	
+        case SNDRV_DREAM_IOCTL_CODEC_MSG:
+		codec_msg = (struct snd_dream_codec_msg *)kmalloc(sizeof(*codec_msg), GFP_KERNEL);
+		if (codec_msg == NULL)
+			return -ENOMEM;
+		if (copy_from_user(codec_msg, argp, sizeof(*codec_msg))) {
+			kfree(codec_msg);
+			return -EFAULT;
+		}
+
+	        res = DrmcIoctlProc(codec_msg);
 
 
---===============1643367830==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+		if (copy_to_user(argp, codec_msg, sizeof(*codec_msg))) {
+			kfree(codec_msg);
+			return -EFAULT;
+		}
+		
+		kfree(codec_msg);
+                return res;
+	}
+	return -ENOTTY;
+}
+int __devinit snd_dream_hwdep_new(struct snd_card_dream *dream, int device, snd_hwdep_t ** rhwdep)
+{
+	snd_hwdep_t *hw;
+	int err;
+	
+	if (rhwdep)
+		*rhwdep = NULL;
+	if ((err = snd_hwdep_new(dream->card, "Dreamchip", device, &hw)) < 0)
+		return err;
+	strcpy(hw->name, "Dreamchip");
+	hw->iface = SNDRV_HWDEP_IFACE_DREAMCHIP;
+	hw->ops.open = snd_dream_hwdep_open;
+	hw->ops.ioctl = snd_dream_hwdep_ioctl;
+	hw->ops.release = snd_dream_hwdep_release;
+	hw->private_data = dream;
+	if (rhwdep)
+		*rhwdep = hw;
+	return 0;
+}
+
+static int snd_dream_free(struct snd_card_dream *dream)
+{
+	/* release the i/o ports & memory */
+	pci_release_regions(dream->pci);
+
+	/* disable the PCI entry */
+	pci_disable_device(dream->pci);
+
+	/* release the data */
+	kfree(dream);
+	return 0;
+}
+
+static int snd_dream_dev_free(snd_device_t *device)
+{
+	struct snd_card_dream *dream = device->device_data;
+	return snd_dream_free(dream);
+}
+
+static int __devinit snd_dream_pci_create(snd_card_t * card,
+				      struct pci_dev * pci,
+				      struct snd_card_dream ** rdream)
+{
+	struct snd_card_dream *dream;
+	int err, len;
+	
+	static snd_device_ops_t ops = {
+		.dev_free = snd_dream_dev_free,
+	};
+	
+	/* enable PCI device */
+	if ((err = pci_enable_device(pci)) < 0)
+		return err;
+
+	dream = kmalloc(sizeof(*dream), GFP_KERNEL);
+	if (dream == NULL) {
+		pci_disable_device(pci);
+		return -ENOMEM;
+	}	    
+	memset(dream, 0, sizeof(*dream));
+	
+	dream->card = card;
+	dream->pci = pci;
+
+	if ((err = pci_request_regions(pci, "Dreamchip")) < 0) {
+		kfree(dream);
+		pci_disable_device(pci);
+		return err;
+	}
+
+	printk("Dreamchip: alchemy is %i\n", alchemy);
+
+	/* Get the PCI BAR */
+	dream->port = pci_resource_start(pci, 0);
+	printk("Dreamchip: base port 0x%x\n", dream->port);
+	len = pci_resource_len(pci, 0);
+	printk("Dreamchip: base port len %i\n", len);
+
+#if 0
+	if (request_irq(pci->irq, snd_dream_interrupt, SA_INTERRUPT|SA_SHIRQ, "Dreamchip", (void *)dream)) {
+		kfree(dream);
+		pci_disable_device(pci);
+		return -EBUSY;
+	}
+	dream->irq = pci->irq;
+#endif
+
+	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, dream, &ops)) < 0) {
+		snd_dream_free(dream);
+		return err;
+	}
+
+	snd_card_set_dev(card, &pci->dev);
+
+	*rdream = dream;
+	return 0;
+}	    
+	
+static int __devinit snd_card_dream_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+{
+	static int dev;
+	snd_card_t *card;
+	struct snd_card_dream *dream;
+	int idx, err;
+
+	if (dev >= SNDRV_CARDS)
+        	return -ENODEV;
+	if (!enable[dev]) {
+		dev++;
+		return -ENOENT;
+	}
+
+	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
+	if (card == NULL)
+		return -ENOMEM;
+
+	strcpy(card->driver, "Dream");
+	strcpy(card->shortname, "Dream");
+	sprintf(card->longname, "Dream %i", dev + 1);
+
+	if ((err = snd_dream_pci_create(card, pci, &dream)) < 0)
+		goto __nodev;
+
+	spin_lock_init(&dream->dream_lock);
+	spin_lock_init(&dream->log_lock);
+	
+	for (idx = 0; idx < MAX_PCM_DEVICES && idx < pcm_devs[dev]; idx++) {
+		if (pcm_substreams[dev] < 1)
+			pcm_substreams[dev] = 1;
+		if (pcm_substreams[dev] > MAX_PCM_SUBSTREAMS)
+			pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
+		if ((err = snd_card_dream_pcm(dream, idx, pcm_substreams[dev])) < 0)
+			goto __nodev;
+	}
+	if ((err = snd_card_dream_new_mixer(dream)) < 0)
+		goto __nodev;
+	
+	snd_dream_proc_init(dream);
+	
+	snd_dream_midi(dream);
+
+	if ((err = snd_dream_hwdep_new(dream, 0, NULL)) < 0)
+		goto __nodev;
+
+	/* Simulation mode should not be set by default for PCI board bringup */
+	dream->simulation_mode = 0;
+
+	/* Set the register IO log buffer index to 0 */
+	dream->log_idx = 0;
+	
+	/* Load firmware */
+	/* if ((err = dream_setup_firmware(dream)) < 0) 
+	  goto __nodev; */
+
+#if 0
+	if((err = DrmcInit(1, 0, 0)) != 0)
+	   goto __nodev;
+#endif
+
+	if ((err = snd_card_register(card)) == 0) {
+		snd_dream_cards[dev] = card;
+		return 0;
+	}
+	pci_set_drvdata(pci, card);
+	dev++;
+      __nodev:
+	snd_card_free(card);
+	return err;
+}
+
+static int __devinit snd_card_dream_lb_probe(int dev)
+{
+	snd_card_t *card;
+	struct snd_card_dream *dream;
+	int idx, err;
+
+	if (!enable[dev])
+ 		return -ENODEV;
+
+ 	card = snd_card_new(index[dev], id[dev], THIS_MODULE,
+ 			    sizeof(struct snd_card_dream));
+
+	if (card == NULL)
+		return -ENOMEM;
+
+ 	dream = (struct snd_card_dream *)card->private_data;
+ 
+ 	dream->card = card;
+
+	spin_lock_init(&dream->dream_lock);
+	spin_lock_init(&dream->log_lock);
+	
+	for (idx = 0; idx < MAX_PCM_DEVICES && idx < pcm_devs[dev]; idx++) {
+		if (pcm_substreams[dev] < 1)
+			pcm_substreams[dev] = 1;
+		if (pcm_substreams[dev] > MAX_PCM_SUBSTREAMS)
+			pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
+		if ((err = snd_card_dream_pcm(dream, idx, pcm_substreams[dev])) < 0)
+			goto __nodev;
+	}
+	if ((err = snd_card_dream_new_mixer(dream)) < 0)
+		goto __nodev;
+	
+	snd_dream_proc_init(dream);
+	
+	snd_dream_midi(dream);
+
+	if ((err = snd_dream_hwdep_new(dream, 0, NULL)) < 0)
+		goto __nodev;
+
+	/* Simulation mode should not be set by default for PCI board bringup */
+	dream->simulation_mode = 0;
+
+	/* Set the register IO log buffer index to 0 */
+	dream->log_idx = 0;
+	
+	/* We are a local bus device, not PCI */
+	dream->alchemy = 1;
+
+	dream->mmio_base = ioremap(SAM9708_MMIO_BASE, 0x20);
+	printk("MMIO base 0x%p", dream->mmio_base);
+	
+	/* Load firmware */
+	/* if ((err = dream_setup_firmware(dream)) < 0) 
+	  goto __nodev; */
+
+#if 0
+	if((err = DrmcInit(1, 0, 0)) != 0)
+	   goto __nodev;
+#endif
+
+	strcpy(card->driver, "Dream");
+	strcpy(card->shortname, "Dream");
+	sprintf(card->longname, "Dream %i", dev + 1);
+	if ((err = snd_card_register(card)) == 0) {
+		snd_dream_cards[dev] = card;
+		return 0;
+	}
+	dev++;
+      __nodev:
+	snd_card_free(card);
+	return err;
+}
+
+struct pci_device_id snd_dream_ids[] = {
+	{ 0x1438, 0x9707, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },	/* Dream PCI board */
+	{ 0, }
+};
+
+static void __devexit snd_card_dream_pci_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+	pci_set_drvdata(pci, NULL);
+}
+
+static struct pci_driver driver = {
+	.name = "Dreamchip",
+	.id_table = snd_dream_ids,
+	.probe = snd_card_dream_pci_probe,
+	.remove = __devexit_p(snd_card_dream_pci_remove),
+};
+
+static int __init alsa_card_dream_init(void)
+{
+	int dev, cards;
+
+	pci_register_driver(&driver);
+
+	if (!alchemy)
+		return 0;
+
+	for (dev = cards = 1; dev < SNDRV_CARDS && enable[dev]; dev++) {
+		if (snd_card_dream_lb_probe(dev) < 0) {
+#ifdef MODULE
+			dbg(dream, "Dream soundcard #%i not found or device busy\n", dev + 1);
+#endif
+			break;
+		}
+		cards++;
+	}
+	if (!cards) {
+#ifdef MODULE
+		dbg(dream, "Dream soundcard not found or device busy\n");
+#endif
+		return -ENODEV;
+	}
+	return 0;
+}
+
+static void __exit alsa_card_dream_exit(void)
+{
+	int idx;
+
+	pci_unregister_driver(&driver);
+
+	for (idx = 0; idx < SNDRV_CARDS; idx++)
+		snd_card_free(snd_dream_cards[idx]);
+}
+
+
+module_init(alsa_card_dream_init)
+module_exit(alsa_card_dream_exit)
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1643367830==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1643367830==--
