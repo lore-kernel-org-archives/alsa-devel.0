@@ -1,14 +1,10 @@
-From: "Marvin Stodolsky" <marvin.stodolsky@gmail.com>
-Subject: Re: [PATCH] hda/patch_si3054: new codec vendor IDs
-Date: Mon, 25 Sep 2006 07:29:25 -0400
-Message-ID: <c27106ee0609250429u1a0d2513s2ce871691e451a32@mail.gmail.com>
-References: <20060925080101.GA7996@sk>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: [PATCH] WM9712 fixes for ac97_patch.c
+Date: Mon, 25 Sep 2006 16:15:06 +0100
+Message-ID: <1159197306.27504.88.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-iufrYHQneMpmsMnZgN+r"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060925080101.GA7996@sk>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,118 +14,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Luke Zhang <lzhang@intrinsyc.com>
 List-Id: alsa-devel@alsa-project.org
 
-Several  tarballs of /proc/asound have been accumulated,
-corresponding to the new softmodems on HDA card cases encountered
-through the List discuss@linmodems.org.  When encountering  a novel
-HDA modem Vendor ID,  my scanModem script does:
-    cp -a /proc/asound  $VendorID
-    tar cfz $VendorID.tgz  $VendorID/
-   echo "  Please send $VendorID.tgz to marvin.stodolsky@gamil.com"
-where Vendor ID  is novel such as in:
 
->  PCI ID     Subsystem  Name
->  ---------- ---------  -----------------
->  10de:026c  107b:0317  0403: nVidia Corporation MCP51 High Definition Audio
->
->     /proc/asound/card0/codec#1
-> -------------------------------
-> Codec: Generic 11c1 ID 1040
-> Address: 1
-> Vendor Id: 0x11c11040
-> Subsystem Id: 0x11c10001
-> Revision Id: 0x100200
-> -------------------------------
+--=-iufrYHQneMpmsMnZgN+r
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Should it be usefull to any of you to have these cases, please left me know.
-The internal archive within
-http://linmodems.technion.ac.il/packages/scanModem.gz
-currently has the HDA modem cases below.
+This patch by Luke Zhang fixes a couple of issues with the WM9712
+support in ac97_patch.c
 
-MarvS
------------
-      cat<<END>/dev/null
-In the Archive below, the first field is the modem chipset
-manufacturer  ID for HDA cards
-OR the mc97 codec for cards with a AC'97/MC97 compatible register,
-orginally read from the 0:7c and 0:7e fields and then translated.
-           Following is the SubSystem PCI IDs of cards with that codec,
-which is grep filtered on. This field accepts comments diverse.
-The HDA cards are first listed. In newer cases there are:   $SUBSYS_$VendorID
-END
+Changes:-
 
-      if test "$PCIDEV" = 8086:2668 ; then
-      HDA=1
-# Class 0403: 8086:2668   Class 0403: Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller
-     cat<<END | grep $SUBSYS | cut -d' ' -f1 >$TMPM.2
-14f1  1025:008f 1028:01c9 1028:01cb
-11c1  1179:ff00 1025:0070
-163c  1558:0900
-END
-      elif test "$PCIDEV" = 8086:27d8 ; then
-      HDA=1
-        # Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller
-     cat<<END | grep $SUBSYS | cut -d' ' -f1 >$TMPM.2
-14f1  1028:01cd_14f12bfa 1043:81d8  17aa:2010 1028:01bd 1025:0090
-11c1  1179:ff00_11c13026 ; 103c:30aa
-1057  1558:5405_10573055
-END
-      elif test "$PCIDEV" = 1002:437b ; then
-        HDA=1
-      # Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
-      cat<<END | grep $SUBSYS | cut -d' ' -f1 >$TMPM.2
-11c1  1462:0369 , 10cf:1326
-END
-      elif test "$PCIDEV" = 10de:026c ; then
-        HDA=1
-      # nVidia Corporation MCP51 High Definition Audio
-      cat<<END | grep $SUBSYS | cut -d' ' -f1 >$TMPM.2
-14f1   103c:30b7
-11c1   107b:0317_11c11040 ;
-END
+ o Fix Out3 ZC switch invert.
+ o Extend capture volume control to 6 bits.
+ o Change Mic 1 volume mask to 5 bits (31).
+ o Add Mic 2 volume.
 
+Signed-off-by: Luke Zhang <lzhang@intrinsyc.com>
+Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
+--=-iufrYHQneMpmsMnZgN+r
+Content-Disposition: attachment; filename=wm9712.patch
+Content-Type: text/x-patch; name=wm9712.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+diff -r bfec5c1bf1cc pci/ac97/ac97_patch.c
+--- a/pci/ac97/ac97_patch.c	Sun Sep 17 22:05:54 2006 +0200
++++ b/pci/ac97/ac97_patch.c	Mon Sep 25 15:52:13 2006 +0100
+@@ -530,7 +530,7 @@ AC97_SINGLE("ALC Headphone Volume", AC97
+ AC97_SINGLE("ALC Headphone Volume", AC97_VIDEO, 7, 7, 1),
+ 
+ AC97_SINGLE("Out3 Switch", AC97_AUX, 15, 1, 1),
+-AC97_SINGLE("Out3 ZC Switch", AC97_AUX, 7, 1, 1),
++AC97_SINGLE("Out3 ZC Switch", AC97_AUX, 7, 1, 0),
+ AC97_ENUM("Out3 Mux", wm9711_enum[2]),
+ AC97_ENUM("Out3 LR Mux", wm9711_enum[3]),
+ AC97_SINGLE("Out3 Volume", AC97_AUX, 0, 31, 1),
+@@ -575,13 +575,14 @@ AC97_SINGLE("Playback Attenuate (-6dB) S
+ 
+ AC97_SINGLE("ADC Switch", AC97_REC_GAIN, 15, 1, 1),
+ AC97_ENUM("Capture Volume Steps", wm9711_enum[6]),
+-AC97_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 15, 1),
++AC97_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
+ AC97_SINGLE("Capture ZC Switch", AC97_REC_GAIN, 7, 1, 0),
+ 
+ AC97_SINGLE("Mic 1 to Phone Switch", AC97_MIC, 14, 1, 1),
+ AC97_SINGLE("Mic 2 to Phone Switch", AC97_MIC, 13, 1, 1),
+ AC97_ENUM("Mic Select Source", wm9711_enum[7]),
+-AC97_SINGLE("Mic 1 Volume", AC97_MIC, 8, 32, 1),
++AC97_SINGLE("Mic 1 Volume", AC97_MIC, 8, 31, 1),
++AC97_SINGLE("Mic 2 Volume", AC97_MIC, 0, 31, 1),
+ AC97_SINGLE("Mic 20dB Boost Switch", AC97_MIC, 7, 1, 0),
+ 
+ AC97_SINGLE("Master ZC Switch", AC97_MASTER, 7, 1, 0),
 
-On 9/25/06, Sasha Khapyorsky <sashakh@gmail.com> wrote:
-> Hi Takashi,
->
-> There are new IDs for Si3054 based HDA modems.
->
-> Sasha
->
-> ---
-> There are additional IDs for Si3054 codec based HDA modems. Most of
-> them were discovered on discuss@linmodems.org list - Thanks to MarvS
-> and all linmodems.org folks.
->
-> Signed-off-by: Sasha Khapyorsky <sashak@alsa-project.org>
->
-> ---
-> diff -r 63e58b008259 pci/hda/patch_si3054.c
-> --- a/pci/hda/patch_si3054.c    Mon Sep 04 13:03:51 2006 +0200
-> +++ b/pci/hda/patch_si3054.c    Sun Sep 24 03:20:25 2006 +0300
-> @@ -297,7 +297,12 @@ struct hda_codec_preset snd_hda_preset_s
->  struct hda_codec_preset snd_hda_preset_si3054[] = {
->         { .id = 0x163c3055, .name = "Si3054", .patch = patch_si3054 },
->         { .id = 0x163c3155, .name = "Si3054", .patch = patch_si3054 },
-> +       { .id = 0x11c11040, .name = "Si3054", .patch = patch_si3054 },
->         { .id = 0x11c13026, .name = "Si3054", .patch = patch_si3054 },
-> +       { .id = 0x11c13055, .name = "Si3054", .patch = patch_si3054 },
-> +       { .id = 0x11c13155, .name = "Si3054", .patch = patch_si3054 },
-> +       { .id = 0x10573055, .name = "Si3054", .patch = patch_si3054 },
-> +       { .id = 0x10573155, .name = "Si3054", .patch = patch_si3054 },
->         {}
->  };
->
->
+--=-iufrYHQneMpmsMnZgN+r
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--=-iufrYHQneMpmsMnZgN+r
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-iufrYHQneMpmsMnZgN+r--
