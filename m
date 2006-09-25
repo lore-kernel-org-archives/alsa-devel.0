@@ -1,15 +1,17 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: :  ALC260 (Re:  ALSA 1.0.13rc2 release)
-Date: Mon, 25 Sep 2006 10:58:21 +0930 (CST)
-Message-ID: <200609250128.k8P1SLth010255@auster.physics.adelaide.edu.au>
-References: <mailman.23633.1159108348.16222.alsa-devel@lists.sourceforge.net>
+From: "Marc Brooker" <marcbrooker@gmail.com>
+Subject: Re: [Alsa-user] USB card @48kHz only: at what layer to
+	resample?
+Date: Mon, 25 Sep 2006 08:35:04 +0200
+Message-ID: <b5ee41f40609242335v4cb0c8b2w6748bff74b3242f4@mail.gmail.com>
+References: <J63PIH$040EF5CF6AFFDBCB31B65DEC3272A191@libero.it>
+	<Pine.LNX.4.61.0609240755230.27883@info.physics.ubc.ca>
+	<20060924182825.2230a6bf@comp.home.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <mailman.23633.1159108348.16222.alsa-devel@lists.sourceforge.net>
-	from "alsa-devel-request@lists.sourceforge.net" at Sep 24,
-	2006 07:32:28 AM
+In-Reply-To: <20060924182825.2230a6bf@comp.home.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,46 +21,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Andrea
+On 9/24/06, Sergei Steshenko <steshenko_sergei@list.ru> wrote:
+>
+> Takashi Iwai meant to include quality resampler into ALSA - I do not know
+> what the status is.
 
-> I'm sorry to bother you again but every time I try to set an option on
-> snd-hda-intel I get this in syslog:
-> 
-> Sep 23 22:31:33 stariez kernel:
-> ALSA /usr/src/alsa/alsa-driver-1.0.13rc2/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:4059: hda_codec: Unknown model for ALC260, trying auto-probe from BIOS...
-> Sep 23 22:31:33 stariez kernel:
-> ALSA /usr/src/alsa/alsa-driver-1.0.13rc2/pci/hda/hda_codec.c:2150:
-> autoconfig: line_outs=1 (0xf/0x0/0x0/0x0/0x0)
-> Sep 23 22:31:33 stariez kernel:
-> ALSA /usr/src/alsa/alsa-driver-1.0.13rc2/pci/hda/hda_codec.c:2154:
-> speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> Sep 23 22:31:33 stariez kernel:
-> ALSA /usr/src/alsa/alsa-driver-1.0.13rc2/pci/hda/hda_codec.c:2156:
-> hp=0x0, dig_out=0x18, din_in=0x0
-> Sep 23 22:31:33 stariez kernel:
-> ALSA /usr/src/alsa/alsa-driver-1.0.13rc2/pci/hda/hda_codec.c:2164:
-> inputs: mic=0x12, fmic=0x0, line=0x14, fline=0x0, cd=0x16, aux=0x0
-> 
-> Is it normal?
+The resample plugin, written by Takashi Iwai, enables high quality
+resampling in ALSA. You need to install the plugin (it's included in
+the 1.0.11 and higher source, but most distros don't package it yet)
+and add a line to either alsa.conf or .asoundrc enabling it.
 
-Which options are you trying?  What command line(s) are you using?  If
-you're trying to use the "model=test" option to modprobe, have you first
-configured ALSA with the "--enable-debug" option and recompiled/reinstalled?
-If testing alsa from within a standard kernel tree there's a similarly named
-configuration option in the alsa section of "make menuconfig".
+Takashi's plugin (which uses libsamplerate) performs very well,
+especially when compared to the standard rate converter included in
+ALSA. I would recommend it if you are doing any sort of resampling
+operation.
 
-As Takashi said, the "test" model is only available if debugging has been
-enabled.
+In my opinion, it should be enabled by default, but that's a different
+argument for a different day.
+>
+> A LADSPA plugin can be created for the purpose.
+>
+> Anyway, there are good quality resamplers, and they consume less than 5% =
+CPU
+> even on old CPUs.
+>
+> --Sergei.
+>
+> --
+> Visit my http://appsfromscratch.berlios.de/ open source project.
+>
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share y=
+our
+> opinions on IT & business topics through brief surveys -- and earn cash
+> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
+DEVDEV
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
-Regards
-  jonathan
+
+-- =
+
+Increasingly, people seem to misinterpret complexity as
+sophistication, which is baffling =97 the incomprehensible should cause
+suspicion rather than admiration - Niklaus Wirth
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
