@@ -1,11 +1,18 @@
-From: Andrea Gozzi <andrea.gozzi@linuxrevolution.eu>
-Subject: ALSA 1.0.13rc3 (intel_hda + ALC260)
-Date: Tue, 26 Sep 2006 23:29:17 +0200
-Message-ID: <1159306157.14557.26.camel@osmosis>
-Reply-To: andrea.gozzi@linuxrevolution.eu
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: 1.0.13rc3: relocation error: mocp: symbol
+	snd_pcm_hw_params_get_channels_min ..
+Date: Tue, 26 Sep 2006 23:31:27 +0200
+Message-ID: <20060926213127.GB4519@frodo.home.lxtec.de>
+References: <20060926201319.GA3067@samweis.home.lxtec.de>
+	<1159302210.2899.227.camel@mindpipe>
+	<20060926204053.GB3067@samweis.home.lxtec.de>
+	<1159304610.2899.231.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1047160246=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1159304610.2899.231.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,63 +22,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 26 Sep 2006 the mental interface of
+Lee Revell told:
 
---===============1047160246==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-WTRhpv4yPvtldOvePrhL"
+> On Tue, 2006-09-26 at 22:40 +0200, Elimar Riesebieter wrote:
+> > On Tue, 26 Sep 2006 the mental interface of
+> > Lee Revell told:
+> > 
+> > > On Tue, 2006-09-26 at 22:13 +0200, Elimar Riesebieter wrote:
+> > > > Hi all,
+> > > > 
+> > > > I am testing 1.0.13rc3 (lib/driver/utils) on PPC/2.6.18
+> > > > 
+> > > > Starting a soundapp like moc gives:
+> > > > 
+> > > > "relocation error: mocp: symbol snd_pcm_hw_params_get_channels_min,
+> > > > version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link
+> > > > time reference"
+> > > > 
+> > > > Any hints?
+> > > > 
+> > > 
+> > > Application was compiled against a different alsa-lib version than is
+> > > present.
+> > 
+> > This was my idea as well, but apps compiled with versions << 1.0.12
+> > are running with 1.0.13rc2?
+> 
+> It's not guaranteed that using a wrong library version won't work.  It
+> may or may not.  Just use the same version.
+
+It must be guaranteed!
+
+Please notice: As a distributor you have to force all sond-app
+maintainers to rebuild their package against the new libasound
+headers. This is normaly done by ABI's which libasound doesn't
+use. In the past I've experienced never a behaviour descibed in the
+subject.
+
+Elimar
 
 
---=-WTRhpv4yPvtldOvePrhL
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Hi.
-
-I noticed ALSA 1.0.13rc3 is out.
-I'm having troubles with my soundcard (Intel ICH7 and Realtek ALC260).
-Should I try it or it won't make any difference?
-
---=-WTRhpv4yPvtldOvePrhL
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBFGZutoIXRn+fZcV0RAsVYAKCAapHVUHLJhzRgD0hIcUsxhuC2WwCglUQf
-QEhwfbFebNuD6/96E8UBNL4=
-=gSet
------END PGP SIGNATURE-----
-
---=-WTRhpv4yPvtldOvePrhL--
-
-
-
---===============1047160246==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+  On the keyboard of life you have always
+  to keep a finger at the escape key;-)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1047160246==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1047160246==--
