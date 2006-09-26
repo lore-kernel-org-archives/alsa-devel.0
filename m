@@ -1,19 +1,11 @@
-From: Luke Ross <luke@lukeross.name>
-Subject: Re: "Unable to handle kernel paging request"
-	panic	in	snd-usb-audio on x86_64
-Date: Tue, 26 Sep 2006 11:13:15 +0100
-Message-ID: <20060926101315.GB28386@lukeross.name>
-References: <20060920225128.GG19215@lukeross.name>
-	<s5hvenhcb8v.wl%tiwai@suse.de>
-	<20060922104850.GA20850@lukeross.name>
-	<s5hodt3j4fm.wl%tiwai@suse.de>
-	<20060924234858.GA23432@lukeross.name>
-	<s5hpsdir3bx.wl%tiwai@suse.de>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: 1.0.13rc3: relocation error: mocp: symbol
+	snd_pcm_hw_params_get_channels_min ..
+Date: Tue, 26 Sep 2006 22:13:19 +0200
+Message-ID: <20060926201319.GA3067@samweis.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1392602714=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hpsdir3bx.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,44 +15,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Tue, Sep 26, 2006 at 06:37:54PM +0200, Takashi Iwai wrote:
-> 
-> > > I still couldn't find a proper way to reproduce this bug...
-> > 
-> > So I can compare, which kernel version are you using? As touched on 
-> > before, it only happens to me on x86_64, and it may be SMP dependent 
-> > (my i386 machine is uniprocessor, my x86_64 one is SMP).
-> 
-> My test machine is an Intel x86-64 single core running (almost)
-> vanilla 2.6.18 SMP kernel with HT.  ALSA 1.0.13rc3 is now built on
-> that, and seems working with mpg321, at least.
-> The whole ALSA stuff is built as modules.
+--===============1392602714==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
 
-Sorry if I've jumped to an incorrect conclusion here, but you are 
-including the patch and/or Hg pull? Neither 2.6.18 nor 1.0.13rc3 
-incorporate the patch in question, as it went in after both of these 
-were released. The patch is in Hg and also the latest -mm, although I 
-can also reproduce the problem by taking a stock kernel and applying the 
-patch as posted to the mailing list[1]
 
-Regards,
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Luke
+Hi all,
 
-[1] 
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=d55e9f78b1c4fbff1cd5d4c6462ec111aaea9267;style=raw
--- 
-``Avoid employing unlucky people - throw half of the pile of CVs in the bin
-  without reading them'' (David Brent)
+I am testing 1.0.13rc3 (lib/driver/utils) on PPC/2.6.18
+
+Starting a soundapp like moc gives:
+
+"relocation error: mocp: symbol snd_pcm_hw_params_get_channels_min,
+version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link
+time reference"
+
+Any hints?
+
+Elimar
+
+--=20
+  On the keyboard of life you have always
+  to keep a finger at the escape key;-)
+
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFGYnf3Ig8bsVPf7ARAt+OAJ9gkEZQot770JcTbKdmnHwiJWzIiACfeF5w
+2ouW9wwPBd4qjCGVihBq1oI=
+=HSY6
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--
+
+
+--===============1392602714==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1392602714==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1392602714==--
