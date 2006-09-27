@@ -1,14 +1,14 @@
-From: Andrea Gzz <andreagzz@fastwebnet.it>
-Subject: Re: ALSA 1.0.13rc3 (intel_hda + ALC260)
-Date: Wed, 27 Sep 2006 01:53:22 +0200
-Message-ID: <1159314802.14557.28.camel@osmosis>
-References: <200609262346.k8QNkmDc032118@auster.physics.adelaide.edu.au>
-Reply-To: andreagzz@fastwebnet.it
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: 1.0.13rc3: relocation error: mocp: symbol
+ snd_pcm_hw_params_get_channels_min ..
+Date: Wed, 27 Sep 2006 08:41:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0609270841040.9340@tm8103.perex-int.cz>
+References: <20060926201319.GA3067@samweis.home.lxtec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200609262346.k8QNkmDc032118@auster.physics.adelaide.edu.au>
+In-Reply-To: <20060926201319.GA3067@samweis.home.lxtec.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,25 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Elimar Riesebieter <riesebie@lxtec.de>
+Cc: pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Still nothing even with 1.0.13rc3.
+On Tue, 26 Sep 2006, Elimar Riesebieter wrote:
 
-On Wed, 2006-09-27 at 09:16 +0930, Jonathan Woithe wrote:
-> > I noticed ALSA 1.0.13rc3 is out.
-> > I'm having troubles with my soundcard (Intel ICH7 and Realtek ALC260).
-> > Should I try it or it won't make any difference?
+> Hi all,
 > 
-> Given what the problem is I suspect it won't fix the issue (we might be
-> lucky though).  However, there's no harm in trying it if you can since it
-> will keep investigations relevant to recent versions of the ALSA tree.
+> I am testing 1.0.13rc3 (lib/driver/utils) on PPC/2.6.18
 > 
-> Regards
->   jonathan
+> Starting a soundapp like moc gives:
+> 
+> "relocation error: mocp: symbol snd_pcm_hw_params_get_channels_min,
+> version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link
+> time reference"
+> 
+> Any hints?
 
+What is output from commands 'nm /usr/lib/libasound.so.2 | grep 
+snd_pcm_hw_params_get_channels_min' and 'nm mocp | grep 
+snd_pcm_hw_params_get_channels_min'?
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
