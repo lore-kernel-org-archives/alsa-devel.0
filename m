@@ -1,18 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.13rc3: relocation error: mocp: symbol
- snd_pcm_hw_params_get_channels_min ..
-Date: Wed, 27 Sep 2006 20:55:57 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0609272054170.9340@tm8103.perex-int.cz>
-References: <20060926201319.GA3067@samweis.home.lxtec.de>
-	<1159302210.2899.227.camel@mindpipe>
-	<20060926204053.GB3067@samweis.home.lxtec.de>
-	<1159304610.2899.231.camel@mindpipe> <s5hd59hqygh.wl%tiwai@suse.de>
-	<20060927181346.GB5202@aragorn.home.lxtec.de>
+Subject: Re: Feature needed for EMU1820m driver
+Date: Wed, 27 Sep 2006 20:58:57 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0609272056350.9340@tm8103.perex-int.cz>
+References: <451ABFD1.5030206@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060927181346.GB5202@aragorn.home.lxtec.de>
+In-Reply-To: <451ABFD1.5030206@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,89 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Elimar Riesebieter <riesebie@lxtec.de>
-Cc: Takashi Iwai <tiwai@suse.de>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Sep 2006, Elimar Riesebieter wrote:
+On Wed, 27 Sep 2006, James Courtier-Dutton wrote:
 
-> On Wed, 27 Sep 2006 the mental interface of
-> Takashi Iwai told:
+> Hi,
 > 
-> > At Tue, 26 Sep 2006 17:03:29 -0400,
-> > Lee Revell wrote:
-> > > 
-> > > On Tue, 2006-09-26 at 22:40 +0200, Elimar Riesebieter wrote:
-> > > > On Tue, 26 Sep 2006 the mental interface of
-> > > > Lee Revell told:
-> > > > 
-> > > > > On Tue, 2006-09-26 at 22:13 +0200, Elimar Riesebieter wrote:
-> > > > > > Hi all,
-> > > > > > 
-> > > > > > I am testing 1.0.13rc3 (lib/driver/utils) on PPC/2.6.18
-> > > > > > 
-> > > > > > Starting a soundapp like moc gives:
-> > > > > > 
-> > > > > > "relocation error: mocp: symbol snd_pcm_hw_params_get_channels_min,
-> > > > > > version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link
-> > > > > > time reference"
-> > > > > > 
-> > > > > > Any hints?
-> > > > > > 
-> > > > > 
-> > > > > Application was compiled against a different alsa-lib version than is
-> > > > > present.
-> > > > 
-> > > > This was my idea as well, but apps compiled with versions << 1.0.12
-> > > > are running with 1.0.13rc2?
-> > > 
-> > > It's not guaranteed that using a wrong library version won't work.
-> > 
-> > The backward compatibility is guaranteed.
-> > That's the very reason that such a versioned symbol was introduced.
-> > (And it was a big failure...)
-> > 
-> > Please don't mix up the things about config files and the library ABI
-> > compatibility.  In a very rare case, the configuration file doesn't
-> > match with the driver version.  This happend once on emu10k1 (and
-> > people now think that it's a frequent case, unforunately, although
-> > we've tried to keep the compatibility of config stuff since then).
-> > But, the ABI is kept backward-compatible for many years. 
-> > 
-> > So, you don't have to use the same version of alsa-lib.  In general,
-> > the newer version is always better.  The newer one includes more
-> > bugfixes and new features.
-> > 
-> > 
-> > BTW, the problem here looks like a build of alsa-lib with versioned
-> > symbols.  Or, the app isn't linked to libasound at compile time, so it
-> > couldn't resolve the versioned symbols properly.  It's a common
-> > problem with versioned symbols.
+> The E-MU 1820m consists of a PCI card with a connector on it.
+> A cable then runs to an external box called the AudioDock with all the
+> audio IO on it.
+> The AudioDock is hot pluggable.
+> The problem is that no interrupts occur if one connects the AudioDock.
+> One would have to poll the device until one saw a certain bit being set.
+> One would then know the AudioDock was there. The driver then needs to
+> load some firmware into the AudioDock.
 > 
-> The libs where build as follows:
-> 
-> ../configure --prefix=/usr \
-> --mandir=\$${prefix}/share/man \
-> --infodir=\$${prefix}/share/info \
-> --datadir=\$${prefix}/share \
-> --host=$(DEB_HOST_GNU_TYPE) \
-> --enable-static --disable-maintainer-mode
-> 
-> where --enable-shared[=PKGS]  build shared libraries
-> points by default to yes
+> My question is, what should I use to monitor for the plug/unplug of the
+> AudioDock? I would expect some user land app could do the polling, but
+> that might require some new ALSA api to support it.
 
-I would follow this paragraph from the INSTALL file:
-
-Compilation of static library
------------------------------
-
-If you would like to use the static ALSA library, you need to use these
-options for the configure script:
-
-        ./configure --enable-shared=no --enable-static=yes
-
-Unfortunately, due to bug in the libtool script, the shared and static
-library cannot be built together.
+I would use a low resolution (probably ~1 sec) system timer to check this 
+bit and request the additional firmware in tasklet or workqueue. In this 
+case, the userland is not required to participate.
 
 						Jaroslav
 
