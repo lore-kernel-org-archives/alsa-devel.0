@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.13rc3: relocation error: mocp: symbol
- snd_pcm_hw_params_get_channels_min ..
-Date: Wed, 27 Sep 2006 08:41:47 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0609270841040.9340@tm8103.perex-int.cz>
-References: <20060926201319.GA3067@samweis.home.lxtec.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: adding volume to raw-midi device
+Date: Wed, 27 Sep 2006 09:28:13 +0200
+Message-ID: <1159342093.30849.271951370@webmail.messagingengine.com>
+References: <DB99F0250CDF5F438C525F4695C888DC154511@exchange01-srv.pianodisc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060926201319.GA3067@samweis.home.lxtec.de>
+Content-Disposition: inline
+In-Reply-To: <DB99F0250CDF5F438C525F4695C888DC154511@exchange01-srv.pianodisc.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,34 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Elimar Riesebieter <riesebie@lxtec.de>
-Cc: pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: "Pamela K. Clift" <pclift@pianodisc.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Sep 2006, Elimar Riesebieter wrote:
+Pamela K. Clift wrote:
+> when I compile the file I get many errors including "warning:
+> struct snd_ctl_elem_info declared inside parameter list"   I have at
+> the top of my file #include <sound/control.h> along with the other
+> includes I see in the sample files.
 
-> Hi all,
-> 
-> I am testing 1.0.13rc3 (lib/driver/utils) on PPC/2.6.18
-> 
-> Starting a soundapp like moc gives:
-> 
-> "relocation error: mocp: symbol snd_pcm_hw_params_get_channels_min,
-> version ALSA_0.9.0rc4 not defined in file libasound.so.2 with link
-> time reference"
-> 
-> Any hints?
+struct snd_ctl_elem_info is defined in <sound/asound.h> which is
+automatically included by control.h, so I guess the compiler got
+confused by some earlier error.
 
-What is output from commands 'nm /usr/lib/libasound.so.2 | grep 
-snd_pcm_hw_params_get_channels_min' and 'nm mocp | grep 
-snd_pcm_hw_params_get_channels_min'?
+Please show the exact output of the compiler.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
