@@ -1,41 +1,47 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: adding volume to raw-midi device
-Date: Wed, 27 Sep 2006 09:28:13 +0200
-Message-ID: <1159342093.30849.271951370@webmail.messagingengine.com>
-References: <DB99F0250CDF5F438C525F4695C888DC154511@exchange01-srv.pianodisc.com>
+From: Karl Grill <kgrill@chello.at>
+Subject: rme hammerfall dsp questions
+Date: Wed, 27 Sep 2006 10:13:46 +0200
+Message-ID: <451A32BA.8080202@chello.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <DB99F0250CDF5F438C525F4695C888DC154511@exchange01-srv.pianodisc.com>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "Pamela K. Clift" <pclift@pianodisc.com>, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, support@synthax.de
 List-Id: alsa-devel@alsa-project.org
 
-Pamela K. Clift wrote:
-> when I compile the file I get many errors including "warning:
-> struct snd_ctl_elem_info declared inside parameter list"   I have at
-> the top of my file #include <sound/control.h> along with the other
-> includes I see in the sample files.
-
-struct snd_ctl_elem_info is defined in <sound/asound.h> which is
-automatically included by control.h, so I guess the compiler got
-confused by some earlier error.
-
-Please show the exact output of the compiler.
-
-
-Regards,
-Clemens
+Hi all,
+I'm working on getting the hammerfall dsp rpm to work under alsa. 
+Unfortunately, I haven't experienced the proverbal supportiveness of RME 
+towards linux yet (my e-mails have gone unanswered for three weeks now),
+so I'm using a disassembly of the windows (2k) driver (to Paul: yes, maybe
+I'm insane). By now, I know the card detection routine, and it is a bit 
+different from the one that is used in the alsa driver (apart from the 
+fact that it has to deal with the additional case of the RPM), 
+apparently the definition of some of the bitfields in the control 
+register has changed. This, in turn, seems to be due to the new 
+firmware, and as there is no old firmware for the RPM (it is only 
+supported by the win2k driver, and the alsa driver seems to be modeled 
+after the w9 software), I'm afraid that adding RPM functionality means 
+that I will have to adapt the driver as a whole to the new firmware. But 
+maybe it's not so bad, so here's my question:
+Does anybody have any experience with using (or failing to use) any of 
+the dsp cards with the new firmware (or only with the new firmware for 
+the pci/cardbus interface of the multiface/digiface) under alsa? Or 
+would any of the digi/multiface users out there to be willing to try the 
+new firmware on their cards (I think there's little risk involved, 
+except that in the case of failure, you will most likely have to do a 
+cold boot or two).
+Regards
+kg
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
