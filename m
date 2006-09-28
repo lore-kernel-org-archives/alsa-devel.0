@@ -1,14 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Feature needed for EMU1820m driver
-Date: Thu, 28 Sep 2006 18:02:34 +0100
-Message-ID: <451C002A.6060706@superbug.co.uk>
-References: <451ABFD1.5030206@superbug.co.uk>	<Pine.LNX.4.61.0609272056350.9340@tm8103.perex-int.cz>
-	<s5hk63o2lt0.wl%tiwai@suse.de>
+Date: Thu, 28 Sep 2006 13:19:49 -0400
+Message-ID: <1159463990.7086.34.camel@mindpipe>
+References: <451ABFD1.5030206@superbug.co.uk>
+	<Pine.LNX.4.61.0609272056350.9340@tm8103.perex-int.cz>
+	<s5hk63o2lt0.wl%tiwai@suse.de>  <451C002A.6060706@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk63o2lt0.wl%tiwai@suse.de>
+In-Reply-To: <451C002A.6060706@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,59 +19,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Jaroslav Kysela <perex@suse.cz>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 27 Sep 2006 20:58:57 +0200 (CEST),
-> Jaroslav Kysela wrote:
->   
->> On Wed, 27 Sep 2006, James Courtier-Dutton wrote:
->>
->>     
->>> Hi,
->>>
->>> The E-MU 1820m consists of a PCI card with a connector on it.
->>> A cable then runs to an external box called the AudioDock with all the
->>> audio IO on it.
->>> The AudioDock is hot pluggable.
->>> The problem is that no interrupts occur if one connects the AudioDock.
->>> One would have to poll the device until one saw a certain bit being set.
->>> One would then know the AudioDock was there. The driver then needs to
->>> load some firmware into the AudioDock.
->>>
->>> My question is, what should I use to monitor for the plug/unplug of the
->>> AudioDock? I would expect some user land app could do the polling, but
->>> that might require some new ALSA api to support it.
->>>       
->> I would use a low resolution (probably ~1 sec) system timer to check this 
->> bit and request the additional firmware in tasklet or workqueue. In this 
->> case, the userland is not required to participate.
->>     
->
-> Agreed (tasklet cannot used for firmware loading, though).
->
-> The unplug would be more tough, I guess.  The driver has to accept
-> that the box can be unplugged at any time.
->
->
-> Takashi
->   
+On Thu, 2006-09-28 at 18:02 +0100, James Courtier-Dutton wrote:
+> 
+> Ok, that's and interesting problem them, because about the only thing
+> it 
+> has to do when plugged in is load the firmware.
+> 
+> So, if a tasklet it not useable for firmware loading, what should I
+> use? 
 
-Ok, that's and interesting problem them, because about the only thing it 
-has to do when plugged in is load the firmware.
+You must use a workqueue - it's the only bottom half mechanism that can
+sleep.
 
-So, if a tasklet it not useable for firmware loading, what should I use?
-
-It is a shame that the kernel does not have a global poll function, 
-where one justs adds their function to a queue with minimum and maximum 
-poll intervals, and a single kernel task then steps through each one 
-doing the poll. If the poll returns true, the kernel should then 
-schedule a function to be run. This would use less task switching.
-
-James
-
+Lee
 
 
 -------------------------------------------------------------------------
