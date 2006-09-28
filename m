@@ -1,18 +1,12 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [Patch] Memory Leak in sound/isa/es18xx.c
-Date: Thu, 28 Sep 2006 00:21:14 +0200
-Message-ID: <200609280021.14839.linux@rainbow-software.org>
-References: <1159371001.9125.2.camel@alice>
+From: "YongLi" <sdshliyong@163.com>
+Subject: Alsa driver data transfer problem: the MSB is changed
+	to 1
+Date: Thu, 28 Sep 2006 16:43:06 +0800
+Message-ID: <001901c6e2da$216e9140$9b01a8c0@LiYong>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailhub3.nextra.sk (smtp3.nextra.sk [195.168.1.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4051A152
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Sep 2006 00:20:33 +0200 (MEST)
-In-Reply-To: <1159371001.9125.2.camel@alice>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,38 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Eric Sesterhenn <snakebyte@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 27 September 2006 17:30, Eric Sesterhenn wrote:
-> hi,
->
-> your patch
-> http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdi
->ff;h=1c3985580445ef9225c1ea7714d6d963f7626eeb to add PnP BIOS support to the
-> es18xx driver, removed a kfree(cfg) in an error path, was this intentional,
-> because coverity flagged it as a memory leak, and i found nothing that
-> speaks against it. Attached is a patch to readd the kfree()
+Hello All,
 
-Yes, looks just like a stupid bug. Thanks.
+I am desiging a TI sound card driver on my ARM board using Linux 2.6.18.
 
-> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
->
-> --- linux-2.6.18-git7/sound/isa/es18xx.c.orig	2006-09-27 17:02:57.000000000
-> +0200 +++ linux-2.6.18-git7/sound/isa/es18xx.c	2006-09-27
-> 17:03:51.000000000 +0200 @@ -2154,6 +2154,7 @@ static int __devinit
-> snd_audiodrive_pnpc
->  	}
->  	/* Control port initialization */
->  	if (pnp_activate_dev(acard->devc) < 0) {
-> +		kfree(cfg);
->  		snd_printk(KERN_ERR PFX "PnP control configure failure (out of
-> resources?)\n"); return -EAGAIN;
->  	}
+The ARM SOC uses IIS and IIC to control this soud codec chip. 
 
--- 
-Ondrej Zary
+I found a stranger problem reltaed to the sound PCM data: The data transfered by DMA is different from the data I write to the sound device!
+
+If I perform this command:
+
+cat test.txt > /dev/dsp
+
+using the printk to trace the data flow, I found the snd_pcm_oss_write function write all the data in test.txt to 
+substream->runtime->oss.buffer. However, In the snd_pcm_plug_write_transfer function, the channel changes and the data is different:
+
+original data(text.txt):
+[00]=30
+[01]=31
+[02]=32
+[03]=33
+[04]=34
+[05]=35
+[06]=36
+[07]=37
+[08]=38
+[09]=39
+[10]=0a
+
+The modified data:
+[00]=00
+[01]=b0
+[02]=00
+[03]=b0
+[04]=00
+[05]=b1
+[06]=00
+[07]=b1
+[08]=00
+[09]=b2
+[10]=00
+[11]=b2
+[12]=00
+[13]=b3
+[14]=00
+[15]=b3
+
+It seems that all the 8th bit are changed to 1. I am not sure if it is correct.
+
+Thank you!
+
+Tyler Li
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
