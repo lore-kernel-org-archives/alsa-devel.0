@@ -1,13 +1,14 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] Reset file->f_op in snd_card_file_remove().
-	Take 2
-Date: Thu, 28 Sep 2006 22:28:02 +0200
-Message-ID: <200609282228.02611.annabellesgarden@yahoo.de>
+From: Eivind Tagseth <eivindt@multinet.no>
+Subject: Re: [Alsa-user] hda-intel on Thinkpad T60p fails to
+ load with unable to handle kernel paging request
+Date: Thu, 28 Sep 2006 23:15:03 +0200
+Message-ID: <20060928211449.GA11276@tagseth-trd.consultit.no>
+References: <efaq89$idd$1@sea.gmane.org> <451982DE.90102@multinet.no>
+	<s5h7izo2h9r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1645136275=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: <s5h7izo2h9r.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,72 +18,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Cc: mingo@elte.hu, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-It oopses with 2.6.18-rt4 + alsa-kernel-1.0.13rc3 now.
-I wrote before, 2.6.18-rt3 + alsa-driver-1.0.13rc3 would be ok,
-but its not. bug showed again reliably under memory-pressure.
-
-      Karsten
-
-===
-
-Reset file->f_op in snd_card_file_remove(). Take 2
+--===============1645136275==
+Content-type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="oC1+HKm2/end4ao3"
+Content-disposition: inline
 
 
-i think what happens here is:
+--oC1+HKm2/end4ao3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  us428control runs, kernel has allocated a struct file for /dev/hwC1D0.
+* Takashi Iwai <tiwai@suse.de> [2006-09-28 16:32:48 +0200]:
 
-  usb disconnect
+> > > Sep 26 09:09:10 [kernel] BUG: unable to handle kernel paging request =
+at
+> > > virtual address 07400041
+> >=20
+> > Scratch that, this happened while loading snd-timer, not snd-hda-intel!=
+=20
+> >   Sorry.
+>=20
+> Could you elaborate the step how to reproduce it?
 
-  snd_usb_usx2y calls snd_card_disconnect,
-  tells us428control to exit.
+Just by insmod-ing.
 
-  snd_card_disconnect replaces /dev/hwC1D0's file->f_op
-  with a kmalloc()ed version, that would only allow releases.
+> > I managed to get around that (either by adding seq-rtctimer-default, or=
+=20
+> > just by updating and rebuilding), and I can now get sound working again.
+>=20
+> And what was exaclty the workaround you did?
 
-  us428control starts exiting
+I'm afraid I did more than one thing:
 
-  __fput is called with struct file for /dev/hwC1D0.
+	o  updated from hg
+	o  added seq_rtctimer-default
+	o  rebuilt
 
-  snd_card_file_remove() is called, alsa notices struct file
-  for /dev/hwC1D0 is about to be closed.
-  with patch below, file->f_op would be set NULL now.
-
-  snd_usb_usx2y's free()s snd_card instance and /dev/hwC1D0's
-  file->f_ops, those that would only allow releases.
-
-  for reason I would like to know,
-  __fput is called again with struct file for /dev/hwC1D0
-  from us428control's do_exit().
-  __fput see's file->f_op is still set.
-  Without patch and under memory pressure, file->f_op can
-  point to anything now.
+It may very well have been the rebuilding, I had some problems before
+with my kernel version not being detected properly.  After updating,
+this was fixed in the configure script.  Maybe that was what fixed it...
 
 
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
 
-diff -pur ../alsa/1.0.13/alsa-driver-1.0.13rc3/alsa-kernel/core/init.c rt4-kw/sound/core/init.c
---- ../alsa/1.0.13/alsa-driver-1.0.13rc3/alsa-kernel/core/init.c	2006-09-25 15:33:19.000000000 +0200
-+++ rt4-kw/sound/core/init.c	2006-09-28 18:48:15.000000000 +0200
-@@ -707,6 +707,8 @@ int snd_card_file_remove(struct snd_card
- 	mfile = card->files;
- 	while (mfile) {
- 		if (mfile->file == file) {
-+			fops_put(file->f_op);
-+			file->f_op = NULL;
- 			if (pfile)
- 				pfile->next = mfile->next;
- 			else
+Eivind
+
+--oC1+HKm2/end4ao3
+Content-Type: application/x-pkcs7-signature
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIIIlgYJKoZIhvcNAQcCoIIIhzCCCIMCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3DQEHAaCC
+BhowggLTMIICPKADAgECAgMP9VkwDQYJKoZIhvcNAQEEBQAwYjELMAkGA1UEBhMCWkExJTAj
+BgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
+ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA1MTIwMTExNDA0MloXDTA2MTIwMTEx
+NDA0MlowRTEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEiMCAGCSqGSIb3DQEJ
+ARYTZWl2aW5kdEBtdWx0aW5ldC5ubzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+AMQ0HB/KSjQPTYc2kqUoHQvuXUtuUmivxZ4sOixOYNdNxqG9piXqUtkKmfHzf/0fHMcb1YaQ
+/5kcgrUsBZt6ULILGcCZNsiCziG2NH3qy1vulrTYaw3VNHCdFGCwcg802PCYR+fDWiSDi12j
+VO5iWRbJjE71MFYt3joJB/xUyj/t5F8KcVLMw6opFPnxaQmJdUp9WHw+630ExzHYhfCSyLI2
+F0a+k9bZVa6wBnJwuBoSBWy/VnyBBFKBc2b2IKMA5Q65D0XkZnutF+ewq9v+wh2c0THkSjp6
+I6XavQCaISnN19FBd5zTF4wV5KSHNRpSF/RrPawb8ZMFlw0LRMymsckCAwEAAaMwMC4wHgYD
+VR0RBBcwFYETZWl2aW5kdEBtdWx0aW5ldC5ubzAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEB
+BAUAA4GBAK7PUtiPkVQqOxum9MzrmMxY5AKli+c3RrkrCdq9tc7rUJo7KUcLN+iCgAb5iy3D
+601do0L+5cc6/U0vPvRjc1gNJEegZaXfgcb/CPKPxDkzUZQpOmcxD5qecuSrYyjOIRnefROO
+CY8e0Z+BPzyoiAXbKHsTuo1Rxw6nF1PAvhSdMIIDPzCCAqigAwIBAgIBDTANBgkqhkiG9w0B
+AQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJ
+Q2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMfQ2VydGlm
+aWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFsIEZy
+ZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUuY29t
+MB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMCWkExJTAjBgNV
+BAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJz
+b25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDE
+pjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAKMNcCY1osiRVw
+jt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTXp6a7n2XRxSpU
+hQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYBAf8CAQAwQwYD
+VR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBlcnNvbmFsRnJl
+ZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2
+YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2asZw9/r6y+wheh
+Q5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSeJVCUYsfbJ3FX
+JY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHTHUb/XV9lTzGC
+AkQwggJAAgEBMGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5n
+IChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5n
+IENBAgMP9VkwCQYFKw4DAhoFAKCBsTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqG
+SIb3DQEJBTEPFw0wNjA5MjgyMTE1MDNaMCMGCSqGSIb3DQEJBDEWBBT6PxaZglNwmEsc+pOg
+rYDcalcTzjBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
+BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDANBgkqhkiG9w0BAQEFAASC
+AQBK5VNmfyXQwUd85VfsF3aXIey/Iu+hXR+JPef+0LfIwyGBZ70BAj4U3I8AYgqkL8uJ7Jqf
+DUMfpw1fD1R1WtaaTmnJSKi6blH6mKp7doYhP6jTY3PxPwoY5Xz89BTPNimRPR46d12a/yKX
+x7S8w2baCYHTkmLpBPbjfSNxHukk3KncY0t3D19YFugju+mzQyeWHz/uclFLir/o0AZK9CGs
+mwNNeBqInv1NTcG3HRG2PhhliAx3vDMnA5SijVWfjvOzKbQIYfZqJpWpTQWM4hAJx3KEN8lq
+T4Tkv6WZQr1yXTA7B3CbYr3jAObFKaBxsnr01uQzhc9rRvfbskaRqbLs
+
+--oC1+HKm2/end4ao3--
+
+
+--===============1645136275==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1645136275==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1645136275==--
