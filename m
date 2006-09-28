@@ -1,17 +1,13 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: [alsa-cvslog] ROLLBACK! alsa-kernel: hda-intel -
-	New pci id for Nvidia MCP61
-Date: Thu, 28 Sep 2006 12:49:36 +0200
-Message-ID: <m2slicl0zj.fsf@vador.mandriva.com>
-References: <ALOGGER1159439233.06@alsa-project.org>
-	<m2wt7ol1r5.fsf@vador.mandriva.com>
-	<Pine.LNX.4.61.0609281235400.9381@tm8103.perex-int.cz>
+From: karsten wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH] Reset file->f_op in snd_card_file_remove()
+Date: Thu, 28 Sep 2006 13:39:06 +0200 (CEST)
+Message-ID: <20060928113906.20550.qmail@web26504.mail.ukl.yahoo.com>
+References: <s5h4puspal8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0609281235400.9381@tm8103.perex-int.cz> (Jaroslav
-	Kysela's message of "Thu, 28 Sep 2006 12:46:50 +0200 (CEST)")
+In-Reply-To: <s5h4puspal8.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,33 +17,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: mingo@elte.hu, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+--- Takashi Iwai <tiwai@suse.de> schrieb:
 
-> > why isn't there any diff inline like for other commits?
-> 
-> Sorry, it was not clear what 'ROLLBACK' in the subject means.
-> 
-> I've put this comment to rollback e-mails:
-> 
-> =====
-> The rollback was triggered. The repository was rolled back to
-> the changeset number bellow. All patches on top of this changeset
-> were lost.
-> =====
-> 
-> So, you already received patch #4551.
+> At Wed, 27 Sep 2006 21:27:51 +0200,
+> Karsten Wiese wrote:
+> > =
 
-ok.
-maybe should we include the reversed diff anyway?
-it's more user-friendly for other developers or for lazy readers like
-me.
+> > Hi
+> > =
+
+> > This patch helps prevent an oops on 2.6.18-rt3,
+> > when my usb usx2y soundcard disconnects.
+> > Physically disconnects or "rmmod uhci_hc" both oops 1in7.
+> > =
+
+> > With this patch still no oops after > 1000 disconnects.
+> > =
+
+> > Please apply/comment.
+> > =
+
+> >       thanks,
+> >       Karsten
+> > =
+
+> > =3D=3D=3D
+> > =
+
+> > Reset file->f_op in snd_card_file_remove()
+> > =
+
+> > When passing here in response to an usb disconnect,
+> > file->f_op has been replaced with a kmalloc()ed version,
+> > that would only allow releases.
+> > =
+
+> > It will be free()ed later on in snd_card_free().
+> > Here it happened sometimes, that the free()ed, not NULLed file->f_op
+> > caused an oops in module_put() called by fops_put() still later on.
+> > =
+
+> > Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+> =
+
+> snd_card_file_remove() is not a right place to do that, IMO.
+> =
+
+you are right, patch is wrong: it causes snd_hwdep's use count corruption.
+
+> Could you check whether this problem still happens on post-2.6.18?
+> There are a lot of fixes in this area after 2.6.18.
+> =
+
+i'm now running 2.6.18-rt3 + alsa-driver-1.0.13rc1 and problem seams to be =
+gone.
+
+      Karsten
+
+
+	=
+
+
+	=
+
+		=
+
+___________________________________________________________ =
+
+Der fr=FChe Vogel f=E4ngt den Wurm. Hier gelangen Sie zum neuen Yahoo! Mail=
+: http://mail.yahoo.de
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
