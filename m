@@ -1,15 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Default soundcard (UDEV?)
-Date: Thu, 28 Sep 2006 17:06:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0609281654230.9381@tm8103.perex-int.cz>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Default soundcard (UDEV?)
+Date: Thu, 28 Sep 2006 11:15:45 -0400
+Message-ID: <1159456546.7086.29.camel@mindpipe>
 References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
 	<s5hhcys2kr2.wl%tiwai@suse.de> <1159454460.7086.23.camel@mindpipe>
 	<s5h64f82gm8.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0609281654230.9381@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h64f82gm8.wl%tiwai@suse.de>
+In-Reply-To: <Pine.LNX.4.61.0609281654230.9381@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,40 +20,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa Developement <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa Developement <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 28 Sep 2006, Takashi Iwai wrote:
+On Thu, 2006-09-28 at 17:06 +0200, Jaroslav Kysela wrote:
+> Opinions (except that we should learn users to use "logical 
+> identification" not card numbers)? 
 
-> BTW, for the secondary card, you can use like the style like
-> "default:1".  This will choose the default PCM of the secondary card.
+ALSA device naming is a constant FAQ.  There's no document anywhere that
+explains the syntax or even basic things like 'apps should always use
+"default" device', '"default:x" can be used to address the second card',
+that cards can be addressed by name, etc.  Look at how many apps only
+enumerate the hw:x devices.
 
-Note that perhaps we should change what the default card means. In the 
-sense of udev mechanism, devices should be detected and enumerated in 
-system. We have actually no way (and it will be very problematic) to 
-change the soundcard number in the ALSA driver. Fortunately, we have extra 
-card id (which is not very much used) which can be perfectly used for this 
-purpose and it can be also changed at runtime (so udev rules can reassing 
-for example the default card).
+One paragraph of documentation on device naming could greatly reduce
+user confusion and improve the level of ALSA support in applications.
 
-I would propose that "default" will refer always to a card with id 
-"default" (and if no card will have this id, first soundcard will be used 
-as now). At driver initialization, first card becomes as "default", then 
-user or udev can rename it to something else.
+I think a great start would be to write up Takashi-san's answers to
+Daniel Yek in the recent thread.
 
-Also, extra udev support should be added to match devices from longname or 
-shortname (see control API and SYSFS{}).
+Lee
 
-Opinions (except that we should learn users to use "logical 
-identification" not card numbers)?
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
