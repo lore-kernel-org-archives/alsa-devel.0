@@ -1,129 +1,23 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: [PATCH] Reset file->f_op in
-	snd_card_file_remove(). Take 2
-Date: Fri, 29 Sep 2006 14:29:20 +0200
-Message-ID: <200609291429.21183.annabellesgarden@yahoo.de>
-References: <200609282228.02611.annabellesgarden@yahoo.de>
-	<s5hmz8j3q59.wl%tiwai@suse.de>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [PATCH] Reset file->f_op in snd_card_file_remove(). Take 2
+Date: Fri, 29 Sep 2006 14:26:16 +0200
+Message-ID: <20060929122616.GA28111@elte.hu>
+References: <200609282228.02611.annabellesgarden@yahoo.de> <s5hmz8j3q59.wl%tiwai@suse.de> <200609291429.21183.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hmz8j3q59.wl%tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964860AbWI2Me0@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: mingo@elte.hu, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+In-Reply-To: <200609291429.21183.annabellesgarden@yahoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 29. September 2006 12:48 schrieb Takashi Iwai:
-> At Thu, 28 Sep 2006 22:28:02 +0200,
-> Karsten Wiese wrote:
-> > 
-> > Hi
-> > 
-> > It oopses with 2.6.18-rt4 + alsa-kernel-1.0.13rc3 now.
-> > I wrote before, 2.6.18-rt3 + alsa-driver-1.0.13rc3 would be ok,
-> > but its not. bug showed again reliably under memory-pressure.
-> > 
-> >       Karsten
-> > 
-> > ===
-> > 
-> > Reset file->f_op in snd_card_file_remove(). Take 2
-> > 
-> > 
-> > i think what happens here is:
-> > 
-> >   us428control runs, kernel has allocated a struct file for /dev/hwC1D0.
-> > 
-> >   usb disconnect
-> > 
-> >   snd_usb_usx2y calls snd_card_disconnect,
-> >   tells us428control to exit.
-> > 
-> >   snd_card_disconnect replaces /dev/hwC1D0's file->f_op
-> >   with a kmalloc()ed version, that would only allow releases.
-> > 
-> >   us428control starts exiting
-> > 
-> >   __fput is called with struct file for /dev/hwC1D0.
-> > 
-> >   snd_card_file_remove() is called, alsa notices struct file
-> >   for /dev/hwC1D0 is about to be closed.
-> >   with patch below, file->f_op would be set NULL now.
-> > 
-> >   snd_usb_usx2y's free()s snd_card instance and /dev/hwC1D0's
-> >   file->f_ops, those that would only allow releases.
-> > 
-> >   for reason I would like to know,
-> >   __fput is called again with struct file for /dev/hwC1D0
-> >   from us428control's do_exit().
-> >   __fput see's file->f_op is still set.
-> >   Without patch and under memory pressure, file->f_op can
-> >   point to anything now.
-> > 
-> > 
-> > Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
-> 
-> I guess this bug is fixed by Florin's patch below, juding from your
-> explanation.  Could you check it?
-> 
-Florin's patch fixes it.
 
-This one for immediate consumation by mainline, mm, rt,
-and the stable teams, hmm?
+* Karsten Wiese <annabellesgarden@yahoo.de> wrote:
 
-      Karsten
-> 
-> Takashi
-> 
-> Subject: [PATCH] Dereference after free in snd_hwdep_release()
-> From: Florin Malita <fmalita@gmail.com>
-> Date: Thu, 28 Sep 2006 19:45:50 -0400
-> 
-> snd_card_file_remove() may free hw->card so we can't dereference
-> hw->card->module after that.
-> 
-> Coverity ID 1420.
-> 
-> Signed-off-by: Florin Malita <fmalita@gmail.com>
-> ---
-> 
-> diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-> index 9aa9d94..46b4768 100644
-> --- a/sound/core/hwdep.c
-> +++ b/sound/core/hwdep.c
-> @@ -158,6 +158,7 @@ static int snd_hwdep_release(struct inod
->  {
->  	int err = -ENXIO;
->  	struct snd_hwdep *hw = file->private_data;
-> +	struct module *mod = hw->card->module;
->  	mutex_lock(&hw->open_mutex);
->  	if (hw->ops.release) {
->  		err = hw->ops.release(hw, file);
-> @@ -167,7 +168,7 @@ static int snd_hwdep_release(struct inod
->  		hw->used--;
->  	snd_card_file_remove(hw->card, file);
->  	mutex_unlock(&hw->open_mutex);
-> -	module_put(hw->card->module);
-> +	module_put(mod);
->  	return err;
->  }
->  
-> 
-> 
+> Florin's patch fixes it.
 
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+great - i've applied Florin's patch to -rt.
+
+	Ingo
