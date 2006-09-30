@@ -1,15 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Driver design question
-Date: Fri, 29 Sep 2006 22:03:09 -0400
-Message-ID: <1159581790.7086.141.camel@mindpipe>
-References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
-	<1158331680.7948.156.camel@mindpipe> <s5h64fjj3aj.wl%tiwai@suse.de>
-	<1159214063.2899.127.camel@mindpipe>  <s5hhcytp6sy.wl%tiwai@suse.de>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [alsa-announce] ALSA 1.0.13 final
+Date: Sat, 30 Sep 2006 10:54:24 +0200
+Message-ID: <20060930085424.GA2752@aragorn.home.lxtec.de>
+References: <Pine.LNX.4.61.0609291932370.9474@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0548095030=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hhcytp6sy.wl%tiwai@suse.de>
+Received: from h01.hostsharing.net (h01.hostsharing.net [212.42.230.152])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB01B15D
+	for <alsa-devel@alsa-project.org>;
+	Sat, 30 Sep 2006 10:54:37 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0609291932370.9474@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,65 +20,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-09-27 at 19:18 +0200, Takashi Iwai wrote:
-> At Mon, 25 Sep 2006 15:54:22 -0400,
-> Lee Revell wrote:
-> > Here is the code - can you see anything wrong with it?  It's derived
-> > from the ALSA dummy driver and still uses the dummy driver's hardware
-> > pointer and timer scheme for calling pcm_period_elapsed() - could this
-> > be the problem?  My attempts to track the hardware pointer more
-> > accurately and call pcm_period_elapsed from the copy callback have not
-> > been successful.
-> > 
-> > Most of the work is done in the workqueue dream_handle_pcm_queue() and
-> > the copy callback.
-> 
-> Well, when you have an intermediate buffer (allocated via
-> snd_pcm_lib_malloc(), you don't need copy and silent callbacks.  The
-> data is written on the intermediate buffer.  Then, the workq copies
-> the data again from this buffer to the hardware in the background.
-> 
-> As I mentioned, the helpers in pcm-indirect.h might make things eaiser
-> for such an implementation.  In your case, a pseudo code would look
-> like below.
 
-OK, I've implemented this, but it's still not quite working.
+--===============0548095030==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
+Content-Disposition: inline
 
-I've noticed that with the PCM indirect implementation, the pointer
-callback invokes the ack callback every time:
 
-pcm-indirect.h:
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- 90  */
- 91 static inline snd_pcm_uframes_t
- 92 snd_pcm_indirect_playback_pointer(snd_pcm_substream_t *substream,
- 93                                   snd_pcm_indirect_t *rec, unsigned int ptr)
- 94 {
+On Fri, 29 Sep 2006 the mental interface of
+Jaroslav Kysela told:
 
-[ ... ]
+> Hello all,
+>=20
+> 	ALSA packages 1.0.13 final are available for download. Only=20
+> the alsa-oss package is missing (no changes from 1.0.12).
 
-103         if (substream->ops->ack)
-104                 substream->ops->ack(substream);
+I can not find the packages?
 
-But, this cannot work with our hardware, if the ack callback always
-transfers 0x2000 words from the hardware, because the pointer callback
-is invoked many times per period.
+Elimar
 
-What are the exact rules/semantics for when the ack callback is invoked?
 
-Also, how should I know when to invoke snd_pcm_period_elapsed?  It only
-seems to work if I call it from a timer - if I move it to the ack or
-copy callback, playback hangs after the first chunk of audio is played.
+--=20
+  Excellent day for drinking heavily.=20
+  Spike the office water cooler;-)
 
-Lee
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFHjDA3Ig8bsVPf7ARAjBAAKC885Jp3kSpHSwLIlEMJj9D+0vfbwCfVGOb
+Kpqo/RNvyLLTSYSHNFRB4GE=
+=Bb5G
+-----END PGP SIGNATURE-----
+
+--M9NhX3UHpAaciwkO--
+
+
+--===============0548095030==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0548095030==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0548095030==--
