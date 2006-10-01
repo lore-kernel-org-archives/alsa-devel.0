@@ -1,8 +1,7 @@
-From: "Jaap Struyk" <japie@deserver.nl>
-Subject: Re: problems with via82xx alsa part
-Date: Sun, 1 Oct 2006 16:58:22 +0000 (UTC)
-Message-ID: <efos3e$g63$1@sea.gmane.org>
-References: <ef3pll$kng$1@sea.gmane.org>
+From: Sebastian Wasilewski <Sebastian.Wasilewski@fizyka.umk.pl>
+Subject: Intel HDA and headphones problem
+Date: Sun, 01 Oct 2006 19:02:38 +0100
+Message-ID: <452002BE.3010204@fizyka.umk.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,20 +18,29 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> ALSA lib pcm_direct.c:985:(snd_pcm_direct_initialize_slave) unable to install hw params
-> ALSA lib pcm_dmix.c:876:(snd_pcm_dmix_open) unable to initialize slave
-> aplay: main:550: audio open error: Ongepaste ioctl voor apparaat
-> 
-> I'am using alsa-*-1.0.12 and kernel 2.6.18, I have two similar systems
+Dear Alsa Developers,
 
-I yust upgraded to alsa-1.0.13 (libs, tools, oss etc.) tryed another card
-(ess1370) tryed another kernel but whatever I try still got the same
-problems.
-It's obvious it has something to do with that machine in particular but
-what?
-Is there someone who can tell me what I'am missing here here?
--- 
-Greeting Japie
+I am not sure if I am writting to correct mailing list. If not, please 
+let me know.
+I have Lenovo 3000 N100 notebook with Intel HDA inside (Analog Devices 
+AD1986A). As far as I know from the Google there is a problem with 
+support headphones jack of that computer by Alsa drivers.
+The problem exists when headphones jack is plugged in. The "onboard" 
+speakers does not mute, so there is impossible to listen music only from 
+the headphones jack. Muting "External Amplifier" in alsamixer muting 
+onboard speakers but also causing strong sound's distortions on 
+headphones output.
+It is probably only Linux driver problem because in Windows XP 
+everything works well.
+
+Is there any possibility that this bug will be fixed?
+
+Thanks for any replies,
+Sebastian
+
+If it possible please send a CC of any replies to me because I am not a 
+member of that list.
+
 
 
 -------------------------------------------------------------------------
