@@ -1,11 +1,17 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GU2D2-0001l5-97 delayed 10 hours
-Date: Sun, 01 Oct 2006 18:43:04 -0700
-Message-ID: <E1GUCpk-0007a5-Li@externalmx-1.sourceforge.net>
+From: Tobias Klauser <tklauser@distanz.ch>
+Subject: [PATCH] sound/usb/usbaudio: Handle return value of
+	usb_register()
+Date: Mon, 2 Oct 2006 12:52:59 +0200
+Message-ID: <20061002105259.GA12070@distanz.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from sym.noone.org (symlink.to.noone.org [85.10.207.172])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D73CC21C
+	for <alsa-devel@alsa-project.org>;
+	Mon,  2 Oct 2006 12:53:05 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +21,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: kernel-janitors@lists.osdl.org
+Cc: akpm@osdl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+Handle the return value of usb_register() in the module_init function.
 
-The message identifier is:     1GU2D2-0001l5-97
-The date of the message is:    Sun, 01 Oct 2006 15:30:26 +0200
-The subject of the message is: sir, said, confusedly, I guess not a colony, the
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-The address to which the message has not yet been delivered is:
+---
+ sound/usb/usbaudio.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+index a42acf6..191c811 100644
+--- a/sound/usb/usbaudio.c
++++ b/sound/usb/usbaudio.c
+@@ -3576,8 +3576,7 @@ static int __init snd_usb_audio_init(voi
+ 		printk(KERN_WARNING "invalid nrpacks value.\n");
+ 		return -EINVAL;
+ 	}
+-	usb_register(&usb_audio_driver);
+-	return 0;
++	return usb_register(&usb_audio_driver);
+ }
+ 
+ 
+-- 
+1.4.2
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
