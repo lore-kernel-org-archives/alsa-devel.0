@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC AT91RM92000 audio DMA
-Date: Mon, 02 Oct 2006 17:17:02 +0100
-Message-ID: <1159805822.2382.117.camel@localhost.localdomain>
+Subject: [PATCH 2/4] ASoC AT91RM92000 I2S support
+Date: Mon, 02 Oct 2006 17:17:08 +0100
+Message-ID: <1159805828.2382.119.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-V2G+EVDhQCPc34scZzVn"
+Content-Type: multipart/mixed; boundary="=-DKAW6jU8t0c9bncXATzL"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,58 +18,60 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-V2G+EVDhQCPc34scZzVn
+--=-DKAW6jU8t0c9bncXATzL
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds ASoC audio DMA support to the Atmel AT91RM9200 CPU.
+This patch adds I2S support to the Atmel AT91RM9200 CPU.
 
 Features:-
 
- o Playback/Capture supported.
- o 16 Bit data size.
+o Playback/Capture supported.
+o 16 Bit data size.
+o 8k - 48k sample rates.
+o ssc0, ssc1 and ssc2 supported as I2S ports.
 
 Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
---=-V2G+EVDhQCPc34scZzVn
-Content-Disposition: attachment; filename=asoc-at91-dma.patch
-Content-Type: text/x-patch; name=asoc-at91-dma.patch; charset=UTF-8
+--=-DKAW6jU8t0c9bncXATzL
+Content-Disposition: attachment; filename=asoc-at91-i2s.patch
+Content-Type: text/x-patch; name=asoc-at91-i2s.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/at91/at91rm9200-pcm.c
+Index: alsa-kernel/soc/at91/at91rm9200-i2s.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/at91/at91rm9200-pcm.c
-@@ -0,0 +1,428 @@
++++ alsa-kernel/soc/at91/at91rm9200-i2s.c
+@@ -0,0 +1,688 @@
 +/*
-+ * at91rm9200-pcm.c -- ALSA PCM interface for the Atmel AT91RM9200 chip.
++ * at91rm9200-i2s.c  --  ALSA Soc Audio Layer Platform driver and DMA engine
 + *
-+ * Author:	Frank Mandarino <fmandarino@endrelia.com>
-+ *		Endrelia Technologies Inc.
-+ * Created:	Mar 3, 2006
++ * Author: Frank Mandarino <fmandarino@endrelia.com>
++ *         Endrelia Technologies Inc.
 + *
-+ * Based on pxa2xx-pcm.c by:
++ * Based on pxa2xx Platform drivers by
++ * Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 + *
-+ * Author:	Nicolas Pitre
-+ * Created:	Nov 30, 2004
-+ * Copyright:	(C) 2004 MontaVista Software, Inc.
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ *  Revision history
++ *     3rd Mar 2006   Initial version.
 + */
 +
-+#include <linux/module.h>
 +#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/dma-mapping.h>
-+
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
++#include <sound/initval.h>
 +#include <sound/soc.h>
 +
 +#include <asm/arch/at91rm9200.h>
@@ -80,478 +82,658 @@ Index: alsa-kernel/soc/at91/at91rm9200-pcm.c
 +#include "at91rm9200-pcm.h"
 +
 +#if 0
-+#define	DBG(x...)	printk(KERN_INFO "at91rm9200-pcm: " x)
++#define	DBG(x...)	printk(KERN_DEBUG "at91rm9200-i2s:" x)
 +#else
 +#define	DBG(x...)
 +#endif
 +
-+static const snd_pcm_hardware_t at91rm9200_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_PAUSE,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= 8192,
-+	.periods_min		= 2,
-+	.periods_max		= 1024,
-+	.buffer_bytes_max	= 32 * 1024,
++#define AT91RM9200_I2S_DAIFMT \
++	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_NB_NF)
++
++#define AT91RM9200_I2S_DIR \
++	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++
++/* priv is (SSC_CMR.DIV << 16 | SSC_TCMR.PERIOD ) */
++static struct snd_soc_dai_mode at91rm9200_i2s[] = {
++
++	/* 8k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
++	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_8000, AT91RM9200_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 1500, SND_SOC_FSBD(10), (25 << 16 | 74) },
++
++	/* 16k: BCLK = (MCLK/3) ~= (60MHz/14) = 4.285714MHz */
++	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_16000, AT91RM9200_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 750, SND_SOC_FSBD(3) , (7 << 16 | 133) },
++
++	/* 24k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
++	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_22050, AT91RM9200_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 500, SND_SOC_FSBD(10), (25 << 16 | 24) },
++
++	/* 48kHz: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
++	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_48000, AT91RM9200_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 250, SND_SOC_FSBD(5), (13 << 16 | 23) },
 +};
 +
-+struct at91rm9200_runtime_data {
-+	at91rm9200_pcm_dma_params_t *params;
-+	dma_addr_t dma_buffer;			/* physical address of dma buffer */
-+	dma_addr_t dma_buffer_end;		/* first address beyond DMA buffer */
-+	size_t period_size;
-+	dma_addr_t period_ptr;			/* physical address of next period */
-+	u32 pdc_xpr_save;			/* PDC register save */
-+	u32 pdc_xcr_save;
-+	u32 pdc_xnpr_save;
-+	u32 pdc_xncr_save;
++
++/*
++ * SSC registers required by the PCM DMA engine.
++ */
++static struct at91rm9200_ssc_regs ssc_reg[3] = {
++	{
++	.cr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_SSC_CR),
++	.ier	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_SSC_IER),
++	.idr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_SSC_IDR),
++	},
++	{
++	.cr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_SSC_CR),
++	.ier	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_SSC_IER),
++	.idr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_SSC_IDR),
++	},
++	{
++	.cr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_SSC_CR),
++	.ier	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_SSC_IER),
++	.idr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_SSC_IDR),
++	},
 +};
 +
-+static void at91rm9200_pcm_dma_irq(u32 ssc_sr,
-+	struct snd_pcm_substream *substream)
++static struct at91rm9200_pdc_regs pdc_tx_reg[3] = {
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_TPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_TCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_TNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_TNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_PTCR),
++	},
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_TPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_TCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_TNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_TNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_PTCR),
++	},
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_TPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_TCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_TNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_TNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_PTCR),
++	},
++};
++
++static struct at91rm9200_pdc_regs pdc_rx_reg[3] = {
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_RPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_RCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_RNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_RNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC0 + AT91_PDC_PTCR),
++	},
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_RPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_RCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_RNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_RNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC1 + AT91_PDC_PTCR),
++	},
++	{
++	.xpr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_RPR),
++	.xcr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_RCR),
++	.xnpr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_RNPR),
++	.xncr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_RNCR),
++	.ptcr	= (void __iomem *) (AT91_VA_BASE_SSC2 + AT91_PDC_PTCR),
++	},
++};
++
++/*
++ * SSC & PDC status bits for transmit and receive.
++ */
++static struct at91rm9200_ssc_mask ssc_tx_mask = {
++	.ssc_enable	= AT91_SSC_TXEN,
++	.ssc_disable	= AT91_SSC_TXDIS,
++	.ssc_endx	= AT91_SSC_ENDTX,
++	.ssc_endbuf	= AT91_SSC_TXBUFE,
++	.pdc_enable	= AT91_PDC_TXTEN,
++	.pdc_disable	= AT91_PDC_TXTDIS,
++};
++
++static struct at91rm9200_ssc_mask ssc_rx_mask = {
++	.ssc_enable	= AT91_SSC_RXEN,
++	.ssc_disable	= AT91_SSC_RXDIS,
++	.ssc_endx	= AT91_SSC_ENDRX,
++	.ssc_endbuf	= AT91_SSC_RXBUFF,
++	.pdc_enable	= AT91_PDC_RXTEN,
++	.pdc_disable	= AT91_PDC_RXTDIS,
++};
++
++/*
++ * A MUTEX is used to protect an SSC initialzed flag which allows
++ * the substream hw_params() call to initialize the SSC only if
++ * there are no other substreams open.  If there are other
++ * substreams open, the hw_param() call can only check that
++ * it is using the same format and rate.
++ */
++static DECLARE_MUTEX(ssc0_mutex);
++static DECLARE_MUTEX(ssc1_mutex);
++static DECLARE_MUTEX(ssc2_mutex);
++
++/*
++ * DMA parameters.
++ */
++static at91rm9200_pcm_dma_params_t ssc_dma_params[3][2] = {
++	{{
++	.name		= "SSC0/I2S PCM Stereo out",
++	.ssc		= &ssc_reg[0],
++	.pdc		= &pdc_tx_reg[0],
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC0/I2S PCM Stereo in",
++	.ssc		= &ssc_reg[0],
++	.pdc		= &pdc_rx_reg[0],
++	.mask		= &ssc_rx_mask,
++	}},
++	{{
++	.name		= "SSC1/I2S PCM Stereo out",
++	.ssc		= &ssc_reg[1],
++	.pdc		= &pdc_tx_reg[1],
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC1/I2S PCM Stereo in",
++	.ssc		= &ssc_reg[1],
++	.pdc		= &pdc_rx_reg[1],
++	.mask		= &ssc_rx_mask,
++	}},
++	{{
++	.name		= "SSC2/I2S PCM Stereo out",
++	.ssc		= &ssc_reg[2],
++	.pdc		= &pdc_tx_reg[2],
++	.mask		= &ssc_tx_mask,
++	},
++	{
++	.name		= "SSC1/I2S PCM Stereo in",
++	.ssc		= &ssc_reg[2],
++	.pdc		= &pdc_rx_reg[2],
++	.mask		= &ssc_rx_mask,
++	}},
++};
++
++
++struct at91rm9200_ssc_state {
++	u32	ssc_cmr;
++	u32	ssc_rcmr;
++	u32	ssc_rfmr;
++	u32	ssc_tcmr;
++	u32	ssc_tfmr;
++	u32	ssc_sr;
++	u32	ssc_imr;
++};
++
++static struct at91rm9200_ssc_info {
++	char		*name;
++	void __iomem    *ssc_base;
++	u32		pid;
++	spinlock_t 	lock;		/* lock for dir_mask */
++	int		dir_mask;	/* 0=unused, 1=playback, 2=capture */
++	struct semaphore *mutex;
++	int		initialized;
++	int		pcmfmt;
++	int		rate;
++	at91rm9200_pcm_dma_params_t *dma_params[2];
++	struct at91rm9200_ssc_state ssc_state;
++
++} ssc_info[3] = {
++	{
++	.name		= "ssc0",
++	.ssc_base	= (void __iomem *) AT91_VA_BASE_SSC0,
++	.pid		= AT91_ID_SSC0,
++	.lock		= SPIN_LOCK_UNLOCKED,
++	.dir_mask	= 0,
++	.mutex		= &ssc0_mutex,
++	.initialized	= 0,
++	},
++	{
++	.name		= "ssc1",
++	.ssc_base	= (void __iomem *) AT91_VA_BASE_SSC1,
++	.pid		= AT91_ID_SSC1,
++	.lock		= SPIN_LOCK_UNLOCKED,
++	.dir_mask	= 0,
++	.mutex		= &ssc1_mutex,
++	.initialized	= 0,
++	},
++	{
++	.name		= "ssc2",
++	.ssc_base	= (void __iomem *) AT91_VA_BASE_SSC2,
++	.pid		= AT91_ID_SSC2,
++	.lock		= SPIN_LOCK_UNLOCKED,
++	.dir_mask	= 0,
++	.mutex		= &ssc2_mutex,
++	.initialized	= 0,
++	},
++};
++
++
++static int at91rm9200_i2s_interrupt(int irq, void *dev_id,
++	struct pt_regs *regs)
 +{
-+	struct at91rm9200_runtime_data *prtd = substream->runtime->private_data;
-+	at91rm9200_pcm_dma_params_t *params = prtd->params;
-+	static int count = 0;
++	struct at91rm9200_ssc_info *ssc_p = dev_id;
++	at91rm9200_pcm_dma_params_t *dma_params;
++	u32 ssc_sr;
++	int i;
 +
-+	count++;
++	ssc_sr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_SR)
++			& at91_ssc_read(ssc_p->ssc_base + AT91_SSC_IMR);
 +
-+	if (ssc_sr & params->mask->ssc_endbuf) {
++	/*
++	 * Loop through the substreams attached to this SSC.  If
++	 * a DMA-related interrupt occurred on that substream, call
++	 * the DMA interrupt handler function, if one has been
++	 * registered in the dma_params structure by the PCM driver.
++	 */
++	for (i = 0; i < ARRAY_SIZE(ssc_p->dma_params); i++) {
++		dma_params = ssc_p->dma_params[i];
 +
-+		printk(KERN_WARNING
-+			"at91rm9200-pcm: buffer %s on %s (SSC_SR=%#x, count=%d)\n",
-+			substream->stream == SNDRV_PCM_STREAM_PLAYBACK
-+				? "underrun" : "overrun",
-+			params->name, ssc_sr, count);
++		if (dma_params != NULL && dma_params->dma_intr_handler != NULL &&
++			(ssc_sr &
++			(dma_params->mask->ssc_endx | dma_params->mask->ssc_endbuf)))
 +
-+		/* re-start the PDC */
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_disable);
-+
-+		prtd->period_ptr += prtd->period_size;
-+		if (prtd->period_ptr >= prtd->dma_buffer_end) {
-+			prtd->period_ptr = prtd->dma_buffer;
-+		}
-+
-+		at91_ssc_write(params->pdc->xpr, prtd->period_ptr);
-+		at91_ssc_write(params->pdc->xcr,
-+				prtd->period_size / params->pdc_xfer_size);
-+
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_enable);
++			dma_params->dma_intr_handler(ssc_sr, dma_params->substream);
 +	}
 +
-+	if (ssc_sr & params->mask->ssc_endx) {
-+
-+		/* Load the PDC next pointer and counter registers */
-+		prtd->period_ptr += prtd->period_size;
-+		if (prtd->period_ptr >= prtd->dma_buffer_end) {
-+			prtd->period_ptr = prtd->dma_buffer;
-+		}
-+		at91_ssc_write(params->pdc->xnpr, prtd->period_ptr);
-+		at91_ssc_write(params->pdc->xncr,
-+				prtd->period_size / params->pdc_xfer_size);
-+	}
-+
-+	snd_pcm_period_elapsed(substream);
++	return IRQ_HANDLED;
 +}
 +
-+static int at91rm9200_pcm_hw_params(struct snd_pcm_substream *substream,
++static int at91rm9200_i2s_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct at91rm9200_ssc_info *ssc_p = &ssc_info[rtd->cpu_dai->id];
++	int dir_mask;
++
++	DBG("i2s_startup: SSC_SR=0x%08lx\n",
++			at91_ssc_read(ssc_p->ssc_base + AT91_SSC_SR));
++	dir_mask = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0x1 : 0x2;
++
++	spin_lock_irq(&ssc_p->lock);
++	if (ssc_p->dir_mask & dir_mask) {
++		spin_unlock_irq(&ssc_p->lock);
++		return -EBUSY;
++	}
++	ssc_p->dir_mask |= dir_mask;
++	spin_unlock_irq(&ssc_p->lock);
++
++	return 0;
++}
++
++static void at91rm9200_i2s_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct at91rm9200_ssc_info *ssc_p = &ssc_info[rtd->cpu_dai->id];
++	at91rm9200_pcm_dma_params_t *dma_params = rtd->cpu_dai->dma_data;
++	int dir, dir_mask;
++
++	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
++
++	if (dma_params != NULL) {
++		at91_ssc_write(dma_params->ssc->cr, dma_params->mask->ssc_disable);
++		DBG("%s disabled SSC_SR=0x%08lx\n", (dir ? "receive" : "transmit"),
++			at91_ssc_read(ssc_p->ssc_base + AT91_SSC_SR));
++
++		dma_params->substream = NULL;
++		ssc_p->dma_params[dir] = NULL;
++	}
++
++	dir_mask = 1 << dir;
++
++	spin_lock_irq(&ssc_p->lock);
++	ssc_p->dir_mask &= ~dir_mask;
++	if (!ssc_p->dir_mask) {
++		/* Shutdown the SSC clock. */
++		DBG("Stopping pid %d clock\n", ssc_p->pid);
++		at91_sys_write(AT91_PMC_PCDR, ssc_p->pid);
++
++		if (ssc_p->initialized)
++			free_irq(ssc_p->pid, ssc_p);
++
++		/* Reset the SSC */
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_CR, AT91_SSC_SWRST);
++
++		/* Force a re-init on the next hw_params() call. */
++		ssc_p->initialized = 0;
++	}
++	spin_unlock_irq(&ssc_p->lock);
++}
++
++#ifdef CONFIG_PM
++static int at91rm9200_i2s_suspend(struct platform_device *pdev,
++	struct snd_soc_cpu_dai *dai)
++{
++	struct at91rm9200_ssc_info *ssc_p;
++
++	if(!dai->active)
++		return 0;
++
++	ssc_p = &ssc_info[dai->id];
++
++	/* Save the status register before disabling transmit and receive. */
++	ssc_p->state->ssc_sr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_SR);
++	at91_ssc_write(ssc_p->ssc_base +
++		AT91_SSC_CR, AT91_SSC_TXDIS | AT91_SSC_RXDIS);
++
++	/* Save the current interrupt mask, then disable unmasked interrupts. */
++	ssc_p->state->ssc_imr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_IMR);
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_IDR, ssc_p->state->ssc_imr);
++
++	ssc_p->state->ssc_cmr  = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_CMR);
++	ssc_p->state->ssc_rcmr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_RCMR);
++	ssc_p->state->ssc_rfmr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_RCMR);
++	ssc_p->state->ssc_tcmr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_RCMR);
++	ssc_p->state->ssc_tfmr = at91_ssc_read(ssc_p->ssc_base + AT91_SSC_RCMR);
++
++	return 0;
++}
++
++static int at91rm9200_i2s_resume(struct platform_device *pdev,
++	struct snd_soc_cpu_dai *dai)
++{
++	struct at91rm9200_ssc_info *ssc_p;
++	u32 cr_mask;
++
++	if(!dai->active)
++		return 0;
++
++	ssc_p = &ssc_info[dai->id];
++
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RCMR, ssc_p->state->ssc_tfmr);
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RCMR, ssc_p->state->ssc_tcmr);
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RCMR, ssc_p->state->ssc_rfmr);
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RCMR, ssc_p->state->ssc_rcmr);
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_CMR,  ssc_p->state->ssc_cmr);
++
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_IER,  ssc_p->state->ssc_imr);
++
++	at91_ssc_write(ssc_p->ssc_base + AT91_SSC_CR,
++		((ssc_p->state->ssc_sr & AT91_SSC_RXENA) ? AT91_SSC_RXEN : 0) |
++		((ssc_p->state->ssc_sr & AT91_SSC_TXENA) ? AT91_SSC_TXEN : 0));
++
++	return 0;
++}
++
++#else
++#define at91rm9200_i2s_suspend	NULL
++#define at91rm9200_i2s_resume	NULL
++#endif
++
++static unsigned int at91rm9200_i2s_config_sysclk(
++	struct snd_soc_cpu_dai *iface, struct snd_soc_clock_info *info,
++	unsigned int clk)
++{
++	/* Currently, there is only support for USB (12Mhz) mode */
++	if (clk != 12000000)
++		return 0;
++	return 12000000;
++}
++
++static int at91rm9200_i2s_hw_params(struct snd_pcm_substream *substream,
 +	struct snd_pcm_hw_params *params)
 +{
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	struct at91rm9200_runtime_data *prtd = runtime->private_data;
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int id = rtd->cpu_dai->id;
++	struct at91rm9200_ssc_info *ssc_p = &ssc_info[id];
++	at91rm9200_pcm_dma_params_t *dma_params;
++	unsigned int pcmfmt, rate;
++	int dir, channels, bits;
++	struct clk *mck_clk;
++	unsigned long bclk;
++	u32 div, period, tfmr, rfmr, tcmr, rcmr;
++	int ret;
 +
-+	/* this may get called several times by oss emulation
-+	 * with different params */
++	/*
++	 * Currently, there is only one set of dma params for
++	 * each direction.  If more are added, this code will
++	 * have to be changed to select the proper set.
++	 */
++	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
 +
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	runtime->dma_bytes = params_buffer_bytes(params);
++	dma_params = &ssc_dma_params[id][dir];
++	dma_params->substream = substream;
 +
-+	prtd->params = rtd->cpu_dai->dma_data;
-+	prtd->params->dma_intr_handler = at91rm9200_pcm_dma_irq;
++	ssc_p->dma_params[dir] = dma_params;
++	rtd->cpu_dai->dma_data = dma_params;
 +
-+	prtd->dma_buffer = runtime->dma_addr;
-+	prtd->dma_buffer_end = runtime->dma_addr + runtime->dma_bytes;
-+	prtd->period_size = params_period_bytes(params);
++	rate = params_rate(params);
++	channels = params_channels(params);
 +
-+	DBG("hw_params: DMA for %s initialized (dma_bytes=%d, period_size=%d)\n",
-+		prtd->params->name, runtime->dma_bytes, prtd->period_size);
-+	return 0;
-+}
-+
-+static int at91rm9200_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct at91rm9200_runtime_data *prtd = substream->runtime->private_data;
-+	at91rm9200_pcm_dma_params_t *params = prtd->params;
-+
-+	if (params != NULL) {
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_disable);
-+		prtd->params->dma_intr_handler = NULL;
++	pcmfmt = rtd->cpu_dai->dai_runtime.pcmfmt;
++	switch(pcmfmt) {
++		case SNDRV_PCM_FMTBIT_S16_LE:
++			/* likely this is all we'll ever support, but ... */
++			bits = 16;
++			dma_params->pdc_xfer_size = 2;
++			break;
++		default:
++			printk(KERN_WARNING "at91rm9200-i2s: unsupported format %x\n",
++				pcmfmt);
++			return -EINVAL;
 +	}
 +
-+	return 0;
-+}
++	/* Don't allow both SSC substreams to initialize at the same time. */
++	down(ssc_p->mutex);
 +
-+static int at91rm9200_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct at91rm9200_runtime_data *prtd = substream->runtime->private_data;
-+	at91rm9200_pcm_dma_params_t *params = prtd->params;
++	/*
++	 * If this SSC is alreadly initialized, then this substream must use
++	 * the same format and rate.
++	 */
++	if (ssc_p->initialized) {
++		if (pcmfmt != ssc_p->pcmfmt || rate != ssc_p->rate) {
++			printk(KERN_WARNING "at91rm9200-i2s: "
++				"incompatible substream in other direction\n");
++			up(ssc_p->mutex);
++			return -EINVAL;
++		}
++	} else {
++		/* Enable PMC peripheral clock for this SSC */
++		DBG("Starting pid %d clock\n", ssc_p->pid);
++		at91_sys_write(AT91_PMC_PCER, 1<<ssc_p->pid);
 +
-+	at91_ssc_write(params->ssc->idr,
-+			params->mask->ssc_endx | params->mask->ssc_endbuf);
++		/* Reset the SSC */
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_CR, AT91_SSC_SWRST);
 +
-+	at91_ssc_write(params->pdc->ptcr, params->mask->pdc_disable);
-+	return 0;
-+}
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_RPR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_RCR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_RNPR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_RNCR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_TPR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_TCR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_TNPR, 0);
++		at91_ssc_write(ssc_p->ssc_base + AT91_PDC_TNCR, 0);
 +
-+static int at91rm9200_pcm_trigger(struct snd_pcm_substream *substream,
-+	int cmd)
-+{
-+	struct at91rm9200_runtime_data *prtd = substream->runtime->private_data;
-+	at91rm9200_pcm_dma_params_t *params = prtd->params;
-+	int ret = 0;
++		mck_clk = clk_get(NULL, "mck");
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		prtd->period_ptr = prtd->dma_buffer;
++		div = rtd->cpu_dai->dai_runtime.priv >> 16;
++		period = rtd->cpu_dai->dai_runtime.priv & 0xffff;
++		bclk = 60000000 / (2 * div);
 +
-+		at91_ssc_write(params->pdc->xpr, prtd->period_ptr);
-+		at91_ssc_write(params->pdc->xcr,
-+				prtd->period_size / params->pdc_xfer_size);
++		DBG("mck %ld fsbd %d bfs %d bfs_real %d bclk %ld div %d period %d\n",
++			clk_get_rate(mck_clk),
++			SND_SOC_FSBD(6),
++			rtd->cpu_dai->dai_runtime.bfs,
++			SND_SOC_FSBD_REAL(rtd->cpu_dai->dai_runtime.bfs),
++			bclk,
++			div,
++			period);
 +
-+		prtd->period_ptr += prtd->period_size;
-+		at91_ssc_write(params->pdc->xnpr, prtd->period_ptr);
-+		at91_ssc_write(params->pdc->xncr,
-+				prtd->period_size / params->pdc_xfer_size);
++		clk_put(mck_clk);
 +
-+		DBG("trigger: period_ptr=%lx, xpr=%lx, xcr=%ld, xnpr=%lx, xncr=%ld\n",
-+			(unsigned long) prtd->period_ptr,
-+			at91_ssc_read(params->pdc->xpr),
-+			at91_ssc_read(params->pdc->xcr),
-+			at91_ssc_read(params->pdc->xnpr),
-+			at91_ssc_read(params->pdc->xncr));
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_CMR, div);
 +
-+		at91_ssc_write(params->ssc->ier,
-+			params->mask->ssc_endx | params->mask->ssc_endbuf);
++		/*
++		 * Setup the TFMR and RFMR for the proper data format.
++		 */
++		tfmr =
++		  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
++		| (( 0				<< 23) & AT91_SSC_FSDEN)
++		| (( AT91_SSC_FSOS_NEGATIVE	     ) & AT91_SSC_FSOS)
++		| (((bits - 1)			<< 16) & AT91_SSC_FSLEN)
++		| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
++		| (( 1				<<  7) & AT91_SSC_MSBF)
++		| (( 0				<<  5) & AT91_SSC_DATDEF)
++		| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
++		DBG("SSC_TFMR=0x%08x\n", tfmr);
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_TFMR, tfmr);
 +
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_enable);
++		rfmr =
++		  (( AT91_SSC_FSEDGE_POSITIVE	     ) & AT91_SSC_FSEDGE)
++		| (( AT91_SSC_FSOS_NONE		     ) & AT91_SSC_FSOS)
++		| (( 0				<< 16) & AT91_SSC_FSLEN)
++		| (((channels - 1)		<<  8) & AT91_SSC_DATNB)
++		| (( 1				<<  7) & AT91_SSC_MSBF)
++		| (( 0				<<  5) & AT91_SSC_LOOP)
++		| (((bits - 1)			<<  0) & AT91_SSC_DATALEN);
 +
-+		DBG("sr=%lx imr=%lx\n", at91_ssc_read(params->ssc->ier - 4),
-+					at91_ssc_read(params->ssc->ier + 8));
-+		break;
++		DBG("SSC_RFMR=0x%08x\n", rfmr);
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RFMR, rfmr);
 +
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_disable);
-+		break;
++		/*
++		 * Setup the TCMR and RCMR to generate the proper BCLK
++		 * and LRC signals.
++		 */
++		tcmr =
++		  (( period			<< 24) & AT91_SSC_PERIOD)
++		| (( 1				<< 16) & AT91_SSC_STTDLY)
++		| (( AT91_SSC_START_FALLING_RF       ) & AT91_SSC_START)
++		| (( AT91_SSC_CKI_FALLING	     ) & AT91_SSC_CKI)
++		| (( AT91_SSC_CKO_CONTINUOUS	     ) & AT91_SSC_CKO)
++		| (( AT91_SSC_CKS_DIV		     ) & AT91_SSC_CKS);
 +
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		at91_ssc_write(params->pdc->ptcr, params->mask->pdc_enable);
-+		break;
++		DBG("SSC_TCMR=0x%08x\n", tcmr);
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_TCMR, tcmr);
 +
-+	default:
-+		ret = -EINVAL;
++		rcmr =
++		  (( 0				<< 24) & AT91_SSC_PERIOD)
++		| (( 1				<< 16) & AT91_SSC_STTDLY)
++		| (( AT91_SSC_START_TX_RX	     ) & AT91_SSC_START)
++		| (( AT91_SSC_CK_RISING		     ) & AT91_SSC_CKI)
++		| (( AT91_SSC_CKO_NONE		     ) & AT91_SSC_CKO)
++		| (( AT91_SSC_CKS_CLOCK		     ) & AT91_SSC_CKS);
++
++		DBG("SSC_RCMR=0x%08x\n", rcmr);
++		at91_ssc_write(ssc_p->ssc_base + AT91_SSC_RCMR, rcmr);
++
++		if ((ret = request_irq(ssc_p->pid, at91rm9200_i2s_interrupt,
++					0, ssc_p->name, ssc_p)) < 0) {
++			printk(KERN_WARNING "at91rm9200-i2s: request_irq failure\n");
++			return ret;
++		}
++
++		/*
++		 * Save the current substream parameters in order to check
++		 * that the substream in the opposite direction uses the
++		 * same parameters.
++		 */
++		ssc_p->pcmfmt = pcmfmt;
++		ssc_p->rate = rate;
++		ssc_p->initialized = 1;
++
++		DBG("hw_params: SSC initialized\n");
 +	}
 +
-+	return ret;
-+}
++	up(ssc_p->mutex);
 +
-+static snd_pcm_uframes_t at91rm9200_pcm_pointer(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct at91rm9200_runtime_data *prtd = runtime->private_data;
-+	at91rm9200_pcm_dma_params_t *params = prtd->params;
-+	dma_addr_t ptr;
-+	snd_pcm_uframes_t x;
-+
-+	ptr = (dma_addr_t) at91_ssc_read(params->pdc->xpr);
-+	x = bytes_to_frames(runtime, ptr - prtd->dma_buffer);
-+
-+	if (x == runtime->buffer_size)
-+		x = 0;
-+	return x;
-+}
-+
-+static int at91rm9200_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct at91rm9200_runtime_data *prtd;
-+	int ret = 0;
-+
-+	snd_soc_set_runtime_hwparams(substream, &at91rm9200_pcm_hardware);
-+
-+	/* ensure that buffer size is a multiple of period size */
-+	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		goto out;
-+
-+	prtd = kzalloc(sizeof(struct at91rm9200_runtime_data), GFP_KERNEL);
-+	if (prtd == NULL) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	runtime->private_data = prtd;
-+
-+ out:
-+	return ret;
-+}
-+
-+static int at91rm9200_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct at91rm9200_runtime_data *prtd = substream->runtime->private_data;
-+
-+	kfree(prtd);
 +	return 0;
 +}
 +
-+static int at91rm9200_pcm_mmap(struct snd_pcm_substream *substream,
-+	struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
 +
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+				     runtime->dma_area,
-+				     runtime->dma_addr,
-+				     runtime->dma_bytes);
++static int at91rm9200_i2s_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	at91rm9200_pcm_dma_params_t *dma_params = rtd->cpu_dai->dma_data;
++
++	at91_ssc_write(dma_params->ssc->cr, dma_params->mask->ssc_enable);
++
++	DBG("%s enabled SSC_SR=0x%08lx\n",
++	substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "transmit" : "receive",
++	at91_ssc_read(ssc_info[rtd->cpu_dai->id].ssc_base + AT91_SSC_SR));
++	return 0;
 +}
 +
-+struct snd_pcm_ops at91rm9200_pcm_ops = {
-+	.open		= at91rm9200_pcm_open,
-+	.close		= at91rm9200_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= at91rm9200_pcm_hw_params,
-+	.hw_free	= at91rm9200_pcm_hw_free,
-+	.prepare	= at91rm9200_pcm_prepare,
-+	.trigger	= at91rm9200_pcm_trigger,
-+	.pointer	= at91rm9200_pcm_pointer,
-+	.mmap		= at91rm9200_pcm_mmap,
++
++struct snd_soc_cpu_dai at91rm9200_i2s_dai[] = {
++	{	.name = "at91rm9200-ssc0/i2s",
++		.id = 0,
++		.type = SND_SOC_DAI_I2S,
++		.suspend = at91rm9200_i2s_suspend,
++		.resume = at91rm9200_i2s_resume,
++		.config_sysclk = at91rm9200_i2s_config_sysclk,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.ops = {
++			.startup = at91rm9200_i2s_startup,
++			.shutdown = at91rm9200_i2s_shutdown,
++			.prepare = at91rm9200_i2s_prepare,
++			.hw_params = at91rm9200_i2s_hw_params,},
++		.caps = {
++			.mode = &at91rm9200_i2s[0],
++			.num_modes = ARRAY_SIZE(at91rm9200_i2s),},
++	},
++	{	.name = "at91rm9200-ssc1/i2s",
++		.id = 1,
++		.type = SND_SOC_DAI_I2S,
++		.suspend = at91rm9200_i2s_suspend,
++		.resume = at91rm9200_i2s_resume,
++		.config_sysclk = at91rm9200_i2s_config_sysclk,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.ops = {
++			.startup = at91rm9200_i2s_startup,
++			.shutdown = at91rm9200_i2s_shutdown,
++			.prepare = at91rm9200_i2s_prepare,
++			.hw_params = at91rm9200_i2s_hw_params,},
++		.caps = {
++			.mode = &at91rm9200_i2s[0],
++			.num_modes = ARRAY_SIZE(at91rm9200_i2s),},
++	},
++	{	.name = "at91rm9200-ssc2/i2s",
++		.id = 2,
++		.type = SND_SOC_DAI_I2S,
++		.suspend = at91rm9200_i2s_suspend,
++		.resume = at91rm9200_i2s_resume,
++		.config_sysclk = at91rm9200_i2s_config_sysclk,
++		.playback = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.capture = {
++			.channels_min = 1,
++			.channels_max = 2,},
++		.ops = {
++			.startup = at91rm9200_i2s_startup,
++			.shutdown = at91rm9200_i2s_shutdown,
++			.prepare = at91rm9200_i2s_prepare,
++			.hw_params = at91rm9200_i2s_hw_params,},
++		.caps = {
++			.mode = &at91rm9200_i2s[0],
++			.num_modes = ARRAY_SIZE(at91rm9200_i2s),},
++	},
 +};
 +
-+static int at91rm9200_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
-+	int stream)
-+{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = at91rm9200_pcm_hardware.buffer_bytes_max;
++EXPORT_SYMBOL_GPL(at91rm9200_i2s_dai);
 +
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
-+
-+	DBG("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
-+		(void *) buf->area,
-+		(void *) buf->addr,
-+		size);
-+
-+	if (!buf->area)
-+		return -ENOMEM;
-+
-+	buf->bytes = size;
-+	return 0;
-+}
-+
-+static u64 at91rm9200_pcm_dmamask = 0xffffffff;
-+
-+static int at91rm9200_pcm_new(struct snd_card *card,
-+	struct snd_soc_codec_dai *dai, struct snd_pcm *pcm)
-+{
-+	int ret = 0;
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &at91rm9200_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = 0xffffffff;
-+
-+	if (dai->playback.channels_min) {
-+		ret = at91rm9200_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (dai->capture.channels_min) {
-+		ret = at91rm9200_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
-+ out:
-+	return ret;
-+}
-+
-+static void at91rm9200_pcm_free_dma_buffers(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
-+static int at91rm9200_pcm_suspend(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	struct snd_pcm_runtime *runtime = dai->runtime;
-+	struct at91rm9200_runtime_data *prtd;
-+	at91rm9200_pcm_dma_params_t *params;
-+
-+	if (!runtime)
-+		return 0;
-+
-+	prtd = runtime->private_data;
-+	params = prtd->params;
-+
-+	/* disable the PDC and save the PDC registers */
-+
-+	at91_ssc_write(params->pdc->ptcr, params->mask->pdc_disable);
-+
-+	prtd->pdc_xpr_save  = at91_ssc_read(params->pdc->xpr);
-+	prtd->pdc_xcr_save  = at91_ssc_read(params->pdc->xcr);
-+	prtd->pdc_xnpr_save = at91_ssc_read(params->pdc->xnpr);
-+	prtd->pdc_xncr_save = at91_ssc_read(params->pdc->xncr);
-+
-+	return 0;
-+}
-+
-+static int at91rm9200_pcm_resume(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	struct snd_pcm_runtime *runtime = dai->runtime;
-+	struct at91rm9200_runtime_data *prtd;
-+	at91rm9200_pcm_dma_params_t *params;
-+
-+	if (!runtime)
-+		return 0;
-+
-+	prtd = runtime->private_data;
-+	params = prtd->params;
-+
-+	/* restore the PDC registers and enable the PDC */
-+	at91_ssc_write(params->pdc->xpr,  prtd->pdc_xpr_save);
-+	at91_ssc_write(params->pdc->xcr,  prtd->pdc_xcr_save);
-+	at91_ssc_write(params->pdc->xnpr, prtd->pdc_xnpr_save);
-+	at91_ssc_write(params->pdc->xncr, prtd->pdc_xncr_save);
-+
-+	at91_ssc_write(params->pdc->ptcr, params->mask->pdc_enable);
-+	return 0;
-+}
-+
-+struct snd_soc_platform at91rm9200_soc_platform = {
-+	.name		= "at91rm9200-audio",
-+	.pcm_ops 	= &at91rm9200_pcm_ops,
-+	.pcm_new	= at91rm9200_pcm_new,
-+	.pcm_free	= at91rm9200_pcm_free_dma_buffers,
-+	.suspend	= at91rm9200_pcm_suspend,
-+	.resume		= at91rm9200_pcm_resume,
-+};
-+
-+EXPORT_SYMBOL_GPL(at91rm9200_soc_platform);
-+
-+MODULE_AUTHOR("Frank Mandarino <fmandarino@endrelia.com>");
-+MODULE_DESCRIPTION("Atmel AT91RM9200 PCM module");
++/* Module information */
++MODULE_AUTHOR("Frank Mandarino, fmandarino@endrelia.com, www.endrelia.com");
++MODULE_DESCRIPTION("AT91RM9200 I2S ASoC Interface");
 +MODULE_LICENSE("GPL");
-Index: alsa-kernel/soc/at91/at91rm9200-pcm.h
-===================================================================
---- /dev/null
-+++ alsa-kernel/soc/at91/at91rm9200-pcm.h
-@@ -0,0 +1,75 @@
-+/*
-+ * at91rm9200-pcm.h - ALSA PCM interface for the Atmel AT91RM9200 chip
-+ *
-+ * Author:	Frank Mandarino <fmandarino@endrelia.com>
-+ *		Endrelia Technologies Inc.
-+ * Created:	Mar 3, 2006
-+ *
-+ * Based on pxa2xx-pcm.h by:
-+ *
-+ * Author:	Nicolas Pitre
-+ * Created:	Nov 30, 2004
-+ * Copyright:	MontaVista Software, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+/*
-+ * Registers and status bits that are required by the PCM driver.
-+ */
-+struct at91rm9200_ssc_regs {
-+	void __iomem 	*cr;		/* SSC control */
-+	void __iomem	*ier;		/* SSC interrupt enable */
-+	void __iomem	*idr;		/* SSC interrupt disable */
-+};
-+
-+struct at91rm9200_pdc_regs {
-+	void __iomem	*xpr;		/* PDC recv/trans pointer */
-+	void __iomem	*xcr;		/* PDC recv/trans counter */
-+	void __iomem	*xnpr;		/* PDC next recv/trans pointer */
-+	void __iomem	*xncr;		/* PDC next recv/trans counter */
-+	void __iomem	*ptcr;		/* PDC transfer control */
-+};
-+
-+struct at91rm9200_ssc_mask {
-+	u32	ssc_enable;		/* SSC recv/trans enable */
-+	u32	ssc_disable;		/* SSC recv/trans disable */
-+	u32	ssc_endx;		/* SSC ENDTX or ENDRX */
-+	u32	ssc_endbuf;		/* SSC TXBUFE or RXBUFF */
-+	u32	pdc_enable;		/* PDC recv/trans enable */
-+	u32	pdc_disable;		/* PDC recv/trans disable */
-+};
-+
-+
-+/*
-+ * This structure, shared between the PCM driver and the interface,
-+ * contains all information required by the PCM driver to perform the
-+ * PDC DMA operation.  All fields except dma_intr_handler() are initialized
-+ * by the interface.  The dms_intr_handler() pointer is set by the PCM
-+ * driver and called by the interface SSC interrupt handler if it is
-+ * non-NULL.
-+ */
-+typedef struct {
-+	char *name;			/* stream identifier */
-+	int pdc_xfer_size;		/* PDC counter increment in bytes */
-+	struct at91rm9200_ssc_regs *ssc; /* SSC register addresses */
-+	struct at91rm9200_pdc_regs *pdc; /* PDC receive/transmit registers */
-+	struct at91rm9200_ssc_mask *mask;/* SSC & PDC status bits */
-+	snd_pcm_substream_t *substream;
-+	void (*dma_intr_handler)(u32, snd_pcm_substream_t *);
-+} at91rm9200_pcm_dma_params_t;
-+
-+extern struct snd_soc_cpu_dai at91rm9200_i2s_dai[3];
-+extern struct snd_soc_platform at91rm9200_soc_platform;
-+
-+
-+/*
-+ * SSC I/O helpers.
-+ * E.g., at91_ssc_write(AT91_SSC(1) + AT91_SSC_CR, AT91_SSC_RXEN);
-+ */
-+#define AT91_SSC(x) (((x)==0) ? AT91_VA_BASE_SSC0 :\
-+	 ((x)==1) ? AT91_VA_BASE_SSC1 : ((x)==2) ? AT91_VA_BASE_SSC2 : NULL)
-+#define at91_ssc_read(a)	((unsigned long) __raw_readl(a))
-+#define at91_ssc_write(a,v)	__raw_writel((v),(a))
 
---=-V2G+EVDhQCPc34scZzVn
+--=-DKAW6jU8t0c9bncXATzL
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -562,7 +744,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-V2G+EVDhQCPc34scZzVn
+--=-DKAW6jU8t0c9bncXATzL
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -573,4 +755,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-V2G+EVDhQCPc34scZzVn--
+--=-DKAW6jU8t0c9bncXATzL--
