@@ -1,7 +1,7 @@
-From: Remy Bruno <remy.bruno@trinnov.com>
-Subject: Intel HDA 82801G
-Date: Tue, 3 Oct 2006 12:55:34 +0200
-Message-ID: <20061003105534.GA13274@trinnov.com>
+From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
+Subject: [PATCH] via82xx: add __devinitdata
+Date: Tue, 3 Oct 2006 14:21:50 +0200
+Message-ID: <20061003122150.GA21376@rhlx01.fht-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,58 +16,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I've recently installed alsa drivers 1.0.13 on my laptop (its brand is Medion),
-and I don't get the sound to work on it. I saw a recent post on this subject
-(somedy having the same card as me), but I didn't see a follow-up after the
-first answer, so I'm sending this email.
+add __devinitdata to struct whitelist, since it's used within
+a __devinit function.
+Add const attribute to iterator variable, too.
 
-lspci -nv says:
-00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 161f:2054
-        Flags: fast devsel, IRQ 21
-        Memory at d5300000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Compile-tested (no section warnings etc.) and run-tested
+on vt8233, 2.6.18-mm3 (hopefully applies well to current ALSA).
 
-Codec info:
-* vendor 0x10ec0883, subsystem 0x161fd82b, revision 0x100002
-* vendor 0x11c11040, subsystem 0x11c10001, revision 0x100200
-I think the second one is the modem part (which I would like to get working
-too, but I think the two problems are linked together).
+Signed-off-by: Andreas Mohr <andi@lisas.de>
 
-The card is seen as an hda-intel, but the driver fails to initialize it. A
-previous version of the alsa driver (1.0.11) successfuly loaded the hda-intel
-driver (but telling that it was an unknown model), but I got no sound (of
-course I chcked the mixer settings). With 1.0.13, I get the following driver
-messages:
 
-Oct  3 11:20:36 localhost ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 21
-Oct  3 11:20:36 localhost PCI: Setting latency timer of device 0000:00:1b.0 to 64
-Oct  3 11:20:36 localhost hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
-Oct  3 11:20:36 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/hda_codec.c:607: HDA: codec info: vendor 0x10ec0883, subsystem 0x161fd82b, revision 0x100002
-Oct  3 11:20:38 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/hda_codec.c:607: HDA: codec info: vendor 0x11c11040, subsystem 0x11c10001, revision 0x100200
-Oct  3 11:20:38 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:245: si3054: cannot initialize. EXT MID = 0000
-Oct  3 11:20:38 localhost HDA Intel: probe of 0000:00:1b.0 failed with error -13
-
-The two "HDA: codec info" lines were added by me to see the info on the
-detected codecs (the /proc/asound/card0/codec* files are not available as the
-card is not recognized)
-
-I tried the model=acer option of the driver as suggested several times on this
-list, but with no success (and with both versions of alsa).
-
-Thank you,
-
-Remy Bruno
-
+diff -urN linux-2.6.18-mm3.orig/sound/pci/via82xx.c linux-2.6.18-mm3/sound/pci/via82xx.c
+--- linux-2.6.18-mm3.orig/sound/pci/via82xx.c	2006-10-11 12:00:07.000000000 +0200
++++ linux-2.6.18-mm3.my/sound/pci/via82xx.c	2006-10-11 14:02:23.000000000 +0200
+@@ -2360,7 +2360,7 @@
+ 
+ static int __devinit check_dxs_list(struct pci_dev *pci, int revision)
+ {
+-	static struct dxs_whitelist whitelist[] = {
++	static struct dxs_whitelist whitelist[] __devinitdata = {
+ 		{ .subvendor = 0x1005, .subdevice = 0x4710, .action = VIA_DXS_ENABLE }, /* Avance Logic Mobo */
+ 		{ .subvendor = 0x1019, .subdevice = 0x0996, .action = VIA_DXS_48K },
+ 		{ .subvendor = 0x1019, .subdevice = 0x0a81, .action = VIA_DXS_NO_VRA }, /* ECS K7VTA3 v8.0 */
+@@ -2421,7 +2421,7 @@
+ 		{ .subvendor = 0x4005, .subdevice = 0x4710, .action = VIA_DXS_SRC },	/* MSI K7T266 Pro2 (MS-6380 V2.0) BIOS 3.7 */
+ 		{ } /* terminator */
+ 	};
+-	struct dxs_whitelist *w;
++	const struct dxs_whitelist *w;
+ 	unsigned short subsystem_vendor;
+ 	unsigned short subsystem_device;
+ 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
