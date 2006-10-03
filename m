@@ -1,7 +1,8 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: [PATCH] via82xx: add __devinitdata
-Date: Tue, 3 Oct 2006 14:21:50 +0200
-Message-ID: <20061003122150.GA21376@rhlx01.fht-esslingen.de>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH] Fix bug in snd-usb-usx2y's
+	usX2Y_pcms_lock_check()
+Date: Tue, 3 Oct 2006 14:33:56 +0200
+Message-ID: <200610031433.56957.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,43 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Fix bug in snd-usb-usx2y's usX2Y_pcms_lock_check()
 
-add __devinitdata to struct whitelist, since it's used within
-a __devinit function.
-Add const attribute to iterator variable, too.
+substream can be NULL......
+in mainline, bug was introduced by:
+2006-06-22  [ALSA] Add O_APPEND flag support to PCM
 
-Compile-tested (no section warnings etc.) and run-tested
-on vt8233, 2.6.18-mm3 (hopefully applies well to current ALSA).
-
-Signed-off-by: Andreas Mohr <andi@lisas.de>
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
 
-diff -urN linux-2.6.18-mm3.orig/sound/pci/via82xx.c linux-2.6.18-mm3/sound/pci/via82xx.c
---- linux-2.6.18-mm3.orig/sound/pci/via82xx.c	2006-10-11 12:00:07.000000000 +0200
-+++ linux-2.6.18-mm3.my/sound/pci/via82xx.c	2006-10-11 14:02:23.000000000 +0200
-@@ -2360,7 +2360,7 @@
- 
- static int __devinit check_dxs_list(struct pci_dev *pci, int revision)
- {
--	static struct dxs_whitelist whitelist[] = {
-+	static struct dxs_whitelist whitelist[] __devinitdata = {
- 		{ .subvendor = 0x1005, .subdevice = 0x4710, .action = VIA_DXS_ENABLE }, /* Avance Logic Mobo */
- 		{ .subvendor = 0x1019, .subdevice = 0x0996, .action = VIA_DXS_48K },
- 		{ .subvendor = 0x1019, .subdevice = 0x0a81, .action = VIA_DXS_NO_VRA }, /* ECS K7VTA3 v8.0 */
-@@ -2421,7 +2421,7 @@
- 		{ .subvendor = 0x4005, .subdevice = 0x4710, .action = VIA_DXS_SRC },	/* MSI K7T266 Pro2 (MS-6380 V2.0) BIOS 3.7 */
- 		{ } /* terminator */
- 	};
--	struct dxs_whitelist *w;
-+	const struct dxs_whitelist *w;
- 	unsigned short subsystem_vendor;
- 	unsigned short subsystem_device;
- 
+
+--- alsa-kernel/usb/usx2y/usx2yhwdeppcm.c~	2006-06-29 23:25:30.000000000 +0200
++++ alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	2006-10-03 14:05:12.000000000 +0200
+@@ -632,7 +632,7 @@ static int usX2Y_pcms_lock_check(struct 
+ 		for (s = 0; s < 2; ++s) {
+ 			struct snd_pcm_substream *substream;
+ 			substream = pcm->streams[s].substream;
+-			if (SUBSTREAM_BUSY(substream))
++			if (substream && SUBSTREAM_BUSY(substream))
+ 				err = -EBUSY;
+ 		}
+ 	}
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
