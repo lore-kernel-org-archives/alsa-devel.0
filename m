@@ -1,12 +1,22 @@
-From: =?iso-2022-jp?B?bWl5dWtp?= <miyuki@yahoo.co.jp>
-Subject: Re: (no subject)
-Date: Tue,  3 Oct 2006 18:18:54 -0700 (PDT)
-Message-ID: <E1GUvPO-0003QV-4f@mail.sourceforge.net>
-Reply-To: miyuki@yahoo.co.jp
+From: "Mariusz Domanski" <surfer.q3@gmail.com>
+Subject: Re: hda-intel,
+	ALC861 and Asus A6rp laptop - problem with headphones almost solved
+Date: Tue, 3 Oct 2006 17:18:56 +0200
+Message-ID: <b209ae1e0610030818h164a7071s8e9edbf6482fdb81@mail.gmail.com>
+References: <b209ae1e0609231108i634d41fm87012983b4b9b83e@mail.gmail.com>
+	<s5hmz8nt00v.wl%tiwai@suse.de>
+	<b209ae1e0609260743kce76b90r15d4a8505657d146@mail.gmail.com>
+	<s5h4puusmwc.wl%tiwai@suse.de>
+	<b209ae1e0609260843j1418adcbn154f8308842ac251@mail.gmail.com>
+	<s5hlko6r2ya.wl%tiwai@suse.de>
+	<b209ae1e0609261114t44a4214dv51548f309c41a4eb@mail.gmail.com>
+	<s5hfyedp6ag.wl%tiwai@suse.de>
+	<b209ae1e0609271537p5bc7095dr3cbb0db41f99acac@mail.gmail.com>
+	<s5hirj6537t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2004514819=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hirj6537t.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,158 +26,282 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-:―― INFORMATION  ―――――――――――――――――――――――――:
- 不正・悪質なサイトを一切排除しておりますので
- 安心してご利用ください。   http://love-match.bz/pc/?02
-:――――――――――――――――――――――――――――――――――:
+--===============2004514819==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_97755_32552853.1159888736310"
 
-*・゜゜・*:.。. .。.:*・゜゜・*:.。..。:*・゜゜・*:.。..。:**・゜゜・*
+------=_Part_97755_32552853.1159888736310
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+2006/9/29, Takashi Iwai <tiwai@suse.de>:
+>
+> > At Thu, 28 Sep 2006 00:37:19 +0200,
+> > Mariusz Domanski wrote:
+> > >
+> > >
+> > > 2006/9/27, Takashi Iwai <tiwai@suse.de>:
+> > >
+> > > At Tue, 26 Sep 2006 20:14:58 +0200,
+> > > Mariusz Domanski wrote:
+> > > >
+> > > > I have codec#0 output saved when everything was working.
+> > > > There is little change according to outpiu which codec#0 gives me
+> now.
+> > > >
+> > > > Part of "good" codec#0:
+> > > > Node 0x15 [Audio Mixer] wcaps 0x20050f: Stereo Amp-In Amp-Out
+> > > > Amp-In caps: ofs=0x0c, nsteps=0x17, stepsize=0x0b, mute=1
+> > > > Amp-In vals: [0x95 0x95] [0x80 0x80] [0x80 0x80]
+> > > > Amp-Out caps: ofs=0x0c, nsteps=0x0c, stepsize=0x0b, mute=1
+> > > > Amp-Out vals: [0x0c 0x0c]
+> > > > Power: 0x0
+> > > > Connection: 3
+> > > > 0x11 0x14 0x1c
+> > > >
+> > > > Now the 3rd line is:
+> > > > Amp-In vals: [0x95 0x95] [0x95 0x95] [0x95 0x95]
+> > >
+> > > Above all, _what_ happened by this change?
+> > >
+> > > > This is the only change.
+> > > >
+> > > > What does this mean?
+> > >
+> > > It means that the amp-input values are changed.
+> > > But they are still muted (bit 7 [0x80] is on), so in theory, they
+> > > shouldn't make any difference. No other changes at all?
+> > >
+> > > > How can I change it?
+> > >
+> > > Via mixer elements, most likely.
+> > > You can check the mixer elements you created which ones have the NID
+> > > 0x15 (and INPUT direction).
+> > >
+> > > > Can this cause this whole strange problem?
+> > >
+> > > You'd better to take a look at the block diagram in ALC861 datasheet
+> > > to understand what's happning.
+> > >
+> > > The widget 0x15 is "analog mixer" that takes all inputs from line,
+> > > mic, etc and passes to ADC and the output mixer. The three values are
+> > > volumes from inputs to this mixer from CD, line and mic input pins.
+> > >
+> > > > I can try to change something but I don't know what exactly should
+> be changed,
+> > > so
+> > > > i'll be changing various values :P
+> > >
+> > > That's my question, too. First, you have to recognize the way to
+> > > reproduce the problem. Debugging randomly happening problem is quite
+> > > hard. We need to know the cause, not only the result.
+> >>
+> > > Takashi
+> > >
+>
+
+> > Well that's great question... What cause the problem? I really would
+like to know... :)
+> > If I would know how to reproduce this problem I would tell you...
+>
+> If you can ever get a "good" state, then there must be a cause. You
+> need to find out how to get a good and a bad state, the step to
+> reproduce (e.g. first boot Windows, or whatever). Then check the
+> internal state of the device. This is the most important thing to
+> debug this kind of problems.
+
+The worst thing is that I don't see any reason the "good" state is changing
+to the "bad" one...
+Headphones DID work few times, just after recompilation, reinstallation of
+modules and restarting alsasound. Headphones were working well as they sould
+work always but just after restarting Alsa or rebooting laptop they weren't
+working... (I wrote about this in previous mails)
+
+> > I mean now this problem is present - headphones are not working :P
+> > codec#0 shows PIN_OUT (0x40) on headphones jack, but there is no
+sound...
+>
+> Which PIN node? The headphone jack takes usually PIN_HP (0xc0) with
+> HP-overdrive bit. You should also trace the connection line between
+> the pin and DAC, and check whether all widgets are unmuted/adjusted
+> throughout the line.
+
+I know that the hp jack should take PIN_HP, it is even set in my patch, but
+codec#0 shows:
+Pin-ctls: 0x40: OUT
+for hp jack.
+How can I chceck if all widgets between pin and DAC are unmuted?
+
+> > I can tell you that when line-in is unmuted and master mixer and line-in
+mixers
+> > are set to 100% I'm about to hear music... It's very very quiet and
+> > with high frequency noises...
+>
+> Sorry, it's not clear what you mean here. Please describe more
+> exactly what you did, step by step?
+
+It's always when I'm writing "there is no sound". Basically there is no
+sound, but: if you set PCM to 100% and unmute line-in and set it also to
+100% (I'm using gnome-volume-manager), the sound can be heard. This sound is
+very very quiet and with high frequency noises.
+
+> > The most strange thing is that, as I wrote before, the sound was and
+> > disappeard after
+> > Alsa restart...
+>
+> Is the device state restored via alsactl automatically?
+> Usually, udev takes a charge to call "alsactl restore" after module
+> reloading. You can call "alsactl save" before restart, and call
+> "alsactl restore" after restart manually.
+
+I don't know if the device state is restored via alsactl automatically. How
+can i check it?
+Dou you mean that after alsasound restart the mixers states should be set
+like before restart?
+
+> > Does Alsa have any config files that could be changed during restart?
+> > What can be changed during Alsa restart?
+>
+> The device is set up to be muted per default (depending on the driver
+> implementation, though). You have to adjust it to unmuted state.
+> Calling "alsactl restore" would restore to the last saved state.
+>
+> This whole thing depends on the distribution you use. I cannot tell
+> the exact detail.
+
+As I wrote in the first mail I'm using Ubuntu 6.06 Dapper Drake with kernel
+2.6.17.11 (I had to remove earlier emails, because it would be too long
+email and it would be hard to read everything, all our mails are archived in
+the alsa-devel archive of course, on
+http://news.gmane.org/gmane.linux.alsa.devel thread posted on 23 Sep 20:08).
+And what about muted mixers per default... It's strange but every time I
+fully recompile Alsa (with make clean before recompilation) the default
+level of PCM (which is set after alsasound restart) is different. Once it's
+45%, another time 80%, 60% or 10%... Strange... I think that earlier (with
+previous versions of Alsa) mixer was muted until I changed it or called
+alsaconf.
+
+> > I'll try to make the headphones working... What should I do if I'll do
+it? Any
+> > special things to do?
+>
+> Has the headphone _ever_ worked? If not, we can do only blind shots.
+
+As I wrote - worked few times.
+> > What about looking at datasheet... Well... I don't understand much,
+> > I'm not a driver
+> > programmer. I just can think and read and I'm trying to make
+> > something knowing almost nothing :)
+> >
+> > Now I'm looking at datasheet and can only tell what I knew earlier:
+> > PORT-A - SURR-OUT - 0x0e - surround, but in my case hp jack (?) [let
+> > say it can work]
+>
+> OK, that's good to know.
+>
+> > PORT-B - MIC1 - 0x0d - mic jack or built-in mic [works]
+> > PORT-C - LINE1 - 0x0c - line-in jack [propably works, I have nothing to
+test it]
+> > PORT-D - FRONT - 0x0b - front out (built-in speakers) [works]
+>
+> Is it muted automatically when HP is plugged, or it still continues to
+> output sounds? If it keeps sound, we'll need a pin detection (if
+> auto-toggling feature is needed).
+
+The FRONT is muted every time I plug something into hp jack, even if
+headphones are not working.
+
+> > PORT-E - LINE2 - 0x0f - usually hp, but not in my case, has to be
+> > set to 0x24 (mic-input as I understand) or nothing does work...
+>
+> 0x24 is to set INPUT and VREF 80%. Yes, it's a usual setting for mic
+input.
+>
+> > PORT-F - MIC2 - 0x10 - built-in mic or mic jack [works]
+>
+> Hm, what is the difference from port-B?
+
+PORT-B and PORT-F - I suppose that one is mic jack, 2nd is built-in mic
+(there is built-in mic which is muted, when something is plugged into mic
+jack).
+
+> Takashi
+
+Mariusz
+
+P.S.
+I have some problems sending mails to alsa-devel...
+
+------=_Part_97755_32552853.1159888736310
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<br><br><div><span class="gmail_quote">2006/9/29, Takashi Iwai &lt;<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt;:</span><blockquote class="gmail_quote" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; margin-left: 0.80ex; border-left-color: #cccccc; border-left-width: 1px; border-left-style: solid; padding-left: 1ex">
+&gt; At Thu, 28 Sep 2006 00:37:19 +0200,<br>&gt; Mariusz Domanski wrote:<br>&gt; &gt;<br>&gt; &gt;<br>&gt; &gt; 2006/9/27, Takashi Iwai &lt;<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt;:<br>&gt; &gt;<br>&gt; &gt;     At Tue, 26 Sep 2006 20:14:58 +0200, 
+<br>&gt; &gt;     Mariusz Domanski wrote:<br>&gt; &gt;     &gt;<br>&gt; &gt;     &gt; I have codec#0 output saved when everything was working.<br>&gt; &gt;     &gt; There is little change according to outpiu which codec#0 gives me now. 
+<br>&gt; &gt;     &gt;<br>&gt; &gt;     &gt; Part of &quot;good&quot; codec#0:<br>&gt; &gt;     &gt; Node 0x15 [Audio Mixer] wcaps 0x20050f: Stereo Amp-In Amp-Out<br>&gt; &gt;     &gt; Amp-In caps: ofs=0x0c, nsteps=0x17, stepsize=0x0b, mute=1 
+<br>&gt; &gt;     &gt; Amp-In vals: [0x95 0x95] [0x80 0x80] [0x80 0x80]<br>&gt; &gt;     &gt; Amp-Out caps: ofs=0x0c, nsteps=0x0c, stepsize=0x0b, mute=1<br>&gt; &gt;     &gt; Amp-Out vals: [0x0c 0x0c]<br>&gt; &gt;     &gt; Power: 0x0 
+<br>&gt; &gt;     &gt; Connection: 3<br>&gt; &gt;     &gt; 0x11 0x14 0x1c<br>&gt; &gt;     &gt;<br>&gt; &gt;     &gt; Now the 3rd line is:<br>&gt; &gt;     &gt; Amp-In vals: [0x95 0x95] [0x95 0x95] [0x95 0x95]<br>&gt; &gt; 
+<br>&gt; &gt;     Above all, _what_ happened by this change?<br>&gt; &gt;<br>&gt; &gt;     &gt; This is the only change.<br>&gt; &gt;     &gt;<br>&gt; &gt;     &gt; What does this mean?<br>&gt; &gt;<br>&gt; &gt;     It means that the amp-input values are changed. 
+<br>&gt; &gt;     But they are still muted (bit 7 [0x80] is on), so in theory, they<br>&gt; &gt;     shouldn't make any difference.  No other changes at all?<br>&gt; &gt;<br>&gt; &gt;     &gt; How can I change it?<br>&gt; &gt; 
+<br>&gt; &gt;     Via mixer elements, most likely.<br>&gt; &gt;     You can check the mixer elements you created which ones have the NID<br>&gt; &gt;     0x15 (and INPUT direction).<br>&gt; &gt;<br>&gt; &gt;     &gt; Can this cause this whole strange problem? 
+<br>&gt; &gt;<br>&gt; &gt;     You'd better to take a look at the block diagram in ALC861 datasheet<br>&gt; &gt;     to understand what's happning.<br>&gt; &gt;<br>&gt; &gt;     The widget 0x15 is &quot;analog mixer&quot; that takes all inputs from line, 
+<br>&gt; &gt;     mic, etc and passes to ADC and the output mixer.  The three values are<br>&gt; &gt;     volumes from inputs to this mixer from CD, line and mic input pins.<br>&gt; &gt;<br>&gt; &gt;     &gt; I can try to change something but I don't know what exactly should be changed, 
+<br>&gt; &gt;     so<br>&gt; &gt;     &gt; i'll be changing various values :P<br>&gt; &gt;<br>&gt; &gt;     That's my question, too.  First, you have to recognize the way to<br>&gt; &gt;     reproduce the problem.  Debugging randomly happening problem is quite 
+<br>&gt; &gt;     hard.  We need to know the cause, not only the result.<br>&gt;&gt; <br>&gt; &gt;     Takashi<br>&gt; &gt;<br></blockquote></div><br>&gt; &gt; Well that's great question... What cause the problem? I really would like to know... :) 
+<br>&gt; &gt; If I would know how to reproduce this problem I would tell you...<br>&gt; <br>&gt; If you can ever get a &quot;good&quot; state, then there must be a cause. You<br>&gt; need to find out how to get a good and a bad state, the step to 
+<br>&gt; reproduce (e.g. first boot Windows, or whatever). Then check the<br>&gt; internal state of the device. This is the most important thing to<br>&gt; debug this kind of problems.<br><br>The worst thing is that I don't see any reason the &quot;good&quot; state is changing to the &quot;bad&quot; one... 
+<br>Headphones DID work few times, just after recompilation, reinstallation of modules and restarting alsasound. Headphones were working well as they sould work always but just after restarting Alsa or rebooting laptop they weren't working... (I wrote about this in previous mails) 
+<br><br>&gt; &gt; I mean now this problem is present - headphones are not working :P<br>&gt; &gt; codec#0 shows PIN_OUT (0x40) on headphones jack, but there is no sound...<br>&gt; <br>&gt; Which PIN node? The headphone jack takes usually PIN_HP (0xc0) with 
+<br>&gt; HP-overdrive bit. You should also trace the connection line between<br>&gt; the pin and DAC, and check whether all widgets are unmuted/adjusted<br>&gt; throughout the line.<br><br>I know that the hp jack should take PIN_HP, it is even set in my patch, but codec#0 shows: 
+<br>Pin-ctls: 0x40: OUT<br>for hp jack.<br>How can I chceck if all widgets between pin and DAC are unmuted?<br><br>&gt; &gt; I can tell you that when line-in is unmuted and master mixer and line-in mixers<br>&gt; &gt; are set to 100% I'm about to hear music... It's very very quiet and 
+<br>&gt; &gt; with high frequency noises...<br>&gt; <br>&gt; Sorry, it's not clear what you mean here. Please describe more<br>&gt; exactly what you did, step by step?<br><br>It's always when I'm writing &quot;there is no sound&quot;. Basically there is no sound, but: if you set PCM to 100% and unmute line-in and set it also to 100% (I'm using gnome-volume-manager), the sound can be heard. This sound is very very quiet and with high frequency noises. 
+<br><br>&gt; &gt; The most strange thing is that, as I wrote before, the sound was and<br>&gt; &gt; disappeard after<br>&gt; &gt; Alsa restart...<br>&gt; <br>&gt; Is the device state restored via alsactl automatically?<br>
+&gt; Usually, udev takes a charge to call &quot;alsactl restore&quot; after module<br>&gt; reloading. You can call &quot;alsactl save&quot; before restart, and call<br>&gt; &quot;alsactl restore&quot; after restart manually. 
+<br><br>I don't know if the device state is restored via alsactl automatically. How can i check it?<br>Dou you mean that after alsasound restart the mixers states should be set like before restart?<br><br>&gt; &gt; Does Alsa have any config files that could be changed during restart? 
+<br>&gt; &gt; What can be changed during Alsa restart?<br>&gt; <br>&gt; The device is set up to be muted per default (depending on the driver<br>&gt; implementation, though). You have to adjust it to unmuted state.<br>&gt; Calling &quot;alsactl restore&quot; would restore to the last saved state. 
+<br>&gt; <br>&gt; This whole thing depends on the distribution you use. I cannot tell<br>&gt; the exact detail.<br><br>As I wrote in the first mail I'm using Ubuntu 6.06 Dapper Drake with kernel <a href="http://2.6.17.11">
+2.6.17.11</a> (I had to remove earlier emails, because it would be too long email and it would be hard to read everything, all our mails are archived in the alsa-devel archive of course, on <a href="http://news.gmane.org/gmane.linux.alsa.devel">
+http://news.gmane.org/gmane.linux.alsa.devel</a> thread posted on 23 Sep 20:08).<br>And what about muted mixers per default... It's strange but every time I fully recompile Alsa (with make clean before recompilation) the default level of PCM (which is set after alsasound restart) is different. Once it's 45%, another time 80%, 60% or 10%... Strange... I think that earlier (with previous versions of Alsa) mixer was muted until I changed it or called alsaconf. 
+<br><br>&gt; &gt; I'll try to make the headphones working... What should I do if I'll do it? Any<br>&gt; &gt; special things to do?<br>&gt; <br>&gt; Has the headphone _ever_ worked? If not, we can do only blind shots.<br>
+<br>As I wrote - worked few times.<br>&gt; &gt; What about looking at datasheet... Well... I don't understand much,<br>&gt; &gt; I'm not a driver<br>&gt; &gt; programmer. I just can think and read and I'm trying to make <br>
+&gt; &gt; something knowing almost nothing :)<br>&gt; &gt;<br>&gt; &gt; Now I'm looking at datasheet and can only tell what I knew earlier:<br>&gt; &gt; PORT-A - SURR-OUT - 0x0e - surround, but in my case hp jack (?) [let 
+<br>&gt; &gt; say it can work]<br>&gt; <br>&gt; OK, that's good to know.<br>&gt; <br>&gt; &gt; PORT-B - MIC1 - 0x0d - mic jack or built-in mic [works]<br>&gt; &gt; PORT-C - LINE1 - 0x0c - line-in jack [propably works, I have nothing to test it] 
+<br>&gt; &gt; PORT-D - FRONT - 0x0b - front out (built-in speakers) [works]<br>&gt; <br>&gt; Is it muted automatically when HP is plugged, or it still continues to<br>&gt; output sounds? If it keeps sound, we'll need a pin detection (if 
+<br>&gt; auto-toggling feature is needed).<br><br>The FRONT is muted every time I plug something into hp jack, even if headphones are not working.<br><br>&gt; &gt; PORT-E - LINE2 - 0x0f - usually hp, but not in my case, has to be 
+<br>&gt; &gt; set to 0x24 (mic-input as I understand) or nothing does work...<br>&gt; <br>&gt; 0x24 is to set INPUT and VREF 80%. Yes, it's a usual setting for mic input.<br>&gt; <br>&gt; &gt; PORT-F - MIC2 - 0x10 - built-in mic or mic jack [works] 
+<br>&gt; <br>&gt; Hm, what is the difference from port-B?<br><br>PORT-B and PORT-F - I suppose that one is mic jack, 2nd is built-in mic (there is built-in mic which is muted, when something is plugged into mic jack).<br>
+<br>&gt; Takashi<br><br>Mariusz<br><br>P.S.<br>I have some problems sending mails to alsa-devel...<br><br>
+
+------=_Part_97755_32552853.1159888736310--
 
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 不倫・ワリキリ専門の無料出会いサイト『Love☆Match』
-　-----------------------------------------------------------------
-　　登録料・利用料　・・・・・・・・・【無料】
-　　メールの送受信　・・・・・・・・・【無料】
-　　ユーザーの検索　・・・・・・・・・【無料】
-　　掲示板の閲覧・書込み　・・・・・・【無料】
-　　画像交換・アップロード　・・・・・【無料】
-　　アドレス交換・電話番号交換　・・・【無料】
-　-----------------------------------------------------------------
-　　どれだけ使っても全て無料！　http://love-match.bz/pc/?02
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ いつでも女性ユーザーがいっぱい。その理由は？
-
-　-----------------------------------------------------------------
-　ＰＣ＆モバイルに対応！いつでもどこでも気軽に楽しめる！
-　-----------------------------------------------------------------
-　仕事中は携帯電話から、プライベートは自宅からのんびりと。
-　気になる相手といつでも繋がっているから、新密度も急速にＵＰ。
-　http://love-match.bz/pc/?02
-
-　-----------------------------------------------------------------
-　ＰＣから簡単プロフィール作成。ネット初心者でもラクラク参加ＯＫ
-　-----------------------------------------------------------------
-　面倒な登録は一切不要。パソコンから簡単なプロフィールを作成して
-　初心者の方や女性でもすぐに参加できます。
-　http://love-match.bz/pc/?02
-　-----------------------------------------------------------------
-　自由恋愛対応！直電・直メ交換支援ツール
-　-----------------------------------------------------------------
-　基本的にメールアドレスや電話番号は非公開ですが
-　仲良くなった人だけにメールアドレスや電話番号を教える事ができます。
-　http://love-match.bz/pc/?02
-
-　-----------------------------------------------------------------
-　写真アップロードに対応！好みの相手を素早くＣＨＥＣＫ！
-　-----------------------------------------------------------------
-　待ち合わせ場所にイメージとまったく違う人が来たら…。
-　ピュアックスなら会う前に写真交換ができるから、そんな不安も解消。
-　http://love-match.jp/pc/?06
-
-　-----------------------------------------------------------------
-　スレッド掲示板で秘密のパートナー検索も効率ＵＰ！
-　-----------------------------------------------------------------
-　メインの掲示板のほかにスレッド型の掲示板を設置。
-　メル友から秘密のパートナーまで目的別のユーザーが集う掲示板です。
-　http://love-match.jp/pc/?06
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 毎日500人近くのユーザーが続々参加中！！
-
-□-----------------------------------------------------------------
-
-　リエ（２１歳/会社員）
-　いつも１人でエッチなことを考えてます。
-　メールだといろいろ話せるんだけど、実際に会うとあまりしゃべれなく
-　なっちゃうので、盛り上げてくれるような楽しい男の人いないかな？
-　引っ込み思案のせいか、男性経験はあまり無いんです。
-　優しく＆楽しくリードしてくれる男性からのメール待ってます。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　真菜（２４歳/フリーター）
-　彼氏が浮気してて超アタマきたっ！まなだって遊びたい盛りだし、ずっと
-　ガマンしてたのにさ！かっこいい人見つけて思いっきりふってやるつもりで
-　登録してみた（笑）
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　みさ（３４歳/専業主婦）
-　殆ど家に帰ってこない仕事人間のだんなさまと二人きりの毎日で、ほんと
-　寂しい思いをしています。年下の男の子がいれば仲良くなりたいな。
-　年下の人とは付き合ったことがないので興味津々です(^^)
-　[写真無し] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　恭子（２８歳/会社員）
-　彼氏とはいつも同じようなセックスばかりでかなり冷め気味です。
-　誰かあたしと熱いセックスを楽しみませんか？めんどくさい事は
-　言いません。ただ、いつもと違うドキドキするような事がしたい
-　だけなんです。
-　[写真無し] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　ななこ（２８歳/主婦）
-　半年前にだんなと別れて今は×1です。
-　夜のお仕事なので、昼間まったりと過ごしませんか？
-　心身ともに疲れ気味で、今、激しく癒されたいです。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　祥子（３１歳/クリエイター）
-　平日は18時くらいまでは大体仕事してるので、その後に食事したり
-　楽しく飲んだりできるパートナー希望です。年上でも年下でも
-　かまいませんので気軽にメールを送って頂けると嬉しいです。
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-　ゅヵ`（２０歳/学生）
-　まずゎ会ってみないとはじまらなぃょね？！
-　横浜近辺の人で、いろんな意味でオトナな人は
-　プロフ付きでめぇる送って☆
-　[写真有り] http://love-match.bz/pc/?02
-
-□-----------------------------------------------------------------
-
-
-   出会いサイトのサクラに騙されないように↓
-　┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-　　【裏】無料の出会い情報
-　　-------------------------------------------------------------
-　　お金と時間を持て余している人妻の間で、噂になってるあのサイト
-　　[登録・利用料全て無料]　http://love-match.bz/pc/?02
-　　-------------------------------------------------------------
-　　彼女達が求めているのはこんな男性です。
-　　?年上女性にリードしてもらいたい、経験少なめの男性
-　　?体力・テクニックに自信が有る男性
-　　男性会員が不足しています。我こそは、と思う方は今すぐ参加！
-　　[登録・利用料全て無料]　http://love-match.bz/pc/?02
-　┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-お問い合わせ先はこちら↓
-広東省茂名市人民大街3-6-4-533
-友誼網絡公司
-139-3668-7892
-
-
-
-
-
+--===============2004514819==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============2004514819==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2004514819==--
