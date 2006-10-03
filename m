@@ -1,7 +1,7 @@
 From: Remy Bruno <remy.bruno@trinnov.com>
-Subject: RME 9632
-Date: Tue, 3 Oct 2006 12:37:12 +0200
-Message-ID: <20061003103712.GA12508@trinnov.com>
+Subject: Intel HDA 82801G
+Date: Tue, 3 Oct 2006 12:55:34 +0200
+Message-ID: <20061003105534.GA13274@trinnov.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -21,37 +21,52 @@ List-Id: alsa-devel@alsa-project.org
 
 Hello,
 
-I'm having a strange problem with an RME HDSP 9632 card I recently bought. I've
-contacted RME, but would like to know if somebody here is having the same
-problem, or if there is a known issue about this (and if possible, a
-workaround).
+I've recently installed alsa drivers 1.0.13 on my laptop (its brand is Medion),
+and I don't get the sound to work on it. I saw a recent post on this subject
+(somedy having the same card as me), but I didn't see a follow-up after the
+first answer, so I'm sending this email.
 
-Start of the story: a couple of monthes ago (let's say about one year, but I'm
-not sure of the time-scale), I got a RME HDSP 9632. Alsa driver was working
-perfectly, I got the 12 I/O (16 with the additionnal add-on cards), the mixer
-matrix worked as expected (mixer params = src,dest,32768 with src=dest+16 for
-sending playback channels to audio outputs). After an hardware problem with the
-card (I plugged the analog add-on card while it was running, which burned the
-card!), I had to get a new one. I didn't manage to get this new card work, so I
-suspected a specific problem with this new card. More recently (one week ago),
-I needed to use an RME9632, so I got a new one, and I'm having about the same
-problem than with the 2nd one:
-- card does not work in master. Everything is as if it ran at 24kHz (sound
-  plays slowly), even if the card pretends to run at the desired sample rate
-  (say 44.1 or 48kHz). So master mode is unusable.
-  Master worked with the 1st card.
-- in slave, it seems to be more or less OK, but the matrix behavior is
-  extremely weird. For sending playback channels 9,10,11,12 on outputs
-  9,10,11,12 (SPDIF & analog), I need to put the value 32768 in the following
-  coefficients: (62, 4), (1, 6), (24, 6), (15, 7)
-  With the first (now dead) card, I used the normal following matrix
-  coefficients: (24,8) (25,9), (26, 10), (27, 11)
+lspci -nv says:
+00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 161f:2054
+        Flags: fast devsel, IRQ 21
+        Memory at d5300000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Any idea?
+Codec info:
+* vendor 0x10ec0883, subsystem 0x161fd82b, revision 0x100002
+* vendor 0x11c11040, subsystem 0x11c10001, revision 0x100200
+I think the second one is the modem part (which I would like to get working
+too, but I think the two problems are linked together).
 
-Thanks
+The card is seen as an hda-intel, but the driver fails to initialize it. A
+previous version of the alsa driver (1.0.11) successfuly loaded the hda-intel
+driver (but telling that it was an unknown model), but I got no sound (of
+course I chcked the mixer settings). With 1.0.13, I get the following driver
+messages:
 
-Remy
+Oct  3 11:20:36 localhost ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 21
+Oct  3 11:20:36 localhost PCI: Setting latency timer of device 0000:00:1b.0 to 64
+Oct  3 11:20:36 localhost hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+Oct  3 11:20:36 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/hda_codec.c:607: HDA: codec info: vendor 0x10ec0883, subsystem 0x161fd82b, revision 0x100002
+Oct  3 11:20:38 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/hda_codec.c:607: HDA: codec info: vendor 0x11c11040, subsystem 0x11c10001, revision 0x100200
+Oct  3 11:20:38 localhost ALSA /usr/local/src/alsa-driver-1.0.13/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:245: si3054: cannot initialize. EXT MID = 0000
+Oct  3 11:20:38 localhost HDA Intel: probe of 0000:00:1b.0 failed with error -13
+
+The two "HDA: codec info" lines were added by me to see the info on the
+detected codecs (the /proc/asound/card0/codec* files are not available as the
+card is not recognized)
+
+I tried the model=acer option of the driver as suggested several times on this
+list, but with no success (and with both versions of alsa).
+
+Thank you,
+
+Remy Bruno
 
 
 -------------------------------------------------------------------------
