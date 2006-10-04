@@ -1,15 +1,11 @@
-From: Jochen Voss <voss@seehuhn.de>
-Subject: [PATCH try2 1/2] enable capture from line-in and CD on
-	Revolution 5.1
-Date: Wed, 4 Oct 2006 12:18:47 +0100
-Message-ID: <20061004111847.GA2395@tarte.seehuhn.de>
-References: <20061003232655.GA1871@tarte.seehuhn.de>
-	<20061003232755.GB1871@tarte.seehuhn.de>
-	<s5h8xjwl5u2.wl%tiwai@suse.de>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH] Repair snd-usb-usx2y for usb 2.6.18; Take 2
+Date: Wed, 4 Oct 2006 13:19:54 +0200
+Message-ID: <200610041319.54591.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2143295966=="
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_aj5IFDaBfePdjJb"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h8xjwl5u2.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,266 +15,404 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2143295966==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+--Boundary-00=_aj5IFDaBfePdjJb
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-
-
---XsQoSWH+UP9D9v3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Enable capture from line-in and CD on the Revolution 5.1 card.
-
-This patch adds support for switching between the 5 input channels of
-the AK5365 ADC and modifies the Revolution 5.1 driver to make use of
-this facility.  Previously the capture channel was fixed to channel 0
-(microphone on the Revolution 5.1 card).
-
-Signed-off-by: Jochen Voss <voss@seehuhn.de>
----
 
 Hi Takashi,
 
-thanks for reviewing.  A fixed patch is below.
+In 2.6.18 urb->start_frame rolls over beyond INT_MAX.
+Without this patch, snd-usb-usx2y can not work on 2.6.18.
 
-On Wed, Oct 04, 2006 at 12:43:01PM +0200, Takashi Iwai wrote:
-> > +	while (num_names<5 && input_names[num_names])
->=20
-> White space around '<', and define a constant for 5, please.
+Patch is split into two parts:
+ 1) usx2y_usb2-6-18_stable-kernel.patch for stable kernel and
+    stable alsa-kernel.
 
-fixed
+ 2) usx2y_usb2-6-18_stable-driver.patch for stable alsa-driver.
 
-> > +	if (idx >=3D num_names) return -1;
->=20
-> Break a line, and return a meaningful error code, e.g. -EINVAL.
+2) needs 1) to be applied first.
 
-ok
+      Karsten
 
-> > +	val =3D snd_akm4xxx_get(ak, chip, addr)&mask;
->=20
-> Put spaces around '&'.
+--Boundary-00=_aj5IFDaBfePdjJb
+Content-Type: text/x-diff; charset="us-ascii";
+	name="usx2y_usb2-6-18_stable-kernel.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="usx2y_usb2-6-18_stable-kernel.patch"
 
-fixed in two places
+Repair snd-usb-usx2y for usb 2.6.18
 
-> > +        ucontrol->value.enumerated.item[0] =3D val;
->=20
-> Indentation?
+urb->start_frame rolls over beyond MAX_INT now.
+This is for stable kernel and stable alsa.
 
-changed eight spaces into a tab
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
-> > +	if (val !=3D oval)
-> > +		snd_akm4xxx_write(ak, chip, addr, val);
-> > +	return 0;
->=20
-> The put callback should return 1 if the value is changed and 0 if the
-> value is unchanged.  That is, such as:
->=20
-> 	if (val !=3D oval) {
-> 		snd_akm4xxx_write(ak, chip, addr, val);
-> 		return 1;
-> 	}
-> 	return 0;
 
-fixed
 
-> >  		if (ak->type =3D=3D SND_AK5365 && (idx % 2) =3D=3D 0) {
-> >  			if (! ak->adc_info ||=20
-> > -			    ! ak->adc_info[mixer_ch].switch_name)
-> > +			    ! ak->adc_info[mixer_ch].switch_name) {
-> >  				knew.name =3D "Capture Switch";
-> > -			else
-> > +				knew.index =3D mixer_ch + ak->idx_offset * 2;
-> > +			} else {
-> >  				knew.name =3D ak->adc_info[mixer_ch].switch_name;
-> > +			}
->=20
-> Don't put braces around a single-line if.
-
-I found it ugly to have braces around the two line if branch but no
-braces around the one line else branch.  But I fixed it anyway.
-
----
-
-diff -ur alsa-driver-hg20060929.orig/alsa-kernel/i2c/other/ak4xxx-adda.c al=
-sa-driver-hg20060929.p1/alsa-kernel/i2c/other/ak4xxx-adda.c
---- alsa-driver-hg20060929.orig/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-09=
--09 01:00:11.000000000 +0100
-+++ alsa-driver-hg20060929.p1/alsa-kernel/i2c/other/ak4xxx-adda.c	2006-10-0=
-4 12:04:49.189233848 +0100
-@@ -513,6 +513,66 @@
- 	return change;
- }
-=20
-+#define AK5365_NUM_INPUTS 5
-+
-+static int ak4xxx_capture_source_info(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
-+	int mixer_ch =3D AK_GET_SHIFT(kcontrol->private_value);
-+	const char **input_names;
-+	int  num_names, idx;
-+
-+	input_names =3D ak->adc_info[mixer_ch].input_names;
-+
-+	num_names =3D 0;
-+	while (num_names < AK5365_NUM_INPUTS && input_names[num_names])
-+		++num_names;
-+=09
-+	uinfo->type =3D SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count =3D 1;
-+	uinfo->value.enumerated.items =3D num_names;
-+	idx =3D uinfo->value.enumerated.item;
-+	if (idx >=3D num_names)
-+		return -EINVAL;
-+	strncpy(uinfo->value.enumerated.name, input_names[idx],
-+		sizeof(uinfo->value.enumerated.name));
-+	return 0;
-+}
-+
-+static int ak4xxx_capture_source_get(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
-+	int chip =3D AK_GET_CHIP(kcontrol->private_value);
-+	int addr =3D AK_GET_ADDR(kcontrol->private_value);
-+	int mask =3D AK_GET_MASK(kcontrol->private_value);
-+	unsigned char val;
-+
-+	val =3D snd_akm4xxx_get(ak, chip, addr) & mask;
-+	ucontrol->value.enumerated.item[0] =3D val;
-+	return 0;
-+}
-+
-+static int ak4xxx_capture_source_put(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_akm4xxx *ak =3D snd_kcontrol_chip(kcontrol);
-+	int chip =3D AK_GET_CHIP(kcontrol->private_value);
-+	int addr =3D AK_GET_ADDR(kcontrol->private_value);
-+	int mask =3D AK_GET_MASK(kcontrol->private_value);
-+	unsigned char oval, val;
-+
-+	oval =3D snd_akm4xxx_get(ak, chip, addr);
-+	val =3D oval & ~mask;
-+	val |=3D ucontrol->value.enumerated.item[0] & mask;
-+	if (val !=3D oval) {
-+		snd_akm4xxx_write(ak, chip, addr, val);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- /*
-  * build AK4xxx controls
-  */
-@@ -647,9 +707,10 @@
-=20
- 		if (ak->type =3D=3D SND_AK5365 && (idx % 2) =3D=3D 0) {
- 			if (! ak->adc_info ||=20
--			    ! ak->adc_info[mixer_ch].switch_name)
-+			    ! ak->adc_info[mixer_ch].switch_name) {
- 				knew.name =3D "Capture Switch";
--			else
-+				knew.index =3D mixer_ch + ak->idx_offset * 2;
+--- ./alsa-kernel/usb/usx2y/usbusx2yaudio.c_	2006-06-29 23:25:30.000000000 +0200
++++ ./alsa-kernel/usb/usx2y/usbusx2yaudio.c	2006-10-03 15:25:55.000000000 +0200
+@@ -322,7 +322,7 @@
+ 		usX2Y_error_urb_status(usX2Y, subs, urb);
+ 		return;
+ 	}
+-	if (likely((0xFFFF & urb->start_frame) == usX2Y->wait_iso_frame))
++	if (likely(urb->start_frame == usX2Y->wait_iso_frame))
+ 		subs->completed_urb = urb;
+ 	else {
+ 		usX2Y_error_sequence(usX2Y, subs, urb);
+@@ -335,13 +335,9 @@
+ 		    atomic_read(&capsubs->state) >= state_PREPARED &&
+ 		    (playbacksubs->completed_urb ||
+ 		     atomic_read(&playbacksubs->state) < state_PREPARED)) {
+-			if (!usX2Y_usbframe_complete(capsubs, playbacksubs, urb->start_frame)) {
+-				if (nr_of_packs() <= urb->start_frame &&
+-				    urb->start_frame <= (2 * nr_of_packs() - 1))	// uhci and ohci
+-					usX2Y->wait_iso_frame = urb->start_frame - nr_of_packs();
+-				else
+-					usX2Y->wait_iso_frame +=  nr_of_packs();
+-			} else {
++			if (!usX2Y_usbframe_complete(capsubs, playbacksubs, urb->start_frame))
++				usX2Y->wait_iso_frame += nr_of_packs();
++			else {
+ 				snd_printdd("\n");
+ 				usX2Y_clients_stop(usX2Y);
+ 			}
+@@ -495,7 +491,6 @@
+ 		if (subs != NULL && atomic_read(&subs->state) >= state_PREPARED)
+ 			goto start;
+ 	}
+-	usX2Y->wait_iso_frame = -1;
+ 
+  start:
+ 	usX2Y_subs_startup(subs);
+@@ -516,10 +511,9 @@
+ 				snd_printk (KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
+ 				err = -EPIPE;
+ 				goto cleanup;
+-			} else {
+-				if (0 > usX2Y->wait_iso_frame)
 +			} else
- 				knew.name =3D ak->adc_info[mixer_ch].switch_name;
- 			knew.info =3D ak4xxx_switch_info;
- 			knew.get =3D ak4xxx_switch_get;
-@@ -662,6 +723,26 @@
- 			err =3D snd_ctl_add(ak->card, snd_ctl_new1(&knew, ak));
- 			if (err < 0)
- 				return err;
-+
-+			memset(&knew, 0, sizeof(knew));
-+			knew.name =3D ak->adc_info[mixer_ch].selector_name;
-+			if (! knew.name) {
-+				knew.name =3D "Capture Channel";
-+				knew.index =3D mixer_ch + ak->idx_offset * 2;
-+			}
-+
-+			knew.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER;
-+			knew.info =3D ak4xxx_capture_source_info;
-+			knew.get =3D ak4xxx_capture_source_get;
-+			knew.put =3D ak4xxx_capture_source_put;
-+			knew.access =3D 0;
-+			/* input selector control: reg. 1, bits 0-2.
-+			 * mis-use 'shift' to pass mixer_ch */
-+			knew.private_value
-+				=3D AK_COMPOSE(idx/2, 1, mixer_ch, 0x07);
-+			err =3D snd_ctl_add(ak->card, snd_ctl_new1(&knew, ak));
-+			if (err < 0)
-+				return err;
++				if (i == 0)
+ 					usX2Y->wait_iso_frame = urb->start_frame;
+-			}
+ 			urb->transfer_flags = 0;
+ 		} else {
+ 			atomic_set(&subs->state, state_STARTING1);
+--- ./alsa-kernel/usb/usx2y/usx2yhwdeppcm.c_	2006-10-03 14:05:12.000000000 +0200
++++ ./alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	2006-10-03 15:27:18.000000000 +0200
+@@ -243,7 +243,7 @@
+ 		usX2Y_error_urb_status(usX2Y, subs, urb);
+ 		return;
+ 	}
+-	if (likely((0xFFFF & urb->start_frame) == usX2Y->wait_iso_frame))
++	if (likely(urb->start_frame == usX2Y->wait_iso_frame))
+ 		subs->completed_urb = urb;
+ 	else {
+ 		usX2Y_error_sequence(usX2Y, subs, urb);
+@@ -256,13 +256,9 @@
+ 	if (capsubs->completed_urb && atomic_read(&capsubs->state) >= state_PREPARED &&
+ 	    (NULL == capsubs2 || capsubs2->completed_urb) &&
+ 	    (playbacksubs->completed_urb || atomic_read(&playbacksubs->state) < state_PREPARED)) {
+-		if (!usX2Y_usbpcm_usbframe_complete(capsubs, capsubs2, playbacksubs, urb->start_frame)) {
+-			if (nr_of_packs() <= urb->start_frame &&
+-			    urb->start_frame <= (2 * nr_of_packs() - 1))	// uhci and ohci
+-				usX2Y->wait_iso_frame = urb->start_frame - nr_of_packs();
+-			else
+-				usX2Y->wait_iso_frame +=  nr_of_packs();
+-		} else {
++		if (!usX2Y_usbpcm_usbframe_complete(capsubs, capsubs2, playbacksubs, urb->start_frame))
++			usX2Y->wait_iso_frame += nr_of_packs();
++		else {
+ 			snd_printdd("\n");
+ 			usX2Y_clients_stop(usX2Y);
  		}
-=20
- 		idx +=3D num_stereo;
-diff -ur alsa-driver-hg20060929.orig/alsa-kernel/include/ak4xxx-adda.h alsa=
--driver-hg20060929.p1/alsa-kernel/include/ak4xxx-adda.h
---- alsa-driver-hg20060929.orig/alsa-kernel/include/ak4xxx-adda.h	2006-09-0=
-9 01:00:11.000000000 +0100
-+++ alsa-driver-hg20060929.p1/alsa-kernel/include/ak4xxx-adda.h	2006-10-03 =
-20:37:46.940264000 +0100
-@@ -50,6 +50,8 @@
- 	char *name;		/* capture gain volume label */
- 	char *switch_name;	/* capture switch */
- 	unsigned int num_channels;
-+	char *selector_name;	/* capture source select label */
-+	const char **input_names; /* capture source names (NULL terminated) */
- };
-=20
- struct snd_akm4xxx {
-diff -ur alsa-driver-hg20060929.orig/alsa-kernel/pci/ice1712/revo.c alsa-dr=
-iver-hg20060929.p1/alsa-kernel/pci/ice1712/revo.c
---- alsa-driver-hg20060929.orig/alsa-kernel/pci/ice1712/revo.c	2006-09-09 0=
-1:00:11.000000000 +0100
-+++ alsa-driver-hg20060929.p1/alsa-kernel/pci/ice1712/revo.c	2006-10-03 20:=
-37:46.944264000 +0100
-@@ -107,11 +107,19 @@
- 	AK_DAC("PCM Rear Playback Volume", 2),
- };
-=20
-+static const char *revo51_adc_input_names[] =3D {
-+	"Mic",
-+	"Line",
-+	"CD",
-+	NULL
-+};
-+
- static struct snd_akm4xxx_adc_channel revo51_adc[] =3D {
- 	{
- 		.name =3D "PCM Capture Volume",
- 		.switch_name =3D "PCM Capture Switch",
--		.num_channels =3D 2
-+		.num_channels =3D 2,
-+		.input_names =3D revo51_adc_input_names
- 	},
- };
-=20
+@@ -433,7 +429,6 @@
+ 		if (subs != NULL && atomic_read(&subs->state) >= state_PREPARED)
+ 			goto start;
+ 	}
+-	usX2Y->wait_iso_frame = -1;
+ 
+  start:
+ 	usX2Y_usbpcm_subs_startup(subs);
+@@ -459,7 +454,7 @@
+ 						goto cleanup;
+ 					}  else {
+ 						snd_printdd("%i\n", urb->start_frame);
+-						if (0 > usX2Y->wait_iso_frame)
++						if (u == 0)
+ 							usX2Y->wait_iso_frame = urb->start_frame;
+ 					}
+ 					urb->transfer_flags = 0;
 
---XsQoSWH+UP9D9v3l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--Boundary-00=_aj5IFDaBfePdjJb
+Content-Type: text/x-diff; charset="us-ascii";
+	name="usx2y_usb2-6-18_stable-driver.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="usx2y_usb2-6-18_stable-driver.patch"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+Repair snd-usb-usx2y for usb 2.6.18
 
-iD8DBQFFI5iXf+iD8yEbECURAr/VAJ9a5Rq0hFUWkY/XzWvYdMVq1i5ncwCfan6F
-mpJsxfJlYYco/0yPVdF+sOo=
-=89Rp
------END PGP SIGNATURE-----
+urb->start_frame rolls over beyond MAX_INT now.
+This is for stable alsa-driver.
 
---XsQoSWH+UP9D9v3l--
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
 
---===============2143295966==
+
+--- ./alsa-driver/usb/usx2y/usx2yhwdeppcm.patch_	2006-06-29 23:22:39.000000000 +0200
++++ ./alsa-driver/usb/usx2y/usx2yhwdeppcm.patch	2006-10-03 15:57:26.000000000 +0200
+@@ -1,6 +1,6 @@
+---- ../../alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	2005-11-22 14:37:40.000000000 +0100
+-+++ usx2yhwdeppcm.c	2005-11-22 14:40:52.000000000 +0100
+-@@ -1,3 +1,14 @@
++--- ../../../alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	2006-10-03 15:27:18.000000000 +0200
+++++ usx2yhwdeppcm.c	2006-10-03 15:48:04.000000000 +0200
++@@ -1,3 +1,16 @@
+ +#include <linux/config.h>
+ +#include <linux/version.h>
+ +
+@@ -12,10 +12,12 @@
+ +#define __NO_VERSION__
+ +#endif
+ +
+++#define USB_2_6_18 (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 18))
+++
+  /*
+   *   This program is free software; you can redistribute it and/or modify
+   *   it under the terms of the GNU General Public License as published by
+-@@ -150,7 +161,11 @@
++@@ -150,7 +163,11 @@
+  {
+  	int pack;
+  	for (pack = 0; pack < nr_of_packs(); ++pack) {
+@@ -27,7 +29,7 @@
+  		if (NULL != subs) {
+  			struct snd_usX2Y_hwdep_pcm_shm *shm = subs->usX2Y->hwdep_pcm_shm;
+  			int head = shm->captured_iso_head + 1;
+-@@ -226,7 +241,11 @@
++@@ -226,7 +243,11 @@
+  }
+  
+  
+@@ -39,7 +41,39 @@
+  {
+  	struct snd_usX2Y_substream *subs = urb->context;
+  	struct usX2Ydev *usX2Y = subs->usX2Y;
+-@@ -294,7 +313,11 @@
++@@ -243,7 +264,11 @@
++ 		usX2Y_error_urb_status(usX2Y, subs, urb);
++ 		return;
++ 	}
++-	if (likely(urb->start_frame == usX2Y->wait_iso_frame))
+++	if (likely((
+++#if !USB_2_6_18
+++			   0xFFFF &
+++#endif
+++			   urb->start_frame) == usX2Y->wait_iso_frame))
++ 		subs->completed_urb = urb;
++ 	else {
++ 		usX2Y_error_sequence(usX2Y, subs, urb);
++@@ -256,9 +281,15 @@
++ 	if (capsubs->completed_urb && atomic_read(&capsubs->state) >= state_PREPARED &&
++ 	    (NULL == capsubs2 || capsubs2->completed_urb) &&
++ 	    (playbacksubs->completed_urb || atomic_read(&playbacksubs->state) < state_PREPARED)) {
++-		if (!usX2Y_usbpcm_usbframe_complete(capsubs, capsubs2, playbacksubs, urb->start_frame))
++-			usX2Y->wait_iso_frame += nr_of_packs();
++-		else {
+++		if (!usX2Y_usbpcm_usbframe_complete(capsubs, capsubs2, playbacksubs, urb->start_frame)) {
+++#if !USB_2_6_18
+++			if (nr_of_packs() <= urb->start_frame &&
+++			    urb->start_frame <= (2 * nr_of_packs() - 1))	// uhci and ohci
+++				usX2Y->wait_iso_frame = urb->start_frame - nr_of_packs();
+++			else
+++#endif
+++				usX2Y->wait_iso_frame +=  nr_of_packs();
+++		} else {
++ 			snd_printdd("\n");
++ 			usX2Y_clients_stop(usX2Y);
++ 		}
++@@ -290,7 +321,11 @@
+  	usX2Y->prepare_subs = NULL;
+  }
+  
+@@ -51,7 +85,7 @@
+  {
+  	struct snd_usX2Y_substream *subs = urb->context;
+  	struct usX2Ydev *usX2Y = subs->usX2Y;
+-@@ -311,7 +334,11 @@
++@@ -307,7 +342,11 @@
+  		wake_up(&usX2Y->prepare_wait_queue);
+  	}
+  
+@@ -63,7 +97,29 @@
+  }
+  
+  /*
+-@@ -688,23 +715,43 @@
++@@ -429,6 +468,9 @@
++ 		if (subs != NULL && atomic_read(&subs->state) >= state_PREPARED)
++ 			goto start;
++ 	}
+++#if !USB_2_6_18
+++	usX2Y->wait_iso_frame = -1;
+++#endif
++ 
++  start:
++ 	usX2Y_usbpcm_subs_startup(subs);
++@@ -454,7 +496,11 @@
++ 						goto cleanup;
++ 					}  else {
++ 						snd_printdd("%i\n", urb->start_frame);
+++#if USB_2_6_18
++ 						if (u == 0)
+++#else
+++						if (0 > usX2Y->wait_iso_frame)
+++#endif
++ 							usX2Y->wait_iso_frame = urb->start_frame;
++ 					}
++ 					urb->transfer_flags = 0;
++@@ -683,23 +729,43 @@
+  }
+  
+  
+@@ -108,7 +164,7 @@
+  }
+  
+  
+-@@ -733,8 +780,14 @@
++@@ -728,8 +794,14 @@
+  		return -ENODEV;
+  	}
+  	area->vm_ops = &snd_usX2Y_hwdep_pcm_vm_ops;
+--- ./alsa-driver/usb/usx2y/usbusx2yaudio.patch_	2006-06-29 23:22:39.000000000 +0200
++++ ./alsa-driver/usb/usx2y/usbusx2yaudio.patch	2006-10-03 15:54:50.000000000 +0200
+@@ -1,6 +1,16 @@
+---- ../../alsa-kernel/usb/usx2y/usbusx2yaudio.c	2005-11-13 15:20:50.000000000 +0100
+-+++ usbusx2yaudio.c	2005-11-13 19:07:00.000000000 +0100
+-@@ -306,7 +306,11 @@
++--- ../../../alsa-kernel/usb/usx2y/usbusx2yaudio.c	2006-10-03 15:25:55.000000000 +0200
+++++ usbusx2yaudio.c	2006-10-03 15:40:49.000000000 +0200
++@@ -67,6 +67,9 @@
++ #endif
++ 
++ 
+++#define USB_2_6_18 (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 18))
+++
+++
++ static int usX2Y_urb_capt_retire(struct snd_usX2Y_substream *subs)
++ {
++ 	struct urb	*urb = subs->completed_urb;
++@@ -306,7 +309,11 @@
+  	usX2Y_clients_stop(usX2Y);
+  }
+  
+@@ -12,7 +22,39 @@
+  {
+  	struct snd_usX2Y_substream *subs = urb->context;
+  	struct usX2Ydev *usX2Y = subs->usX2Y;
+-@@ -349,8 +353,12 @@
++@@ -322,7 +329,11 @@
++ 		usX2Y_error_urb_status(usX2Y, subs, urb);
++ 		return;
++ 	}
++-	if (likely(urb->start_frame == usX2Y->wait_iso_frame))
+++	if (likely((
+++#if !USB_2_6_18
+++			   0xFFFF &
+++#endif
+++			   urb->start_frame) == usX2Y->wait_iso_frame))
++ 		subs->completed_urb = urb;
++ 	else {
++ 		usX2Y_error_sequence(usX2Y, subs, urb);
++@@ -335,9 +346,15 @@
++ 		    atomic_read(&capsubs->state) >= state_PREPARED &&
++ 		    (playbacksubs->completed_urb ||
++ 		     atomic_read(&playbacksubs->state) < state_PREPARED)) {
++-			if (!usX2Y_usbframe_complete(capsubs, playbacksubs, urb->start_frame))
++-				usX2Y->wait_iso_frame += nr_of_packs();
++-			else {
+++			if (!usX2Y_usbframe_complete(capsubs, playbacksubs, urb->start_frame)) {
+++#if !USB_2_6_18
+++				if (nr_of_packs() <= urb->start_frame &&
+++				    urb->start_frame <= (2 * nr_of_packs() - 1))	// uhci and ohci
+++					usX2Y->wait_iso_frame = urb->start_frame - nr_of_packs();
+++				else
+++#endif
+++					usX2Y->wait_iso_frame +=  nr_of_packs();
+++			} else {
++ 				snd_printdd("\n");
++ 				usX2Y_clients_stop(usX2Y);
++ 			}
++@@ -345,8 +362,12 @@
+  	}
+  }
+  
+@@ -25,7 +67,7 @@
+  {
+  	int s, u;
+  	for (s = 0; s < 4; s++) {
+-@@ -370,7 +378,11 @@
++@@ -366,7 +387,11 @@
+  	usX2Y->prepare_subs = NULL;
+  }
+  
+@@ -37,7 +79,7 @@
+  {
+  	struct snd_usX2Y_substream *subs = urb->context;
+  	struct usX2Ydev *usX2Y = subs->usX2Y;
+-@@ -382,7 +394,11 @@
++@@ -378,7 +403,11 @@
+  			wake_up(&usX2Y->prepare_wait_queue);
+  		}
+  
+@@ -49,7 +91,30 @@
+  }
+  
+  static void usX2Y_subs_prepare(struct snd_usX2Y_substream *subs)
+-@@ -663,7 +679,11 @@
++@@ -491,7 +520,9 @@
++ 		if (subs != NULL && atomic_read(&subs->state) >= state_PREPARED)
++ 			goto start;
++ 	}
++-
+++#if !USB_2_6_18
+++	usX2Y->wait_iso_frame = -1;
+++#endif
++  start:
++ 	usX2Y_subs_startup(subs);
++ 	for (i = 0; i < NRURBS; i++) {
++@@ -512,7 +543,11 @@
++ 				err = -EPIPE;
++ 				goto cleanup;
++ 			} else
+++#if USB_2_6_18
++ 				if (i == 0)
+++#else
+++				if (0 > usX2Y->wait_iso_frame)
+++#endif
++ 					usX2Y->wait_iso_frame = urb->start_frame;
++ 			urb->transfer_flags = 0;
++ 		} else {
++@@ -657,7 +692,11 @@
+  };
+  #define NOOF_SETRATE_URBS ARRAY_SIZE(SetRate48000)
+  
+@@ -61,7 +126,7 @@
+  {
+  	struct usX2Ydev *usX2Y = urb->context;
+  	
+-@@ -1023,10 +1043,18 @@
++@@ -1017,10 +1056,18 @@
+  
+  	if (0 > (err = usX2Y_audio_stream_new(card, 0xA, 0x8)))
+  		return err;
+
+--Boundary-00=_aj5IFDaBfePdjJb
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -289,7 +423,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2143295966==
+--Boundary-00=_aj5IFDaBfePdjJb
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -300,4 +434,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2143295966==--
+--Boundary-00=_aj5IFDaBfePdjJb--
