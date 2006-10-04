@@ -1,14 +1,11 @@
-From: Remy Bruno <remy.bruno@trinnov.com>
-Subject: Re: RME 9632
-Date: Wed, 4 Oct 2006 11:41:16 +0200
-Message-ID: <20061004094116.GA9390@trinnov.com>
-References: <17698.30808.300932.447608@boromir.ci.tuwien.ac.at>
+From: "Lubomir Schmidt" <017623780966@o2online.de>
+Subject: Prolem with ALC260 soundcard
+Date: Wed, 4 Oct 2006 12:02:37 +0200
+Message-ID: <200610041002.k94A2bYt030190@mail04.o2online.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <17698.30808.300932.447608@boromir.ci.tuwien.ac.at>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,40 +15,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, I downgraded the firmware and it works now perfectly!
-Thanks a lot!
+Hello, i have an acer c204 Notebook with an ALC260 chip inside. Since one month i have sound on it, because of the ALC883 patch for acer notebooks. When i set "options snd-hda-intel model=acer" in the modprobe.conf, then i have sound over my headphones, but no sound is comming out of the speaker. I olso saw, that when i put my headphones inside the mic, then i olso have sound. That sound have not as good quality as that from the headphones jack and its louder.
+Can someone tell me what i could do to get sound out of my speaker?
 
-So to summarize:
-HDSP9632 with rev <= 151 works OK with current alsa drivers
-HDSP9632 with rev >= 152 doesn't work with current alsa drivers
+At the moment i use the 2.6.17 kernel with alsa 1.0.13
 
-Regards
-Remy
+Thanks
 
-PS: I just received an email from RME, maybe it will allow to modify the alsa
-driver to support rev >= 152, but the simplest for now is to downgrade the
-firmware.
 
-On Tuesday 03 October at 16:48, Karl Grill wrote:
-> I'm not quite sure (only started working on this), but your problem
-> might be a firmware incompatibility. If so, it might help to downgrade
-> (using http://rme-audio.com/download/treiber_archiv/fut_win_dsp.zip ).
-> Could you supply your output from lspci?
-> regards
-> kg
-> 
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> opinions on IT & business topics through brief surveys -- and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
