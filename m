@@ -1,15 +1,20 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-kernel hg repo needs to include i2c-id.h
-Date: Thu, 5 Oct 2006 13:01:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610051300380.9351@tm8103.perex-int.cz>
-References: <1159968218.26829.60.camel@localhost.localdomain>
-	<Pine.LNX.4.61.0610042032160.9297@tm8103-a.perex-int.cz>
-	<s5hodsroy6n.wl%tiwai@suse.de>
+Subject: Re: new rollback commits (was Re: [alsa-cvslog]
+ ROLLBACK! alsa-kernel: ac97_codec (ALC655): add EAPD hack for MSI L725
+ laptop)
+Date: Thu, 5 Oct 2006 13:11:51 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610051305180.9351@tm8103.perex-int.cz>
+References: <ALOGGER1160034648.34@alsa-project.org>
+	<m2lknv6pju.fsf@vador.mandriva.com> <s5hpsd7oybr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hodsroy6n.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13252249
+	for <alsa-devel@alsa-project.org>;
+	Thu,  5 Oct 2006 13:11:52 +0200 (MEST)
+In-Reply-To: <s5hpsd7oybr.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,26 +25,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jean Delvare <khali@linux-fr.org>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, Thierry Vignaud <tvignaud@mandriva.com>
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 5 Oct 2006, Takashi Iwai wrote:
 
-> At Wed, 4 Oct 2006 20:33:14 +0200 (CEST),
-> Jaroslav Kysela wrote:
+> At Thu, 05 Oct 2006 12:10:45 +0200,
+> Thierry Vignaud wrote:
 > > 
-> > On Wed, 4 Oct 2006, Liam Girdwood wrote:
+> > Takashi Iwai <tiwai@suse.de> writes:
 > > 
-> > > I'd like to request that include/linux/i2c-id.h is added to the
-> > > alsa-kernel hg repo (in the same manner as the pci-ids.h). This way
-> > > patches that include new i2c id's can be added to the kernel without
-> > > having to span two different maintainers/trees.
+> > > The rollback was triggered. The repository was rolled back to
+> > > the changeset number bellow. All patches on top of this changeset
+> > > were lost.
+> > > 
+> > > changeset:   4582:9233e1d82ed045609e1fb76acf00696393589031
+> > > tag:         tip
+> > > user:        perex
+> > > date:        Thu Oct 05 09:30:36 2006 +0200
+> > > files:       pci/ac97/ac97_patch.c
+> > > description:
+> > > ac97_codec (ALC655): add EAPD hack for MSI L725 laptop
+> > > New PCI ID described and tested Spectr <spectr@gmail.com> .
 > > 
-> > Added.
+> > I think that:
+> > - the reason of the rollback should be visible and the mail (aka the
+> >   rollback commit changelog)
+> > - the rollback commit changelog) should be in the suject line rather
+> >   than the changelog of the commit we reverse to, since it's more
+> >   important
 > 
-> Don't we need a compat header in alsa-driver like pci_ids.h?
+> The rollback has no log for itself...
 
-Yes, added. Thanks.
+Yes, we have no additional information. Anyway, all rollbacks means "wrong 
+patch". In this case, I figured immediately after commit that mpu401 patch 
+does not make any sense and it was problem in the driver core code in 
+mainstream (I already proposed correct patch on LKML).
+
+I think that it's better to remove last commit rather to push a reversed 
+diff to repo.
 
 						Jaroslav
 
