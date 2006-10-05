@@ -1,15 +1,15 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 Subject: Re: Prolem with ALC260 soundcard
-Date: Thu, 5 Oct 2006 11:32:27 +0930 (CST)
-Message-ID: <200610050202.k9522Rtk022057@turbo.physics.adelaide.edu.au>
-References: <mailman.51025.1159971494.16222.alsa-devel@lists.sourceforge.net>
+Date: Thu, 5 Oct 2006 11:01:23 +0930 (CST)
+Message-ID: <200610050131.k951VNRG020959@turbo.physics.adelaide.edu.au>
+References: <mailman.50380.1159956166.16222.alsa-devel@lists.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <mailman.51025.1159971494.16222.alsa-devel@lists.sourceforge.net>
+In-Reply-To: <mailman.50380.1159956166.16222.alsa-devel@lists.sourceforge.net>
 	from "alsa-devel-request@lists.sourceforge.net" at Oct 04,
-	2006 07:18:14 AM
+	2006 03:02:46 AM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,54 +20,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
-Cc: rlrevell@joe-job.com, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-> I have experienced the same troubles since I bought my Packard Bell
-> V7900 laptop.
-> Not much developement is going for ALC260 ...
+> Hello, i have an acer c204 Notebook with an ALC260 chip inside. Since one
+> month i have sound on it, because of the ALC883 patch for acer notebooks.
 
-Well, that's not entirely accurate.  It is fair to say that development
-occurs on an as-needs basis and as time allows.  No one's paying me to work
-on ALSA so there's a day job and other issues to work around. :-)
+Hmm, that's marginally odd.  I wouldn't expect the ALC883 patch to have any
+effect on your laptop if you truly have an ALC260.  The ALC260 hasn't had
+any major changes for a while so it's a little strange that things have
+changed recently.
 
-> ... but they fixed this problem for other realtek
-> chipsets and I'm confident they will do for this one too.
+Could you send me the output of 
+  lspci -v
+as well as the result of the command
+  cat /proc/asound/card0/codec#0
 
-We'll get there.
+> When i set "options snd-hda-intel model=acer" in the modprobe.conf, then i
+> have sound over my headphones, but no sound is comming out of the speaker.
 
-Lee wrote: 
+If this Acer is anything like others and it truly does use the ALC260 (eg:
+Travelmates) it could be that we need to activate more than just GPIO0 on
+your particular laptop.  Currently the ALC260 Acer model turns GPIO0 on
+which on the Travelmates means both the headphone jack and the internal
+speaker can work.  Perhaps the c204 uses GPIO0 for the headphone jack (since
+you report that working) and GPIO1 (for instance) for the internal speaker.
 
-> Did you report what controls you needed to enable to get sound in test
-> mode?
+However before proceeding we have to confirm exactly which chip is in your
+notebook, as described previously.
 
-Initial details were posted to the list on 25 Sept 2006 by Andrea (subject
-was "Re: : [Alsa-devel] ALC260 (Re:  ALSA 1.0.13rc2 release)"). 
+> I olso saw, that when i put my headphones inside the mic, then i olso have
+> sound. That sound have not as good quality as that from the headphones
+> jack and its louder.
 
-Unfortunately I've been snowed under with work, family and other issues for
-the past 3 or so weeks and have been able to get to this plus a number of
-other things on my ALC260 "todo" list.  I'm hoping to get to them soon but
-it depends on how a number of things pan out over the next couple of weeks.
+Now *that's* odd.  This seems to suggest that the c204 may be wired
+totally differently to the Travelmate from the point of view of which
+pins on the ALC260 chip go where.
 
-For reference this is what was communicated.  When running with the test
-mode:
+Could you give me a complete list of the audio jacks provided on your
+laptop.  I guess there's at least a "headphone" jack and one labelled "mic".
+If there are any others, what are they?
 
-  "The only way I could get sound to work (at a normal volume) was with
-   headphones (connected to the line in plug) and setting "LINE1 pin mode"
-   to "Line out".  Only that option is needed to be set, any other value in
-   the fields doesn't change anything and neither do switches."
+> Can someone tell me what i could do to get sound out of my speaker?
 
-This tends to suggest that on this laptop the "Line in" plug on the laptop
-is connected to the "LINE1" node on the ALC260.  As to what other plugs are
-on this laptop and how they might be connected to ALC260 pin complexes, I
-haven't had a chance to follow up yet.  It's odd that it was not possible to
-get sound out of other plugs but that could be the result of the
-interdependency of many of the controls in the test model - it's easy to
-miss the particular combination which makes a plug start working.
+Are you comfortable/familiar with configuring and compiling ALSA?  We
+are possibly going to have to get you to run some tests with the "test"
+ALC260 model but that will require you recompile ALSA.
 
 Regards
   jonathan
-
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
