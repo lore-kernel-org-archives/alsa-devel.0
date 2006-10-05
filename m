@@ -1,18 +1,18 @@
-From: Prakash Punnoor <prakash@punnoor.de>
-Subject: Re: 2.6.19-rc1: hda_intel: azx_get_response timeout,
-	switching to polling mode...
-Date: Thu, 5 Oct 2006 10:05:50 +0200
-Message-ID: <200610051005.50798.prakash@punnoor.de>
-References: <200610050954.57677.prakash@punnoor.de>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] ALSA: fix kernel panic in initialization
+	of mpu401 driver
+Date: Thu, 5 Oct 2006 10:07:31 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610050951570.9351@tm8103.perex-int.cz>
+References: <Pine.LNX.4.64.0610042216240.12556@twin.jikos.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1808882429=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail-in-01.arcor-online.net (mail-in-01.arcor-online.net
-	[151.189.21.41])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5554F17B
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E03917B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Oct 2006 10:05:58 +0200 (MEST)
-In-Reply-To: <200610050954.57677.prakash@punnoor.de>
+	Thu,  5 Oct 2006 10:07:32 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.64.0610042216240.12556@twin.jikos.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,76 +22,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-Cc: alsa-devel@alsa-project.org, Linux List <linux-kernel@vger.kernel.org>
+To: Jiri Kosina <jikos@jikos.cz>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, Castet Matthieu <castet.matthieu@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
---===============1808882429==
-Content-Type: multipart/signed; boundary="nextPart19335360.7vDRZ2smgD";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Wed, 4 Oct 2006, Jiri Kosina wrote:
 
---nextPart19335360.7vDRZ2smgD
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> I am getting kernel panic (NULL pointer dereference) on boot, with kernel 
+> compiled with CONFIG_SND_MPU401_UART=y, on machine which does not have 
+> this piece of hardware.
+> 
+> I have traced the problem down to 
+> sound/drivers/mpu401/mpu401.c:snd_mpu401_probe() returning EINVAL, when 
+> either port or IRQ parameters are not specified.
+> 
+> In such case, the drivers/base/bus.c:bus_attach_device() does not perform 
+> klist_add_tail() call, but rather sets dev->is_registered to 0. This flag 
+> is however not checked by the driver, so later on, when 
+> alsa_card_mpu401_init() is called and platform_device_register_simple() 
+> fails, the following callchain happens, causing NULL pointer dereference: 
+> alsa_card_mpu401_init() -> platform_device_unregister() -> 
+> platform_device_del() -> device_del() -> bus_remove_device() -> 
+> klist_del() -> BOOM (the entry was not added to klist in 
+> bus_attach_device()).
+> 
+> Proper solution is returning ENODEV from the ->probe() routine, which will 
+> be correctly handled then by the rest of the device-driver attaching 
+> subsystem (namely the retval check in bus_attach_device()). The following 
+> patch fixes the problem, please apply.
 
-Am Donnerstag 05 Oktober 2006 09:54 schrieb Prakash Punnoor:
-> Hi,
->
-> I didn't get above message with 2.6.18. Usign irqpoll above message doesn=
-'t
-> appear, but I think neither it optimal.
+Unfortunately, I do not think that it's a proper solution. I think that
+platform device layer should play more nicely and if probe() fails for 
+a reason and if platform_device_register_simple() does not set 
+IS_ERR(), then platform_device_unregister() must be callable to free
+all resources.
 
-On another boot I get:
+Also, you've proposed to not fix all returns in snd_mpu401_probe() only 
+first two.
 
-Advanced Linux Sound Architecture Driver Version 1.0.12rc1 (Thu Jun 22=20
-13:55:50 2006 UTC).
-ALSA device list:
-  No soundcards found.
+I would reject this patch and fix drivers/base/bus.c. The problematic 
+change is in commit f2eaae197f4590c4d96f31b09b0ee9067421a95c and this 
+patch will probably fix it:
 
-Perhaps because of pci multithreaded init? But the soundcard works normally.
+[PATCH] drivers/base - check if device is registered before removal
 
-Cheers,
-=2D-=20
-(=B0=3D                 =3D=B0)
-//\ Prakash Punnoor /\\
-V_/                 \_V
+Without this fix platform_device_unregister() might oops.
 
---nextPart19335360.7vDRZ2smgD
-Content-Type: application/pgp-signature
+Signed-off-by: Jaroslav Kysela <perex@suse.cz>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+diff --git a/drivers/base/bus.c b/drivers/base/bus.c
+index 12173d1..daa2390 100644
+--- a/drivers/base/bus.c
++++ b/drivers/base/bus.c
+@@ -428,8 +428,10 @@ void bus_remove_device(struct device * d
+ 		sysfs_remove_link(&dev->kobj, "bus");
+ 		sysfs_remove_link(&dev->bus->devices.kobj, dev->bus_id);
+ 		device_remove_attrs(dev->bus, dev);
+-		dev->is_registered = 0;
+-		klist_del(&dev->knode_bus);
++		if (dev->is_registered) {
++			dev->is_registered = 0;
++			klist_del(&dev->knode_bus);
++		}
+ 		pr_debug("bus %s: remove device %s\n", dev->bus->name, dev->bus_id);
+ 		device_release_driver(dev);
+ 		put_bus(dev->bus);
 
-iD8DBQBFJLzexU2n/+9+t5gRAodbAJ43c+P3zkDN7p4QACL7JnDifJ5WkQCgv1SN
-tKt2oV6St3qGTesCgJMIpco=
-=fZg8
------END PGP SIGNATURE-----
+						Jaroslav
 
---nextPart19335360.7vDRZ2smgD--
-
-
---===============1808882429==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1808882429==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1808882429==--
