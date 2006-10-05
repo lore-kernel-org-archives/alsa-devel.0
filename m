@@ -1,12 +1,14 @@
 From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: 1.0.13 and hdsp cardbus
-Date: Thu, 5 Oct 2006 16:41:55 +0400
-Message-ID: <70a871c80610050541r73bbc2d7j408595802bb2c43f@mail.gmail.com>
+Subject: Re: 1.0.13 and indigoio
+Date: Thu, 5 Oct 2006 16:49:16 +0400
+Message-ID: <70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<s5hbqororyw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_27041_26626552.1160052556522"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hbqororyw.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,34 +18,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello again!
-Another problem.
+------=_Part_27041_26626552.1160052556522
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-kernel: linux-2.6.18-gentoo
-arch: x86, amd64
-alsa: 1.0.13
+On 10/5/06, Takashi Iwai <tiwai@suse.de> wrote:
+> Build with debug option.  You should see more messages.
 
-Steps to reproduce:
+------=_Part_27041_26626552.1160052556522
+Content-Type: text/x-log; name="indigo-reinsert.log"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="indigo-reinsert.log"
+X-Attachment-Id: f_esx5br5c
 
-1) boot or plug hdsp cardbus with multiface box switched off
-2) switch multiface on
-3) run hdsploader: Input/output error
-4) remove cardbus
-5) insert cardbus again
-6) FREEZE.
-
-alsa-1.0.11 worked ok (hdsploader gave IO error also, but cardbus
-reinsertion curied the problem).
-
-Dmitry.
-
-P.S. please CC me in your replies.
+WyAxMDkwLjU3NDAwMF0gcGNjYXJkOiBjYXJkIGVqZWN0ZWQgZnJvbSBzbG90IDAKWyAxMDkwLjYw
+NTAwMF0gUENNQ0lBOiBzb2NrZXQgZjdjMGY4Mjg6ICoqKiBEQU5HRVIgKioqIHVuYWJsZSB0byBy
+ZW1vdmUgc29ja2V0IHBvd2VyClsgMTA5My41NDkwMDBdIHBjY2FyZDogQ2FyZEJ1cyBjYXJkIGlu
+c2VydGVkIGludG8gc2xvdCAwClsgMTA5My41NDkwMDBdIEFMU0EgL21udC9iaXRzL3BvcnRhZ2Uv
+dG1wL3BvcnRhZ2UvYWxzYS1kcml2ZXItMS4wLjEzL3dvcmsvYWxzYS1kcml2ZXItMS4wLjEzL3Bj
+aS9lY2hvYXVkaW8vLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2VjaG9hdWRpby9lY2hvYXVkaW8uYzoy
+MDE1OiBFY2hvYXVkaW8gZHJpdmVyIHN0YXJ0aW5nLi4uClsgMTA5My41NDkwMDBdIFBDSTogRW5h
+YmxpbmcgZGV2aWNlIDAwMDA6MDc6MDAuMCAoMDAwMCAtPiAwMDAyKQpbIDEwOTMuNTQ5MDAwXSBB
+Q1BJOiBQQ0kgSW50ZXJydXB0IDAwMDA6MDc6MDAuMFtBXSAtPiBHU0kgMTggKGxldmVsLCBsb3cp
+IC0+IElSUSAxODUKWyAxMDkzLjU0OTAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9y
+dGFnZS9hbHNhLWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9h
+dWRpby8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpby5jOjE5MzI6IGNo
+aXA9ZjdhMGEwMTQKWyAxMDkzLjU0OTAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9y
+dGFnZS9hbHNhLWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9h
+dWRpby8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpby5jOjE5NjI6IHBj
+aT1mN2Y0ZjAwMCBpcnE9MTg1IHN1YmRldj0wMGEwIEluaXQgaGFyZHdhcmUuLi4KWyAxMDkzLjU0
+OTAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9ydGFnZS9hbHNhLWRyaXZlci0xLjAu
+MTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9hdWRpby8uLi8uLi9hbHNhLWtlcm5l
+bC9wY2kvZWNob2F1ZGlvL2luZGlnb2lvX2RzcC5jOjQxOiBpbml0X2h3KCkgLSBJbmRpZ28gSU8K
+WyAxMDkzLjU0OTAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9ydGFnZS9hbHNhLWRy
+aXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9hdWRpby8uLi8uLi9h
+bHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpby5jOjQzOiBmaXJtd2FyZSByZXF1ZXN0
+ZWQ6IGluZGlnb19pb19kc3AuZncKWyAxMDkzLjU3MDAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFn
+ZS90bXAvcG9ydGFnZS9hbHNhLWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMv
+cGNpL2VjaG9hdWRpby8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpb19k
+c3AuYzozNDI6IGxvYWRfZHNwOiBTZXQgYmFkX2JvYXJkIHRvIFRSVUUKWyAxMDkzLjU3MDAwMF0g
+QUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9ydGFnZS9hbHNhLWRyaXZlci0xLjAuMTMvd29y
+ay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9hdWRpby8uLi8uLi9hbHNhLWtlcm5lbC9wY2kv
+ZWNob2F1ZGlvL2VjaG9hdWRpby5jOjQzOiBmaXJtd2FyZSByZXF1ZXN0ZWQ6IGxvYWRlcl9kc3Au
+ZncKWyAxMDkzLjU5MDAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9ydGFnZS9hbHNh
+LWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9hdWRpby8uLi8u
+Li9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpb19kc3AuYzozMTM6IFJlc2lkZW50
+IGxvYWRlciBmYWlsZWQgdG8gc2V0IEhGNQpbIDEwOTMuNTkwMDAwXSBBTFNBIC9tbnQvYml0cy9w
+b3J0YWdlL3RtcC9wb3J0YWdlL2Fsc2EtZHJpdmVyLTEuMC4xMy93b3JrL2Fsc2EtZHJpdmVyLTEu
+MC4xMy9wY2kvZWNob2F1ZGlvLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9lY2hvYXVkaW8vZWNob2F1
+ZGlvLmM6NTM6IGZpcm13YXJlIHJlbGVhc2VkClsgMTA5My41OTAwMDBdIEFMU0EgL21udC9iaXRz
+L3BvcnRhZ2UvdG1wL3BvcnRhZ2UvYWxzYS1kcml2ZXItMS4wLjEzL3dvcmsvYWxzYS1kcml2ZXIt
+MS4wLjEzL3BjaS9lY2hvYXVkaW8vLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2VjaG9hdWRpby9lY2hv
+YXVkaW8uYzo1MzogZmlybXdhcmUgcmVsZWFzZWQKWyAxMDkzLjU5MDAwMF0gQUxTQSAvbW50L2Jp
+dHMvcG9ydGFnZS90bXAvcG9ydGFnZS9hbHNhLWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZl
+ci0xLjAuMTMvcGNpL2VjaG9hdWRpby8uLi8uLi9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2Vj
+aG9hdWRpby5jOjE5Nzg6IGluaXRfaHcgZXJyPS01ClsgMTA5My41OTAwMDBdIEFMU0EgL21udC9i
+aXRzL3BvcnRhZ2UvdG1wL3BvcnRhZ2UvYWxzYS1kcml2ZXItMS4wLjEzL3dvcmsvYWxzYS1kcml2
+ZXItMS4wLjEzL3BjaS9lY2hvYXVkaW8vLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2VjaG9hdWRpby9l
+Y2hvYXVkaW8uYzoxODY4OiBTdG9wIERTUC4uLgpbIDEwOTMuNTkwMDAwXSBBTFNBIC9tbnQvYml0
+cy9wb3J0YWdlL3RtcC9wb3J0YWdlL2Fsc2EtZHJpdmVyLTEuMC4xMy93b3JrL2Fsc2EtZHJpdmVy
+LTEuMC4xMy9wY2kvZWNob2F1ZGlvLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9lY2hvYXVkaW8vZWNo
+b2F1ZGlvX2RzcC5jOjg4MjogcmVzdF9pbl9wZWFjZSgpIG9wZW49MApbIDEwOTMuNTkwMDAwXSBB
+TFNBIC9tbnQvYml0cy9wb3J0YWdlL3RtcC9wb3J0YWdlL2Fsc2EtZHJpdmVyLTEuMC4xMy93b3Jr
+L2Fsc2EtZHJpdmVyLTEuMC4xMy9wY2kvZWNob2F1ZGlvLy4uLy4uL2Fsc2Eta2VybmVsL3BjaS9l
+Y2hvYXVkaW8vZWNob2F1ZGlvX2RzcC5jOjg0Njogc3RvcF90cmFuc3BvcnQgMApbIDEwOTMuNTkw
+MDAwXSBBTFNBIC9tbnQvYml0cy9wb3J0YWdlL3RtcC9wb3J0YWdlL2Fsc2EtZHJpdmVyLTEuMC4x
+My93b3JrL2Fsc2EtZHJpdmVyLTEuMC4xMy9wY2kvZWNob2F1ZGlvLy4uLy4uL2Fsc2Eta2VybmVs
+L3BjaS9lY2hvYXVkaW8vZWNob2F1ZGlvX2RzcC5jOjg2NTogc3RvcF90cmFuc3BvcnQ6IE5vIHBp
+cGVzIHRvIHN0b3AhClsgMTA5My41OTAwMDBdIEFMU0EgL21udC9iaXRzL3BvcnRhZ2UvdG1wL3Bv
+cnRhZ2UvYWxzYS1kcml2ZXItMS4wLjEzL3dvcmsvYWxzYS1kcml2ZXItMS4wLjEzL3BjaS9lY2hv
+YXVkaW8vLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2VjaG9hdWRpby9lY2hvYXVkaW8uYzoxODczOiBT
+dG9wcGVkLgpbIDEwOTMuNTkwMDAwXSBBTFNBIC9tbnQvYml0cy9wb3J0YWdlL3RtcC9wb3J0YWdl
+L2Fsc2EtZHJpdmVyLTEuMC4xMy93b3JrL2Fsc2EtZHJpdmVyLTEuMC4xMy9wY2kvZWNob2F1ZGlv
+Ly4uLy4uL2Fsc2Eta2VybmVsL3BjaS9lY2hvYXVkaW8vZWNob2F1ZGlvLmM6MTg4NDogTU1JTyBm
+cmVlZC4KWyAxMDkzLjU5MDAwMF0gQUxTQSAvbW50L2JpdHMvcG9ydGFnZS90bXAvcG9ydGFnZS9h
+bHNhLWRyaXZlci0xLjAuMTMvd29yay9hbHNhLWRyaXZlci0xLjAuMTMvcGNpL2VjaG9hdWRpby8u
+Li8uLi9hbHNhLWtlcm5lbC9wY2kvZWNob2F1ZGlvL2VjaG9hdWRpby5jOjE4OTA6IENoaXAgZnJl
+ZWQuClsgMTA5My41OTAwMDBdIEVjaG9hdWRpbyBJbmRpZ28gSU86IHByb2JlIG9mIDAwMDA6MDc6
+MDAuMCBmYWlsZWQgd2l0aCBlcnJvciAtNQo=
+------=_Part_27041_26626552.1160052556522
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------=_Part_27041_26626552.1160052556522
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------=_Part_27041_26626552.1160052556522--
