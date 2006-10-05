@@ -1,18 +1,18 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH] ALSA: fix kernel panic in initialization
-	of mpu401 driver
-Date: Thu, 5 Oct 2006 10:02:24 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.0610050959330.6226-100000__39695.2634132051$1160057056$gmane$org@iolanthe.rowland.org>
-References: <Pine.LNX.4.61.0610050951570.9351@tm8103.perex-int.cz>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re:
+	=?iso-8859-1?q?=5BPATCH=5D_Reset_file-=3Ef=5Fop_in?=
+	=?iso-8859-1?q?=09snd=5Fcard=5Ffile=5Fremove_=28=29=2E_Take_2?=
+Date: Thu, 5 Oct 2006 16:12:07 +0200
+Message-ID: <200610051612.07770.annabellesgarden@yahoo.de>
+References: <200609282228.02611.annabellesgarden@yahoo.de>
+	<s5hmz8boxeh.wl%tiwai@suse.de>
+	<200610051333.12574.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BE7BB12E
-	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Oct 2006 16:02:28 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0610050951570.9351@tm8103.perex-int.cz>
+In-Reply-To: <200610051333.12574.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,101 +22,176 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Castet Matthieu <castet.matthieu@free.fr>
+To: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Cc: mingo@elte.hu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 5 Oct 2006, Jaroslav Kysela wrote:
+here is rc3.
 
-> On Wed, 4 Oct 2006, Jiri Kosina wrote:
-> 
-> > I am getting kernel panic (NULL pointer dereference) on boot, with kernel 
-> > compiled with CONFIG_SND_MPU401_UART=y, on machine which does not have 
-> > this piece of hardware.
-> > 
-> > I have traced the problem down to 
-> > sound/drivers/mpu401/mpu401.c:snd_mpu401_probe() returning EINVAL, when 
-> > either port or IRQ parameters are not specified.
-> > 
-> > In such case, the drivers/base/bus.c:bus_attach_device() does not perform 
-> > klist_add_tail() call, but rather sets dev->is_registered to 0. This flag 
-> > is however not checked by the driver, so later on, when 
-> > alsa_card_mpu401_init() is called and platform_device_register_simple() 
-> > fails, the following callchain happens, causing NULL pointer dereference: 
-> > alsa_card_mpu401_init() -> platform_device_unregister() -> 
-> > platform_device_del() -> device_del() -> bus_remove_device() -> 
-> > klist_del() -> BOOM (the entry was not added to klist in 
-> > bus_attach_device()).
-> > 
-> > Proper solution is returning ENODEV from the ->probe() routine, which will 
-> > be correctly handled then by the rest of the device-driver attaching 
-> > subsystem (namely the retval check in bus_attach_device()). The following 
-> > patch fixes the problem, please apply.
-> 
-> Unfortunately, I do not think that it's a proper solution. I think that
-> platform device layer should play more nicely and if probe() fails for 
-> a reason and if platform_device_register_simple() does not set 
-> IS_ERR(), then platform_device_unregister() must be callable to free
-> all resources.
-> 
-> Also, you've proposed to not fix all returns in snd_mpu401_probe() only 
-> first two.
-> 
-> I would reject this patch and fix drivers/base/bus.c. The problematic 
-> change is in commit f2eaae197f4590c4d96f31b09b0ee9067421a95c and this 
-> patch will probably fix it:
+Anything to fix?
 
-Your patch is right as far as it goes, but it misses part of the problem.  
-device_add() shouldn't ignore the return value from bus_attach_device().  
-That's why we ended up trying to unregister a device which never was 
-properly registered in the first place.
+We've lots of things disconnectable...
+Is this useful in the kernel global?
 
-What do you think of this addition to your patch (untested)?
+      Karsten
 
-Alan Stern
+rc3:
+---------------------------------------------------------------------------
+snd_disconnected_file, virtual device
+
+On response to "usb disconnect" an usb-soundcard manipulates
+that snd_card's file's f_ops to only allow release
+by calling this virtual device's 
+   void snd_disconnect_file(struct file *file).
+After release is actually called, the virtual device instance is freeed.
+
+Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
 
 
-Index: 18g20/drivers/base/bus.c
-===================================================================
---- 18g20.orig/drivers/base/bus.c
-+++ 18g20/drivers/base/bus.c
-@@ -453,8 +453,10 @@ void bus_remove_device(struct device * d
- 		remove_deprecated_bus_links(dev);
- 		sysfs_remove_link(&dev->bus->devices.kobj, dev->bus_id);
- 		device_remove_attrs(dev->bus, dev);
--		dev->is_registered = 0;
--		klist_del(&dev->knode_bus);
-+		if (dev->is_registered) {
-+			dev->is_registered = 0;
-+			klist_del(&dev->knode_bus);
+--- alsa-kernel/core/_disconnected.c	2006-10-05 12:16:34.000000000 +0200
++++ alsa-kernel/core/disconnected.c	2006-10-05 15:15:06.000000000 +0200
+@@ -0,0 +1,141 @@
++/* virtual device
++   hides a real device's f_ops,
++   except for release
++
++ *  Copyright (c) by Karsten Wiese <fzu@wemgehoertderstaat.de>
++ *
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
++
++
++#include <linux/fs.h>
++#include <linux/list.h>
++#include <linux/poll.h>
++#include <linux/module.h>
++
++static DEFINE_MUTEX(mutex);
++static LIST_HEAD(disconnected_files);
++
++struct snd_disconnected_file {
++	struct file *file;
++	const struct file_operations *f_op;
++	struct list_head list;
++};
++
++static struct file_operations snd_disconnect_f_ops;
++
++void snd_disconnect_file(struct file *file)
++{
++	struct snd_disconnected_file *df;
++	df = kmalloc(sizeof(struct snd_disconnected_file), GFP_KERNEL);
++	if (df == NULL)
++		panic("Atomic allocation failed for snd_disconnected_file!");
++
++	df->file = file;
++	df->f_op = file->f_op;
++
++	mutex_lock(&mutex);
++	list_add(&df->list, &disconnected_files);
++	mutex_unlock(&mutex);
++
++	fops_get(&snd_disconnect_f_ops);
++	file->f_op = &snd_disconnect_f_ops;
++	printk(KERN_INFO "%s rc3\n", __FUNCTION__);
++}
++
++
++static loff_t snd_disconnect_llseek(struct file *file, loff_t offset, int orig)
++{
++	return -ENODEV;
++}
++
++static ssize_t snd_disconnect_read(struct file *file, char __user *buf,
++				   size_t count, loff_t *offset)
++{
++	return -ENODEV;
++}
++
++static ssize_t snd_disconnect_write(struct file *file, const char __user *buf,
++				    size_t count, loff_t *offset)
++{
++	return -ENODEV;
++}
++
++static int snd_disconnect_release(struct inode *inode, struct file *file)
++{
++	struct snd_disconnected_file *df = NULL;
++	struct list_head *entry;
++
++	mutex_lock(&mutex);
++	list_for_each(entry, &disconnected_files) {
++		struct snd_disconnected_file *_df;
++		_df = list_entry(entry, struct snd_disconnected_file, list);
++		if (_df->file == file) {
++			list_del(entry);
++			df = _df;
++			break;
 +		}
- 		pr_debug("bus %s: remove device %s\n", dev->bus->name, dev->bus_id);
- 		device_release_driver(dev);
- 		put_bus(dev->bus);
-Index: 18g20/drivers/base/core.c
-===================================================================
---- 18g20.orig/drivers/base/core.c
-+++ 18g20/drivers/base/core.c
-@@ -485,7 +485,8 @@ int device_add(struct device *dev)
- 	if ((error = bus_add_device(dev)))
- 		goto BusError;
- 	kobject_uevent(&dev->kobj, KOBJ_ADD);
--	bus_attach_device(dev);
-+	if ((error = bus_attach_device(dev)))
-+		goto AttachError;
- 	if (parent)
- 		klist_add_tail(&dev->knode_parent, &parent->klist_children);
- 
-@@ -504,6 +505,8 @@ int device_add(struct device *dev)
-  	kfree(class_name);
- 	put_device(dev);
- 	return error;
-+ AttachError:
-+	bus_remove_device(dev);
-  BusError:
- 	device_pm_remove(dev);
-  PMError:
-
++	}
++	mutex_unlock(&mutex);
++
++	if (likely(df != NULL))	{
++		int err = df->f_op->release(inode, file);
++		fops_put(df->f_op);
++		kfree(df);
++		printk(KERN_INFO "%s rc3\n", __FUNCTION__);
++		return err;
++	}
++
++	panic("%s(%p, %p) failed!", __FUNCTION__, inode, file);
++}
++
++static unsigned int snd_disconnect_poll(struct file * file, poll_table * wait)
++{
++	return POLLERR | POLLNVAL;
++}
++
++static long snd_disconnect_ioctl(struct file *file,
++				 unsigned int cmd, unsigned long arg)
++{
++	return -ENODEV;
++}
++
++static int snd_disconnect_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	return -ENODEV;
++}
++
++static int snd_disconnect_fasync(int fd, struct file *file, int on)
++{
++	return -ENODEV;
++}
++
++static struct file_operations snd_disconnect_f_ops =
++{
++	.owner = 	THIS_MODULE,
++	.llseek =	snd_disconnect_llseek,
++	.read = 	snd_disconnect_read,
++	.write =	snd_disconnect_write,
++	.release =	snd_disconnect_release,
++	.poll =		snd_disconnect_poll,
++	.unlocked_ioctl = snd_disconnect_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl = snd_disconnect_ioctl,
++#endif
++	.mmap =		snd_disconnect_mmap,
++	.fasync =	snd_disconnect_fasync
++};
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
