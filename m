@@ -1,15 +1,18 @@
-From: "Lubomir Schmidt" <017623780966@o2online.de>
-Subject: Re: Prolem with ALC260 soundcard
-Date: Thu, 5 Oct 2006 15:54:46 +0200
-Message-ID: <200610051354.k95DskFH016320@mail04.o2online.de>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] ALSA: fix kernel panic in initialization
+	of mpu401 driver
+Date: Thu, 5 Oct 2006 10:02:24 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.0610050959330.6226-100000__39695.2634132051$1160057056$gmane$org@iolanthe.rowland.org>
+References: <Pine.LNX.4.61.0610050951570.9351@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail04.o2online.de (mail04.o2online.de [82.113.101.31])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8933224B
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BE7BB12E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Oct 2006 15:54:48 +0200 (MEST)
+	Thu,  5 Oct 2006 16:02:28 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0610050951570.9351@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,77 +22,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: jwoithe@turbo.physics.adelaide.edu.au, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Castet Matthieu <castet.matthieu@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Here is the lspci -vv (shows more then -v ;-)  )
-http://pastebin.ca/191868
+On Thu, 5 Oct 2006, Jaroslav Kysela wrote:
 
-and the cat /proc/asound/card0/codec#0
-http://pastebin.ca/191871
+> On Wed, 4 Oct 2006, Jiri Kosina wrote:
+> 
+> > I am getting kernel panic (NULL pointer dereference) on boot, with kernel 
+> > compiled with CONFIG_SND_MPU401_UART=y, on machine which does not have 
+> > this piece of hardware.
+> > 
+> > I have traced the problem down to 
+> > sound/drivers/mpu401/mpu401.c:snd_mpu401_probe() returning EINVAL, when 
+> > either port or IRQ parameters are not specified.
+> > 
+> > In such case, the drivers/base/bus.c:bus_attach_device() does not perform 
+> > klist_add_tail() call, but rather sets dev->is_registered to 0. This flag 
+> > is however not checked by the driver, so later on, when 
+> > alsa_card_mpu401_init() is called and platform_device_register_simple() 
+> > fails, the following callchain happens, causing NULL pointer dereference: 
+> > alsa_card_mpu401_init() -> platform_device_unregister() -> 
+> > platform_device_del() -> device_del() -> bus_remove_device() -> 
+> > klist_del() -> BOOM (the entry was not added to klist in 
+> > bus_attach_device()).
+> > 
+> > Proper solution is returning ENODEV from the ->probe() routine, which will 
+> > be correctly handled then by the rest of the device-driver attaching 
+> > subsystem (namely the retval check in bus_attach_device()). The following 
+> > patch fixes the problem, please apply.
+> 
+> Unfortunately, I do not think that it's a proper solution. I think that
+> platform device layer should play more nicely and if probe() fails for 
+> a reason and if platform_device_register_simple() does not set 
+> IS_ERR(), then platform_device_unregister() must be callable to free
+> all resources.
+> 
+> Also, you've proposed to not fix all returns in snd_mpu401_probe() only 
+> first two.
+> 
+> I would reject this patch and fix drivers/base/bus.c. The problematic 
+> change is in commit f2eaae197f4590c4d96f31b09b0ee9067421a95c and this 
+> patch will probably fix it:
 
-I can rememebr that i have read in the alsa bugtrack that i am not the only one with an ALC260 chip who helped that alc883 patch. I olso remember that i have sound since the 1.0.13rc2 or rc3 release (i have installed extra the suse 10.2 alpha 4 to try the driver). In release 1.0.13rc1 came that ALC883 patch.
+Your patch is right as far as it goes, but it misses part of the problem.  
+device_add() shouldn't ignore the return value from bus_attach_device().  
+That's why we ended up trying to unregister a device which never was 
+properly registered in the first place.
 
-I do not know how i could add compile-options when i compile something. I use gentoo and work with portage. Could you put the different things into model=acer in the new RC releases? The Acer have an headphone and an mic jack. There is no otehr jack.
+What do you think of this addition to your patch (untested)?
 
-I have tested again the mic jack. The sound that comes out there is louder and have no bass. I think that is the sound that had to come out of the speaker. I remember the sound that comes out of the speaker when i had windows installed (i have no windows on it now). It had olso no bass.
-
-The mic that is been build into the notebook is working. I can hear that, when i turn in alsamixer the mic to maximum and unmute it. When i go with my finger over the mic, i can hear that through the headphone and the mic jack. That mic only work when i set "mic jack" = "Mic 50pc" or "Mic 80pc". 
-
-Hey, in the time i write the text here i found out why i had sound out of the mic jack. The "Line Jac" was on "Line out". When i turn that into "Line in,Mic 50pc or Mic 80pc" i can not hear anything more coming out of the mic jack. When it is set to line out or headphone i can hear the music that i have started with amaroK(internet radio stream).
-
-Thank you for the support
-
-------old mail--------
-> Hello, i have an acer c204 Notebook with an ALC260 chip inside. Since one
-> month i have sound on it, because of the ALC883 patch for acer notebooks.
-
-Hmm, that's marginally odd.  I wouldn't expect the ALC883 patch to have any
-effect on your laptop if you truly have an ALC260.  The ALC260 hasn't had
-any major changes for a while so it's a little strange that things have
-changed recently.
-
-Could you send me the output of 
-  lspci -v
-as well as the result of the command
-  cat /proc/asound/card0/codec#0
-
-> When i set "options snd-hda-intel model=acer" in the modprobe.conf, then i
-> have sound over my headphones, but no sound is comming out of the speaker.
-
-If this Acer is anything like others and it truly does use the ALC260 (eg:
-Travelmates) it could be that we need to activate more than just GPIO0 on
-your particular laptop.  Currently the ALC260 Acer model turns GPIO0 on
-which on the Travelmates means both the headphone jack and the internal
-speaker can work.  Perhaps the c204 uses GPIO0 for the headphone jack (since
-you report that working) and GPIO1 (for instance) for the internal speaker.
-
-However before proceeding we have to confirm exactly which chip is in your
-notebook, as described previously.
-
-> I olso saw, that when i put my headphones inside the mic, then i olso have
-> sound. That sound have not as good quality as that from the headphones
-> jack and its louder.
-
-Now *that's* odd.  This seems to suggest that the c204 may be wired
-totally differently to the Travelmate from the point of view of which
-pins on the ALC260 chip go where.
-
-Could you give me a complete list of the audio jacks provided on your
-laptop.  I guess there's at least a "headphone" jack and one labelled "mic".
-If there are any others, what are they?
-
-> Can someone tell me what i could do to get sound out of my speaker?
-
-Are you comfortable/familiar with configuring and compiling ALSA?  We
-are possibly going to have to get you to run some tests with the "test"
-ALC260 model but that will require you recompile ALSA.
-
-Regards
-  jonathan
+Alan Stern
 
 
-
+Index: 18g20/drivers/base/bus.c
+===================================================================
+--- 18g20.orig/drivers/base/bus.c
++++ 18g20/drivers/base/bus.c
+@@ -453,8 +453,10 @@ void bus_remove_device(struct device * d
+ 		remove_deprecated_bus_links(dev);
+ 		sysfs_remove_link(&dev->bus->devices.kobj, dev->bus_id);
+ 		device_remove_attrs(dev->bus, dev);
+-		dev->is_registered = 0;
+-		klist_del(&dev->knode_bus);
++		if (dev->is_registered) {
++			dev->is_registered = 0;
++			klist_del(&dev->knode_bus);
++		}
+ 		pr_debug("bus %s: remove device %s\n", dev->bus->name, dev->bus_id);
+ 		device_release_driver(dev);
+ 		put_bus(dev->bus);
+Index: 18g20/drivers/base/core.c
+===================================================================
+--- 18g20.orig/drivers/base/core.c
++++ 18g20/drivers/base/core.c
+@@ -485,7 +485,8 @@ int device_add(struct device *dev)
+ 	if ((error = bus_add_device(dev)))
+ 		goto BusError;
+ 	kobject_uevent(&dev->kobj, KOBJ_ADD);
+-	bus_attach_device(dev);
++	if ((error = bus_attach_device(dev)))
++		goto AttachError;
+ 	if (parent)
+ 		klist_add_tail(&dev->knode_parent, &parent->klist_children);
+ 
+@@ -504,6 +505,8 @@ int device_add(struct device *dev)
+  	kfree(class_name);
+ 	put_device(dev);
+ 	return error;
++ AttachError:
++	bus_remove_device(dev);
+  BusError:
+ 	device_pm_remove(dev);
+  PMError:
 
 
 -------------------------------------------------------------------------
