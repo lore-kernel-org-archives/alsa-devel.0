@@ -1,12 +1,15 @@
-From: "Eduardo Valentin" <edubezval@gmail.com>
-Subject: [EXT PCM / CTL Plugin][RFC][ANNOUNCE] Alsa support for
-	n770
-Date: Thu, 5 Oct 2006 10:26:18 -0400
-Message-ID: <a0580c510610050726i3fe8437cm1e783e1b6305f3bc@mail.gmail.com>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH 1/2] New virtual device snd_disconnected rc3
+Date: Thu, 5 Oct 2006 17:17:53 +0200
+Message-ID: <200610051717.53608.annabellesgarden@yahoo.de>
+References: <200610051253.46779.annabellesgarden@yahoo.de>
+	<200610051554.48027.annabellesgarden@yahoo.de>
+	<s5h4puiq292.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5h4puiq292.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,37 +20,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+Am Donnerstag, 5. Oktober 2006 16:13 schrieb Takashi Iwai:
+> At Thu, 5 Oct 2006 15:54:47 +0200,
+> Karsten Wiese wrote:
+> > 
+> > snd_disconnected_file, virtual device
+> > 
+> > On response to "usb disconnect" an usb-soundcard manipulates
+> > that snd_card's file's f_ops to only allow release
+> > by calling this virtual device's 
+> >    void snd_disconnect_file(struct file *file).
+> > After release is actually called, the virtual device instance is freed.
+> > 
+> > Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+> 
+> Thanks, the code looks better.
+> 
+> > +void snd_disconnect_file(struct file *file)
+> > +{
+> > +	struct snd_disconnected_file *df;
+> > +	df = kmalloc(sizeof(struct snd_disconnected_file), GFP_KERNEL);
+> > +	if (df == NULL)
+> > +		panic("Atomic allocation failed for snd_disconnected_file!");
+> 
+> The message doesn't match...
+> Some people prefer "if (!df)" although I myself don't mind at all.
 
+Me neither. I remember Al Viro preferring the "== NULL".
 
-    I'd like to announce an alsa plugin project to add support for
-ALSA application on nokia 770. I'd like also to ask you comments and
-suggestions about the code.
+> 
+> > +
+> > +	df->file = file;
+> > +	df->f_op = file->f_op;
+> > +
+> > +	mutex_lock(&mutex);
+> > +	list_add(&df->list, &disconnected_files);
+> > +	mutex_unlock(&mutex);
+> > +
+> > +	fops_get(&snd_disconnect_f_ops);
+> > +	file->f_op = &snd_disconnect_f_ops;
+> > +	printk(KERN_INFO "%s rc3\n", __FUNCTION__);
+> 
+> This will be removed in the final version, right?
 
-    Although n770 hasn't ALSA kernel driver, it is possible to write a
-user-space driver to communicate with n770's audio system.
+right.
 
-   The n770's audio system is based on DSP gateway project:
-(http://dspgateway.sourceforge.net/pub/index.php)
+> 
+> > +}
+> 
+> My only concern is whether the release of the old f_op can be called
+> at the same time during snd_disconnect_file().  If this can happen,
+> it's racy and results in a memory leak.
 
-   To add ALSA support, an EXT PCM I/O plugin and EXT CTL plugin were
-written. The code is based on SDK documentation from the alsa-project
-site.
+Uiuiui, good point!
+rc4 will merge with init.c.
 
-    The project is in garage.maemo:
-https://garage.maemo.org/projects/dsp-alsa/
-
-     You can have a look at its REAME file in:
-https://garage.maemo.org/plugins/scmsvn/viewcvs.php/alsa-plugin/debian/README?root=dsp-alsa&view=markup
-
-    It is possible also to browse the its source code svn repository in:
-https://garage.maemo.org/plugins/scmsvn/viewcvs.php/alsa-plugin/?root=dsp-alsa
-
--- 
-Eduardo Bezerra Valentin
+      Karsten
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
