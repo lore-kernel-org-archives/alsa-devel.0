@@ -1,12 +1,16 @@
-From: gtrfree <gtrfree@supereva.it>
-Subject: Re: [PATCH] us428control support for mixxx
-Date: 5 Oct 2006 00:39:31 -0000
-Message-ID: <20061005003931.28475.qmail@mail.supereva.it>
-Reply-To: gtrfree@supereva.it
+From: Prakash Punnoor <prakash@punnoor.de>
+Subject: 2.6.19-rc1: hda_intel: azx_get_response timeout,
+	switching to polling mode...
+Date: Thu, 5 Oct 2006 09:54:57 +0200
+Message-ID: <200610050954.57677.prakash@punnoor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1150387606=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mail-in-01.arcor-online.net (mail-in-06.arcor-online.net
+	[151.189.21.46])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E36A918F
+	for <alsa-devel@alsa-project.org>;
+	Thu,  5 Oct 2006 09:55:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,80 +20,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: Linux List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1150387606==
+Content-Type: multipart/signed; boundary="nextPart1389044.0cY7vJJixT";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-GESTES Cedric wrote:
+--nextPart1389044.0cY7vJJixT
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> This patch allow to change the midi mapping of the us428, the new 
+Hi,
 
-> mapping is used with mixxx.
+I didn't get above message with 2.6.18. Usign irqpoll above message doesn't=
+=20
+appear, but I think neither it optimal.
 
-> To use the new mapping:
+The kernel is patched with reiser4 and acpi_skip_timer_override quirk is=20
+deactivated (see last link why).
 
-> ../us428control -m mixxx
+I tried different combinations (dmesg + .config). Differences are mostly pc=
+i=20
+mt init, irqpoll, nforce eth napi, pata/ide amd driver
 
-> 
+http://www.prakash.gmxhome.de/linux/2.6.19-rc1-1.txt.bz2
+http://www.prakash.gmxhome.de/linux/2.6.19-rc1-2.txt.bz2
+http://www.prakash.gmxhome.de/linux/2.6.19-rc1-3.txt.bz2
+http://www.prakash.gmxhome.de/linux/2.6.19-rc1-4.txt.bz2
 
-> I have splitted the class who does the mapping, it is more easy to add 
+cat /proc/interrupts for 2.6.18 resp .19-rc1
+http://www.prakash.gmxhome.de/linux/irqs18.txt
+http://www.prakash.gmxhome.de/linux/irqs19.txt
 
-> new mapping now.
+lspci can be found here:
+http://marc.theaimsgroup.com/?l=3Dlinux-kernel&m=3D115545986619977&w=3D2
 
-> Furthermore I need to find a way to communicate with the program, to 
+Cheers,
+=2D-=20
+(=C2=B0=3D                 =3D=C2=B0)
+//\ Prakash Punnoor /\\
+V_/                 \_V
 
-> change mapping on the fly.
+--nextPart1389044.0cY7vJJixT
+Content-Type: application/pgp-signature
 
-> Cause currently us428control is launched from udev, and to change the 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-> mapping you should kill the previous us428control and launch another.
+iD8DBQBFJLpRxU2n/+9+t5gRAt6ZAKClXC2qp5ybYfgfv3riLsquOE2PZQCg0Ci2
+ZnRWsL1tSH/tr7PTznb9llY=
+=UUbQ
+-----END PGP SIGNATURE-----
 
-> 
-
-> I already posted an older version on the bug tracker, but I had'nt have 
-
-> response for it. (with different addrese cause gmail bounce my mail to 
-
-> sf.net)
-
-> thanks.
-
-> 
-
-
-
-Hi, I'm not a developer, just an user... and I'm new with Linux so don't count too much my opinion. ;-)
-
-
-
-I'm running OpenSuSE 10.1 - 32bits and seems that the us428control in 'mixxx mode' doesn't work. It starts good but only the lights in the eq sections lit, nothing more.
-
-When I run Mixxx in Jack-mode there isn't 'something' to connect to the Tascam control into the QJackctl midi-window (I mean some 'mixxx-control input').
-
-If I start Mixxx in standard mode, there isn't the  Tascam to choose in the midi configuration. Anyway I tried every option with no results (Play, stop and faders don't work with Mixxx).
-
-
-
-Sorry to carry bad news but I repeat: I'm very new with Linux (still fighting with 3-4 us428 inputs!) and I hope it's just a problem of mine, not Mixxx or your patch.
-
-
-
-Cheers.
+--nextPart1389044.0cY7vJJixT--
 
 
-
-
-
---
-
----------------------------------------------------------------
-Mettiti al centro del mondo! Crea il tuo blog e condividi con
-i tuoi amici idee, immagini e video, da web e da cellulare!
-http://beta.dada.net/
----------------------------------------------------------------
+--===============1150387606==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1150387606==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1150387606==--
