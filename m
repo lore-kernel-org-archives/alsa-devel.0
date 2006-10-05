@@ -1,15 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH 1/2] New virtual device snd_disconnected rc3
-Date: Thu, 5 Oct 2006 15:54:47 +0200
-Message-ID: <200610051554.48027.annabellesgarden@yahoo.de>
-References: <200610051253.46779.annabellesgarden@yahoo.de>
-	<200610051552.37812.annabellesgarden@yahoo.de>
+From: "Lubomir Schmidt" <017623780966@o2online.de>
+Subject: Re: Prolem with ALC260 soundcard
+Date: Thu, 5 Oct 2006 15:54:46 +0200
+Message-ID: <200610051354.k95DskFH016320@mail04.o2online.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200610051552.37812.annabellesgarden@yahoo.de>
-Content-Disposition: inline
+Received: from mail04.o2online.de (mail04.o2online.de [82.113.101.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8933224B
+	for <alsa-devel@alsa-project.org>;
+	Thu,  5 Oct 2006 15:54:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,165 +19,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+To: jwoithe@turbo.physics.adelaide.edu.au, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_disconnected_file, virtual device
+Here is the lspci -vv (shows more then -v ;-)  )
+http://pastebin.ca/191868
 
-On response to "usb disconnect" an usb-soundcard manipulates
-that snd_card's file's f_ops to only allow release
-by calling this virtual device's 
-   void snd_disconnect_file(struct file *file).
-After release is actually called, the virtual device instance is freed.
+and the cat /proc/asound/card0/codec#0
+http://pastebin.ca/191871
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+I can rememebr that i have read in the alsa bugtrack that i am not the only one with an ALC260 chip who helped that alc883 patch. I olso remember that i have sound since the 1.0.13rc2 or rc3 release (i have installed extra the suse 10.2 alpha 4 to try the driver). In release 1.0.13rc1 came that ALC883 patch.
+
+I do not know how i could add compile-options when i compile something. I use gentoo and work with portage. Could you put the different things into model=acer in the new RC releases? The Acer have an headphone and an mic jack. There is no otehr jack.
+
+I have tested again the mic jack. The sound that comes out there is louder and have no bass. I think that is the sound that had to come out of the speaker. I remember the sound that comes out of the speaker when i had windows installed (i have no windows on it now). It had olso no bass.
+
+The mic that is been build into the notebook is working. I can hear that, when i turn in alsamixer the mic to maximum and unmute it. When i go with my finger over the mic, i can hear that through the headphone and the mic jack. That mic only work when i set "mic jack" = "Mic 50pc" or "Mic 80pc". 
+
+Hey, in the time i write the text here i found out why i had sound out of the mic jack. The "Line Jac" was on "Line out". When i turn that into "Line in,Mic 50pc or Mic 80pc" i can not hear anything more coming out of the mic jack. When it is set to line out or headphone i can hear the music that i have started with amaroK(internet radio stream).
+
+Thank you for the support
+
+------old mail--------
+> Hello, i have an acer c204 Notebook with an ALC260 chip inside. Since one
+> month i have sound on it, because of the ALC883 patch for acer notebooks.
+
+Hmm, that's marginally odd.  I wouldn't expect the ALC883 patch to have any
+effect on your laptop if you truly have an ALC260.  The ALC260 hasn't had
+any major changes for a while so it's a little strange that things have
+changed recently.
+
+Could you send me the output of 
+  lspci -v
+as well as the result of the command
+  cat /proc/asound/card0/codec#0
+
+> When i set "options snd-hda-intel model=acer" in the modprobe.conf, then i
+> have sound over my headphones, but no sound is comming out of the speaker.
+
+If this Acer is anything like others and it truly does use the ALC260 (eg:
+Travelmates) it could be that we need to activate more than just GPIO0 on
+your particular laptop.  Currently the ALC260 Acer model turns GPIO0 on
+which on the Travelmates means both the headphone jack and the internal
+speaker can work.  Perhaps the c204 uses GPIO0 for the headphone jack (since
+you report that working) and GPIO1 (for instance) for the internal speaker.
+
+However before proceeding we have to confirm exactly which chip is in your
+notebook, as described previously.
+
+> I olso saw, that when i put my headphones inside the mic, then i olso have
+> sound. That sound have not as good quality as that from the headphones
+> jack and its louder.
+
+Now *that's* odd.  This seems to suggest that the c204 may be wired
+totally differently to the Travelmate from the point of view of which
+pins on the ALC260 chip go where.
+
+Could you give me a complete list of the audio jacks provided on your
+laptop.  I guess there's at least a "headphone" jack and one labelled "mic".
+If there are any others, what are they?
+
+> Can someone tell me what i could do to get sound out of my speaker?
+
+Are you comfortable/familiar with configuring and compiling ALSA?  We
+are possibly going to have to get you to run some tests with the "test"
+ALC260 model but that will require you recompile ALSA.
+
+Regards
+  jonathan
 
 
---- alsa-kernel/core/_disconnected.c	2006-10-05 12:16:34.000000000 +0200
-+++ alsa-kernel/core/disconnected.c	2006-10-05 15:15:06.000000000 +0200
-@@ -0,0 +1,141 @@
-+/* virtual device
-+   hides a real device's f_ops,
-+   except for release
-+
-+ *  Copyright (c) by Karsten Wiese <fzu@wemgehoertderstaat.de>
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+
-+#include <linux/fs.h>
-+#include <linux/list.h>
-+#include <linux/poll.h>
-+#include <linux/module.h>
-+
-+static DEFINE_MUTEX(mutex);
-+static LIST_HEAD(disconnected_files);
-+
-+struct snd_disconnected_file {
-+	struct file *file;
-+	const struct file_operations *f_op;
-+	struct list_head list;
-+};
-+
-+static struct file_operations snd_disconnect_f_ops;
-+
-+void snd_disconnect_file(struct file *file)
-+{
-+	struct snd_disconnected_file *df;
-+	df = kmalloc(sizeof(struct snd_disconnected_file), GFP_KERNEL);
-+	if (df == NULL)
-+		panic("Atomic allocation failed for snd_disconnected_file!");
-+
-+	df->file = file;
-+	df->f_op = file->f_op;
-+
-+	mutex_lock(&mutex);
-+	list_add(&df->list, &disconnected_files);
-+	mutex_unlock(&mutex);
-+
-+	fops_get(&snd_disconnect_f_ops);
-+	file->f_op = &snd_disconnect_f_ops;
-+	printk(KERN_INFO "%s rc3\n", __FUNCTION__);
-+}
-+
-+
-+static loff_t snd_disconnect_llseek(struct file *file, loff_t offset, int orig)
-+{
-+	return -ENODEV;
-+}
-+
-+static ssize_t snd_disconnect_read(struct file *file, char __user *buf,
-+				   size_t count, loff_t *offset)
-+{
-+	return -ENODEV;
-+}
-+
-+static ssize_t snd_disconnect_write(struct file *file, const char __user *buf,
-+				    size_t count, loff_t *offset)
-+{
-+	return -ENODEV;
-+}
-+
-+static int snd_disconnect_release(struct inode *inode, struct file *file)
-+{
-+	struct snd_disconnected_file *df = NULL;
-+	struct list_head *entry;
-+
-+	mutex_lock(&mutex);
-+	list_for_each(entry, &disconnected_files) {
-+		struct snd_disconnected_file *_df;
-+		_df = list_entry(entry, struct snd_disconnected_file, list);
-+		if (_df->file == file) {
-+			list_del(entry);
-+			df = _df;
-+			break;
-+		}
-+	}
-+	mutex_unlock(&mutex);
-+
-+	if (likely(df != NULL))	{
-+		int err = df->f_op->release(inode, file);
-+		fops_put(df->f_op);
-+		kfree(df);
-+		printk(KERN_INFO "%s rc3\n", __FUNCTION__);
-+		return err;
-+	}
-+
-+	panic("%s(%p, %p) failed!", __FUNCTION__, inode, file);
-+}
-+
-+static unsigned int snd_disconnect_poll(struct file * file, poll_table * wait)
-+{
-+	return POLLERR | POLLNVAL;
-+}
-+
-+static long snd_disconnect_ioctl(struct file *file,
-+				 unsigned int cmd, unsigned long arg)
-+{
-+	return -ENODEV;
-+}
-+
-+static int snd_disconnect_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	return -ENODEV;
-+}
-+
-+static int snd_disconnect_fasync(int fd, struct file *file, int on)
-+{
-+	return -ENODEV;
-+}
-+
-+static struct file_operations snd_disconnect_f_ops =
-+{
-+	.owner = 	THIS_MODULE,
-+	.llseek =	snd_disconnect_llseek,
-+	.read = 	snd_disconnect_read,
-+	.write =	snd_disconnect_write,
-+	.release =	snd_disconnect_release,
-+	.poll =		snd_disconnect_poll,
-+	.unlocked_ioctl = snd_disconnect_ioctl,
-+#ifdef CONFIG_COMPAT
-+	.compat_ioctl = snd_disconnect_ioctl,
-+#endif
-+	.mmap =		snd_disconnect_mmap,
-+	.fasync =	snd_disconnect_fasync
-+};
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
