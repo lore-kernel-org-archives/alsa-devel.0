@@ -1,15 +1,15 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Prolem with ALC260 soundcard
-Date: Thu, 5 Oct 2006 11:01:23 +0930 (CST)
-Message-ID: <200610050131.k951VNRG020959@turbo.physics.adelaide.edu.au>
-References: <mailman.50380.1159956166.16222.alsa-devel@lists.sourceforge.net>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.13 and hdsp cardbus
+Date: Fri, 6 Oct 2006 11:27:50 +0400
+Message-ID: <70a871c80610060027l4196fdfi7b7ecd215733a7b3@mail.gmail.com>
+References: <70a871c80610050541r73bbc2d7j408595802bb2c43f@mail.gmail.com>
+	<4525F73D.2040105@chello.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <mailman.50380.1159956166.16222.alsa-devel@lists.sourceforge.net>
-	from "alsa-devel-request@lists.sourceforge.net" at Oct 04,
-	2006 03:02:46 AM
+In-Reply-To: <4525F73D.2040105@chello.at>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,56 +19,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Karl Grill <kgrill@chello.at>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Hello, i have an acer c204 Notebook with an ALC260 chip inside. Since one
-> month i have sound on it, because of the ALC883 patch for acer notebooks.
+On 10/6/06, Karl Grill <kgrill@chello.at> wrote:
+> that's interesting - I saw the same problem, but attributed it to the
+> fact that
+> my iobox is the (currently unsupported) hdsp rpm and that the cardbus
+> card is revision 15 (also currently unsupported). You didn't do a
+> firmware upgrade on the card, did you? Anyway, could you send me some
+> more information (like lspci, dmesg output, at least what you can get in
+> spite of the freeze).
 
-Hmm, that's marginally odd.  I wouldn't expect the ALC883 patch to have any
-effect on your laptop if you truly have an ALC260.  The ALC260 hasn't had
-any major changes for a while so it's a little strange that things have
-changed recently.
+I do not reflashed the card. But bought it recently, it may be of the
+newest revision.
+lspci gives:
+02:00.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
+DSP (rev 35)
 
-Could you send me the output of 
-  lspci -v
-as well as the result of the command
-  cat /proc/asound/card0/codec#0
+It turns out, the freeze is on cardbus ejection.
+Stack trace (hand-rewritten from the screen):
 
-> When i set "options snd-hda-intel model=acer" in the modprobe.conf, then i
-> have sound over my headphones, but no sound is comming out of the speaker.
+Call trace:
+:snd_hdsp:snd_hdsp_midi_input_read + 0x29/0xfd
+:snd_hdsp:hdsp_midi_tasklet + 0x13/0x28
+tasklet_hi_action+0x3d/0x65
+__do_softirq+0x49/0x9c
+call_softirq+0x1c/0x28
 
-If this Acer is anything like others and it truly does use the ALC260 (eg:
-Travelmates) it could be that we need to activate more than just GPIO0 on
-your particular laptop.  Currently the ALC260 Acer model turns GPIO0 on
-which on the Travelmates means both the headphone jack and the internal
-speaker can work.  Perhaps the c204 uses GPIO0 for the headphone jack (since
-you report that working) and GPIO1 (for instance) for the internal speaker.
+DWARF2 unwinder stuck at call_softirq
+Leftover inexact backtrace:
 
-However before proceeding we have to confirm exactly which chip is in your
-notebook, as described previously.
+<IRQ> do_softirq
+irq_exit
+do_IRQ
+default_idle
+ret_from_intr
+<EOI>udp_poll
+default_idel
+cpu_idel
+start_kernel
+_sinittext
 
-> I olso saw, that when i put my headphones inside the mic, then i olso have
-> sound. That sound have not as good quality as that from the headphones
-> jack and its louder.
+Kernnel panic - not syncing: Aiee, killing interrupt handler!
 
-Now *that's* odd.  This seems to suggest that the c204 may be wired
-totally differently to the Travelmate from the point of view of which
-pins on the ALC260 chip go where.
 
-Could you give me a complete list of the audio jacks provided on your
-laptop.  I guess there's at least a "headphone" jack and one labelled "mic".
-If there are any others, what are they?
+Hope this will help.
 
-> Can someone tell me what i could do to get sound out of my speaker?
-
-Are you comfortable/familiar with configuring and compiling ALSA?  We
-are possibly going to have to get you to run some tests with the "test"
-ALC260 model but that will require you recompile ALSA.
-
-Regards
-  jonathan
+Dmitry.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
