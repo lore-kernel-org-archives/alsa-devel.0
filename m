@@ -1,22 +1,16 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.13 and indigoio
-Date: Fri, 6 Oct 2006 20:01:17 +0400
-Message-ID: <70a871c80610060901m6d5dbd4ds48420beed7b5fb2e@mail.gmail.com>
-References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
-	<s5hbqororyw.wl%tiwai@suse.de>
-	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
-	<s5hu02iu1ni.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
-	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
-	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
-	<Pine.LNX.4.64.0610061714430.4839@denise.shiny.it>
-	<70a871c80610060858u605e6805r432dc57cc21da038@mail.gmail.com>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH 0/5] ASoC codecs
+Date: Fri, 06 Oct 2006 17:07:26 +0100
+Message-ID: <1160150846.16898.58.camel@localhost.localdomain>
+References: <1159805715.2382.108.camel@localhost.localdomain>
+	<s5hy7rwht29.wl%tiwai@suse.de>
+	<1160149650.16898.36.camel@localhost.localdomain>
+	<s5hd595safh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <70a871c80610060858u605e6805r432dc57cc21da038@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <s5hd595safh.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,11 +20,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@denise.shiny.it>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Just tested with linux-2.6.17-gentoo-r2 and alsa-1.0.11: problem stays.
+On Fri, 2006-10-06 at 17:58 +0200, Takashi Iwai wrote:
+> At Fri, 06 Oct 2006 16:47:30 +0100,
+> Liam Girdwood wrote:
+> > 
+> > On Wed, 2006-10-04 at 19:47 +0200, Takashi Iwai wrote:
+> > > At Mon, 02 Oct 2006 17:15:15 +0100,
+> > > Liam Girdwood wrote:
+> > > > 
+> > > > This patch series will add initial ASoC codec support for the WM8731,
+> > > > WM8750 and WM9712 codecs. It also adds support for AC97 codecs through a
+> > > > generic AC97 codec driver (this connects any ASoC AC97 controller driver
+> > > > to the std alsa ac97 codec driver). These codec drivers were chosen as
+> > > > they are all working well and have good machine support (Zaurus).
+> > > > 
+> > > > The ak4535, uda1380, wm8753 and wm9713 ASoC codec drivers are all beta
+> > > > quality atm and will hopefully be submitted soon, after some further
+> > > > testing.
+> > > 
+> > > I got undefined soc_ac97_ops when I compile with your patches.
+> > > A missing piece?
+> > > 
+> > 
+> > It's shouldn't have been built (unless AC97 support was selected). I've
+> > fixed this up in the codecs Kconfig and Makefile now (see new patch
+> > 5/5).
+> 
+> But I couldn't find the definition of soc_ac97_ops in your patches.
+> Which patch does include this?
+> 
+
+This is supplied by any AC97 controller driver, however it's not in the
+AT91 series as AC97 is not supported. It will appear in the pxa2xx AC97
+driver patch next week. 
+
+It's only used by the AC97 codec drivers and the soc-core (and only
+*now* when SOC_AC97_ is selected by the build system). 
+
+Liam
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
