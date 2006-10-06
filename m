@@ -1,12 +1,12 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC codecs: WM8750 support
-Date: Fri, 06 Oct 2006 16:39:48 +0100
-Message-ID: <1160149188.16898.28.camel@localhost.localdomain>
-References: <1159805741.2382.111.camel@localhost.localdomain>
+Subject: Re: [PATCH 3/5] ASoC codecs: WM9712 support
+Date: Fri, 06 Oct 2006 16:43:03 +0100
+Message-ID: <1160149383.16898.32.camel@localhost.localdomain>
+References: <1159805754.2382.112.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-HQpIBYB76yOqyHoDH1Ze"
+Content-Type: multipart/mixed; boundary="=-JCrY81XOeK2VGCEbH6P+"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1159805741.2382.111.camel@localhost.localdomain>
+In-Reply-To: <1159805754.2382.112.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,702 +20,499 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-HQpIBYB76yOqyHoDH1Ze
+--=-JCrY81XOeK2VGCEbH6P+
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Requested changes made (same as WM8731 driver).
-
-Also included is I2C id.
+Requested changes made (same as WM8731).
 
 Liam
+
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
 
---=-HQpIBYB76yOqyHoDH1Ze
-Content-Disposition: attachment; filename=asoc-wm8750.patch
-Content-Type: text/x-patch; name=asoc-wm8750.patch; charset=utf-8
+--=-JCrY81XOeK2VGCEbH6P+
+Content-Disposition: attachment; filename=asoc-wm9712.patch
+Content-Type: text/x-patch; name=asoc-wm9712.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/codecs/wm8750.h
+Index: alsa-kernel/soc/codecs/wm9712.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/codecs/wm8750.h
-@@ -0,0 +1,66 @@
++++ alsa-kernel/soc/codecs/wm9712.c
+@@ -0,0 +1,778 @@
 +/*
-+ * Copyright 2005 Openedhand Ltd.
++ * wm9712.c  --  ALSA Soc WM9712 codec support
 + *
-+ * Author: Richard Purdie <richard@openedhand.com>
++ * Copyright 2006 Wolfson Microelectronics PLC.
++ * Author: Liam Girdwood
++ *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
 + *
-+ * Based on WM8753.h
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
++ *  Revision history
++ *    4th Feb 2006   Initial version.
 + */
 +
-+#ifndef _WM8750_H
-+#define _WM8750_H
-+
-+/* WM8750 register space */
-+
-+#define WM8750_LINVOL    0x00
-+#define WM8750_RINVOL    0x01
-+#define WM8750_LOUT1V    0x02
-+#define WM8750_ROUT1V    0x03
-+#define WM8750_ADCDAC    0x05
-+#define WM8750_IFACE     0x07
-+#define WM8750_SRATE     0x08
-+#define WM8750_LDAC      0x0a
-+#define WM8750_RDAC      0x0b
-+#define WM8750_BASS      0x0c
-+#define WM8750_TREBLE    0x0d
-+#define WM8750_RESET     0x0f
-+#define WM8750_3D        0x10
-+#define WM8750_ALC1      0x11
-+#define WM8750_ALC2      0x12
-+#define WM8750_ALC3      0x13
-+#define WM8750_NGATE     0x14
-+#define WM8750_LADC      0x15
-+#define WM8750_RADC      0x16
-+#define WM8750_ADCTL1    0x17
-+#define WM8750_ADCTL2    0x18
-+#define WM8750_PWR1      0x19
-+#define WM8750_PWR2      0x1a
-+#define WM8750_ADCTL3    0x1b
-+#define WM8750_ADCIN     0x1f
-+#define WM8750_LADCIN    0x20
-+#define WM8750_RADCIN    0x21
-+#define WM8750_LOUTM1    0x22
-+#define WM8750_LOUTM2    0x23
-+#define WM8750_ROUTM1    0x24
-+#define WM8750_ROUTM2    0x25
-+#define WM8750_MOUTM1    0x26
-+#define WM8750_MOUTM2    0x27
-+#define WM8750_LOUT2V    0x28
-+#define WM8750_ROUT2V    0x29
-+#define WM8750_MOUTV     0x2a
-+
-+#define WM8750_CACHE_REGNUM 0x2a
-+
-+struct wm8750_setup_data {
-+	unsigned short i2c_address;
-+	unsigned int mclk;
-+};
-+
-+extern struct snd_soc_codec_dai wm8750_dai;
-+extern struct snd_soc_codec_device soc_codec_dev_wm8750;
-+
-+#endif
-Index: alsa-kernel/soc/codecs/wm8750.c
-===================================================================
---- /dev/null
-+++ alsa-kernel/soc/codecs/wm8750.c
-@@ -0,0 +1,1131 @@
-+/*
-+ * wm8750.c -- WM8750 ALSA SoC audio driver
-+ *
-+ * Copyright 2005 Openedhand Ltd.
-+ *
-+ * Author: Richard Purdie <richard@openedhand.com>
-+ *
-+ * Based on WM8753.c
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
 +#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/device.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
++#include <sound/ac97_codec.h>
++#include <sound/initval.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
 +
-+#include "wm8750.h"
++#define WM9712_VERSION "0.4"
 +
-+#define AUDIO_NAME "WM8750"
-+#define WM8750_VERSION "0.11"
++static unsigned int ac97_read(struct snd_soc_codec *codec,
++	unsigned int reg);
++static int ac97_write(struct snd_soc_codec *codec,
++	unsigned int reg, unsigned int val);
 +
-+/*
-+ * Debug
-+ */
-+
-+#define WM8750_DEBUG 0
-+
-+#ifdef WM8750_DEBUG
-+#define dbg(format, arg...) \
-+	printk(KERN_DEBUG AUDIO_NAME ": " format "\n" , ## arg)
-+#else
-+#define dbg(format, arg...) do {} while (0)
-+#endif
-+#define err(format, arg...) \
-+	printk(KERN_ERR AUDIO_NAME ": " format "\n" , ## arg)
-+#define info(format, arg...) \
-+	printk(KERN_INFO AUDIO_NAME ": " format "\n" , ## arg)
-+#define warn(format, arg...) \
-+	printk(KERN_WARNING AUDIO_NAME ": " format "\n" , ## arg)
-+
-+static struct workqueue_struct *wm8750_workq = NULL;
-+static struct work_struct wm8750_dapm_work;
-+
-+/*
-+ * wm8750 register cache
-+ * We can't read the WM8750 register space when we
-+ * are using 2 wire for device control, so we cache them instead.
-+ */
-+static const u16 wm8750_reg[] = {
-+	0x0097, 0x0097, 0x0079, 0x0079,  /*  0 */
-+	0x0000, 0x0008, 0x0000, 0x000a,  /*  4 */
-+	0x0000, 0x0000, 0x00ff, 0x00ff,  /*  8 */
-+	0x000f, 0x000f, 0x0000, 0x0000,  /* 12 */
-+	0x0000, 0x007b, 0x0000, 0x0032,  /* 16 */
-+	0x0000, 0x00c3, 0x00c3, 0x00c0,  /* 20 */
-+	0x0000, 0x0000, 0x0000, 0x0000,  /* 24 */
-+	0x0000, 0x0000, 0x0000, 0x0000,  /* 28 */
-+	0x0000, 0x0000, 0x0050, 0x0050,  /* 32 */
-+	0x0050, 0x0050, 0x0050, 0x0050,  /* 36 */
-+	0x0079, 0x0079, 0x0079,          /* 40 */
-+};
-+
-+#define WM8750_HIFI_DAIFMT \
-+	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_RIGHT_J | \
-+	SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_NB_IF | SND_SOC_DAIFMT_IB_NF | \
-+	SND_SOC_DAIFMT_IB_IF)
-+
-+#define WM8750_DIR \
++#define AC97_DIR \
 +	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
 +
-+#define WM8750_HIFI_FSB \
-+	(SND_SOC_FSBD(1) | SND_SOC_FSBD(2) | SND_SOC_FSBD(4) | \
-+	SND_SOC_FSBD(8) | SND_SOC_FSBD(16))
-+
-+#define WM8750_HIFI_RATES \
++#define AC97_RATES \
 +	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
 +	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++	SNDRV_PCM_RATE_48000)
 +
-+#define WM8750_HIFI_BITS \
-+	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_mode wm8750_modes[] = {
-+	/* common codec frame and clock master modes */
-+	/* 8k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1536, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1408, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 2304, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 2112, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1500, WM8750_HIFI_FSB},
-+
-+	/* 11.025k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1024, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1536, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1088, WM8750_HIFI_FSB},
-+
-+	/* 16k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 768, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1152, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 750, WM8750_HIFI_FSB},
-+
-+	/* 22.05k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 512, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 768, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 544, WM8750_HIFI_FSB},
-+
-+	/* 32k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 384, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 576, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 375, WM8750_HIFI_FSB},
-+
-+	/* 44.1k & 48k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100 |
-+		SNDRV_PCM_RATE_48000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 256,
-+		WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100 |
-+		SNDRV_PCM_RATE_48000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 384,
-+		WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 272, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_48000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 250, WM8750_HIFI_FSB},
-+
-+	/* 88.2k & 96k */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200 |
-+		SNDRV_PCM_RATE_96000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 128,
-+		WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200 |
-+		SNDRV_PCM_RATE_96000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 192,
-+		WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 136, WM8750_HIFI_FSB},
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_96000,
-+		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 125, WM8750_HIFI_FSB},
-+
-+	/* codec frame and clock slave modes */
-+	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		WM8750_HIFI_BITS, WM8750_HIFI_RATES, WM8750_DIR,
-+		SND_SOC_DAI_BFS_DIV, SND_SOC_FS_ALL, SND_SOC_FSBD_ALL},
++/* may need to expand this */
++static struct snd_soc_dai_mode ac97_modes[] = {
++	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
++	{0, 0,	SNDRV_PCM_FMTBIT_S18_3LE,	AC97_RATES},
 +};
 +
 +/*
-+ * read wm8750 register cache
++ * WM9712 register cache
 + */
-+static inline unsigned int wm8750_read_reg_cache(struct snd_soc_codec *codec,
-+	unsigned int reg)
-+{
-+	u16 *cache = codec->reg_cache;
-+	if (reg > WM8750_CACHE_REGNUM)
-+		return -1;
-+	return cache[reg];
-+}
-+
-+/*
-+ * write wm8750 register cache
-+ */
-+static inline void wm8750_write_reg_cache(struct snd_soc_codec *codec,
-+	unsigned int reg, unsigned int value)
-+{
-+	u16 *cache = codec->reg_cache;
-+	if (reg > WM8750_CACHE_REGNUM)
-+		return;
-+	cache[reg] = value;
-+}
-+
-+static int wm8750_write(struct snd_soc_codec *codec, unsigned int reg,
-+	unsigned int value)
-+{
-+	u8 data[2];
-+
-+	/* data is
-+	 *   D15..D9 WM8753 register offset
-+	 *   D8...D0 register data
-+	 */
-+	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
-+	data[1] = value & 0x00ff;
-+
-+	wm8750_write_reg_cache (codec, reg, value);
-+	if (codec->hw_write(codec->control_data, data, 2) == 2)
-+		return 0;
-+	else
-+		return -EIO;
-+}
-+
-+#define wm8750_reset(c)	wm8750_write(c, WM8750_RESET, 0)
-+
-+/*
-+ * WM8750 Controls
-+ */
-+static const char *wm8750_bass[] = {"Linear Control", "Adaptive Boost"};
-+static const char *wm8750_bass_filter[] = { "130Hz @ 48kHz", "200Hz @ 48kHz" };
-+static const char *wm8750_treble[] = {"8kHz", "4kHz"};
-+static const char *wm8750_3d_lc[] = {"200Hz", "500Hz"};
-+static const char *wm8750_3d_uc[] = {"2.2kHz", "1.5kHz"};
-+static const char *wm8750_3d_func[] = {"Capture", "Playback"};
-+static const char *wm8750_alc_func[] = {"Off", "Right", "Left", "Stereo"};
-+static const char *wm8750_ng_type[] = {"Constant PGA Gain",
-+	"Mute ADC Output"};
-+static const char *wm8750_line_mux[] = {"Line 1", "Line 2", "Line 3", "PGA",
-+	"Differential"};
-+static const char *wm8750_pga_sel[] = {"Line 1", "Line 2", "Line 3",
-+	"Differential"};
-+static const char *wm8750_out3[] = {"VREF", "ROUT1 + Vol", "MonoOut",
-+	"ROUT1"};
-+static const char *wm8750_diff_sel[] = {"Line 1", "Line 2"};
-+static const char *wm8750_adcpol[] = {"Normal", "L Invert", "R Invert",
-+	"L + R Invert"};
-+static const char *wm8750_deemph[] = {"None", "32Khz", "44.1Khz", "48Khz"};
-+static const char *wm8750_mono_mux[] = {"Stereo", "Mono (Left)",
-+	"Mono (Right)", "Digital Mono"};
-+
-+static const struct soc_enum wm8750_enum[] = {
-+SOC_ENUM_SINGLE(WM8750_BASS, 7, 2, wm8750_bass),
-+SOC_ENUM_SINGLE(WM8750_BASS, 6, 2, wm8750_bass_filter),
-+SOC_ENUM_SINGLE(WM8750_TREBLE, 6, 2, wm8750_treble),
-+SOC_ENUM_SINGLE(WM8750_3D, 5, 2, wm8750_3d_lc),
-+SOC_ENUM_SINGLE(WM8750_3D, 6, 2, wm8750_3d_uc),
-+SOC_ENUM_SINGLE(WM8750_3D, 7, 2, wm8750_3d_func),
-+SOC_ENUM_SINGLE(WM8750_ALC1, 7, 4, wm8750_alc_func),
-+SOC_ENUM_SINGLE(WM8750_NGATE, 1, 2, wm8750_ng_type),
-+SOC_ENUM_SINGLE(WM8750_LOUTM1, 0, 5, wm8750_line_mux),
-+SOC_ENUM_SINGLE(WM8750_ROUTM1, 0, 5, wm8750_line_mux),
-+SOC_ENUM_SINGLE(WM8750_LADCIN, 6, 4, wm8750_pga_sel), /* 10 */
-+SOC_ENUM_SINGLE(WM8750_RADCIN, 6, 4, wm8750_pga_sel),
-+SOC_ENUM_SINGLE(WM8750_ADCTL2, 7, 4, wm8750_out3),
-+SOC_ENUM_SINGLE(WM8750_ADCIN, 8, 2, wm8750_diff_sel),
-+SOC_ENUM_SINGLE(WM8750_ADCDAC, 5, 4, wm8750_adcpol),
-+SOC_ENUM_SINGLE(WM8750_ADCDAC, 1, 4, wm8750_deemph),
-+SOC_ENUM_SINGLE(WM8750_ADCIN, 6, 4, wm8750_mono_mux), /* 16 */
-+
++static const u16 wm9712_reg[] = {
++	0x6174, 0x8000, 0x8000, 0x8000, // 6
++	0xf0f0, 0xaaa0, 0xc008, 0x6808, // e
++	0xe808, 0xaaa0, 0xad00, 0x8000, // 16
++	0xe808, 0x3000, 0x8000, 0x0000, // 1e
++	0x0000, 0x0000, 0x0000, 0x000f, // 26
++	0x0405, 0x0410, 0xbb80, 0xbb80, // 2e
++	0x0000, 0xbb80, 0x0000, 0x0000, // 36
++	0x0000, 0x2000, 0x0000, 0x0000, // 3e
++	0x0000, 0x0000, 0x0000, 0x0000, // 46
++	0x0000, 0x0000, 0xf83e, 0xffff, // 4e
++	0x0000, 0x0000, 0x0000, 0xf83e, // 56
++	0x0008, 0x0000, 0x0000, 0x0000, // 5e
++	0xb032, 0x3e00, 0x0000, 0x0000, // 66
++	0x0000, 0x0000, 0x0000, 0x0000, // 6e
++	0x0000, 0x0000, 0x0000, 0x0006, // 76
++	0x0001, 0x0000, 0x574d, 0x4c12, // 7e
++	0x0000, 0x0000 // virtual hp mixers
 +};
 +
-+static const struct snd_kcontrol_new wm8750_snd_controls[] = {
++/* virtual HP mixers regs */
++#define HPL_MIXER	0x80
++#define HPR_MIXER	0x82
 +
-+SOC_DOUBLE_R("Capture Volume", WM8750_LINVOL, WM8750_RINVOL, 0, 63, 0),
-+SOC_DOUBLE_R("Capture ZC Switch", WM8750_LINVOL, WM8750_RINVOL, 6, 1, 0),
-+SOC_DOUBLE_R("Capture Switch", WM8750_LINVOL, WM8750_RINVOL, 7, 1, 1),
++static const char *wm9712_alc_select[] = {"None", "Left", "Right", "Stereo"};
++static const char *wm9712_alc_mux[] = {"Stereo", "Left", "Right", "None"};
++static const char *wm9712_out3_src[] = {"Left", "VREF", "Left + Right",
++	"Mono"};
++static const char *wm9712_spk_src[] = {"Speaker Mix", "Headphone Mix"};
++static const char *wm9712_rec_adc[] = {"Stereo", "Left", "Right", "Mute"};
++static const char *wm9712_base[] = {"Linear Control", "Adaptive Boost"};
++static const char *wm9712_rec_gain[] = {"+1.5dB Steps", "+0.75dB Steps"};
++static const char *wm9712_mic[] = {"Mic 1", "Differential", "Mic 2",
++	"Stereo"};
++static const char *wm9712_rec_sel[] = {"Mic", "NC", "NC", "Speaker Mixer",
++	"Line", "Headphone Mixer", "Phone Mixer", "Phone"};
++static const char *wm9712_ng_type[] = {"Constant Gain", "Mute"};
++static const char *wm9712_diff_sel[] = {"Mic", "Line"};
 +
-+SOC_DOUBLE_R("Out1 Playback ZC Switch", WM8750_LOUT1V,
-+	WM8750_ROUT1V, 7, 1, 0),
-+SOC_DOUBLE_R("Out2 Playback ZC Switch", WM8750_LOUT2V,
-+	WM8750_ROUT2V, 7, 1, 0),
++static const struct soc_enum wm9712_enum[] = {
++SOC_ENUM_SINGLE(AC97_PCI_SVID, 14, 4, wm9712_alc_select),
++SOC_ENUM_SINGLE(AC97_VIDEO, 12, 4, wm9712_alc_mux),
++SOC_ENUM_SINGLE(AC97_AUX, 9, 4, wm9712_out3_src),
++SOC_ENUM_SINGLE(AC97_AUX, 8, 2, wm9712_spk_src),
++SOC_ENUM_SINGLE(AC97_REC_SEL, 12, 4, wm9712_rec_adc),
++SOC_ENUM_SINGLE(AC97_MASTER_TONE, 15, 2, wm9712_base),
++SOC_ENUM_DOUBLE(AC97_REC_GAIN, 14, 6, 2, wm9712_rec_gain),
++SOC_ENUM_SINGLE(AC97_MIC, 5, 4, wm9712_mic),
++SOC_ENUM_SINGLE(AC97_REC_SEL, 8, 8, wm9712_rec_sel),
++SOC_ENUM_SINGLE(AC97_REC_SEL, 0, 8, wm9712_rec_sel),
++SOC_ENUM_SINGLE(AC97_PCI_SVID, 5, 2, wm9712_ng_type),
++SOC_ENUM_SINGLE(0x5c, 8, 2, wm9712_diff_sel),
++};
 +
-+SOC_ENUM("Playback De-emphasis", wm8750_enum[15]),
++static const struct snd_kcontrol_new wm9712_snd_ac97_controls[] = {
++SOC_DOUBLE("Speaker Playback Volume", AC97_MASTER, 8, 0, 31, 1),
++SOC_SINGLE("Speaker Playback Switch", AC97_MASTER, 15, 1, 1),
++SOC_DOUBLE("Headphone Playback Volume", AC97_HEADPHONE, 8, 0, 31, 1),
++SOC_SINGLE("Headphone Playback Switch", AC97_HEADPHONE,15, 1, 1),
 +
-+SOC_ENUM("Capture Polarity", wm8750_enum[14]),
-+SOC_SINGLE("Playback 6dB Attenuate", WM8750_ADCDAC, 7, 1, 0),
-+SOC_SINGLE("Capture 6dB Attenuate", WM8750_ADCDAC, 8, 1, 0),
++SOC_SINGLE("Speaker Playback ZC Switch", AC97_MASTER, 7, 1, 0),
++SOC_SINGLE("Speaker Playback Invert Switch", AC97_MASTER, 6, 1, 0),
++SOC_SINGLE("Headphone Playback ZC Switch", AC97_HEADPHONE, 7, 1, 0),
++SOC_SINGLE("Mono Playback ZC Switch", AC97_MASTER_MONO, 7, 1, 0),
++SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 0),
 +
-+SOC_DOUBLE_R("PCM Volume", WM8750_LDAC, WM8750_RDAC, 0, 255, 0),
++SOC_SINGLE("ALC Target Volume", AC97_CODEC_CLASS_REV, 12, 15, 0),
++SOC_SINGLE("ALC Hold Time", AC97_CODEC_CLASS_REV, 8, 15, 0),
++SOC_SINGLE("ALC Decay Time", AC97_CODEC_CLASS_REV, 4, 15, 0),
++SOC_SINGLE("ALC Attack Time", AC97_CODEC_CLASS_REV, 0, 15, 0),
++SOC_ENUM("ALC Function", wm9712_enum[0]),
++SOC_SINGLE("ALC Max Volume", AC97_PCI_SVID, 11, 7, 0),
++SOC_SINGLE("ALC ZC Timeout", AC97_PCI_SVID, 9, 3, 1),
++SOC_SINGLE("ALC ZC Switch", AC97_PCI_SVID, 8, 1, 0),
++SOC_SINGLE("ALC NG Switch", AC97_PCI_SVID, 7, 1, 0),
++SOC_ENUM("ALC NG Type", wm9712_enum[10]),
++SOC_SINGLE("ALC NG Threshold", AC97_PCI_SVID, 0, 31, 1),
 +
-+SOC_ENUM("Bass Boost", wm8750_enum[0]),
-+SOC_ENUM("Bass Filter", wm8750_enum[1]),
-+SOC_SINGLE("Bass Volume", WM8750_BASS, 0, 15, 1),
++SOC_SINGLE("Mic Headphone  Volume", AC97_VIDEO, 12, 7, 1),
++SOC_SINGLE("ALC Headphone Volume", AC97_VIDEO, 7, 7, 1),
 +
-+SOC_SINGLE("Treble Volume", WM8750_TREBLE, 0, 15, 0),
-+SOC_ENUM("Treble Cut-off", wm8750_enum[2]),
++SOC_SINGLE("Out3 Switch", AC97_AUX, 15, 1, 1),
++SOC_SINGLE("Out3 ZC Switch", AC97_AUX, 7, 1, 1),
++SOC_SINGLE("Out3 Volume", AC97_AUX, 0, 31, 1),
 +
-+SOC_SINGLE("3D Switch", WM8750_3D, 0, 1, 0),
-+SOC_SINGLE("3D Volume", WM8750_3D, 1, 15, 0),
-+SOC_ENUM("3D Lower Cut-off", wm8750_enum[3]),
-+SOC_ENUM("3D Upper Cut-off", wm8750_enum[4]),
-+SOC_ENUM("3D Mode", wm8750_enum[5]),
++SOC_SINGLE("PCBeep Bypass Headphone Volume", AC97_PC_BEEP, 12, 7, 1),
++SOC_SINGLE("PCBeep Bypass Speaker Volume", AC97_PC_BEEP, 8, 7, 1),
++SOC_SINGLE("PCBeep Bypass Phone Volume", AC97_PC_BEEP, 4, 7, 1),
 +
-+SOC_SINGLE("ALC Capture Target Volume", WM8750_ALC1, 0, 7, 0),
-+SOC_SINGLE("ALC Capture Max Volume", WM8750_ALC1, 4, 7, 0),
-+SOC_ENUM("ALC Capture Function", wm8750_enum[6]),
-+SOC_SINGLE("ALC Capture ZC Switch", WM8750_ALC2, 7, 1, 0),
-+SOC_SINGLE("ALC Capture Hold Time", WM8750_ALC2, 0, 15, 0),
-+SOC_SINGLE("ALC Capture Decay Time", WM8750_ALC3, 4, 15, 0),
-+SOC_SINGLE("ALC Capture Attack Time", WM8750_ALC3, 0, 15, 0),
-+SOC_SINGLE("ALC Capture NG Threshold", WM8750_NGATE, 3, 31, 0),
-+SOC_ENUM("ALC Capture NG Type", wm8750_enum[4]),
-+SOC_SINGLE("ALC Capture NG Switch", WM8750_NGATE, 0, 1, 0),
++SOC_SINGLE("Aux Playback Headphone Volume", AC97_CD, 12, 7, 1),
++SOC_SINGLE("Aux Playback Speaker Volume", AC97_CD, 8, 7, 1),
++SOC_SINGLE("Aux Playback Phone Volume", AC97_CD, 4, 7, 1),
 +
-+SOC_SINGLE("Left ADC Capture Volume", WM8750_LADC, 0, 255, 0),
-+SOC_SINGLE("Right ADC Capture Volume", WM8750_RADC, 0, 255, 0),
++SOC_SINGLE("Phone Volume", AC97_PHONE, 0, 15, 0),
++SOC_DOUBLE("Line Capture Volume", AC97_LINE, 8, 0, 31, 1),
 +
-+SOC_SINGLE("ZC Timeout Switch", WM8750_ADCTL1, 0, 1, 0),
-+SOC_SINGLE("Playback Invert Switch", WM8750_ADCTL1, 1, 1, 0),
++SOC_SINGLE("Capture 20dB Boost Switch", AC97_REC_SEL, 14, 1, 0),
++SOC_SINGLE("Capture to Phone 20dB Boost Switch", AC97_REC_SEL, 11, 1, 1),
 +
-+SOC_SINGLE("Right Out2 Playback Invert Switch", WM8750_ADCTL2, 4, 1, 0),
++SOC_SINGLE("3D Upper Cut-off Switch", AC97_3D_CONTROL, 5, 1, 1),
++SOC_SINGLE("3D Lower Cut-off Switch", AC97_3D_CONTROL, 4, 1, 1),
++SOC_SINGLE("3D Playback Volume", AC97_3D_CONTROL, 0, 15, 0),
 +
-+/* Unimplemented */
-+/* ADCDAC Bit 0 - ADCHPD */
-+/* ADCDAC Bit 4 - HPOR */
-+/* ADCTL1 Bit 2,3 - DATSEL */
-+/* ADCTL1 Bit 4,5 - DMONOMIX */
-+/* ADCTL1 Bit 6,7 - VSEL */
-+/* ADCTL2 Bit 2 - LRCM */
-+/* ADCTL2 Bit 3 - TRI */
-+/* ADCTL3 Bit 5 - HPFLREN */
-+/* ADCTL3 Bit 6 - VROI */
-+/* ADCTL3 Bit 7,8 - ADCLRM */
-+/* ADCIN Bit 4 - LDCM */
-+/* ADCIN Bit 5 - RDCM */
++SOC_ENUM("Bass Control", wm9712_enum[5]),
++SOC_SINGLE("Bass Cut-off Switch", AC97_MASTER_TONE, 12, 1, 1),
++SOC_SINGLE("Tone Cut-off Switch", AC97_MASTER_TONE, 4, 1, 1),
++SOC_SINGLE("Playback Attenuate (-6dB) Switch", AC97_MASTER_TONE, 6, 1, 0),
++SOC_SINGLE("Bass Volume", AC97_MASTER_TONE, 8, 15, 0),
++SOC_SINGLE("Treble Volume", AC97_MASTER_TONE, 0, 15, 0),
 +
-+SOC_DOUBLE_R("Mic Boost", WM8750_LADCIN, WM8750_RADCIN, 4, 3, 0),
++SOC_SINGLE("Capture ADC Switch", AC97_REC_GAIN, 15, 1, 1),
++SOC_ENUM("Capture Volume Steps", wm9712_enum[6]),
++SOC_DOUBLE("Capture Volume", AC97_REC_GAIN, 8, 0, 63, 1),
++SOC_SINGLE("Capture ZC Switch", AC97_REC_GAIN, 7, 1, 0),
 +
-+SOC_DOUBLE_R("Bypass Left Playback Volume", WM8750_LOUTM1,
-+	WM8750_LOUTM2, 4, 7, 1),
-+SOC_DOUBLE_R("Bypass Right Playback Volume", WM8750_ROUTM1,
-+	WM8750_ROUTM2, 4, 7, 1),
-+SOC_DOUBLE_R("Bypass Mono Playback Volume", WM8750_MOUTM1,
-+	WM8750_MOUTM2, 4, 7, 1),
-+
-+SOC_SINGLE("Mono Playback ZC Switch", WM8750_MOUTV, 7, 1, 0),
-+
-+SOC_DOUBLE_R("Out1 Playback Volume", WM8750_LOUT1V, WM8750_ROUT1V, 0, 127, 0),
-+SOC_DOUBLE_R("Out2 Playback Volume", WM8750_LOUT2V, WM8750_ROUT2V, 0, 127, 0),
-+
-+SOC_SINGLE("Mono Playback Volume", WM8750_MOUTV, 0, 127, 0),
-+
++SOC_SINGLE("Mic 1 Volume", AC97_MIC, 8, 31, 1),
++SOC_SINGLE("Mic 2 Volume", AC97_MIC, 0, 31, 1),
++SOC_SINGLE("Mic 20dB Boost Switch", AC97_MIC, 7, 1, 0),
 +};
 +
 +/* add non dapm controls */
-+static int wm8750_add_controls(struct snd_soc_codec *codec)
++static int wm9712_add_controls(struct snd_soc_codec *codec)
 +{
 +	int err, i;
 +
-+	for (i = 0; i < ARRAY_SIZE(wm8750_snd_controls); i++) {
++	for (i = 0; i < ARRAY_SIZE(wm9712_snd_ac97_controls); i++) {
 +		err = snd_ctl_add(codec->card,
-+				snd_soc_cnew(&wm8750_snd_controls[i],codec, NULL));
++				snd_soc_cnew(&wm9712_snd_ac97_controls[i],codec, NULL));
 +		if (err < 0)
 +			return err;
 +	}
 +	return 0;
 +}
 +
-+/*
-+ * DAPM Controls
++/* We have to create a fake left and right HP mixers because
++ * the codec only has a single control that is shared by both channels.
++ * This makes it impossible to determine the audio path.
 + */
++static int mixer_event (struct snd_soc_dapm_widget *w, int event)
++{
++	u16 l, r, beep, line, phone, mic, pcm, aux;
 +
-+/* Left Mixer */
-+static const struct snd_kcontrol_new wm8750_left_mixer_controls[] = {
-+SOC_DAPM_SINGLE("Playback Switch", WM8750_LOUTM1, 8, 1, 0),
-+SOC_DAPM_SINGLE("Left Bypass Switch", WM8750_LOUTM1, 7, 1, 0),
-+SOC_DAPM_SINGLE("Right Playback Switch", WM8750_LOUTM2, 8, 1, 0),
-+SOC_DAPM_SINGLE("Right Bypass Switch", WM8750_LOUTM2, 7, 1, 0),
++	l = ac97_read(w->codec, HPL_MIXER);
++	r = ac97_read(w->codec, HPR_MIXER);
++	beep = ac97_read(w->codec, AC97_PC_BEEP);
++	mic = ac97_read(w->codec, AC97_VIDEO);
++	phone = ac97_read(w->codec, AC97_PHONE);
++	line = ac97_read(w->codec, AC97_LINE);
++	pcm = ac97_read(w->codec, AC97_PCM);
++	aux = ac97_read(w->codec, AC97_CD);
++
++	if (l & 0x1 || r & 0x1)
++		ac97_write(w->codec, AC97_VIDEO, mic & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_VIDEO, mic | 0x8000);
++
++	if (l & 0x2 || r & 0x2)
++		ac97_write(w->codec, AC97_PCM, pcm & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_PCM, pcm | 0x8000);
++
++	if (l & 0x4 || r & 0x4)
++		ac97_write(w->codec, AC97_LINE, line & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_LINE, line | 0x8000);
++
++	if (l & 0x8 || r & 0x8)
++		ac97_write(w->codec, AC97_PHONE, phone & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_PHONE, phone | 0x8000);
++
++	if (l & 0x10 || r & 0x10)
++		ac97_write(w->codec, AC97_CD, aux & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_CD, aux | 0x8000);
++
++	if (l & 0x20 || r & 0x20)
++		ac97_write(w->codec, AC97_PC_BEEP, beep & 0x7fff);
++	else
++		ac97_write(w->codec, AC97_PC_BEEP, beep | 0x8000);
++
++	return 0;
++}
++
++/* Left Headphone Mixers */
++static const struct snd_kcontrol_new wm9712_hpl_mixer_controls[] = {
++	SOC_DAPM_SINGLE("PCBeep Bypass Switch", HPL_MIXER, 5, 1, 0),
++	SOC_DAPM_SINGLE("Aux Playback Switch", HPL_MIXER, 4, 1, 0),
++	SOC_DAPM_SINGLE("Phone Bypass Switch", HPL_MIXER, 3, 1, 0),
++	SOC_DAPM_SINGLE("Line Bypass Switch", HPL_MIXER, 2, 1, 0),
++	SOC_DAPM_SINGLE("PCM Playback Switch", HPL_MIXER, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mic Sidetone Switch", HPL_MIXER, 0, 1, 0),
 +};
 +
-+/* Right Mixer */
-+static const struct snd_kcontrol_new wm8750_right_mixer_controls[] = {
-+SOC_DAPM_SINGLE("Left Playback Switch", WM8750_ROUTM1, 8, 1, 0),
-+SOC_DAPM_SINGLE("Left Bypass Switch", WM8750_ROUTM1, 7, 1, 0),
-+SOC_DAPM_SINGLE("Playback Switch", WM8750_ROUTM2, 8, 1, 0),
-+SOC_DAPM_SINGLE("Right Bypass Switch", WM8750_ROUTM2, 7, 1, 0),
++/* Right Headphone Mixers */
++static const struct snd_kcontrol_new wm9712_hpr_mixer_controls[] = {
++	SOC_DAPM_SINGLE("PCBeep Bypass Switch", HPR_MIXER, 5, 1, 0),
++	SOC_DAPM_SINGLE("Aux Playback Switch", HPR_MIXER, 4, 1, 0),
++	SOC_DAPM_SINGLE("Phone Bypass Switch", HPR_MIXER, 3, 1, 0),
++	SOC_DAPM_SINGLE("Line Bypass Switch", HPR_MIXER, 2, 1, 0),
++	SOC_DAPM_SINGLE("PCM Playback Switch", HPR_MIXER, 1, 1, 0),
++	SOC_DAPM_SINGLE("Mic Sidetone Switch", HPR_MIXER, 0, 1, 0),
 +};
 +
-+/* Mono Mixer */
-+static const struct snd_kcontrol_new wm8750_mono_mixer_controls[] = {
-+SOC_DAPM_SINGLE("Left Playback Switch", WM8750_MOUTM1, 8, 1, 0),
-+SOC_DAPM_SINGLE("Left Bypass Switch", WM8750_MOUTM1, 7, 1, 0),
-+SOC_DAPM_SINGLE("Right Playback Switch", WM8750_MOUTM2, 8, 1, 0),
-+SOC_DAPM_SINGLE("Right Bypass Switch", WM8750_MOUTM2, 7, 1, 0),
++/* Speaker Mixer */
++static const struct snd_kcontrol_new wm9712_speaker_mixer_controls[] = {
++	SOC_DAPM_SINGLE("PCBeep Bypass Switch", AC97_PC_BEEP, 11, 1, 1),
++	SOC_DAPM_SINGLE("Aux Playback Switch", AC97_CD, 11, 1, 1),
++	SOC_DAPM_SINGLE("Phone Bypass Switch", AC97_PHONE, 14, 1, 1),
++	SOC_DAPM_SINGLE("Line Bypass Switch", AC97_LINE, 14, 1, 1),
++	SOC_DAPM_SINGLE("PCM Playback Switch", AC97_PCM, 14, 1, 1),
 +};
 +
-+/* Left Line Mux */
-+static const struct snd_kcontrol_new wm8750_left_line_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[8]);
++/* Phone Mixer */
++static const struct snd_kcontrol_new wm9712_phone_mixer_controls[] = {
++	SOC_DAPM_SINGLE("PCBeep Bypass Switch", AC97_PC_BEEP, 7, 1, 1),
++	SOC_DAPM_SINGLE("Aux Playback Switch", AC97_CD, 7, 1, 1),
++	SOC_DAPM_SINGLE("Line Bypass Switch", AC97_LINE, 13, 1, 1),
++	SOC_DAPM_SINGLE("PCM Playback Switch", AC97_PCM, 13, 1, 1),
++	SOC_DAPM_SINGLE("Mic 1 Sidetone Switch", AC97_MIC, 14, 1, 1),
++	SOC_DAPM_SINGLE("Mic 2 Sidetone Switch", AC97_MIC, 13, 1, 1),
++};
 +
-+/* Right Line Mux */
-+static const struct snd_kcontrol_new wm8750_right_line_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[9]);
++/* ALC headphone mux */
++static const struct snd_kcontrol_new wm9712_alc_mux_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[1]);
 +
-+/* Left PGA Mux */
-+static const struct snd_kcontrol_new wm8750_left_pga_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[10]);
++/* out 3 mux */
++static const struct snd_kcontrol_new wm9712_out3_mux_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[2]);
 +
-+/* Right PGA Mux */
-+static const struct snd_kcontrol_new wm8750_right_pga_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[11]);
++/* spk mux */
++static const struct snd_kcontrol_new wm9712_spk_mux_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[3]);
 +
-+/* Out 3 Mux */
-+static const struct snd_kcontrol_new wm8750_out3_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[12]);
++/* Capture to Phone mux */
++static const struct snd_kcontrol_new wm9712_capture_phone_mux_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[4]);
 +
-+/* Differential Mux */
-+static const struct snd_kcontrol_new wm8750_diffmux_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[13]);
++/* Capture left select */
++static const struct snd_kcontrol_new wm9712_capture_selectl_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[8]);
 +
-+/* Mono ADC Mux */
-+static const struct snd_kcontrol_new wm8750_monomux_controls =
-+SOC_DAPM_ENUM("Route", wm8750_enum[16]);
++/* Capture right select */
++static const struct snd_kcontrol_new wm9712_capture_selectr_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[9]);
 +
-+static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
-+		&wm8750_left_mixer_controls[0],
-+		ARRAY_SIZE(wm8750_left_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
-+		&wm8750_right_mixer_controls[0],
-+		ARRAY_SIZE(wm8750_right_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Mono Mixer", WM8750_PWR2, 2, 0,
-+		&wm8750_mono_mixer_controls[0],
-+		ARRAY_SIZE(wm8750_mono_mixer_controls)),
++/* Mic select */
++static const struct snd_kcontrol_new wm9712_mic_src_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[7]);
 +
-+	SND_SOC_DAPM_PGA("Right Out 2", WM8750_PWR2, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Left Out 2", WM8750_PWR2, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Right Out 1", WM8750_PWR2, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Left Out 1", WM8750_PWR2, 6, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("Right DAC", "Right Playback", WM8750_PWR2, 7, 0),
-+	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", WM8750_PWR2, 8, 0),
++/* diff select */
++static const struct snd_kcontrol_new wm9712_diff_sel_controls =
++SOC_DAPM_ENUM("Route", wm9712_enum[11]);
 +
-+	SND_SOC_DAPM_MICBIAS("Mic Bias", WM8750_PWR1, 1, 0),
-+	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", WM8750_PWR1, 2, 0),
-+	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", WM8750_PWR1, 3, 0),
-+
-+	SND_SOC_DAPM_MUX("Left PGA Mux", WM8750_PWR1, 5, 0,
-+		&wm8750_left_pga_controls),
-+	SND_SOC_DAPM_MUX("Right PGA Mux", WM8750_PWR1, 4, 0,
-+		&wm8750_right_pga_controls),
-+	SND_SOC_DAPM_MUX("Left Line Mux", SND_SOC_NOPM, 0, 0,
-+		&wm8750_left_line_controls),
-+	SND_SOC_DAPM_MUX("Right Line Mux", SND_SOC_NOPM, 0, 0,
-+		&wm8750_right_line_controls),
-+
-+	SND_SOC_DAPM_MUX("Out3 Mux", SND_SOC_NOPM, 0, 0, &wm8750_out3_controls),
-+	SND_SOC_DAPM_PGA("Out 3", WM8750_PWR2, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mono Out 1", WM8750_PWR2, 2, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_MUX("Differential Mux", SND_SOC_NOPM, 0, 0,
-+		&wm8750_diffmux_controls),
-+	SND_SOC_DAPM_MUX("Left ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&wm8750_monomux_controls),
-+	SND_SOC_DAPM_MUX("Right ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&wm8750_monomux_controls),
-+
-+	SND_SOC_DAPM_OUTPUT("LOUT1"),
-+	SND_SOC_DAPM_OUTPUT("ROUT1"),
-+	SND_SOC_DAPM_OUTPUT("LOUT2"),
-+	SND_SOC_DAPM_OUTPUT("ROUT2"),
-+	SND_SOC_DAPM_OUTPUT("MONO"),
-+	SND_SOC_DAPM_OUTPUT("OUT3"),
-+
-+	SND_SOC_DAPM_INPUT("LINPUT1"),
-+	SND_SOC_DAPM_INPUT("LINPUT2"),
-+	SND_SOC_DAPM_INPUT("LINPUT3"),
-+	SND_SOC_DAPM_INPUT("RINPUT1"),
-+	SND_SOC_DAPM_INPUT("RINPUT2"),
-+	SND_SOC_DAPM_INPUT("RINPUT3"),
++static const struct snd_soc_dapm_widget wm9712_dapm_widgets[] = {
++SND_SOC_DAPM_MUX("ALC Sidetone Mux", SND_SOC_NOPM, 0, 0,
++	&wm9712_alc_mux_controls),
++SND_SOC_DAPM_MUX("Out3 Mux", SND_SOC_NOPM, 0, 0,
++	&wm9712_out3_mux_controls),
++SND_SOC_DAPM_MUX("Speaker Mux", SND_SOC_NOPM, 0, 0,
++	&wm9712_spk_mux_controls),
++SND_SOC_DAPM_MUX("Capture Phone Mux", SND_SOC_NOPM, 0, 0,
++	&wm9712_capture_phone_mux_controls),
++SND_SOC_DAPM_MUX("Left Capture Select", SND_SOC_NOPM, 0, 0,
++	&wm9712_capture_selectl_controls),
++SND_SOC_DAPM_MUX("Right Capture Select", SND_SOC_NOPM, 0, 0,
++	&wm9712_capture_selectr_controls),
++SND_SOC_DAPM_MUX("Mic Select Source", SND_SOC_NOPM, 0, 0,
++	&wm9712_mic_src_controls),
++SND_SOC_DAPM_MUX("Differential Source", SND_SOC_NOPM, 0, 0,
++	&wm9712_diff_sel_controls),
++SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_MIXER_E("Left HP Mixer", AC97_INT_PAGING, 9, 1,
++	&wm9712_hpl_mixer_controls[0], ARRAY_SIZE(wm9712_hpl_mixer_controls),
++	mixer_event, SND_SOC_DAPM_POST_REG),
++SND_SOC_DAPM_MIXER_E("Right HP Mixer", AC97_INT_PAGING, 8, 1,
++	&wm9712_hpr_mixer_controls[0], ARRAY_SIZE(wm9712_hpr_mixer_controls),
++	 mixer_event, SND_SOC_DAPM_POST_REG),
++SND_SOC_DAPM_MIXER("Phone Mixer", AC97_INT_PAGING, 6, 1,
++	&wm9712_phone_mixer_controls[0], ARRAY_SIZE(wm9712_phone_mixer_controls)),
++SND_SOC_DAPM_MIXER("Speaker Mixer", AC97_INT_PAGING, 7, 1,
++	&wm9712_speaker_mixer_controls[0],
++	ARRAY_SIZE(wm9712_speaker_mixer_controls)),
++SND_SOC_DAPM_MIXER("Mono Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_DAC("Left DAC", "Left HiFi Playback", AC97_INT_PAGING, 14, 1),
++SND_SOC_DAPM_DAC("Right DAC", "Right HiFi Playback", AC97_INT_PAGING, 13, 1),
++SND_SOC_DAPM_DAC("Aux DAC", "Aux Playback", SND_SOC_NOPM, 0, 0),
++SND_SOC_DAPM_ADC("Left ADC", "Left HiFi Capture", AC97_INT_PAGING, 12, 1),
++SND_SOC_DAPM_ADC("Right ADC", "Right HiFi Capture", AC97_INT_PAGING, 11, 1),
++SND_SOC_DAPM_PGA("Headphone PGA", AC97_INT_PAGING, 4, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Speaker PGA", AC97_INT_PAGING, 3, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Out 3 PGA", AC97_INT_PAGING, 5, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Line PGA", AC97_INT_PAGING, 2, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Phone PGA", AC97_INT_PAGING, 1, 1, NULL, 0),
++SND_SOC_DAPM_PGA("Mic PGA", AC97_INT_PAGING, 0, 1, NULL, 0),
++SND_SOC_DAPM_MICBIAS("Mic Bias", AC97_INT_PAGING, 10, 1),
++SND_SOC_DAPM_OUTPUT("MONOOUT"),
++SND_SOC_DAPM_OUTPUT("HPOUTL"),
++SND_SOC_DAPM_OUTPUT("HPOUTR"),
++SND_SOC_DAPM_OUTPUT("LOUT2"),
++SND_SOC_DAPM_OUTPUT("ROUT2"),
++SND_SOC_DAPM_OUTPUT("OUT3"),
++SND_SOC_DAPM_INPUT("LINEINL"),
++SND_SOC_DAPM_INPUT("LINEINR"),
++SND_SOC_DAPM_INPUT("PHONE"),
++SND_SOC_DAPM_INPUT("PCBEEP"),
++SND_SOC_DAPM_INPUT("MIC1"),
++SND_SOC_DAPM_INPUT("MIC2"),
 +};
 +
 +static const char *audio_map[][3] = {
-+	/* left mixer */
-+	{"Left Mixer", "Playback Switch", "Left DAC"},
-+	{"Left Mixer", "Left Bypass Switch", "Left Line Mux"},
-+	{"Left Mixer", "Right Playback Switch", "Right DAC"},
-+	{"Left Mixer", "Right Bypass Switch", "Right Line Mux"},
++	/* virtual mixer - mixes left & right channels for spk and mono */
++	{"AC97 Mixer", NULL, "Left DAC"},
++	{"AC97 Mixer", NULL, "Right DAC"},
 +
-+	/* right mixer */
-+	{"Right Mixer", "Left Playback Switch", "Left DAC"},
-+	{"Right Mixer", "Left Bypass Switch", "Left Line Mux"},
-+	{"Right Mixer", "Playback Switch", "Right DAC"},
-+	{"Right Mixer", "Right Bypass Switch", "Right Line Mux"},
++	/* Left HP mixer */
++	{"Left HP Mixer", "PCBeep Bypass Switch", "PCBEEP"},
++	{"Left HP Mixer", "Aux Playback Switch",  "Aux DAC"},
++	{"Left HP Mixer", "Phone Bypass Switch",  "Phone PGA"},
++	{"Left HP Mixer", "Line Bypass Switch",   "Line PGA"},
++	{"Left HP Mixer", "PCM Playback Switch",  "Left DAC"},
++	{"Left HP Mixer", "Mic Sidetone Switch",  "Mic PGA"},
++	{"Left HP Mixer", NULL,  "ALC Sidetone Mux"},
++	//{"Right HP Mixer", NULL, "HP Mixer"},
 +
-+	/* left out 1 */
-+	{"Left Out 1", NULL, "Left Mixer"},
-+	{"LOUT1", NULL, "Left Out 1"},
++	/* Right HP mixer */
++	{"Right HP Mixer", "PCBeep Bypass Switch", "PCBEEP"},
++	{"Right HP Mixer", "Aux Playback Switch",  "Aux DAC"},
++	{"Right HP Mixer", "Phone Bypass Switch",  "Phone PGA"},
++	{"Right HP Mixer", "Line Bypass Switch",   "Line PGA"},
++	{"Right HP Mixer", "PCM Playback Switch",  "Right DAC"},
++	{"Right HP Mixer", "Mic Sidetone Switch",  "Mic PGA"},
++	{"Right HP Mixer", NULL,  "ALC Sidetone Mux"},
 +
-+	/* left out 2 */
-+	{"Left Out 2", NULL, "Left Mixer"},
-+	{"LOUT2", NULL, "Left Out 2"},
++	/* speaker mixer */
++	{"Speaker Mixer", "PCBeep Bypass Switch", "PCBEEP"},
++	{"Speaker Mixer", "Line Bypass Switch",   "Line PGA"},
++	{"Speaker Mixer", "PCM Playback Switch",  "AC97 Mixer"},
++	{"Speaker Mixer", "Phone Bypass Switch",  "Phone PGA"},
++	{"Speaker Mixer", "Aux Playback Switch",  "Aux DAC"},
 +
-+	/* right out 1 */
-+	{"Right Out 1", NULL, "Right Mixer"},
-+	{"ROUT1", NULL, "Right Out 1"},
++	/* Phone mixer */
++	{"Phone Mixer", "PCBeep Bypass Switch",  "PCBEEP"},
++	{"Phone Mixer", "Line Bypass Switch",    "Line PGA"},
++	{"Phone Mixer", "Aux Playback Switch",   "Aux DAC"},
++	{"Phone Mixer", "PCM Playback Switch",   "AC97 Mixer"},
++	{"Phone Mixer", "Mic 1 Sidetone Switch", "Mic PGA"},
++	{"Phone Mixer", "Mic 2 Sidetone Switch", "Mic PGA"},
 +
-+	/* right out 2 */
-+	{"Right Out 2", NULL, "Right Mixer"},
-+	{"ROUT2", NULL, "Right Out 2"},
++	/* inputs */
++	{"Line PGA", NULL, "LINEINL"},
++	{"Line PGA", NULL, "LINEINR"},
++	{"Phone PGA", NULL, "PHONE"},
++	{"Mic PGA", NULL, "MIC1"},
++	{"Mic PGA", NULL, "MIC2"},
 +
-+	/* mono mixer */
-+	{"Mono Mixer", "Left Playback Switch", "Left DAC"},
-+	{"Mono Mixer", "Left Bypass Switch", "Left Line Mux"},
-+	{"Mono Mixer", "Right Playback Switch", "Right DAC"},
-+	{"Mono Mixer", "Right Bypass Switch", "Right Line Mux"},
++	/* left capture selector */
++	{"Left Capture Select", "Mic", "MIC1"},
++	{"Left Capture Select", "Speaker Mixer", "Speaker Mixer"},
++	{"Left Capture Select", "Line", "LINEINL"},
++	{"Left Capture Select", "Headphone Mixer", "Left HP Mixer"},
++	{"Left Capture Select", "Phone Mixer", "Phone Mixer"},
++	{"Left Capture Select", "Phone", "PHONE"},
 +
-+	/* mono out */
-+	{"Mono Out 1", NULL, "Mono Mixer"},
-+	{"MONO1", NULL, "Mono Out 1"},
++	/* right capture selector */
++	{"Right Capture Select", "Mic", "MIC2"},
++	{"Right Capture Select", "Speaker Mixer", "Speaker Mixer"},
++	{"Right Capture Select", "Line", "LINEINR"},
++	{"Right Capture Select", "Headphone Mixer", "Right HP Mixer"},
++	{"Right Capture Select", "Phone Mixer", "Phone Mixer"},
++	{"Right Capture Select", "Phone", "PHONE"},
 +
-+	/* out 3 */
-+	{"Out3 Mux", "VREF", "VREF"},
-+	{"Out3 Mux", "ROUT1 + Vol", "ROUT1"},
-+	{"Out3 Mux", "ROUT1", "Right Mixer"},
-+	{"Out3 Mux", "MonoOut", "MONO1"},
-+	{"Out 3", NULL, "Out3 Mux"},
-+	{"OUT3", NULL, "Out 3"},
++	/* ALC Sidetone */
++	{"ALC Sidetone Mux", "Stereo", "Left Capture Select"},
++	{"ALC Sidetone Mux", "Stereo", "Right Capture Select"},
++	{"ALC Sidetone Mux", "Left", "Left Capture Select"},
++	{"ALC Sidetone Mux", "Right", "Right Capture Select"},
 +
-+	/* Left Line Mux */
-+	{"Left Line Mux", "Line 1", "LINPUT1"},
-+	{"Left Line Mux", "Line 2", "LINPUT2"},
-+	{"Left Line Mux", "Line 3", "LINPUT3"},
-+	{"Left Line Mux", "PGA", "Left PGA Mux"},
-+	{"Left Line Mux", "Differential", "Differential Mux"},
++	/* ADC's */
++	{"Left ADC", NULL, "Left Capture Select"},
++	{"Right ADC", NULL, "Right Capture Select"},
 +
-+	/* Right Line Mux */
-+	{"Right Line Mux", "Line 1", "RINPUT1"},
-+	{"Right Line Mux", "Line 2", "RINPUT2"},
-+	{"Right Line Mux", "Line 3", "RINPUT3"},
-+	{"Right Line Mux", "PGA", "Right PGA Mux"},
-+	{"Right Line Mux", "Differential", "Differential Mux"},
++	/* outputs */
++	{"MONOOUT", NULL, "Phone Mixer"},
++	{"HPOUTL", NULL, "Headphone PGA"},
++	{"Headphone PGA", NULL, "Left HP Mixer"},
++	{"HPOUTR", NULL, "Headphone PGA"},
++	{"Headphone PGA", NULL, "Right HP Mixer"},
 +
-+	/* Left PGA Mux */
-+	{"Left PGA Mux", "Line 1", "LINPUT1"},
-+	{"Left PGA Mux", "Line 2", "LINPUT2"},
-+	{"Left PGA Mux", "Line 3", "LINPUT3"},
-+	{"Left PGA Mux", "Differential", "Differential Mux"},
++	/* mono hp mixer */
++	{"Mono HP Mixer", NULL, "Left HP Mixer"},
++	{"Mono HP Mixer", NULL, "Right HP Mixer"},
 +
-+	/* Right PGA Mux */
-+	{"Right PGA Mux", "Line 1", "RINPUT1"},
-+	{"Right PGA Mux", "Line 2", "RINPUT2"},
-+	{"Right PGA Mux", "Line 3", "RINPUT3"},
-+	{"Right PGA Mux", "Differential", "Differential Mux"},
++	/* Out3 Mux */
++	{"Out3 Mux", "Left", "Left HP Mixer"},
++	{"Out3 Mux", "Mono", "Phone Mixer"},
++	{"Out3 Mux", "Left + Right", "Mono HP Mixer"},
++	{"Out 3 PGA", NULL, "Out3 Mux"},
++	{"OUT3", NULL, "Out 3 PGA"},
 +
-+	/* Differential Mux */
-+	{"Differential Mux", "Line 1", "LINPUT1"},
-+	{"Differential Mux", "Line 1", "RINPUT1"},
-+	{"Differential Mux", "Line 2", "LINPUT2"},
-+	{"Differential Mux", "Line 2", "RINPUT2"},
++	/* speaker Mux */
++	{"Speaker Mux", "Speaker Mix", "Speaker Mixer"},
++	{"Speaker Mux", "Headphone Mix", "Mono HP Mixer"},
++	{"Speaker PGA", NULL, "Speaker Mux"},
++	{"LOUT2", NULL, "Speaker PGA"},
++	{"ROUT2", NULL, "Speaker PGA"},
 +
-+	/* Left ADC Mux */
-+	{"Left ADC Mux", "Stereo", "Left PGA Mux"},
-+	{"Left ADC Mux", "Mono (Left)", "Left PGA Mux"},
-+	{"Left ADC Mux", "Digital Mono", "Left PGA Mux"},
-+
-+	/* Right ADC Mux */
-+	{"Right ADC Mux", "Stereo", "Right PGA Mux"},
-+	{"Right ADC Mux", "Mono (Right)", "Right PGA Mux"},
-+	{"Right ADC Mux", "Digital Mono", "Right PGA Mux"},
-+
-+	/* ADC */
-+	{"Left ADC", NULL, "Left ADC Mux"},
-+	{"Right ADC", NULL, "Right ADC Mux"},
-+
-+	/* terminator */
 +	{NULL, NULL, NULL},
 +};
 +
-+static int wm8750_add_widgets(struct snd_soc_codec *codec)
++static int wm9712_add_widgets(struct snd_soc_codec *codec)
 +{
 +	int i;
 +
-+	for(i = 0; i < ARRAY_SIZE(wm8750_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &wm8750_dapm_widgets[i]);
++	for(i = 0; i < ARRAY_SIZE(wm9712_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &wm9712_dapm_widgets[i]);
 +	}
 +
 +	/* set up audio path audio_mapnects */
@@ -728,538 +525,323 @@ Index: alsa-kernel/soc/codecs/wm8750.c
 +	return 0;
 +}
 +
-+struct _coeff_div {
-+	u32 mclk;
-+	u32 rate;
-+	u16 fs;
-+	u8 sr:5;
-+	u8 usb:1;
-+};
-+
-+/* codec hifi mclk clock divider coefficients */
-+static const struct _coeff_div coeff_div[] = {
-+	/* 8k */
-+	{12288000, 8000, 1536, 0x6, 0x0},
-+	{11289600, 8000, 1408, 0x16, 0x0},
-+	{18432000, 8000, 2304, 0x7, 0x0},
-+	{16934400, 8000, 2112, 0x17, 0x0},
-+	{12000000, 8000, 1500, 0x6, 0x1},
-+
-+	/* 11.025k */
-+	{11289600, 11025, 1024, 0x18, 0x0},
-+	{16934400, 11025, 1536, 0x19, 0x0},
-+	{12000000, 11025, 1088, 0x19, 0x1},
-+
-+	/* 16k */
-+	{12288000, 16000, 768, 0xa, 0x0},
-+	{18432000, 16000, 1152, 0xb, 0x0},
-+	{12000000, 16000, 750, 0xa, 0x1},
-+
-+	/* 22.05k */
-+	{11289600, 22050, 512, 0x1a, 0x0},
-+	{16934400, 22050, 768, 0x1b, 0x0},
-+	{12000000, 22050, 544, 0x1b, 0x1},
-+
-+	/* 32k */
-+	{12288000, 32000, 384, 0xc, 0x0},
-+	{18432000, 32000, 576, 0xd, 0x0},
-+	{12000000, 32000, 375, 0xa, 0x1},
-+
-+	/* 44.1k */
-+	{11289600, 44100, 256, 0x10, 0x0},
-+	{16934400, 44100, 384, 0x11, 0x0},
-+	{12000000, 44100, 272, 0x11, 0x1},
-+
-+	/* 48k */
-+	{12288000, 48000, 256, 0x0, 0x0},
-+	{18432000, 48000, 384, 0x1, 0x0},
-+	{12000000, 48000, 250, 0x0, 0x1},
-+
-+	/* 88.2k */
-+	{11289600, 88200, 128, 0x1e, 0x0},
-+	{16934400, 88200, 192, 0x1f, 0x0},
-+	{12000000, 88200, 136, 0x1f, 0x1},
-+
-+	/* 96k */
-+	{12288000, 96000, 128, 0xe, 0x0},
-+	{18432000, 96000, 192, 0xf, 0x0},
-+	{12000000, 96000, 125, 0xe, 0x1},
-+};
-+
-+static inline int get_coeff(int mclk, int rate)
++static unsigned int ac97_read(struct snd_soc_codec *codec,
++	unsigned int reg)
 +{
-+	int i;
++	u16 *cache = codec->reg_cache;
 +
-+	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
-+		if (coeff_div[i].rate == rate && coeff_div[i].mclk == mclk)
-+			return i;
++	if (reg == AC97_RESET || reg == AC97_GPIO_STATUS ||
++		reg == AC97_VENDOR_ID1 || reg == AC97_VENDOR_ID2 ||
++		reg == AC97_REC_GAIN)
++		return soc_ac97_ops.read(codec->ac97, reg);
++	else {
++		reg = reg >> 1;
++
++		if (reg > (ARRAY_SIZE(wm9712_reg)))
++			return -EIO;
++
++		return cache[reg];
 +	}
-+	return -EINVAL;
 +}
 +
-+/* WM8750 supports numerous input clocks per sample rate */
-+static unsigned int wm8750_config_sysclk(struct snd_soc_codec_dai *dai,
-+	struct snd_soc_clock_info *info, unsigned int clk)
++static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
++	unsigned int val)
 +{
-+	dai->mclk = 0;
++	u16 *cache = codec->reg_cache;
 +
-+	/* check that the calculated FS and rate actually match a clock from
-+	 * the machine driver */
-+	if (info->fs * info->rate == clk)
-+		dai->mclk = clk;
++	soc_ac97_ops.write(codec->ac97, reg, val);
++	reg = reg >> 1;
++	if (reg <= (ARRAY_SIZE(wm9712_reg)))
++		cache[reg] = val;
 +
-+	return dai->mclk;
++	return 0;
 +}
 +
-+static int wm8750_pcm_prepare(struct snd_pcm_substream *substream)
++static int ac97_prepare(struct snd_pcm_substream *substream)
 +{
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_device *socdev = rtd->socdev;
 +	struct snd_soc_codec *codec = socdev->codec;
-+	u16 iface = 0, bfs, srate = 0;
-+	int i = get_coeff(rtd->codec_dai->mclk,
-+		snd_soc_get_rate(rtd->codec_dai->dai_runtime.pcmrate));
++	int reg;
++	u16 vra;
 +
-+	/* is coefficient valid ? */
-+	if (i < 0)
-+		return i;
++	vra = ac97_read(codec, AC97_EXTENDED_STATUS);
++	ac97_write(codec, AC97_EXTENDED_STATUS, vra | 0x1);
 +
-+	bfs = SND_SOC_FSB_REAL(rtd->codec_dai->dai_runtime.bfs);
-+
-+	/* set master/slave audio interface */
-+	switch (rtd->codec_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		iface = 0x0040;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		break;
-+	}
-+
-+	/* interface format */
-+	switch (rtd->codec_dai->dai_runtime.fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		iface |= 0x0002;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		iface |= 0x0001;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		iface |= 0x0003;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		iface |= 0x0013;
-+		break;
-+	}
-+
-+	/* bit size */
-+	switch (rtd->codec_dai->dai_runtime.pcmfmt) {
-+	case SNDRV_PCM_FMTBIT_S16_LE:
-+		break;
-+	case SNDRV_PCM_FMTBIT_S20_3LE:
-+		iface |= 0x0004;
-+		break;
-+	case SNDRV_PCM_FMTBIT_S24_LE:
-+		iface |= 0x0008;
-+		break;
-+	case SNDRV_PCM_FMTBIT_S32_LE:
-+		iface |= 0x000c;
-+		break;
-+	}
-+
-+	/* clock inversion */
-+	switch (rtd->codec_dai->dai_runtime.fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		iface |= 0x0090;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		iface |= 0x0080;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		iface |= 0x0010;
-+		break;
-+	}
-+
-+	/* set bclk divisor rate */
-+	switch (bfs) {
-+	case 1:
-+		break;
-+	case 4:
-+		srate |= (0x1 << 7);
-+		break;
-+	case 8:
-+		srate |= (0x2 << 7);
-+		break;
-+	case 16:
-+		srate |= (0x3 << 7);
-+		break;
-+	}
-+
-+	/* set iface & srate */
-+	wm8750_write(codec, WM8750_IFACE, iface);
-+	wm8750_write(codec, WM8750_SRATE, srate |
-+		(coeff_div[i].sr << 1) | coeff_div[i].usb);
-+
-+	return 0;
-+}
-+
-+static int wm8750_mute(struct snd_soc_codec *codec,
-+	struct snd_soc_codec_dai *dai, int mute)
-+{
-+	u16 mute_reg = wm8750_read_reg_cache(codec, WM8750_ADCDAC) & 0xfff7;
-+	if (mute)
-+		wm8750_write(codec, WM8750_ADCDAC, mute_reg | 0x8);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		reg = AC97_PCM_FRONT_DAC_RATE;
 +	else
-+		wm8750_write(codec, WM8750_ADCDAC, mute_reg);
-+	return 0;
++		reg = AC97_PCM_LR_ADC_RATE;
++
++	return ac97_write(codec, reg, runtime->rate);
 +}
 +
-+static int wm8750_dapm_event(struct snd_soc_codec *codec, int event)
++static int ac97_aux_prepare(struct snd_pcm_substream *substream)
 +{
-+	u16 pwr_reg = wm8750_read_reg_cache(codec, WM8750_PWR1) & 0xfe3e;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	u16 vra, xsle;
++
++	vra = ac97_read(codec, AC97_EXTENDED_STATUS);
++	ac97_write(codec, AC97_EXTENDED_STATUS, vra | 0x1);
++	xsle = ac97_read(codec, AC97_PCI_SID);
++	ac97_write(codec, AC97_PCI_SID, xsle | 0x8000);
++
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return -ENODEV;
++
++	return ac97_write(codec, AC97_PCM_SURR_DAC_RATE, runtime->rate);
++}
++
++struct snd_soc_codec_dai wm9712_dai[] = {
++{
++	.name = "AC97 HiFi",
++	.playback = {
++		.stream_name = "HiFi Playback",
++		.channels_min = 1,
++		.channels_max = 2,},
++	.capture = {
++		.stream_name = "HiFi Capture",
++		.channels_min = 1,
++		.channels_max = 2,},
++	.ops = {
++		.prepare = ac97_prepare,},
++	.caps = {
++		.num_modes = ARRAY_SIZE(ac97_modes),
++		.mode = ac97_modes,},
++	},
++	{
++	.name = "AC97 Aux",
++	.playback = {
++		.stream_name = "Aux Playback",
++		.channels_min = 1,
++		.channels_max = 1,},
++	.ops = {
++		.prepare = ac97_aux_prepare,},
++	.caps = {
++		.num_modes = ARRAY_SIZE(ac97_modes),
++		.mode = ac97_modes,},
++	},
++};
++EXPORT_SYMBOL_GPL(wm9712_dai);
++
++static int wm9712_dapm_event(struct snd_soc_codec *codec, int event)
++{
++	u16 reg;
 +
 +	switch (event) {
 +	case SNDRV_CTL_POWER_D0: /* full On */
-+		/* set vmid to 50k and unmute dac */
-+		wm8750_write(codec, WM8750_PWR1, pwr_reg | 0x00c0);
++		/* liam - maybe enable thermal shutdown */
++		reg = ac97_read(codec, AC97_EXTENDED_MID) & 0xdfff;
++		ac97_write(codec, AC97_EXTENDED_MID, reg);
 +		break;
 +	case SNDRV_CTL_POWER_D1: /* partial On */
 +	case SNDRV_CTL_POWER_D2: /* partial On */
-+		/* set vmid to 5k for quick power up */
-+		wm8750_write(codec, WM8750_PWR1, pwr_reg | 0x01c1);
 +		break;
 +	case SNDRV_CTL_POWER_D3hot: /* Off, with power */
-+		/* mute dac and set vmid to 500k, enable VREF */
-+		wm8750_write(codec, WM8750_PWR1, pwr_reg | 0x0141);
++		/* enable master bias and vmid */
++		reg = ac97_read(codec, AC97_EXTENDED_MID) & 0xbbff;
++		ac97_write(codec, AC97_EXTENDED_MID, reg);
++		ac97_write(codec, AC97_POWERDOWN, 0x0000);
 +		break;
 +	case SNDRV_CTL_POWER_D3cold: /* Off, without power */
-+		wm8750_write(codec, WM8750_PWR1, 0x0001);
++		/* disable everything including AC link */
++		ac97_write(codec, AC97_EXTENDED_MID, 0xffff);
++		ac97_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
++		ac97_write(codec, AC97_POWERDOWN, 0xffff);
 +		break;
 +	}
 +	codec->dapm_state = event;
 +	return 0;
 +}
 +
-+struct snd_soc_codec_dai wm8750_dai = {
-+	.name = "WM8750",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.config_sysclk = wm8750_config_sysclk,
-+	.digital_mute = wm8750_mute,
-+	.ops = {
-+		.prepare = wm8750_pcm_prepare,
-+	},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(wm8750_modes),
-+		.mode = wm8750_modes,
-+	},
-+};
-+EXPORT_SYMBOL_GPL(wm8750_dai);
-+
-+static void wm8750_work(void *data)
++static int wm9712_reset(struct snd_soc_codec *codec, int try_warm)
 +{
-+	struct snd_soc_codec *codec = (struct snd_soc_codec *)data;
-+	wm8750_dapm_event(codec, codec->dapm_state);
++	if (try_warm && soc_ac97_ops.warm_reset) {
++		soc_ac97_ops.warm_reset(codec->ac97);
++		if (!(ac97_read(codec, 0) & 0x8000))
++			return 1;
++	}
++
++	soc_ac97_ops.reset(codec->ac97);
++	if (ac97_read(codec, 0) & 0x8000)
++		goto err;
++	return 0;
++
++err:
++	printk(KERN_ERR "WM9712 AC97 reset failed\n");
++	return -EIO;
 +}
 +
-+static int wm8750_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm9712_soc_suspend(struct platform_device *pdev,
++	pm_message_t state)
 +{
 +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 +	struct snd_soc_codec *codec = socdev->codec;
 +
-+	wm8750_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++	wm9712_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
 +	return 0;
 +}
 +
-+static int wm8750_resume(struct platform_device *pdev)
++static int wm9712_soc_resume(struct platform_device *pdev)
 +{
 +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 +	struct snd_soc_codec *codec = socdev->codec;
-+	int i;
-+	u8 data[2];
++	int i, ret;
 +	u16 *cache = codec->reg_cache;
 +
-+	/* Sync reg_cache with the hardware */
-+	for (i = 0; i < ARRAY_SIZE(wm8750_reg); i++) {
-+		if (i == WM8750_RESET)
-+			continue;
-+		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
-+		data[1] = cache[i] & 0x00ff;
-+		codec->hw_write(codec->control_data, data, 2);
-+	}
-+
-+	wm8750_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+
-+	/* charge wm8750 caps */
-+	if (codec->suspend_dapm_state == SNDRV_CTL_POWER_D0) {
-+		wm8750_dapm_event(codec, SNDRV_CTL_POWER_D2);
-+		codec->dapm_state = SNDRV_CTL_POWER_D0;
-+		queue_delayed_work(wm8750_workq, &wm8750_dapm_work,
-+			 msecs_to_jiffies(1000));
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * initialise the WM8750 driver
-+ * register the mixer and dsp interfaces with the kernel
-+ */
-+static int wm8750_init(struct snd_soc_device *socdev)
-+{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int reg, ret = 0;
-+
-+	codec->name = "WM8750";
-+	codec->owner = THIS_MODULE;
-+	codec->read = wm8750_read_reg_cache;
-+	codec->write = wm8750_write;
-+	codec->dapm_event = wm8750_dapm_event;
-+	codec->dai = &wm8750_dai;
-+	codec->num_dai = 1;
-+	codec->reg_cache_size = ARRAY_SIZE(wm8750_reg);
-+
-+	codec->reg_cache =
-+			kzalloc(sizeof(u16) * ARRAY_SIZE(wm8750_reg), GFP_KERNEL);
-+	if (codec->reg_cache == NULL)
-+		return -ENOMEM;
-+	memcpy(codec->reg_cache, wm8750_reg,
-+		sizeof(u16) * ARRAY_SIZE(wm8750_reg));
-+	codec->reg_cache_size = sizeof(u16) * ARRAY_SIZE(wm8750_reg);
-+
-+	wm8750_reset(codec);
-+
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		kfree(codec->reg_cache);
++	ret = wm9712_reset(codec, 1);
++	if (ret < 0){
++		printk(KERN_ERR "could not reset AC97 codec\n");
 +		return ret;
 +	}
 +
-+	/* charge output caps */
-+	wm8750_dapm_event(codec, SNDRV_CTL_POWER_D2);
-+	codec->dapm_state = SNDRV_CTL_POWER_D3hot;
-+	queue_delayed_work(wm8750_workq, &wm8750_dapm_work,
-+		msecs_to_jiffies(1000));
++	wm9712_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
 +
-+	/* set the update bits */
-+	reg = wm8750_read_reg_cache(codec, WM8750_LDAC);
-+	wm8750_write(codec, WM8750_LDAC, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_RDAC);
-+	wm8750_write(codec, WM8750_RDAC, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_LOUT1V);
-+	wm8750_write(codec, WM8750_LOUT1V, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_ROUT1V);
-+	wm8750_write(codec, WM8750_ROUT1V, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_LOUT2V);
-+	wm8750_write(codec, WM8750_LOUT2V, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_ROUT2V);
-+	wm8750_write(codec, WM8750_ROUT2V, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_LINVOL);
-+	wm8750_write(codec, WM8750_LINVOL, reg | 0x0100);
-+	reg = wm8750_read_reg_cache(codec, WM8750_RINVOL);
-+	wm8750_write(codec, WM8750_RINVOL, reg | 0x0100);
-+
-+	wm8750_add_controls(codec);
-+	wm8750_add_widgets(codec);
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		snd_soc_free_pcms(socdev);
-+		snd_soc_dapm_free(socdev);
++	if (ret == 0) {
++		/* Sync reg_cache with the hardware after cold reset */
++		for (i = 2; i < ARRAY_SIZE(wm9712_reg) << 1; i+=2) {
++			if (i == AC97_INT_PAGING || i == AC97_POWERDOWN ||
++				(i > 0x58 && i != 0x5c))
++				continue;
++			soc_ac97_ops.write(codec->ac97, i, cache[i>>1]);
++		}
 +	}
++
++	if (codec->suspend_dapm_state == SNDRV_CTL_POWER_D0)
++		wm9712_dapm_event(codec, SNDRV_CTL_POWER_D0);
 +
 +	return ret;
 +}
 +
-+/* If the i2c layer weren't so broken, we could pass this kind of data
-+   around */
-+static struct snd_soc_device *wm8750_socdev;
-+
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+
-+/*
-+ * WM8731 2 wire address is determined by GPIO5
-+ * state during powerup.
-+ *    low  = 0x1a
-+ *    high = 0x1b
-+ */
-+static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
-+
-+/* Magic definition of all other variables and things */
-+I2C_CLIENT_INSMOD;
-+
-+static struct i2c_driver wm8750_i2c_driver;
-+static struct i2c_client client_template;
-+
-+static int wm8750_codec_probe(struct i2c_adapter *adap, int addr, int kind)
-+{
-+	struct snd_soc_device *socdev = wm8750_socdev;
-+	struct wm8750_setup_data *setup = socdev->codec_data;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct i2c_client *i2c;
-+	int ret;
-+
-+	if (addr != setup->i2c_address)
-+		return -ENODEV;
-+
-+	client_template.adapter = adap;
-+	client_template.addr = addr;
-+
-+	i2c = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
-+	if (i2c == NULL) {
-+		kfree(codec);
-+		return -ENOMEM;
-+	}
-+	memcpy(i2c, &client_template, sizeof(struct i2c_client));
-+	i2c_set_clientdata(i2c, codec);
-+	codec->control_data = i2c;
-+
-+	ret = i2c_attach_client(i2c);
-+	if (ret < 0) {
-+		err("failed to attach codec at addr %x\n", addr);
-+		goto err;
-+	}
-+
-+	ret = wm8750_init(socdev);
-+	if (ret < 0) {
-+	err("failed to initialise WM8750\n");
-+		goto err;
-+	}
-+	return ret;
-+
-+err:
-+	kfree(codec);
-+	kfree(i2c);
-+	return ret;
-+}
-+
-+static int wm8750_i2c_detach(struct i2c_client *client)
-+{
-+	struct snd_soc_codec *codec = i2c_get_clientdata(client);
-+	i2c_detach_client(client);
-+	kfree(codec->reg_cache);
-+	kfree(client);
-+	return 0;
-+}
-+
-+static int wm8750_i2c_attach(struct i2c_adapter *adap)
-+{
-+	return i2c_probe(adap, &addr_data, wm8750_codec_probe);
-+}
-+
-+/* corgi i2c codec control layer */
-+static struct i2c_driver wm8750_i2c_driver = {
-+	.driver = {
-+		.name = "WM8750 I2C Codec",
-+		.owner = THIS_MODULE,
-+	},
-+	.id =             I2C_DRIVERID_WM8750,
-+	.attach_adapter = wm8750_i2c_attach,
-+	.detach_client =  wm8750_i2c_detach,
-+	.command =        NULL,
-+};
-+
-+static struct i2c_client client_template = {
-+	.name =   "WM8750",
-+	.driver = &wm8750_i2c_driver,
-+};
-+#endif
-+
-+static int wm8750_probe(struct platform_device *pdev)
++static int wm9712_soc_probe(struct platform_device *pdev)
 +{
 +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct wm8750_setup_data *setup = socdev->codec_data;
 +	struct snd_soc_codec *codec;
 +	int ret = 0;
 +
-+	info("WM8750 Audio Codec %s", WM8750_VERSION);
-+	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (codec == NULL)
-+		return -ENOMEM;
++	printk(KERN_INFO "WM9711/WM9712 SoC Audio Codec %s\n", WM9712_VERSION);
 +
-+	socdev->codec = codec;
++	socdev->codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (socdev->codec == NULL)
++		return -ENOMEM;
++	codec = socdev->codec;
 +	mutex_init(&codec->mutex);
++
++	codec->reg_cache =
++		kzalloc(sizeof(u16) * ARRAY_SIZE(wm9712_reg), GFP_KERNEL);
++	if (codec->reg_cache == NULL) {
++		kfree(codec->ac97);
++		kfree(socdev->codec);
++		socdev->codec = NULL;
++		return -ENOMEM;
++	}
++	memcpy(codec->reg_cache, wm9712_reg, sizeof(u16) * ARRAY_SIZE(wm9712_reg));
++	codec->reg_cache_size = sizeof(u16) * ARRAY_SIZE(wm9712_reg);
++	codec->reg_cache_step = 2;
++
++	codec->name = "WM9712";
++	codec->owner = THIS_MODULE;
++	codec->dai = wm9712_dai;
++	codec->num_dai = ARRAY_SIZE(wm9712_dai);
++	codec->write = ac97_write;
++	codec->read = ac97_read;
++	codec->dapm_event = wm9712_dapm_event;
 +	INIT_LIST_HEAD(&codec->dapm_widgets);
 +	INIT_LIST_HEAD(&codec->dapm_paths);
-+	wm8750_socdev = socdev;
-+	INIT_WORK(&wm8750_dapm_work, wm8750_work, codec);
-+	wm8750_workq = create_workqueue("wm8750");
-+	if (wm8750_workq == NULL) {
-+		kfree(codec);
-+		return -ENOMEM;
-+	}
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	if (setup->i2c_address) {
-+		normal_i2c[0] = setup->i2c_address;
-+		codec->hw_write = (hw_write_t)i2c_master_send;
-+		ret = i2c_add_driver(&wm8750_i2c_driver);
-+		if (ret != 0)
-+			printk(KERN_ERR "can't add i2c driver");
-+	}
-+#else
-+		/* Add other interfaces here */
-+#endif
 +
++	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
++	if (ret < 0)
++		goto err;
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0)
++		goto pcm_err;
++
++	ret = wm9712_reset(codec, 0);
++	if (ret < 0) {
++		printk(KERN_ERR "AC97 link error\n");
++		goto reset_err;
++	}
++
++	/* set alc mux to none */
++	ac97_write(codec, AC97_VIDEO, ac97_read(codec, AC97_VIDEO) | 0x3000);
++
++	wm9712_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++	wm9712_add_controls(codec);
++	wm9712_add_widgets(codec);
++	ret = snd_soc_register_card(socdev);
++	if (ret < 0)
++		goto reset_err;
++
++	return 0;
++
++reset_err:
++	snd_soc_free_pcms(socdev);
++
++pcm_err:
++	snd_soc_free_ac97_codec(codec);
++
++err:
++	kfree(socdev->codec->reg_cache);
++	kfree(socdev->codec);
++	socdev->codec = NULL;
 +	return ret;
 +}
 +
-+/* power down chip */
-+static int wm8750_remove(struct platform_device *pdev)
++static int wm9712_soc_remove(struct platform_device *pdev)
 +{
 +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 +	struct snd_soc_codec *codec = socdev->codec;
 +
-+	if (codec->control_data)
-+		wm8750_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
-+	if (wm8750_workq)
-+		destroy_workqueue(wm8750_workq);
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	i2c_del_driver(&wm8750_i2c_driver);
-+#endif
-+	kfree(codec);
++	if (codec == NULL)
++		return 0;
 +
++	snd_soc_dapm_free(socdev);
++	snd_soc_free_pcms(socdev);
++	snd_soc_free_ac97_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
 +	return 0;
 +}
 +
-+struct snd_soc_codec_device soc_codec_dev_wm8750 = {
-+	.probe = 	wm8750_probe,
-+	.remove = 	wm8750_remove,
-+	.suspend = 	wm8750_suspend,
-+	.resume =	wm8750_resume,
++struct snd_soc_codec_device soc_codec_dev_wm9712 = {
++	.probe = 	wm9712_soc_probe,
++	.remove = 	wm9712_soc_remove,
++	.suspend =	wm9712_soc_suspend,
++	.resume =	wm9712_soc_resume,
 +};
 +
-+EXPORT_SYMBOL_GPL(soc_codec_dev_wm8750);
++EXPORT_SYMBOL_GPL(soc_codec_dev_wm9712);
 +
-+MODULE_DESCRIPTION("ASoC WM8750 driver");
++MODULE_DESCRIPTION("ASoC WM9711/WM9712 driver");
 +MODULE_AUTHOR("Liam Girdwood");
 +MODULE_LICENSE("GPL");
-Index: alsa-kernel/kernel/include/linux/i2c-id.h
+Index: alsa-kernel/soc/codecs/wm9712.h
 ===================================================================
---- alsa-kernel.orig/kernel/include/linux/i2c-id.h
-+++ alsa-kernel/kernel/include/linux/i2c-id.h
-@@ -117,6 +117,7 @@
- #define I2C_DRIVERID_TLV320AIC23B 87	/* TI TLV320AIC23B audio codec  */
- #define I2C_DRIVERID_ISL1208	88	/* Intersil ISL1208 RTC		*/
- #define I2C_DRIVERID_WM8731		89	/* Wolfson WM8731 audio codec */
-+#define I2C_DRIVERID_WM8750		90	/* Wolfson WM8750 audio codec */
- 
- #define I2C_DRIVERID_I2CDEV	900
- #define I2C_DRIVERID_ARP        902    /* SMBus ARP Client              */
+--- /dev/null
++++ alsa-kernel/soc/codecs/wm9712.h
+@@ -0,0 +1,14 @@
++/*
++ * wm9712.h  --  WM9712 Soc Audio driver
++ */
++
++#ifndef _WM9712_H
++#define _WM9712_H
++
++#define WM9712_DAI_AC97_HIFI	0
++#define WM9712_DAI_AC97_AUX		1
++
++extern struct snd_soc_codec_dai wm9712_dai[2];
++extern struct snd_soc_codec_device soc_codec_dev_wm9712;
++
++#endif
 
---=-HQpIBYB76yOqyHoDH1Ze
+--=-JCrY81XOeK2VGCEbH6P+
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1270,7 +852,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-HQpIBYB76yOqyHoDH1Ze
+--=-JCrY81XOeK2VGCEbH6P+
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1281,4 +863,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-HQpIBYB76yOqyHoDH1Ze--
+--=-JCrY81XOeK2VGCEbH6P+--
