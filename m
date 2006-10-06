@@ -1,15 +1,18 @@
-From: Stephen Hemminger <shemminger@osdl.org>
-Subject: Panasonic R5 audio jack support
-Date: Fri, 6 Oct 2006 09:57:39 -0700
-Message-ID: <20061006095739.4bb8550b@freekitty>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] Driver core: Don't ignore error returns
+ from probing
+Date: Fri, 6 Oct 2006 14:12:49 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.0610061400180.1311-100000@netrider.rowland.org>
+References: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CC261A0
+Received: from mx2.rowland.org (mx2.rowland.org [192.131.102.7])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 891CA1A0
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 19:59:12 +0200 (MEST)
+	Fri,  6 Oct 2006 20:12:51 +0200 (MEST)
+In-Reply-To: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,37 +22,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Michael Stone <mstone@mathom.us>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Cornelia Huck <cornelia.huck@de.ibm.com>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Castet Matthieu <castet.matthieu@free.fr>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-The headphone jack on my new Panasonic R5 doesn't work. The laptop is uses the 
-Intel HDA sound driver, and it works for the one small speaker on the bottom
-but not through the headphones.
+On Fri, 6 Oct 2006, Cornelia Huck wrote:
 
-I tried unsuccessfully the patch for the similar CF-Y5 from here:
-http://www.cs.unm.edu/~moret/CFY5.html
+> On Fri, 6 Oct 2006 11:41:05 +0200 (CEST),
+> Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> > > Hm, I don't think we should call device_release_driver if
+> > > bus_attach_device failed (and I think calling bus_remove_device if
+> > > bus_attach_device failed is unintuitive). I did a patch that added a
+> > > function which undid just the things bus_add_device did (here:
+> > > http://marc.theaimsgroup.com/?l=linux-kernel&m=115816560424389&w=2),
+> > > which unfortunately got lost somewhere... (I'll rebase and resend.)
 
-That didn't help. Any other ideas?
+I'm still not sure why bus_attach_device() was split off from 
+bus_add_device() in the first place.  Was it just so that the 
+kobject_uevent() call could go in between?
 
-The PCI info is:
+Is there any reason they couldn't be recombined into a single function?
 
-000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-	Subsystem: Matsushita Electric Industrial Co., Ltd.: Unknown device 8338
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 0, Cache Line Size: 0x10 (64 bytes)
-	Interrupt: pin A routed to IRQ 185
-	Region 0: Memory at d0340000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-		Address: 0000000000000000  Data: 0000
-	Capabilities: [70] #10 [0091]
+> > Yes, but it might be better to check dev->is_registered flag in 
+> > bus_remove_device() before device_release_driver() call to save some code, 
+> > rather than reuse most of code in bus_delete_device().
 
--- 
-Stephen Hemminger <shemminger@osdl.org>
+Agreed; I don't like the duplication of code.  It's wasteful and 
+error-prone (somebody might change one routine and not the other).
+
+> If we undid things (symlinks et al.) in the order we added them, we can
+> factor out bus_delete_device() from bus_remove_device() and avoid both
+> code duplication and calling bus_remove_device() if bus_attach_device()
+> failed. Something like the patch below (untested).
+
+This looks okay, but it would be better if bus_remove_device() did not
+directly call bus_delete_device().  Just add an extra call inside
+device_del(), so that everything remains symmetrical.
+
+While I'm harping on style issues, you should also capitalize AttachError
+so that it matches the form of the other statement labels nearby.  And in
+bus_remove_device() you should put all the code inside the "if" block
+instead of returning when dev->bus isn't set, just as the neighboring
+subroutines do.
+
+Alan Stern
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
