@@ -1,19 +1,22 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] RFC - add prealloc_max proc file
-Date: Fri, 6 Oct 2006 13:36:51 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610061332560.8573@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0610061026300.8573@tm8103.perex-int.cz>
-	<1160126104.8856.272696626@webmail.messagingengine.com>
-	<s5hbqopu1ip.wl%tiwai@suse.de>
+Subject: Re: [PATCH] Driver core: Don't ignore error returns
+ from probing
+Date: Fri, 6 Oct 2006 13:46:52 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610061338230.8573@tm8103.perex-int.cz>
+References: <20061005175852.GC15180@suse.de>
+	<Pine.LNX.4.44L0.0610051656290.7144-100000@iolanthe.rowland.org>
+	<20061006095334.3cdebcc0@gondolin.boeblingen.de.ibm.com>
+	<Pine.LNX.4.61.0610061138580.8573@tm8103.perex-int.cz>
+	<20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A5DD19A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F07FF1A2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 13:36:52 +0200 (MEST)
-In-Reply-To: <s5hbqopu1ip.wl%tiwai@suse.de>
+	Fri,  6 Oct 2006 13:46:52 +0200 (MEST)
+In-Reply-To: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,35 +26,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Cornelia Huck <cornelia.huck@de.ibm.com>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Alan Stern <stern@rowland.harvard.edu>, Castet Matthieu <castet.matthieu@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 6 Oct 2006, Takashi Iwai wrote:
+On Fri, 6 Oct 2006, Cornelia Huck wrote:
 
-> At Fri, 06 Oct 2006 11:15:04 +0200,
-> Clemens Ladisch wrote:
-> > 
-> > Jaroslav Kysela wrote:
-> > > I would like to propose to add prealloc_max proc file to give a 
-> > > hint, what's the maximum allowed DMA buffer size in bytes:
-> > 
-> > You mean, users are not supposed to do a binary search with
-> > the prealloc file?  ;-)
-> > 
-> > > ...
-> > 
-> > Looks good.
-> > 
-> > 
-> > BTW: Shouldn't all(?) these proc files eventually go to sysfs?
+> On Fri, 6 Oct 2006 11:41:05 +0200 (CEST),
+> Jaroslav Kysela <perex@suse.cz> wrote:
 > 
-> There is already a function to add a sysfs file
-> (snd_add_device_sysfs_file()), so it must be pretty easy.
+> > > Hm, I don't think we should call device_release_driver if
+> > > bus_attach_device failed (and I think calling bus_remove_device if
+> > > bus_attach_device failed is unintuitive). I did a patch that added a
+> > > function which undid just the things bus_add_device did (here:
+> > > http://marc.theaimsgroup.com/?l=linux-kernel&m=115816560424389&w=2),
+> > > which unfortunately got lost somewhere... (I'll rebase and resend.)
+> > 
+> > Yes, but it might be better to check dev->is_registered flag in 
+> > bus_remove_device() before device_release_driver() call to save some code, 
+> > rather than reuse most of code in bus_delete_device().
+> 
+> If we undid things (symlinks et al.) in the order we added them, we can
+> factor out bus_delete_device() from bus_remove_device() and avoid both
+> code duplication and calling bus_remove_device() if bus_attach_device()
+> failed. Something like the patch below (untested).
 
-Yes and no. An layer for concrete device/substream should be added.
-Anyway, actually we can move most of values from proc to sysfs for 2.6.
-Any problems with it?
+It looks better, but I think that having only one function with if 
+(is_registered) saves a few bytes of instruction memory. Anyway, I do not 
+feel myself to judge what's the best.
 
 						Jaroslav
 
