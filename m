@@ -1,18 +1,25 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH] Driver core: Don't ignore error returns
- from probing
-Date: Fri, 6 Oct 2006 14:12:49 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.0610061400180.1311-100000@netrider.rowland.org>
-References: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
+From: Daniel Yek <dyek@real.com>
+Subject: Re: 5.1 surround sound playback XRUN /
+ snd_pcm_writei() didn't unblock immediately / small 114 msec buffer
+Date: Fri, 06 Oct 2006 13:34:48 -0700
+Message-ID: <6.2.1.2.2.20061006123102.428226e0@mailone.real.com>
+References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
+	<s5hhcys2kr2.wl%tiwai@suse.de>
+	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
+	<s5hhcyq52do.wl%tiwai@suse.de>
+	<6.2.1.2.2.20061006012016.30ac5ee8@mailone.real.com>
+	<1160140179.28711.272704715@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.rowland.org (mx2.rowland.org [192.131.102.7])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 891CA1A0
-	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 20:12:51 +0200 (MEST)
-In-Reply-To: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
+In-Reply-To: <1160140179.28711.272704715@webmail.messagingengine.com>
+References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
+	<s5hhcys2kr2.wl%tiwai@suse.de>
+	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
+	<s5hhcyq52do.wl%tiwai@suse.de>
+	<6.2.1.2.2.20061006012016.30ac5ee8@mailone.real.com>
+	<1160140179.28711.272704715@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,51 +29,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Cornelia Huck <cornelia.huck@de.ibm.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Castet Matthieu <castet.matthieu@free.fr>, Jaroslav Kysela <perex@suse.cz>
+To: Clemens Ladisch <cladisch@fastmail.net>, Alsa Developement <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 6 Oct 2006, Cornelia Huck wrote:
+Hi Clemens,
 
-> On Fri, 6 Oct 2006 11:41:05 +0200 (CEST),
-> Jaroslav Kysela <perex@suse.cz> wrote:
-> 
-> > > Hm, I don't think we should call device_release_driver if
-> > > bus_attach_device failed (and I think calling bus_remove_device if
-> > > bus_attach_device failed is unintuitive). I did a patch that added a
-> > > function which undid just the things bus_add_device did (here:
-> > > http://marc.theaimsgroup.com/?l=linux-kernel&m=115816560424389&w=2),
-> > > which unfortunately got lost somewhere... (I'll rebase and resend.)
+First of all, thank you for the helpful remarks and suggestions.
 
-I'm still not sure why bus_attach_device() was split off from 
-bus_add_device() in the first place.  Was it just so that the 
-kobject_uevent() call could go in between?
+I have comments inline...
 
-Is there any reason they couldn't be recombined into a single function?
+At 06:09 AM 10/6/2006, Clemens Ladisch wrote:
+>Daniel Yek wrote:
+> > I opened "surround51" PCM device and set the sampling rate to 48000, 
+> S16_LE
+> > format.
+>
+>Better use "plug:surround51".  There are chips like ICE1712 that do not
+>support any format except S32_LE.
 
-> > Yes, but it might be better to check dev->is_registered flag in 
-> > bus_remove_device() before device_release_driver() call to save some code, 
-> > rather than reuse most of code in bus_delete_device().
+It would be great if somebody could suggest an easy way for a media 
+application to identify if the system is 5.1-channels capable. After making 
+sure that 5.1-channels playback is preferable over 2-channels playback, I 
+can then use "plug:surround51" PCM device. I assume that Plug will convert 
+all 6 channels without dropping any here. If not, it is not usable.
 
-Agreed; I don't like the duplication of code.  It's wasteful and 
-error-prone (somebody might change one routine and not the other).
+Right now, I'm depending on opening "surround51" PCM device to fail to 
+indicate that the system isn't 5.1-channels capable. "plug:surround51" PCM 
+wouldn't open-fail even if the system isn't 5.1-channels capable, resulting 
+in a poor playback experience. Do you have a suggestion for me?
 
-> If we undid things (symlinks et al.) in the order we added them, we can
-> factor out bus_delete_device() from bus_remove_device() and avoid both
-> code duplication and calling bus_remove_device() if bus_attach_device()
-> failed. Something like the patch below (untested).
 
-This looks okay, but it would be better if bus_remove_device() did not
-directly call bus_delete_device().  Just add an extra call inside
-device_del(), so that everything remains symmetrical.
 
-While I'm harping on style issues, you should also capitalize AttachError
-so that it matches the form of the other statement labels nearby.  And in
-bus_remove_device() you should put all the code inside the "if" block
-instead of returning when dev->bus isn't set, just as the neighboring
-subroutines do.
+> > I requested 500000 usec (0.5 sec) of buffer time, but I got back only
+> > 113770 usec. (equals to 65532 bytes.) Is there a way I can get a
+> > bigger buffer size?
+>
+>You can try writing a value larger than 64 to
+>/proc/asound/card?/pcm?p/sub?/prealloc, but drivers for on-board
+>controllers typically don't support more than 128 KB.
 
-Alan Stern
+This worked. XRUN is reduced or eliminated in this case. This would be one 
+way to have (root) users fix the systems if other methods don't work.
+
+Thanks.
+
+<...snip...>
+
+> > I used snd_pcm_writei() in blocking mode, transferring 28800 bytes (2400
+> > frames) at a time. After two writes (buffer about full), the third write
+> > blocked for 95 msec. Soon after, the function blocked for 128 msec, caused
+> > XRUN. Is snd_pcm_writei() in blocking mode suitable for 5.1 channels
+> > playback without XRUNs? Why snd_pcm_writei() didn't unblock immediately
+> > when snd_pcm_avail_update() returned 5044 frames (105 msec.) available?
+>
+>In theory, playback with a ~100 ms buffer should be possible.
+>
+>There are several possibilities why your program wasn't waken up fast
+>enough:
+>1) The period size is too high.  The period size specifies the interval
+>    after which the hardware issues an interrupt.  If the buffer is full,
+>    you have to wait at least until the next period boundary before ALSA
+>    can detect that some part of the buffer is free.
+>    You should try to have at least about five periods per buffer.
+>2) avail_min and or xfer_align are set too high.  avail_min specifies
+>    how much free space must be in the buffer before snd_pcm_writei()
+>    continues writing; xfer_align specifies the minimum size of a block
+>    to write into the buffer.  The default value of both parameters is
+>    the period size, but this is not appropriate for your application;
+>    you don't want to wait before writing even the smallest possible
+>    amount.
+>    Set both these software parameters to one frame.
+
+Thanks! I'll try it out.
+
+
+>3) Some other process or thread was executed and prevented
+>    snd_pcm_writei() from executing.  This shouldn't be too much a
+>    problem because the kernel reschedules every 4 ms.  Make sure the
+>    priority of your audio thread is higher than the default.
+>
+> > I'm going to try a non-blocking snd_pcm_writei() solution. Do you think it
+> > is the answer to the XRUN problem?
+>
+>No.  Using non-blocking writes does not change the wake-up behaviour.
+>
+>
+>HTH
+>Clemens
+
+
+You are so helpful. Thank you very much.
+
+
+-- 
+Daniel Yek
 
 
 -------------------------------------------------------------------------
