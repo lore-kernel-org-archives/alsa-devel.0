@@ -1,20 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Driver core: Don't ignore error returns
- from probing
-Date: Fri, 6 Oct 2006 11:41:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610061138580.8573@tm8103.perex-int.cz>
-References: <20061005175852.GC15180@suse.de>
-	<Pine.LNX.4.44L0.0610051656290.7144-100000@iolanthe.rowland.org>
-	<20061006095334.3cdebcc0@gondolin.boeblingen.de.ibm.com>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: 1.0.13 and indigoio
+Date: Fri, 6 Oct 2006 11:54:43 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0610061150380.4839@denise.shiny.it>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 761181A0
-	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 11:41:06 +0200 (MEST)
-In-Reply-To: <20061006095334.3cdebcc0@gondolin.boeblingen.de.ibm.com>
+In-Reply-To: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,73 +17,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Cornelia Huck <cornelia.huck@de.ibm.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Alan Stern <stern@rowland.harvard.edu>, Castet Matthieu <castet.matthieu@free.fr>
+To: Dmitry Baikov <dsbaikov@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 6 Oct 2006, Cornelia Huck wrote:
 
-> On Thu, 5 Oct 2006 17:03:24 -0400 (EDT),
-> Alan Stern <stern@rowland.harvard.edu> wrote:
-> 
-> > Index: 18g20/drivers/base/bus.c
-> > ===================================================================
-> > --- 18g20.orig/drivers/base/bus.c
-> > +++ 18g20/drivers/base/bus.c
-> > @@ -453,8 +453,10 @@ void bus_remove_device(struct device * d
-> >  		remove_deprecated_bus_links(dev);
-> >  		sysfs_remove_link(&dev->bus->devices.kobj, dev->bus_id);
-> >  		device_remove_attrs(dev->bus, dev);
-> > -		dev->is_registered = 0;
-> > -		klist_del(&dev->knode_bus);
-> > +		if (dev->is_registered) {
-> > +			dev->is_registered = 0;
-> > +			klist_del(&dev->knode_bus);
-> > +		}
-> >  		pr_debug("bus %s: remove device %s\n", dev->bus->name, dev->bus_id);
-> >  		device_release_driver(dev);
-> >  		put_bus(dev->bus);
-> > Index: 18g20/drivers/base/core.c
-> > ===================================================================
-> > --- 18g20.orig/drivers/base/core.c
-> > +++ 18g20/drivers/base/core.c
-> > @@ -485,7 +485,8 @@ int device_add(struct device *dev)
-> >  	if ((error = bus_add_device(dev)))
-> >  		goto BusError;
-> >  	kobject_uevent(&dev->kobj, KOBJ_ADD);
-> > -	bus_attach_device(dev);
-> > +	if ((error = bus_attach_device(dev)))
-> > +		goto AttachError;
-> >  	if (parent)
-> >  		klist_add_tail(&dev->knode_parent, &parent->klist_children);
-> >  
-> > @@ -504,6 +505,8 @@ int device_add(struct device *dev)
-> >   	kfree(class_name);
-> >  	put_device(dev);
-> >  	return error;
-> > + AttachError:
-> > +	bus_remove_device(dev);
-> >   BusError:
-> >  	device_pm_remove(dev);
-> >   PMError:
-> 
-> Hm, I don't think we should call device_release_driver if
-> bus_attach_device failed (and I think calling bus_remove_device if
-> bus_attach_device failed is unintuitive). I did a patch that added a
-> function which undid just the things bus_add_device did (here:
-> http://marc.theaimsgroup.com/?l=linux-kernel&m=115816560424389&w=2),
-> which unfortunately got lost somewhere... (I'll rebase and resend.)
 
-Yes, but it might be better to check dev->is_registered flag in 
-bus_remove_device() before device_release_driver() call to save some code, 
-rather than reuse most of code in bus_delete_device().
+On Thu, 5 Oct 2006, Dmitry Baikov wrote:
 
-						Jaroslav
+> Hello!
+>
+> Echo Indigo IO refuses to work with alsa-driver > 1.0.11
+> with alsa-driver/alsa-firmware-1.0.12:
+>
+> [ 4212.781000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+> low) -> IRQ 177
+> [ 4212.781000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+> [ 4213.094000] ACPI: PCI Interrupt 0000:07:00.0[A] -> GSI 18 (level,
+> low) -> IRQ 185
+> [ 4213.163000] ALSA
+> /mnt/bits/portage/tmp/portage/alsa-driver-1.0.12/work/alsa-driver-1.0.12/pci/echoaudio/../../alsa-kernel/pci/echoaudio/echoaudio.c:46:
+> get_firmware(): Firmware not available (-2)
+> [ 4213.163000] ALSA
+> /mnt/bits/portage/tmp/portage/alsa-driver-1.0.12/work/alsa-driver-1.0.12/pci/echoaudio/../../alsa-kernel/pci/echoaudio/echoaudio_dsp.c:249:
+> Firmware not found !
+> [ 4213.163000] Echoaudio Indigo IO: probe of 0000:07:00.0 failed with error -2
+>
+>
+> with driver/firmware-1.0.13:
+>
+> [ 4361.080000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+> low) -> IRQ 177
+> [ 4361.080000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+> [ 4361.306000] ACPI: PCI Interrupt 0000:07:00.0[A] -> GSI 18 (level,
+> low) -> IRQ 185
+> [ 4387.819000] Echoaudio Indigo IO: probe of 0000:07:00.0 failed with error -5
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+There were a stupid bug in the makefile of alsa-firmware that prevented 
+loader_dsp.fw from being installed, so most recent cards didn't work. I 
+fixed it in 1.0.12 IIRC. The -EIO error with 1.0.13 is a different 
+problem. [another msg follows]
+
+
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
