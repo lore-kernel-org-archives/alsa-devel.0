@@ -1,15 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] New virtual device snd_disconnected rc5
-Date: Fri, 6 Oct 2006 14:15:50 +0200
-Message-ID: <200610061415.51120.annabellesgarden@yahoo.de>
-References: <200610051253.46779.annabellesgarden@yahoo.de>
-	<200610051717.53608.annabellesgarden@yahoo.de>
-	<200610061355.44559.annabellesgarden@yahoo.de>
+From: "Eduardo Valentin" <edubezval@gmail.com>
+Subject: Re: [EXT PCM / CTL Plugin][RFC][ANNOUNCE] Alsa support
+	for n770
+Date: Fri, 6 Oct 2006 08:41:35 -0400
+Message-ID: <a0580c510610060541g66727f95v78f1ea38d72071ba@mail.gmail.com>
+References: <a0580c510610050726i3fe8437cm1e783e1b6305f3bc@mail.gmail.com>
+	<s5hvemyu1ql.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200610061355.44559.annabellesgarden@yahoo.de>
+In-Reply-To: <s5hvemyu1ql.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,245 +21,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-New virtual device snd_disconnected rc4
-
-Hi
-
-Motivation for this came from oopses consistently happening
-when my usb-soundcard disconnected.
-Takashi and me discussed various fixes and this patch
-implements the result of our discussion.
-
-Changes in rc3: kmalloc with GFP_KERNEL, use linux list
-
-Changes in rc4: struct snd_disconnected_file merged into
-	   	struct snd_monitor_file.
-		Omit a separate kmalloc/free for disconnect
-		at the cost of sizeof(3 pointers) more in
-		each struct snd_monitor_file.
-		Move the cleanup of the virtual device to
-		snd_card_remove_file() so it wont be missed
-		in case the release call is already underway,
-		when disconnect starts.
-		use DEFINE_SPINLOCK(shutdown_mutex);
-		instead of DEFINE_MUTEX(mutex); 'cause code paths
-		are small under that lock.
-	   	Merged with init.c.
-
-Changes in rc5: move fops_put(mfile->disconnected_f_op);
-	   	out of the spin_lock.
-
-If agreed upon, this should go to all stable.
-
-      Karsten
-
---------------------------------------------------------------------------
-Handle file operations during snd_card disconnects using static file->f_op
+Hello Takashi,
 
 
-Alsa used to kmalloc one file->f_op per file per disconnecting snd_card.
-This led to oopses sometimes when file->f_op was freed before __fput()
-finished.
-Patch adds a virtual device for disconnect: VDD.
-VDD consists of:
-	LIST_HEAD(shutdown_files)
-	    protected by DEFINE_SPINLOCK(shutdown_mutex)
+   Thanks for your response.
 
-	static struct file_operations snd_shutdown_f_ops
-	    and functions assigned to it
-
-	Additions to struct snd_monitor_file
-	    to specify if instance is hidden by VDD or not.
-
-A VDD's instance is
-	created in snd_card_disconnect() under the card->files_lock.
-	cleaned up in snd_card_file_remove() under the card->files_lock.
-
-
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+On 10/5/06, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 5 Oct 2006 10:26:18 -0400,
+> Eduardo Valentin wrote:
+> >
+> > Hello all,
+> >
+> >
+> >     I'd like to announce an alsa plugin project to add support for
+> > ALSA application on nokia 770. I'd like also to ask you comments and
+> > suggestions about the code.
+> >
+> >     Although n770 hasn't ALSA kernel driver, it is possible to write a
+> > user-space driver to communicate with n770's audio system.
+>
+> Great, does the plugin work well?
 
 
+   yes, it does. I tested it with aplay, arecord, alsamixer, amixer,
+mplayer and alsaplayer.
+Of course, there are some issues. There is a list of limitations in
+the end of REAME file. I'll put it here:
 
---- alsa-kernel/include/core.h	2006-09-29 13:40:33.000000000 +0200
-+++ alsa-kernel/include/core.h	2006-10-06 00:25:45.000000000 +0200
-@@ -89,10 +89,10 @@
- struct snd_monitor_file {
- 	struct file *file;
- 	struct snd_monitor_file *next;
-+	const struct file_operations *disconnected_f_op;
-+	struct list_head shutdown_list;
- };
- 
--struct snd_shutdown_f_ops;	/* define it later in init.c */
--
- /* main structure for soundcard */
- 
- struct snd_card {
---- alsa-kernel/core/init.c	2006-09-29 13:40:32.000000000 +0200
-+++ alsa-kernel/core/init.c	2006-10-06 00:25:44.000000000 +0200
-@@ -33,10 +33,10 @@
- #include <sound/control.h>
- #include <sound/info.h>
- 
--struct snd_shutdown_f_ops {
--	struct file_operations f_ops;
--	struct snd_shutdown_f_ops *next;
--};
-+static DEFINE_SPINLOCK(shutdown_mutex);
-+static LIST_HEAD(shutdown_files);
-+
-+static struct file_operations snd_shutdown_f_ops;
- 
- static unsigned int snd_cards_lock;	/* locked for registering/using */
- struct snd_card *snd_cards[SNDRV_CARDS];
-@@ -198,6 +198,28 @@
- 	return -ENODEV;
- }
- 
-+static int snd_disconnect_release(struct inode *inode, struct file *file)
-+{
-+	struct snd_monitor_file *df = NULL;
-+	struct list_head *entry;
-+
-+	spin_lock(&shutdown_mutex);
-+	list_for_each(entry, &shutdown_files) {
-+		struct snd_monitor_file *_df;
-+		_df = list_entry(entry, struct snd_monitor_file, shutdown_list);
-+		if (_df->file == file) {
-+			df = _df;
-+			break;
-+		}
-+	}
-+	spin_unlock(&shutdown_mutex);
-+
-+	if (likely(df))
-+		return df->disconnected_f_op->release(inode, file);
-+
-+	panic("%s(%p, %p) failed!", __FUNCTION__, inode, file);
-+}
-+
- static unsigned int snd_disconnect_poll(struct file * file, poll_table * wait)
- {
- 	return POLLERR | POLLNVAL;
-@@ -219,6 +241,22 @@
- 	return -ENODEV;
- }
- 
-+static struct file_operations snd_shutdown_f_ops =
-+{
-+	.owner = 	THIS_MODULE,
-+	.llseek =	snd_disconnect_llseek,
-+	.read = 	snd_disconnect_read,
-+	.write =	snd_disconnect_write,
-+	.release =	snd_disconnect_release,
-+	.poll =		snd_disconnect_poll,
-+	.unlocked_ioctl = snd_disconnect_ioctl,
-+#ifdef CONFIG_COMPAT
-+	.compat_ioctl = snd_disconnect_ioctl,
-+#endif
-+	.mmap =		snd_disconnect_mmap,
-+	.fasync =	snd_disconnect_fasync
-+};
-+
- /**
-  *  snd_card_disconnect - disconnect all APIs from the file-operations (user space)
-  *  @card: soundcard structure
-@@ -234,9 +272,6 @@
- {
- 	struct snd_monitor_file *mfile;
- 	struct file *file;
--	struct snd_shutdown_f_ops *s_f_ops;
--	struct file_operations *f_ops;
--	const struct file_operations *old_f_ops;
- 	int err;
- 
- 	spin_lock(&card->files_lock);
-@@ -261,34 +296,14 @@
- 
- 		/* it's critical part, use endless loop */
- 		/* we have no room to fail */
--		s_f_ops = kmalloc(sizeof(struct snd_shutdown_f_ops), GFP_ATOMIC);
--		if (s_f_ops == NULL)
--			panic("Atomic allocation failed for snd_shutdown_f_ops!");
--
--		f_ops = &s_f_ops->f_ops;
--
--		memset(f_ops, 0, sizeof(*f_ops));
--		f_ops->owner = file->f_op->owner;
--		f_ops->release = file->f_op->release;
--		f_ops->llseek = snd_disconnect_llseek;
--		f_ops->read = snd_disconnect_read;
--		f_ops->write = snd_disconnect_write;
--		f_ops->poll = snd_disconnect_poll;
--		f_ops->unlocked_ioctl = snd_disconnect_ioctl;
--#ifdef CONFIG_COMPAT
--		f_ops->compat_ioctl = snd_disconnect_ioctl;
--#endif
--		f_ops->mmap = snd_disconnect_mmap;
--		f_ops->fasync = snd_disconnect_fasync;
-+		mfile->disconnected_f_op = mfile->file->f_op;
- 
--		s_f_ops->next = card->s_f_ops;
--		card->s_f_ops = s_f_ops;
--		
--		f_ops = fops_get(f_ops);
-+		spin_lock(&shutdown_mutex);
-+		list_add(&mfile->shutdown_list, &shutdown_files);
-+		spin_unlock(&shutdown_mutex);
- 
--		old_f_ops = file->f_op;
--		file->f_op = f_ops;	/* must be atomic */
--		fops_put(old_f_ops);
-+		fops_get(&snd_shutdown_f_ops);
-+		mfile->file->f_op = &snd_shutdown_f_ops;
- 		
- 		mfile = mfile->next;
- 	}
-@@ -326,8 +341,6 @@
-  */
- static int snd_card_do_free(struct snd_card *card)
- {
--	struct snd_shutdown_f_ops *s_f_ops;
--
- #if defined(CONFIG_SND_MIXER_OSS) || defined(CONFIG_SND_MIXER_OSS_MODULE)
- 	if (snd_mixer_oss_notify_callback)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
-@@ -351,11 +364,6 @@
- 		snd_printk(KERN_WARNING "unable to free card info\n");
- 		/* Not fatal error */
- 	}
--	while (card->s_f_ops) {
--		s_f_ops = card->s_f_ops;
--		card->s_f_ops = s_f_ops->next;
--		kfree(s_f_ops);
--	}
- 	kfree(card);
- 	return 0;
- }
-@@ -670,6 +678,7 @@
- 	if (mfile == NULL)
- 		return -ENOMEM;
- 	mfile->file = file;
-+	mfile->disconnected_f_op = NULL;
- 	mfile->next = NULL;
- 	spin_lock(&card->files_lock);
- 	if (card->shutdown) {
-@@ -716,6 +725,12 @@
- 		pfile = mfile;
- 		mfile = mfile->next;
- 	}
-+	if (mfile && mfile->disconnected_f_op) {
-+		fops_put(mfile->disconnected_f_op);
-+		spin_lock(&shutdown_mutex);
-+		list_del(&mfile->shutdown_list);
-+		spin_unlock(&shutdown_mutex);
-+	}
- 	if (card->files == NULL)
- 		last_close = 1;
- 	spin_unlock(&card->files_lock);
+- Some application does not recognize the plugin
+(ekiga, for example). I think that they look for real card.
+
+These are related to the n770 audio system:
+
+- While the plugin is using a pcm task node, another applications,
+for example gstreamer, can not use the same task node. This will cause
+unexpected behaviour.
+
+- To prevent more than one application access per task node, I need to do
+a processes synchronization. I did it using semaphores from libc (sys/sem.h).
+However, If an application does not close alsa device properly, this plugin
+will not have chance to release all reserved resouces. One expected
+behaviour in this case is to have -EBUSY error for following applications
+whose try to open the same alsa device. This issue was partialy solved
+(version 0.6)
+with __attribute__((destructor)) functions. But if the application
+receives an uncaught signal, resources may be kept unreleased.
+
+- If many requests to volume information read / write is done in the
+same alsa device while it is being used to do playback, this playback
+could be affected and some little stops can be heard.
+
+
+>
+> >    The n770's audio system is based on DSP gateway project:
+> > (http://dspgateway.sourceforge.net/pub/index.php)
+> >
+> >    To add ALSA support, an EXT PCM I/O plugin and EXT CTL plugin were
+> > written. The code is based on SDK documentation from the alsa-project
+> > site.
+> >
+> >     The project is in garage.maemo:
+> > https://garage.maemo.org/projects/dsp-alsa/
+> >
+> >      You can have a look at its REAME file in:
+> > https://garage.maemo.org/plugins/scmsvn/viewcvs.php/alsa-plugin/debian/README?root=dsp-alsa&view=markup
+> >
+> >     It is possible also to browse the its source code svn repository in:
+> > https://garage.maemo.org/plugins/scmsvn/viewcvs.php/alsa-plugin/?root=dsp-alsa
+>
+> The code looks good at a short glance.
+> (But what is the reason to include <linux/soundcard.h>?)
+
+   Just a mistake. Thanks to advice me.
+
+
+>
+> Do you think of merging this to upstream (likely in alsa-plugins
+> repository)?
+
+   It would be a great. But how would it happen? What is the
+process/requirements to merge it?
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+
+-- 
+Eduardo Bezerra Valentin
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
