@@ -1,16 +1,17 @@
 From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.13 and hdsp cardbus
-Date: Fri, 6 Oct 2006 18:09:59 +0400
-Message-ID: <70a871c80610060709s73c87f03u31f4e91af077da46@mail.gmail.com>
-References: <70a871c80610050541r73bbc2d7j408595802bb2c43f@mail.gmail.com>
-	<4525F73D.2040105@chello.at>
-	<70a871c80610060027l4196fdfi7b7ecd215733a7b3@mail.gmail.com>
-	<45264A94.6010504@chello.at>
+Subject: Re: 1.0.13 and indigoio
+Date: Fri, 6 Oct 2006 18:12:54 +0400
+Message-ID: <70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<s5hbqororyw.wl%tiwai@suse.de>
+	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
+	<s5hu02iu1ni.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45264A94.6010504@chello.at>
+In-Reply-To: <Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,27 +22,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Karl Grill <kgrill@chello.at>
-Cc: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@denise.shiny.it>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/6/06, Karl Grill <kgrill@chello.at> wrote:
-> Thanks a lot, but is it possible that you made a mistake in writing this
-> down?
-> Namely, this looks suspicious:
-> > lspci gives:
-> > 02:00.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
-> > DSP (rev 35)
-> rev should be either 15 or 53 (to my knowledge)
-No, it is 35. Definetely.
+On 10/6/06, Giuliano Pochini <pochini@denise.shiny.it> wrote:
+> > Dmitry Baikov wrote:
+> >> [ 1090.574000] pccard: card ejected from slot 0
+> >> [ 1090.605000] PCMCIA: socket f7c0f828: *** DANGER *** unable to remove socket power
+> I wonder what this may cause. Dmitry said the first insersion works.
 
-> and find a windows box where you can do it). Otherwise, wait for an
-> update of the alsa driver; I'm working on it, but it will take some time
-> (Christmas?)
+Can it be the problem with linux-2.6.18?
 
-It worked ok with linux-2.6.17 and alsa-driver-1.0.11
+I just reinstalled my repaired laptop and finally moved to 64-bit on
+desktop and experience these 2 problems with cardbus: echo and rme.
 
-Regards,
+I'll try to test old working setup later today.
+
+
 Dmitry.
 
 -------------------------------------------------------------------------
