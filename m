@@ -1,22 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: SYSFS,
- was Re:  [PATCH] RFC - add prealloc_max proc file
-Date: Fri, 6 Oct 2006 15:19:58 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610061517520.8573@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0610061026300.8573@tm8103.perex-int.cz>
-	<1160126104.8856.272696626@webmail.messagingengine.com>
-	<s5hbqopu1ip.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0610061332560.8573@tm8103.perex-int.cz>
-	<s5h64extxxd.wl%tiwai@suse.de>
+Subject: Re: [alsa-cvslog] alsa-lib: fix various warnings
+Date: Fri, 6 Oct 2006 15:23:28 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610061522480.8573@tm8103.perex-int.cz>
+References: <ALOGGER1160133519.3@alsa-project.org>
+	<s5h1wpltwmw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C10718A
-	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 15:19:59 +0200 (MEST)
-In-Reply-To: <s5h64extxxd.wl%tiwai@suse.de>
+In-Reply-To: <s5h1wpltwmw.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,32 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 6 Oct 2006, Takashi Iwai wrote:
 
-> > > > BTW: Shouldn't all(?) these proc files eventually go to sysfs?
-> > > 
-> > > There is already a function to add a sysfs file
-> > > (snd_add_device_sysfs_file()), so it must be pretty easy.
-> > 
-> > Yes and no. An layer for concrete device/substream should be added.
+> (snip)
+> > diff -r 603411fd0c77712cab43cdd5afcf0ff4ebe51a7f -r 1de4320f21cc1bd5d4fdcf0aa9f022c66954547c src/control/control_ext.c
+> > --- a/src/control/control_ext.c	Fri Oct 06 11:01:40 2006 +0200
+> > +++ b/src/control/control_ext.c	Fri Oct 06 13:18:34 2006 +0200
+> > @@ -142,9 +142,9 @@ static int snd_ctl_ext_elem_info(snd_ctl
+> >  		{
+> >  			int64_t xmin, xmax, xstep;
+> >  			ret = ext->callback->get_integer64_info(ext, key,
+> > -								&xmin,
+> > -								&xmax,
+> > -								&xstep);
+> > +								(int64_t *)&xmin,
+> > +								(int64_t *)&xmax,
+> > +								(int64_t *)&xstep);
+> >  			info->value.integer64.min = xmin;
+> >  			info->value.integer64.max = xmax;
+> >  			info->value.integer64.step = xstep;
 > 
-> Right, it's missing.
-> 
-> > Anyway, actually we can move most of values from proc to sysfs for 2.6.
-> > Any problems with it?
-> 
-> Proc files for showing information are OK, but controlling the driver
-> over proc file isn't a recommended way on 2.6 kernel.  That's what
-> sysfs is for.
-> 
-> Anyway it's no big deal but just TODO.
+> This change is nonsense.  The relevant warnings were already fixed.
 
-I'd like to create similar layer as in proc, but it seems that we must 
-place cards root somewhere. Do you think that /sys/class/soundcard is good 
-place and name for this root?
+Yes, you're right. My brain was in another dimension :-) Reverted.
 
 						Jaroslav
 
