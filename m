@@ -1,23 +1,21 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: [PATCH] RFC - add prealloc_max proc file
-Date: Fri, 6 Oct 2006 10:27:58 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610061026300.8573@tm8103.perex-int.cz>
+From: Daniel Yek <dyek@real.com>
+Subject: 5.1 surround sound playback XRUN / snd_pcm_writei()
+ didn't unblock immediately / small 114 msec buffer
+Date: Fri, 06 Oct 2006 01:52:41 -0700
+Message-ID: <6.2.1.2.2.20061006012016.30ac5ee8@mailone.real.com>
+References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
+	<s5hhcys2kr2.wl%tiwai@suse.de>
+	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
+	<s5hhcyq52do.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E014199
-	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 10:27:59 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	6EC3999562 for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 10:27:59 +0200 (MEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	38AE0E9481 for <alsa-devel@alsa-project.org>;
-	Fri,  6 Oct 2006 10:27:59 +0200 (CEST)
+In-Reply-To: <s5hhcyq52do.wl%tiwai@suse.de>
+References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
+	<s5hhcys2kr2.wl%tiwai@suse.de>
+	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
+	<s5hhcyq52do.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,79 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Alsa Developement <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-	I would like to propose to add prealloc_max proc file to give a 
-hint, what's the maximum allowed DMA buffer size in bytes:
+I opened "surround51" PCM device and set the sampling rate to 48000, S16_LE 
+format. I requested 500000 usec (0.5 sec) of buffer time, but I got back 
+only 113770 usec. (equals to 65532 bytes.) Is there a way I can get a 
+bigger buffer size? Does it depend on the driver or ALSA can typically 
+provide more?
 
-diff -r 1551b696524c core/pcm_memory.c
---- a/core/pcm_memory.c	Fri Oct 06 09:34:20 2006 +0200
-+++ b/core/pcm_memory.c	Fri Oct 06 10:26:15 2006 +0200
-@@ -101,6 +101,8 @@ int snd_pcm_lib_preallocate_free(struct 
- {
- 	snd_pcm_lib_preallocate_dma_free(substream);
- #ifdef CONFIG_SND_VERBOSE_PROCFS
-+	snd_info_free_entry(substream->proc_prealloc_max_entry);
-+	substream->proc_prealloc_max_entry = NULL;
- 	snd_info_free_entry(substream->proc_prealloc_entry);
- 	substream->proc_prealloc_entry = NULL;
- #endif
-@@ -139,6 +141,18 @@ static void snd_pcm_lib_preallocate_proc
- {
- 	struct snd_pcm_substream *substream = entry->private_data;
- 	snd_iprintf(buffer, "%lu\n", (unsigned long) substream->dma_buffer.bytes / 1024);
-+}
-+
-+/*
-+ * read callback for prealloc_max proc file
-+ *
-+ * prints the maximum allowed size in kB.
-+ */
-+static void snd_pcm_lib_preallocate_max_proc_read(struct snd_info_entry *entry,
-+						  struct snd_info_buffer *buffer)
-+{
-+	struct snd_pcm_substream *substream = entry->private_data;
-+	snd_iprintf(buffer, "%lu\n", (unsigned long) substream->dma_max / 1024);
- }
- 
- /*
-@@ -203,6 +217,15 @@ static inline void preallocate_info_init
- 		}
- 	}
- 	substream->proc_prealloc_entry = entry;
-+	if ((entry = snd_info_create_card_entry(substream->pcm->card, "prealloc_max", substream->proc_root)) != NULL) {
-+		entry->c.text.read = snd_pcm_lib_preallocate_max_proc_read;
-+		entry->private_data = substream;
-+		if (snd_info_register(entry) < 0) {
-+			snd_info_free_entry(entry);
-+			entry = NULL;
-+		}
-+	}
-+	substream->proc_prealloc_max_entry = entry;
- }
- 
- #else /* !CONFIG_SND_VERBOSE_PROCFS */
-diff -r 1551b696524c include/pcm.h
---- a/include/pcm.h	Fri Oct 06 09:34:20 2006 +0200
-+++ b/include/pcm.h	Fri Oct 06 10:26:15 2006 +0200
-@@ -383,6 +383,7 @@ struct snd_pcm_substream {
- 	struct snd_info_entry *proc_sw_params_entry;
- 	struct snd_info_entry *proc_status_entry;
- 	struct snd_info_entry *proc_prealloc_entry;
-+	struct snd_info_entry *proc_prealloc_max_entry;
- #endif
- 	/* misc flags */
- 	unsigned int hw_opened: 1;
+I used snd_pcm_writei() in blocking mode, transferring 28800 bytes (2400 
+frames) at a time. After two writes (buffer about full), the third write 
+blocked for 95 msec. Soon after, the function blocked for 128 msec, caused 
+XRUN. Is snd_pcm_writei() in blocking mode suitable for 5.1 channels 
+playback without XRUNs? Why snd_pcm_writei() didn't unblock immediately 
+when snd_pcm_avail_update() returned 5044 frames (105 msec.) available?
 
-						Jaroslav
+I'm going to try a non-blocking snd_pcm_writei() solution. Do you think it 
+is the answer to the XRUN problem?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Thank you very much.
+
+
+-- 
+Daniel Yek
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
