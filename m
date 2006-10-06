@@ -1,15 +1,15 @@
 From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] New virtual device snd_disconnected rc4
-Date: Fri, 6 Oct 2006 13:55:44 +0200
-Message-ID: <200610061355.44559.annabellesgarden@yahoo.de>
+Subject: [PATCH] New virtual device snd_disconnected rc5
+Date: Fri, 6 Oct 2006 14:15:50 +0200
+Message-ID: <200610061415.51120.annabellesgarden@yahoo.de>
 References: <200610051253.46779.annabellesgarden@yahoo.de>
-	<s5h4puiq292.wl%tiwai@suse.de>
 	<200610051717.53608.annabellesgarden@yahoo.de>
+	<200610061355.44559.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200610051717.53608.annabellesgarden@yahoo.de>
+In-Reply-To: <200610061355.44559.annabellesgarden@yahoo.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,12 +24,16 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
+New virtual device snd_disconnected rc4
+
 Hi
 
 Motivation for this came from oopses consistently happening
 when my usb-soundcard disconnected.
 Takashi and me discussed various fixes and this patch
 implements the result of our discussion.
+
+Changes in rc3: kmalloc with GFP_KERNEL, use linux list
 
 Changes in rc4: struct snd_disconnected_file merged into
 	   	struct snd_monitor_file.
@@ -44,6 +48,9 @@ Changes in rc4: struct snd_disconnected_file merged into
 		instead of DEFINE_MUTEX(mutex); 'cause code paths
 		are small under that lock.
 	   	Merged with init.c.
+
+Changes in rc5: move fops_put(mfile->disconnected_f_op);
+	   	out of the spin_lock.
 
 If agreed upon, this should go to all stable.
 
@@ -245,8 +252,8 @@ Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
  		mfile = mfile->next;
  	}
 +	if (mfile && mfile->disconnected_f_op) {
-+		spin_lock(&shutdown_mutex);
 +		fops_put(mfile->disconnected_f_op);
++		spin_lock(&shutdown_mutex);
 +		list_del(&mfile->shutdown_list);
 +		spin_unlock(&shutdown_mutex);
 +	}
