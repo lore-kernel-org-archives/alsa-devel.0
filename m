@@ -1,19 +1,17 @@
-From: Luke Ross <luke@lukeross.name>
-Subject: Re: "Unable to handle kernel paging request"
-	panic	in	snd-usb-audio on x86_64
-Date: Sat, 7 Oct 2006 18:10:23 +0100
-Message-ID: <20061007171022.GA23089@lukeross.name>
-References: <20060920225128.GG19215@lukeross.name>
-	<s5hvenhcb8v.wl%tiwai@suse.de>
-	<20060922104850.GA20850@lukeross.name>
-	<s5hodt3j4fm.wl%tiwai@suse.de>
-	<20061004201341.GA6195@lukeross.name>
-	<s5hy7rtsh80.wl%tiwai@suse.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: maximum PCM DMA buffer sizes for PCI hw
+Date: Sat, 7 Oct 2006 14:03:39 +0200
+Message-ID: <20061007140339.09ed6a79.pochini@shiny.it>
+References: <Pine.LNX.4.61.0610061002220.8573@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hy7rtsh80.wl%tiwai@suse.de>
+Received: from smtp-out12.alice.it (smtp-out12.alice.it [85.37.17.107])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52948245
+	for <alsa-devel@alsa-project.org>;
+	Sat,  7 Oct 2006 23:13:02 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0610061002220.8573@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,33 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 6 Oct 2006 10:16:20 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-On Fri, Oct 06, 2006 at 03:31:59PM +0200, Takashi Iwai wrote:
->
-> According to the stack trace, the problem looks rather like a problem
-> of usb-audio driver than the PCM core stuff I've suspected.
+> Hi all,
 > 
-> Could you try the patch below?  It's to the latest HG but should be
-> applicable to other recent versions, too.
+> 	while working on ALSA bug#2481 I figured that we do not allow to 
+> setup large DMA buffers for hardware which is capable using that. I do not 
+> think that it's right behaviour.
 
-I gave your patch a try, but the problem is still there.
+> echoaudio - 256KB - might be increased (?)
 
-Just for the record, the device in question supports only one rate, 
-which is a non-ALSA-standard one. Therefore, needs_knot should be set 
-and hence the call to snd_pcm_hw_constraint_list.
+I pass default=128K and max=256K to snd_pcm_lib_preallocate_pages(), but
+there are no hw limits. Most apps use a much smaller buffer to keep latency
+low, so I though it was a reasonable size. I didn't want to waste too much
+non-swappable memory. If you decide to raise the 256K limit, please let me
+know, because I have to lower the .periods_max value (the s-g list stays in
+one page, so if the buffer is too big, the s-g list may not fit in one page).
 
-As a basic sanity check I did some printk just before the call and 
-neither runtime nor fp are null, and fp->nr_rates is 1 as expected. I'm 
-happy to try some more printk to try and work out what's going on, but 
-still don't quite see why the code/soundcard combination works on i386 
-but not x86_64 - could it be arch dependent?
 
-Luke
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
