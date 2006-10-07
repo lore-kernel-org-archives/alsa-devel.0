@@ -1,17 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: maximum PCM DMA buffer sizes for PCI hw
-Date: Sat, 7 Oct 2006 14:03:39 +0200
-Message-ID: <20061007140339.09ed6a79.pochini@shiny.it>
-References: <Pine.LNX.4.61.0610061002220.8573@tm8103.perex-int.cz>
+From: albox@free.fr
+Subject: Re: Issue with Intel HDA Sound card 82801G
+	(laptop	Medion)
+Date: Sun, 08 Oct 2006 01:00:39 +0200
+Message-ID: <1160262039.45283197cf7cd@imp5-g19.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp-out12.alice.it (smtp-out12.alice.it [85.37.17.107])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52948245
-	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Oct 2006 23:13:02 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0610061002220.8573@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,31 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: tdavis@dsl-only.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 6 Oct 2006 10:16:20 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
+"Is this ALSA 1.0.13-rc3, or a patched ALSA from Realtek?"
+=> It ALSA, not a patched version.
 
-> Hi all,
-> 
-> 	while working on ALSA bug#2481 I figured that we do not allow to 
-> setup large DMA buffers for hardware which is capable using that. I do not 
-> think that it's right behaviour.
+It's weird because now, I get this error :
+[17179588.420000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:680:
+codec_mask = 0x3
+[17179588.596000] hda_codec: Unknown model for ALC883, trying auto-probe from
+BIOS...
+[17179588.644000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/hda_codec.c:2164:
+autoconfig: line_outs=3 (0x14/0x15/0x16/0x0/0x0)
+[17179588.644000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/hda_codec.c:2168:
+   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[17179588.644000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/hda_codec.c:2172:
+   hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
+[17179588.644000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/hda_codec.c:2180:
+   inputs: mic=0x0, fmic=0x18, line=0x1a, fline=0x0, cd=0x0, aux=0x0
+[17179589.092000] NET: Registered protocol family 17
+[17179589.392000] ALSA
+/home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.13/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:245:
+si3054: cannot initialize. EXT MID = 0000
+[17179589.392000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[17179589.392000] HDA Intel: probe of 0000:00:1b.0 failed with error -13
 
-> echoaudio - 256KB - might be increased (?)
+$ aplay -l
+aplay: device_list:218: no soundcards found...
 
-I pass default=128K and max=256K to snd_pcm_lib_preallocate_pages(), but
-there are no hw limits. Most apps use a much smaller buffer to keep latency
-low, so I though it was a reasonable size. I didn't want to waste too much
-non-swappable memory. If you decide to raise the 256K limit, please let me
-know, because I have to lower the .periods_max value (the s-g list stays in
-one page, so if the buffer is too big, the s-g list may not fit in one page).
+$ alsamixer
+alsamixer: function snd_ctl_open failed for default: No such file or directory
 
-
---
-Giuliano.
+I don't understand why I get this error :-(
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
