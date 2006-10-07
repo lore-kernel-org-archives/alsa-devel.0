@@ -1,11 +1,19 @@
-From: "Mave Thorn" <crusjack@houstonfcu.org>
-Subject: Re: Hi
-Date: Fri, 6 Oct 2006 23:21:55 -0700
-Message-ID: <000001c6e9d8$e31f60d0$98a1a8c0@uzsjenf>
-Reply-To: Mave Thorn <crusjack@houstonfcu.org>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.13 and hdsp cardbus
+Date: Sat, 7 Oct 2006 14:41:35 +0400
+Message-ID: <70a871c80610070341q3104c89ne76bd70dd6be035e@mail.gmail.com>
+References: <70a871c80610050541r73bbc2d7j408595802bb2c43f@mail.gmail.com>
+	<4525F73D.2040105@chello.at>
+	<70a871c80610060027l4196fdfi7b7ecd215733a7b3@mail.gmail.com>
+	<45264A94.6010504@chello.at>
+	<70a871c80610060709s73c87f03u31f4e91af077da46@mail.gmail.com>
+	<4526D56E.1000904@chello.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1793380190=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <4526D56E.1000904@chello.at>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,89 +23,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Karl Grill <kgrill@chello.at>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On 10/7/06, Karl Grill <kgrill@chello.at> wrote:
+> Sorry for my mistake, I just didn't realize that lspci is not quite
+> consistent about using decimal or hex, so, in a way, we were both right.
+> Your card revision (0x35) is the latest, and I'm quite surprised taht
+> you had it working (all the reports I heard up to now were negative, but
+> equally unanimously people reported success after a flash downgrade).
+> Maybe you can alternatively downgrade the alsa driver - if you try,
+> please keep me informed about your fate. BTW, does the card work with
+> the 1.0.13 driver if you insert it with the iobox plugged in and turned
+> on (or does it at least refrain from freezing your system)?
 
---===============1793380190==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6E99E.36C088D0"
+iobox turned on and plugged:
 
-This is a multi-part message in MIME format.
+1) booting with plugged cardbus
+    card works
+   after unplugging, writes: card ejected from slot 0
+   all subsequent cardbus insertions/removals are not detected.
+   Not a single word in syslog.
 
-------=_NextPart_000_0001_01C6E99E.36C088D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+2) booting without cardbus
+    all insertions/removals are detected and card works ok.
 
-Hi,
+Please, take a look into my thread "1.0.13 and indigoio", seems
+there's a bug in the kernel:
+it in some cases does not notify driver about cardbus removal.
 
-VrAGRA for less
+Regards,
 
-http://www.sadetiondefunjertion.com
-=20
-  _____ =20
-
-
-a plastic dog mouthpiece for an ancient ships computer.
-took it and looked at it, then turned it around since there was no
-There was no answering that one. Would I? I smiled, a little grimly.
-
-
-
-------=_NextPart_000_0001_01C6E99E.36C088D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<H1>VrAGRA for less</H1>
-<DIV><A =
-href=3D"http://www.sadetiondefunjertion.com">http://www.sadetiondefunjert=
-ion.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><HR></DIV>
-<P>a plastic dog mouthpiece for an ancient ships computer.<BR>
-took  it  and looked at it, then turned it around since there  was  =
-no<BR>
- There  was no answering that one. Would I? I smiled, a little =
-grimly.<BR></P>
-</BODY></HTML>
-------=_NextPart_000_0001_01C6E99E.36C088D0--
-
-
-
-
-
---===============1793380190==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Dmitry.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1793380190==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1793380190==--
