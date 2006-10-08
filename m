@@ -1,10 +1,7 @@
-From: Cezar <cezar@mixandgo.ro>
-Subject: Re: symbol _snd_seq_hw_open is not
-	defined	inside	(null)
-Date: Sun, 08 Oct 2006 20:20:36 +0300
-Message-ID: <35760.0403171547$1160328030@news.gmane.org>
-References: <871wpjgthv.fsf@mixandgo.ro> <1160323113.17615.97.camel@mindpipe>
-	<87ejtig2wt.fsf@mixandgo.ro> <1160326981.17615.112.camel@mindpipe>
+From: Pierre Ossman <drzeus-list@drzeus.cx>
+Subject: No sound with snd_cmipci
+Date: Sun, 08 Oct 2006 19:34:29 +0200
+Message-ID: <452936A5.1020902@drzeus.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -21,31 +18,29 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell <rlrevell@joe-job.com> writes:
+Hi!
 
-> On Sun, 2006-10-08 at 19:58 +0300, Cezar wrote:
->> aplaymidi file.mid requires a port
->> 
->> aplaymidi -p 0:0 file.mid says : 
->> 
->> Cannot connect to port 0:0 - Operation not permited
->> 
->
-> Where did you get 0:0?
->
-> Use aplaymidi -l to list available ports.
->
-> Lee
->
->
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> opinions on IT & business topics through brief surveys -- and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+I bought some cheap ass sound card yesterday to use in my HTPC system.
+Unfortunately, I cannot seem to get it to output any sound.
 
-it works !
+The card is labeled "PC Line" but is a C-Media CM8738, i.e. snd_cmipci.
+There are no error messages whatsoever, just no audio out.
 
+The problem only seems to affect PCM as I did some tests with a mic that
+worked just fine. The mixer controls for mic playback and capture both
+work and I get valid data when recording. PCM eats data at a reasonable
+pace, but no sound it sent out. Also, no data is generated when I set
+capture to PCM and try to loop stuff.
+
+I also notice two other effects, but I do not know if they're relevant.
+First, the mixer setting "IEC958 In Monitor" cannot be turned off.
+Second, when "IEC958 Output" is activated, mic playback is activated
+unconditionally.
+
+Any help appreciated.
+
+Rgds
+Pierre
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
