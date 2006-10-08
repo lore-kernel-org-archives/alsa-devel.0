@@ -1,18 +1,11 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.13 and indigoio
-Date: Mon, 9 Oct 2006 01:21:03 +0400
-Message-ID: <70a871c80610081421r16dce24cr6ec452c62812a2d3@mail.gmail.com>
-References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
-	<s5hbqororyw.wl%tiwai@suse.de>
-	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
-	<70a871c80610050550l657155d9p5b57c9f534171e82@mail.gmail.com>
-	<Pine.LNX.4.64.0610061208150.4839@denise.shiny.it>
-	<20061008231208.156668f7.pochini@shiny.it>
+From: Daniel Jacobowitz <drow@false.org>
+Subject: Surround sound and volume control question
+Date: Sun, 8 Oct 2006 18:27:26 -0400
+Message-ID: <20061008222726.GA23855@nevyn.them.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20061008231208.156668f7.pochini@shiny.it>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,20 +16,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net, Giuliano Pochini <pochini@denise.shiny.it>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/9/06, Giuliano Pochini <pochini@shiny.it> wrote:
-> > Uhm... I'll have a look at the code again.
-> Found nothing. I'll check outside the driver.
+How is volume control supposed to work for surround sound codecs?  Is there
+typically a register which affects every channel, or do you have to adjust
+them separately?  I've been staring at the datasheets and prodding the
+registers for mine (ICE1724, on a Shuttle SN25P).  There's three pieces:
+the vt1720, the vt1617a, and a wm8728.  The vt1617a has ac97 volume control
+registers, but the "master" volume doesn't affect the center/lfe or rear
+surround channels.  I am guessing that the wm8728 is just for the last two
+channels (I've got jacks for 7.1 but the vt1617a only does 5.1).
 
-And take a look into hdsp thread. There's a possibility smth
-cardbus-related is broken in the kernel, I suppose.
+I cobbled together patches that add a stereo mute switch to the softvol
+plugin, and set that in front of the card.  Then I can actually change
+volume or mute the whole set.  But for various reasons this is
+unsatisfactory, e.g. because it's not called "Master Playback", and because
+it doesn't show up as the first mixer element - every application needs a
+bit of configuration to find the right volume control.  And one of the
+applications I wanted to configure, gnome-settings-daemon, is basically
+unconfigurable.  It just grabs whatever gstreamer sees at the front of the
+list.
 
-Thank you.
+(The mute patches available on request, btw, one alsa-lib patch and one
+kernel driver bugfix for user-created boolean controls.)
 
-Dmitry.
+Before I go any further with this I want to know how it works elsewhere.
+I would think that having a single mixer control that affected all the
+surround speakers would be a pretty standard thing to want!  Do other chips
+have a single register for it?  Or does this one, and I'm just not seeing
+it?
+
+If I have no other way to get this to work than with the softvol plugin,
+I think this is the way to go:
+  - Rename the "Master" volume control/switch to "Front".
+  - In userspace, have softvol create a control/switch named "Master".
+
+Potential problems:
+  - With a library older than kernel driver I think things would start
+    picking up the Headphone channel as the master volume control if
+    I made this change, yuck.
+  - The user-created controls don't exist right away, so saving and
+    restoring volume might not work.
+
+All comments very welcome - I'm out of my depth here.  There's a bit of
+related discussion in bug 1407.
+
+-- 
+Daniel Jacobowitz
+CodeSourcery
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
