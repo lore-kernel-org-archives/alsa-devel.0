@@ -1,20 +1,17 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Issue with Intel HDA Sound card
-	82801G	(laptop	Medion)
-Date: Sun, 08 Oct 2006 13:24:05 -0700
-Message-ID: <1160339045.17297.118.camel@razman>
-References: <1160227460.4527aa8501646@imp1-g19.free.fr>
-	<1160242659.17297.64.camel@razman> <20061008110304.GA30604@trinnov.com>
-	<1160323211.17615.100.camel@mindpipe>
-	<1160323875.17297.94.camel@razman>
-	<1160326355.17615.109.camel@mindpipe>
-	<1160327744.17297.108.camel@razman>
-	<1160336468.17615.118.camel@mindpipe>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: 1.0.13 and indigoio
+Date: Sun, 8 Oct 2006 23:12:08 +0200
+Message-ID: <20061008231208.156668f7.pochini@shiny.it>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<s5hbqororyw.wl%tiwai@suse.de>
+	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
+	<70a871c80610050550l657155d9p5b57c9f534171e82@mail.gmail.com>
+	<Pine.LNX.4.64.0610061208150.4839@denise.shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1160336468.17615.118.camel@mindpipe>
+In-Reply-To: <Pine.LNX.4.64.0610061208150.4839@denise.shiny.it>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,38 +21,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@denise.shiny.it>
+Cc: tiwai@suse.de, dsbaikov@gmail.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 6 Oct 2006 12:19:47 +0200 (CEST)
+Giuliano Pochini <pochini@denise.shiny.it> wrote:
+
+> > Forgot to add, the very first insertion works.
+>
+> Uhm... I'll have a look at the code again.
+
+Found nothing. I'll check outside the driver.
 
 
-On Sun, 2006-10-08 at 15:41 -0400, Lee Revell wrote:
-> On Sun, 2006-10-08 at 10:15 -0700, Tobin Davis wrote:
-> > Realtek takes a snapshot of the stable branches, then temporarily forks
-> > for a while.  I'd expect to see a submission from them before 1.0.14
-> > (but why wait).  Their latest package is
-> > realtek-linux-audiopack-4.05b.tar.bz2, which has alsa-driver-1.0.12
-> > (plus their changes), lib & utils are version 1.0.9.  There are
-> > differences between their code and 1.0.13, and other users have reported
-> > that the Realtek version works where 1.0.13 doesn't.
-> 
-> I don't think Realtek ever submitted anything.  Users figured out that
-> they had forked ALSA and extracted the useful changes themselves.
-
-Ok, Guess I'm it then.
-
-At any rate, I've been studying the changes that Medion made, and I
-think I have a better solution to merging.  It appears that they pulled
-patches that suited them, leaving others out (figures).  Some of their
-patches are already in the mainstream.  The easiest way to get this
-working is to create new configurations under ALC883 (I'm thinking
-ALC883_TEST and ALC883_MEDION).  I should have something tonight or
-tomorrow for testing.
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
-
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
