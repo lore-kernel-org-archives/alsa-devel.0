@@ -1,18 +1,19 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 0/5] ASoC codecs
-Date: Mon, 09 Oct 2006 17:57:47 +0100
-Message-ID: <1160413067.3235.62.camel@localhost.localdomain>
-References: <1159805715.2382.108.camel@localhost.localdomain>
-	<s5hy7rwht29.wl%tiwai@suse.de>
-	<1160149650.16898.36.camel@localhost.localdomain>
-	<s5hd595safh.wl%tiwai@suse.de>
-	<1160150846.16898.58.camel@localhost.localdomain>
-	<s5h7izds7hq.wl%tiwai@suse.de>
+From: Daniel Jacobowitz <drow@false.org>
+Subject: Re: Surround sound and volume control question
+Date: Mon, 9 Oct 2006 13:04:51 -0400
+Message-ID: <20061009170451.GA19661@nevyn.them.org>
+References: <20061008222726.GA23855@nevyn.them.org>
+	<s5hiritr4nm.wl%tiwai@suse.de>
+	<20061009134539.GA13343@nevyn.them.org>
+	<1160402124.629.16.camel@mindpipe>
+	<20061009143814.GA14827@nevyn.them.org>
+	<1160404977.629.22.camel@mindpipe> <s5hbqolr19y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h7izds7hq.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5hbqolr19y.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,58 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-10-06 at 19:02 +0200, Takashi Iwai wrote:
-> At Fri, 06 Oct 2006 17:07:26 +0100,
-> Liam Girdwood wrote:
-> > 
-> > On Fri, 2006-10-06 at 17:58 +0200, Takashi Iwai wrote:
-> > > At Fri, 06 Oct 2006 16:47:30 +0100,
-> > > Liam Girdwood wrote:
-> > > > 
-> > > > On Wed, 2006-10-04 at 19:47 +0200, Takashi Iwai wrote:
-> > > > > At Mon, 02 Oct 2006 17:15:15 +0100,
-> > > > > Liam Girdwood wrote:
-> > > > > > 
-> > > > > > This patch series will add initial ASoC codec support for the WM8731,
-> > > > > > WM8750 and WM9712 codecs. It also adds support for AC97 codecs through a
-> > > > > > generic AC97 codec driver (this connects any ASoC AC97 controller driver
-> > > > > > to the std alsa ac97 codec driver). These codec drivers were chosen as
-> > > > > > they are all working well and have good machine support (Zaurus).
-> > > > > > 
-> > > > > > The ak4535, uda1380, wm8753 and wm9713 ASoC codec drivers are all beta
-> > > > > > quality atm and will hopefully be submitted soon, after some further
-> > > > > > testing.
-> > > > > 
-> > > > > I got undefined soc_ac97_ops when I compile with your patches.
-> > > > > A missing piece?
-> > > > > 
-> > > > 
-> > > > It's shouldn't have been built (unless AC97 support was selected). I've
-> > > > fixed this up in the codecs Kconfig and Makefile now (see new patch
-> > > > 5/5).
-> > > 
-> > > But I couldn't find the definition of soc_ac97_ops in your patches.
-> > > Which patch does include this?
-> > > 
-> > 
-> > This is supplied by any AC97 controller driver, however it's not in the
-> > AT91 series as AC97 is not supported. It will appear in the pxa2xx AC97
-> > driver patch next week. 
-> > 
-> > It's only used by the AC97 codec drivers and the soc-core (and only
-> > *now* when SOC_AC97_ is selected by the build system). 
+On Mon, Oct 09, 2006 at 04:50:49PM +0200, Takashi Iwai wrote:
+> > Is a ganged master control fundamentally incompatible with individual
+> > channel volumes?  If so, doesn't it mean that this problem can never be
+> > solved by an abstract mixer layer?
 > 
-> OK.  Now I merged all ASoC-related patches you've posted to ALSA HG
-> tree.  Please check out whether it's OK for you.
+> It's possible to create a virtual volume element that represents the
+> base attenuation level.  Suppose "Master" to be a virtual volume (a
+> mono), then the real volume values for front, rear and CLFE become
+> "front + master", "rear + master" and "CLFE + master".  The values
+> have to be clipped to max 31 (or 63).
 > 
+> The problem is that the mixer values are no longer corresponding to
+> the register values as 1:1.  Thus the current code for get/put
+> callbacks can't be used as it is.  The values have to be cached and
+> handled internally independent from the register values...
 
-Thanks, It all seems fine. :)
+Do you think this is a better choice than using softvol?  If so, I
+will work on the implementation later this week.
 
-Liam
-
+-- 
+Daniel Jacobowitz
+CodeSourcery
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
