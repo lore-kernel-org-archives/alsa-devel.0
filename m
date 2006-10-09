@@ -1,19 +1,21 @@
-From: Daniel Jacobowitz <drow@false.org>
-Subject: Re: Surround sound and volume control question
-Date: Mon, 9 Oct 2006 10:53:57 -0400
-Message-ID: <20061009145357.GA15542@nevyn.them.org>
-References: <20061008222726.GA23855@nevyn.them.org>
-	<s5hiritr4nm.wl%tiwai@suse.de>
-	<20061009134539.GA13343@nevyn.them.org>
-	<1160402124.629.16.camel@mindpipe>
-	<20061009143814.GA14827@nevyn.them.org>
-	<1160404977.629.22.camel@mindpipe>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: 5.1 surround sound playback XRUN /
+ snd_pcm_writei() didn't unblock immediately / small 114 msec buffer
+Date: Mon, 09 Oct 2006 17:21:29 +0200
+Message-ID: <1160407289.6513.272893861@webmail.messagingengine.com>
+References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
+	<s5hhcys2kr2.wl%tiwai@suse.de>
+	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
+	<s5hhcyq52do.wl%tiwai@suse.de>
+	<6.2.1.2.2.20061006012016.30ac5ee8@mailone.real.com>
+	<1160140179.28711.272704715@webmail.messagingengine.com>
+	<6.2.1.2.2.20061006123102.428226e0@mailone.real.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1160404977.629.22.camel@mindpipe>
+In-Reply-To: <6.2.1.2.2.20061006123102.428226e0@mailone.real.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,46 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Daniel Yek <dyek@real.com>, Alsa Developement <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 09, 2006 at 10:42:56AM -0400, Lee Revell wrote:
-> On Mon, 2006-10-09 at 10:38 -0400, Daniel Jacobowitz wrote:
-> > I did consider doing it this way over the weekend.  However, being
-> > able to adjust the relative volumes of the different channels still
-> > seems useful to me.  If you have a single unified control, then you
-> > mess up trying to move the others.
-> > 
-> > What do you think?  Should I just slave them all together and remove
-> > the other volume controls?  It's probably easier; it just seems
-> > somehow lacking.
-> > 
+Daniel Yek wrote:
+> At 06:09 AM 10/6/2006, Clemens Ladisch wrote:
+> >Daniel Yek wrote:
+> > > I opened "surround51" PCM device and set the sampling rate to 48000, S16_LE
+> > > format.
+> >
+> >Better use "plug:surround51".  There are chips like ICE1712 that do not
+> >support any format except S32_LE.
 > 
-> How do other OSes do it?  Do they also force everything through a
-> software volume control?
+> It would be great if somebody could suggest an easy way for a media 
+> application to identify if the system is 5.1-channels capable. After making 
+> sure that 5.1-channels playback is preferable over 2-channels playback, I 
+> can then use "plug:surround51" PCM device. I assume that Plug will convert 
+> all 6 channels without dropping any here. If not, it is not usable.
+> 
+> Right now, I'm depending on opening "surround51" PCM device to fail to 
+> indicate that the system isn't 5.1-channels capable. "plug:surround51" PCM 
+> wouldn't open-fail even if the system isn't 5.1-channels capable, resulting 
+> in a poor playback experience. Do you have a suggestion for me?
 
-Unfortunately, I could find a program to dump the ice1724's IO space in
-Windows, but I couldn't find anything to dump the vt1617a AC97
-registers (which require writes to select the registers IIRC).  If
-you've got a recommendation, I can boot this machine into Windows and
-see what happens to the vt1617a's registers when the Windows driver
-adjusts the volume.
+The configuration files won't define a "surround51" device if the
+hardware is not capable of accepting 5.1 sound, so opening
+"plug:surround51" should fail as expected.
 
-> Is a ganged master control fundamentally incompatible with individual
-> channel volumes?  If so, doesn't it mean that this problem can never be
-> solved by an abstract mixer layer?
 
-I don't know.  I guess you could preserve individual channel volumes by
-saving them separately (outside the registers), and using a volume of
-"master control plus channel control".  But I don't know how the
-resulting quality would be or how tricky it would be to implement.
-Right now we never cache the volumes corresponding to hardware
-registers.
-
--- 
-Daniel Jacobowitz
-CodeSourcery
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
