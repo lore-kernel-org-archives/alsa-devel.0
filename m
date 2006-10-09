@@ -1,21 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: 5.1 surround sound playback XRUN /
- snd_pcm_writei() didn't unblock immediately / small 114 msec buffer
-Date: Mon, 09 Oct 2006 17:21:29 +0200
-Message-ID: <1160407289.6513.272893861@webmail.messagingengine.com>
-References: <6.2.1.2.2.20060928013552.16a4b928@mailone.real.com>
-	<s5hhcys2kr2.wl%tiwai@suse.de>
-	<6.2.1.2.2.20060928125136.20c38030@mailone.real.com>
-	<s5hhcyq52do.wl%tiwai@suse.de>
-	<6.2.1.2.2.20061006012016.30ac5ee8@mailone.real.com>
-	<1160140179.28711.272704715@webmail.messagingengine.com>
-	<6.2.1.2.2.20061006123102.428226e0@mailone.real.com>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH 0/5] ASoC codecs
+Date: Mon, 09 Oct 2006 17:57:47 +0100
+Message-ID: <1160413067.3235.62.camel@localhost.localdomain>
+References: <1159805715.2382.108.camel@localhost.localdomain>
+	<s5hy7rwht29.wl%tiwai@suse.de>
+	<1160149650.16898.36.camel@localhost.localdomain>
+	<s5hd595safh.wl%tiwai@suse.de>
+	<1160150846.16898.58.camel@localhost.localdomain>
+	<s5h7izds7hq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <6.2.1.2.2.20061006123102.428226e0@mailone.real.com>
+In-Reply-To: <s5h7izds7hq.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,36 +22,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Daniel Yek <dyek@real.com>, Alsa Developement <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Yek wrote:
-> At 06:09 AM 10/6/2006, Clemens Ladisch wrote:
-> >Daniel Yek wrote:
-> > > I opened "surround51" PCM device and set the sampling rate to 48000, S16_LE
-> > > format.
-> >
-> >Better use "plug:surround51".  There are chips like ICE1712 that do not
-> >support any format except S32_LE.
+On Fri, 2006-10-06 at 19:02 +0200, Takashi Iwai wrote:
+> At Fri, 06 Oct 2006 17:07:26 +0100,
+> Liam Girdwood wrote:
+> > 
+> > On Fri, 2006-10-06 at 17:58 +0200, Takashi Iwai wrote:
+> > > At Fri, 06 Oct 2006 16:47:30 +0100,
+> > > Liam Girdwood wrote:
+> > > > 
+> > > > On Wed, 2006-10-04 at 19:47 +0200, Takashi Iwai wrote:
+> > > > > At Mon, 02 Oct 2006 17:15:15 +0100,
+> > > > > Liam Girdwood wrote:
+> > > > > > 
+> > > > > > This patch series will add initial ASoC codec support for the WM8731,
+> > > > > > WM8750 and WM9712 codecs. It also adds support for AC97 codecs through a
+> > > > > > generic AC97 codec driver (this connects any ASoC AC97 controller driver
+> > > > > > to the std alsa ac97 codec driver). These codec drivers were chosen as
+> > > > > > they are all working well and have good machine support (Zaurus).
+> > > > > > 
+> > > > > > The ak4535, uda1380, wm8753 and wm9713 ASoC codec drivers are all beta
+> > > > > > quality atm and will hopefully be submitted soon, after some further
+> > > > > > testing.
+> > > > > 
+> > > > > I got undefined soc_ac97_ops when I compile with your patches.
+> > > > > A missing piece?
+> > > > > 
+> > > > 
+> > > > It's shouldn't have been built (unless AC97 support was selected). I've
+> > > > fixed this up in the codecs Kconfig and Makefile now (see new patch
+> > > > 5/5).
+> > > 
+> > > But I couldn't find the definition of soc_ac97_ops in your patches.
+> > > Which patch does include this?
+> > > 
+> > 
+> > This is supplied by any AC97 controller driver, however it's not in the
+> > AT91 series as AC97 is not supported. It will appear in the pxa2xx AC97
+> > driver patch next week. 
+> > 
+> > It's only used by the AC97 codec drivers and the soc-core (and only
+> > *now* when SOC_AC97_ is selected by the build system). 
 > 
-> It would be great if somebody could suggest an easy way for a media 
-> application to identify if the system is 5.1-channels capable. After making 
-> sure that 5.1-channels playback is preferable over 2-channels playback, I 
-> can then use "plug:surround51" PCM device. I assume that Plug will convert 
-> all 6 channels without dropping any here. If not, it is not usable.
+> OK.  Now I merged all ASoC-related patches you've posted to ALSA HG
+> tree.  Please check out whether it's OK for you.
 > 
-> Right now, I'm depending on opening "surround51" PCM device to fail to 
-> indicate that the system isn't 5.1-channels capable. "plug:surround51" PCM 
-> wouldn't open-fail even if the system isn't 5.1-channels capable, resulting 
-> in a poor playback experience. Do you have a suggestion for me?
 
-The configuration files won't define a "surround51" device if the
-hardware is not capable of accepting 5.1 sound, so opening
-"plug:surround51" should fail as expected.
+Thanks, It all seems fine. :)
 
+Liam
 
-HTH
-Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
