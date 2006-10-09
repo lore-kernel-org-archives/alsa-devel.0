@@ -1,12 +1,15 @@
-From: Daniel Jacobowitz <drow@false.org>
-Subject: Surround sound and volume control question
-Date: Sun, 8 Oct 2006 18:27:26 -0400
-Message-ID: <20061008222726.GA23855@nevyn.them.org>
+From: Remy Bruno <remy.bruno@trinnov.com>
+Subject: Re: RME 9632 - Problem half solved
+Date: Mon, 9 Oct 2006 12:18:59 +0200
+Message-ID: <20061009101859.GA16650@trinnov.com>
+References: <20061003103712.GA12508@trinnov.com>
+	<20061006135355.GA22664@trinnov.com> <s5h64exs714.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <s5h64exs714.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,55 +19,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-How is volume control supposed to work for surround sound codecs?  Is there
-typically a register which affects every channel, or do you have to adjust
-them separately?  I've been staring at the datasheets and prodding the
-registers for mine (ICE1724, on a Shuttle SN25P).  There's three pieces:
-the vt1720, the vt1617a, and a wm8728.  The vt1617a has ac97 volume control
-registers, but the "master" volume doesn't affect the center/lfe or rear
-surround channels.  I am guessing that the wm8728 is just for the last two
-channels (I've got jacks for 7.1 but the vt1617a only does 5.1).
+On Friday 06 October at 19:12, Takashi Iwai wrote:
+> Could you give a proper changelog text and a signed-off-by line to
+> merge your patch into ALSA tree?
 
-I cobbled together patches that add a stereo mute switch to the softvol
-plugin, and set that in front of the card.  Then I can actually change
-volume or mute the whole set.  But for various reasons this is
-unsatisfactory, e.g. because it's not called "Master Playback", and because
-it doesn't show up as the first mixer element - every application needs a
-bit of configuration to find the right volume control.  And one of the
-applications I wanted to configure, gnome-settings-daemon, is basically
-unconfigurable.  It just grabs whatever gstreamer sees at the front of the
-list.
+Changelog:
+hdsp: support for mixer matrix of RME9632 rev 152
 
-(The mute patches available on request, btw, one alsa-lib patch and one
-kernel driver bugfix for user-created boolean controls.)
+Signed-off-by: Remy Bruno <remy.bruno@trinnov.com>
 
-Before I go any further with this I want to know how it works elsewhere.
-I would think that having a single mixer control that affected all the
-surround speakers would be a pretty standard thing to want!  Do other chips
-have a single register for it?  Or does this one, and I'm just not seeing
-it?
+> 
+> > 
+> > For the frequency problem, I got an answer from RME which explains that another
+> > register needs to be set (together with the freq0, 1, 2 bits of the control
+> > register). This register is the "DDS" register. Here is how it should be
+> > computed:
+> > UINT64 CalcDDSValue(UINT64 rate)
+> > {
+> >         if (rate >= 112000)
+> >                 rate /= 4;
+> >         else if (rate >= 56000)
+> >                 rate /= 2;
+> > 
+> >         return 104857600000000 / rate;
+> > }
+> > MemBase[FREQ_REG] = (ULONG)CalcDDSValue(new_rate)
+> > 
+> > Any ideas of what the offset of this register is? If not, I will ask him. BTW,
+> > this register exists only for the 9632 and not for the 9652.
+> 
+> Hm, the numerator is pretty big, it's 0x100000 * 10^7.
+> A clock with fixed point?
 
-If I have no other way to get this to work than with the softvol plugin,
-I think this is the way to go:
-  - Rename the "Master" volume control/switch to "Front".
-  - In userspace, have softvol create a control/switch named "Master".
+Yes, that's weird. That's what they told me. I'll investigate this.
 
-Potential problems:
-  - With a library older than kernel driver I think things would start
-    picking up the Headphone channel as the master volume control if
-    I made this change, yuck.
-  - The user-created controls don't exist right away, so saving and
-    restoring volume might not work.
+> 
+> Anyway, remember that you cannot use 64bit division in the linux
+> kernel code as it is.  You can use a macro div64_32 defined in pcm.h,
+> though.
 
-All comments very welcome - I'm out of my depth here.  There's a bit of
-related discussion in bug 1407.
+OK
 
--- 
-Daniel Jacobowitz
-CodeSourcery
+Remy
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
