@@ -1,15 +1,32 @@
-From: Remy Bruno <remy.bruno@trinnov.com>
-Subject: Re: RME 9632 - Problem half solved
-Date: Mon, 9 Oct 2006 12:18:59 +0200
-Message-ID: <20061009101859.GA16650@trinnov.com>
-References: <20061003103712.GA12508@trinnov.com>
-	<20061006135355.GA22664@trinnov.com> <s5h64exs714.wl%tiwai@suse.de>
+From: Cornelia Huck <cornelia.huck@de.ibm.com>
+Subject: Re: [PATCH] Driver core: Don't ignore error returns
+ from probing
+Date: Mon, 9 Oct 2006 13:10:12 +0200
+Message-ID: <20061009131012.3ba21242__34037.7760622234$1160392562$gmane$org@gondolin.boeblingen.de.ibm.com>
+References: <20061006131443.473c203c@gondolin.boeblingen.de.ibm.com>
+	<Pine.LNX.4.44L0.0610061400180.1311-100000@netrider.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h64exs714.wl%tiwai@suse.de>
+Received: from mtagate3.de.ibm.com (mtagate3.de.ibm.com [195.212.29.152])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E54FB171
+	for <alsa-devel@alsa-project.org>;
+	Mon,  9 Oct 2006 13:10:25 +0200 (MEST)
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate3.de.ibm.com (8.13.8/8.13.8) with ESMTP id k99BANtj016628
+	for <alsa-devel@alsa-project.org>; Mon, 9 Oct 2006 11:10:23 GMT
+Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
+	[9.149.165.228])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with
+	ESMTP id k99BCeoP2785510
+	for <alsa-devel@alsa-project.org>; Mon, 9 Oct 2006 13:12:40 +0200
+Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av02.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id k99B9bUl020431
+	for <alsa-devel@alsa-project.org>; Mon, 9 Oct 2006 13:09:37 +0200
+In-Reply-To: <Pine.LNX.4.44L0.0610061400180.1311-100000@netrider.rowland.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,52 +36,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jiri Kosina <jikos@jikos.cz>, Castet Matthieu <castet.matthieu@free.fr>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 06 October at 19:12, Takashi Iwai wrote:
-> Could you give a proper changelog text and a signed-off-by line to
-> merge your patch into ALSA tree?
+On Fri, 6 Oct 2006 14:12:49 -0400 (EDT),
+Alan Stern <stern@rowland.harvard.edu> wrote:
 
-Changelog:
-hdsp: support for mixer matrix of RME9632 rev 152
+> I'm still not sure why bus_attach_device() was split off from 
+> bus_add_device() in the first place.  Was it just so that the 
+> kobject_uevent() call could go in between?
 
-Signed-off-by: Remy Bruno <remy.bruno@trinnov.com>
+I think yes. This was added in
+http://marc.theaimsgroup.com/?l=linux-kernel&m=115092084915731&w=2
 
+> This looks okay, but it would be better if bus_remove_device() did not
+> directly call bus_delete_device().  Just add an extra call inside
+> device_del(), so that everything remains symmetrical.
 > 
-> > 
-> > For the frequency problem, I got an answer from RME which explains that another
-> > register needs to be set (together with the freq0, 1, 2 bits of the control
-> > register). This register is the "DDS" register. Here is how it should be
-> > computed:
-> > UINT64 CalcDDSValue(UINT64 rate)
-> > {
-> >         if (rate >= 112000)
-> >                 rate /= 4;
-> >         else if (rate >= 56000)
-> >                 rate /= 2;
-> > 
-> >         return 104857600000000 / rate;
-> > }
-> > MemBase[FREQ_REG] = (ULONG)CalcDDSValue(new_rate)
-> > 
-> > Any ideas of what the offset of this register is? If not, I will ask him. BTW,
-> > this register exists only for the 9632 and not for the 9652.
-> 
-> Hm, the numerator is pretty big, it's 0x100000 * 10^7.
-> A clock with fixed point?
+> While I'm harping on style issues, you should also capitalize AttachError
+> so that it matches the form of the other statement labels nearby.  And in
+> bus_remove_device() you should put all the code inside the "if" block
+> instead of returning when dev->bus isn't set, just as the neighboring
+> subroutines do.
 
-Yes, that's weird. That's what they told me. I'll investigate this.
+OK, new patch on the way.
 
-> 
-> Anyway, remember that you cannot use 64bit division in the linux
-> kernel code as it is.  You can use a macro div64_32 defined in pcm.h,
-> though.
-
-OK
-
-Remy
+-- 
+Cornelia Huck
+Linux for zSeries Developer
+Tel.: +49-7031-16-4837, Mail: cornelia.huck@de.ibm.com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
