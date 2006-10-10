@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 3/8] ASoC pxa2xx AC97 support
-Date: Tue, 10 Oct 2006 17:19:36 +0100
-Message-ID: <1160497176.24436.112.camel@localhost.localdomain>
+Subject: [PATCH 6/8] ASoC pxa2xx Tosa machine support
+Date: Tue, 10 Oct 2006 17:19:55 +0100
+Message-ID: <1160497195.24436.115.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-c3Vi7MPcliYrpAMItdFX"
+Content-Type: multipart/mixed; boundary="=-C5BfsbqP0WndhJ5BwNG/"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,473 +15,312 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Nicolas Pitre <nico@cam.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-c3Vi7MPcliYrpAMItdFX
+--=-C5BfsbqP0WndhJ5BwNG/
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds pxa2xx AC97 ASoC audio support. It's based on
-sound/arm/pxa-ac97 by Nicolas Pitre with the following differences.
+This patch adds Alsa audio support to the Sharp Zaurus SL-C6000 (Tosa)
+machine. 
 
- o Modified driver structure to use ASoC core PCM callbacks.
- o Removed AC97 configuration function (all handled in ASoC core)
- o Added and exported ASoC DAI configuration table.
- o Added DMA support for AUX DAC and Mic ADC
- o Separated out AC97 reset into cold and warm reset functions.
 
-Signed-off-by: Nicolas Pitre <nico@cam.org>
+Signed-off-by: Dirk Opfer <Dirk@Opfer-Online.de>
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
---=-c3Vi7MPcliYrpAMItdFX
-Content-Disposition: attachment; filename=asoc-pxa2xx-ac97.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-ac97.patch; charset=UTF-8
+--=-C5BfsbqP0WndhJ5BwNG/
+Content-Disposition: attachment; filename=asoc-pxa2xx-tosa.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-tosa.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/pxa2xx-ac97.c
+Index: alsa-kernel/soc/pxa/tosa.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/pxa2xx-ac97.c
-@@ -0,0 +1,434 @@
++++ alsa-kernel/soc/pxa/tosa.c
+@@ -0,0 +1,279 @@
 +/*
-+ * linux/sound/pxa2xx-ac97.c -- AC97 support for the Intel PXA2xx chip.
++ * tosa.c  --  SoC audio for Tosa
 + *
-+ * Author:	Nicolas Pitre
-+ * Created:	Dec 02, 2004
-+ * Copyright:	MontaVista Software Inc.
++ * Copyright 2005 Wolfson Microelectronics PLC.
++ * Copyright 2005 Openedhand Ltd.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ *          Richard Purdie <richard@openedhand.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  Revision history
++ *    30th Nov 2005   Initial version.
++ *
++ * GPIO's
++ *  1 - Jack Insertion
++ *  5 - Hookswitch (headset answer/hang up switch)
++ *
 + */
 +
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+#include <linux/delay.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
 +
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-+#include <sound/initval.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
 +
-+#include <asm/irq.h>
-+#include <linux/mutex.h>
-+#include <asm/hardware.h>
++#include <asm/mach-types.h>
++#include <asm/hardware/tmio.h>
 +#include <asm/arch/pxa-regs.h>
++#include <asm/arch/hardware.h>
 +#include <asm/arch/audio.h>
++#include <asm/arch/tosa.h>
 +
++#include "../codecs/wm9712.h"
 +#include "pxa2xx-pcm.h"
 +
-+static DEFINE_MUTEX(car_mutex);
-+static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
-+static volatile long gsr_bits;
++static struct snd_soc_machine tosa;
 +
-+#define AC97_DIR \
-+	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++#define TOSA_HP        0
++#define TOSA_MIC_INT   1
++#define TOSA_HEADSET   2
++#define TOSA_HP_OFF    3
++#define TOSA_SPK_ON    0
++#define TOSA_SPK_OFF   1
 +
-+#define AC97_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++static int tosa_jack_func;
++static int tosa_spk_func;
 +
-+/* may need to expand this */
-+static struct snd_soc_dai_mode pxa2xx_ac97_modes[] = {
-+	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
-+};
-+
-+/*
-+ * Beware PXA27x bugs:
-+ *
-+ *   o Slot 12 read from modem space will hang controller.
-+ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
-+ *
-+ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
-+ * 1 jiffy timeout if interrupt never comes).
-+ */
-+
-+static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97,
-+	unsigned short reg)
++static void tosa_ext_control(struct snd_soc_codec *codec)
 +{
-+	unsigned short val = -1;
-+	volatile u32 *reg_addr;
++	int spk = 0, mic_int = 0, hp = 0, hs = 0;
 +
-+	mutex_lock(&car_mutex);
-+
-+	/* set up primary or secondary codec/modem space */
-+#ifdef CONFIG_PXA27x
-+	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#else
-+	if (reg == AC97_GPIO_STATUS)
-+		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+	else
-+		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+	reg_addr += (reg >> 1);
-+
-+#ifndef CONFIG_PXA27x
-+	if (reg == AC97_GPIO_STATUS) {
-+		/* read from controller cache */
-+		val = *reg_addr;
-+		goto out;
-+	}
-+#endif
-+
-+	/* start read access across the ac97 link */
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	val = *reg_addr;
-+
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
-+	if (!((GSR | gsr_bits) & GSR_SDONE)) {
-+		printk(KERN_ERR "%s: read error (ac97_reg=%x GSR=%#lx)\n",
-+				__FUNCTION__, reg, GSR | gsr_bits);
-+		val = -1;
-+		goto out;
++	/* set up jack connection */
++	switch (tosa_jack_func) {
++	case TOSA_HP:
++		hp = 1;
++		break;
++	case TOSA_MIC_INT:
++		mic_int = 1;
++		break;
++	case TOSA_HEADSET:
++		hs = 1;
++		break;
 +	}
 +
-+	/* valid data now */
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	val = *reg_addr;
-+	/* but we've just started another cycle... */
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
++	if (tosa_spk_func == TOSA_SPK_ON)
++		spk = 1;
 +
-+out:	mutex_unlock(&car_mutex);
-+	return val;
++	snd_soc_dapm_set_endpoint(codec, "Speaker", spk);
++	snd_soc_dapm_set_endpoint(codec, "Mic (Internal)", mic_int);
++	snd_soc_dapm_set_endpoint(codec, "Headphone Jack", hp);
++	snd_soc_dapm_set_endpoint(codec, "Headset Jack", hs);
++	snd_soc_dapm_sync_endpoints(codec);
 +}
 +
-+static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
-+	unsigned short val)
++static int tosa_startup(struct snd_pcm_substream *substream)
 +{
-+	volatile u32 *reg_addr;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec *codec = rtd->socdev->codec;
 +
-+	mutex_lock(&car_mutex);
-+
-+	/* set up primary or secondary codec/modem space */
-+#ifdef CONFIG_PXA27x
-+	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#else
-+	if (reg == AC97_GPIO_STATUS)
-+		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+	else
-+		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+	reg_addr += (reg >> 1);
-+
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	*reg_addr = val;
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1);
-+	if (!((GSR | gsr_bits) & GSR_CDONE))
-+		printk(KERN_ERR "%s: write error (ac97_reg=%x GSR=%#lx)\n",
-+				__FUNCTION__, reg, GSR | gsr_bits);
-+
-+	mutex_unlock(&car_mutex);
-+}
-+
-+static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
-+{
-+	gsr_bits = 0;
-+
-+#ifdef CONFIG_PXA27x
-+	/* warm reset broken on Bulverde,
-+	   so manually keep AC97 reset high */
-+	pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
-+	udelay(10);
-+	GCR |= GCR_WARM_RST;
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+	udelay(500);
-+#else
-+	GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
-+	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+#endif
-+
-+	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
-+		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
-+				 __FUNCTION__, gsr_bits);
-+
-+	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
-+}
-+
-+static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
-+{
-+	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
-+	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
-+
-+	gsr_bits = 0;
-+#ifdef CONFIG_PXA27x
-+	/* PXA27x Developers Manual section 13.5.2.2.1 */
-+	pxa_set_cken(1 << 31, 1);
-+	udelay(5);
-+	pxa_set_cken(1 << 31, 0);
-+	GCR = GCR_COLD_RST;
-+	udelay(50);
-+#else
-+	GCR = GCR_COLD_RST;
-+	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-+	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+#endif
-+
-+	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
-+		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
-+				 __FUNCTION__, gsr_bits);
-+
-+	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
-+}
-+
-+static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id,
-+	struct pt_regs *regs)
-+{
-+	long status;
-+
-+	status = GSR;
-+	if (status) {
-+		GSR = status;
-+		gsr_bits |= status;
-+		wake_up(&gsr_wq);
-+
-+#ifdef CONFIG_PXA27x
-+		/* Although we don't use those we still need to clear them
-+		   since they tend to spuriously trigger when MMC is used
-+		   (hardware bug? go figure)... */
-+		MISR = MISR_EOC;
-+		PISR = PISR_EOC;
-+		MCSR = MCSR_EOC;
-+#endif
-+
-+		return IRQ_HANDLED;
-+	}
-+
-+	return IRQ_NONE;
-+}
-+
-+struct snd_ac97_bus_ops soc_ac97_ops = {
-+	.read	= pxa2xx_ac97_read,
-+	.write	= pxa2xx_ac97_write,
-+	.warm_reset	= pxa2xx_ac97_warm_reset,
-+	.reset	= pxa2xx_ac97_cold_reset,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_out = {
-+	.name			= "AC97 PCM Stereo out",
-+	.dev_addr		= __PREG(PCDR),
-+	.drcmr			= &DRCMRTXPCDR,
-+	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
-+				  DCMD_BURST32 | DCMD_WIDTH4,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_in = {
-+	.name			= "AC97 PCM Stereo in",
-+	.dev_addr		= __PREG(PCDR),
-+	.drcmr			= &DRCMRRXPCDR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST32 | DCMD_WIDTH4,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_out = {
-+	.name			= "AC97 Aux PCM (Slot 5) Mono out",
-+	.dev_addr		= __PREG(MODR),
-+	.drcmr			= &DRCMRTXMODR,
-+	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_in = {
-+	.name			= "AC97 Aux PCM (Slot 5) Mono in",
-+	.dev_addr		= __PREG(MODR),
-+	.drcmr			= &DRCMRRXMODR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_mic_mono_in = {
-+	.name			= "AC97 Mic PCM (Slot 6) Mono in",
-+	.dev_addr		= __PREG(MCDR),
-+	.drcmr			= &DRCMRRXMCDR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+#ifdef CONFIG_PM
-+static int pxa2xx_ac97_suspend(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	GCR |= GCR_ACLINK_OFF;
-+	pxa_set_cken(CKEN2_AC97, 0);
++	/* check the jack status at stream startup */
++	tosa_ext_control(codec);
 +	return 0;
 +}
 +
-+static int pxa2xx_ac97_resume(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
++static struct snd_soc_ops tosa_ops = {
++	.startup = tosa_startup,
++};
++
++static int tosa_get_jack(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+#ifdef CONFIG_PXA27x
-+	/* Use GPIO 113 as AC97 Reset on Bulverde */
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+#endif
-+	pxa_set_cken(CKEN2_AC97, 1);
++	ucontrol->value.integer.value[0] = tosa_jack_func;
 +	return 0;
 +}
 +
-+#else
-+#define pxa2xx_ac97_suspend	NULL
-+#define pxa2xx_ac97_resume	NULL
-+#endif
++static int tosa_set_jack(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	tosa_jack_func = ucontrol->value.integer.value[0];
++	tosa_ext_control(codec);
++	return 0;
++}
 +
-+static int pxa2xx_ac97_probe(struct platform_device *pdev)
++static int tosa_get_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = tosa_spk_func;
++	return 0;
++}
++
++static int tosa_set_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	tosa_spk_func = ucontrol->value.integer.value[0];
++	tosa_ext_control(codec);
++	return 0;
++}
++
++/* tosa dapm event handlers */
++static int tosa_hp_event(struct snd_soc_dapm_widget *w, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
++	else
++		reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
++	return 0;
++}
++
++/* tosa machine dapm widgets */
++static const struct snd_soc_dapm_widget tosa_dapm_widgets[] = {
++SND_SOC_DAPM_HP("Headphone Jack", tosa_hp_event),
++SND_SOC_DAPM_HP("Headset Jack", NULL),
++SND_SOC_DAPM_MIC("Mic (Internal)", NULL),
++SND_SOC_DAPM_SPK("Speaker", NULL),
++};
++
++/* tosa audio map */
++static const char *audio_map[][3] = {
++
++	/* headphone connected to HPOUTL, HPOUTR */
++	{"Headphone Jack", NULL, "HPOUTL"},
++	{"Headphone Jack", NULL, "HPOUTR"},
++
++	/* ext speaker connected to LOUT2, ROUT2 */
++	{"Speaker", NULL, "LOUT2"},
++	{"Speaker", NULL, "ROUT2"},
++
++	/* internal mic is connected to mic1, mic2 differential - with bias */
++	{"MIC1", NULL, "Mic Bias"},
++	{"MIC2", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Mic (Internal)"},
++
++	/* headset is connected to HPOUTR, and LINEINR with bias */
++	{"Headset Jack", NULL, "HPOUTR"},
++	{"LINEINR", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Headset Jack"},
++
++	{NULL, NULL, NULL},
++};
++
++static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
++	"Off"};
++static const char *spk_function[] = {"On", "Off"};
++static const struct soc_enum tosa_enum[] = {
++	SOC_ENUM_SINGLE_EXT(5, jack_function),
++	SOC_ENUM_SINGLE_EXT(2, spk_function),
++};
++
++static const struct snd_kcontrol_new tosa_controls[] = {
++	SOC_ENUM_EXT("Jack Function", tosa_enum[0], tosa_get_jack,
++		tosa_set_jack),
++	SOC_ENUM_EXT("Speaker Function", tosa_enum[1], tosa_get_spk,
++		tosa_set_spk),
++};
++
++static int tosa_ac97_init(struct snd_soc_codec *codec)
++{
++	int i, err;
++
++	snd_soc_dapm_set_endpoint(codec, "OUT3", 0);
++	snd_soc_dapm_set_endpoint(codec, "MONOOUT", 0);
++
++	/* add tosa specific controls */
++	for (i = 0; i < ARRAY_SIZE(tosa_controls); i++) {
++		err = snd_ctl_add(codec->card,
++				snd_soc_cnew(&tosa_controls[i],codec, NULL));
++		if (err < 0)
++			return err;
++	}
++
++	/* add tosa specific widgets */
++	for (i = 0; i < ARRAY_SIZE(tosa_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &tosa_dapm_widgets[i]);
++	}
++
++	/* set up tosa specific audio path audio_mapnects */
++	for (i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0], audio_map[i][1],
++			audio_map[i][2]);
++	}
++
++	snd_soc_dapm_sync_endpoints(codec);
++	return 0;
++}
++
++static struct snd_soc_dai_link tosa_dai[] = {
++{
++	.name = "AC97",
++	.stream_name = "AC97 HiFi",
++	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_HIFI],
++	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_HIFI],
++	.init = tosa_ac97_init,
++},
++{
++	.name = "AC97 Aux",
++	.stream_name = "AC97 Aux",
++	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_AUX],
++	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_AUX],
++},
++};
++
++static struct snd_soc_machine tosa = {
++	.name = "Tosa",
++	.dai_link = tosa_dai,
++	.num_links = ARRAY_SIZE(tosa_dai),
++	.ops = &tosa_ops,
++};
++
++static struct snd_soc_device tosa_snd_devdata = {
++	.machine = &tosa,
++	.platform = &pxa2xx_soc_platform,
++	.codec_dev = &soc_codec_dev_wm9712,
++};
++
++static struct platform_device *tosa_snd_device;
++
++static int __init tosa_init(void)
 +{
 +	int ret;
 +
-+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
-+	if (ret < 0)
-+		goto err;
++	if (!machine_is_tosa())
++		return -ENODEV;
 +
-+	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+#ifdef CONFIG_PXA27x
-+	/* Use GPIO 113 as AC97 Reset on Bulverde */
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+#endif
-+	pxa_set_cken(CKEN2_AC97, 1);
-+	return 0;
++	tosa_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!tosa_snd_device)
++		return -ENOMEM;
 +
-+ err:
-+	if (CKEN & CKEN2_AC97) {
-+		GCR |= GCR_ACLINK_OFF;
-+		free_irq(IRQ_AC97, NULL);
-+		pxa_set_cken(CKEN2_AC97, 0);
-+	}
++	platform_set_drvdata(tosa_snd_device, &tosa_snd_devdata);
++	tosa_snd_devdata.dev = &tosa_snd_device->dev;
++	ret = platform_device_add(tosa_snd_device);
++
++	if (ret)
++		platform_device_put(tosa_snd_device);
++
 +	return ret;
 +}
 +
-+static void pxa2xx_ac97_remove(struct platform_device *pdev)
++static void __exit tosa_exit(void)
 +{
-+	GCR |= GCR_ACLINK_OFF;
-+	free_irq(IRQ_AC97, NULL);
-+	pxa_set_cken(CKEN2_AC97, 0);
++	platform_device_unregister(tosa_snd_device);
 +}
 +
-+static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++module_init(tosa_init);
++module_exit(tosa_exit);
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_out;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_in;
-+
-+	return 0;
-+}
-+
-+static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_out;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_in;
-+
-+	return 0;
-+}
-+
-+static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENODEV;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_mic_mono_in;
-+
-+	return 0;
-+}
-+
-+/*
-+ * There is only 1 physical AC97 interface for pxa2xx, but it
-+ * has extra fifo's that can be used for aux DACs and ADCs.
-+ */
-+struct snd_soc_cpu_dai pxa_ac97_dai[] = {
-+{
-+	.name = "pxa2xx-ac97",
-+	.id = 0,
-+	.type = SND_SOC_DAI_AC97,
-+	.probe = pxa2xx_ac97_probe,
-+	.remove = pxa2xx_ac97_remove,
-+	.suspend = pxa2xx_ac97_suspend,
-+	.resume = pxa2xx_ac97_resume,
-+	.playback = {
-+		.stream_name = "AC97 Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,},
-+	.capture = {
-+		.stream_name = "AC97 Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},
-+},
-+{
-+	.name = "pxa2xx-ac97-aux",
-+	.id = 1,
-+	.type = SND_SOC_DAI_AC97,
-+	.playback = {
-+		.stream_name = "AC97 Aux Playback",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.capture = {
-+		.stream_name = "AC97 Aux Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_aux_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},
-+},
-+{
-+	.name = "pxa2xx-ac97-mic",
-+	.id = 2,
-+	.type = SND_SOC_DAI_AC97,
-+	.capture = {
-+		.stream_name = "AC97 Mic Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_mic_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},},
-+};
-+
-+EXPORT_SYMBOL_GPL(pxa_ac97_dai);
-+EXPORT_SYMBOL_GPL(soc_ac97_ops);
-+
-+MODULE_AUTHOR("Nicolas Pitre");
-+MODULE_DESCRIPTION("AC97 driver for the Intel PXA2xx chip");
++/* Module information */
++MODULE_AUTHOR("Richard Purdie");
++MODULE_DESCRIPTION("ALSA SoC Tosa");
 +MODULE_LICENSE("GPL");
 
---=-c3Vi7MPcliYrpAMItdFX
+--=-C5BfsbqP0WndhJ5BwNG/
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -492,7 +331,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-c3Vi7MPcliYrpAMItdFX
+--=-C5BfsbqP0WndhJ5BwNG/
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -503,4 +342,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-c3Vi7MPcliYrpAMItdFX--
+--=-C5BfsbqP0WndhJ5BwNG/--
