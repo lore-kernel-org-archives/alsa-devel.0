@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 6/8] ASoC pxa2xx Tosa machine support
-Date: Tue, 10 Oct 2006 17:19:55 +0100
-Message-ID: <1160497195.24436.115.camel@localhost.localdomain>
+Subject: [PATCH 5/8] ASoC pxa2xx Spitz machine support
+Date: Tue, 10 Oct 2006 17:19:50 +0100
+Message-ID: <1160497190.24436.114.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-C5BfsbqP0WndhJ5BwNG/"
+Content-Type: multipart/mixed; boundary="=-6EgXAKHKvXlwjjqDUIjX"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +18,29 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-C5BfsbqP0WndhJ5BwNG/
+--=-6EgXAKHKvXlwjjqDUIjX
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds Alsa audio support to the Sharp Zaurus SL-C6000 (Tosa)
-machine. 
+This patch adds Alsa audio support to the Sharp Zaurus SL-C1000/SL-C3x00
+(Akita/Spitz) machines. 
 
 
-Signed-off-by: Dirk Opfer <Dirk@Opfer-Online.de>
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
---=-C5BfsbqP0WndhJ5BwNG/
-Content-Disposition: attachment; filename=asoc-pxa2xx-tosa.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-tosa.patch; charset=UTF-8
+--=-6EgXAKHKvXlwjjqDUIjX
+Content-Disposition: attachment; filename=asoc-pxa2xx-spitz.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-spitz.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/tosa.c
+Index: alsa-kernel/soc/pxa/spitz.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/tosa.c
-@@ -0,0 +1,279 @@
++++ alsa-kernel/soc/pxa/spitz.c
+@@ -0,0 +1,361 @@
 +/*
-+ * tosa.c  --  SoC audio for Tosa
++ * spitz.c  --  SoC audio for Sharp SL-Cxx00 models Spitz, Borzoi and Akita
 + *
 + * Copyright 2005 Wolfson Microelectronics PLC.
 + * Copyright 2005 Openedhand Ltd.
@@ -57,16 +56,13 @@ Index: alsa-kernel/soc/pxa/tosa.c
 + *  Revision history
 + *    30th Nov 2005   Initial version.
 + *
-+ * GPIO's
-+ *  1 - Jack Insertion
-+ *  5 - Hookswitch (headset answer/hang up switch)
-+ *
 + */
 +
 +#include <linux/module.h>
 +#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
@@ -74,138 +70,183 @@ Index: alsa-kernel/soc/pxa/tosa.c
 +#include <sound/soc-dapm.h>
 +
 +#include <asm/mach-types.h>
-+#include <asm/hardware/tmio.h>
++#include <asm/hardware/scoop.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/hardware.h>
-+#include <asm/arch/audio.h>
-+#include <asm/arch/tosa.h>
-+
-+#include "../codecs/wm9712.h"
++#include <asm/arch/akita.h>
++#include <asm/arch/spitz.h>
++#include <asm/mach-types.h>
++#include "../codecs/wm8750.h"
 +#include "pxa2xx-pcm.h"
 +
-+static struct snd_soc_machine tosa;
++#define SPITZ_HP        0
++#define SPITZ_MIC       1
++#define SPITZ_LINE      2
++#define SPITZ_HEADSET   3
++#define SPITZ_HP_OFF    4
++#define SPITZ_SPK_ON    0
++#define SPITZ_SPK_OFF   1
 +
-+#define TOSA_HP        0
-+#define TOSA_MIC_INT   1
-+#define TOSA_HEADSET   2
-+#define TOSA_HP_OFF    3
-+#define TOSA_SPK_ON    0
-+#define TOSA_SPK_OFF   1
++ /* audio clock in Hz - rounded from 12.235MHz */
++#define SPITZ_AUDIO_CLOCK 12288000
 +
-+static int tosa_jack_func;
-+static int tosa_spk_func;
++static int spitz_jack_func = 0;
++static int spitz_spk_func = 0;
 +
-+static void tosa_ext_control(struct snd_soc_codec *codec)
++static void spitz_ext_control(struct snd_soc_codec *codec)
 +{
-+	int spk = 0, mic_int = 0, hp = 0, hs = 0;
++	if (spitz_spk_func == SPITZ_SPK_ON)
++		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 1);
++	else
++		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 0);
 +
 +	/* set up jack connection */
-+	switch (tosa_jack_func) {
-+	case TOSA_HP:
-+		hp = 1;
++	switch (spitz_jack_func) {
++	case SPITZ_HP:
++		/* enable and unmute hp jack, disable mic bias */
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
 +		break;
-+	case TOSA_MIC_INT:
-+		mic_int = 1;
++	case SPITZ_MIC:
++		/* enable mic jack and bias, mute hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
 +		break;
-+	case TOSA_HEADSET:
-+		hs = 1;
++	case SPITZ_LINE:
++		/* enable line jack, disable mic bias and mute hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_HEADSET:
++		/* enable and unmute headset jack enable mic bias, mute L hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_HP_OFF:
++
++		/* jack removed, everything off */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
 +		break;
 +	}
-+
-+	if (tosa_spk_func == TOSA_SPK_ON)
-+		spk = 1;
-+
-+	snd_soc_dapm_set_endpoint(codec, "Speaker", spk);
-+	snd_soc_dapm_set_endpoint(codec, "Mic (Internal)", mic_int);
-+	snd_soc_dapm_set_endpoint(codec, "Headphone Jack", hp);
-+	snd_soc_dapm_set_endpoint(codec, "Headset Jack", hs);
 +	snd_soc_dapm_sync_endpoints(codec);
 +}
 +
-+static int tosa_startup(struct snd_pcm_substream *substream)
++static int spitz_startup(struct snd_pcm_substream *substream)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_codec *codec = rtd->socdev->codec;
 +
 +	/* check the jack status at stream startup */
-+	tosa_ext_control(codec);
++	spitz_ext_control(codec);
 +	return 0;
 +}
 +
-+static struct snd_soc_ops tosa_ops = {
-+	.startup = tosa_startup,
++static struct snd_soc_ops spitz_ops = {
++	.startup = spitz_startup,
 +};
 +
-+static int tosa_get_jack(struct snd_kcontrol *kcontrol,
++static int spitz_get_jack(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	ucontrol->value.integer.value[0] = tosa_jack_func;
++	ucontrol->value.integer.value[0] = spitz_jack_func;
 +	return 0;
 +}
 +
-+static int tosa_set_jack(struct snd_kcontrol *kcontrol,
++static int spitz_set_jack(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	spitz_jack_func = ucontrol->value.integer.value[0];
++	spitz_ext_control(codec);
++	return 0;
++}
++
++static int spitz_get_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = spitz_spk_func;
++	return 0;
++}
++
++static int spitz_set_spk(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	tosa_jack_func = ucontrol->value.integer.value[0];
-+	tosa_ext_control(codec);
++	spitz_spk_func = ucontrol->value.integer.value[0];
++	spitz_ext_control(codec);
 +	return 0;
 +}
 +
-+static int tosa_get_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int spitz_mic_bias(struct snd_soc_dapm_widget *w, int event)
 +{
-+	ucontrol->value.integer.value[0] = tosa_spk_func;
++	if (machine_is_borzoi() || machine_is_spitz()) {
++		if (SND_SOC_DAPM_EVENT_ON(event))
++			set_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
++		else
++			reset_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
++	}
++
++	if (machine_is_akita()){
++		if (SND_SOC_DAPM_EVENT_ON(event))
++			akita_set_ioexp(&akitaioexp_device.dev, AKITA_IOEXP_MIC_BIAS);
++		else
++			akita_reset_ioexp(&akitaioexp_device.dev, AKITA_IOEXP_MIC_BIAS);
++	}
 +	return 0;
 +}
 +
-+static int tosa_set_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	tosa_spk_func = ucontrol->value.integer.value[0];
-+	tosa_ext_control(codec);
-+	return 0;
-+}
++/* spitz machine dapm widgets */
++static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", spitz_mic_bias),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_LINE("Line Jack", NULL),
 +
-+/* tosa dapm event handlers */
-+static int tosa_hp_event(struct snd_soc_dapm_widget *w, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
-+	else
-+		reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
-+	return 0;
-+}
-+
-+/* tosa machine dapm widgets */
-+static const struct snd_soc_dapm_widget tosa_dapm_widgets[] = {
-+SND_SOC_DAPM_HP("Headphone Jack", tosa_hp_event),
-+SND_SOC_DAPM_HP("Headset Jack", NULL),
-+SND_SOC_DAPM_MIC("Mic (Internal)", NULL),
-+SND_SOC_DAPM_SPK("Speaker", NULL),
++	/* headset is a mic and mono headphone */
++	SND_SOC_DAPM_HP("Headset Jack", NULL),
 +};
 +
-+/* tosa audio map */
++/* Spitz machine audio_map */
 +static const char *audio_map[][3] = {
 +
-+	/* headphone connected to HPOUTL, HPOUTR */
-+	{"Headphone Jack", NULL, "HPOUTL"},
-+	{"Headphone Jack", NULL, "HPOUTR"},
++	/* headphone connected to LOUT1, ROUT1 */
++	{"Headphone Jack", NULL, "LOUT1"},
++	{"Headphone Jack", NULL, "ROUT1"},
 +
-+	/* ext speaker connected to LOUT2, ROUT2 */
-+	{"Speaker", NULL, "LOUT2"},
-+	{"Speaker", NULL, "ROUT2"},
++	/* headset connected to ROUT1 and LINPUT1 with bias (def below) */
++	{"Headset Jack", NULL, "ROUT1"},
 +
-+	/* internal mic is connected to mic1, mic2 differential - with bias */
-+	{"MIC1", NULL, "Mic Bias"},
-+	{"MIC2", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Mic (Internal)"},
++	/* ext speaker connected to LOUT2, ROUT2  */
++	{"Ext Spk", NULL , "ROUT2"},
++	{"Ext Spk", NULL , "LOUT2"},
 +
-+	/* headset is connected to HPOUTR, and LINEINR with bias */
-+	{"Headset Jack", NULL, "HPOUTR"},
-+	{"LINEINR", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Headset Jack"},
++	/* mic is connected to input 1 - with bias */
++	{"LINPUT1", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Mic Jack"},
++
++	/* line is connected to input 1 - no bias */
++	{"LINPUT1", NULL, "Line Jack"},
 +
 +	{NULL, NULL, NULL},
 +};
@@ -213,39 +254,48 @@ Index: alsa-kernel/soc/pxa/tosa.c
 +static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
 +	"Off"};
 +static const char *spk_function[] = {"On", "Off"};
-+static const struct soc_enum tosa_enum[] = {
++static const struct soc_enum spitz_enum[] = {
 +	SOC_ENUM_SINGLE_EXT(5, jack_function),
 +	SOC_ENUM_SINGLE_EXT(2, spk_function),
 +};
 +
-+static const struct snd_kcontrol_new tosa_controls[] = {
-+	SOC_ENUM_EXT("Jack Function", tosa_enum[0], tosa_get_jack,
-+		tosa_set_jack),
-+	SOC_ENUM_EXT("Speaker Function", tosa_enum[1], tosa_get_spk,
-+		tosa_set_spk),
++static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
++	SOC_ENUM_EXT("Jack Function", spitz_enum[0], spitz_get_jack,
++		spitz_set_jack),
++	SOC_ENUM_EXT("Speaker Function", spitz_enum[1], spitz_get_spk,
++		spitz_set_spk),
 +};
 +
-+static int tosa_ac97_init(struct snd_soc_codec *codec)
++/*
++ * Logic for a wm8750 as connected on a Sharp SL-Cxx00 Device
++ */
++static int spitz_wm8750_init(struct snd_soc_codec *codec)
 +{
 +	int i, err;
 +
++	/* NC codec pins */
++	snd_soc_dapm_set_endpoint(codec, "RINPUT1", 0);
++	snd_soc_dapm_set_endpoint(codec, "LINPUT2", 0);
++	snd_soc_dapm_set_endpoint(codec, "RINPUT2", 0);
++	snd_soc_dapm_set_endpoint(codec, "LINPUT3", 0);
++	snd_soc_dapm_set_endpoint(codec, "RINPUT3", 0);
 +	snd_soc_dapm_set_endpoint(codec, "OUT3", 0);
-+	snd_soc_dapm_set_endpoint(codec, "MONOOUT", 0);
++	snd_soc_dapm_set_endpoint(codec, "MONO", 0);
 +
-+	/* add tosa specific controls */
-+	for (i = 0; i < ARRAY_SIZE(tosa_controls); i++) {
++	/* Add spitz specific controls */
++	for (i = 0; i < ARRAY_SIZE(wm8750_spitz_controls); i++) {
 +		err = snd_ctl_add(codec->card,
-+				snd_soc_cnew(&tosa_controls[i],codec, NULL));
++				snd_soc_cnew(&wm8750_spitz_controls[i], codec, NULL));
 +		if (err < 0)
 +			return err;
 +	}
 +
-+	/* add tosa specific widgets */
-+	for (i = 0; i < ARRAY_SIZE(tosa_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &tosa_dapm_widgets[i]);
++	/* Add spitz specific widgets */
++	for (i = 0; i < ARRAY_SIZE(wm8750_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &wm8750_dapm_widgets[i]);
 +	}
 +
-+	/* set up tosa specific audio path audio_mapnects */
++	/* Set up spitz specific audio path audio_mapnects */
 +	for (i = 0; audio_map[i][0] != NULL; i++) {
 +		snd_soc_dapm_connect_input(codec, audio_map[i][0], audio_map[i][1],
 +			audio_map[i][2]);
@@ -255,72 +305,103 @@ Index: alsa-kernel/soc/pxa/tosa.c
 +	return 0;
 +}
 +
-+static struct snd_soc_dai_link tosa_dai[] = {
++unsigned int spitz_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++	struct snd_soc_clock_info *info)
 +{
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_HIFI],
-+	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_HIFI],
-+	.init = tosa_ac97_init,
-+},
-+{
-+	.name = "AC97 Aux",
-+	.stream_name = "AC97 Aux",
-+	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_AUX],
-+	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_AUX],
-+},
++	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
++		/* pxa2xx is i2s master  */
++		switch (info->rate) {
++			case 11025:
++			case 22050:
++			case 44100:
++			case 88200:
++				/* configure codec digital filters
++				 * for 11.025, 22.05, 44.1, 88.2 */
++				rtd->codec_dai->config_sysclk(rtd->codec_dai, info, 11289600);
++			break;
++			default:
++				/* configure codec digital filters for all other rates */
++				rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
++					SPITZ_AUDIO_CLOCK);
++			break;
++		}
++		/* configure pxa2xx i2s interface clocks as master */
++		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
++			SPITZ_AUDIO_CLOCK);
++	} else {
++		/* codec is i2s master - only configure codec DAI clock */
++		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
++			SPITZ_AUDIO_CLOCK);
++	}
++}
++
++/* spitz digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link spitz_dai = {
++	.name = "wm8750",
++	.stream_name = "WM8750",
++	.cpu_dai = &pxa_i2s_dai,
++	.codec_dai = &wm8750_dai,
++	.init = spitz_wm8750_init,
++	.config_sysclk = spitz_config_sysclk,
 +};
 +
-+static struct snd_soc_machine tosa = {
-+	.name = "Tosa",
-+	.dai_link = tosa_dai,
-+	.num_links = ARRAY_SIZE(tosa_dai),
-+	.ops = &tosa_ops,
++/* spitz audio machine driver */
++static struct snd_soc_machine snd_soc_machine_spitz = {
++	.name = "Spitz",
++	.dai_link = &spitz_dai,
++	.num_links = 1,
++	.ops = &spitz_ops,
 +};
 +
-+static struct snd_soc_device tosa_snd_devdata = {
-+	.machine = &tosa,
++/* spitz audio private data */
++static struct wm8750_setup_data spitz_wm8750_setup = {
++	.i2c_address = 0x1b,
++};
++
++/* spitz audio subsystem */
++static struct snd_soc_device spitz_snd_devdata = {
++	.machine = &snd_soc_machine_spitz,
 +	.platform = &pxa2xx_soc_platform,
-+	.codec_dev = &soc_codec_dev_wm9712,
++	.codec_dev = &soc_codec_dev_wm8750,
++	.codec_data = &spitz_wm8750_setup,
 +};
 +
-+static struct platform_device *tosa_snd_device;
++static struct platform_device *spitz_snd_device;
 +
-+static int __init tosa_init(void)
++static int __init spitz_init(void)
 +{
 +	int ret;
 +
-+	if (!machine_is_tosa())
++	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
 +		return -ENODEV;
 +
-+	tosa_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!tosa_snd_device)
++	spitz_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!spitz_snd_device)
 +		return -ENOMEM;
 +
-+	platform_set_drvdata(tosa_snd_device, &tosa_snd_devdata);
-+	tosa_snd_devdata.dev = &tosa_snd_device->dev;
-+	ret = platform_device_add(tosa_snd_device);
++	platform_set_drvdata(spitz_snd_device, &spitz_snd_devdata);
++	spitz_snd_devdata.dev = &spitz_snd_device->dev;
++	ret = platform_device_add(spitz_snd_device);
 +
 +	if (ret)
-+		platform_device_put(tosa_snd_device);
++		platform_device_put(spitz_snd_device);
 +
 +	return ret;
 +}
 +
-+static void __exit tosa_exit(void)
++static void __exit spitz_exit(void)
 +{
-+	platform_device_unregister(tosa_snd_device);
++	platform_device_unregister(spitz_snd_device);
 +}
 +
-+module_init(tosa_init);
-+module_exit(tosa_exit);
++module_init(spitz_init);
++module_exit(spitz_exit);
 +
-+/* Module information */
 +MODULE_AUTHOR("Richard Purdie");
-+MODULE_DESCRIPTION("ALSA SoC Tosa");
++MODULE_DESCRIPTION("ALSA SoC Spitz");
 +MODULE_LICENSE("GPL");
 
---=-C5BfsbqP0WndhJ5BwNG/
+--=-6EgXAKHKvXlwjjqDUIjX
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -331,7 +412,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-C5BfsbqP0WndhJ5BwNG/
+--=-6EgXAKHKvXlwjjqDUIjX
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -342,4 +423,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-C5BfsbqP0WndhJ5BwNG/--
+--=-6EgXAKHKvXlwjjqDUIjX--
