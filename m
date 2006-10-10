@@ -1,15 +1,20 @@
-From: Remy Bruno <remy.bruno@trinnov.com>
-Subject: Re: Issue with Intel HDA Sound card 82801G (laptop
-	Medion)
-Date: Tue, 10 Oct 2006 20:09:44 +0200
-Message-ID: <20061010180944.GA32060@trinnov.com>
-References: <1160502498.452bdce24d797@imp4-g19.free.fr>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: RFC: provide a device name list for applications
+Date: Tue, 10 Oct 2006 20:14:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610102008420.9410@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0610101530410.9410@tm8103.perex-int.cz>
+	<s5hodskm8t7.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0610101948490.9410@tm8103.perex-int.cz>
+	<s5h3b9wm4d6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1160502498.452bdce24d797@imp4-g19.free.fr>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8982C189
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Oct 2006 20:14:07 +0200 (MEST)
+In-Reply-To: <s5h3b9wm4d6.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,29 +24,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: albox@free.fr
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 10 October at 19:48, albox@free.fr wrote:
-> I have just tried and it works...I guess the only thing to do now is to figure
-> it out what's the difference between this patched version and the alsa driver
-> 1.0.13.
+On Tue, 10 Oct 2006, Takashi Iwai wrote:
 
-Yes, that's exactly the point! But not a small one. There are big difference
-between the two. I think Tobin is working on this.
-
+> At Tue, 10 Oct 2006 19:59:09 +0200 (CEST),
+> Jaroslav Kysela wrote:
+> > 
+> > On Tue, 10 Oct 2006, Takashi Iwai wrote:
+> > 
+> > > At Tue, 10 Oct 2006 15:45:54 +0200 (CEST),
+> > > Jaroslav Kysela wrote:
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > 	here is my proposal to provide (a long waited feature) a device 
+> > > > name list for applications (especially for GUI). The work is not finished, 
+> > > > but the patch bellow gives already useful hints like (for PCM devices):
+> > > > 
+> > > > hw:CARD=Intel,DEV=0
+> > > > hw:CARD=Intel,DEV=1
+> > > > hw:CARD=Intel,DEV=2
+> > > > hw:CARD=Intel,DEV=6
+> > > > plughw:CARD=Intel,DEV=0
+> > > > plughw:CARD=Intel,DEV=1
+> > > > plughw:CARD=Intel,DEV=2
+> > > > plughw:CARD=Intel,DEV=6
+> > > > plug
+> > > > shm
+> > > > tee
+> > > > file
+> > > > null
+> > > 
+> > > Hm...  I don't think it's a good idea to pass the device like
+> > > "hw:xxx"  to applications.  The hw access doesn't work for most of
+> > > apps except for a special one like JACK.  Even plughw isn't enough,
+> > > e.g. for SPDIF access.
+> > > 
+> > > In other words, it's rather harmful to pass all available configs.
+> > > The apps need only limited configs that they can use safely,
+> > > preferably with a certain description text for each.
+> > > 
+> > > I think we'd need some flags to indicate "this config is OK for
+> > > enumeration".  For example, add 'export' option in each exported
+> > > config definition together with 'description "xxxx"' 
+> > > (or 'export "xxxx"' indicates that it's exported with a description
+> > > xxxx).  For the hardware devices, we can retrieve the information from
+> > > the driver.  For a virtual device, the description should be given
+> > > manually.
+> > 
+> > Yes, the policies should be discussed. I already proposed to have 
+> > a "disable hint" tag in the configuration files, so we can avoid
+> > to put specific definitions to the hint list.
+> > 
+> > But the major idea is to provide list of all device definitions including 
+> > user specific ones by default.
 > 
-> And as I said, don't forget to "modprobe -r" the driver before suspending to
-> disk, or the kernel will crash.
-> => What type of message did you get ? Do you know how we can avoid this problem
-> (a  shell script to remove the module before suspending ?).
+> Well, my opinion is that providing "all" devices is wrong.  Instead, 
+> only approved devices should be listed.
+> 
+> For example, what would be a merit to list "hw:x", "plughw:x" and
+> "default:x" (this can be renamed) at the same time?  When multiple
+> items appear on a list, user shall choose wrong ones in a pretty high
+> probability according to Murphy's law.
 
-I get an oops... Indeed, it is possible to make a script, but you need to kill
-all the processes that use alsa before modprobing -r...
+I am not against to disable the hw: and plughw: listing, but my opinion is 
+if user adds an extra configuration to ~/.asoundrc, it might be expected 
+to use (and see) this configuration.
 
-Regards,
-Remy
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
