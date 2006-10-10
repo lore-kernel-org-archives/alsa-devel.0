@@ -1,12 +1,18 @@
-From: albox@free.fr
-Subject: Re: Issue with Intel HDA Sound card 82801G (laptop
-	Medion)
-Date: Tue, 10 Oct 2006 19:48:18 +0200
-Message-ID: <1160502498.452bdce24d797@imp4-g19.free.fr>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: RFC: provide a device name list for applications
+Date: Tue, 10 Oct 2006 19:59:09 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610101948490.9410@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0610101530410.9410@tm8103.perex-int.cz>
+	<s5hodskm8t7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D2B6189
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Oct 2006 19:59:10 +0200 (MEST)
+In-Reply-To: <s5hodskm8t7.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,22 +22,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: remy.bruno@trinnov.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have just tried and it works...I guess the only thing to do now is to figure
-it out what's the difference between this patched version and the alsa driver
-1.0.13.
+On Tue, 10 Oct 2006, Takashi Iwai wrote:
 
-And as I said, don't forget to "modprobe -r" the driver before suspending to
-disk, or the kernel will crash.
-=> What type of message did you get ? Do you know how we can avoid this problem
-(a  shell script to remove the module before suspending ?).
+> At Tue, 10 Oct 2006 15:45:54 +0200 (CEST),
+> Jaroslav Kysela wrote:
+> > 
+> > Hi,
+> > 
+> > 	here is my proposal to provide (a long waited feature) a device 
+> > name list for applications (especially for GUI). The work is not finished, 
+> > but the patch bellow gives already useful hints like (for PCM devices):
+> > 
+> > hw:CARD=Intel,DEV=0
+> > hw:CARD=Intel,DEV=1
+> > hw:CARD=Intel,DEV=2
+> > hw:CARD=Intel,DEV=6
+> > plughw:CARD=Intel,DEV=0
+> > plughw:CARD=Intel,DEV=1
+> > plughw:CARD=Intel,DEV=2
+> > plughw:CARD=Intel,DEV=6
+> > plug
+> > shm
+> > tee
+> > file
+> > null
+> 
+> Hm...  I don't think it's a good idea to pass the device like
+> "hw:xxx"  to applications.  The hw access doesn't work for most of
+> apps except for a special one like JACK.  Even plughw isn't enough,
+> e.g. for SPDIF access.
+> 
+> In other words, it's rather harmful to pass all available configs.
+> The apps need only limited configs that they can use safely,
+> preferably with a certain description text for each.
+> 
+> I think we'd need some flags to indicate "this config is OK for
+> enumeration".  For example, add 'export' option in each exported
+> config definition together with 'description "xxxx"' 
+> (or 'export "xxxx"' indicates that it's exported with a description
+> xxxx).  For the hardware devices, we can retrieve the information from
+> the driver.  For a virtual device, the description should be given
+> manually.
 
-Thanks
+Yes, the policies should be discussed. I already proposed to have 
+a "disable hint" tag in the configuration files, so we can avoid
+to put specific definitions to the hint list.
 
-Al
+But the major idea is to provide list of all device definitions including 
+user specific ones by default.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
