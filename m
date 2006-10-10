@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 7/8] ASoC pxa2xx Poodle machine support
-Date: Tue, 10 Oct 2006 17:20:03 +0100
-Message-ID: <1160497203.24436.116.camel@localhost.localdomain>
+Subject: [PATCH 8/8] ASoC pxa2xx build support
+Date: Tue, 10 Oct 2006 17:20:19 +0100
+Message-ID: <1160497219.24436.117.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-YLCeqQNavQQXSVKc+sQF"
+Content-Type: multipart/mixed; boundary="=-Fw9nW9WRTdxFQsFbMtd9"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,351 +18,136 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-YLCeqQNavQQXSVKc+sQF
+--=-Fw9nW9WRTdxFQsFbMtd9
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds Alsa audio support to the Sharp Zaurus SL-C5600 (Poodle)
-machine. 
+This patch builds ASoC pxa2xx support for Corgi, Spitz, Tosa and Poodle
+Zaurus machines.
 
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
-
---=-YLCeqQNavQQXSVKc+sQF
-Content-Disposition: attachment; filename=asoc-pxa2xx-poodle.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-poodle.patch; charset=UTF-8
+--=-Fw9nW9WRTdxFQsFbMtd9
+Content-Disposition: attachment; filename=asoc-pxa2xx-build.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-build.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/poodle.c
+Index: alsa-kernel/soc/pxa/Kconfig
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/poodle.c
-@@ -0,0 +1,321 @@
-+/*
-+ * poodle.c  --  SoC audio for Poodle
-+ *
-+ * Copyright 2005 Wolfson Microelectronics PLC.
-+ * Copyright 2005 Openedhand Ltd.
-+ *
-+ * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ *          Richard Purdie <richard@openedhand.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
++++ alsa-kernel/soc/pxa/Kconfig
+@@ -0,0 +1,60 @@
++menu "SoC Audio for the Intel PXA2xx"
 +
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
++config SND_PXA2xx_SOC
++	tristate "SoC Audio for the Intel PXA2xx chip"
++	depends on ARCH_PXA && SND
++	select SND_PCM
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the PXA2xx AC97, I2S or SSP interface. You will also need
++	  to select the audio interfaces to support below.
 +
-+#include <asm/mach-types.h>
-+#include <asm/hardware/locomo.h>
-+#include <asm/arch/pxa-regs.h>
-+#include <asm/arch/hardware.h>
-+#include <asm/arch/poodle.h>
-+#include <asm/arch/audio.h>
++config SND_PXA2xx_AC97
++	tristate
++	select SND_AC97_CODEC
 +
-+#include "../codecs/wm8731.h"
-+#include "pxa2xx-pcm.h"
++config SND_PXA2xx_SOC_AC97
++	tristate
++	select SND_AC97_BUS
++	select SND_SOC_AC97_BUS
 +
-+#define POODLE_HP        1
-+#define POODLE_HP_OFF    0
-+#define POODLE_SPK_ON    1
-+#define POODLE_SPK_OFF   0
++config SND_PXA2xx_SOC_I2S
++	tristate
 +
-+ /* audio clock in Hz - rounded from 12.235MHz */
-+#define POODLE_AUDIO_CLOCK 12288000
++config SND_PXA2xx_SOC_CORGI
++	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
++	depends on SND_PXA2xx_SOC && PXA_SHARP_C7xx
++	select SND_PXA2xx_SOC_I2S
++	select SND_SOC_WM8731
++	help
++	  Say Y if you want to add support for SoC audio on Sharp
++	  Zaurus SL-C7x0 models (Corgi, Shepherd, Husky).
 +
-+static int poodle_jack_func = 0;
-+static int poodle_spk_func = 0;
++config SND_PXA2xx_SOC_SPITZ
++	tristate "SoC Audio support for Sharp Zaurus SL-Cxx00"
++	depends on SND_PXA2xx_SOC && PXA_SHARP_Cxx00
++	select SND_PXA2xx_SOC_I2S
++	select SND_SOC_WM8750
++	help
++	  Say Y if you want to add support for SoC audio on Sharp
++	  Zaurus SL-Cxx00 models (Spitz, Borzoi and Akita).
 +
-+static void poodle_ext_control(struct snd_soc_codec *codec)
-+{
-+	int spk = 0;
++config SND_PXA2xx_SOC_POODLE
++	tristate "SoC Audio support for Poodle"
++	depends on SND_PXA2xx_SOC && MACH_POODLE
++	select SND_PXA2xx_SOC_I2S
++	select SND_SOC_WM8731
++	help
++	  Say Y if you want to add support for SoC audio on Sharp
++	  Zaurus SL-5600 model (Poodle).
 +
-+	/* set up jack connection */
-+	if (poodle_jack_func == POODLE_HP) {
-+		/* set = unmute headphone */
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_MUTE_L, 1);
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_MUTE_R, 1);
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
-+	} else {
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_MUTE_L, 0);
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_MUTE_R, 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
-+	}
++config SND_PXA2xx_SOC_TOSA
++	tristate "SoC AC97 Audio support for Tosa"
++	depends on SND_PXA2xx_SOC && MACH_TOSA
++	select SND_PXA2xx_SOC_AC97
++	select SND_SOC_WM9712
++	help
++	  Say Y if you want to add support for SoC audio on Sharp
++	  Zaurus SL-C6000x models (Tosa).
 +
-+	if (poodle_spk_func == POODLE_SPK_ON)
-+		spk = 1;
++endmenu
+Index: alsa-kernel/soc/pxa/Makefile
+===================================================================
+--- /dev/null
++++ alsa-kernel/soc/pxa/Makefile
+@@ -0,0 +1,20 @@
++# PXA Platform Support
++snd-soc-pxa2xx-objs := pxa2xx-pcm.o
++snd-soc-pxa2xx-ac97-objs := pxa2xx-ac97.o
++snd-soc-pxa2xx-i2s-objs := pxa2xx-i2s.o
 +
-+	/* set the enpoints to their new connetion states */
-+	snd_soc_dapm_set_endpoint(codec, "Ext Spk", spk);
++obj-$(CONFIG_SND_PXA2xx_SOC) += snd-soc-pxa2xx.o
++obj-$(CONFIG_SND_PXA2xx_SOC_AC97) += snd-soc-pxa2xx-ac97.o
++obj-$(CONFIG_SND_PXA2xx_SOC_I2S) += snd-soc-pxa2xx-i2s.o
 +
-+	/* signal a DAPM event */
-+	snd_soc_dapm_sync_endpoints(codec);
-+}
++# PXA Machine Support
++snd-soc-corgi-objs := corgi.o
++snd-soc-poodle-objs := poodle.o
++snd-soc-tosa-objs := tosa.o
++snd-soc-spitz-objs := spitz.o
 +
-+static int poodle_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->socdev->codec;
++obj-$(CONFIG_SND_PXA2xx_SOC_CORGI) += snd-soc-corgi.o
++obj-$(CONFIG_SND_PXA2xx_SOC_POODLE) += snd-soc-poodle.o
++obj-$(CONFIG_SND_PXA2xx_SOC_TOSA) += snd-soc-tosa.o
++obj-$(CONFIG_SND_PXA2xx_SOC_SPITZ) += snd-soc-spitz.o
 +
-+	/* check the jack status at stream startup */
-+	poodle_ext_control(codec);
-+	return 0;
-+}
-+
-+/* we need to unmute the HP at shutdown as the mute burns power on poodle */
-+static int poodle_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->socdev->codec;
-+
-+	/* set = unmute headphone */
-+	locomo_gpio_write(&poodle_locomo_device.dev,
-+		POODLE_LOCOMO_GPIO_MUTE_L, 1);
-+	locomo_gpio_write(&poodle_locomo_device.dev,
-+		POODLE_LOCOMO_GPIO_MUTE_R, 1);
-+	return 0;
-+}
-+
-+static struct snd_soc_ops poodle_ops = {
-+	.startup = poodle_startup,
-+	.shutdown = poodle_shutdown,
-+};
-+
-+static int poodle_get_jack(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = poodle_jack_func;
-+	return 0;
-+}
-+
-+static int poodle_set_jack(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	poodle_jack_func = ucontrol->value.integer.value[0];
-+
-+	poodle_ext_control(codec);
-+	return 0;
-+}
-+
-+static int poodle_get_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = poodle_spk_func;
-+	return 0;
-+}
-+
-+static int poodle_set_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	poodle_spk_func = ucontrol->value.integer.value[0];
-+
-+	poodle_ext_control(codec);
-+	return 0;
-+}
-+
-+static int poodle_amp_event(struct snd_soc_dapm_widget *w, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_AMP_ON, 0);
-+	else
-+		locomo_gpio_write(&poodle_locomo_device.dev,
-+			POODLE_LOCOMO_GPIO_AMP_ON, 1);
-+
-+	return 0;
-+}
-+
-+/* poodle machine dapm widgets */
-+static const struct snd_soc_dapm_widget wm8731_dapm_widgets[] = {
-+SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+SND_SOC_DAPM_SPK("Ext Spk", poodle_amp_event),
-+};
-+
-+/* Corgi machine audio_mapnections to the codec pins */
-+static const char *audio_map[][3] = {
-+
-+	/* headphone connected to LHPOUT1, RHPOUT1 */
-+	{"Headphone Jack", NULL, "LHPOUT"},
-+	{"Headphone Jack", NULL, "RHPOUT"},
-+
-+	/* speaker connected to LOUT, ROUT */
-+	{"Ext Spk", NULL, "ROUT"},
-+	{"Ext Spk", NULL, "LOUT"},
-+
-+	{NULL, NULL, NULL},
-+};
-+
-+static const char *jack_function[] = {"Off", "Headphone"};
-+static const char *spk_function[] = {"Off", "On"};
-+static const struct soc_enum poodle_enum[] = {
-+	SOC_ENUM_SINGLE_EXT(2, jack_function),
-+	SOC_ENUM_SINGLE_EXT(2, spk_function),
-+};
-+
-+static const snd_kcontrol_new_t wm8731_poodle_controls[] = {
-+	SOC_ENUM_EXT("Jack Function", poodle_enum[0], poodle_get_jack,
-+		poodle_set_jack),
-+	SOC_ENUM_EXT("Speaker Function", poodle_enum[1], poodle_get_spk,
-+		poodle_set_spk),
-+};
-+
-+/*
-+ * Logic for a wm8731 as connected on a Sharp SL-C7x0 Device
-+ */
-+static int poodle_wm8731_init(struct snd_soc_codec *codec)
-+{
-+	int i, err;
-+
-+	snd_soc_dapm_set_endpoint(codec, "LLINEIN", 0);
-+	snd_soc_dapm_set_endpoint(codec, "RLINEIN", 0);
-+	snd_soc_dapm_set_endpoint(codec, "MICIN", 1);
-+
-+	/* Add poodle specific controls */
-+	for (i = 0; i < ARRAY_SIZE(wm8731_poodle_controls); i++) {
-+		err = snd_ctl_add(codec->card,
-+				snd_soc_cnew(&wm8731_poodle_controls[i],codec, NULL));
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	/* Add poodle specific widgets */
-+	for (i = 0; i < ARRAY_SIZE(wm8731_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &wm8731_dapm_widgets[i]);
-+	}
-+
-+	/* Set up poodle specific audio path audio_mapnects */
-+	for (i = 0; audio_map[i][0] != NULL; i++) {
-+		snd_soc_dapm_connect_input(codec, audio_map[i][0],
-+			audio_map[i][1], audio_map[i][2]);
-+	}
-+
-+	snd_soc_dapm_sync_endpoints(codec);
-+	return 0;
-+}
-+
-+unsigned int poodle_config_sysclk(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_soc_clock_info *info)
-+{
-+	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
-+		/* pxa2xx is i2s master  */
-+		switch (info->rate) {
-+			case 44100:
-+			case 88200:
-+				/* configure codec digital filters for 44.1, 88.2 */
-+				rtd->codec_dai->config_sysclk(rtd->codec_dai, info, 11289600);
-+			break;
-+			default:
-+				/* configure codec digital filters for all other rates */
-+				rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+					POODLE_AUDIO_CLOCK);
-+			break;
-+		}
-+		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
-+			POODLE_AUDIO_CLOCK);
-+	} else {
-+		/* codec is i2s master - only configure codec DAI clock and filters */
-+		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+			POODLE_AUDIO_CLOCK);
-+	}
-+}
-+
-+/* poodle digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link poodle_dai = {
-+	.name = "WM8731",
-+	.stream_name = "WM8731",
-+	.cpu_dai = &pxa_i2s_dai,
-+	.codec_dai = &wm8731_dai,
-+	.init = poodle_wm8731_init,
-+	.config_sysclk = poodle_config_sysclk,
-+};
-+
-+/* poodle audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_poodle = {
-+	.name = "Poodle",
-+	.dai_link = &poodle_dai,
-+	.num_links = 1,
-+	.ops = &poodle_ops,
-+};
-+
-+/* poodle audio private data */
-+static struct wm8731_setup_data poodle_wm8731_setup = {
-+	.i2c_address = 0x1b,
-+};
-+
-+/* poodle audio subsystem */
-+static struct snd_soc_device poodle_snd_devdata = {
-+	.machine = &snd_soc_machine_poodle,
-+	.platform = &pxa2xx_soc_platform,
-+	.codec_dev = &soc_codec_dev_wm8731,
-+	.codec_data = &poodle_wm8731_setup,
-+};
-+
-+static struct platform_device *poodle_snd_device;
-+
-+static int __init poodle_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_poodle())
-+		return -ENODEV;
-+
-+	locomo_gpio_set_dir(&poodle_locomo_device.dev,
-+		POODLE_LOCOMO_GPIO_AMP_ON, 0);
-+	/* should we mute HP at startup - burning power ?*/
-+	locomo_gpio_set_dir(&poodle_locomo_device.dev,
-+		POODLE_LOCOMO_GPIO_MUTE_L, 0);
-+	locomo_gpio_set_dir(&poodle_locomo_device.dev,
-+		POODLE_LOCOMO_GPIO_MUTE_R, 0);
-+
-+	poodle_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!poodle_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(poodle_snd_device, &poodle_snd_devdata);
-+	poodle_snd_devdata.dev = &poodle_snd_device->dev;
-+	ret = platform_device_add(poodle_snd_device);
-+
-+	if (ret)
-+		platform_device_put(poodle_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit poodle_exit(void)
-+{
-+	platform_device_unregister(poodle_snd_device);
-+}
-+
-+module_init(poodle_init);
-+module_exit(poodle_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Richard Purdie");
-+MODULE_DESCRIPTION("ALSA SoC Poodle");
-+MODULE_LICENSE("GPL");
+Index: alsa-kernel/soc/Kconfig
+===================================================================
+--- alsa-kernel.orig/soc/Kconfig
++++ alsa-kernel/soc/Kconfig
+@@ -23,6 +23,7 @@ config SND_SOC
+ menu "SoC Platforms"
+ depends on SND_SOC
+ source "sound/soc/at91/Kconfig"
++source "sound/soc/pxa/Kconfig"
+ endmenu
+ 
+ # Supported codecs
+Index: alsa-kernel/soc/Makefile
+===================================================================
+--- alsa-kernel.orig/soc/Makefile
++++ alsa-kernel/soc/Makefile
+@@ -1,4 +1,4 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ at91/
++obj-$(CONFIG_SND_SOC)	+= codecs/ at91/ pxa/
 
---=-YLCeqQNavQQXSVKc+sQF
+--=-Fw9nW9WRTdxFQsFbMtd9
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -373,7 +158,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-YLCeqQNavQQXSVKc+sQF
+--=-Fw9nW9WRTdxFQsFbMtd9
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -384,4 +169,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-YLCeqQNavQQXSVKc+sQF--
+--=-Fw9nW9WRTdxFQsFbMtd9--
