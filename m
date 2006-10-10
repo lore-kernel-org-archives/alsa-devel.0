@@ -1,18 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: RFC: provide a device name list for applications
-Date: Tue, 10 Oct 2006 19:46:27 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610101942480.9410@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0610101530410.9410@tm8103.perex-int.cz>
-	<1160490622.24436.73.camel@localhost.localdomain>
+From: albox@free.fr
+Subject: Re: Issue with Intel HDA Sound card 82801G (laptop
+	Medion)
+Date: Tue, 10 Oct 2006 19:48:18 +0200
+Message-ID: <1160502498.452bdce24d797@imp4-g19.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F17EE189
-	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Oct 2006 19:46:27 +0200 (MEST)
-In-Reply-To: <1160490622.24436.73.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,90 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: remy.bruno@trinnov.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Oct 2006, Liam Girdwood wrote:
+I have just tried and it works...I guess the only thing to do now is to figure
+it out what's the difference between this patched version and the alsa driver
+1.0.13.
 
-> On Tue, 2006-10-10 at 15:45 +0200, Jaroslav Kysela wrote:
-> > Hi,
-> > 
-> > 	here is my proposal to provide (a long waited feature) a device 
-> > name list for applications (especially for GUI). The work is not finished, 
-> > but the patch bellow gives already useful hints like (for PCM devices):
-> > 
-> > hw:CARD=Intel,DEV=0
-> > hw:CARD=Intel,DEV=1
-> > hw:CARD=Intel,DEV=2
-> > hw:CARD=Intel,DEV=6
-> > plughw:CARD=Intel,DEV=0
-> > plughw:CARD=Intel,DEV=1
-> > plughw:CARD=Intel,DEV=2
-> > plughw:CARD=Intel,DEV=6
-> > plug
-> > shm
-> > tee
-> > file
-> > null
-> > 
-> > 	Things to do:
-> > 
-> > - provide device description behind '|' separator - add this description
-> >   to configuration files
-> > - some virtual devices does not make sense without arguments (like file) -
-> >   add a list off switch 
-> > - gather virtual devices from configuration files probably from
-> >   namehint.pcm tree:
-> > 
-> > namehint.pcm [
-> > 	"file:FILE=/tmp/soundwave.raw|Save sound output to /tmp/soundwave.raw file"
-> > 	"plug:front|Do all conversions for front speakers"
-> > ]
-> > 
-> > - sorting / ordering of resulted hints? any hints from you? ;-) maybe add
-> >   a wieght to config files?
-> 
-> I'd like to be able to add hints on pcm usage. e.g. Consider an embedded
-> system where there is a HiFi DAC, voice DAC and Aux DAC.
-> 
-> 00-02: WM9713 Voice WM9713 Voice-PCM-2 :  : playback 1 : capture 1
-> 00-01: AC97 Aux AC97 Aux-AC97-1 :  : playback 1
-> 00-00: AC97 HiFi AC97 HiFi-AC97-0 :  : playback 1 : capture 1 
-> 
-> The intended usage for each DAC would be as follows:-
-> 
->  HiFi DAC - High quality (multimedia playback) music/video players would
-> use this pcm by default.
-> 
->  Voice DAC - Cell/Phone/VOIP calls (lower power consumption DAC -
-> optimised for voice) telephony apps would use this pcm by default.
-> 
->  Aux DAC - System noises/phone ringer (lower quality and power),
-> system/ringer would use this by default.
-> 
-> It would be nice if the applications could determine the best pcm to use
-> based upon this hint (or similar). Atm, it either has to be hard coded
-> or set up in the applications config/start up scripts.
-> 
-> This would eventually allow applications (esp in embedded space) to
-> become more portable between different machines (without the need to re
-> configure). 
+And as I said, don't forget to "modprobe -r" the driver before suspending to
+disk, or the kernel will crash.
+=> What type of message did you get ? Do you know how we can avoid this problem
+(a  shell script to remove the module before suspending ?).
 
-I would suggest to define the exact purpose PCM device names like
-audio, system and voip . Then you can modify the global alsa-lib 
-configuration file in /etc directory and you can get the portability 
-benefit then. I am missing something? Of course, you can create special 
-tags in the description text, but I think that special device names are 
-better.
+Thanks
 
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Al
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
