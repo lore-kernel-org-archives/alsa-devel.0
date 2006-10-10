@@ -1,17 +1,16 @@
-From: Faik Uygur <faik@pardus.org.tr>
-Subject: Re:
-	=?utf-8?q?Issue_with_Intel_HDA_Sound_card=0982801G_?=
-	=?utf-8?q?=28_laptop=09Medion_=29?=
-Date: Tue, 10 Oct 2006 11:28:38 +0300
-Message-ID: <200610101128.38532.faik@pardus.org.tr>
-References: <1160262039.45283197cf7cd@imp5-g19.free.fr>
-	<1160416513.17297.135.camel@razman> <s5h4pudqrks.wl%tiwai@suse.de>
+From: Remy Bruno <remy.bruno@trinnov.com>
+Subject: Re: Issue with Intel HDA Sound card 82801G (laptop
+	Medion)
+Date: Tue, 10 Oct 2006 15:30:19 +0200
+Message-ID: <20061010133019.GA19725@trinnov.com>
+References: <1160438676.452ae39456ad3@imp6-g19.free.fr>
+	<1160439314.452ae61245cdb@imp6-g19.free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h4pudqrks.wl%tiwai@suse.de>
 Content-Disposition: inline
+In-Reply-To: <1160439314.452ae61245cdb@imp6-g19.free.fr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,29 +20,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: caglar@pardus.org.tr
+To: albox@free.fr
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-MDkgRWtpIDIwMDYgUHRzIDIxOjIwIHRhcmloaW5kZSwgVGFrYXNoaSBJd2FpIMWfdW5sYXLEsSB5
-YXptxLHFn3TEsTogCj4gZGlmZiAtciA2ZDFiYjMzMzRmMzggcGNpL2hkYS9wYXRjaF9zaTMwNTQu
-Ywo+IC0tLSBhL3BjaS9oZGEvcGF0Y2hfc2kzMDU0LmMJTW9uIE9jdCAwOSAxNjowNDozNCAyMDA2
-ICswMjAwCj4gKysrIGIvcGNpL2hkYS9wYXRjaF9zaTMwNTQuYwlNb24gT2N0IDA5IDIwOjE3OjM2
-IDIwMDYgKzAyMDAKPiBAQCAtMjQzLDcgKzI0Myw4IEBAIHN0YXRpYyBpbnQgc2kzMDU0X2luaXQo
-c3RydWN0IGhkYV9jb2RlYwo+Cj4gIAlpZigodmFsJlNJMzA1NF9NRUlfUkVBRFkpICE9IFNJMzA1
-NF9NRUlfUkVBRFkpIHsKPiAgCQlzbmRfcHJpbnRrKEtFUk5fRVJSICJzaTMwNTQ6IGNhbm5vdCBp
-bml0aWFsaXplLiBFWFQgTUlEID0gJTA0eFxuIiwgdmFsKTsKPiAtCQlyZXR1cm4gLUVBQ0NFUzsK
-PiArCQkvKiBsZXQncyBwcmF5IHRoYXQgdGhpcyBpcyBubyBmYXRhbCBlcnJvciAqLwo+ICsJCS8q
-IHJldHVybiAtRUFDQ0VTOyAqLwo+ICAJfQo+Cj4gIAlTRVRfUkVHKGNvZGVjLCBTSTMwNTRfR1BJ
-T19QT0xBUklUWSwgMHhmZmZmKTsKCk9uZSBvZiBvdXIgdXNlcnMgd2FzIGNvbXBsYWluaW5nIGFi
-b3V0IHRoaXMgcHJvYmxlbS4gVGhpcyBwYXRjaCBzb2x2ZWQgdGhlIApwcm9ibGVtLgoKRm9yIHlv
-dXIgaW5mb3JtYXRpb24sClJlZ2FyZHMsCi0gRmFpawoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUYWtlIFN1
-cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKSm9pbiBTb3VyY2VG
-b3JnZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFuY2UgdG8gc2hh
-cmUgeW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVmIHN1
-cnZleXMgLS0gYW5kIGVhcm4gY2FzaApodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhw
-P3BhZ2U9am9pbi5waHAmcD1zb3VyY2Vmb3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+In fact, I didn't use their alsa_driver directly (it doesn't compile for me
+neither), but I too the alsa-kernel/pci/hda directory of it and replaced the
+corresponding dir in 1.0.13 by this one, and I used the resulting modified
+1.0.13 tree. As I said, I needed to change minor things (see the patch I se=
+nt
+you together with the alsa-driver-1.0.9b_25 tar). And as I said, don't forg=
+et
+to "modprobe -r" the driver before suspending to disk, or the kernel will
+crash.
+
+Regards,
+Remy
+
+On Tuesday 10 October at 02:15, albox@free.fr wrote:
+> I tried to compile the version included in the tarball that Remy posted l=
+ast
+> weekend but I got some error messages :
+> =
+
+> /home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.9b_25=
+/acore/init.c:749:
+> error: field =91pdev=92 has incomplete type
+> /home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.9b_25=
+/acore/init.c:762:
+> error: =91platform_bus_type=92 undeclared here (not in a function)
+> /home/albuntu/install/realtek-linux-audiopack-4.05b/alsa-driver-1.0.9b_25=
+/acore/init.c:763:
+> warning: initialization from incompatible pointer type
+> =
+
+> Remy, which version of GCC did you use ?
+> =
+
+> Thanks
+> =
+
+> Al
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys -- and earn cash
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
