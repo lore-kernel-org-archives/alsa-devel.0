@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 4/8] ASoC pxa2xx Corgi machine support
-Date: Tue, 10 Oct 2006 17:19:45 +0100
-Message-ID: <1160497185.24436.113.camel@localhost.localdomain>
+Subject: [PATCH 7/8] ASoC pxa2xx Poodle machine support
+Date: Tue, 10 Oct 2006 17:20:03 +0100
+Message-ID: <1160497203.24436.116.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-YNenXqL+ffk8emtTPSxi"
+Content-Type: multipart/mixed; boundary="=-YLCeqQNavQQXSVKc+sQF"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +18,30 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-YNenXqL+ffk8emtTPSxi
+--=-YLCeqQNavQQXSVKc+sQF
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds Alsa audio support to the Sharp Zaurus SL-C7x0/C860
-(Corgi) machines. 
+This patch adds Alsa audio support to the Sharp Zaurus SL-C5600 (Poodle)
+machine. 
 
 
-Signed-off-by: Graeme Gregory <dp@xora.org.uk>
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
---=-YNenXqL+ffk8emtTPSxi
-Content-Disposition: attachment; filename=asoc-pxa2xx-corgi.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-corgi.patch; charset=UTF-8
+
+--=-YLCeqQNavQQXSVKc+sQF
+Content-Disposition: attachment; filename=asoc-pxa2xx-poodle.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-poodle.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/corgi.c
+Index: alsa-kernel/soc/pxa/poodle.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/corgi.c
-@@ -0,0 +1,352 @@
++++ alsa-kernel/soc/pxa/poodle.c
+@@ -0,0 +1,321 @@
 +/*
-+ * corgi.c  --  SoC audio for Corgi
++ * poodle.c  --  SoC audio for Poodle
 + *
 + * Copyright 2005 Wolfson Microelectronics PLC.
 + * Copyright 2005 Openedhand Ltd.
@@ -53,9 +53,6 @@ Index: alsa-kernel/soc/pxa/corgi.c
 + *  under  the terms of  the GNU General  Public License as published by the
 + *  Free Software Foundation;  either version 2 of the  License, or (at your
 + *  option) any later version.
-+ *
-+ *  Revision history
-+ *    30th Nov 2005   Initial version.
 + *
 + */
 +
@@ -71,168 +68,139 @@ Index: alsa-kernel/soc/pxa/corgi.c
 +#include <sound/soc-dapm.h>
 +
 +#include <asm/mach-types.h>
-+#include <asm/hardware/scoop.h>
++#include <asm/hardware/locomo.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/hardware.h>
-+#include <asm/arch/corgi.h>
++#include <asm/arch/poodle.h>
 +#include <asm/arch/audio.h>
 +
 +#include "../codecs/wm8731.h"
 +#include "pxa2xx-pcm.h"
 +
-+#define CORGI_HP        0
-+#define CORGI_MIC       1
-+#define CORGI_LINE      2
-+#define CORGI_HEADSET   3
-+#define CORGI_HP_OFF    4
-+#define CORGI_SPK_ON    0
-+#define CORGI_SPK_OFF   1
++#define POODLE_HP        1
++#define POODLE_HP_OFF    0
++#define POODLE_SPK_ON    1
++#define POODLE_SPK_OFF   0
 +
 + /* audio clock in Hz - rounded from 12.235MHz */
-+#define CORGI_AUDIO_CLOCK 12288000
++#define POODLE_AUDIO_CLOCK 12288000
 +
-+static int corgi_jack_func = 0;
-+static int corgi_spk_func = 0;
++static int poodle_jack_func = 0;
++static int poodle_spk_func = 0;
 +
-+static void corgi_ext_control(struct snd_soc_codec *codec)
++static void poodle_ext_control(struct snd_soc_codec *codec)
 +{
-+	int spk = 0, mic = 0, line = 0, hp = 0, hs = 0;
++	int spk = 0;
 +
 +	/* set up jack connection */
-+	switch (corgi_jack_func) {
-+	case CORGI_HP:
-+		hp = 1;
++	if (poodle_jack_func == POODLE_HP) {
 +		/* set = unmute headphone */
-+		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
-+		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
-+		break;
-+	case CORGI_MIC:
-+		mic = 1;
-+		/* reset = mute headphone */
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
-+		break;
-+	case CORGI_LINE:
-+		line = 1;
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
-+		break;
-+	case CORGI_HEADSET:
-+		hs = 1;
-+		mic = 1;
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
-+		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
-+		break;
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_MUTE_L, 1);
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_MUTE_R, 1);
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
++	} else {
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_MUTE_L, 0);
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_MUTE_R, 0);
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
 +	}
 +
-+	if (corgi_spk_func == CORGI_SPK_ON)
++	if (poodle_spk_func == POODLE_SPK_ON)
 +		spk = 1;
 +
 +	/* set the enpoints to their new connetion states */
 +	snd_soc_dapm_set_endpoint(codec, "Ext Spk", spk);
-+	snd_soc_dapm_set_endpoint(codec, "Mic Jack", mic);
-+	snd_soc_dapm_set_endpoint(codec, "Line Jack", line);
-+	snd_soc_dapm_set_endpoint(codec, "Headphone Jack", hp);
-+	snd_soc_dapm_set_endpoint(codec, "Headset Jack", hs);
 +
 +	/* signal a DAPM event */
 +	snd_soc_dapm_sync_endpoints(codec);
 +}
 +
-+static int corgi_startup(struct snd_pcm_substream *substream)
++static int poodle_startup(struct snd_pcm_substream *substream)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_codec *codec = rtd->socdev->codec;
 +
 +	/* check the jack status at stream startup */
-+	corgi_ext_control(codec);
++	poodle_ext_control(codec);
 +	return 0;
 +}
 +
-+/* we need to unmute the HP at shutdown as the mute burns power on corgi */
-+static int corgi_shutdown(struct snd_pcm_substream *substream)
++/* we need to unmute the HP at shutdown as the mute burns power on poodle */
++static int poodle_shutdown(struct snd_pcm_substream *substream)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_codec *codec = rtd->socdev->codec;
 +
 +	/* set = unmute headphone */
-+	set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
-+	set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
++	locomo_gpio_write(&poodle_locomo_device.dev,
++		POODLE_LOCOMO_GPIO_MUTE_L, 1);
++	locomo_gpio_write(&poodle_locomo_device.dev,
++		POODLE_LOCOMO_GPIO_MUTE_R, 1);
 +	return 0;
 +}
 +
-+static struct snd_soc_ops corgi_ops = {
-+	.startup = corgi_startup,
-+	.shutdown = corgi_shutdown,
++static struct snd_soc_ops poodle_ops = {
++	.startup = poodle_startup,
++	.shutdown = poodle_shutdown,
 +};
 +
-+static int corgi_get_jack(struct snd_kcontrol *kcontrol,
++static int poodle_get_jack(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	ucontrol->value.integer.value[0] = corgi_jack_func;
++	ucontrol->value.integer.value[0] = poodle_jack_func;
 +	return 0;
 +}
 +
-+static int corgi_set_jack(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	corgi_jack_func = ucontrol->value.integer.value[0];
-+	corgi_ext_control(codec);
-+	return 0;
-+}
-+
-+static int corgi_get_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = corgi_spk_func;
-+	return 0;
-+}
-+
-+static int corgi_set_spk(struct snd_kcontrol *kcontrol,
++static int poodle_set_jack(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+	corgi_spk_func = ucontrol->value.integer.value[0];
++	poodle_jack_func = ucontrol->value.integer.value[0];
 +
-+	corgi_ext_control(codec);
++	poodle_ext_control(codec);
 +	return 0;
 +}
 +
-+static int corgi_amp_event(struct snd_soc_dapm_widget *w, int event)
++static int poodle_get_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = poodle_spk_func;
++	return 0;
++}
++
++static int poodle_set_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	poodle_spk_func = ucontrol->value.integer.value[0];
++
++	poodle_ext_control(codec);
++	return 0;
++}
++
++static int poodle_amp_event(struct snd_soc_dapm_widget *w, int event)
 +{
 +	if (SND_SOC_DAPM_EVENT_ON(event))
-+		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_AMP_ON, 0);
 +	else
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
++		locomo_gpio_write(&poodle_locomo_device.dev,
++			POODLE_LOCOMO_GPIO_AMP_ON, 1);
 +
 +	return 0;
 +}
 +
-+static int corgi_mic_event(struct snd_soc_dapm_widget *w, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MIC_BIAS);
-+	else
-+		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MIC_BIAS);
-+
-+	return 0;
-+}
-+
-+/* corgi machine dapm widgets */
++/* poodle machine dapm widgets */
 +static const struct snd_soc_dapm_widget wm8731_dapm_widgets[] = {
 +SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+SND_SOC_DAPM_MIC("Mic Jack", corgi_mic_event),
-+SND_SOC_DAPM_SPK("Ext Spk", corgi_amp_event),
-+SND_SOC_DAPM_LINE("Line Jack", NULL),
-+SND_SOC_DAPM_HP("Headset Jack", NULL),
++SND_SOC_DAPM_SPK("Ext Spk", poodle_amp_event),
 +};
 +
-+/* Corgi machine audio map (connections to the codec pins) */
++/* Corgi machine audio_mapnections to the codec pins */
 +static const char *audio_map[][3] = {
-+
-+	/* headset Jack  - in = micin, out = LHPOUT*/
-+	{"Headset Jack", NULL, "LHPOUT"},
 +
 +	/* headphone connected to LHPOUT1, RHPOUT1 */
 +	{"Headphone Jack", NULL, "LHPOUT"},
@@ -242,69 +210,63 @@ Index: alsa-kernel/soc/pxa/corgi.c
 +	{"Ext Spk", NULL, "ROUT"},
 +	{"Ext Spk", NULL, "LOUT"},
 +
-+	/* mic is connected to MICIN (via right channel of headphone jack) */
-+	{"MICIN", NULL, "Mic Jack"},
-+
-+	/* Same as the above but no mic bias for line signals */
-+	{"MICIN", NULL, "Line Jack"},
-+
 +	{NULL, NULL, NULL},
 +};
 +
-+static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
-+	"Off"};
-+static const char *spk_function[] = {"On", "Off"};
-+static const struct soc_enum corgi_enum[] = {
-+	SOC_ENUM_SINGLE_EXT(5, jack_function),
++static const char *jack_function[] = {"Off", "Headphone"};
++static const char *spk_function[] = {"Off", "On"};
++static const struct soc_enum poodle_enum[] = {
++	SOC_ENUM_SINGLE_EXT(2, jack_function),
 +	SOC_ENUM_SINGLE_EXT(2, spk_function),
 +};
 +
-+static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
-+	SOC_ENUM_EXT("Jack Function", corgi_enum[0], corgi_get_jack,
-+		corgi_set_jack),
-+	SOC_ENUM_EXT("Speaker Function", corgi_enum[1], corgi_get_spk,
-+		corgi_set_spk),
++static const snd_kcontrol_new_t wm8731_poodle_controls[] = {
++	SOC_ENUM_EXT("Jack Function", poodle_enum[0], poodle_get_jack,
++		poodle_set_jack),
++	SOC_ENUM_EXT("Speaker Function", poodle_enum[1], poodle_get_spk,
++		poodle_set_spk),
 +};
 +
 +/*
 + * Logic for a wm8731 as connected on a Sharp SL-C7x0 Device
 + */
-+static int corgi_wm8731_init(struct snd_soc_codec *codec)
++static int poodle_wm8731_init(struct snd_soc_codec *codec)
 +{
 +	int i, err;
 +
 +	snd_soc_dapm_set_endpoint(codec, "LLINEIN", 0);
 +	snd_soc_dapm_set_endpoint(codec, "RLINEIN", 0);
++	snd_soc_dapm_set_endpoint(codec, "MICIN", 1);
 +
-+	/* Add corgi specific controls */
-+	for (i = 0; i < ARRAY_SIZE(wm8731_corgi_controls); i++) {
++	/* Add poodle specific controls */
++	for (i = 0; i < ARRAY_SIZE(wm8731_poodle_controls); i++) {
 +		err = snd_ctl_add(codec->card,
-+				snd_soc_cnew(&wm8731_corgi_controls[i],codec, NULL));
++				snd_soc_cnew(&wm8731_poodle_controls[i],codec, NULL));
 +		if (err < 0)
 +			return err;
 +	}
 +
-+	/* Add corgi specific widgets */
-+	for(i = 0; i < ARRAY_SIZE(wm8731_dapm_widgets); i++) {
++	/* Add poodle specific widgets */
++	for (i = 0; i < ARRAY_SIZE(wm8731_dapm_widgets); i++) {
 +		snd_soc_dapm_new_control(codec, &wm8731_dapm_widgets[i]);
 +	}
 +
-+	/* Set up corgi specific audio path audio_mapnects */
-+	for(i = 0; audio_map[i][0] != NULL; i++) {
-+		snd_soc_dapm_connect_input(codec, audio_map[i][0], audio_map[i][1],
-+			audio_map[i][2]);
++	/* Set up poodle specific audio path audio_mapnects */
++	for (i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++			audio_map[i][1], audio_map[i][2]);
 +	}
 +
 +	snd_soc_dapm_sync_endpoints(codec);
 +	return 0;
 +}
 +
-+unsigned int corgi_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++unsigned int poodle_config_sysclk(struct snd_soc_pcm_runtime *rtd,
 +	struct snd_soc_clock_info *info)
 +{
 +	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
 +		/* pxa2xx is i2s master  */
-+		switch(info->rate) {
++		switch (info->rate) {
 +			case 44100:
 +			case 88200:
 +				/* configure codec digital filters for 44.1, 88.2 */
@@ -313,87 +275,94 @@ Index: alsa-kernel/soc/pxa/corgi.c
 +			default:
 +				/* configure codec digital filters for all other rates */
 +				rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+					CORGI_AUDIO_CLOCK);
++					POODLE_AUDIO_CLOCK);
 +			break;
 +		}
-+		/* config pxa i2s as master */
 +		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
-+			CORGI_AUDIO_CLOCK);
++			POODLE_AUDIO_CLOCK);
 +	} else {
 +		/* codec is i2s master - only configure codec DAI clock and filters */
 +		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+			CORGI_AUDIO_CLOCK);
++			POODLE_AUDIO_CLOCK);
 +	}
 +}
 +
-+/* corgi digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link corgi_dai = {
++/* poodle digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link poodle_dai = {
 +	.name = "WM8731",
 +	.stream_name = "WM8731",
 +	.cpu_dai = &pxa_i2s_dai,
 +	.codec_dai = &wm8731_dai,
-+	.init = corgi_wm8731_init,
-+	.config_sysclk = corgi_config_sysclk,
++	.init = poodle_wm8731_init,
++	.config_sysclk = poodle_config_sysclk,
 +};
 +
-+/* corgi audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_corgi = {
-+	.name = "Corgi",
-+	.dai_link = &corgi_dai,
++/* poodle audio machine driver */
++static struct snd_soc_machine snd_soc_machine_poodle = {
++	.name = "Poodle",
++	.dai_link = &poodle_dai,
 +	.num_links = 1,
-+	.ops = &corgi_ops,
++	.ops = &poodle_ops,
 +};
 +
-+/* corgi audio private data */
-+static struct wm8731_setup_data corgi_wm8731_setup = {
++/* poodle audio private data */
++static struct wm8731_setup_data poodle_wm8731_setup = {
 +	.i2c_address = 0x1b,
 +};
 +
-+/* corgi audio subsystem */
-+static struct snd_soc_device corgi_snd_devdata = {
-+	.machine = &snd_soc_machine_corgi,
++/* poodle audio subsystem */
++static struct snd_soc_device poodle_snd_devdata = {
++	.machine = &snd_soc_machine_poodle,
 +	.platform = &pxa2xx_soc_platform,
 +	.codec_dev = &soc_codec_dev_wm8731,
-+	.codec_data = &corgi_wm8731_setup,
++	.codec_data = &poodle_wm8731_setup,
 +};
 +
-+static struct platform_device *corgi_snd_device;
++static struct platform_device *poodle_snd_device;
 +
-+static int __init corgi_init(void)
++static int __init poodle_init(void)
 +{
 +	int ret;
 +
-+	if (!(machine_is_corgi() || machine_is_shepherd() || machine_is_husky()))
++	if (!machine_is_poodle())
 +		return -ENODEV;
 +
-+	corgi_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!corgi_snd_device)
++	locomo_gpio_set_dir(&poodle_locomo_device.dev,
++		POODLE_LOCOMO_GPIO_AMP_ON, 0);
++	/* should we mute HP at startup - burning power ?*/
++	locomo_gpio_set_dir(&poodle_locomo_device.dev,
++		POODLE_LOCOMO_GPIO_MUTE_L, 0);
++	locomo_gpio_set_dir(&poodle_locomo_device.dev,
++		POODLE_LOCOMO_GPIO_MUTE_R, 0);
++
++	poodle_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!poodle_snd_device)
 +		return -ENOMEM;
 +
-+	platform_set_drvdata(corgi_snd_device, &corgi_snd_devdata);
-+	corgi_snd_devdata.dev = &corgi_snd_device->dev;
-+	ret = platform_device_add(corgi_snd_device);
++	platform_set_drvdata(poodle_snd_device, &poodle_snd_devdata);
++	poodle_snd_devdata.dev = &poodle_snd_device->dev;
++	ret = platform_device_add(poodle_snd_device);
 +
 +	if (ret)
-+		platform_device_put(corgi_snd_device);
++		platform_device_put(poodle_snd_device);
 +
 +	return ret;
 +}
 +
-+static void __exit corgi_exit(void)
++static void __exit poodle_exit(void)
 +{
-+	platform_device_unregister(corgi_snd_device);
++	platform_device_unregister(poodle_snd_device);
 +}
 +
-+module_init(corgi_init);
-+module_exit(corgi_exit);
++module_init(poodle_init);
++module_exit(poodle_exit);
 +
 +/* Module information */
 +MODULE_AUTHOR("Richard Purdie");
-+MODULE_DESCRIPTION("ALSA SoC Corgi");
++MODULE_DESCRIPTION("ALSA SoC Poodle");
 +MODULE_LICENSE("GPL");
 
---=-YNenXqL+ffk8emtTPSxi
+--=-YLCeqQNavQQXSVKc+sQF
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -404,7 +373,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-YNenXqL+ffk8emtTPSxi
+--=-YLCeqQNavQQXSVKc+sQF
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -415,4 +384,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-YNenXqL+ffk8emtTPSxi--
+--=-YLCeqQNavQQXSVKc+sQF--
