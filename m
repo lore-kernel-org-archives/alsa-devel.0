@@ -1,14 +1,14 @@
-From: "Nikhil Rao" <nikhil_p_rao@hotmail.com>
-Subject: Re: Fw: Bug with PCM plug layer with mmap
-	emulation=true ?
-Date: Wed, 11 Oct 2006 10:09:07 -0700
-Message-ID: <BAY111-DAV1100D311DE82D414411136C2140@phx.gbl>
-References: <BAY111-DAV16F31559638787B8CDA054C2CC0@phx.gbl>
-	<s5hmzer6odr.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Issue with Intel HDA Sound card 82801G
+	(laptop	Medion)
+Date: Wed, 11 Oct 2006 10:26:46 -0700
+Message-ID: <1160587606.17297.173.camel@razman>
+References: <1160502498.452bdce24d797@imp4-g19.free.fr>
+	<20061010180944.GA32060@trinnov.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_000C_01C6ED1D.49F0A520"
+Content-Type: multipart/mixed; boundary="=-BSjJc95vzKBj9T4/X0ne"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20061010180944.GA32060@trinnov.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,173 +18,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
+To: Remy Bruno <remy.bruno@trinnov.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_000C_01C6ED1D.49F0A520
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+--=-BSjJc95vzKBj9T4/X0ne
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Here is a new patch.  I'm slowly peeling the onion on this.  Use this
+along with Takashi's patch to fix the modem (disregard my previous
+patches).
 
-I am running into a bug with mmap_emulation=true and the plug layer, I had 
-also run into the bug with 1.0.9b.
+Tobin
 
-The symptom of the bug is that the first period (first 2 ?) get repeated on 
-playback.
-
-To reproduce the bug -
-
-Modify the  the intel-snd8x0 driver so that MMAP is disabled and only the 
-48Khz sample rate is supported in hardware.
-Compile the driver and install it.
-
-The changes are attached with this email and reproduced below.
-
-1097c1097
-<  .info =   ( SNDRV_PCM_INFO_INTERLEAVED |
----
->  .info =   (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-1099c1099,1100
-<            SNDRV_PCM_INFO_PAUSE |
----
->      SNDRV_PCM_INFO_MMAP_VALID |
->      SNDRV_PCM_INFO_PAUSE |
-
-1143,1144c1144
-<  //runtime->hw.rates = ichdev->pcm->rates;
-<  runtime->hw.rates = SNDRV_PCM_RATE_48000;
----
->  runtime->hw.rates = ichdev->pcm->rates;
-
-Since MMAP is now disabled enable mmap_emulation=true in 
-/usr/share/alsa/alsa.conf, below is the modification
-
-pcm.plughw {
-
-<SNIPPED>
-
- type plug
- slave.pcm {
-  type hw
-  card $CARD
-  device $DEV
-  subdevice $SUBDEV
-  mmap_emulation true #modification to get plughw to work if MMAP is not 
-supported.
- }
-}
-
-Now play any non-48Khz  wav file and you will hear the first fragment 
-repeating.
-
-aplay -D plughw:0,0 <wav file name>
-
-If anyone knows of a workaround or if you need any more info please let me 
-know.
-
-Thanks,
-Nikhil
------ Original Message ----- 
-From: "Takashi Iwai" <tiwai@suse.de>
-To: "Nikhil Rao" <nikhil_p_rao@hotmail.com>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Wednesday, April 12, 2006 4:10 AM
-Subject: Re: Fw: Bug with PCM plug layer with mmap emulation=true ?
-
-
-> At Mon, 10 Apr 2006 15:51:14 -0700,
-> Nikhil Rao wrote:
->>
->> Hi Takashi,
->>
->> I havent received any response to the query below, let me know if I need 
->> to
->> add more information.
->
-> Sorry I seem to have missed that post.
->
->>
->> thanks,
->> Nikhil
->> ----- Original Message ----- 
->> From: "Nikhil Rao" <nikhil_p_rao@hotmail.com>
->> To: <alsa-devel@lists.sourceforge.net>
->> Sent: Monday, April 03, 2006 4:26 PM
->> Subject: Bug with PCM plug layer with mmap emulation=true ?
->>
->>
->> > Hello,
->> >
->> > I have observed that the using pcm plug layer with mmap emulation=true 
->> > in
->> > alsa.conf, causes the first period of data to be sent twice to the 
->> > driver.
->> > I also verified this by dumping the PCM data to a file (using the copy
->> > callback)
->
-> This could be a bug.  The mmap_emulation mode wasn't debugged for long
-> time.
->
->> > I have tried experiments using the ALSA driver (ver 1.0.10) written by 
->> > me
->> > for  my development system (an SoC)
->> > and also the intelx80 driver on a Suse 10.0 system (ALSA ver 1.0.9b). I
->> > modified the intelx80 driver so that it only supports 48Khz and then 
->> > used
->> > the plughw device to playout a 44Khz sample. There is a distinct 
->> > stutter
->> > audible at the beginning of the clip caused by the first period being
->> > presented twice to the hardware.
->> >
->> > Is this a known problem ? if so, is a workaround available (my 
->> > development
->> > platform does not support mmap currently).
->
-> Well, another question is whether really mmap is necessary for your
-> device.  Any particular applications require the mmap access
-> exclusively?
->
-> Anyway, the bug should be fixed.  First, could you try the latest ALSA
-> (1.0.11rc5 was released yesterday)?  Debugging old codes is a waste of
-> time.
->
-> The symptom sounds like a problem with rate plugin.  The rate plugin
-> defers the transfer until a whole period size is filled.
-> So, if the problem still exists, please describe the method you
-> checked this behavior in details, too.
->
->
-> Takashi
+On Tue, 2006-10-10 at 20:09 +0200, Remy Bruno wrote:
+> On Tuesday 10 October at 19:48, albox@free.fr wrote:
+> > I have just tried and it works...I guess the only thing to do now is to figure
+> > it out what's the difference between this patched version and the alsa driver
+> > 1.0.13.
 > 
+> Yes, that's exactly the point! But not a small one. There are big difference
+> between the two. I think Tobin is working on this.
+> 
+> > 
+> > And as I said, don't forget to "modprobe -r" the driver before suspending to
+> > disk, or the kernel will crash.
+> > => What type of message did you get ? Do you know how we can avoid this problem
+> > (a  shell script to remove the module before suspending ?).
+> 
+> I get an oops... Indeed, it is possible to make a script, but you need to kill
+> all the processes that use alsa before modprobing -r...
+> 
+> Regards,
+> Remy
+> 
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share your
+> opinions on IT & business topics through brief surveys -- and earn cash
+> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Tobin Davis <tdavis@dsl-only.net>
 
-------=_NextPart_000_000C_01C6ED1D.49F0A520
-Content-Type: application/octet-stream;
-	name="intel8x0.diff"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="intel8x0.diff"
+--=-BSjJc95vzKBj9T4/X0ne
+Content-Disposition: attachment; filename=medion-test.patch
+Content-Type: text/x-patch; name=medion-test.patch; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-1097c1097=0A=
-< 	.info =3D			( SNDRV_PCM_INFO_INTERLEAVED |=0A=
----=0A=
-> 	.info =3D			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |=0A=
-1099c1099,1100=0A=
-<       				 SNDRV_PCM_INFO_PAUSE |=0A=
----=0A=
-> 				 SNDRV_PCM_INFO_MMAP_VALID |=0A=
-> 				 SNDRV_PCM_INFO_PAUSE |=0A=
-1143,1144c1144=0A=
-< 	//runtime->hw.rates =3D ichdev->pcm->rates;=0A=
-< 	runtime->hw.rates =3D SNDRV_PCM_RATE_48000;=0A=
----=0A=
-> 	runtime->hw.rates =3D ichdev->pcm->rates;=0A=
+--- alsa-driver/alsa-kernel/pci/hda/patch_realtek.c.orig	2006-10-08 10:58:28.000000000 -0700
++++ alsa-driver/alsa-kernel/pci/hda/patch_realtek.c	2006-10-11 10:22:55.000000000 -0700
+@@ -112,6 +112,7 @@
+ 	ALC883_6ST_DIG,
+ 	ALC888_DEMO_BOARD,
+ 	ALC883_ACER,
++	ALC883_MEDION,
+ 	ALC883_AUTO,
+ 	ALC883_MODEL_LAST,
+ };
+@@ -4309,7 +4310,7 @@
+ static struct hda_verb alc882_eapd_verbs[] = {
+ 	/* change to EAPD mode */
+ 	{0x20, AC_VERB_SET_COEF_INDEX, 0x07},
+-	{0x20, AC_VERB_SET_PROC_COEF, 0x3060},
++	{0x20, AC_VERB_SET_PROC_COEF, 0x3070},
+ 	{ } 
+ };
+ 
+@@ -5080,6 +5081,8 @@
+ 	  .config = ALC883_ACER },
+ 	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x009f,
+ 	  .config = ALC883_ACER },
++	{ .pci_subvendor = 0x161f, .pci_subdevice = 0xd82b,
++	  .modelname = "medion", .config = ALC883_MEDION }
+ 	{ .modelname = "auto", .config = ALC883_AUTO },
+ 	{}
+ };
+@@ -5167,6 +5170,20 @@
+ 		.channel_mode = alc883_3ST_2ch_modes,
+ 		.input_mux = &alc883_capture_source,
+ 	},
++	[ALC883_MEDION] = {
++		.mixers = { alc883_base_mixer,
++			    alc883_chmode_mixer },
++		.init_verbs = { alc883_init_verbs,
++				alc882_eapd_verbs },
++		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
++		.dac_nids = alc883_dac_nids,
++		.num_adc_nids = ARRAY_SIZE(alc883_adc_nids),
++		.adc_nids = alc883_adc_nids,
++		.num_channel_mode = ARRAY_SIZE(alc883_sixstack_modes),
++		.channel_mode = alc883_sixstack_modes,
++		.input_mux = &alc883_capture_source,
++	}
++
+ };
+ 
+ 
 
-------=_NextPart_000_000C_01C6ED1D.49F0A520
+--=-BSjJc95vzKBj9T4/X0ne
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -195,7 +132,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------=_NextPart_000_000C_01C6ED1D.49F0A520
+--=-BSjJc95vzKBj9T4/X0ne
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -206,4 +143,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------=_NextPart_000_000C_01C6ED1D.49F0A520--
+--=-BSjJc95vzKBj9T4/X0ne--
