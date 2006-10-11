@@ -1,15 +1,16 @@
 From: Tobin Davis <tdavis@dsl-only.net>
 Subject: Re: Issue with Intel HDA Sound card 82801G
 	(laptop	Medion)
-Date: Wed, 11 Oct 2006 10:38:37 -0700
-Message-ID: <1160588317.17297.177.camel@razman>
+Date: Wed, 11 Oct 2006 11:06:20 -0700
+Message-ID: <1160589980.17297.185.camel@razman>
 References: <1160502498.452bdce24d797@imp4-g19.free.fr>
 	<20061010180944.GA32060@trinnov.com>
 	<1160587606.17297.173.camel@razman>
+	<1160588317.17297.177.camel@razman>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-QlkbDbELOxRPQL5OKjUK"
+Content-Type: multipart/mixed; boundary="=-H1LUGw3jLmpA0gHIy6cU"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1160587606.17297.173.camel@razman>
+In-Reply-To: <1160588317.17297.177.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,65 +25,75 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-QlkbDbELOxRPQL5OKjUK
+--=-H1LUGw3jLmpA0gHIy6cU
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Oops.  Somehow my code reverted to the wrong subdevice id.  Change that
-in the patch before applying.
+Ok, need serious caffeine infusion here.  
 
-I have another patch to test as well (I'm going to start numbering
-them).
+That last patch added a new mixer control array, but didn't call it.
+This patch calls it.
+
+Sorry for the flood of bad patches.
 
 Tobin
 
-On Wed, 2006-10-11 at 10:26 -0700, Tobin Davis wrote:
-> Here is a new patch.  I'm slowly peeling the onion on this.  Use this
-> along with Takashi's patch to fix the modem (disregard my previous
-> patches).
+On Wed, 2006-10-11 at 10:38 -0700, Tobin Davis wrote:
+> Oops.  Somehow my code reverted to the wrong subdevice id.  Change that
+> in the patch before applying.
+> 
+> I have another patch to test as well (I'm going to start numbering
+> them).
 > 
 > Tobin
 > 
-> On Tue, 2006-10-10 at 20:09 +0200, Remy Bruno wrote:
-> > On Tuesday 10 October at 19:48, albox@free.fr wrote:
-> > > I have just tried and it works...I guess the only thing to do now is to figure
-> > > it out what's the difference between this patched version and the alsa driver
-> > > 1.0.13.
+> On Wed, 2006-10-11 at 10:26 -0700, Tobin Davis wrote:
+> > Here is a new patch.  I'm slowly peeling the onion on this.  Use this
+> > along with Takashi's patch to fix the modem (disregard my previous
+> > patches).
 > > 
-> > Yes, that's exactly the point! But not a small one. There are big difference
-> > between the two. I think Tobin is working on this.
+> > Tobin
 > > 
+> > On Tue, 2006-10-10 at 20:09 +0200, Remy Bruno wrote:
+> > > On Tuesday 10 October at 19:48, albox@free.fr wrote:
+> > > > I have just tried and it works...I guess the only thing to do now is to figure
+> > > > it out what's the difference between this patched version and the alsa driver
+> > > > 1.0.13.
 > > > 
-> > > And as I said, don't forget to "modprobe -r" the driver before suspending to
-> > > disk, or the kernel will crash.
-> > > => What type of message did you get ? Do you know how we can avoid this problem
-> > > (a  shell script to remove the module before suspending ?).
-> > 
-> > I get an oops... Indeed, it is possible to make a script, but you need to kill
-> > all the processes that use alsa before modprobing -r...
-> > 
-> > Regards,
-> > Remy
-> > 
-> > -------------------------------------------------------------------------
-> > Take Surveys. Earn Cash. Influence the Future of IT
-> > Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> > opinions on IT & business topics through brief surveys -- and earn cash
-> > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> > > Yes, that's exactly the point! But not a small one. There are big difference
+> > > between the two. I think Tobin is working on this.
+> > > 
+> > > > 
+> > > > And as I said, don't forget to "modprobe -r" the driver before suspending to
+> > > > disk, or the kernel will crash.
+> > > > => What type of message did you get ? Do you know how we can avoid this problem
+> > > > (a  shell script to remove the module before suspending ?).
+> > > 
+> > > I get an oops... Indeed, it is possible to make a script, but you need to kill
+> > > all the processes that use alsa before modprobing -r...
+> > > 
+> > > Regards,
+> > > Remy
+> > > 
+> > > -------------------------------------------------------------------------
+> > > Take Surveys. Earn Cash. Influence the Future of IT
+> > > Join SourceForge.net's Techsay panel and you'll get the chance to share your
+> > > opinions on IT & business topics through brief surveys -- and earn cash
+> > > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
 -- 
 Tobin Davis <tdavis@dsl-only.net>
 
---=-QlkbDbELOxRPQL5OKjUK
-Content-Disposition: attachment; filename=medion-test3.patch
-Content-Type: text/x-patch; name=medion-test3.patch; charset=ISO-8859-1
+--=-H1LUGw3jLmpA0gHIy6cU
+Content-Disposition: attachment; filename=medion-test4.patch
+Content-Type: text/x-patch; name=medion-test4.patch; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
 --- alsa-driver/alsa-kernel/pci/hda/patch_realtek.c.orig	2006-10-08 10:58:28.000000000 -0700
-+++ alsa-driver/alsa-kernel/pci/hda/patch_realtek.c	2006-10-11 10:35:04.000000000 -0700
++++ alsa-driver/alsa-kernel/pci/hda/patch_realtek.c	2006-10-11 11:03:13.000000000 -0700
 @@ -112,6 +112,7 @@
  	ALC883_6ST_DIG,
  	ALC888_DEMO_BOARD,
@@ -156,7 +167,7 @@ Content-Transfer-Encoding: 7bit
  		.input_mux = &alc883_capture_source,
  	},
 +	[ALC883_MEDION] = {
-+		.mixers = { alc883_base_mixer,
++		.mixers = { alc883_fivestack_mixer,
 +			    alc883_chmode_mixer },
 +		.init_verbs = { alc883_init_verbs,
 +				alc882_eapd_verbs },
@@ -173,7 +184,7 @@ Content-Transfer-Encoding: 7bit
  
  
 
---=-QlkbDbELOxRPQL5OKjUK
+--=-H1LUGw3jLmpA0gHIy6cU
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -184,7 +195,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-QlkbDbELOxRPQL5OKjUK
+--=-H1LUGw3jLmpA0gHIy6cU
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -195,4 +206,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-QlkbDbELOxRPQL5OKjUK--
+--=-H1LUGw3jLmpA0gHIy6cU--
