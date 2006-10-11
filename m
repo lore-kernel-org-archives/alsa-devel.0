@@ -1,13 +1,18 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ALSA snd_xferi_t buffer arrangment
-Date: Wed, 11 Oct 2006 14:53:30 +0100
-Message-ID: <452CF75A.5060706@superbug.co.uk>
-References: <B9FFC3F97441D04093A504CEA31B7C41E4DFE5@msilexch01.marvell.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib: snd_device_name_hint() function
+Date: Wed, 11 Oct 2006 15:54:53 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610111553430.8848@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0610111323470.8848@tm8103.perex-int.cz>
+	<20061011130347.GB3038@palantir8> <s5h7iz7klvb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <B9FFC3F97441D04093A504CEA31B7C41E4DFE5@msilexch01.marvell.com>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A539916A
+	for <alsa-devel@alsa-project.org>;
+	Wed, 11 Oct 2006 15:54:54 +0200 (MEST)
+In-Reply-To: <s5h7iz7klvb.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,43 +22,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Assaf Hoffman <hoffman@marvell.com>
-Cc: Rita Shtern <rita@marvell.com>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Martin Habets <errandir_news@mph.eclipse.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Assaf Hoffman wrote:
-> Hi,
-> 
-> I'm mew to sound and ALSA.
-> 
-> My project deals with PCM in standard (I2S) mode and IEC958 (SPDIF)
-> mode. 
-> 
-> Can anyone tell me how the ALSA stack expects to "see" the data received
-> form the sound device? I mean, what is the format of the data DMA'ed
-> from the sound device to DRAM that the ALSA stack expects? 
-> 
-> Is this raw sound data? SPDIF frame includes non sound data as well.
-> Does the sound card HW strip the sound payload from the IEC958 frame to
-> deliver the raw sound data to the ALSA buffer? 
-> 
-> Please shed some light...
-> 
-> Many thanks. 
-> 
->  
+On Wed, 11 Oct 2006, Takashi Iwai wrote:
 
-ALSA can deal with all the different formats that the sound device might
-deliver. The low level sound driver simply tells the upper layers what
-formats are available. ALSA then handles those formats and all format
-conversion required to reach the user space application.
-It depends what your device does as to which format ALSA will see.
+> At Wed, 11 Oct 2006 14:03:48 +0100,
+> Martin Habets wrote:
+> > 
+> > Jaroslav, Takashi,
+> > 
+> > I'd rather err on being more vebose here. While it is true displaying
+> > all of them increases the chance of (mostly newbies) picking the wrong
+> > device, but it also avoids people claiming they do not have those devices.
+> 
+> Please don't jump to conclusion yet.  Whether the default is on or off
+> is no big deal, indeed.  We could add a global option to make the
+> default on or not, for example.
+> 
+> The problem is that we're seeing two different things.
+> 
+> 1. List all devices that are available
+> 
+>   The list contains every single device defined in the config space.
+> You can pick it up and open it but don't know whether it works and
+> what is for.  It's suitable for tools like aplay that accepts all
+> configs, but can be confusing for GUI programs.
+> 
+> 2. List devices that are predefined
+> 
+>   The list contains only devices that are tagged as usable and have
+> proper descriptions.  It's suitable for GUI programs, but some
+> user-defined definitions or functions may be missing unless you set it
+> right.
+> 
+> So, both are designed for different purposes.  The current design
+> doesn't look sufficient for the latter purpose.  For example, below is
+> the output of aplay -L on my machine.  If this appears on a selection
+> list of a GUI program, you would have no clue what to choose.
 
-James
+I don't think that most of GUI users will have defined own device names in 
+~/.asoundrc. So let's concentrate on the standard device list in alsa-lib.
 
+						Jaroslav
 
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
