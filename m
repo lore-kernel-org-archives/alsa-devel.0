@@ -1,13 +1,13 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 1/8] ASoC pxa2xx DMA support
-Date: Thu, 12 Oct 2006 11:12:23 +0100
-Message-ID: <1160647943.13780.2.camel@localhost.localdomain>
-References: <1160496702.24436.110.camel@localhost.localdomain>
-	<s5hk638m79r.wl%tiwai@suse.de>
+Subject: Re: [PATCH 2/8] ASoC pxa2xx I2S support
+Date: Thu, 12 Oct 2006 11:14:02 +0100
+Message-ID: <1160648042.13780.5.camel@localhost.localdomain>
+References: <1160496714.24436.111.camel@localhost.localdomain>
+	<s5hirism764.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-EKGI+gaRoaxHMszUexxI"
+Content-Type: multipart/mixed; boundary="=-7DQRpWuxqPJMJfKf3jLr"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk638m79r.wl%tiwai@suse.de>
+In-Reply-To: <s5hirism764.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,307 +22,259 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-EKGI+gaRoaxHMszUexxI
+--=-7DQRpWuxqPJMJfKf3jLr
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2006-10-10 at 19:04 +0200, Takashi Iwai wrote:
-> At Tue, 10 Oct 2006 17:11:42 +0100,
+On Tue, 2006-10-10 at 19:06 +0200, Takashi Iwai wrote:
+> At Tue, 10 Oct 2006 17:11:54 +0100,
 > Liam Girdwood wrote:
 > > 
-> > +static int
-> > +pxa2xx_pcm_hw_rule_mult32(struct snd_pcm_hw_params *params,
-> > +	struct snd_pcm_hw_rule *rule)
+> > +/* used to disable sysclk if external crystal is used */
+> > +static int extclk = 0;
+> 
+> You can omit "= 0" for zero-initialization of a static variable.
+
+Removed, although I do like it for clarity. 
+
+> 
+> > +static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
+> > +				struct snd_pcm_hw_params *params)
 > > +{
-> > +	struct snd_interval *i = hw_param_interval(params, rule->var);
-> > +	int changed = 0;
+> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 > > +
-> > +	if (i->min & 31) {
-> > +		i->min = (i->min & ~31) + 32;
-> > +		i->openmin = 0;
-> > +		changed = 1;
+> > +	pxa_i2s.master = 0;
+> > +	if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CBS_CFS)
+> > +		pxa_i2s.master = 1;
+> > +
+> > +	if (pxa_i2s.master && !extclk) {
+> > +		pxa_gpio_mode(gpio_bus[pxa_i2s.master].sys);
 > > +	}
-> > +
-> > +	if (i->max & 31) {
-> > +		i->max &= ~31;
-> > +		i->openmax = 0;
-> > +		changed = 1;
-> > +	}
-> > +
-> > +	return changed;
-> > +}
-> > +
-> > +static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
-> > +{
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	struct pxa2xx_runtime_data *prtd;
-> > +	int ret;
-> > +
-> > +	snd_soc_set_runtime_hwparams(substream, &pxa2xx_pcm_hardware);
-> > +
-> > +	/*
-> > +	 * For mysterious reasons (and despite what the manual says)
-> > +	 * playback samples are lost if the DMA count is not a multiple
-> > +	 * of the DMA burst size.  Let's add a rule to enforce that.
-> > +	 */
-> > +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-> > +				  pxa2xx_pcm_hw_rule_mult32, NULL,
-> > +				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, -1);
 > 
-> How about to use snd_pcm_hw_constraint_step()?
-
-Np, now changed to use snd_pcm_hw_constarint_step().
-
+> Remove braces.
 > 
-> 
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-> > +				  pxa2xx_pcm_hw_rule_mult32, NULL,
-> > +				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	prtd = kzalloc(sizeof(struct pxa2xx_runtime_data), GFP_KERNEL);
-> > +	if (prtd == NULL) {
-> > +		ret = -ENOMEM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	prtd->dma_desc_array =
-> > +		dma_alloc_writecombine(substream->pcm->card->dev, PAGE_SIZE,
-> > +				       &prtd->dma_desc_array_phys, GFP_KERNEL);
-> > +	if (!prtd->dma_desc_array)
-> > +		goto err1;
-> 
-> You have to set "ret = -EXXX" here.
-
 Fixed.
-
-> 
-> > +static u64 pxa2xx_pcm_dmamask = 0xffffffff;
-> 
-> Use DMA_32BIT_MASK.
-> 
-
-Fixed.
-
-> > +
-> > +int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
-> > +	struct snd_pcm *pcm)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (!card->dev->dma_mask)
-> > +		card->dev->dma_mask = &pxa2xx_pcm_dmamask;
-> > +	if (!card->dev->coherent_dma_mask)
-> > +		card->dev->coherent_dma_mask = 0xffffffff;
-> 
-> Ditto.
-> 
-
-Fixed.
-
 
 Thanks
 
 Liam
 
---=-EKGI+gaRoaxHMszUexxI
-Content-Disposition: attachment; filename=asoc-pxa2xx-dma.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-dma.patch; charset=utf-8
+
+--=-7DQRpWuxqPJMJfKf3jLr
+Content-Disposition: attachment; filename=asoc-pxa2xx-i2s.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-i2s.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/pxa2xx-pcm.c
+Index: alsa-kernel/soc/pxa/pxa2xx-i2s.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/pxa2xx-pcm.c
-@@ -0,0 +1,363 @@
++++ alsa-kernel/soc/pxa/pxa2xx-i2s.c
+@@ -0,0 +1,306 @@
 +/*
-+ * linux/sound/arm/pxa2xx-pcm.c -- ALSA PCM interface for the Intel PXA2xx chip
++ * pxa2xx-i2s.c  --  ALSA Soc Audio Layer
 + *
-+ * Author:	Nicolas Pitre
-+ * Created:	Nov 30, 2004
-+ * Copyright:	(C) 2004 MontaVista Software, Inc.
++ * Copyright 2005 Wolfson Microelectronics PLC.
++ * Author: Liam Girdwood
++ *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  Revision history
++ *    12th Aug 2005   Initial version.
 + */
 +
-+#include <linux/module.h>
 +#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/dma-mapping.h>
-+
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/delay.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
++#include <sound/initval.h>
 +#include <sound/soc.h>
 +
-+#include <asm/dma.h>
 +#include <asm/hardware.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/audio.h>
 +
 +#include "pxa2xx-pcm.h"
 +
-+static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_PAUSE |
-+				  SNDRV_PCM_INFO_RESUME,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+					SNDRV_PCM_FMTBIT_S24_LE |
-+					SNDRV_PCM_FMTBIT_S32_LE,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= 8192 - 32,
-+	.periods_min		= 1,
-+	.periods_max		= PAGE_SIZE/sizeof(pxa_dma_desc),
-+	.buffer_bytes_max	= 128 * 1024,
-+	.fifo_size		= 32,
++/* used to disable sysclk if external crystal is used */
++static int extclk;
++module_param(extclk, int, 0);
++MODULE_PARM_DESC(extclk, "set to 1 to disable pxa2xx i2s sysclk");
++
++struct pxa_i2s_port {
++	u32 sadiv;
++	u32 sacr0;
++	u32 sacr1;
++	u32 saimr;
++	int master;
++};
++static struct pxa_i2s_port pxa_i2s;
++
++#define PXA_I2S_DAIFMT \
++	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF)
++
++#define PXA_I2S_DIR \
++	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++
++#define PXA_I2S_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++
++/* priv is divider */
++static struct snd_soc_dai_mode pxa2xx_i2s_modes[] = {
++	/* pxa2xx I2S frame and clock master modes */
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_8000, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x48},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_11025, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x34},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_16000, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x24},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_22050, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x1a},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_44100, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xd},
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_48000, PXA_I2S_DIR,
++		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xc},
++
++	/* pxa2xx I2S frame master and clock slave mode */
++	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBM_CFS, SND_SOC_DAITDM_LRDW(0,0),
++		SNDRV_PCM_FMTBIT_S16_LE, PXA_I2S_RATES, PXA_I2S_DIR, 0,
++		SND_SOC_FS_ALL, SND_SOC_FSB(64), 0x48},
++
 +};
 +
-+struct pxa2xx_runtime_data {
-+	int dma_ch;
-+	struct pxa2xx_pcm_dma_params *params;
-+	pxa_dma_desc *dma_desc_array;
-+	dma_addr_t dma_desc_array_phys;
++static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_out = {
++	.name			= "I2S PCM Stereo out",
++	.dev_addr		= __PREG(SADR),
++	.drcmr			= &DRCMRTXSADR,
++	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
++				  DCMD_BURST32 | DCMD_WIDTH4,
 +};
 +
-+static void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
++static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_in = {
++	.name			= "I2S PCM Stereo in",
++	.dev_addr		= __PREG(SADR),
++	.drcmr			= &DRCMRRXSADR,
++	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
++				  DCMD_BURST32 | DCMD_WIDTH4,
++};
++
++static struct pxa2xx_gpio gpio_bus[] = {
++	{ /* I2S SoC Slave */
++		.rx = GPIO29_SDATA_IN_I2S_MD,
++		.tx = GPIO30_SDATA_OUT_I2S_MD,
++		.clk = GPIO28_BITCLK_IN_I2S_MD,
++		.frm = GPIO31_SYNC_I2S_MD,
++	},
++	{ /* I2S SoC Master */
++#ifdef CONFIG_PXA27x
++		.sys = GPIO113_I2S_SYSCLK_MD,
++#else
++		.sys = GPIO32_SYSCLK_I2S_MD,
++#endif
++		.rx = GPIO29_SDATA_IN_I2S_MD,
++		.tx = GPIO30_SDATA_OUT_I2S_MD,
++		.clk = GPIO28_BITCLK_OUT_I2S_MD,
++		.frm = GPIO31_SYNC_I2S_MD,
++	},
++};
++
++static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream)
 +{
-+	struct snd_pcm_substream *substream = dev_id;
-+	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
-+	int dcsr;
-+
-+	dcsr = DCSR(dma_ch);
-+	DCSR(dma_ch) = dcsr & ~DCSR_STOPIRQEN;
-+
-+	if (dcsr & DCSR_ENDINTR) {
-+		snd_pcm_period_elapsed(substream);
-+	} else {
-+		printk( KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
-+			prtd->params->name, dma_ch, dcsr );
-+	}
-+}
-+
-+static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct pxa2xx_runtime_data *prtd = runtime->private_data;
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct pxa2xx_pcm_dma_params *dma = rtd->cpu_dai->dma_data;
-+	size_t totsize = params_buffer_bytes(params);
-+	size_t period = params_period_bytes(params);
-+	pxa_dma_desc *dma_desc;
-+	dma_addr_t dma_buff_phys, next_desc_phys;
-+	int ret;
 +
-+	/* this may get called several times by oss emulation
-+	 * with different params */
-+	if (prtd->params == NULL) {
-+		prtd->params = dma;
-+		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
-+			      pxa2xx_pcm_dma_irq, substream);
-+		if (ret < 0)
-+			return ret;
-+		prtd->dma_ch = ret;
-+	} else if (prtd->params != dma) {
-+		pxa_free_dma(prtd->dma_ch);
-+		prtd->params = dma;
-+		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
-+			      pxa2xx_pcm_dma_irq, substream);
-+		if (ret < 0)
-+			return ret;
-+		prtd->dma_ch = ret;
-+	}
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	runtime->dma_bytes = totsize;
-+
-+	dma_desc = prtd->dma_desc_array;
-+	next_desc_phys = prtd->dma_desc_array_phys;
-+	dma_buff_phys = runtime->dma_addr;
-+	do {
-+		next_desc_phys += sizeof(pxa_dma_desc);
-+		dma_desc->ddadr = next_desc_phys;
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			dma_desc->dsadr = dma_buff_phys;
-+			dma_desc->dtadr = prtd->params->dev_addr;
-+		} else {
-+			dma_desc->dsadr = prtd->params->dev_addr;
-+			dma_desc->dtadr = dma_buff_phys;
-+		}
-+		if (period > totsize)
-+			period = totsize;
-+		dma_desc->dcmd = prtd->params->dcmd | period | DCMD_ENDIRQEN;
-+		dma_desc++;
-+		dma_buff_phys += period;
-+	} while (totsize -= period);
-+	dma_desc[-1].ddadr = prtd->dma_desc_array_phys;
-+
-+	return 0;
-+}
-+
-+static int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
-+
-+	if (prtd && prtd->params)
-+		*prtd->params->drcmr = 0;
-+
-+	if (prtd->dma_ch) {
-+		snd_pcm_set_runtime_buffer(substream, NULL);
-+		pxa_free_dma(prtd->dma_ch);
-+		prtd->dma_ch = 0;
++	if (!rtd->cpu_dai->active) {
++		SACR0 |= SACR0_RST;
++		SACR0 = 0;
 +	}
 +
 +	return 0;
 +}
 +
-+static int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
++/* wait for I2S controller to be ready */
++static int pxa_i2s_wait(void)
 +{
-+	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++	int i;
 +
-+	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
-+	DCSR(prtd->dma_ch) = 0;
-+	DCMD(prtd->dma_ch) = 0;
-+	*prtd->params->drcmr = prtd->dma_ch | DRCMR_MAPVLD;
-+
++	/* flush the Rx FIFO */
++	for(i = 0; i < 16; i++)
++		SADR;
 +	return 0;
 +}
 +
-+static int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
 +{
-+	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	pxa_i2s.master = 0;
++	if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CBS_CFS)
++		pxa_i2s.master = 1;
++
++	if (pxa_i2s.master && !extclk)
++		pxa_gpio_mode(gpio_bus[pxa_i2s.master].sys);
++
++	pxa_gpio_mode(gpio_bus[pxa_i2s.master].rx);
++	pxa_gpio_mode(gpio_bus[pxa_i2s.master].tx);
++	pxa_gpio_mode(gpio_bus[pxa_i2s.master].frm);
++	pxa_gpio_mode(gpio_bus[pxa_i2s.master].clk);
++	pxa_set_cken(CKEN8_I2S, 1);
++	pxa_i2s_wait();
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		rtd->cpu_dai->dma_data = &pxa2xx_i2s_pcm_stereo_out;
++	else
++		rtd->cpu_dai->dma_data = &pxa2xx_i2s_pcm_stereo_in;
++
++	/* is port used by another stream */
++	if (!(SACR0 & SACR0_ENB)) {
++
++		SACR0 = 0;
++		SACR1 = 0;
++		if (pxa_i2s.master)
++			SACR0 |= SACR0_BCKD;
++
++		SACR0 |= SACR0_RFTH(14) | SACR0_TFTH(1);
++
++		if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_LEFT_J)
++			SACR1 |= SACR1_AMSL;
++	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		SAIMR |= SAIMR_TFS;
++	else
++		SAIMR |= SAIMR_RFS;
++
++	SADIV = rtd->cpu_dai->dai_runtime.priv;
++	return 0;
++}
++
++static int pxa2xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
++{
 +	int ret = 0;
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
-+		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
-+		DCSR(prtd->dma_ch) = DCSR_RUN;
++		SACR0 |= SACR0_ENB;
 +		break;
-+
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		DCSR(prtd->dma_ch) &= ~DCSR_RUN;
 +		break;
-+
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		DCSR(prtd->dma_ch) |= DCSR_RUN;
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
-+		DCSR(prtd->dma_ch) |= DCSR_RUN;
-+		break;
-+
 +	default:
 +		ret = -EINVAL;
 +	}
@@ -330,233 +282,102 @@ Index: alsa-kernel/soc/pxa/pxa2xx-pcm.c
 +	return ret;
 +}
 +
-+static snd_pcm_uframes_t
-+pxa2xx_pcm_pointer(struct snd_pcm_substream *substream)
++static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct pxa2xx_runtime_data *prtd = runtime->private_data;
-+
-+	dma_addr_t ptr = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-+			 DSADR(prtd->dma_ch) : DTADR(prtd->dma_ch);
-+	snd_pcm_uframes_t x = bytes_to_frames(runtime, ptr - runtime->dma_addr);
-+
-+	if (x == runtime->buffer_size)
-+		x = 0;
-+	return x;
-+}
-+
-+static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct pxa2xx_runtime_data *prtd;
-+	int ret;
-+
-+	snd_soc_set_runtime_hwparams(substream, &pxa2xx_pcm_hardware);
-+
-+	/*
-+	 * For mysterious reasons (and despite what the manual says)
-+	 * playback samples are lost if the DMA count is not a multiple
-+	 * of the DMA burst size.  Let's add a rule to enforce that.
-+	 */
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+		SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (ret)
-+		goto out;
-+
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
-+	if (ret)
-+		goto out;
-+
-+	prtd = kzalloc(sizeof(struct pxa2xx_runtime_data), GFP_KERNEL);
-+	if (prtd == NULL) {
-+		ret = -ENOMEM;
-+		goto out;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		SACR1 |= SACR1_DRPL;
++		SAIMR &= ~SAIMR_TFS;
++	} else {
++		SACR1 |= SACR1_DREC;
++		SAIMR &= ~SAIMR_RFS;
 +	}
 +
-+	prtd->dma_desc_array =
-+		dma_alloc_writecombine(substream->pcm->card->dev, PAGE_SIZE,
-+				       &prtd->dma_desc_array_phys, GFP_KERNEL);
-+	if (!prtd->dma_desc_array) {
-+		ret = -ENOMEM;
-+		goto err1;
++	if (SACR1 & (SACR1_DREC | SACR1_DRPL)) {
++		SACR0 &= ~SACR0_ENB;
++		pxa_i2s_wait();
++		pxa_set_cken(CKEN8_I2S, 0);
 +	}
-+
-+	runtime->private_data = prtd;
-+	return 0;
-+
-+ err1:
-+	kfree(prtd);
-+ out:
-+	return ret;
 +}
 +
-+static int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
++#ifdef CONFIG_PM
++static int pxa2xx_i2s_suspend(struct platform_device *dev,
++	struct snd_soc_cpu_dai *dai)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct pxa2xx_runtime_data *prtd = runtime->private_data;
++	if (!dai->active)
++		return 0;
 +
-+	dma_free_writecombine(substream->pcm->card->dev, PAGE_SIZE,
-+			      prtd->dma_desc_array, prtd->dma_desc_array_phys);
-+	kfree(prtd);
++	/* store registers */
++	pxa_i2s.sacr0 = SACR0;
++	pxa_i2s.sacr1 = SACR1;
++	pxa_i2s.saimr = SAIMR;
++	pxa_i2s.sadiv = SADIV;
++
++	/* deactivate link */
++	SACR0 &= ~SACR0_ENB;
++	pxa_i2s_wait();
 +	return 0;
 +}
 +
-+static int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
-+	struct vm_area_struct *vma)
++static int pxa2xx_i2s_resume(struct platform_device *pdev,
++	struct snd_soc_cpu_dai *dai)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+				     runtime->dma_area,
-+				     runtime->dma_addr,
-+				     runtime->dma_bytes);
-+}
++	if (!dai->active)
++		return 0;
 +
-+struct snd_pcm_ops pxa2xx_pcm_ops = {
-+	.open		= pxa2xx_pcm_open,
-+	.close		= pxa2xx_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pxa2xx_pcm_hw_params,
-+	.hw_free	= pxa2xx_pcm_hw_free,
-+	.prepare	= pxa2xx_pcm_prepare,
-+	.trigger	= pxa2xx_pcm_trigger,
-+	.pointer	= pxa2xx_pcm_pointer,
-+	.mmap		= pxa2xx_pcm_mmap,
-+};
++	pxa_i2s_wait();
 +
-+static int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
-+{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = pxa2xx_pcm_hardware.buffer_bytes_max;
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
-+	if (!buf->area)
-+		return -ENOMEM;
-+	buf->bytes = size;
++	SACR0 = pxa_i2s.sacr0 &= ~SACR0_ENB;
++	SACR1 = pxa_i2s.sacr1;
++	SAIMR = pxa_i2s.saimr;
++	SADIV = pxa_i2s.sadiv;
++	SACR0 |= SACR0_ENB;
++
 +	return 0;
 +}
 +
-+static void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
-+static u64 pxa2xx_pcm_dmamask = DMA_32BIT_MASK;
-+
-+int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
-+	struct snd_pcm *pcm)
-+{
-+	int ret = 0;
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &pxa2xx_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = DMA_32BIT_MASK;
-+
-+	if (dai->playback.channels_min) {
-+		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (dai->capture.channels_min) {
-+		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
-+ out:
-+	return ret;
-+}
-+
-+struct snd_soc_platform pxa2xx_soc_platform = {
-+	.name		= "pxa2xx-audio",
-+	.pcm_ops 	= &pxa2xx_pcm_ops,
-+	.pcm_new	= pxa2xx_pcm_new,
-+	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
-+};
-+
-+EXPORT_SYMBOL_GPL(pxa2xx_soc_platform);
-+
-+MODULE_AUTHOR("Nicolas Pitre");
-+MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");
-+MODULE_LICENSE("GPL");
-Index: alsa-kernel/soc/pxa/pxa2xx-pcm.h
-===================================================================
---- /dev/null
-+++ alsa-kernel/soc/pxa/pxa2xx-pcm.h
-@@ -0,0 +1,48 @@
-+/*
-+ * linux/sound/arm/pxa2xx-pcm.h -- ALSA PCM interface for the Intel PXA2xx chip
-+ *
-+ * Author:	Nicolas Pitre
-+ * Created:	Nov 30, 2004
-+ * Copyright:	MontaVista Software, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _PXA2XX_PCM_H
-+#define _PXA2XX_PCM_H
-+
-+struct pxa2xx_pcm_dma_params {
-+	char *name;			/* stream identifier */
-+	u32 dcmd;			/* DMA descriptor dcmd field */
-+	volatile u32 *drcmr;		/* the DMA request channel to use */
-+	u32 dev_addr;			/* device physical address for DMA */
-+};
-+
-+struct pxa2xx_gpio {
-+	u32 sys;
-+	u32	rx;
-+	u32 tx;
-+	u32 clk;
-+	u32 frm;
-+};
-+
-+/* pxa2xx DAI ID's */
-+#define PXA2XX_DAI_AC97_HIFI	0
-+#define PXA2XX_DAI_AC97_AUX		1
-+#define PXA2XX_DAI_AC97_MIC		2
-+#define PXA2XX_DAI_I2S			0
-+#define PXA2XX_DAI_SSP1			0
-+#define PXA2XX_DAI_SSP2			1
-+#define PXA2XX_DAI_SSP3			2
-+
-+extern struct snd_soc_cpu_dai pxa_ac97_dai[3];
-+extern struct snd_soc_cpu_dai pxa_i2s_dai;
-+extern struct snd_soc_cpu_dai pxa_ssp_dai[3];
-+
-+/* platform data */
-+extern struct snd_soc_platform pxa2xx_soc_platform;
-+extern struct snd_ac97_bus_ops pxa2xx_ac97_ops;
-+
++#else
++#define pxa2xx_i2s_suspend	NULL
++#define pxa2xx_i2s_resume	NULL
 +#endif
++
++/* pxa2xx I2S sysclock is always 256 FS */
++static unsigned int pxa_i2s_config_sysclk(struct snd_soc_cpu_dai *iface,
++	struct snd_soc_clock_info *info, unsigned int clk)
++{
++	return info->rate << 8;
++}
++
++struct snd_soc_cpu_dai pxa_i2s_dai = {
++	.name = "pxa2xx-i2s",
++	.id = 0,
++	.type = SND_SOC_DAI_I2S,
++	.suspend = pxa2xx_i2s_suspend,
++	.resume = pxa2xx_i2s_resume,
++	.config_sysclk = pxa_i2s_config_sysclk,
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,},
++	.capture = {
++		.channels_min = 2,
++		.channels_max = 2,},
++	.ops = {
++		.startup = pxa2xx_i2s_startup,
++		.shutdown = pxa2xx_i2s_shutdown,
++		.trigger = pxa2xx_i2s_trigger,
++		.hw_params = pxa2xx_i2s_hw_params,},
++	.caps = {
++		.num_modes = ARRAY_SIZE(pxa2xx_i2s_modes),
++		.mode = pxa2xx_i2s_modes,},
++};
++
++EXPORT_SYMBOL_GPL(pxa_i2s_dai);
++
++/* Module information */
++MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
++MODULE_DESCRIPTION("pxa2xx I2S SoC Interface");
++MODULE_LICENSE("GPL");
 
---=-EKGI+gaRoaxHMszUexxI
+--=-7DQRpWuxqPJMJfKf3jLr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -567,7 +388,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-EKGI+gaRoaxHMszUexxI
+--=-7DQRpWuxqPJMJfKf3jLr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -578,4 +399,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-EKGI+gaRoaxHMszUexxI--
+--=-7DQRpWuxqPJMJfKf3jLr--
