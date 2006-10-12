@@ -1,13 +1,13 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 5/8] ASoC pxa2xx Spitz machine support
-Date: Thu, 12 Oct 2006 11:29:43 +0100
-Message-ID: <1160648983.13780.15.camel@localhost.localdomain>
-References: <1160497190.24436.114.camel@localhost.localdomain>
-	<s5hejtgm6fz.wl%tiwai@suse.de>
+Subject: Re: [PATCH 4/8] ASoC pxa2xx Corgi machine support
+Date: Thu, 12 Oct 2006 11:28:58 +0100
+Message-ID: <1160648938.13780.13.camel@localhost.localdomain>
+References: <1160497185.24436.113.camel@localhost.localdomain>
+	<s5hfydwm6mt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-DbH8kKyK5mMXewKJIuO9"
+Content-Type: multipart/mixed; boundary="=-m6bu6320zWLXOqNt/DBf"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hejtgm6fz.wl%tiwai@suse.de>
+In-Reply-To: <s5hfydwm6mt.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,23 +22,54 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-DbH8kKyK5mMXewKJIuO9
+--=-m6bu6320zWLXOqNt/DBf
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2006-10-10 at 19:22 +0200, Takashi Iwai wrote:
-> At Tue, 10 Oct 2006 17:19:50 +0100,
+On Tue, 2006-10-10 at 19:18 +0200, Takashi Iwai wrote:
+> At Tue, 10 Oct 2006 17:19:45 +0100,
 > Liam Girdwood wrote:
 > > 
-> > +static int spitz_mic_bias(struct snd_soc_dapm_widget *w, int event)
-> > +{
-> > +	if (machine_is_borzoi() || machine_is_spitz()) {
-> > +		if (SND_SOC_DAPM_EVENT_ON(event))
-> > +			set_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
-> > +		else
-> > +			reset_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
+> > +static int corgi_jack_func = 0;
+> > +static int corgi_spk_func = 0;
 > 
-> Can you fold lines within 80-chars?
+> '= 0' can be omitted.
+
+Fixed.
+
+> 
+> > +static int corgi_set_jack(struct snd_kcontrol *kcontrol,
+> > +	struct snd_ctl_elem_value *ucontrol)
+> > +{
+> > +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+> > +	corgi_jack_func = ucontrol->value.integer.value[0];
+> > +	corgi_ext_control(codec);
+> > +	return 0;
+> > +}
+> 
+> The put callback should return 1 if the value is changed.
+
+Fixed.
+
+> 
+> > +unsigned int corgi_config_sysclk(struct snd_soc_pcm_runtime *rtd,
+> > +	struct snd_soc_clock_info *info)
+> > +{
+> 
+> Missing static?
+
+Fixed.
+
+> 
+> > +	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
+> > +		/* pxa2xx is i2s master  */
+> > +		switch(info->rate) {
+> > +			case 44100:
+> > +			case 88200:
+> 
+> cases are normally in the same indent level as switch().
+> Also, put a space between switch and (.
+> 
 > 
 
 Fixed.
@@ -48,18 +79,18 @@ Thanks
 Liam
 
 
---=-DbH8kKyK5mMXewKJIuO9
-Content-Disposition: attachment; filename=asoc-pxa2xx-spitz.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-spitz.patch; charset=utf-8
+--=-m6bu6320zWLXOqNt/DBf
+Content-Disposition: attachment; filename=asoc-pxa2xx-corgi.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-corgi.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/spitz.c
+Index: alsa-kernel/soc/pxa/corgi.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/spitz.c
-@@ -0,0 +1,374 @@
++++ alsa-kernel/soc/pxa/corgi.c
+@@ -0,0 +1,361 @@
 +/*
-+ * spitz.c  --  SoC audio for Sharp SL-Cxx00 models Spitz, Borzoi and Akita
++ * corgi.c  --  SoC audio for Corgi
 + *
 + * Copyright 2005 Wolfson Microelectronics PLC.
 + * Copyright 2005 Openedhand Ltd.
@@ -92,192 +123,186 @@ Index: alsa-kernel/soc/pxa/spitz.c
 +#include <asm/hardware/scoop.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/hardware.h>
-+#include <asm/arch/akita.h>
-+#include <asm/arch/spitz.h>
-+#include <asm/mach-types.h>
-+#include "../codecs/wm8750.h"
++#include <asm/arch/corgi.h>
++#include <asm/arch/audio.h>
++
++#include "../codecs/wm8731.h"
 +#include "pxa2xx-pcm.h"
 +
-+#define SPITZ_HP        0
-+#define SPITZ_MIC       1
-+#define SPITZ_LINE      2
-+#define SPITZ_HEADSET   3
-+#define SPITZ_HP_OFF    4
-+#define SPITZ_SPK_ON    0
-+#define SPITZ_SPK_OFF   1
++#define CORGI_HP        0
++#define CORGI_MIC       1
++#define CORGI_LINE      2
++#define CORGI_HEADSET   3
++#define CORGI_HP_OFF    4
++#define CORGI_SPK_ON    0
++#define CORGI_SPK_OFF   1
 +
 + /* audio clock in Hz - rounded from 12.235MHz */
-+#define SPITZ_AUDIO_CLOCK 12288000
++#define CORGI_AUDIO_CLOCK 12288000
 +
-+static int spitz_jack_func;
-+static int spitz_spk_func;
++static int corgi_jack_func;
++static int corgi_spk_func;
 +
-+static void spitz_ext_control(struct snd_soc_codec *codec)
++static void corgi_ext_control(struct snd_soc_codec *codec)
 +{
-+	if (spitz_spk_func == SPITZ_SPK_ON)
-+		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 1);
-+	else
-+		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 0);
++	int spk = 0, mic = 0, line = 0, hp = 0, hs = 0;
 +
 +	/* set up jack connection */
-+	switch (spitz_jack_func) {
-+	case SPITZ_HP:
-+		/* enable and unmute hp jack, disable mic bias */
-+		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
-+		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
-+		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++	switch (corgi_jack_func) {
++	case CORGI_HP:
++		hp = 1;
++		/* set = unmute headphone */
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
 +		break;
-+	case SPITZ_MIC:
-+		/* enable mic jack and bias, mute hp */
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++	case CORGI_MIC:
++		mic = 1;
++		/* reset = mute headphone */
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
 +		break;
-+	case SPITZ_LINE:
-+		/* enable line jack, disable mic bias and mute hp */
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Line Jack", 1);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++	case CORGI_LINE:
++		line = 1;
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
 +		break;
-+	case SPITZ_HEADSET:
-+		/* enable and unmute headset jack enable mic bias, mute L hp */
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
-+		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 1);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
-+		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
-+		break;
-+	case SPITZ_HP_OFF:
-+
-+		/* jack removed, everything off */
-+		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
-+		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++	case CORGI_HEADSET:
++		hs = 1;
++		mic = 1;
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
 +		break;
 +	}
++
++	if (corgi_spk_func == CORGI_SPK_ON)
++		spk = 1;
++
++	/* set the enpoints to their new connetion states */
++	snd_soc_dapm_set_endpoint(codec, "Ext Spk", spk);
++	snd_soc_dapm_set_endpoint(codec, "Mic Jack", mic);
++	snd_soc_dapm_set_endpoint(codec, "Line Jack", line);
++	snd_soc_dapm_set_endpoint(codec, "Headphone Jack", hp);
++	snd_soc_dapm_set_endpoint(codec, "Headset Jack", hs);
++
++	/* signal a DAPM event */
 +	snd_soc_dapm_sync_endpoints(codec);
 +}
 +
-+static int spitz_startup(struct snd_pcm_substream *substream)
++static int corgi_startup(struct snd_pcm_substream *substream)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_codec *codec = rtd->socdev->codec;
 +
 +	/* check the jack status at stream startup */
-+	spitz_ext_control(codec);
++	corgi_ext_control(codec);
 +	return 0;
 +}
 +
-+static struct snd_soc_ops spitz_ops = {
-+	.startup = spitz_startup,
++/* we need to unmute the HP at shutdown as the mute burns power on corgi */
++static int corgi_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec *codec = rtd->socdev->codec;
++
++	/* set = unmute headphone */
++	set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_L);
++	set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MUTE_R);
++	return 0;
++}
++
++static struct snd_soc_ops corgi_ops = {
++	.startup = corgi_startup,
++	.shutdown = corgi_shutdown,
 +};
 +
-+static int spitz_get_jack(struct snd_kcontrol *kcontrol,
++static int corgi_get_jack(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	ucontrol->value.integer.value[0] = spitz_jack_func;
++	ucontrol->value.integer.value[0] = corgi_jack_func;
 +	return 0;
 +}
 +
-+static int spitz_set_jack(struct snd_kcontrol *kcontrol,
++static int corgi_set_jack(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 +
-+	if (spitz_jack_func == ucontrol->value.integer.value[0])
++	if (corgi_jack_func == ucontrol->value.integer.value[0])
 +		return 0;
 +
-+	spitz_jack_func = ucontrol->value.integer.value[0];
-+	spitz_ext_control(codec);
++	corgi_jack_func = ucontrol->value.integer.value[0];
++	corgi_ext_control(codec);
 +	return 1;
 +}
 +
-+static int spitz_get_spk(struct snd_kcontrol *kcontrol,
++static int corgi_get_spk(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	ucontrol->value.integer.value[0] = spitz_spk_func;
++	ucontrol->value.integer.value[0] = corgi_spk_func;
 +	return 0;
 +}
 +
-+static int spitz_set_spk(struct snd_kcontrol *kcontrol,
++static int corgi_set_spk(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
 +
-+	if (spitz_spk_func == ucontrol->value.integer.value[0])
++	if (corgi_spk_func == ucontrol->value.integer.value[0])
 +		return 0;
 +
-+	spitz_spk_func = ucontrol->value.integer.value[0];
-+	spitz_ext_control(codec);
++	corgi_spk_func = ucontrol->value.integer.value[0];
++	corgi_ext_control(codec);
 +	return 1;
 +}
 +
-+static int spitz_mic_bias(struct snd_soc_dapm_widget *w, int event)
++static int corgi_amp_event(struct snd_soc_dapm_widget *w, int event)
 +{
-+	if (machine_is_borzoi() || machine_is_spitz()) {
-+		if (SND_SOC_DAPM_EVENT_ON(event))
-+			set_scoop_gpio(&spitzscoop2_device.dev,
-+				SPITZ_SCP2_MIC_BIAS);
-+		else
-+			reset_scoop_gpio(&spitzscoop2_device.dev,
-+				SPITZ_SCP2_MIC_BIAS);
-+	}
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
++	else
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_APM_ON);
 +
-+	if (machine_is_akita()) {
-+		if (SND_SOC_DAPM_EVENT_ON(event))
-+			akita_set_ioexp(&akitaioexp_device.dev,
-+				AKITA_IOEXP_MIC_BIAS);
-+		else
-+			akita_reset_ioexp(&akitaioexp_device.dev,
-+				AKITA_IOEXP_MIC_BIAS);
-+	}
 +	return 0;
 +}
 +
-+/* spitz machine dapm widgets */
-+static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", spitz_mic_bias),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_LINE("Line Jack", NULL),
++static int corgi_mic_event(struct snd_soc_dapm_widget *w, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		set_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MIC_BIAS);
++	else
++		reset_scoop_gpio(&corgiscoop_device.dev, CORGI_SCP_MIC_BIAS);
 +
-+	/* headset is a mic and mono headphone */
-+	SND_SOC_DAPM_HP("Headset Jack", NULL),
++	return 0;
++}
++
++/* corgi machine dapm widgets */
++static const struct snd_soc_dapm_widget wm8731_dapm_widgets[] = {
++SND_SOC_DAPM_HP("Headphone Jack", NULL),
++SND_SOC_DAPM_MIC("Mic Jack", corgi_mic_event),
++SND_SOC_DAPM_SPK("Ext Spk", corgi_amp_event),
++SND_SOC_DAPM_LINE("Line Jack", NULL),
++SND_SOC_DAPM_HP("Headset Jack", NULL),
 +};
 +
-+/* Spitz machine audio_map */
++/* Corgi machine audio map (connections to the codec pins) */
 +static const char *audio_map[][3] = {
 +
-+	/* headphone connected to LOUT1, ROUT1 */
-+	{"Headphone Jack", NULL, "LOUT1"},
-+	{"Headphone Jack", NULL, "ROUT1"},
++	/* headset Jack  - in = micin, out = LHPOUT*/
++	{"Headset Jack", NULL, "LHPOUT"},
 +
-+	/* headset connected to ROUT1 and LINPUT1 with bias (def below) */
-+	{"Headset Jack", NULL, "ROUT1"},
++	/* headphone connected to LHPOUT1, RHPOUT1 */
++	{"Headphone Jack", NULL, "LHPOUT"},
++	{"Headphone Jack", NULL, "RHPOUT"},
 +
-+	/* ext speaker connected to LOUT2, ROUT2  */
-+	{"Ext Spk", NULL , "ROUT2"},
-+	{"Ext Spk", NULL , "LOUT2"},
++	/* speaker connected to LOUT, ROUT */
++	{"Ext Spk", NULL, "ROUT"},
++	{"Ext Spk", NULL, "LOUT"},
 +
-+	/* mic is connected to input 1 - with bias */
-+	{"LINPUT1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Mic Jack"},
++	/* mic is connected to MICIN (via right channel of headphone jack) */
++	{"MICIN", NULL, "Mic Jack"},
 +
-+	/* line is connected to input 1 - no bias */
-+	{"LINPUT1", NULL, "Line Jack"},
++	/* Same as the above but no mic bias for line signals */
++	{"MICIN", NULL, "Line Jack"},
 +
 +	{NULL, NULL, NULL},
 +};
@@ -285,49 +310,43 @@ Index: alsa-kernel/soc/pxa/spitz.c
 +static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
 +	"Off"};
 +static const char *spk_function[] = {"On", "Off"};
-+static const struct soc_enum spitz_enum[] = {
++static const struct soc_enum corgi_enum[] = {
 +	SOC_ENUM_SINGLE_EXT(5, jack_function),
 +	SOC_ENUM_SINGLE_EXT(2, spk_function),
 +};
 +
-+static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
-+	SOC_ENUM_EXT("Jack Function", spitz_enum[0], spitz_get_jack,
-+		spitz_set_jack),
-+	SOC_ENUM_EXT("Speaker Function", spitz_enum[1], spitz_get_spk,
-+		spitz_set_spk),
++static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
++	SOC_ENUM_EXT("Jack Function", corgi_enum[0], corgi_get_jack,
++		corgi_set_jack),
++	SOC_ENUM_EXT("Speaker Function", corgi_enum[1], corgi_get_spk,
++		corgi_set_spk),
 +};
 +
 +/*
-+ * Logic for a wm8750 as connected on a Sharp SL-Cxx00 Device
++ * Logic for a wm8731 as connected on a Sharp SL-C7x0 Device
 + */
-+static int spitz_wm8750_init(struct snd_soc_codec *codec)
++static int corgi_wm8731_init(struct snd_soc_codec *codec)
 +{
 +	int i, err;
 +
-+	/* NC codec pins */
-+	snd_soc_dapm_set_endpoint(codec, "RINPUT1", 0);
-+	snd_soc_dapm_set_endpoint(codec, "LINPUT2", 0);
-+	snd_soc_dapm_set_endpoint(codec, "RINPUT2", 0);
-+	snd_soc_dapm_set_endpoint(codec, "LINPUT3", 0);
-+	snd_soc_dapm_set_endpoint(codec, "RINPUT3", 0);
-+	snd_soc_dapm_set_endpoint(codec, "OUT3", 0);
-+	snd_soc_dapm_set_endpoint(codec, "MONO", 0);
++	snd_soc_dapm_set_endpoint(codec, "LLINEIN", 0);
++	snd_soc_dapm_set_endpoint(codec, "RLINEIN", 0);
 +
-+	/* Add spitz specific controls */
-+	for (i = 0; i < ARRAY_SIZE(wm8750_spitz_controls); i++) {
++	/* Add corgi specific controls */
++	for (i = 0; i < ARRAY_SIZE(wm8731_corgi_controls); i++) {
 +		err = snd_ctl_add(codec->card,
-+			snd_soc_cnew(&wm8750_spitz_controls[i], codec, NULL));
++			snd_soc_cnew(&wm8731_corgi_controls[i],codec, NULL));
 +		if (err < 0)
 +			return err;
 +	}
 +
-+	/* Add spitz specific widgets */
-+	for (i = 0; i < ARRAY_SIZE(wm8750_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &wm8750_dapm_widgets[i]);
++	/* Add corgi specific widgets */
++	for(i = 0; i < ARRAY_SIZE(wm8731_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &wm8731_dapm_widgets[i]);
 +	}
 +
-+	/* Set up spitz specific audio path audio_map */
-+	for (i = 0; audio_map[i][0] != NULL; i++) {
++	/* Set up corgi specific audio path audio_map */
++	for(i = 0; audio_map[i][0] != NULL; i++) {
 +		snd_soc_dapm_connect_input(codec, audio_map[i][0],
 +			audio_map[i][1], audio_map[i][2]);
 +	}
@@ -336,104 +355,103 @@ Index: alsa-kernel/soc/pxa/spitz.c
 +	return 0;
 +}
 +
-+static unsigned int spitz_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++static unsigned int corgi_config_sysclk(struct snd_soc_pcm_runtime *rtd,
 +	struct snd_soc_clock_info *info)
 +{
 +	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
 +		/* pxa2xx is i2s master  */
 +		switch (info->rate) {
-+		case 11025:
-+		case 22050:
 +		case 44100:
 +		case 88200:
-+			/* configure codec digital filters
-+			 * for 11.025, 22.05, 44.1, 88.2 */
++			/* configure codec digital filters for 44.1, 88.2 */
 +			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
 +				11289600);
 +		break;
 +		default:
 +			/* configure codec digital filters for all other rates */
 +			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+				SPITZ_AUDIO_CLOCK);
++				CORGI_AUDIO_CLOCK);
 +		break;
 +		}
-+		/* configure pxa2xx i2s interface clocks as master */
++		/* config pxa i2s as master */
 +		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
-+			SPITZ_AUDIO_CLOCK);
++			CORGI_AUDIO_CLOCK);
 +	} else {
-+		/* codec is i2s master - only configure codec DAI clock */
++		/* codec is i2s master -
++		 * only configure codec DAI clock and filters */
 +		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
-+			SPITZ_AUDIO_CLOCK);
++			CORGI_AUDIO_CLOCK);
 +	}
 +}
 +
-+/* spitz digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link spitz_dai = {
-+	.name = "wm8750",
-+	.stream_name = "WM8750",
++/* corgi digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link corgi_dai = {
++	.name = "WM8731",
++	.stream_name = "WM8731",
 +	.cpu_dai = &pxa_i2s_dai,
-+	.codec_dai = &wm8750_dai,
-+	.init = spitz_wm8750_init,
-+	.config_sysclk = spitz_config_sysclk,
++	.codec_dai = &wm8731_dai,
++	.init = corgi_wm8731_init,
++	.config_sysclk = corgi_config_sysclk,
 +};
 +
-+/* spitz audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_spitz = {
-+	.name = "Spitz",
-+	.dai_link = &spitz_dai,
++/* corgi audio machine driver */
++static struct snd_soc_machine snd_soc_machine_corgi = {
++	.name = "Corgi",
++	.dai_link = &corgi_dai,
 +	.num_links = 1,
-+	.ops = &spitz_ops,
++	.ops = &corgi_ops,
 +};
 +
-+/* spitz audio private data */
-+static struct wm8750_setup_data spitz_wm8750_setup = {
++/* corgi audio private data */
++static struct wm8731_setup_data corgi_wm8731_setup = {
 +	.i2c_address = 0x1b,
 +};
 +
-+/* spitz audio subsystem */
-+static struct snd_soc_device spitz_snd_devdata = {
-+	.machine = &snd_soc_machine_spitz,
++/* corgi audio subsystem */
++static struct snd_soc_device corgi_snd_devdata = {
++	.machine = &snd_soc_machine_corgi,
 +	.platform = &pxa2xx_soc_platform,
-+	.codec_dev = &soc_codec_dev_wm8750,
-+	.codec_data = &spitz_wm8750_setup,
++	.codec_dev = &soc_codec_dev_wm8731,
++	.codec_data = &corgi_wm8731_setup,
 +};
 +
-+static struct platform_device *spitz_snd_device;
++static struct platform_device *corgi_snd_device;
 +
-+static int __init spitz_init(void)
++static int __init corgi_init(void)
 +{
 +	int ret;
 +
-+	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
++	if (!(machine_is_corgi() || machine_is_shepherd() || machine_is_husky()))
 +		return -ENODEV;
 +
-+	spitz_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!spitz_snd_device)
++	corgi_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!corgi_snd_device)
 +		return -ENOMEM;
 +
-+	platform_set_drvdata(spitz_snd_device, &spitz_snd_devdata);
-+	spitz_snd_devdata.dev = &spitz_snd_device->dev;
-+	ret = platform_device_add(spitz_snd_device);
++	platform_set_drvdata(corgi_snd_device, &corgi_snd_devdata);
++	corgi_snd_devdata.dev = &corgi_snd_device->dev;
++	ret = platform_device_add(corgi_snd_device);
 +
 +	if (ret)
-+		platform_device_put(spitz_snd_device);
++		platform_device_put(corgi_snd_device);
 +
 +	return ret;
 +}
 +
-+static void __exit spitz_exit(void)
++static void __exit corgi_exit(void)
 +{
-+	platform_device_unregister(spitz_snd_device);
++	platform_device_unregister(corgi_snd_device);
 +}
 +
-+module_init(spitz_init);
-+module_exit(spitz_exit);
++module_init(corgi_init);
++module_exit(corgi_exit);
 +
++/* Module information */
 +MODULE_AUTHOR("Richard Purdie");
-+MODULE_DESCRIPTION("ALSA SoC Spitz");
++MODULE_DESCRIPTION("ALSA SoC Corgi");
 +MODULE_LICENSE("GPL");
 
---=-DbH8kKyK5mMXewKJIuO9
+--=-m6bu6320zWLXOqNt/DBf
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -444,7 +462,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-DbH8kKyK5mMXewKJIuO9
+--=-m6bu6320zWLXOqNt/DBf
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -455,4 +473,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-DbH8kKyK5mMXewKJIuO9--
+--=-m6bu6320zWLXOqNt/DBf--
