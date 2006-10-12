@@ -1,16 +1,20 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH 2/8] ASoC pxa2xx I2S support
-Date: Thu, 12 Oct 2006 11:47:16 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0610121144020.2435@xanadu.home>
-References: <1160496714.24436.111.camel@localhost.localdomain>
-	<s5hirism764.wl%tiwai@suse.de>
-	<1160648042.13780.5.camel@localhost.localdomain>
-	<s5h8xjlkdk3.wl%tiwai@suse.de>
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: 1.0.13 and hdsp cardbus
+Date: Thu, 12 Oct 2006 12:36:32 -0400
+Message-ID: <1160670992.4665.27.camel@localhost.localdomain>
+References: <70a871c80610050541r73bbc2d7j408595802bb2c43f@mail.gmail.com>
+	<4525F73D.2040105@chello.at>
+	<70a871c80610060027l4196fdfi7b7ecd215733a7b3@mail.gmail.com>
+	<45264A94.6010504@chello.at>
+	<70a871c80610060709s73c87f03u31f4e91af077da46@mail.gmail.com>
+	<4526D56E.1000904@chello.at>
+	<70a871c80610070341q3104c89ne76bd70dd6be035e@mail.gmail.com>
+Reply-To: paul@linuxaudiosystems.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <s5h8xjlkdk3.wl%tiwai@suse.de>
+In-reply-to: <70a871c80610070341q3104c89ne76bd70dd6be035e@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,38 +24,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Dmitry Baikov <dsbaikov@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Oct 2006, Takashi Iwai wrote:
+On Sat, 2006-10-07 at 14:41 +0400, Dmitry Baikov wrote:
+> 1) booting with plugged cardbus
+>     card works
+>    after unplugging, writes: card ejected from slot 0
+>    all subsequent cardbus insertions/removals are not detected.
+>    Not a single word in syslog.
 
-> At Thu, 12 Oct 2006 11:14:02 +0100,
-> Liam Girdwood wrote:
-> > 
-> > On Tue, 2006-10-10 at 19:06 +0200, Takashi Iwai wrote:
-> > > At Tue, 10 Oct 2006 17:11:54 +0100,
-> > > Liam Girdwood wrote:
-> > > > 
-> > > > +/* used to disable sysclk if external crystal is used */
-> > > > +static int extclk = 0;
-> > > 
-> > > You can omit "= 0" for zero-initialization of a static variable.
-> > 
-> > Removed, although I do like it for clarity. 
-> 
-> IIRC, the code size is reduced by omitting '= 0'.  That is why kernel
-> code prefers the style without '= 0'. 
-> Maybe it doesn't matter any more with the recetn gcc, though.
-
-The reason is that global variables with explicit initial values are 
-allocated to the .data section which is always present in the kernel 
-binary.  When no explicit initial value is provided then the variable is 
-allocated to the .bss section which is _not_ included in the kernel 
-binary but initialized to zero at runtime.
+this has been the case for quite a long time. my laptop has a cardbus
+eject button that is too easy to hit, and i have never seen a kernel i
+couldn't hang/crash by accidentally hitting it and then finishing the
+full "press" by hand.
 
 
-Nicolas
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
