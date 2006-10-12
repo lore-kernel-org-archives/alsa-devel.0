@@ -1,13 +1,13 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 2/8] ASoC pxa2xx I2S support
-Date: Thu, 12 Oct 2006 11:14:02 +0100
-Message-ID: <1160648042.13780.5.camel@localhost.localdomain>
-References: <1160496714.24436.111.camel@localhost.localdomain>
-	<s5hirism764.wl%tiwai@suse.de>
+Subject: Re: [PATCH 3/8] ASoC pxa2xx AC97 support
+Date: Thu, 12 Oct 2006 11:27:19 +0100
+Message-ID: <1160648839.13780.10.camel@localhost.localdomain>
+References: <1160497176.24436.112.camel@localhost.localdomain>
+	<s5hhcycm6tj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-7DQRpWuxqPJMJfKf3jLr"
+Content-Type: multipart/mixed; boundary="=-sj4YfFKt9QzJ8Ipb5lX/"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hirism764.wl%tiwai@suse.de>
+In-Reply-To: <s5hhcycm6tj.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,37 +22,42 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-7DQRpWuxqPJMJfKf3jLr
+--=-sj4YfFKt9QzJ8Ipb5lX/
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2006-10-10 at 19:06 +0200, Takashi Iwai wrote:
-> At Tue, 10 Oct 2006 17:11:54 +0100,
+On Tue, 2006-10-10 at 19:14 +0200, Takashi Iwai wrote:
+> At Tue, 10 Oct 2006 17:19:36 +0100,
 > Liam Girdwood wrote:
-> > 
-> > +/* used to disable sysclk if external crystal is used */
-> > +static int extclk = 0;
+> > +/* may need to expand this */
+> > +static struct snd_soc_dai_mode pxa2xx_ac97_modes[] = {
+> > +	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
 > 
-> You can omit "= 0" for zero-initialization of a static variable.
+> Better to use ".field = value" initialization.
 
-Removed, although I do like it for clarity. 
+IMHO, this is a better style for the DAI capabilities field because it
+can grow quite large depending on the DAI.
 
 > 
-> > +static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
-> > +				struct snd_pcm_hw_params *params)
+> > +static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id,
+> > +	struct pt_regs *regs)
+> 
+> Note that in the latest kernel code, the last struct pt_regs pointer
+> is removed from irq handler.  I already updated ALSA HG tree
+> accordingly.
+
+Fixed.
+
+> 
+> > +static int pxa2xx_ac97_probe(struct platform_device *pdev)
 > > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +	int ret;
 > > +
-> > +	pxa_i2s.master = 0;
-> > +	if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CBS_CFS)
-> > +		pxa_i2s.master = 1;
-> > +
-> > +	if (pxa_i2s.master && !extclk) {
-> > +		pxa_gpio_mode(gpio_bus[pxa_i2s.master].sys);
-> > +	}
+> > +	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
 > 
-> Remove braces.
+> Don't you need IRQF_DISABLED (former SA_INTERRUPT)?
 > 
+
 Fixed.
 
 Thanks
@@ -60,324 +65,451 @@ Thanks
 Liam
 
 
---=-7DQRpWuxqPJMJfKf3jLr
-Content-Disposition: attachment; filename=asoc-pxa2xx-i2s.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-i2s.patch; charset=utf-8
+--=-sj4YfFKt9QzJ8Ipb5lX/
+Content-Disposition: attachment; filename=asoc-pxa2xx-ac97.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-ac97.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/pxa2xx-i2s.c
+Index: alsa-kernel/soc/pxa/pxa2xx-ac97.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/pxa2xx-i2s.c
-@@ -0,0 +1,306 @@
++++ alsa-kernel/soc/pxa/pxa2xx-ac97.c
+@@ -0,0 +1,433 @@
 +/*
-+ * pxa2xx-i2s.c  --  ALSA Soc Audio Layer
++ * linux/sound/pxa2xx-ac97.c -- AC97 support for the Intel PXA2xx chip.
 + *
-+ * Copyright 2005 Wolfson Microelectronics PLC.
-+ * Author: Liam Girdwood
-+ *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Author:	Nicolas Pitre
++ * Created:	Dec 02, 2004
++ * Copyright:	MontaVista Software Inc.
 + *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    12th Aug 2005   Initial version.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
 +#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/wait.h>
 +#include <linux/delay.h>
++
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
++#include <sound/ac97_codec.h>
 +#include <sound/initval.h>
 +#include <sound/soc.h>
 +
++#include <asm/irq.h>
++#include <linux/mutex.h>
 +#include <asm/hardware.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/audio.h>
 +
 +#include "pxa2xx-pcm.h"
 +
-+/* used to disable sysclk if external crystal is used */
-+static int extclk;
-+module_param(extclk, int, 0);
-+MODULE_PARM_DESC(extclk, "set to 1 to disable pxa2xx i2s sysclk");
++static DEFINE_MUTEX(car_mutex);
++static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
++static volatile long gsr_bits;
 +
-+struct pxa_i2s_port {
-+	u32 sadiv;
-+	u32 sacr0;
-+	u32 sacr1;
-+	u32 saimr;
-+	int master;
-+};
-+static struct pxa_i2s_port pxa_i2s;
-+
-+#define PXA_I2S_DAIFMT \
-+	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF)
-+
-+#define PXA_I2S_DIR \
++#define AC97_DIR \
 +	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
 +
-+#define PXA_I2S_RATES \
++#define AC97_RATES \
 +	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
 +
-+/* priv is divider */
-+static struct snd_soc_dai_mode pxa2xx_i2s_modes[] = {
-+	/* pxa2xx I2S frame and clock master modes */
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_8000, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x48},
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_11025, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x34},
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_16000, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x24},
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_22050, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x1a},
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_44100, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xd},
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_48000, PXA_I2S_DIR,
-+		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xc},
-+
-+	/* pxa2xx I2S frame master and clock slave mode */
-+	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBM_CFS, SND_SOC_DAITDM_LRDW(0,0),
-+		SNDRV_PCM_FMTBIT_S16_LE, PXA_I2S_RATES, PXA_I2S_DIR, 0,
-+		SND_SOC_FS_ALL, SND_SOC_FSB(64), 0x48},
-+
++/* may need to expand this */
++static struct snd_soc_dai_mode pxa2xx_ac97_modes[] = {
++	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
 +};
 +
-+static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_out = {
-+	.name			= "I2S PCM Stereo out",
-+	.dev_addr		= __PREG(SADR),
-+	.drcmr			= &DRCMRTXSADR,
++/*
++ * Beware PXA27x bugs:
++ *
++ *   o Slot 12 read from modem space will hang controller.
++ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
++ *
++ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
++ * 1 jiffy timeout if interrupt never comes).
++ */
++
++static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97,
++	unsigned short reg)
++{
++	unsigned short val = -1;
++	volatile u32 *reg_addr;
++
++	mutex_lock(&car_mutex);
++
++	/* set up primary or secondary codec/modem space */
++#ifdef CONFIG_PXA27x
++	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
++#else
++	if (reg == AC97_GPIO_STATUS)
++		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
++	else
++		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
++#endif
++	reg_addr += (reg >> 1);
++
++#ifndef CONFIG_PXA27x
++	if (reg == AC97_GPIO_STATUS) {
++		/* read from controller cache */
++		val = *reg_addr;
++		goto out;
++	}
++#endif
++
++	/* start read access across the ac97 link */
++	GSR = GSR_CDONE | GSR_SDONE;
++	gsr_bits = 0;
++	val = *reg_addr;
++
++	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
++	if (!((GSR | gsr_bits) & GSR_SDONE)) {
++		printk(KERN_ERR "%s: read error (ac97_reg=%x GSR=%#lx)\n",
++				__FUNCTION__, reg, GSR | gsr_bits);
++		val = -1;
++		goto out;
++	}
++
++	/* valid data now */
++	GSR = GSR_CDONE | GSR_SDONE;
++	gsr_bits = 0;
++	val = *reg_addr;
++	/* but we've just started another cycle... */
++	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
++
++out:	mutex_unlock(&car_mutex);
++	return val;
++}
++
++static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
++	unsigned short val)
++{
++	volatile u32 *reg_addr;
++
++	mutex_lock(&car_mutex);
++
++	/* set up primary or secondary codec/modem space */
++#ifdef CONFIG_PXA27x
++	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
++#else
++	if (reg == AC97_GPIO_STATUS)
++		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
++	else
++		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
++#endif
++	reg_addr += (reg >> 1);
++
++	GSR = GSR_CDONE | GSR_SDONE;
++	gsr_bits = 0;
++	*reg_addr = val;
++	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1);
++	if (!((GSR | gsr_bits) & GSR_CDONE))
++		printk(KERN_ERR "%s: write error (ac97_reg=%x GSR=%#lx)\n",
++				__FUNCTION__, reg, GSR | gsr_bits);
++
++	mutex_unlock(&car_mutex);
++}
++
++static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
++{
++	gsr_bits = 0;
++
++#ifdef CONFIG_PXA27x
++	/* warm reset broken on Bulverde,
++	   so manually keep AC97 reset high */
++	pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
++	udelay(10);
++	GCR |= GCR_WARM_RST;
++	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++	udelay(500);
++#else
++	GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
++	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
++#endif
++
++	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
++		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
++				 __FUNCTION__, gsr_bits);
++
++	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
++	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
++}
++
++static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
++{
++	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
++	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
++
++	gsr_bits = 0;
++#ifdef CONFIG_PXA27x
++	/* PXA27x Developers Manual section 13.5.2.2.1 */
++	pxa_set_cken(1 << 31, 1);
++	udelay(5);
++	pxa_set_cken(1 << 31, 0);
++	GCR = GCR_COLD_RST;
++	udelay(50);
++#else
++	GCR = GCR_COLD_RST;
++	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
++	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
++#endif
++
++	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
++		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
++				 __FUNCTION__, gsr_bits);
++
++	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
++	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
++}
++
++static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
++{
++	long status;
++
++	status = GSR;
++	if (status) {
++		GSR = status;
++		gsr_bits |= status;
++		wake_up(&gsr_wq);
++
++#ifdef CONFIG_PXA27x
++		/* Although we don't use those we still need to clear them
++		   since they tend to spuriously trigger when MMC is used
++		   (hardware bug? go figure)... */
++		MISR = MISR_EOC;
++		PISR = PISR_EOC;
++		MCSR = MCSR_EOC;
++#endif
++
++		return IRQ_HANDLED;
++	}
++
++	return IRQ_NONE;
++}
++
++struct snd_ac97_bus_ops soc_ac97_ops = {
++	.read	= pxa2xx_ac97_read,
++	.write	= pxa2xx_ac97_write,
++	.warm_reset	= pxa2xx_ac97_warm_reset,
++	.reset	= pxa2xx_ac97_cold_reset,
++};
++
++static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_out = {
++	.name			= "AC97 PCM Stereo out",
++	.dev_addr		= __PREG(PCDR),
++	.drcmr			= &DRCMRTXPCDR,
 +	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
 +				  DCMD_BURST32 | DCMD_WIDTH4,
 +};
 +
-+static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_in = {
-+	.name			= "I2S PCM Stereo in",
-+	.dev_addr		= __PREG(SADR),
-+	.drcmr			= &DRCMRRXSADR,
++static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_in = {
++	.name			= "AC97 PCM Stereo in",
++	.dev_addr		= __PREG(PCDR),
++	.drcmr			= &DRCMRRXPCDR,
 +	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
 +				  DCMD_BURST32 | DCMD_WIDTH4,
 +};
 +
-+static struct pxa2xx_gpio gpio_bus[] = {
-+	{ /* I2S SoC Slave */
-+		.rx = GPIO29_SDATA_IN_I2S_MD,
-+		.tx = GPIO30_SDATA_OUT_I2S_MD,
-+		.clk = GPIO28_BITCLK_IN_I2S_MD,
-+		.frm = GPIO31_SYNC_I2S_MD,
-+	},
-+	{ /* I2S SoC Master */
-+#ifdef CONFIG_PXA27x
-+		.sys = GPIO113_I2S_SYSCLK_MD,
-+#else
-+		.sys = GPIO32_SYSCLK_I2S_MD,
-+#endif
-+		.rx = GPIO29_SDATA_IN_I2S_MD,
-+		.tx = GPIO30_SDATA_OUT_I2S_MD,
-+		.clk = GPIO28_BITCLK_OUT_I2S_MD,
-+		.frm = GPIO31_SYNC_I2S_MD,
-+	},
++static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_out = {
++	.name			= "AC97 Aux PCM (Slot 5) Mono out",
++	.dev_addr		= __PREG(MODR),
++	.drcmr			= &DRCMRTXMODR,
++	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
++				  DCMD_BURST16 | DCMD_WIDTH2,
 +};
 +
-+static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_in = {
++	.name			= "AC97 Aux PCM (Slot 5) Mono in",
++	.dev_addr		= __PREG(MODR),
++	.drcmr			= &DRCMRRXMODR,
++	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
++				  DCMD_BURST16 | DCMD_WIDTH2,
++};
 +
-+	if (!rtd->cpu_dai->active) {
-+		SACR0 |= SACR0_RST;
-+		SACR0 = 0;
++static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_mic_mono_in = {
++	.name			= "AC97 Mic PCM (Slot 6) Mono in",
++	.dev_addr		= __PREG(MCDR),
++	.drcmr			= &DRCMRRXMCDR,
++	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
++				  DCMD_BURST16 | DCMD_WIDTH2,
++};
++
++#ifdef CONFIG_PM
++static int pxa2xx_ac97_suspend(struct platform_device *pdev,
++	struct snd_soc_cpu_dai *dai)
++{
++	GCR |= GCR_ACLINK_OFF;
++	pxa_set_cken(CKEN2_AC97, 0);
++	return 0;
++}
++
++static int pxa2xx_ac97_resume(struct platform_device *pdev,
++	struct snd_soc_cpu_dai *dai)
++{
++	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
++	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
++	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
++	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
++#ifdef CONFIG_PXA27x
++	/* Use GPIO 113 as AC97 Reset on Bulverde */
++	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++#endif
++	pxa_set_cken(CKEN2_AC97, 1);
++	return 0;
++}
++
++#else
++#define pxa2xx_ac97_suspend	NULL
++#define pxa2xx_ac97_resume	NULL
++#endif
++
++static int pxa2xx_ac97_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
++	if (ret < 0)
++		goto err;
++
++	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
++	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
++	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
++	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
++#ifdef CONFIG_PXA27x
++	/* Use GPIO 113 as AC97 Reset on Bulverde */
++	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++#endif
++	pxa_set_cken(CKEN2_AC97, 1);
++	return 0;
++
++ err:
++	if (CKEN & CKEN2_AC97) {
++		GCR |= GCR_ACLINK_OFF;
++		free_irq(IRQ_AC97, NULL);
++		pxa_set_cken(CKEN2_AC97, 0);
 +	}
-+
-+	return 0;
++	return ret;
 +}
 +
-+/* wait for I2S controller to be ready */
-+static int pxa_i2s_wait(void)
++static void pxa2xx_ac97_remove(struct platform_device *pdev)
 +{
-+	int i;
-+
-+	/* flush the Rx FIFO */
-+	for(i = 0; i < 16; i++)
-+		SADR;
-+	return 0;
++	GCR |= GCR_ACLINK_OFF;
++	free_irq(IRQ_AC97, NULL);
++	pxa_set_cken(CKEN2_AC97, 0);
 +}
 +
-+static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
++static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
 +				struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +
-+	pxa_i2s.master = 0;
-+	if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_CBS_CFS)
-+		pxa_i2s.master = 1;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_out;
++	else
++		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_in;
 +
-+	if (pxa_i2s.master && !extclk)
-+		pxa_gpio_mode(gpio_bus[pxa_i2s.master].sys);
++	return 0;
++}
 +
-+	pxa_gpio_mode(gpio_bus[pxa_i2s.master].rx);
-+	pxa_gpio_mode(gpio_bus[pxa_i2s.master].tx);
-+	pxa_gpio_mode(gpio_bus[pxa_i2s.master].frm);
-+	pxa_gpio_mode(gpio_bus[pxa_i2s.master].clk);
-+	pxa_set_cken(CKEN8_I2S, 1);
-+	pxa_i2s_wait();
++static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +
 +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->dma_data = &pxa2xx_i2s_pcm_stereo_out;
++		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_out;
 +	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_i2s_pcm_stereo_in;
++		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_in;
 +
-+	/* is port used by another stream */
-+	if (!(SACR0 & SACR0_ENB)) {
++	return 0;
++}
 +
-+		SACR0 = 0;
-+		SACR1 = 0;
-+		if (pxa_i2s.master)
-+			SACR0 |= SACR0_BCKD;
++static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +
-+		SACR0 |= SACR0_RFTH(14) | SACR0_TFTH(1);
-+
-+		if (rtd->cpu_dai->dai_runtime.fmt & SND_SOC_DAIFMT_LEFT_J)
-+			SACR1 |= SACR1_AMSL;
-+	}
 +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		SAIMR |= SAIMR_TFS;
++		return -ENODEV;
 +	else
-+		SAIMR |= SAIMR_RFS;
-+
-+	SADIV = rtd->cpu_dai->dai_runtime.priv;
-+	return 0;
-+}
-+
-+static int pxa2xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		SACR0 |= SACR0_ENB;
-+		break;
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream)
-+{
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		SACR1 |= SACR1_DRPL;
-+		SAIMR &= ~SAIMR_TFS;
-+	} else {
-+		SACR1 |= SACR1_DREC;
-+		SAIMR &= ~SAIMR_RFS;
-+	}
-+
-+	if (SACR1 & (SACR1_DREC | SACR1_DRPL)) {
-+		SACR0 &= ~SACR0_ENB;
-+		pxa_i2s_wait();
-+		pxa_set_cken(CKEN8_I2S, 0);
-+	}
-+}
-+
-+#ifdef CONFIG_PM
-+static int pxa2xx_i2s_suspend(struct platform_device *dev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	if (!dai->active)
-+		return 0;
-+
-+	/* store registers */
-+	pxa_i2s.sacr0 = SACR0;
-+	pxa_i2s.sacr1 = SACR1;
-+	pxa_i2s.saimr = SAIMR;
-+	pxa_i2s.sadiv = SADIV;
-+
-+	/* deactivate link */
-+	SACR0 &= ~SACR0_ENB;
-+	pxa_i2s_wait();
-+	return 0;
-+}
-+
-+static int pxa2xx_i2s_resume(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	if (!dai->active)
-+		return 0;
-+
-+	pxa_i2s_wait();
-+
-+	SACR0 = pxa_i2s.sacr0 &= ~SACR0_ENB;
-+	SACR1 = pxa_i2s.sacr1;
-+	SAIMR = pxa_i2s.saimr;
-+	SADIV = pxa_i2s.sadiv;
-+	SACR0 |= SACR0_ENB;
++		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_mic_mono_in;
 +
 +	return 0;
 +}
 +
-+#else
-+#define pxa2xx_i2s_suspend	NULL
-+#define pxa2xx_i2s_resume	NULL
-+#endif
-+
-+/* pxa2xx I2S sysclock is always 256 FS */
-+static unsigned int pxa_i2s_config_sysclk(struct snd_soc_cpu_dai *iface,
-+	struct snd_soc_clock_info *info, unsigned int clk)
++/*
++ * There is only 1 physical AC97 interface for pxa2xx, but it
++ * has extra fifo's that can be used for aux DACs and ADCs.
++ */
++struct snd_soc_cpu_dai pxa_ac97_dai[] = {
 +{
-+	return info->rate << 8;
-+}
-+
-+struct snd_soc_cpu_dai pxa_i2s_dai = {
-+	.name = "pxa2xx-i2s",
++	.name = "pxa2xx-ac97",
 +	.id = 0,
-+	.type = SND_SOC_DAI_I2S,
-+	.suspend = pxa2xx_i2s_suspend,
-+	.resume = pxa2xx_i2s_resume,
-+	.config_sysclk = pxa_i2s_config_sysclk,
++	.type = SND_SOC_DAI_AC97,
++	.probe = pxa2xx_ac97_probe,
++	.remove = pxa2xx_ac97_remove,
++	.suspend = pxa2xx_ac97_suspend,
++	.resume = pxa2xx_ac97_resume,
 +	.playback = {
++		.stream_name = "AC97 Playback",
 +		.channels_min = 2,
 +		.channels_max = 2,},
 +	.capture = {
++		.stream_name = "AC97 Capture",
 +		.channels_min = 2,
 +		.channels_max = 2,},
 +	.ops = {
-+		.startup = pxa2xx_i2s_startup,
-+		.shutdown = pxa2xx_i2s_shutdown,
-+		.trigger = pxa2xx_i2s_trigger,
-+		.hw_params = pxa2xx_i2s_hw_params,},
++		.hw_params = pxa2xx_ac97_hw_params,},
 +	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_i2s_modes),
-+		.mode = pxa2xx_i2s_modes,},
++		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
++		.mode = pxa2xx_ac97_modes,},
++},
++{
++	.name = "pxa2xx-ac97-aux",
++	.id = 1,
++	.type = SND_SOC_DAI_AC97,
++	.playback = {
++		.stream_name = "AC97 Aux Playback",
++		.channels_min = 1,
++		.channels_max = 1,},
++	.capture = {
++		.stream_name = "AC97 Aux Capture",
++		.channels_min = 1,
++		.channels_max = 1,},
++	.ops = {
++		.hw_params = pxa2xx_ac97_hw_aux_params,},
++	.caps = {
++		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
++		.mode = pxa2xx_ac97_modes,},
++},
++{
++	.name = "pxa2xx-ac97-mic",
++	.id = 2,
++	.type = SND_SOC_DAI_AC97,
++	.capture = {
++		.stream_name = "AC97 Mic Capture",
++		.channels_min = 1,
++		.channels_max = 1,},
++	.ops = {
++		.hw_params = pxa2xx_ac97_hw_mic_params,},
++	.caps = {
++		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
++		.mode = pxa2xx_ac97_modes,},},
 +};
 +
-+EXPORT_SYMBOL_GPL(pxa_i2s_dai);
++EXPORT_SYMBOL_GPL(pxa_ac97_dai);
++EXPORT_SYMBOL_GPL(soc_ac97_ops);
 +
-+/* Module information */
-+MODULE_AUTHOR("Liam Girdwood, liam.girdwood@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_DESCRIPTION("pxa2xx I2S SoC Interface");
++MODULE_AUTHOR("Nicolas Pitre");
++MODULE_DESCRIPTION("AC97 driver for the Intel PXA2xx chip");
 +MODULE_LICENSE("GPL");
 
---=-7DQRpWuxqPJMJfKf3jLr
+--=-sj4YfFKt9QzJ8Ipb5lX/
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -388,7 +520,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-7DQRpWuxqPJMJfKf3jLr
+--=-sj4YfFKt9QzJ8Ipb5lX/
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -399,4 +531,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-7DQRpWuxqPJMJfKf3jLr--
+--=-sj4YfFKt9QzJ8Ipb5lX/--
