@@ -1,13 +1,13 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH 3/8] ASoC pxa2xx AC97 support
-Date: Thu, 12 Oct 2006 11:27:19 +0100
-Message-ID: <1160648839.13780.10.camel@localhost.localdomain>
-References: <1160497176.24436.112.camel@localhost.localdomain>
-	<s5hhcycm6tj.wl%tiwai@suse.de>
+Subject: Re: [PATCH 5/8] ASoC pxa2xx Spitz machine support
+Date: Thu, 12 Oct 2006 11:29:43 +0100
+Message-ID: <1160648983.13780.15.camel@localhost.localdomain>
+References: <1160497190.24436.114.camel@localhost.localdomain>
+	<s5hejtgm6fz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-sj4YfFKt9QzJ8Ipb5lX/"
+Content-Type: multipart/mixed; boundary="=-DbH8kKyK5mMXewKJIuO9"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hhcycm6tj.wl%tiwai@suse.de>
+In-Reply-To: <s5hejtgm6fz.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,40 +22,23 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-sj4YfFKt9QzJ8Ipb5lX/
+--=-DbH8kKyK5mMXewKJIuO9
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2006-10-10 at 19:14 +0200, Takashi Iwai wrote:
-> At Tue, 10 Oct 2006 17:19:36 +0100,
+On Tue, 2006-10-10 at 19:22 +0200, Takashi Iwai wrote:
+> At Tue, 10 Oct 2006 17:19:50 +0100,
 > Liam Girdwood wrote:
-> > +/* may need to expand this */
-> > +static struct snd_soc_dai_mode pxa2xx_ac97_modes[] = {
-> > +	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
-> 
-> Better to use ".field = value" initialization.
-
-IMHO, this is a better style for the DAI capabilities field because it
-can grow quite large depending on the DAI.
-
-> 
-> > +static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id,
-> > +	struct pt_regs *regs)
-> 
-> Note that in the latest kernel code, the last struct pt_regs pointer
-> is removed from irq handler.  I already updated ALSA HG tree
-> accordingly.
-
-Fixed.
-
-> 
-> > +static int pxa2xx_ac97_probe(struct platform_device *pdev)
+> > 
+> > +static int spitz_mic_bias(struct snd_soc_dapm_widget *w, int event)
 > > +{
-> > +	int ret;
-> > +
-> > +	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
+> > +	if (machine_is_borzoi() || machine_is_spitz()) {
+> > +		if (SND_SOC_DAPM_EVENT_ON(event))
+> > +			set_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
+> > +		else
+> > +			reset_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_MIC_BIAS);
 > 
-> Don't you need IRQF_DISABLED (former SA_INTERRUPT)?
+> Can you fold lines within 80-chars?
 > 
 
 Fixed.
@@ -65,451 +48,392 @@ Thanks
 Liam
 
 
---=-sj4YfFKt9QzJ8Ipb5lX/
-Content-Disposition: attachment; filename=asoc-pxa2xx-ac97.patch
-Content-Type: text/x-patch; name=asoc-pxa2xx-ac97.patch; charset=utf-8
+--=-DbH8kKyK5mMXewKJIuO9
+Content-Disposition: attachment; filename=asoc-pxa2xx-spitz.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-spitz.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Index: alsa-kernel/soc/pxa/pxa2xx-ac97.c
+Index: alsa-kernel/soc/pxa/spitz.c
 ===================================================================
 --- /dev/null
-+++ alsa-kernel/soc/pxa/pxa2xx-ac97.c
-@@ -0,0 +1,433 @@
++++ alsa-kernel/soc/pxa/spitz.c
+@@ -0,0 +1,374 @@
 +/*
-+ * linux/sound/pxa2xx-ac97.c -- AC97 support for the Intel PXA2xx chip.
++ * spitz.c  --  SoC audio for Sharp SL-Cxx00 models Spitz, Borzoi and Akita
 + *
-+ * Author:	Nicolas Pitre
-+ * Created:	Dec 02, 2004
-+ * Copyright:	MontaVista Software Inc.
++ * Copyright 2005 Wolfson Microelectronics PLC.
++ * Copyright 2005 Openedhand Ltd.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ *          Richard Purdie <richard@openedhand.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  Revision history
++ *    30th Nov 2005   Initial version.
++ *
 + */
 +
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
++#include <linux/moduleparam.h>
++#include <linux/timer.h>
 +#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+#include <linux/delay.h>
-+
++#include <linux/platform_device.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-+#include <sound/initval.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
 +
-+#include <asm/irq.h>
-+#include <linux/mutex.h>
-+#include <asm/hardware.h>
++#include <asm/mach-types.h>
++#include <asm/hardware/scoop.h>
 +#include <asm/arch/pxa-regs.h>
-+#include <asm/arch/audio.h>
-+
++#include <asm/arch/hardware.h>
++#include <asm/arch/akita.h>
++#include <asm/arch/spitz.h>
++#include <asm/mach-types.h>
++#include "../codecs/wm8750.h"
 +#include "pxa2xx-pcm.h"
 +
-+static DEFINE_MUTEX(car_mutex);
-+static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
-+static volatile long gsr_bits;
++#define SPITZ_HP        0
++#define SPITZ_MIC       1
++#define SPITZ_LINE      2
++#define SPITZ_HEADSET   3
++#define SPITZ_HP_OFF    4
++#define SPITZ_SPK_ON    0
++#define SPITZ_SPK_OFF   1
 +
-+#define AC97_DIR \
-+	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
++ /* audio clock in Hz - rounded from 12.235MHz */
++#define SPITZ_AUDIO_CLOCK 12288000
 +
-+#define AC97_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++static int spitz_jack_func;
++static int spitz_spk_func;
 +
-+/* may need to expand this */
-+static struct snd_soc_dai_mode pxa2xx_ac97_modes[] = {
-+	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
++static void spitz_ext_control(struct snd_soc_codec *codec)
++{
++	if (spitz_spk_func == SPITZ_SPK_ON)
++		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 1);
++	else
++		snd_soc_dapm_set_endpoint(codec, "Ext Spk", 0);
++
++	/* set up jack connection */
++	switch (spitz_jack_func) {
++	case SPITZ_HP:
++		/* enable and unmute hp jack, disable mic bias */
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_MIC:
++		/* enable mic jack and bias, mute hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_LINE:
++		/* enable line jack, disable mic bias and mute hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_HEADSET:
++		/* enable and unmute headset jack enable mic bias, mute L hp */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 1);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		set_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	case SPITZ_HP_OFF:
++
++		/* jack removed, everything off */
++		snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Mic Jack", 0);
++		snd_soc_dapm_set_endpoint(codec, "Line Jack", 0);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_L);
++		reset_scoop_gpio(&spitzscoop_device.dev, SPITZ_SCP_MUTE_R);
++		break;
++	}
++	snd_soc_dapm_sync_endpoints(codec);
++}
++
++static int spitz_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec *codec = rtd->socdev->codec;
++
++	/* check the jack status at stream startup */
++	spitz_ext_control(codec);
++	return 0;
++}
++
++static struct snd_soc_ops spitz_ops = {
++	.startup = spitz_startup,
++};
++
++static int spitz_get_jack(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = spitz_jack_func;
++	return 0;
++}
++
++static int spitz_set_jack(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++
++	if (spitz_jack_func == ucontrol->value.integer.value[0])
++		return 0;
++
++	spitz_jack_func = ucontrol->value.integer.value[0];
++	spitz_ext_control(codec);
++	return 1;
++}
++
++static int spitz_get_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = spitz_spk_func;
++	return 0;
++}
++
++static int spitz_set_spk(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++
++	if (spitz_spk_func == ucontrol->value.integer.value[0])
++		return 0;
++
++	spitz_spk_func = ucontrol->value.integer.value[0];
++	spitz_ext_control(codec);
++	return 1;
++}
++
++static int spitz_mic_bias(struct snd_soc_dapm_widget *w, int event)
++{
++	if (machine_is_borzoi() || machine_is_spitz()) {
++		if (SND_SOC_DAPM_EVENT_ON(event))
++			set_scoop_gpio(&spitzscoop2_device.dev,
++				SPITZ_SCP2_MIC_BIAS);
++		else
++			reset_scoop_gpio(&spitzscoop2_device.dev,
++				SPITZ_SCP2_MIC_BIAS);
++	}
++
++	if (machine_is_akita()) {
++		if (SND_SOC_DAPM_EVENT_ON(event))
++			akita_set_ioexp(&akitaioexp_device.dev,
++				AKITA_IOEXP_MIC_BIAS);
++		else
++			akita_reset_ioexp(&akitaioexp_device.dev,
++				AKITA_IOEXP_MIC_BIAS);
++	}
++	return 0;
++}
++
++/* spitz machine dapm widgets */
++static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", spitz_mic_bias),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_LINE("Line Jack", NULL),
++
++	/* headset is a mic and mono headphone */
++	SND_SOC_DAPM_HP("Headset Jack", NULL),
++};
++
++/* Spitz machine audio_map */
++static const char *audio_map[][3] = {
++
++	/* headphone connected to LOUT1, ROUT1 */
++	{"Headphone Jack", NULL, "LOUT1"},
++	{"Headphone Jack", NULL, "ROUT1"},
++
++	/* headset connected to ROUT1 and LINPUT1 with bias (def below) */
++	{"Headset Jack", NULL, "ROUT1"},
++
++	/* ext speaker connected to LOUT2, ROUT2  */
++	{"Ext Spk", NULL , "ROUT2"},
++	{"Ext Spk", NULL , "LOUT2"},
++
++	/* mic is connected to input 1 - with bias */
++	{"LINPUT1", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Mic Jack"},
++
++	/* line is connected to input 1 - no bias */
++	{"LINPUT1", NULL, "Line Jack"},
++
++	{NULL, NULL, NULL},
++};
++
++static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
++	"Off"};
++static const char *spk_function[] = {"On", "Off"};
++static const struct soc_enum spitz_enum[] = {
++	SOC_ENUM_SINGLE_EXT(5, jack_function),
++	SOC_ENUM_SINGLE_EXT(2, spk_function),
++};
++
++static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
++	SOC_ENUM_EXT("Jack Function", spitz_enum[0], spitz_get_jack,
++		spitz_set_jack),
++	SOC_ENUM_EXT("Speaker Function", spitz_enum[1], spitz_get_spk,
++		spitz_set_spk),
 +};
 +
 +/*
-+ * Beware PXA27x bugs:
-+ *
-+ *   o Slot 12 read from modem space will hang controller.
-+ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
-+ *
-+ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
-+ * 1 jiffy timeout if interrupt never comes).
++ * Logic for a wm8750 as connected on a Sharp SL-Cxx00 Device
 + */
-+
-+static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97,
-+	unsigned short reg)
++static int spitz_wm8750_init(struct snd_soc_codec *codec)
 +{
-+	unsigned short val = -1;
-+	volatile u32 *reg_addr;
++	int i, err;
 +
-+	mutex_lock(&car_mutex);
++	/* NC codec pins */
++	snd_soc_dapm_set_endpoint(codec, "RINPUT1", 0);
++	snd_soc_dapm_set_endpoint(codec, "LINPUT2", 0);
++	snd_soc_dapm_set_endpoint(codec, "RINPUT2", 0);
++	snd_soc_dapm_set_endpoint(codec, "LINPUT3", 0);
++	snd_soc_dapm_set_endpoint(codec, "RINPUT3", 0);
++	snd_soc_dapm_set_endpoint(codec, "OUT3", 0);
++	snd_soc_dapm_set_endpoint(codec, "MONO", 0);
 +
-+	/* set up primary or secondary codec/modem space */
-+#ifdef CONFIG_PXA27x
-+	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#else
-+	if (reg == AC97_GPIO_STATUS)
-+		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+	else
-+		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+	reg_addr += (reg >> 1);
-+
-+#ifndef CONFIG_PXA27x
-+	if (reg == AC97_GPIO_STATUS) {
-+		/* read from controller cache */
-+		val = *reg_addr;
-+		goto out;
-+	}
-+#endif
-+
-+	/* start read access across the ac97 link */
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	val = *reg_addr;
-+
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
-+	if (!((GSR | gsr_bits) & GSR_SDONE)) {
-+		printk(KERN_ERR "%s: read error (ac97_reg=%x GSR=%#lx)\n",
-+				__FUNCTION__, reg, GSR | gsr_bits);
-+		val = -1;
-+		goto out;
++	/* Add spitz specific controls */
++	for (i = 0; i < ARRAY_SIZE(wm8750_spitz_controls); i++) {
++		err = snd_ctl_add(codec->card,
++			snd_soc_cnew(&wm8750_spitz_controls[i], codec, NULL));
++		if (err < 0)
++			return err;
 +	}
 +
-+	/* valid data now */
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	val = *reg_addr;
-+	/* but we've just started another cycle... */
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
-+
-+out:	mutex_unlock(&car_mutex);
-+	return val;
-+}
-+
-+static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
-+	unsigned short val)
-+{
-+	volatile u32 *reg_addr;
-+
-+	mutex_lock(&car_mutex);
-+
-+	/* set up primary or secondary codec/modem space */
-+#ifdef CONFIG_PXA27x
-+	reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#else
-+	if (reg == AC97_GPIO_STATUS)
-+		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+	else
-+		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+	reg_addr += (reg >> 1);
-+
-+	GSR = GSR_CDONE | GSR_SDONE;
-+	gsr_bits = 0;
-+	*reg_addr = val;
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1);
-+	if (!((GSR | gsr_bits) & GSR_CDONE))
-+		printk(KERN_ERR "%s: write error (ac97_reg=%x GSR=%#lx)\n",
-+				__FUNCTION__, reg, GSR | gsr_bits);
-+
-+	mutex_unlock(&car_mutex);
-+}
-+
-+static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
-+{
-+	gsr_bits = 0;
-+
-+#ifdef CONFIG_PXA27x
-+	/* warm reset broken on Bulverde,
-+	   so manually keep AC97 reset high */
-+	pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
-+	udelay(10);
-+	GCR |= GCR_WARM_RST;
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+	udelay(500);
-+#else
-+	GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
-+	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+#endif
-+
-+	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
-+		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
-+				 __FUNCTION__, gsr_bits);
-+
-+	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
-+}
-+
-+static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
-+{
-+	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
-+	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
-+
-+	gsr_bits = 0;
-+#ifdef CONFIG_PXA27x
-+	/* PXA27x Developers Manual section 13.5.2.2.1 */
-+	pxa_set_cken(1 << 31, 1);
-+	udelay(5);
-+	pxa_set_cken(1 << 31, 0);
-+	GCR = GCR_COLD_RST;
-+	udelay(50);
-+#else
-+	GCR = GCR_COLD_RST;
-+	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-+	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+#endif
-+
-+	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
-+		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
-+				 __FUNCTION__, gsr_bits);
-+
-+	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
-+}
-+
-+static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
-+{
-+	long status;
-+
-+	status = GSR;
-+	if (status) {
-+		GSR = status;
-+		gsr_bits |= status;
-+		wake_up(&gsr_wq);
-+
-+#ifdef CONFIG_PXA27x
-+		/* Although we don't use those we still need to clear them
-+		   since they tend to spuriously trigger when MMC is used
-+		   (hardware bug? go figure)... */
-+		MISR = MISR_EOC;
-+		PISR = PISR_EOC;
-+		MCSR = MCSR_EOC;
-+#endif
-+
-+		return IRQ_HANDLED;
++	/* Add spitz specific widgets */
++	for (i = 0; i < ARRAY_SIZE(wm8750_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &wm8750_dapm_widgets[i]);
 +	}
 +
-+	return IRQ_NONE;
-+}
++	/* Set up spitz specific audio path audio_map */
++	for (i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++			audio_map[i][1], audio_map[i][2]);
++	}
 +
-+struct snd_ac97_bus_ops soc_ac97_ops = {
-+	.read	= pxa2xx_ac97_read,
-+	.write	= pxa2xx_ac97_write,
-+	.warm_reset	= pxa2xx_ac97_warm_reset,
-+	.reset	= pxa2xx_ac97_cold_reset,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_out = {
-+	.name			= "AC97 PCM Stereo out",
-+	.dev_addr		= __PREG(PCDR),
-+	.drcmr			= &DRCMRTXPCDR,
-+	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
-+				  DCMD_BURST32 | DCMD_WIDTH4,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_stereo_in = {
-+	.name			= "AC97 PCM Stereo in",
-+	.dev_addr		= __PREG(PCDR),
-+	.drcmr			= &DRCMRRXPCDR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST32 | DCMD_WIDTH4,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_out = {
-+	.name			= "AC97 Aux PCM (Slot 5) Mono out",
-+	.dev_addr		= __PREG(MODR),
-+	.drcmr			= &DRCMRTXMODR,
-+	.dcmd			= DCMD_INCSRCADDR | DCMD_FLOWTRG |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_aux_mono_in = {
-+	.name			= "AC97 Aux PCM (Slot 5) Mono in",
-+	.dev_addr		= __PREG(MODR),
-+	.drcmr			= &DRCMRRXMODR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_mic_mono_in = {
-+	.name			= "AC97 Mic PCM (Slot 6) Mono in",
-+	.dev_addr		= __PREG(MCDR),
-+	.drcmr			= &DRCMRRXMCDR,
-+	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
-+				  DCMD_BURST16 | DCMD_WIDTH2,
-+};
-+
-+#ifdef CONFIG_PM
-+static int pxa2xx_ac97_suspend(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
-+{
-+	GCR |= GCR_ACLINK_OFF;
-+	pxa_set_cken(CKEN2_AC97, 0);
++	snd_soc_dapm_sync_endpoints(codec);
 +	return 0;
 +}
 +
-+static int pxa2xx_ac97_resume(struct platform_device *pdev,
-+	struct snd_soc_cpu_dai *dai)
++static unsigned int spitz_config_sysclk(struct snd_soc_pcm_runtime *rtd,
++	struct snd_soc_clock_info *info)
 +{
-+	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+#ifdef CONFIG_PXA27x
-+	/* Use GPIO 113 as AC97 Reset on Bulverde */
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+#endif
-+	pxa_set_cken(CKEN2_AC97, 1);
-+	return 0;
++	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
++		/* pxa2xx is i2s master  */
++		switch (info->rate) {
++		case 11025:
++		case 22050:
++		case 44100:
++		case 88200:
++			/* configure codec digital filters
++			 * for 11.025, 22.05, 44.1, 88.2 */
++			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
++				11289600);
++		break;
++		default:
++			/* configure codec digital filters for all other rates */
++			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
++				SPITZ_AUDIO_CLOCK);
++		break;
++		}
++		/* configure pxa2xx i2s interface clocks as master */
++		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
++			SPITZ_AUDIO_CLOCK);
++	} else {
++		/* codec is i2s master - only configure codec DAI clock */
++		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
++			SPITZ_AUDIO_CLOCK);
++	}
 +}
 +
-+#else
-+#define pxa2xx_ac97_suspend	NULL
-+#define pxa2xx_ac97_resume	NULL
-+#endif
++/* spitz digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link spitz_dai = {
++	.name = "wm8750",
++	.stream_name = "WM8750",
++	.cpu_dai = &pxa_i2s_dai,
++	.codec_dai = &wm8750_dai,
++	.init = spitz_wm8750_init,
++	.config_sysclk = spitz_config_sysclk,
++};
 +
-+static int pxa2xx_ac97_probe(struct platform_device *pdev)
++/* spitz audio machine driver */
++static struct snd_soc_machine snd_soc_machine_spitz = {
++	.name = "Spitz",
++	.dai_link = &spitz_dai,
++	.num_links = 1,
++	.ops = &spitz_ops,
++};
++
++/* spitz audio private data */
++static struct wm8750_setup_data spitz_wm8750_setup = {
++	.i2c_address = 0x1b,
++};
++
++/* spitz audio subsystem */
++static struct snd_soc_device spitz_snd_devdata = {
++	.machine = &snd_soc_machine_spitz,
++	.platform = &pxa2xx_soc_platform,
++	.codec_dev = &soc_codec_dev_wm8750,
++	.codec_data = &spitz_wm8750_setup,
++};
++
++static struct platform_device *spitz_snd_device;
++
++static int __init spitz_init(void)
 +{
 +	int ret;
 +
-+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
-+	if (ret < 0)
-+		goto err;
++	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
++		return -ENODEV;
 +
-+	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+#ifdef CONFIG_PXA27x
-+	/* Use GPIO 113 as AC97 Reset on Bulverde */
-+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+#endif
-+	pxa_set_cken(CKEN2_AC97, 1);
-+	return 0;
++	spitz_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!spitz_snd_device)
++		return -ENOMEM;
 +
-+ err:
-+	if (CKEN & CKEN2_AC97) {
-+		GCR |= GCR_ACLINK_OFF;
-+		free_irq(IRQ_AC97, NULL);
-+		pxa_set_cken(CKEN2_AC97, 0);
-+	}
++	platform_set_drvdata(spitz_snd_device, &spitz_snd_devdata);
++	spitz_snd_devdata.dev = &spitz_snd_device->dev;
++	ret = platform_device_add(spitz_snd_device);
++
++	if (ret)
++		platform_device_put(spitz_snd_device);
++
 +	return ret;
 +}
 +
-+static void pxa2xx_ac97_remove(struct platform_device *pdev)
++static void __exit spitz_exit(void)
 +{
-+	GCR |= GCR_ACLINK_OFF;
-+	free_irq(IRQ_AC97, NULL);
-+	pxa_set_cken(CKEN2_AC97, 0);
++	platform_device_unregister(spitz_snd_device);
 +}
 +
-+static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++module_init(spitz_init);
++module_exit(spitz_exit);
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_out;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_in;
-+
-+	return 0;
-+}
-+
-+static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_out;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_in;
-+
-+	return 0;
-+}
-+
-+static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENODEV;
-+	else
-+		rtd->cpu_dai->dma_data = &pxa2xx_ac97_pcm_mic_mono_in;
-+
-+	return 0;
-+}
-+
-+/*
-+ * There is only 1 physical AC97 interface for pxa2xx, but it
-+ * has extra fifo's that can be used for aux DACs and ADCs.
-+ */
-+struct snd_soc_cpu_dai pxa_ac97_dai[] = {
-+{
-+	.name = "pxa2xx-ac97",
-+	.id = 0,
-+	.type = SND_SOC_DAI_AC97,
-+	.probe = pxa2xx_ac97_probe,
-+	.remove = pxa2xx_ac97_remove,
-+	.suspend = pxa2xx_ac97_suspend,
-+	.resume = pxa2xx_ac97_resume,
-+	.playback = {
-+		.stream_name = "AC97 Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,},
-+	.capture = {
-+		.stream_name = "AC97 Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},
-+},
-+{
-+	.name = "pxa2xx-ac97-aux",
-+	.id = 1,
-+	.type = SND_SOC_DAI_AC97,
-+	.playback = {
-+		.stream_name = "AC97 Aux Playback",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.capture = {
-+		.stream_name = "AC97 Aux Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_aux_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},
-+},
-+{
-+	.name = "pxa2xx-ac97-mic",
-+	.id = 2,
-+	.type = SND_SOC_DAI_AC97,
-+	.capture = {
-+		.stream_name = "AC97 Mic Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,},
-+	.ops = {
-+		.hw_params = pxa2xx_ac97_hw_mic_params,},
-+	.caps = {
-+		.num_modes = ARRAY_SIZE(pxa2xx_ac97_modes),
-+		.mode = pxa2xx_ac97_modes,},},
-+};
-+
-+EXPORT_SYMBOL_GPL(pxa_ac97_dai);
-+EXPORT_SYMBOL_GPL(soc_ac97_ops);
-+
-+MODULE_AUTHOR("Nicolas Pitre");
-+MODULE_DESCRIPTION("AC97 driver for the Intel PXA2xx chip");
++MODULE_AUTHOR("Richard Purdie");
++MODULE_DESCRIPTION("ALSA SoC Spitz");
 +MODULE_LICENSE("GPL");
 
---=-sj4YfFKt9QzJ8Ipb5lX/
+--=-DbH8kKyK5mMXewKJIuO9
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -520,7 +444,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-sj4YfFKt9QzJ8Ipb5lX/
+--=-DbH8kKyK5mMXewKJIuO9
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -531,4 +455,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-sj4YfFKt9QzJ8Ipb5lX/--
+--=-DbH8kKyK5mMXewKJIuO9--
