@@ -1,16 +1,13 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Issue with Intel HDA Sound card 82801G
-	(laptop	Medion)
-Date: Wed, 11 Oct 2006 11:06:20 -0700
-Message-ID: <1160589980.17297.185.camel@razman>
-References: <1160502498.452bdce24d797@imp4-g19.free.fr>
-	<20061010180944.GA32060@trinnov.com>
-	<1160587606.17297.173.camel@razman>
-	<1160588317.17297.177.camel@razman>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH 1/8] ASoC pxa2xx DMA support
+Date: Thu, 12 Oct 2006 11:12:23 +0100
+Message-ID: <1160647943.13780.2.camel@localhost.localdomain>
+References: <1160496702.24436.110.camel@localhost.localdomain>
+	<s5hk638m79r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-H1LUGw3jLmpA0gHIy6cU"
+Content-Type: multipart/mixed; boundary="=-EKGI+gaRoaxHMszUexxI"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1160588317.17297.177.camel@razman>
+In-Reply-To: <s5hk638m79r.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,171 +17,546 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Remy Bruno <remy.bruno@trinnov.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-H1LUGw3jLmpA0gHIy6cU
+--=-EKGI+gaRoaxHMszUexxI
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Ok, need serious caffeine infusion here.  
-
-That last patch added a new mixer control array, but didn't call it.
-This patch calls it.
-
-Sorry for the flood of bad patches.
-
-Tobin
-
-On Wed, 2006-10-11 at 10:38 -0700, Tobin Davis wrote:
-> Oops.  Somehow my code reverted to the wrong subdevice id.  Change that
-> in the patch before applying.
-> 
-> I have another patch to test as well (I'm going to start numbering
-> them).
-> 
-> Tobin
-> 
-> On Wed, 2006-10-11 at 10:26 -0700, Tobin Davis wrote:
-> > Here is a new patch.  I'm slowly peeling the onion on this.  Use this
-> > along with Takashi's patch to fix the modem (disregard my previous
-> > patches).
+On Tue, 2006-10-10 at 19:04 +0200, Takashi Iwai wrote:
+> At Tue, 10 Oct 2006 17:11:42 +0100,
+> Liam Girdwood wrote:
 > > 
-> > Tobin
-> > 
-> > On Tue, 2006-10-10 at 20:09 +0200, Remy Bruno wrote:
-> > > On Tuesday 10 October at 19:48, albox@free.fr wrote:
-> > > > I have just tried and it works...I guess the only thing to do now is to figure
-> > > > it out what's the difference between this patched version and the alsa driver
-> > > > 1.0.13.
-> > > 
-> > > Yes, that's exactly the point! But not a small one. There are big difference
-> > > between the two. I think Tobin is working on this.
-> > > 
-> > > > 
-> > > > And as I said, don't forget to "modprobe -r" the driver before suspending to
-> > > > disk, or the kernel will crash.
-> > > > => What type of message did you get ? Do you know how we can avoid this problem
-> > > > (a  shell script to remove the module before suspending ?).
-> > > 
-> > > I get an oops... Indeed, it is possible to make a script, but you need to kill
-> > > all the processes that use alsa before modprobing -r...
-> > > 
-> > > Regards,
-> > > Remy
-> > > 
-> > > -------------------------------------------------------------------------
-> > > Take Surveys. Earn Cash. Influence the Future of IT
-> > > Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> > > opinions on IT & business topics through brief surveys -- and earn cash
-> > > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
--- 
-Tobin Davis <tdavis@dsl-only.net>
+> > +static int
+> > +pxa2xx_pcm_hw_rule_mult32(struct snd_pcm_hw_params *params,
+> > +	struct snd_pcm_hw_rule *rule)
+> > +{
+> > +	struct snd_interval *i = hw_param_interval(params, rule->var);
+> > +	int changed = 0;
+> > +
+> > +	if (i->min & 31) {
+> > +		i->min = (i->min & ~31) + 32;
+> > +		i->openmin = 0;
+> > +		changed = 1;
+> > +	}
+> > +
+> > +	if (i->max & 31) {
+> > +		i->max &= ~31;
+> > +		i->openmax = 0;
+> > +		changed = 1;
+> > +	}
+> > +
+> > +	return changed;
+> > +}
+> > +
+> > +static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
+> > +{
+> > +	struct snd_pcm_runtime *runtime = substream->runtime;
+> > +	struct pxa2xx_runtime_data *prtd;
+> > +	int ret;
+> > +
+> > +	snd_soc_set_runtime_hwparams(substream, &pxa2xx_pcm_hardware);
+> > +
+> > +	/*
+> > +	 * For mysterious reasons (and despite what the manual says)
+> > +	 * playback samples are lost if the DMA count is not a multiple
+> > +	 * of the DMA burst size.  Let's add a rule to enforce that.
+> > +	 */
+> > +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+> > +				  pxa2xx_pcm_hw_rule_mult32, NULL,
+> > +				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, -1);
+> 
+> How about to use snd_pcm_hw_constraint_step()?
 
---=-H1LUGw3jLmpA0gHIy6cU
-Content-Disposition: attachment; filename=medion-test4.patch
-Content-Type: text/x-patch; name=medion-test4.patch; charset=ISO-8859-1
+Np, now changed to use snd_pcm_hw_constarint_step().
+
+> 
+> 
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+> > +				  pxa2xx_pcm_hw_rule_mult32, NULL,
+> > +				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	prtd = kzalloc(sizeof(struct pxa2xx_runtime_data), GFP_KERNEL);
+> > +	if (prtd == NULL) {
+> > +		ret = -ENOMEM;
+> > +		goto out;
+> > +	}
+> > +
+> > +	prtd->dma_desc_array =
+> > +		dma_alloc_writecombine(substream->pcm->card->dev, PAGE_SIZE,
+> > +				       &prtd->dma_desc_array_phys, GFP_KERNEL);
+> > +	if (!prtd->dma_desc_array)
+> > +		goto err1;
+> 
+> You have to set "ret = -EXXX" here.
+
+Fixed.
+
+> 
+> > +static u64 pxa2xx_pcm_dmamask = 0xffffffff;
+> 
+> Use DMA_32BIT_MASK.
+> 
+
+Fixed.
+
+> > +
+> > +int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
+> > +	struct snd_pcm *pcm)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	if (!card->dev->dma_mask)
+> > +		card->dev->dma_mask = &pxa2xx_pcm_dmamask;
+> > +	if (!card->dev->coherent_dma_mask)
+> > +		card->dev->coherent_dma_mask = 0xffffffff;
+> 
+> Ditto.
+> 
+
+Fixed.
+
+
+Thanks
+
+Liam
+
+--=-EKGI+gaRoaxHMszUexxI
+Content-Disposition: attachment; filename=asoc-pxa2xx-dma.patch
+Content-Type: text/x-patch; name=asoc-pxa2xx-dma.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
---- alsa-driver/alsa-kernel/pci/hda/patch_realtek.c.orig	2006-10-08 10:58:28.000000000 -0700
-+++ alsa-driver/alsa-kernel/pci/hda/patch_realtek.c	2006-10-11 11:03:13.000000000 -0700
-@@ -112,6 +112,7 @@
- 	ALC883_6ST_DIG,
- 	ALC888_DEMO_BOARD,
- 	ALC883_ACER,
-+	ALC883_MEDION,
- 	ALC883_AUTO,
- 	ALC883_MODEL_LAST,
- };
-@@ -4309,7 +4310,7 @@
- static struct hda_verb alc882_eapd_verbs[] = {
- 	/* change to EAPD mode */
- 	{0x20, AC_VERB_SET_COEF_INDEX, 0x07},
--	{0x20, AC_VERB_SET_PROC_COEF, 0x3060},
-+	{0x20, AC_VERB_SET_PROC_COEF, 0x3070},
- 	{ } 
- };
- 
-@@ -4875,6 +4876,41 @@
- 	{ } /* end */
- };
- 
-+static snd_kcontrol_new_t alc883_fivestack_mixer[] = {
-+	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Front Playback Switch", 0x14, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Surround Playback Switch", 0x15, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x16, 1, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x16, 2, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
-+	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
+Index: alsa-kernel/soc/pxa/pxa2xx-pcm.c
+===================================================================
+--- /dev/null
++++ alsa-kernel/soc/pxa/pxa2xx-pcm.c
+@@ -0,0 +1,363 @@
++/*
++ * linux/sound/arm/pxa2xx-pcm.c -- ALSA PCM interface for the Intel PXA2xx chip
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Nov 30, 2004
++ * Copyright:	(C) 2004 MontaVista Software, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		/* .name = "Capture Source", */
-+		.name = "Input Source",
-+		.count = 1,
-+		.info = alc883_mux_enum_info,
-+		.get = alc883_mux_enum_get,
-+		.put = alc883_mux_enum_put,
-+	},
-+	{ } /* end */
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include <asm/dma.h>
++#include <asm/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/audio.h>
++
++#include "pxa2xx-pcm.h"
++
++static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_PAUSE |
++				  SNDRV_PCM_INFO_RESUME,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++					SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= 8192 - 32,
++	.periods_min		= 1,
++	.periods_max		= PAGE_SIZE/sizeof(pxa_dma_desc),
++	.buffer_bytes_max	= 128 * 1024,
++	.fifo_size		= 32,
 +};
 +
- static struct snd_kcontrol_new alc883_chmode_mixer[] = {
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -5080,6 +5116,8 @@
- 	  .config = ALC883_ACER },
- 	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x009f,
- 	  .config = ALC883_ACER },
-+	{ .pci_subvendor = 0x161f, .pci_subdevice = 0x2054,
-+	  .modelname = "medion", .config = ALC883_MEDION }
- 	{ .modelname = "auto", .config = ALC883_AUTO },
- 	{}
- };
-@@ -5167,6 +5205,20 @@
- 		.channel_mode = alc883_3ST_2ch_modes,
- 		.input_mux = &alc883_capture_source,
- 	},
-+	[ALC883_MEDION] = {
-+		.mixers = { alc883_fivestack_mixer,
-+			    alc883_chmode_mixer },
-+		.init_verbs = { alc883_init_verbs,
-+				alc882_eapd_verbs },
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc883_adc_nids),
-+		.adc_nids = alc883_adc_nids,
-+		.num_channel_mode = ARRAY_SIZE(alc883_sixstack_modes),
-+		.channel_mode = alc883_sixstack_modes,
-+		.input_mux = &alc883_capture_source,
++struct pxa2xx_runtime_data {
++	int dma_ch;
++	struct pxa2xx_pcm_dma_params *params;
++	pxa_dma_desc *dma_desc_array;
++	dma_addr_t dma_desc_array_phys;
++};
++
++static void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
++{
++	struct snd_pcm_substream *substream = dev_id;
++	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++	int dcsr;
++
++	dcsr = DCSR(dma_ch);
++	DCSR(dma_ch) = dcsr & ~DCSR_STOPIRQEN;
++
++	if (dcsr & DCSR_ENDINTR) {
++		snd_pcm_period_elapsed(substream);
++	} else {
++		printk( KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
++			prtd->params->name, dma_ch, dcsr );
++	}
++}
++
++static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct pxa2xx_runtime_data *prtd = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct pxa2xx_pcm_dma_params *dma = rtd->cpu_dai->dma_data;
++	size_t totsize = params_buffer_bytes(params);
++	size_t period = params_period_bytes(params);
++	pxa_dma_desc *dma_desc;
++	dma_addr_t dma_buff_phys, next_desc_phys;
++	int ret;
++
++	/* this may get called several times by oss emulation
++	 * with different params */
++	if (prtd->params == NULL) {
++		prtd->params = dma;
++		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
++			      pxa2xx_pcm_dma_irq, substream);
++		if (ret < 0)
++			return ret;
++		prtd->dma_ch = ret;
++	} else if (prtd->params != dma) {
++		pxa_free_dma(prtd->dma_ch);
++		prtd->params = dma;
++		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
++			      pxa2xx_pcm_dma_irq, substream);
++		if (ret < 0)
++			return ret;
++		prtd->dma_ch = ret;
 +	}
 +
- };
- 
- 
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++	runtime->dma_bytes = totsize;
++
++	dma_desc = prtd->dma_desc_array;
++	next_desc_phys = prtd->dma_desc_array_phys;
++	dma_buff_phys = runtime->dma_addr;
++	do {
++		next_desc_phys += sizeof(pxa_dma_desc);
++		dma_desc->ddadr = next_desc_phys;
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			dma_desc->dsadr = dma_buff_phys;
++			dma_desc->dtadr = prtd->params->dev_addr;
++		} else {
++			dma_desc->dsadr = prtd->params->dev_addr;
++			dma_desc->dtadr = dma_buff_phys;
++		}
++		if (period > totsize)
++			period = totsize;
++		dma_desc->dcmd = prtd->params->dcmd | period | DCMD_ENDIRQEN;
++		dma_desc++;
++		dma_buff_phys += period;
++	} while (totsize -= period);
++	dma_desc[-1].ddadr = prtd->dma_desc_array_phys;
++
++	return 0;
++}
++
++static int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++
++	if (prtd && prtd->params)
++		*prtd->params->drcmr = 0;
++
++	if (prtd->dma_ch) {
++		snd_pcm_set_runtime_buffer(substream, NULL);
++		pxa_free_dma(prtd->dma_ch);
++		prtd->dma_ch = 0;
++	}
++
++	return 0;
++}
++
++static int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++
++	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
++	DCSR(prtd->dma_ch) = 0;
++	DCMD(prtd->dma_ch) = 0;
++	*prtd->params->drcmr = prtd->dma_ch | DRCMR_MAPVLD;
++
++	return 0;
++}
++
++static int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
++		DCSR(prtd->dma_ch) = DCSR_RUN;
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		DCSR(prtd->dma_ch) &= ~DCSR_RUN;
++		break;
++
++	case SNDRV_PCM_TRIGGER_RESUME:
++		DCSR(prtd->dma_ch) |= DCSR_RUN;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
++		DCSR(prtd->dma_ch) |= DCSR_RUN;
++		break;
++
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t
++pxa2xx_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct pxa2xx_runtime_data *prtd = runtime->private_data;
++
++	dma_addr_t ptr = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
++			 DSADR(prtd->dma_ch) : DTADR(prtd->dma_ch);
++	snd_pcm_uframes_t x = bytes_to_frames(runtime, ptr - runtime->dma_addr);
++
++	if (x == runtime->buffer_size)
++		x = 0;
++	return x;
++}
++
++static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct pxa2xx_runtime_data *prtd;
++	int ret;
++
++	snd_soc_set_runtime_hwparams(substream, &pxa2xx_pcm_hardware);
++
++	/*
++	 * For mysterious reasons (and despite what the manual says)
++	 * playback samples are lost if the DMA count is not a multiple
++	 * of the DMA burst size.  Let's add a rule to enforce that.
++	 */
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
++	if (ret)
++		goto out;
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
++	if (ret)
++		goto out;
++
++	prtd = kzalloc(sizeof(struct pxa2xx_runtime_data), GFP_KERNEL);
++	if (prtd == NULL) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	prtd->dma_desc_array =
++		dma_alloc_writecombine(substream->pcm->card->dev, PAGE_SIZE,
++				       &prtd->dma_desc_array_phys, GFP_KERNEL);
++	if (!prtd->dma_desc_array) {
++		ret = -ENOMEM;
++		goto err1;
++	}
++
++	runtime->private_data = prtd;
++	return 0;
++
++ err1:
++	kfree(prtd);
++ out:
++	return ret;
++}
++
++static int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct pxa2xx_runtime_data *prtd = runtime->private_data;
++
++	dma_free_writecombine(substream->pcm->card->dev, PAGE_SIZE,
++			      prtd->dma_desc_array, prtd->dma_desc_array_phys);
++	kfree(prtd);
++	return 0;
++}
++
++static int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
++	struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
++				     runtime->dma_area,
++				     runtime->dma_addr,
++				     runtime->dma_bytes);
++}
++
++struct snd_pcm_ops pxa2xx_pcm_ops = {
++	.open		= pxa2xx_pcm_open,
++	.close		= pxa2xx_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_pcm_hw_params,
++	.hw_free	= pxa2xx_pcm_hw_free,
++	.prepare	= pxa2xx_pcm_prepare,
++	.trigger	= pxa2xx_pcm_trigger,
++	.pointer	= pxa2xx_pcm_pointer,
++	.mmap		= pxa2xx_pcm_mmap,
++};
++
++static int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size = pxa2xx_pcm_hardware.buffer_bytes_max;
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
++					   &buf->addr, GFP_KERNEL);
++	if (!buf->area)
++		return -ENOMEM;
++	buf->bytes = size;
++	return 0;
++}
++
++static void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++
++		buf = &substream->dma_buffer;
++		if (!buf->area)
++			continue;
++
++		dma_free_writecombine(pcm->card->dev, buf->bytes,
++				      buf->area, buf->addr);
++		buf->area = NULL;
++	}
++}
++
++static u64 pxa2xx_pcm_dmamask = DMA_32BIT_MASK;
++
++int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
++	struct snd_pcm *pcm)
++{
++	int ret = 0;
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &pxa2xx_pcm_dmamask;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_32BIT_MASK;
++
++	if (dai->playback.channels_min) {
++		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_PLAYBACK);
++		if (ret)
++			goto out;
++	}
++
++	if (dai->capture.channels_min) {
++		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_CAPTURE);
++		if (ret)
++			goto out;
++	}
++ out:
++	return ret;
++}
++
++struct snd_soc_platform pxa2xx_soc_platform = {
++	.name		= "pxa2xx-audio",
++	.pcm_ops 	= &pxa2xx_pcm_ops,
++	.pcm_new	= pxa2xx_pcm_new,
++	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++};
++
++EXPORT_SYMBOL_GPL(pxa2xx_soc_platform);
++
++MODULE_AUTHOR("Nicolas Pitre");
++MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");
++MODULE_LICENSE("GPL");
+Index: alsa-kernel/soc/pxa/pxa2xx-pcm.h
+===================================================================
+--- /dev/null
++++ alsa-kernel/soc/pxa/pxa2xx-pcm.h
+@@ -0,0 +1,48 @@
++/*
++ * linux/sound/arm/pxa2xx-pcm.h -- ALSA PCM interface for the Intel PXA2xx chip
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Nov 30, 2004
++ * Copyright:	MontaVista Software, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _PXA2XX_PCM_H
++#define _PXA2XX_PCM_H
++
++struct pxa2xx_pcm_dma_params {
++	char *name;			/* stream identifier */
++	u32 dcmd;			/* DMA descriptor dcmd field */
++	volatile u32 *drcmr;		/* the DMA request channel to use */
++	u32 dev_addr;			/* device physical address for DMA */
++};
++
++struct pxa2xx_gpio {
++	u32 sys;
++	u32	rx;
++	u32 tx;
++	u32 clk;
++	u32 frm;
++};
++
++/* pxa2xx DAI ID's */
++#define PXA2XX_DAI_AC97_HIFI	0
++#define PXA2XX_DAI_AC97_AUX		1
++#define PXA2XX_DAI_AC97_MIC		2
++#define PXA2XX_DAI_I2S			0
++#define PXA2XX_DAI_SSP1			0
++#define PXA2XX_DAI_SSP2			1
++#define PXA2XX_DAI_SSP3			2
++
++extern struct snd_soc_cpu_dai pxa_ac97_dai[3];
++extern struct snd_soc_cpu_dai pxa_i2s_dai;
++extern struct snd_soc_cpu_dai pxa_ssp_dai[3];
++
++/* platform data */
++extern struct snd_soc_platform pxa2xx_soc_platform;
++extern struct snd_ac97_bus_ops pxa2xx_ac97_ops;
++
++#endif
 
---=-H1LUGw3jLmpA0gHIy6cU
+--=-EKGI+gaRoaxHMszUexxI
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -195,7 +567,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-H1LUGw3jLmpA0gHIy6cU
+--=-EKGI+gaRoaxHMszUexxI
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -206,4 +578,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-H1LUGw3jLmpA0gHIy6cU--
+--=-EKGI+gaRoaxHMszUexxI--
