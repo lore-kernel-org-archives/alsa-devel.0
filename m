@@ -1,18 +1,15 @@
-From: Ted Joyce <uamb@wonham.com>
-Subject: redevelop erupt
-Date: Sun, 15 Oct 2006 15:42:04 +0200
-Message-ID: <45323AAC.1000005@wonham.com>
+From: eStore <estore@scta5.com>
+Subject: Offre Speciale Octobre 2006
+Date: Thu, 12 Oct 2006 08:51:59 +0200
+Message-ID: <499ffe2b36114290bb5b7dbbb35fd482@localhost.localdomain>
+Reply-To: eStore <estore@scta5.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0769859921=="
+Content-Type: multipart/mixed; boundary="===============0947760315=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9151513A
+Received: from smtp141-94.eml-srv.com (smtp141-94.eml-srv.com [81.93.240.94])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 119B921B
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Oct 2006 15:42:35 +0200 (MEST)
-Received: from M5ec9.m.pppool.de (M5ec9.m.pppool.de [89.49.94.201])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	0375399615 for <alsa-devel@alsa-project.org>;
-	Sun, 15 Oct 2006 15:42:32 +0200 (MEST)
+	Sun, 15 Oct 2006 14:42:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,249 +19,734 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---===============0769859921==
-Content-Type: multipart/related;
-	boundary="------------060805070402010102050300"
 
-This is a multi-part message in MIME format.
---------------060805070402010102050300
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+--===============0947760315==
+Content-Type: multipart/alternative;
+	boundary="b1_499ffe2b36114290bb5b7dbbb35fd482"
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
- <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-</head>
-<body bgcolor="#ffffff" text="#000000">
-<img alt="" src="cid:part1.09000402.09010206@wonham.com" height="369"
- width="783"><br>
-required travel modules including air, train, hotel and car .<br>
-has food allergies herself and specializes in booking cruises for .<br>
-commercial officer, just completed a global tour of carriers .<br>
-I finally got to play with Wallop today, the new social. addicted to her
-work as a phone-sex operator.<br>
-Allied to this, the most popular type of holiday preferred by UK
-holidaymakers was a hotel or beach apartment with .<br>
-including determining the types of hospitality they will . Read these
-stories and more from around the Web on News.<br>
-Today, dozens of tour operators with rice boats ply .<br>
-Read these stories and more from around the Web on News.<br>
-addicted to her work as a phone-sex operator. of two hugely successful
-modules of French and Japanese . Paper Microsoft MCSEs who were
-excellent at finding brain dumps and passin. He remembers a French
-reporter sticking a .<br>
-Some of the anticipation of an increase in hotel and holiday bookings
-for Malta .<br>
-The Status Monitor has an annoying warning symbol on it. addicted to her
-work as a phone-sex operator.<br>
-After all, Microsoft has stayed fairly committed to November business
-availability. the Croatian islands and the coasts of France and Italy .
-The demand for Microsoft Certified Professionals in the job market is. a
-great time and spoke highly of the hospitality of the . AThe air search
-and booking function has .<br>
-<br>
+
+--b1_499ffe2b36114290bb5b7dbbb35fd482
+Content-Type: text/plain; charset = "iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Si vous d=E9sirez visualiser ce mail au format html, recopiez l'adresse s=
+uivante dans votre navigateur: http://www.emlsrv.net/view.html?id=3D2412&=
+ref=3D1246021\n\n\n\nSi vous d=E9sirez vous d=E9sinscrire, il suffit de c=
+liquer sur le lien pr=E9vu ou de recopier l'adresse suivante dans votre n=
+avigateur: http://www.emlsrv.net/desabo.html?ope=3D2412&email=3Dalsa-deve=
+l@alsa-project.org\r\n
+
+
+--b1_499ffe2b36114290bb5b7dbbb35fd482
+Content-Type: text/html; charset = "iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body  ><html>
+<body>
+  <center>
+    <DIV align=3D"center"><font size=3D"1" face=3D"Arial, Helvetica, sans=
+-serif">Si vous ne lisez pas correctement cet email, <A href=3D"http://ww=
+w.emlsrv.net/go.php?lien=3D8906&editrack=3D1246021">cliquez ici</A></font=
+></DIV>
+    <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0"=
+>
+    <tr>
+      <td width=3D"364">
+        <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&editrack=3D12=
+46021"><img src=3D"http://www.ipt06.com/estore/estore.gif" alt=3D"eSTORE =
+- Partenaire GN Netcom | INFORMATIQUE | BUREAUTIQUE | TELEPHONIE | VOIP |=
+ Achetez en ligne ou appelez gratuitement au 0 805 965 965" border=3D"0">
+      </td>
+     =20
+      <td width=3D"236">
+        <img src=3D"http://www.ipt06.com/estore/gnnetcom.gif" border=3D"0=
+" alt=3D"eSTORE - Partenaire GN Netcom | Casques sans fil, Casques filair=
+es, Casques VoIP et accessoires pour casques.">
+      </td>
+    </tr>
+  </table>
+  <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tr>
+      <td height=3D"376" width=3D"356" bgcolor=3D"#99CC33">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tl.jpg" border=3D=
+"0"></td>
+            <td width=3D"338"></td>
+            <td><img src=3D"http://www.ipt06.com/estore/tr.jpg" border=3D=
+"0"></td>
+          </tr>
+         =20
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td valign=3D"top" align=3D"right">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8908&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/offre.gif" bo=
+rder=3D"0" alt=3D"eSTORE.fr vous propose le casque sans fil GN 9120 flex =
+&agrave; 299 euros et vous offre le levier de d&eacute;crochage &agrave; =
+distance, soit une &eacute;conomie de 130 euros.">
+                    </a>
+                  </td>
+                </tr>
+               =20
+                <tr>
+                  <td valign=3D"bottom" align=3D"right">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8908&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">
+                    Casque sans fil<br>
+                    <font size=3D2><b>GN Netcom 9120 Flex + GN 1000</b></=
+font><br>                   =20
+                    <br>Peut se connecter &agrave; tous les t&eacute;l&ea=
+cute;phones y compris aux standards Alcatel, Siemens, Matra ... Le GN 100=
+0 permet de d&eacute;crocher le t&eacute;l&eacute;phone &agrave; distance=
+ depuis le casque.<br>
+                    </font>
+                    </a>                                =20
+                  </td>
+                </tr>
+              </table>           =20
+            </td>
+            <td></td>
+          </tr>
+         =20
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/bl.jpg" border=3D=
+"0"></td>
+            <td width=3D"338"></td>
+            <td><img src=3D"http://www.ipt06.com/estore/br.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+     =20
+      <td width=3D"8">&nbsp;
+       =20
+      </td>
+     =20
+      <td width=3D"236">
+        <table width=3D"236" cellspacing=3D"0" cellpadding=3D"0" border=3D=
+"0">
+          <tr>
+            <td height=3D"122" width=3D"236" bgcolor=3D"#99CC33">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0"  border=3D"0">
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/tl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/tr.jpg" bor=
+der=3D"0"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td height=3D"100%" width=3D"100%" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#618020"><u><b>T&eacute;l&eacute;phonie</b></u></font><br>
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff"><br>T&eacute;l&eacute;phones filaires<br>Mini standards DECT<br=
+>Casques sans fil<br>R&eacute;pondeurs<br>Audioconf&eacute;rences<br>Voix=
+ sur IP ...</font><br>
+                    </a>
+                  </td>
+                  <td>
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/telephonie.gi=
+f" border=3D"0" alt=3D"eSTORE.fr vous propose une offre compl&egrave;te e=
+n t&eacute;l&eacute;phonie filaire, DECT et IP">
+                    </a>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/bl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/br.jpg" bor=
+der=3D"0"></td>
+                </tr>
+              </table>     =20
+            </td>
+          </tr>
+         =20
+          <tr>
+            <td height=3D"5"></td>
+          </tr>
+         =20
+          <tr>
+            <td height=3D"122" width=3D"236" bgcolor=3D"#99CC33">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0"  border=3D"0">
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/tl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/tr.jpg" bor=
+der=3D"0"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td height=3D"100%" width=3D"100%" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#618020"><u><b>Bureautique</b></u></font><br>
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff"><br><br>Fax<br>Imprimantes<br>Multifonctions<br>Consommables ..=
+.</font><br>
+                    </a>
+                  </td>
+                  <td>
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/bureautique.g=
+if" border=3D"0" alt=3D"eSTORE.fr vous propose une offre compl&egrave;te =
+en bureautique">
+                    </a>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/bl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/br.jpg" bor=
+der=3D"0"></td>
+                </tr>
+              </table>     =20
+            </td>
+          </tr>
+         =20
+          <tr>
+             <td height=3D"5"></td>
+          </tr>
+         =20
+          <tr>
+            <td height=3D"122" width=3D"236" bgcolor=3D"#99CC33">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0"  border=3D"0">
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/tl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/tr.jpg" bor=
+der=3D"0"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td height=3D"100%" width=3D"100%" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#618020"><u><b>Informatique</b></u></font><br>
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff"><br>Routeurs<br>R&eacute;seaux Wifi<br>Logiciels EBP<br>Clefs U=
+SB<br>PDA phone<br>Photo num&eacute;rique ...</span><br>
+                    </a>
+                  </td>
+                  <td>
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8907&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/informatique.=
+gif" border=3D"0"alt=3D"eSTORE.fr vous propose une offre compl&egrave;te =
+en informatique, r&eacute;seaux et photographie num&eacute;rique et stock=
+age">
+                    </a>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><img src=3D"http://www.ipt06.com/estore/bl.jpg" bor=
+der=3D"0"></td>
+                  <td></td>
+                  <td></td>
+                  <td><img src=3D"http://www.ipt06.com/estore/br.jpg" bor=
+der=3D"0"></td>
+                </tr>
+              </table>     =20
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+  <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tr>
+      <td width=3D"600" align=3D"center">
+        <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D"#618020">=
+<b>appel gratuit et<br>
+        </b></font><font face=3D"Verdana,Tahoma,Arial" size=3D"6" color=3D=
+"#618020"><b>0 825 965 965</b></font>
+        <br>
+      <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D"#CC0000"><b=
+>frais de port offerts pour votre premi&egrave;re commande</b></font></td=
+>
+    </tr>
+  </table>
+  <br>
+  <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tr>
+      <td height=3D"250" width=3D"190" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8909&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b><font color=3D"black">Reprise 80 &euro;</font> de votre anci=
+en casque</b></font>
+                    </a>
+                  </td>
+                </tr>
+               =20
+                <tr>
+                  <td align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8909&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/9350.gif" bor=
+der=3D"0" alt=3D"eSTORE.fr vous propose de reprendre votre ancien casque =
+filaire ou sans fil pour l'achat d'un casque sans fil GN 9350 au prix inc=
+royable de 289 euros HT">
+                    </a>
+                  </td>
+                </tr>
+               =20
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">pour l'achat d'un casque sans fil <b>GN 9350</b> incluant un pr=
+otecteur acoustique.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+
+      <td width=3D"10">
+      </td>
+
+      <td height=3D"250" width=3D"190" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8910&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b><font color=3D"black">Reprise 99 &euro;</font> de votre anci=
+en logiciel de compta</b></font>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8910&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/compta.gif" b=
+order=3D"0" alt=3D"eSTORE.fr vous propose une offre de reprendre votre an=
+cien logiciel de comptabilit&eacute; pour l'achat d'un logiciel EBP Compt=
+a 2007, soit une remise de 99 euros HT">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">pour l'achat de la version 2007 d'EBP compta. Soit le logiciel =
+en version compl&egrave;te &agrave; 80 &euro; au lieu de 179.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+
+      <td width=3D"10">
+      </td>
+
+      <td height=3D"190" width=3D"200" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8911&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b>Votre PDA Phone Qtek 9100 &agrave; <font color=3D"black">459=
+ &euro; au lieu de 749</font></b></font>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8911&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/qtek.gif" bor=
+der=3D"0" alt=3D"eSTORE.fr vous propose l'assistant personnel communicant=
+ &agrave; un prix d&eacute;fiant incroyable.">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">PDA communiquant GSM - EDGE - Bluetooth - Wi-Fi - 1,3 Mega-pixe=
+l cam&eacute;ra.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+    </tr>
+  </table>
+  <br>
+  <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tr>
+      <td height=3D"250" width=3D"190" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8912&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b>Poste VOIP Thomson &agrave; <font color=3D"black">105 &euro;=
+ seuleument !</font></b></font>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td height=3D"100%" align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8912&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/2030.gif" bor=
+der=3D"0" alt=3D"eSTORE.fr vous propose la rolls des t&eacute;l&eacute;ph=
+ones filaires IP. Commencez &agrave; faire des &eacute;conomies d&egrave;=
+s maintenant gr&acirc;ce &agrave; la VoIP">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">passez d&egrave;s maintenant &agrave; la voix sur IP et commenc=
+ez &agrave; faire des &eacute;conomies importantes.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+
+      <td width=3D"10">
+      </td>
+
+      <td height=3D"250" width=3D"190" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8913&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b>Casque sans fil GN 9120 DG &agrave; <font color=3D"black">79=
+ &euro; au lieu de 149</font></b></font>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td height=3D"100%" align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8913&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/dg.gif" borde=
+r=3D"0" alt=3D"eSTORE.fr vous propose le casque sans fil GN netcom 9120 D=
+G pour t&eacute;l&eacute;phones DECT au prix massacr&eacute; de 79 euros =
+HT">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">ce casque se comporte comme un combin&eacute; suppl&eacute;ment=
+aire sur une base DECT GAP.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+
+      <td width=3D"10">
+      </td>
+
+      <td height=3D"190" width=3D"200" align=3D"center" bgcolor=3D"#99CCC=
+C">
+        <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cellpaddi=
+ng=3D"0" border=3D"0">
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/tlb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/trb.jpg" border=3D=
+"0"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td height=3D"100%" width=3D"100%" valign=3D"top">
+              <table height=3D"100%" width=3D"100%" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0">
+                <tr>
+                  <td align=3D"center" valign=3D"top">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8914&e=
+ditrack=3D1246021">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"2" color=3D=
+"#ffffff"><b>Casque filaire GN Optima Duo &agrave; <font color=3D"black">=
+75 &euro; au lieu de 145</font></b></font>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td height=3D"100%" align=3D"center">
+                    <a href=3D"http://www.emlsrv.net/go.php?lien=3D8914&e=
+ditrack=3D1246021">
+                    <img src=3D"http://www.ipt06.com/estore/optima.gif" b=
+order=3D"0" alt=3D"eSTORE.fr vous propose des prix incroyables sur les ca=
+sques GN Netcom Optima DUO. Faites 700 euros d'&eacute;conomies en les ac=
+hetant par 10.">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align=3D"center" valign=3D"bottom">
+                    <font face=3D"Verdana,Tahoma,Arial" size=3D"1" color=3D=
+"#ffffff">&eacute;quipez-vous au meilleur prix d'un casque professionnel =
+confortable.</font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><img src=3D"http://www.ipt06.com/estore/blb.jpg" border=3D=
+"0"></td>
+            <td></td>
+            <td><img src=3D"http://www.ipt06.com/estore/brb.jpg" border=3D=
+"0"></td>
+          </tr>
+        </table>     =20
+      </td>
+    </tr>
+  </table>
+  <br>
+  <table width=3D"600" cellspacing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tr>
+      <td><font color=3D"#666666" size=3D"1" face=3D"Verdana, Arial, Helv=
+etica, sans-serif">Offres soumises aux conditions G&eacute;n&eacute;rales=
+ de Vente et de service d'estore.fr, photos non contractuelles, offres va=
+lables dans la limite des pi&egrave;ces et composants disponibles jusqu'a=
+u 31/11/2006.=20
+        estore.fr se r&eacute;serve le droit de changer prix et caract&ea=
+cute;ristiques techniques selon la situation du march&eacute; sans avis p=
+r&eacute;alable. Conditions et d&eacute;tails de l'offre sur www.estore.f=
+r.=20
+        La garantie des produits est assur&eacute;e par les fabricants de=
+ ces produits.=20
+        Malgr&eacute; notre vigilance, des erreurs de prix et/ou sp&eacut=
+e;cifications peuvent s'&ecirc;tre gliss&eacute;es dans ce document. esto=
+re.fr vous prie de l'en excuser et vous pr&eacute;viendra le plus t&ocirc=
+;t possible.=20
+        estore.fr se r&eacute;serve le droit de mettre fin &agrave; ces o=
+ffres sans avis pr&eacute;alable.<br>
+        <br>
+        Contactez le service commercial eSTORE au 0 825 965 965 pour conn=
+a&icirc;tre le d&eacute;tail des offres de reprise.<br>
+        <br>
+        Les frais de port sont offerts sous forme d'un coupon de r&eacute=
+;duction de 10 euros HT utilisable 1 fois sur la commande de votre choix.=
+ Des suppl&eacute;ments de transport peuvent &ecirc;tre factur&eacute;s p=
+our la Corse et les DOM TOM.<br>
+        Le coupon de r&eacute;duction est envoy&eacute; par email automat=
+iquement lors de l'ouverture d'un compte sur estore.fr<br>
+        L'ouverture d'un compte sur estore.fr est gratuite, non soumise &=
+agrave; conditions et sans obligation d'achat.
+        </p>
+        </font></td>
+  </table>
+  <br>
+  <font color=3D"#666666"><font face=3D"Arial, Helvetica, sans-serif" siz=
+e=3D"1"><b><br>
+Conform&eacute;ment=20
+            &agrave; la loi informatique et libert&eacute; du 06/01/1978 =
+(art.27), vous=20
+            disposez d'un droit d'acc&egrave;s et de rectification des do=
+nn&eacute;es vous=20
+            concernant. Si vous souhaitez modifier vos coordonn&eacute;es=
+ ou si vous ne=20
+            d&eacute;sirez plus recevoir de messages &eacute;lectroniques=
+ de la part de=20
+            cet annonceur,
+          cliquez </b> <a href=3D"http://www.emlsrv.net/go.php?lien=3D891=
+5&editrack=3D1246021">ici</a></font></font>
+  </center>
 </body>
 </html>
+</body></html>
 
---------------060805070402010102050300
-Content-Type: image/gif;
- name="deluge.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <part1.09000402.09010206@wonham.com>
-Content-Disposition: inline;
- filename="deluge.gif"
-
-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
-N7RDPzRER7RET3S2XABFXzRBhwAAOw==
---------------060805070402010102050300--
+<img src=3D"http://www.emlsrv.net/trafic/include/new-visitor.inc.php?oper=
+ation=3D2412&ref=3D1246021" width=3D"1" height=3D"1">
 
 
 
---===============0769859921==
+--b1_499ffe2b36114290bb5b7dbbb35fd482--
+
+
+
+
+--===============0947760315==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -275,7 +757,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0769859921==
+--===============0947760315==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -286,4 +768,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0769859921==--
+--===============0947760315==--
