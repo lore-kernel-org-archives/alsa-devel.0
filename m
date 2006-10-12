@@ -1,18 +1,12 @@
-From: Daniel Jacobowitz <drow@false.org>
-Subject: Re: [PATCH 2/8] ASoC pxa2xx I2S support
-Date: Thu, 12 Oct 2006 13:18:44 -0400
-Message-ID: <20061012171844.GA10020@nevyn.them.org>
-References: <1160496714.24436.111.camel@localhost.localdomain>
-	<s5hirism764.wl%tiwai@suse.de>
-	<1160648042.13780.5.camel@localhost.localdomain>
-	<s5h8xjlkdk3.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0610121144020.2435@xanadu.home>
+From: albox@free.fr
+Subject: Re: Issue with Intel HDA Sound card 82801G (laptop
+	Medion)
+Date: Thu, 12 Oct 2006 20:13:31 +0200
+Message-ID: <1160676811.452e85cbe2247@imp3-g19.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0610121144020.2435@xanadu.home>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,24 +19,15 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 12, 2006 at 11:47:16AM -0400, Nicolas Pitre wrote:
-> > IIRC, the code size is reduced by omitting '= 0'.  That is why kernel
-> > code prefers the style without '= 0'. 
-> > Maybe it doesn't matter any more with the recetn gcc, though.
-> 
-> The reason is that global variables with explicit initial values are 
-> allocated to the .data section which is always present in the kernel 
-> binary.  When no explicit initial value is provided then the variable is 
-> allocated to the .bss section which is _not_ included in the kernel 
-> binary but initialized to zero at runtime.
 
-GCC has included explicitly zero initialized variables in the .bss
-section for a while now; this is controlled by
--fno-zero-initialized-in-bss.
 
--- 
-Daniel Jacobowitz
-CodeSourcery
+Hi,
+As Andrew said, Tobin's patch is working :-) ...except for the microphone, but
+it's already a big improvement
+
+Thank you very much !!!
+
+Al
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
