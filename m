@@ -1,11 +1,13 @@
-From: albox@free.fr
-Subject: Re: Patch:  Add support for Medion laptops.
-Date: Fri, 13 Oct 2006 17:47:17 +0200
-Message-ID: <1160754437.452fb5057dde9@imp6-g19.free.fr>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib fails to compile.
+Date: Fri, 13 Oct 2006 18:02:01 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0610131801340.8569@tm8103.perex-int.cz>
+References: <452FA0DC.802@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <452FA0DC.802@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,17 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: remy.bruno@trinnov.com
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-No I didn't do something special. I have just compiled and installed the patched
-driver (using the 2 patches I received by email).
-I'm off for the week-end so I won't be able to answer before Monday.
+On Fri, 13 Oct 2006, James Courtier-Dutton wrote:
 
-Cheers,
-Al
+> Hi,
+> 
+> The latest alsa-lib HG fails to compile.
+> Does anyone know why?
+
+I'm sorry, I missed to add pcm_empty.c source file. Fixed.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
