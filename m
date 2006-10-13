@@ -1,9 +1,11 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH] ASoC DAI capabilities labelling
-Date: Fri, 13 Oct 2006 11:17:37 +0100
-Message-ID: <1160734657.4171.15.camel@localhost.localdomain>
+From: albox@free.fr
+Subject: Re: Issue with Intel HDA Sound
+	card	82801G(laptop	Medion)
+Date: Fri, 13 Oct 2006 12:34:40 +0200
+Message-ID: <1160735680.452f6bc049376@imp2-g19.free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-0BDYGi2btha3Ss+N0k8q"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,789 +16,304 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: rlrevell@joe-job.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Actually, it didn't work with KRec but I tried Skype and it works so the only
+problem is that I'ma newbie with KRec ;-)
 
---=-0BDYGi2btha3Ss+N0k8q
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+$ amixer
+Simple mixer control 'Headphone',0
+  Capabilities: pswitch
+  Playback channels: Front Left - Front Right
+  Front Left: Playback [on]
+  Front Right: Playback [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Front Left: Playback 255 [100%]
+  Front Right: Playback 255 [100%]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Front Mic',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 6 [19%] [on]
+  Front Right: Playback 6 [19%] [on]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 11 [35%] [on]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 7 [23%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [on]
+  Front Right: Playback 0 [0%] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: Playback [on] Capture [off]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 26
+  Front Left: Capture 26 [100%] [off]
+  Front Right: Capture 26 [100%] [off]
+Simple mixer control 'Input Source',0
+  Capabilities:
+  Mono:
 
-This patch suggested by Takashi changes the DAI capabilities definitions
-in pxa-i2s.c, at91rm9200-i2s.c, wm8731.c, wm8750.c and wm9712.c to use a
-label = value style.
-
-Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-
-
---=-0BDYGi2btha3Ss+N0k8q
-Content-Disposition: attachment; filename=asoc-label.patch
-Content-Type: text/x-patch; name=asoc-label.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r 98ae850eb995 soc/at91/at91rm9200-i2s.c
---- a/soc/at91/at91rm9200-i2s.c	Thu Oct 12 14:34:32 2006 +0200
-+++ b/soc/at91/at91rm9200-i2s.c	Thu Oct 12 13:47:01 2006 +0100
-@@ -51,24 +51,52 @@ static struct snd_soc_dai_mode at91rm920
- static struct snd_soc_dai_mode at91rm9200_i2s[] = {
- 
- 	/* 8k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
--	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_8000, AT91RM9200_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 1500, SND_SOC_FSBD(10), (25 << 16 | 74) },
-+	{
-+		.fmt = AT91RM9200_I2S_DAIFMT, 
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = AT91RM9200_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = 1500,
-+		.bfs = SND_SOC_FSBD(10),
-+		.priv = (25 << 16 | 74),
-+	},
- 
- 	/* 16k: BCLK = (MCLK/3) ~= (60MHz/14) = 4.285714MHz */
--	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_16000, AT91RM9200_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 750, SND_SOC_FSBD(3) , (7 << 16 | 133) },
-+	{ 
-+		.fmt = AT91RM9200_I2S_DAIFMT,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
-+		.pcmrate = SNDRV_PCM_RATE_16000,
-+		.pcmdir = AT91RM9200_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 750, 
-+		.bfs = SND_SOC_FSBD(3),
-+		.flags (7 << 16 | 133),
-+	},
- 
- 	/* 24k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
--	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_22050, AT91RM9200_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 500, SND_SOC_FSBD(10), (25 << 16 | 24) },
-+	{ 
-+		.fmt = AT91RM9200_I2S_DAIFMT,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_22050, 
-+		.pcmdir = AT91RM9200_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 500, 
-+		.bfs = SND_SOC_FSBD(10), 
-+		.priv = (25 << 16 | 24),
-+	},
- 
- 	/* 48kHz: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
--	{ AT91RM9200_I2S_DAIFMT, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_48000, AT91RM9200_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 250, SND_SOC_FSBD(5), (13 << 16 | 23) },
-+	{ 
-+		.fmt = AT91RM9200_I2S_DAIFMT,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
-+		.pcmrate = SNDRV_PCM_RATE_48000, 
-+		.pcmdir = AT91RM9200_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 250, 
-+		.bfs SND_SOC_FSBD(5), 
-+		.priv = (13 << 16 | 23),
-+	},
- };
- 
- 
-diff -r 98ae850eb995 soc/codecs/wm8731.c
---- a/soc/codecs/wm8731.c	Thu Oct 12 14:34:32 2006 +0200
-+++ b/soc/codecs/wm8731.c	Fri Oct 13 10:54:13 2006 +0100
-@@ -85,74 +85,160 @@ static struct snd_soc_dai_mode wm8731_mo
- static struct snd_soc_dai_mode wm8731_modes[] = {
- 	/* codec frame and clock master modes */
- 	/* 8k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_8000, WM8731_DIR, 0,
--		1536, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_8000, WM8731_DIR, 0,
--		2304, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_8000, WM8731_DIR, 0,
--		1408, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_8000, WM8731_DIR, 0,
--		2112, SND_SOC_FSB(64)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = WM8731_DIR,
-+		.fs = 1536, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = WM8731_DIR,
-+		.fs = 2304, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = WM8731_DIR,
-+		.fs = 1408, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = WM8731_DIR,
-+		.fs = 2112, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
- 
- 	/* 32k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_32000, WM8731_DIR, 0,
--		384, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_32000, WM8731_DIR, 0,
--		576, SND_SOC_FSB(64)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_32000,
-+		.pcmdir = WM8731_DIR,
-+		.fs = 384, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_32000, 
-+		.pcmdir = WM8731_DIR,
-+		.fs = 576, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
- 
- 	/* 44.1k & 48k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
--		WM8731_DIR, 0, 256, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
--		WM8731_DIR, 0, 384, SND_SOC_FSB(64)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-+		.pcmdir = WM8731_DIR,
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-+		.pcmdir = WM8731_DIR,
-+		.fs = 384, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
- 
- 	/* 88.2 & 96k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
--		WM8731_DIR, 0, 128, SND_SOC_FSB(64)},
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
--		WM8731_DIR, 0, 192, SND_SOC_FSB(64)},
--
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
-+		.pcmdir = WM8731_DIR,
-+		.fs = 128, 
-+		.bfs = SND_SOC_FSB(64),
-+		
-+	},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
-+		.pcmdir = WM8731_DIR,
-+		.fs = 192, 
-+		.bfs = SND_SOC_FSB(64),
-+	},
- 
- 	/* USB codec frame and clock master modes */
- 	/* 8k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_8000, WM8731_DIR,
--		SND_SOC_DAI_BFS_DIV, 1500, SND_SOC_FSBD(1)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1500, 
-+		.bfs = SND_SOC_FSBD(1),
-+	},
- 
- 	/* 44.1k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_44100, WM8731_DIR,
--		SND_SOC_DAI_BFS_DIV, 272, SND_SOC_FSBD(1)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = 272, 
-+		.bfs = SND_SOC_FSBD(1),
-+	},
- 
- 	/* 48k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_48000, WM8731_DIR,
--		SND_SOC_DAI_BFS_DIV, 250, SND_SOC_FSBD(1)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_48000, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 250, 
-+		.bfs = SND_SOC_FSBD(1),
-+	},
- 
- 	/* 88.2k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_88200, WM8731_DIR,
--		SND_SOC_DAI_BFS_DIV, 136, SND_SOC_FSBD(1)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, 
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = 136, 
-+		.bfs = SND_SOC_FSBD(1),
-+	},
- 
- 	/* 96k */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, SNDRV_PCM_RATE_96000, WM8731_DIR,
--		SND_SOC_DAI_BFS_DIV, 125, SND_SOC_FSBD(1)},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_96000, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 125, 
-+		.bfs = SND_SOC_FSBD(1),
-+	},
- 
- 	/* codec frame and clock slave modes */
--	{WM8731_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		WM8731_HIFI_BITS, WM8731_RATES, WM8731_DIR, SND_SOC_DAI_BFS_DIV,
--		SND_SOC_FS_ALL, SND_SOC_FSBD_ALL},
-+	{
-+		.fmt = WM8731_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = WM8731_HIFI_BITS, 
-+		.pcmrate = WM8731_RATES, 
-+		.pcmdir = WM8731_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = SND_SOC_FS_ALL, 
-+		.bfs = SND_SOC_FSBD_ALL,
-+	},
- };
- 
- /*
-diff -r 98ae850eb995 soc/codecs/wm8750.c
---- a/soc/codecs/wm8750.c	Thu Oct 12 14:34:32 2006 +0200
-+++ b/soc/codecs/wm8750.c	Fri Oct 13 10:54:13 2006 +0100
-@@ -97,102 +97,254 @@ static struct snd_soc_dai_mode wm8750_mo
- static struct snd_soc_dai_mode wm8750_modes[] = {
- 	/* common codec frame and clock master modes */
- 	/* 8k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1536, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1408, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 2304, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 2112, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_8000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1500, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1536, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1408, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 2304, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 2112, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_8000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1500, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 11.025k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1024, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1536, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_11025,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1088, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_11025,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1024, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_11025,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1536, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_11025,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1088, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 16k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 768, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 1152, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 750, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_16000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 768, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_16000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 1152, 
-+		.bfs = WM8750_HIFI_FSB
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_16000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 750, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 22.05k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 512, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 768, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_22050,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 544, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_22050,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 512, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_22050,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 768, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_22050,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 544, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 32k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 384, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 576, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_16000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 375, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_32000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 384, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_32000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 576, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_32000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 375, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 44.1k & 48k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100 |
--		SNDRV_PCM_RATE_48000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 256,
--		WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100 |
--		SNDRV_PCM_RATE_48000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 384,
--		WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_44100,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 272, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_48000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 250, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000, 
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 256,
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000, 
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 384,
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_44100,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 272, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_48000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 250, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* 88.2k & 96k */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200 |
--		SNDRV_PCM_RATE_96000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 128,
--		WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200 |
--		SNDRV_PCM_RATE_96000, WM8750_DIR, SND_SOC_DAI_BFS_DIV, 192,
--		WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_88200,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 136, WM8750_HIFI_FSB},
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
--		SND_SOC_DAITDM_LRDW(0,0), WM8750_HIFI_BITS, SNDRV_PCM_RATE_96000,
--		WM8750_DIR, SND_SOC_DAI_BFS_DIV, 125, WM8750_HIFI_FSB},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000, 
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 128,
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000, 
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 192,
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_88200,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 136, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBM_CFM,
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = SNDRV_PCM_RATE_96000,
-+		.pcmdir = WM8750_DIR, 
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 125, 
-+		.bfs = WM8750_HIFI_FSB,
-+	},
- 
- 	/* codec frame and clock slave modes */
--	{WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		WM8750_HIFI_BITS, WM8750_HIFI_RATES, WM8750_DIR,
--		SND_SOC_DAI_BFS_DIV, SND_SOC_FS_ALL, SND_SOC_FSBD_ALL},
-+	{
-+		.fmt = WM8750_HIFI_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, 
-+		.pcmfmt = WM8750_HIFI_BITS, 
-+		.pcmrate = WM8750_HIFI_RATES, 
-+		.pcmdir = WM8750_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = SND_SOC_FS_ALL, 
-+		.bfs = SND_SOC_FSBD_ALL,
-+	},
- };
- 
- /*
-diff -r 98ae850eb995 soc/codecs/wm9712.c
---- a/soc/codecs/wm9712.c	Thu Oct 12 14:34:32 2006 +0200
-+++ b/soc/codecs/wm9712.c	Fri Oct 13 10:54:13 2006 +0100
-@@ -44,8 +44,11 @@ static int ac97_write(struct snd_soc_cod
- 
- /* may need to expand this */
- static struct snd_soc_dai_mode ac97_modes[] = {
--	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
--	{0, 0,	SNDRV_PCM_FMTBIT_S18_3LE,	AC97_RATES},
-+	{
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE,	
-+		.pcmrate = AC97_RATES,
-+		.pcmdir = AC97_DIR,
-+	},
- };
- 
- /*
-diff -r 98ae850eb995 soc/pxa/pxa2xx-i2s.c
---- a/soc/pxa/pxa2xx-i2s.c	Thu Oct 12 14:34:32 2006 +0200
-+++ b/soc/pxa/pxa2xx-i2s.c	Thu Oct 12 17:22:33 2006 +0100
-@@ -58,30 +58,77 @@ static struct pxa_i2s_port pxa_i2s;
- /* priv is divider */
- static struct snd_soc_dai_mode pxa2xx_i2s_modes[] = {
- 	/* pxa2xx I2S frame and clock master modes */
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_8000, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x48},
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_11025, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x34},
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_16000, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x24},
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_22050, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0x1a},
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_44100, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xd},
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_RATE_48000, PXA_I2S_DIR,
--		SND_SOC_DAI_BFS_DIV, 256, SND_SOC_FSBD(4), 0xc},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_8000, 
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4), 
-+		.priv = 0x48,
-+	},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_11025, 
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4), 
-+		.priv = 0x34,
-+	},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_16000, 
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4), 
-+		.priv = 0x24,
-+	},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_22050,
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV,
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4), 
-+		.priv = 0x1a,
-+	},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_44100, 
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4), 
-+		.priv = 0xd,
-+	},
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBS_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = SNDRV_PCM_RATE_48000, 
-+		.pcmdir = PXA_I2S_DIR,
-+		.flags = SND_SOC_DAI_BFS_DIV, 
-+		.fs = 256, 
-+		.bfs = SND_SOC_FSBD(4),
-+		.priv = 0xc,
-+	},
- 
- 	/* pxa2xx I2S frame master and clock slave mode */
--	{PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBM_CFS, SND_SOC_DAITDM_LRDW(0,0),
--		SNDRV_PCM_FMTBIT_S16_LE, PXA_I2S_RATES, PXA_I2S_DIR, 0,
--		SND_SOC_FS_ALL, SND_SOC_FSB(64), 0x48},
--
-+	{
-+		.fmt = PXA_I2S_DAIFMT | SND_SOC_DAIFMT_CBM_CFS,
-+		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE, 
-+		.pcmrate = PXA_I2S_RATES,
-+		.pcmdir = PXA_I2S_DIR,
-+		.fs = SND_SOC_FS_ALL, 
-+		.bfs = SND_SOC_FSB(64), 
-+		.priv = 0x48,
-+	},
- };
- 
- static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_out = {
-
---=-0BDYGi2btha3Ss+N0k8q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+$ cat /proc/asound/card0/codec#0
+Codec: Realtek ALC883
+Address: 0
+Vendor Id: 0x10ec0883
+Subsystem Id: 0x0
+Revision Id: 0x100002
+Default PCM: rates 0x560, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x03 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x04 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x05 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM: rates 0x560, bits 0x1e, types 0x1
+Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals: 0x80 0x80
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 1
+     0x23
+Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals: 0x00 0x00
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 1
+     0x22
+Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
+  PCM: rates 0x560, bits 0x1e, types 0x1
+  Connection: 1
+     0x1f
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals: 0x1f 0x1f
+  Connection: 10
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
+Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals: 0x1f 0x1f
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals: 0x06 0x06
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals: 0x0b 0x07
+  Connection: 2
+     0x04 0x0b
+Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals: 0x10 0x10
+  Connection: 2
+     0x05 0x0b
+Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x01011110: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x60: IN OUT
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x01011112: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d* 0x0e 0x0f 0x26
+Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x01011111: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e* 0x0f 0x26
+Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e 0x0f* 0x26
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x02a11c3f: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x24: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x24: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x99830130: [Fixed] Line In at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x0221111f: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x99830131: [Fixed] Line In at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01451120: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x06
+Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
+  Pincap 0x0820: IN
+  Pin Default 0x01c46160: [Jack] SPDIF In at Ext Rear
+    Conn = RCA, Color = Orange
+  Pin-ctls: 0x00:
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x80 0x80
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x23 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x25 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals: 0x00 0x00
+  Connection: 2
+     0x25 0x0b
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-0BDYGi2btha3Ss+N0k8q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-0BDYGi2btha3Ss+N0k8q--
