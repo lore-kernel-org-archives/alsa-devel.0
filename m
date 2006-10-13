@@ -1,10 +1,15 @@
-From: "littertiger" <tiger_zsch@163.com>
-Subject: snd_pcm_lib_preallocate_pages_for_all in armlinux
-Date: Fri, 13 Oct 2006 16:54:34 +0800
-Message-ID: <1375.73848846859$1160729558@news.gmane.org>
+From: Daniel Vukicevic <dv@zhor.de>
+Subject: snd-hda-intel with Asus U5F
+Date: Fri, 13 Oct 2006 11:05:26 +0200
+Message-ID: <452F56D6.2070506@zhor.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0717123897=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mailgate.pce.de (mailgate.pce.de [213.185.64.16])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1234199
+	for <alsa-devel@alsa-project.org>;
+	Fri, 13 Oct 2006 11:05:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,48 +19,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0717123897==
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
+Hello,
 
-Hi,all
+just wanted to let you know, that the snd-hda-intel module on the new
+Asus U5F Notebook works with model=laptop-eapd. That took me some hours
+to find it out, so it would be very helpful for future U5F users to see
+that model in the ALSA-Configuration Doc.
 
-In armlinux, there's no isa,pci...  
-What should I set type and data to in the following function:
-int snd_pcm_lib_preallocate_pages_for_all(snd_pcm_t *pcm,
-					  int type, void *data,
-					  size_t size, size_t max)
+Regards
+Daniel Vukicevic
 
-BEST RIGARDS
-littertiger 				
+dv@buran:~$lspci -nv
 
+00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 1043:1263
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at feb3c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
+dv@buran:~$lspci -v
 
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: ASUSTeK Computer Inc. Unknown device 1263
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at feb3c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
---===============0717123897==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0717123897==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0717123897==--
