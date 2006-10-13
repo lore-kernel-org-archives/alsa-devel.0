@@ -1,9 +1,9 @@
 From: "littertiger" <tiger_zsch@163.com>
 Subject: snd_pcm_lib_preallocate_pages_for_all in armlinux
-Date: Fri, 13 Oct 2006 12:47:32 +0800
-Message-ID: <32969.8067544543$1160714734@news.gmane.org>
+Date: Fri, 13 Oct 2006 16:54:34 +0800
+Message-ID: <1375.73848846859$1160729558@news.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1386464873=="
+Content-Type: multipart/mixed; boundary="===============0717123897=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,10 +14,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============1386464873==
+--===============0717123897==
 Content-Type: text/plain;
 	charset="gb2312"
 Content-Transfer-Encoding: 7bit
@@ -36,7 +36,7 @@ littertiger
 
 
 
---===============1386464873==
+--===============0717123897==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -47,7 +47,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1386464873==
+--===============0717123897==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -58,4 +58,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1386464873==--
+--===============0717123897==--
