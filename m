@@ -1,7 +1,7 @@
-From: Tom Horsley <tomhorsley@adelphia.net>
-Subject: global normalization of sound level?
-Date: Fri, 13 Oct 2006 10:03:05 -0400
-Message-ID: <30532188.1160748185528.JavaMail.root@web35>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: alsa-lib fails to compile.
+Date: Fri, 13 Oct 2006 15:21:16 +0100
+Message-ID: <452FA0DC.802@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,37 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-After being blasted out of my chair for about the umpteenth
-time when an app with really loud sound started after I was
-using an app with really soft sound, I went looking for some
-global sound setting that could solve my problem.
+Hi,
 
-I didn't find anything (other than a few individual apps with
-a normalization mode, but that doesn't help when sound is
-coming from lots of different sources). I did find this bug
-report from someone else with the same desire:
+The latest alsa-lib HG fails to compile.
+Does anyone know why?
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1871
+James
 
-If I get blasted out of my chair a few more times, I may
-actually develop enough energy to want to work on a fix
 
-Can anyone say if this would even be possible to do within the
-architecture of alsa? Where would I start to learn enough to
-figure out how to do it? Where within the alsa architecture
-could such a control best be wedged in? Is such a control
-already under development by someone else?
 
-Thanks for any pointers you can provide.
-
-P.S. I know this will ruin the artistic purity of music with a
-large dynamic range - when I'm feeling artistic, I'll disable
-the control, but for normal day to day usage I'd really like
-it enabled :-).
-
+if /bin/sh ../../libtool --tag=CC --mode=compile gcc -DHAVE_CONFIG_H -I.
+-I. -I../../include -I../../include    -O2 -Wall -W -pipe -g -MT
+pcm_null.lo -MD -MP -MF ".deps/pcm_null.Tpo" -c -o pcm_null.lo pcm_null.c; \
+	then mv -f ".deps/pcm_null.Tpo" ".deps/pcm_null.Plo"; else rm -f
+".deps/pcm_null.Tpo"; exit 1; fi
+ gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -O2 -Wall
+-W -pipe -g -MT pcm_null.lo -MD -MP -MF .deps/pcm_null.Tpo -c pcm_null.c
+ -fPIC -DPIC -o .libs/pcm_null.o
+make[2]: *** No rule to make target `pcm_empty.lo', needed by
+`libpcm.la'.  Stop.
+make[2]: Leaving directory `/u/alsahg/alsa-lib.enum1/src/pcm'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/u/alsahg/alsa-lib.enum1/src'
+make: *** [all-recursive] Error 1
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
