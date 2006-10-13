@@ -1,12 +1,16 @@
-From: lmarsan@ati.com (Luugi Marsan)
-Subject: [PATCH 2.6.18] hda_intel: add ATI RS690 HDMI audio
-	support
-Date: Fri, 13 Oct 2006 13:29:21 -0400 (EDT)
-Message-ID: <20061013172921.AF6A8CBDA5@localhost.localdomain>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: Patch:  Add support for Medion laptops.
+Date: Fri, 13 Oct 2006 20:18:49 +0200
+Message-ID: <m2y7rkoz92.fsf@vador.mandriva.com>
+References: <1160681269.5520.7.camel@razman> <s5hr6xdgw80.wl%tiwai@suse.de>
+	<1160683498.5520.14.camel@razman> <s5h7iz44i41.wl%tiwai@suse.de>
+	<20061013145159.GA29937@trinnov.com> <1160759522.5520.29.camel@razman>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1160759522.5520.29.camel@razman> (Tobin Davis's message of "Fri,
+	13 Oct 2006 10:12:02 -0700")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,44 +20,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for the HDMI codec of the ATI RS690 IGP northbridge.
+Tobin Davis <tdavis@dsl-only.net> writes:
 
-Signed-off-by: Felix Kuehling <fkuehlin@ati.com>
+> Double check to see if you have any "model=" lines in your modprobe
+> file.  Also, compile with "--with-debug=detect", load the driver,
+> and post the output from "dmesg" & "cat /proc/asound/card0/codec#*".
 
-diff -urN vanilla/sound/pci/hda/hda_intel.c linux-2.6.18.x86_64/sound/pci/hda/hda_intel.c
---- vanilla/sound/pci/hda/hda_intel.c	2006-09-19 23:42:06.000000000 -0400
-+++ linux-2.6.18.x86_64/sound/pci/hda/hda_intel.c	2006-09-26 04:24:02.000000000 -0400
-@@ -83,6 +83,7 @@
- 			 "{ATI, SB450},"
- 			 "{ATI, SB600},"
- 			 "{ATI, RS600},"
-+			 "{ATI, RS690},"
- 			 "{VIA, VT8251},"
- 			 "{VIA, VT8237A},"
- 			 "{SiS, SIS966},"
-@@ -1637,6 +1638,7 @@
- 	{ 0x1002, 0x437b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /* ATI SB450 */
- 	{ 0x1002, 0x4383, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /* ATI SB600 */
- 	{ 0x1002, 0x793b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATIHDMI }, /* ATI RS600 HDMI */
-+	{ 0x1002, 0x7919, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATIHDMI }, /* ATI RS690 HDMI */
- 	{ 0x1106, 0x3288, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_VIA }, /* VIA VT8251/VT8237A */
- 	{ 0x1039, 0x7502, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_SIS }, /* SIS966 */
- 	{ 0x10b9, 0x5461, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ULI }, /* ULI M5461 */
-diff -urN vanilla/sound/pci/hda/patch_atihdmi.c linux-2.6.18.x86_64/sound/pci/hda/patch_atihdmi.c
---- vanilla/sound/pci/hda/patch_atihdmi.c	2006-09-19 23:42:06.000000000 -0400
-+++ linux-2.6.18.x86_64/sound/pci/hda/patch_atihdmi.c	2006-09-26 04:23:27.000000000 -0400
-@@ -161,5 +161,6 @@
-  */
- struct hda_codec_preset snd_hda_preset_atihdmi[] = {
- 	{ .id = 0x1002793c, .name = "ATI RS600 HDMI", .patch = patch_atihdmi },
-+	{ .id = 0x1002791a, .name = "ATI RS690 HDMI", .patch = patch_atihdmi },
- 	{} /* terminator */
- };
-
+btw, if model is overriden by a parameter, the driver should just
+print that info (eg: "model overriden by user: XXX") so that this
+could be guessed from dmesg output and help some lost end users.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
