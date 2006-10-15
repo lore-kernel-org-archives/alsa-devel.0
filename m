@@ -1,12 +1,11 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Implementation of cmipci.c snd_cmipci_pcm_prepare():
-Date: Sun, 15 Oct 2006 18:48:43 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E912DA@msilexch01.marvell.com>
+From: "Deepti Chheda" <dchheda@andrew.cmu.edu>
+Subject: ac97 driver for Plan9
+Date: Sun, 15 Oct 2006 14:17:27 -0400 (EDT)
+Message-ID: <2555.128.2.140.130.1160936247.squirrel@128.2.140.130>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,29 +16,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
-Cc: Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I would be happy if someone can help me with understanding the cmipci.c
-snd_cmipci_pcm_prepare():
-Line 789 starts the calculation of Channel 0 Frame Register 2 field Base
-count of samples at Codec:
+I am trying to write the AC 97 driver for the Plan 9 Operating system. Right now there is no support for AC97 what-so-ever on Plan 9. So, I need to understand how to go about it. I went through the ALSA docs pages. Some links are broken there.
 
-	/* buffer and period sizes in frame */
-	rec->dma_size = runtime->buffer_size << rec->shift;
+However, Im am still very confused if I need to write the driver for the AC97 codec or AC97 controller or both ?? The specs are not very driver-writer friendly.
 
-The register expects to get its count in sample granularity.
-This means that the rec->dma_size should be number of samples. 
-The runtime->buffer_size is said to be in frames (in the above comment).
-Can someone explain the above calculation? Why you multiply the
-buffer_size by two if format size is greater than 16? What is the
-connection between the format size and the sample number? Aren't those
-correlate by HW?
+If someone knows about this, can you just point me in the right direction, or send me some link where there is more information regarding this. 
 
-Thanks in advance.
+It will be of great help!
 
-
+Thanks,
+Deepti
 
 
 -------------------------------------------------------------------------
