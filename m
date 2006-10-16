@@ -1,12 +1,15 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: CMIPCI driver. IEC958 user data and channel status
-Date: Mon, 16 Oct 2006 13:41:02 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E914C2@msilexch01.marvell.com>
+From: Daniel Jacobowitz <drow@false.org>
+Subject: Re: Asus P5LD2 SE AD1986A snd-hda-intel model and
+	master	volume control
+Date: Mon, 16 Oct 2006 10:43:26 -0400
+Message-ID: <20061016144326.GA20826@nevyn.them.org>
+References: <45321DC5.5050608@email.it> <s5hfydobndm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <s5hfydobndm.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,17 +19,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Rita Shtern <rita@marvell.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: EmIScA <emisca@email.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-As I understand, the IEC958 frame incorporates not only sound sample but
-also other information such as user data and channel status.
-I could not locate in the CMIPCI driver where the user data or channel
-status is read/write from/to the device and where is it kept on DRAM.
-Many thanks.
+On Mon, Oct 16, 2006 at 11:50:29AM +0200, Takashi Iwai wrote:
+> At Sun, 15 Oct 2006 13:38:45 +0200,
+> EmIScA wrote:
+> > 
+> > To get sound from my Asus P5LD2 SE motherboard (which uses AD1986A
+> > codec) I had to set model=3stack manually using alsa 1.0.13.
+> > It works well, but I have no master volume mixer control, why? There is
+> > a Headphone control which don't control anything. Perhaps I can set the
+> > volume using the Front control. Is it fixable? Can I  map Front as
+> > Master? Can I create a master control that controls front, surround,
+> > center and lfe together?
+> 
+> AD1986A has no real master control.  That is, front, rear and CLFE
+> have separate volume controls but no master control indeed.
+> 
+> The PCM control affects all channels (intentionally done so).
 
+Or you could adapt the patches I just posted to bind the existing
+controls :-)
+
+I'm not sure if there's any advantage, if your PCM control affects
+all channels; mine only affected front.
+
+-- 
+Daniel Jacobowitz
+CodeSourcery
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
