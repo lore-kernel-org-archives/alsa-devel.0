@@ -1,21 +1,16 @@
-From: Stephen Hemminger <shemminger@osdl.org>
-Subject: Re: [RFC: 2.6.19 patch] snd-hda-intel: default MSI to
-	off
-Date: Tue, 17 Oct 2006 14:40:53 -0700
-Message-ID: <20061017144053.29b6b29c@freekitty>
-References: <200610050938.10997.prakash@punnoor.de>
-	<5aa69f860610051030l7323ec2el545873570052f077@mail.gmail.com>
-	<200610052309.01155.prakash@punnoor.de>
-	<20061017211301.GE3502@stusta.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Problems with Realtek ALC260 codec (snd_hda_intel
+	driver)
+Date: Wed, 18 Oct 2006 08:43:55 +0930 (CST)
+Message-ID: <200610172313.k9HNDt82025158@turbo.physics.adelaide.edu.au>
+References: <mailman.5635.1161096490.22397.alsa-devel@lists.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C719316F
-	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Oct 2006 23:40:57 +0200 (MEST)
-In-Reply-To: <20061017211301.GE3502@stusta.de>
+In-Reply-To: <mailman.5635.1161096490.22397.alsa-devel@lists.sourceforge.net>
+	from "alsa-devel-request@lists.sourceforge.net" at Oct 17,
+	2006 07:48:10 AM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,40 +20,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Adrian Bunk <bunk@stusta.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, mingo@redhat.com, hnguyen@de.ibm.com, Prakash Punnoor <prakash@punnoor.de>, perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 17 Oct 2006 23:13:01 +0200
-Adrian Bunk <bunk@stusta.de> wrote:
+> It seems that I have a laptop with ALC260 codec that is absolutely
+> silent either with alsa-driver-1.0.13 or with Realtek's
+> alsa-driver-1.0.12-4.05b.
+> 
+> Playing with "model=" parameter does not help.
+>
+> lspci -nv:
+> ...
+> 00:1b.0 Class 0403: 8086:27d8 (rev 02)
+>         Subsystem: 161f:2057
+>         Flags: bus master, fast devsel, latency 0, IRQ 3
+> :
+> cat /proc/asound/card0/codec#0 (from 1.0.13) :
+> 
+> Codec: Realtek ALC260
+> Address: 0
+> Vendor Id: 0x10ec0260
+> Subsystem Id: 0x161f0000
+> Revision Id: 0x100400
 
-> On Thu, Oct 05, 2006 at 11:08:57PM +0200, Prakash Punnoor wrote:
-> > Am Donnerstag 05 Oktober 2006 19:30 schrieb Fatih A????c??:
-> > > 2006/10/5, Prakash Punnoor <prakash@punnoor.de>:
-> > > > Hi,
-> > > >
-> > > > subjects say it all. Without irqpoll my nic doesn't work anymore. I added
-> > > > Ingo
-> > > > to cc, as my IRQs look different, so it may be a prob of APIC routing or
-> > > > the
-> > > > like.
-> > 
-> > > > Can you try booting with pci=nomsi ? I have a similar problem with my
-> > 
-> > I used snd-hda-intel.disable_msi=1 and this actually helped! Now the nforce 
-> > nic works w/o problems. So it was the audio driver causing havoc on the nic. 
-> >...
-> 
-> Unless someone finds and fixes what causes such problems, I'd therefore 
-> suggest the patch below to let MSI support to be turned off by default.
-> 
-> cu
-> Adrian
-> 
+Could you please try compiling alsa-driver-1.0.13 after configuring it
+using
+  ./configure --enable-debug
 
-It shouldn't be that hard to write a small bit of code to force an interrupt
-and catch it, that's what other drivers do to workaround the BIOS braindamage
-that seems to be rampant (until M$ Vista comes out and supports MSI).
+Then use model=test.  Turn every control up, unmute every control, change
+all "pin mode" controls to "headphone" and see if you get any sound then
+from anywhere.  If not, try turning all the GPIO controls ON (they default
+to OFF).
+
+Once you get sound happening we can use the "test" model to work out the
+details of precisely how your laptop uses the ALC260 and add the necessary
+support to ALSA.
+
+Could you please let us know the make and model of the laptop?
+
+Regards
+  jonathan
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
