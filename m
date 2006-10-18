@@ -1,8 +1,8 @@
 From: Stephen Hemminger <shemminger@osdl.org>
 Subject: Re: [RFC: 2.6.19 patch] snd-hda-intel: default MSI to
  off
-Date: Wed, 18 Oct 2006 09:01:56 -0700
-Message-ID: <20061018090156.1fbb1abf@freekitty>
+Date: Wed, 18 Oct 2006 10:02:19 -0700
+Message-ID: <20061018100219.5cd08ffd@freekitty>
 References: <200610050938.10997.prakash@punnoor.de>
 	<5aa69f860610051030l7323ec2el545873570052f077@mail.gmail.com>
 	<200610052309.01155.prakash@punnoor.de>
@@ -13,9 +13,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AF2D175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BD79186
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Oct 2006 18:02:01 +0200 (MEST)
+	Wed, 18 Oct 2006 19:02:22 +0200 (MEST)
 In-Reply-To: <s5hmz7tapl5.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -73,9 +73,15 @@ Takashi Iwai <tiwai@suse.de> wrote:
 > 	git://kernel.org/pub/scm/linux/kernel/git/perex/alsa.git
 > before applying it (this tree includes only patches to be pushed to
 > 2.6.19).
->
+> 
+> 
+> Takashi
+> 
 
-Looks good, I'll try it
+Don't you need to check return value from pci_enable_msi()?
+
+-- 
+Stephen Hemminger <shemminger@osdl.org>
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
