@@ -1,16 +1,12 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Problems with Realtek ALC260 codec (snd_hda_intel
-	driver)
-Date: Wed, 18 Oct 2006 08:43:55 +0930 (CST)
-Message-ID: <200610172313.k9HNDt82025158@turbo.physics.adelaide.edu.au>
-References: <mailman.5635.1161096490.22397.alsa-devel@lists.sourceforge.net>
+From: "Assaf Hoffman" <hoffman@marvell.com>
+Subject: Re: ALSA snd_xferi_t buffer arrangment
+Date: Wed, 18 Oct 2006 08:31:56 +0200
+Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91A69@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <mailman.5635.1161096490.22397.alsa-devel@lists.sourceforge.net>
-	from "alsa-devel-request@lists.sourceforge.net" at Oct 17,
-	2006 07:48:10 AM
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,46 +16,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Rita Shtern <rita@marvell.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> It seems that I have a laptop with ALC260 codec that is absolutely
-> silent either with alsa-driver-1.0.13 or with Realtek's
-> alsa-driver-1.0.12-4.05b.
+Hi,
+The ALSA PCM supported formats are located in pcm.h file. 
+Where can I find the specification (bit fields) of those PCM formats?
+Many thanks.
+
+
+-----Original Message-----
+From: James Courtier-Dutton [mailto:James@superbug.co.uk] 
+Sent: Wednesday, October 11, 2006 3:54 PM
+To: Assaf Hoffman
+Cc: alsa-devel@lists.sourceforge.net; Rita Shtern
+Subject: Re: [Alsa-devel] ALSA snd_xferi_t buffer arrangment
+
+Assaf Hoffman wrote:
+> Hi,
 > 
-> Playing with "model=" parameter does not help.
->
-> lspci -nv:
-> ...
-> 00:1b.0 Class 0403: 8086:27d8 (rev 02)
->         Subsystem: 161f:2057
->         Flags: bus master, fast devsel, latency 0, IRQ 3
-> :
-> cat /proc/asound/card0/codec#0 (from 1.0.13) :
+> I'm mew to sound and ALSA.
 > 
-> Codec: Realtek ALC260
-> Address: 0
-> Vendor Id: 0x10ec0260
-> Subsystem Id: 0x161f0000
-> Revision Id: 0x100400
+> My project deals with PCM in standard (I2S) mode and IEC958 (SPDIF)
+> mode. 
+> 
+> Can anyone tell me how the ALSA stack expects to "see" the data
+received
+> form the sound device? I mean, what is the format of the data DMA'ed
+> from the sound device to DRAM that the ALSA stack expects? 
+> 
+> Is this raw sound data? SPDIF frame includes non sound data as well.
+> Does the sound card HW strip the sound payload from the IEC958 frame
+to
+> deliver the raw sound data to the ALSA buffer? 
+> 
+> Please shed some light...
+> 
+> Many thanks. 
+> 
+>  
 
-Could you please try compiling alsa-driver-1.0.13 after configuring it
-using
-  ./configure --enable-debug
+ALSA can deal with all the different formats that the sound device might
+deliver. The low level sound driver simply tells the upper layers what
+formats are available. ALSA then handles those formats and all format
+conversion required to reach the user space application.
+It depends what your device does as to which format ALSA will see.
 
-Then use model=test.  Turn every control up, unmute every control, change
-all "pin mode" controls to "headphone" and see if you get any sound then
-from anywhere.  If not, try turning all the GPIO controls ON (they default
-to OFF).
+James
 
-Once you get sound happening we can use the "test" model to work out the
-details of precisely how your laptop uses the ALC260 and add the necessary
-support to ALSA.
 
-Could you please let us know the make and model of the laptop?
 
-Regards
-  jonathan
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
