@@ -1,19 +1,11 @@
-From: Kronos <kronos@hefnerlabs.com>
-Subject: Have another card to donate - SBLIVE CT4780
-Date: Wed, 18 Oct 2006 18:18:57 -0400
-Message-ID: <1161209937.12050.7.camel@elnino.hefnerlabs.com>
-References: <200610050938.10997.prakash@punnoor.de>
-	<5aa69f860610051030l7323ec2el545873570052f077@mail.gmail.com>
-	<200610052309.01155.prakash@punnoor.de>
-	<20061017211301.GE3502@stusta.de>
-	<20061017144053.29b6b29c@freekitty> <s5hmz7tapl5.wl%tiwai@suse.de>
-	<20061018100219.5cd08ffd@freekitty> <s5h64eh5yzx.wl%tiwai@suse.de>
-	<s5h3b9l5ykv.wl%tiwai@suse.de>
+From: Daniel Yek <dyek@real.com>
+Subject: Multichannels channel-mapping application API for PCM?
+Date: Wed, 18 Oct 2006 16:53:09 -0700
+Message-ID: <6.2.1.2.2.20061018160033.5bab2b70@mailone.real.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3b9l5ykv.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,216 +18,53 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I just got a few more cards in and among them is a pair of CT4780s - one
-of which is now in my server and the other up for grabs
+Hi,
 
-Who wants it?
+First of all, thanks for the previous responses that I got. All that was 
+very helpful. More questions here...
+
+What is the rational behind ALSA's PCM multichannel playback channel 
+assignment? ALSA appears to be using the following channel assignment:
+
+5.1 Channels Channel Assignment:
+0: Front left
+1: Front right
+2: Rear Left
+3: Rear Right
+4. Center
+5. LFE
+
+Is this the only format ALSA supported? Why/how it was selected in the 
+beginning? (Just curious about the history...)
+
+I think (not sure, really) the channel assignment for Windows (if it is 
+really one standard there) is:
+0: Front left
+1: Front right
+2: Center
+3: LFE
+4. Rear Left
+5. Rear Right
+
+I haven't investigated AC3 (Dolby Digital) yet, anybody knows if there is a 
+format for channel assignment there?
+
+I'm looking if there is a solution (application API) provided by ALSA to do 
+channel-mapping. If there is one, I can just ask ALSA to do the 
+"heavy-lifting" of swapping the surround sound channels. If not, I'll 
+iterate through the PCM data, mapping the channels to the format expected 
+by ALSA.
+
+I read about channel bindings in configuration files, but that isn't an 
+application API that media application can use and it requires the end 
+users to mess with their system. So, that isn't a real solution. Is there 
+anything else that is available?
+
+As always, thanks.
 
 
-On Wed, 2006-10-18 at 19:21 +0200, Takashi Iwai wrote:
-> At Wed, 18 Oct 2006 19:12:50 +0200,
-> I wrote:
-> > 
-> > At Wed, 18 Oct 2006 10:02:19 -0700,
-> > Stephen Hemminger wrote:
-> > > 
-> > > On Wed, 18 Oct 2006 12:24:54 +0200
-> > > Takashi Iwai <tiwai@suse.de> wrote:
-> > > 
-> > > > At Tue, 17 Oct 2006 14:40:53 -0700,
-> > > > Stephen Hemminger wrote:
-> > > > > 
-> > > > > On Tue, 17 Oct 2006 23:13:01 +0200
-> > > > > Adrian Bunk <bunk@stusta.de> wrote:
-> > > > > 
-> > > > > > On Thu, Oct 05, 2006 at 11:08:57PM +0200, Prakash Punnoor wrote:
-> > > > > > > Am Donnerstag 05 Oktober 2006 19:30 schrieb Fatih A????c??:
-> > > > > > > > 2006/10/5, Prakash Punnoor <prakash@punnoor.de>:
-> > > > > > > > > Hi,
-> > > > > > > > >
-> > > > > > > > > subjects say it all. Without irqpoll my nic doesn't work anymore. I added
-> > > > > > > > > Ingo
-> > > > > > > > > to cc, as my IRQs look different, so it may be a prob of APIC routing or
-> > > > > > > > > the
-> > > > > > > > > like.
-> > > > > > > 
-> > > > > > > > > Can you try booting with pci=nomsi ? I have a similar problem with my
-> > > > > > > 
-> > > > > > > I used snd-hda-intel.disable_msi=1 and this actually helped! Now the nforce 
-> > > > > > > nic works w/o problems. So it was the audio driver causing havoc on the nic. 
-> > > > > > >...
-> > > > > > 
-> > > > > > Unless someone finds and fixes what causes such problems, I'd therefore 
-> > > > > > suggest the patch below to let MSI support to be turned off by default.
-> > > > > > 
-> > > > > > cu
-> > > > > > Adrian
-> > > > > > 
-> > > > > 
-> > > > > It shouldn't be that hard to write a small bit of code to force an interrupt
-> > > > > and catch it, that's what other drivers do to workaround the BIOS braindamage
-> > > > > that seems to be rampant (until M$ Vista comes out and supports MSI).
-> > > > 
-> > > > OK, what about a patch like below?
-> > > > 
-> > > > It's against the latest ALSA tree, so please pull alsa.git from
-> > > > 	git://kernel.org/pub/scm/linux/kernel/git/perex/alsa.git
-> > > > before applying it (this tree includes only patches to be pushed to
-> > > > 2.6.19).
-> > > > 
-> > > > 
-> > > > Takashi
-> > > > 
-> > > 
-> > > Don't you need to check return value from pci_enable_msi()?
-> > 
-> > Yes, it would be better to check the value and reset chip->msi if
-> > not successful.  But it's not a fatal error, so the current code
-> > should work.
-> 
-> The below is the revised patch.
-> 
-> 
-> Takashi
-> 
-> diff -r 74a0618b5f3e sound/pci/hda/hda_intel.c
-> --- a/sound/pci/hda/hda_intel.c	Wed Oct 18 19:09:46 2006 +0200
-> +++ b/sound/pci/hda/hda_intel.c	Wed Oct 18 19:17:48 2006 +0200
-> @@ -337,6 +337,7 @@ struct azx {
->  	unsigned int initialized :1;
->  	unsigned int single_cmd :1;
->  	unsigned int polling_mode :1;
-> +	unsigned int msi :1;
->  };
->  
->  /* driver types */
-> @@ -397,6 +398,7 @@ static char *driver_short_names[] __devi
->   */
->  #define upper_32bit(addr) (sizeof(addr) > 4 ? (u32)((addr) >> 32) : (u32)0)
->  
-> +static int azx_acquire_irq(struct azx *chip, int do_disconnect);
->  
->  /*
->   * Interface for HD codec
-> @@ -535,6 +537,18 @@ static unsigned int azx_rirb_get_respons
->  			return chip->rirb.res; /* the last value */
->  		schedule_timeout_interruptible(1);
->  	} while (time_after_eq(timeout, jiffies));
-> +
-> +	if (chip->msi) {
-> +		snd_printk(KERN_WARNING "hda_intel: No response from codec, "
-> +			   "disabling MSI...\n");
-> +		free_irq(chip->irq, chip);
-> +		chip->irq = -1;
-> +		pci_disable_msi(chip->pci);
-> +		chip->msi = 0;
-> +		if (azx_acquire_irq(chip, 1) < 0)
-> +			return -1;
-> +		goto again;
-> +	}
->  
->  	if (!chip->polling_mode) {
->  		snd_printk(KERN_WARNING "hda_intel: azx_get_response timeout, "
-> @@ -1364,6 +1378,20 @@ static int __devinit azx_init_stream(str
->  	return 0;
->  }
->  
-> +static int azx_acquire_irq(struct azx *chip, int do_disconnect)
-> +{
-> +	if (request_irq(chip->pci->irq, azx_interrupt, IRQF_DISABLED|IRQF_SHARED,
-> +			"HDA Intel", chip)) {
-> +		printk(KERN_ERR "hda-intel: unable to grab IRQ %d, "
-> +		       "disabling device\n", chip->pci->irq);
-> +		if (do_disconnect)
-> +			snd_card_disconnect(chip->card);
-> +		return -1;
-> +	}
-> +	chip->irq = chip->pci->irq;
-> +	return 0;
-> +}
-> +
->  
->  #ifdef CONFIG_PM
->  /*
-> @@ -1385,7 +1413,7 @@ static int azx_suspend(struct pci_dev *p
->  		free_irq(chip->irq, chip);
->  		chip->irq = -1;
->  	}
-> -	if (!disable_msi)
-> +	if (chip->msi)
->  		pci_disable_msi(chip->pci);
->  	pci_disable_device(pci);
->  	pci_save_state(pci);
-> @@ -1407,16 +1435,11 @@ static int azx_resume(struct pci_dev *pc
->  		return -EIO;
->  	}
->  	pci_set_master(pci);
-> -	if (!disable_msi)
-> -		pci_enable_msi(pci);
-> -	if (request_irq(pci->irq, azx_interrupt, IRQF_DISABLED|IRQF_SHARED,
-> -			"HDA Intel", chip)) {
-> -		printk(KERN_ERR "hda-intel: unable to grab IRQ %d, "
-> -		       "disabling device\n", pci->irq);
-> -		snd_card_disconnect(card);
-> +	if (chip->msi)
-> +		if (pci_enable_msi(pci) < 0)
-> +			chip->msi = 0;
-> +	if (azx_acquire_irq(chip, 1) < 0)
->  		return -EIO;
-> -	}
-> -	chip->irq = pci->irq;
->  	azx_init_chip(chip);
->  	snd_hda_resume(chip->bus);
->  	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
-> @@ -1452,7 +1475,7 @@ static int azx_free(struct azx *chip)
->  		synchronize_irq(chip->irq);
->  		free_irq(chip->irq, (void*)chip);
->  	}
-> -	if (!disable_msi)
-> +	if (chip->msi)
->  		pci_disable_msi(chip->pci);
->  	if (chip->remap_addr)
->  		iounmap(chip->remap_addr);
-> @@ -1508,6 +1531,7 @@ static int __devinit azx_create(struct s
->  	chip->pci = pci;
->  	chip->irq = -1;
->  	chip->driver_type = driver_type;
-> +	chip->msi = !disable_msi;
->  
->  	chip->position_fix = position_fix;
->  	chip->single_cmd = single_cmd;
-> @@ -1537,16 +1561,14 @@ static int __devinit azx_create(struct s
->  		goto errout;
->  	}
->  
-> -	if (!disable_msi)
-> -		pci_enable_msi(pci);
-> -
-> -	if (request_irq(pci->irq, azx_interrupt, IRQF_DISABLED|IRQF_SHARED,
-> -			"HDA Intel", (void*)chip)) {
-> -		snd_printk(KERN_ERR SFX "unable to grab IRQ %d\n", pci->irq);
-> +	if (chip->msi)
-> +		if (pci_enable_msi(pci) < 0)
-> +			chip->msi = 0;
-> +
-> +	if (azx_acquire_irq(chip, 0) < 0) {
->  		err = -EBUSY;
->  		goto errout;
->  	}
-> -	chip->irq = pci->irq;
->  
->  	pci_set_master(pci);
->  	synchronize_irq(chip->irq);
-> 
-> -------------------------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Daniel Yek
 
 
 -------------------------------------------------------------------------
