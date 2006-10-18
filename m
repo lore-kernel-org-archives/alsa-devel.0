@@ -1,12 +1,15 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Re: ALSA PCM  data format
-Date: Wed, 18 Oct 2006 17:17:01 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91C7D@msilexch01.marvell.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: [BULK] Re: CMIPCI driver. IEC958 user data and
+ channel status
+Date: Wed, 18 Oct 2006 17:34:29 +0200
+Message-ID: <1161185669.16519.273641415@webmail.messagingengine.com>
+References: <B9FFC3F97441D04093A504CEA31B7C41E91858@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <B9FFC3F97441D04093A504CEA31B7C41E91858@msilexch01.marvell.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,60 +19,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Rita Shtern <rita@marvell.com>, alsa-devel@lists.sourceforge.net
+To: Assaf Hoffman <hoffman@marvell.com>
+Cc: alsa-devel@lists.sourceforge.net, Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-Where can I find the code for alsa-lib IEC958 plugin?
-Thanks.
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Wednesday, October 18, 2006 1:34 PM
-To: Assaf Hoffman
-Cc: alsa-devel@lists.sourceforge.net; Rita Shtern
-Subject: Re: [Alsa-devel] ALSA PCM data format
-Importance: Low
-
-At Wed, 18 Oct 2006 09:33:23 +0200,
 Assaf Hoffman wrote:
-> 
-> Hi,
-> I'm new to ALSA and I would be happy if anyone can explain the format
-of
-> the data the ALSA stack is expecting to find in its buffer.  
-> For example, if I support IEC958 frames that contains 20bit PMC sample
-> in each sub-frame payload, (total of 40 bits per frame), the HW, which
-> is capable of striping down the sound sample will DMA to the buffer 40
-> bits of sound sample. The following frame containing the next 40bits
-> will be placed right after the last 40 bits, creating a total of 80
-bits
-> in the DMA buffer.
-> Is that correct?
+> 1) According to your experience, is it correct to assume that once a PCM
+>    instance for playback/capture is prepared and triggered, the user data 
+>    and channel status are constants during data transmit/receive?
 
-If the hardware supports the raw SPDIF frames, then yes, you can pass
-the data embedded in IEC958 subframes, including preamble, channel
-status and parity bits.  More exactly, it consists of:
+Many drivers assume this for playback, i.e., they set these bits once when
+the PCM stream is configured.
 
- bit 0-3  = preamble
-     4-7  = AUX (=0)
-     8-27 = data (12-27 for 16bit, 8-27 for 20bit, and 24bit without
-AUX)
-     28   = validity (0 for valid data, else 'in error')
-     29   = user data (0)
-     30   = channel status (24 bytes for 192 frames)
-     31   = parity
+When capturing, these bits could change at any time, depending on the
+source.  Most drivers allow to read the current values of these bits.
 
-But, this is optional.  The alsa-lib plugin does this conversion if
-necessary.
+> 2) In the case HW saves the user data and channel status in its internal
+>    registers, how would the ALSA stack know if any of them changed?
 
-If the hardware doesn't support the raw SPDIF frames, you pass only
-the PCM data and set up IEC958 status bits externally.  Usually it's
-packed in either 2-byte, 3-byte or 4-byte samples formats.
+It wouldn't know at all, unless the hardware can issue an interrupt for
+this situation.
+
+There is a flag SNDRV_CTL_ELEM_ACCESS_VOLATILE for controls that can
+change their value without notification.
+
+> 3) Is there a bridge application in the ALSA stack? I mean, in case 
+>    I would like to capture ICE958 frames and route them to ICE958 playback 
+>    channel.
+
+It would be possible to write an application that records and then plays
+back the data, or to pipe the output of arecord into aplay.  ALSA
+doesn't have any built-in functionality for that.
 
 
-Takashi
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
