@@ -1,10 +1,14 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC AT91 DAI modes update
-Date: Thu, 19 Oct 2006 14:33:48 +0100
-Message-ID: <1161264828.22969.105.camel@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Question on PCM formats
+Date: Thu, 19 Oct 2006 17:46:00 +0200
+Message-ID: <1161272760.22900.273737044@webmail.messagingengine.com>
+References: <B9FFC3F97441D04093A504CEA31B7C41E91E64@msilexch01.marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-86t9r3T8r+ho0627Q1cc"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <B9FFC3F97441D04093A504CEA31B7C41E91E64@msilexch01.marvell.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,97 +18,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Frank Mandarino <fmandarino@endrelia.com>
+To: Assaf Hoffman <hoffman@marvell.com>, alsa-devel@lists.sourceforge.net
+Cc: Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
+(quoting fixed)
 
---=-86t9r3T8r+ho0627Q1cc
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Assaf Hoffman wrote:
+> Clemens Ladisch wrote:
+> > Assaf Hoffman wrote:
+> > > Q3: I'm working with kernel 2.6.12.6 and I could not find the
+> > > snd_pcm_hw_params_get_sbits() function there. In which kernel version
+> > > can I find it?
+> > 
+> > This function is part of ALSA's user space API.  It just returns the
+> > value of the kernel's msbits field.
+> 
+> What is the msbits fields? How the kernel get that information?
 
-This patch by Frank Mandarino updates the AT91RM9200 I2S DAI audio modes
-as follows:-
+This is a field that is stored as part of the hardware constraints.
+To set it, call snd_pcm_hw_constraint_msbits() in the open callback.
 
- o fixes a typo in the 16k mode
- o removes experimental 24k mode
- o adds a 32k mode.
+> Can you point me to where I can get an ALSA user space code that will
+> demonstrate how to use the snd_pcm_hw_params_get_sbits()?
 
-Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+I don't know of any program that bothers to read it.  If you would want
+to read it, you would do it immediately after one sample format has
+been selected, i.e., after the call to snd_pcm_hw_params().
+
+> > > Q4: Working with 2.6.12.6 kernel, how can I solve the problem of the
+> > > ICE1712? How do I tell the stack where is the sound sample bit start
+> > > inside the 32-bit frame? 
+> > 
+> > When the number of valid bits (_get_sbits()) is not as large as the
+> > number of bits of the sample format, the valid bits are always the most
+> > significant bits.
+> 
+> isn't the "number of valid bits" and the "number of bits in sample"
+> are the same thing?
+
+The first is the number of bits that actually contain data, the second,
+the number of bits of the sample _format_, describes how the bits in the
+memory must be interpreted (together with physical width and endianness).
+
+In the case of the ICE1712, the first is 24 while the second is 32.
+(The samples can be interpreted as 32-bit samples because it's the least
+significant bits that contain invalid/zero data.)
+
+> > There are special sample formats for hardware that aligns its data in
+> > the least significant bits of a word, e.g., S24_xE is for 24-bit samples
+> > in the lower three bytes of a 32-bit word. 
+> 
+> What about x20_3xE format? Where the 20-bit sample is located
+> in the 24-bit memory?
+
+The sample bits that are part of the sample format name (in this case,
+20) are always aligned to the least significant bit of the memory.
+
+This is a special sample format because, unlike the ICE1712 case, you
+couldn't just access the memory as 24-bit values.
 
 
---=-86t9r3T8r+ho0627Q1cc
-Content-Disposition: attachment; filename=asoc-at91-32k.patch
-Content-Type: text/x-patch; name=asoc-at91-32k.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-# HG changeset patch
-# User fam@procyon
-# Date 1161194387 14400
-# Node ID 40826bcfd48745ed718250558a2ca3fb76beaed9
-# Parent  0047a372140b81a748457ef05a6450ddff271d24
-Fixed typo in 16k dai mode, removed bogus 24k dai mode
-and added 32k mode.
-
-diff -r 0047a372140b -r 40826bcfd487 soc/at91/at91rm9200-i2s.c
---- a/soc/at91/at91rm9200-i2s.c	Tue Oct 17 20:41:38 2006 +0200
-+++ b/soc/at91/at91rm9200-i2s.c	Wed Oct 18 13:59:47 2006 -0400
-@@ -71,22 +71,22 @@ static struct snd_soc_dai_mode at91rm920
- 		.flags = SND_SOC_DAI_BFS_DIV,
- 		.fs = 750,
- 		.bfs = SND_SOC_FSBD(3),
--		.flags (7 << 16 | 133),
--	},
--
--	/* 24k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
-+		.priv = (7 << 16 | 133),
-+	},
-+
-+	/* 32k: BCLK = (MCLK/3) ~= (60MHz/14) = 4.285714MHz */
- 	{
- 		.fmt = AT91RM9200_I2S_DAIFMT,
- 		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
--		.pcmrate = SNDRV_PCM_RATE_22050,
-+		.pcmrate = SNDRV_PCM_RATE_32000,
- 		.pcmdir = AT91RM9200_I2S_DIR,
- 		.flags = SND_SOC_DAI_BFS_DIV,
--		.fs = 500,
--		.bfs = SND_SOC_FSBD(10),
--		.priv = (25 << 16 | 24),
--	},
--
--	/* 48kHz: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
-+		.fs = 375,
-+		.bfs = SND_SOC_FSBD(3),
-+		.priv = (7 << 16 | 66),
-+	},
-+
-+	/* 48k: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
- 	{
- 		.fmt = AT91RM9200_I2S_DAIFMT,
- 		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
-
---=-86t9r3T8r+ho0627Q1cc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-86t9r3T8r+ho0627Q1cc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-86t9r3T8r+ho0627Q1cc--
