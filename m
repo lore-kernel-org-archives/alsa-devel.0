@@ -1,7 +1,7 @@
 From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Re: Question on PCM formats
-Date: Thu, 19 Oct 2006 11:40:42 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91E64@msilexch01.marvell.com>
+Subject: Re: ALSA supported PCM formats
+Date: Thu, 19 Oct 2006 11:45:44 +0200
+Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91E6C@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -21,67 +21,52 @@ Cc: Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
-Many thanks for your answer.
-Please see my comments below.
+Thank you for your quick respond.
+Regarding 2 and 3 below, aren't those different names for the same
+thing?
+If not, can you give me an example of a case where they are different?
 Thanks.
+
 
 -----Original Message-----
 From: Clemens Ladisch [mailto:cladisch@fastmail.net] 
-Sent: Thursday, October 19, 2006 10:55 AM
+Sent: Thursday, October 19, 2006 11:23 AM
 To: Assaf Hoffman; alsa-devel@lists.sourceforge.net
 Cc: Rita Shtern
-Subject: Re: [Alsa-devel] Question on PCM formats
+Subject: Re: [Alsa-devel] ALSA supported PCM formats
+Importance: Low
 
 Assaf Hoffman wrote:
-> I was looking in
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
-> and I have some questions regarding the PCM format paragraph:
+> I'm new to ALSA and I'm trying to understand the PCM formats and the
+way
+> ALSA stack place/pick them from the DMA buffer.
 > 
-> Q1: I think the sentence:
-> "...but the sample is stored in low three bits."
-> Should be
-> "...but the sample is stored in low three bytes."
+> My understanding concerns PCM formats that their physical
+representation
+> bit size is bigger than the actual sound sample bit size.
+> For example, defined in pcm_misc.c file under pcm_formats[]:
+> 	[SNDRV_PCM_FORMAT_x24_xE]  = {.width = 24, .phys = 32, ...}
+> 	[SNDRV_PCM_FORMAT_x20_3xE] = {.width = 20, .phys = 24, ...}
+> 	[SNDRV_PCM_FORMAT_x18_3xE] = {.width = 18, .phys = 24, ...}
+> How the ALSA stack (kernel 2.6.12.6) knows the offset of the sound
+> sample bits inside the format physical size? For example, when the
+sound
+> sample size is 24 (.width = 24) and the format physical size is 32
+> (.phys = 32) the sound sample offset inside the physical frame can
+> anywhere beteen 0-7 bit. How the ALSA stack can know where to look for
+> the sound sample?
 
-Yes, thanks.
+There are three sizes that describe a sample:
+1) physical size: how many bits are occupied in memory, i.e., how many
+   data is read from/written to the DMA buffer for each sample;
+2) sample width: the number of bits, starting at the _least_ significant
+   bit inside (1), used for sample data;
+3) significant bits: the number of bits, starting at the _most_
+   significant bit inside (2), actually used for sample data.
 
-> Q2: What is the meaning of "full range" in the sentence:
-> "Some hardware does not support processing of full range"?
+Which bit is least/most significant depends on whether the sample format
+is little or big endian.
 
-In that case, "full range" is the size of the samples as specified
-by the sample format (in the example, 32 bits).
-
-[Assaf]: If you could give some examples there it would be great.
-
-> Q3: I'm working with kernel 2.6.12.6 and I could not find the
-> snd_pcm_hw_params_get_sbits() function there. In which kernel version
-> can I find it?
-
-This function is part of ALSA's user space API.  It just returns the
-value of the kernel's msbits field.
-
-[Assaf]: What is the msbits fields? How the kernel get that information?
-Can you point me to where I can get an ALSA user space code that will
-demonstrate how to use the snd_pcm_hw_params_get_sbits()?
-
-> Q4: Working with 2.6.12.6 kernel, how can I solve the problem of the
-> ICE1712? How do I tell the stack where is the sound sample bit start
-> inside the 32-bit frame? 
-
-When the number of valid bits (_get_sbits()) is not as large as the
-number of bits of the sample format, the valid bits are always the most
-significant bits.  This means that applications can just ignore the
-_get_sbits() function and pretend that the ICE1712 uses 32-bit samples.
-
-[Assaf]: Regarding the first sentence in the above paragraph, isn't the
-"number of valid bits" and the "number of bits in sample" are the same
-thing? Can you elaborate? 
-
-There are special sample formats for hardware that aligns its data in
-the least significant bits of a word, e.g., S24_xE is for 24-bit samples
-in the lower three bytes of a 32-bit word. 
-
-[Assaf]: What about x20_3xE format? Where the 20-bit sample is located
-in the 24-bit memory?
 
 HTH
 Clemens
