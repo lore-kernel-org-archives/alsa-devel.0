@@ -1,12 +1,10 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Re: ALSA supported PCM formats
-Date: Thu, 19 Oct 2006 11:45:44 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91E6C@msilexch01.marvell.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC AT91 DAI modes update
+Date: Thu, 19 Oct 2006 14:33:48 +0100
+Message-ID: <1161264828.22969.105.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-86t9r3T8r+ho0627Q1cc"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,63 +14,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>, alsa-devel@lists.sourceforge.net
-Cc: Rita Shtern <rita@marvell.com>
+To: alsa-devel@lists.sourceforge.net
+Cc: Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-Thank you for your quick respond.
-Regarding 2 and 3 below, aren't those different names for the same
-thing?
-If not, can you give me an example of a case where they are different?
-Thanks.
+
+--=-86t9r3T8r+ho0627Q1cc
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+This patch by Frank Mandarino updates the AT91RM9200 I2S DAI audio modes
+as follows:-
+
+ o fixes a typo in the 16k mode
+ o removes experimental 24k mode
+ o adds a 32k mode.
+
+Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
 
------Original Message-----
-From: Clemens Ladisch [mailto:cladisch@fastmail.net] 
-Sent: Thursday, October 19, 2006 11:23 AM
-To: Assaf Hoffman; alsa-devel@lists.sourceforge.net
-Cc: Rita Shtern
-Subject: Re: [Alsa-devel] ALSA supported PCM formats
-Importance: Low
+--=-86t9r3T8r+ho0627Q1cc
+Content-Disposition: attachment; filename=asoc-at91-32k.patch
+Content-Type: text/x-patch; name=asoc-at91-32k.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Assaf Hoffman wrote:
-> I'm new to ALSA and I'm trying to understand the PCM formats and the
-way
-> ALSA stack place/pick them from the DMA buffer.
-> 
-> My understanding concerns PCM formats that their physical
-representation
-> bit size is bigger than the actual sound sample bit size.
-> For example, defined in pcm_misc.c file under pcm_formats[]:
-> 	[SNDRV_PCM_FORMAT_x24_xE]  = {.width = 24, .phys = 32, ...}
-> 	[SNDRV_PCM_FORMAT_x20_3xE] = {.width = 20, .phys = 24, ...}
-> 	[SNDRV_PCM_FORMAT_x18_3xE] = {.width = 18, .phys = 24, ...}
-> How the ALSA stack (kernel 2.6.12.6) knows the offset of the sound
-> sample bits inside the format physical size? For example, when the
-sound
-> sample size is 24 (.width = 24) and the format physical size is 32
-> (.phys = 32) the sound sample offset inside the physical frame can
-> anywhere beteen 0-7 bit. How the ALSA stack can know where to look for
-> the sound sample?
+# HG changeset patch
+# User fam@procyon
+# Date 1161194387 14400
+# Node ID 40826bcfd48745ed718250558a2ca3fb76beaed9
+# Parent  0047a372140b81a748457ef05a6450ddff271d24
+Fixed typo in 16k dai mode, removed bogus 24k dai mode
+and added 32k mode.
 
-There are three sizes that describe a sample:
-1) physical size: how many bits are occupied in memory, i.e., how many
-   data is read from/written to the DMA buffer for each sample;
-2) sample width: the number of bits, starting at the _least_ significant
-   bit inside (1), used for sample data;
-3) significant bits: the number of bits, starting at the _most_
-   significant bit inside (2), actually used for sample data.
+diff -r 0047a372140b -r 40826bcfd487 soc/at91/at91rm9200-i2s.c
+--- a/soc/at91/at91rm9200-i2s.c	Tue Oct 17 20:41:38 2006 +0200
++++ b/soc/at91/at91rm9200-i2s.c	Wed Oct 18 13:59:47 2006 -0400
+@@ -71,22 +71,22 @@ static struct snd_soc_dai_mode at91rm920
+ 		.flags = SND_SOC_DAI_BFS_DIV,
+ 		.fs = 750,
+ 		.bfs = SND_SOC_FSBD(3),
+-		.flags (7 << 16 | 133),
+-	},
+-
+-	/* 24k: BCLK = (MCLK/10) = (60MHz/50) = 1.2MHz */
++		.priv = (7 << 16 | 133),
++	},
++
++	/* 32k: BCLK = (MCLK/3) ~= (60MHz/14) = 4.285714MHz */
+ 	{
+ 		.fmt = AT91RM9200_I2S_DAIFMT,
+ 		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
+-		.pcmrate = SNDRV_PCM_RATE_22050,
++		.pcmrate = SNDRV_PCM_RATE_32000,
+ 		.pcmdir = AT91RM9200_I2S_DIR,
+ 		.flags = SND_SOC_DAI_BFS_DIV,
+-		.fs = 500,
+-		.bfs = SND_SOC_FSBD(10),
+-		.priv = (25 << 16 | 24),
+-	},
+-
+-	/* 48kHz: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
++		.fs = 375,
++		.bfs = SND_SOC_FSBD(3),
++		.priv = (7 << 16 | 66),
++	},
++
++	/* 48k: BCLK = (MCLK/5) ~= (60MHz/26) = 2.3076923MHz */
+ 	{
+ 		.fmt = AT91RM9200_I2S_DAIFMT,
+ 		.pcmfmt = SNDRV_PCM_FMTBIT_S16_LE,
 
-Which bit is least/most significant depends on whether the sample format
-is little or big endian.
-
-
-HTH
-Clemens
+--=-86t9r3T8r+ho0627Q1cc
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--=-86t9r3T8r+ho0627Q1cc
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-86t9r3T8r+ho0627Q1cc--
