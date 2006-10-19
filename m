@@ -1,12 +1,14 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: ALSA supported PCM formats
-Date: Thu, 19 Oct 2006 09:44:33 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91DB2@msilexch01.marvell.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Question on PCM formats
+Date: Thu, 19 Oct 2006 10:54:46 +0200
+Message-ID: <1161248086.15656.273708027@webmail.messagingengine.com>
+References: <B9FFC3F97441D04093A504CEA31B7C41E91D94@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <B9FFC3F97441D04093A504CEA31B7C41E91D94@msilexch01.marvell.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,27 +18,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Assaf Hoffman <hoffman@marvell.com>, alsa-devel@lists.sourceforge.net
 Cc: Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-HI,
-I'm new to ALSA and I'm trying to understand the PCM formats and the way
-ALSA stack place/pick them from the DMA buffer.
+Assaf Hoffman wrote:
+> I was looking in http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
+> and I have some questions regarding the PCM format paragraph:
+> 
+> Q1: I think the sentence:
+> "...but the sample is stored in low three bits."
+> Should be
+> "...but the sample is stored in low three bytes."
 
-My understanding concerns PCM formats that their physical representation
-bit size is bigger than the actual sound sample bit size.
-For example, defined in pcm_misc.c file under pcm_formats[]:
-	[SNDRV_PCM_FORMAT_x24_xE]  = {.width = 24, .phys = 32, ...}
-	[SNDRV_PCM_FORMAT_x20_3xE] = {.width = 20, .phys = 24, ...}
-	[SNDRV_PCM_FORMAT_x18_3xE] = {.width = 18, .phys = 24, ...}
-How the ALSA stack (kernel 2.6.12.6) knows the offset of the sound
-sample bits inside the format physical size? For example, when the sound
-sample size is 24 (.width = 24) and the format physical size is 32
-(.phys = 32) the sound sample offset inside the physical frame can
-anywhere beteen 0-7 bit. How the ALSA stack can know where to look for
-the sound sample?
-Thanks. 
+Yes, thanks.
+
+> Q2: What is the meaning of "full range" in the sentence:
+> "Some hardware does not support processing of full range"?
+
+In that case, "full range" is the size of the samples as specified
+by the sample format (in the example, 32 bits).
+
+> Q3: I'm working with kernel 2.6.12.6 and I could not find the
+> snd_pcm_hw_params_get_sbits() function there. In which kernel version
+> can I find it?
+
+This function is part of ALSA's user space API.  It just returns the
+value of the kernel's msbits field.
+
+> Q4: Working with 2.6.12.6 kernel, how can I solve the problem of the
+> ICE1712? How do I tell the stack where is the sound sample bit start
+> inside the 32-bit frame? 
+
+When the number of valid bits (_get_sbits()) is not as large as the
+number of bits of the sample format, the valid bits are always the most
+significant bits.  This means that applications can just ignore the
+_get_sbits() function and pretend that the ICE1712 uses 32-bit samples.
+
+There are special sample formats for hardware that aligns its data in
+the least significant bits of a word, e.g., S24_xE is for 24-bit samples
+in the lower three bytes of a 32-bit word. 
+
+
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
