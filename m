@@ -1,7 +1,7 @@
 From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: Question on PCM formats
-Date: Thu, 19 Oct 2006 09:14:40 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91D94@msilexch01.marvell.com>
+Subject: ALSA supported PCM formats
+Date: Thu, 19 Oct 2006 09:44:33 +0200
+Message-ID: <B9FFC3F97441D04093A504CEA31B7C41E91DB2@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,31 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net, abramo@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 Cc: Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I was looking in http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
-and I have some questions regarding the PCM format paragraph:
+HI,
+I'm new to ALSA and I'm trying to understand the PCM formats and the way
+ALSA stack place/pick them from the DMA buffer.
 
-Q1: I think the sentence:
-"...but the sample is stored in low three bits."
-Should be
-"...but the sample is stored in low three bytes."
-
-Q2: What is the meaning of "full range" in the sentence:
-"Some hardware does not support processing of full range"?
-
-Q3: I'm working with kernel 2.6.12.6 and I could not find the
-snd_pcm_hw_params_get_sbits() function there. In which kernel version
-can I find it?
-
-Q4: Working with 2.6.12.6 kernel, how can I solve the problem of the
-ICE1712? How do I tell the stack where is the sound sample bit start
-inside the 32-bit frame? 
-
-
+My understanding concerns PCM formats that their physical representation
+bit size is bigger than the actual sound sample bit size.
+For example, defined in pcm_misc.c file under pcm_formats[]:
+	[SNDRV_PCM_FORMAT_x24_xE]  = {.width = 24, .phys = 32, ...}
+	[SNDRV_PCM_FORMAT_x20_3xE] = {.width = 20, .phys = 24, ...}
+	[SNDRV_PCM_FORMAT_x18_3xE] = {.width = 18, .phys = 24, ...}
+How the ALSA stack (kernel 2.6.12.6) knows the offset of the sound
+sample bits inside the format physical size? For example, when the sound
+sample size is 24 (.width = 24) and the format physical size is 32
+(.phys = 32) the sound sample offset inside the physical frame can
+anywhere beteen 0-7 bit. How the ALSA stack can know where to look for
+the sound sample?
+Thanks. 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
