@@ -1,9 +1,10 @@
-From: Daniel Yek <dyek@real.com>
-Subject: Multichannels channel-mapping application API for PCM?
-Date: Wed, 18 Oct 2006 16:53:09 -0700
-Message-ID: <6.2.1.2.2.20061018160033.5bab2b70@mailone.real.com>
+From: =?iso-2022-jp?B?bWlzYXRv?= <misato@yahoo.co.jp>
+Subject: Re: (no subject)
+Date: Wed, 18 Oct 2006 20:24:43 -0700 (PDT)
+Message-ID: <E1GaOW9-0002T2-P1@mail.sourceforge.net>
+Reply-To: misato@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +19,149 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+:―― INFORMATION  ―――――――――――――――――――――――――:
+ 不正・悪質なサイトを一切排除しておりますので
+ 安心してご利用ください。   http://love-match.bz/pc/?06
+:――――――――――――――――――――――――――――――――――:
 
-First of all, thanks for the previous responses that I got. All that was 
-very helpful. More questions here...
+*・゜゜・*:.。. .。.:*・゜゜・*:.。..。:*・゜゜・*:.。..。:**・゜゜・*
 
-What is the rational behind ALSA's PCM multichannel playback channel 
-assignment? ALSA appears to be using the following channel assignment:
+お金と時間を持て余している人妻の間で、噂になってるあのサイト
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?03
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ 不倫・ワリキリ専門の無料出会いサイト『Love☆Match』
+　-----------------------------------------------------------------
+　　登録料・利用料　・・・・・・・・・【無料】
+　　メールの送受信　・・・・・・・・・【無料】
+　　ユーザーの検索　・・・・・・・・・【無料】
+　　掲示板の閲覧・書込み　・・・・・・【無料】
+　　画像交換・アップロード　・・・・・【無料】
+　　アドレス交換・電話番号交換　・・・【無料】
+　-----------------------------------------------------------------
+　　どれだけ使っても全て無料！　http://love-match.bz/pc/?06
 
-5.1 Channels Channel Assignment:
-0: Front left
-1: Front right
-2: Rear Left
-3: Rear Right
-4. Center
-5. LFE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ いつでも女性ユーザーがいっぱい。その理由は？
 
-Is this the only format ALSA supported? Why/how it was selected in the 
-beginning? (Just curious about the history...)
+　-----------------------------------------------------------------
+　ＰＣ＆モバイルに対応！いつでもどこでも気軽に楽しめる！
+　-----------------------------------------------------------------
+　仕事中は携帯電話から、プライベートは自宅からのんびりと。
+　気になる相手といつでも繋がっているから、新密度も急速にＵＰ。
+　http://love-match.bz/pc/?06
 
-I think (not sure, really) the channel assignment for Windows (if it is 
-really one standard there) is:
-0: Front left
-1: Front right
-2: Center
-3: LFE
-4. Rear Left
-5. Rear Right
+　-----------------------------------------------------------------
+　ＰＣから簡単プロフィール作成。ネット初心者でもラクラク参加ＯＫ
+　-----------------------------------------------------------------
+　面倒な登録は一切不要。パソコンから簡単なプロフィールを作成して
+　初心者の方や女性でもすぐに参加できます。
+　http://love-match.bz/pc/?06
+　-----------------------------------------------------------------
+　自由恋愛対応！直電・直メ交換支援ツール
+　-----------------------------------------------------------------
+　基本的にメールアドレスや電話番号は非公開ですが
+　仲良くなった人だけにメールアドレスや電話番号を教える事ができます。
+　http://love-match.bz/pc/?06
 
-I haven't investigated AC3 (Dolby Digital) yet, anybody knows if there is a 
-format for channel assignment there?
+　-----------------------------------------------------------------
+　写真アップロードに対応！好みの相手を素早くＣＨＥＣＫ！
+　-----------------------------------------------------------------
+　待ち合わせ場所にイメージとまったく違う人が来たら…。
+　ピュアックスなら会う前に写真交換ができるから、そんな不安も解消。
+　http://love-match.bz/pc/?06
 
-I'm looking if there is a solution (application API) provided by ALSA to do 
-channel-mapping. If there is one, I can just ask ALSA to do the 
-"heavy-lifting" of swapping the surround sound channels. If not, I'll 
-iterate through the PCM data, mapping the channels to the format expected 
-by ALSA.
-
-I read about channel bindings in configuration files, but that isn't an 
-application API that media application can use and it requires the end 
-users to mess with their system. So, that isn't a real solution. Is there 
-anything else that is available?
-
-As always, thanks.
+　-----------------------------------------------------------------
+　スレッド掲示板で秘密のパートナー検索も効率ＵＰ！
+　-----------------------------------------------------------------
+　メインの掲示板のほかにスレッド型の掲示板を設置。
+　メル友から秘密のパートナーまで目的別のユーザーが集う掲示板です。
+　http://love-match.bz/pc/?06
 
 
--- 
-Daniel Yek
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　□■ 毎日500人近くのユーザーが続々参加中！！
+
+□-----------------------------------------------------------------
+
+　リエ（２１歳/会社員）
+　いつも１人でエッチなことを考えてます。
+　メールだといろいろ話せるんだけど、実際に会うとあまりしゃべれなく
+　なっちゃうので、盛り上げてくれるような楽しい男の人いないかな？
+　引っ込み思案のせいか、男性経験はあまり無いんです。
+　優しく＆楽しくリードしてくれる男性からのメール待ってます。
+　[写真有り] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　真菜（２４歳/フリーター）
+　彼氏が浮気してて超アタマきたっ！まなだって遊びたい盛りだし、ずっと
+　ガマンしてたのにさ！かっこいい人見つけて思いっきりふってやるつもりで
+　登録してみた（笑）
+　[写真有り] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　みさ（３４歳/専業主婦）
+　殆ど家に帰ってこない仕事人間のだんなさまと二人きりの毎日で、ほんと
+　寂しい思いをしています。年下の男の子がいれば仲良くなりたいな。
+　年下の人とは付き合ったことがないので興味津々です(^^)
+　[写真無し] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　恭子（２８歳/会社員）
+　彼氏とはいつも同じようなセックスばかりでかなり冷め気味です。
+　誰かあたしと熱いセックスを楽しみませんか？めんどくさい事は
+　言いません。ただ、いつもと違うドキドキするような事がしたい
+　だけなんです。
+　[写真無し] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　ななこ（２８歳/主婦）
+　半年前にだんなと別れて今は×1です。
+　夜のお仕事なので、昼間まったりと過ごしませんか？
+　心身ともに疲れ気味で、今、激しく癒されたいです。
+　[写真有り] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　祥子（３１歳/クリエイター）
+　平日は18時くらいまでは大体仕事してるので、その後に食事したり
+　楽しく飲んだりできるパートナー希望です。年上でも年下でも
+　かまいませんので気軽にメールを送って頂けると嬉しいです。
+　[写真有り] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+　ゅヵ`（２０歳/学生）
+　まずゎ会ってみないとはじまらなぃょね？！
+　横浜近辺の人で、いろんな意味でオトナな人は
+　プロフ付きでめぇる送って☆
+　[写真有り] http://love-match.bz/pc/?06
+
+□-----------------------------------------------------------------
+
+
+   出会いサイトのサクラに騙されないように↓
+　┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+　　【裏】無料の出会い情報
+　　-------------------------------------------------------------
+　　お金と時間を持て余している人妻の間で、噂になってるあのサイト
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?06
+　　-------------------------------------------------------------
+　　彼女達が求めているのはこんな男性です。
+　　?年上女性にリードしてもらいたい、経験少なめの男性
+　　?体力・テクニックに自信が有る男性
+　　男性会員が不足しています。我こそは、と思う方は今すぐ参加！
+　　[登録・利用料全て無料]　http://love-match.bz/pc/?06
+　┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+広東省茂名市人民大街3-6-4-533
+友誼網絡公司
+139-3668-7892
+
+
 
 
 -------------------------------------------------------------------------
