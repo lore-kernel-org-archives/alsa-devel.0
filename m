@@ -1,21 +1,12 @@
-From: "Jaap Struyk" <japie@deserver.nl>
-Subject: Re: problems with via82xx alsa part
-Date: Fri, 20 Oct 2006 07:00:52 +0000 (UTC)
-Message-ID: <eh9s74$jcl$1@sea.gmane.org>
-References: <ef3pll$kng$1@sea.gmane.org> <efos3e$g63$1@sea.gmane.org>
-	<s5hwt7ghsxd.wl%tiwai@suse.de>
-	<1160121885.1790.2.camel@japie.deserver.nl>
-	<s5hd595u1t3.wl%tiwai@suse.de>
-	<1160325289.2558.2.camel@japie.deserver.nl>
-	<s5hzmc5pb7c.wl%tiwai@suse.de>
-	<1160499844.2449.5.camel@japie.deserver.nl>
-	<s5hbqokm65g.wl%tiwai@suse.de> <eglrgk$vpi$1@sea.gmane.org>
-	<s5hfydtiic4.wl%tiwai@suse.de> <egt810$628$1@sea.gmane.org>
-	<s5hac3wbmpn.wl%tiwai@suse.de>
+From: "K.A." <deb.lists@gmail.com>
+Subject: Snd-usb-audio and usb-phones.
+Date: Fri, 20 Oct 2006 11:36:57 +0300
+Message-ID: <20061020083657.GA8792@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,24 +19,54 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Op Mon, 16 Oct 2006 12:04:52 +0200, schreef Takashi Iwai:
-
-> Odd, indeed.  You ARE using 32bit kernel, right?
-> 
-> My system is with gcc4.1, too, but doesn't get such flags.
-
-It's 32bit, maybe glibc related?
-
-I tryed modules and modprobe -v snd_via82xx didn't gave me anything
-usefull, but now dmesg shows me:
-ALSA sound/core/pcm_native.c:2594: unknown ioctl = 0x80144132
-Is this usefull to work with?
--- 
-Japie
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+T24gRnJpLCBPY3QgMjAsIDIwMDYgYXQgMTA6MDg6NTlBTSArMDMwMCwgYWtiYXJhIHdyb3RlOgog
+T24gVHVlLCBPY3QgMTcsIDIwMDYgYXQgMDk6NTc6MzNBTSArMDMwMCwgYWtiYXJhIHdyb3RlOgog
+SGVsbG8sIFRha2FzaGkhCiBJIGJvdWdodCBhIG5vbmFtZSB1c2IgaXAtcGhvbmUuIFNvIHdoZW4g
+cGx1Z2dpbmcgaXQgaW4sIHlvdXIgZHJpdmVyCiBzbmQtdXNiLWF1ZGlvIGlzIHVzZWQuIFNvIEkg
+ZGVjaWRlZCB0byBhc2sgd2hldGhlciB5b3Uga25vdyBpZiBkcml2ZXJzCiBmb3Igc3VjaCBkZXZp
+Y2VzIGV4aXN0LgogVGhlIHByb2JsZW0gaXMgdGhhdCB0aGUgcGhvbmUgaXMgZm91bmQgYXMgYW4g
+YXVkaW8gZGV2aWNlLCBpdCB1c2VzCiB0aGUgaGlkZGV2OTYgZHJpdmVyLCBidXQgSSBjYW4ndCBo
+ZWFyIGFueSBzb3VuZCB3aGVuIHRyeWluZyB0byBjYWxsIHRvCiBteSBTa3lwZSBjb250YWN0IC0t
+IG9ubHkgbm9pc2UsIGFuZCBjcmFjaywgYW5kIGZsaWNrcyB3aGlsZSB0aGUgY2FsbCBpcwogcHJv
+Y2Vzc2luZy4KIFNvLCBteSBxdWVzdGlvbiBpczogZG8gYW55IGRyaXZlcnMgZm9yIHN1Y2ggZGV2
+aWNlcyBleGlzdD8gQW5kIC0tIHdoYXQKIGNhbiBJIGxvb2sgZm9yPwogRGlzdHJvIC0tIERlYmlh
+biBFdGNoLCAyLjYuMTggKHZhbmlsbGEpLgogQWZ0ZXIgcGx1Z2dpbmcgaW4gdGhlIHBob25lOgog
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KIGRtZXNnOgogdXNiIDItMjogbmV3IGZ1bGwgc3BlZWQgVVNCIGRldmljZSB1c2lu
+ZyB1aGNpX2hjZCBhbmQgYWRkcmVzcyAyCiB1c2IgMi0yOiBjb25maWd1cmF0aW9uICMxIGNob3Nl
+biBmcm9tIDEgY2hvaWNlCiAyOjE6MTogY2Fubm90IGdldCBmcmVxIGF0IGVwIDB4MgogMjoyOjE6
+IGNhbm5vdCBnZXQgZnJlcSBhdCBlcCAweDgyCiB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBkcml2
+ZXIgc25kLXVzYi1hdWRpbwogdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgZHJpdmVyIGhpZGRldgog
+aGlkZGV2OTY6IFVTQiBISUQgdjIuMDEgRGV2aWNlIFtCVUlMRFdJTiBTS1lQRSBQSE9ORV0gb24g
+dXNiLTAwMDA6MDA6MWQuMC0yCiB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBkcml2ZXIgdXNiaGlk
+CiBkcml2ZXJzL3VzYi9pbnB1dC9oaWQtY29yZS5jOiB2Mi42OlVTQiBISUQgY29yZSBkcml2ZXIK
+IHVzYiAyLTI6IFVTQiBkaXNjb25uZWN0LCBhZGRyZXNzIDIKIHVzYiAyLTI6IG5ldyBmdWxsIHNw
+ZWVkIFVTQiBkZXZpY2UgdXNpbmcgdWhjaV9oY2QgYW5kIGFkZHJlc3MgMwogdXNiIDItMjogY29u
+ZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNob2ljZQogMzoxOjE6IGNhbm5vdCBnZXQgZnJl
+cSBhdCBlcCAweDIKIDM6MjoxOiBjYW5ub3QgZ2V0IGZyZXEgYXQgZXAgMHg4MgogaGlkZGV2OTY6
+IFVTQiBISUQgdjIuMDEgRGV2aWNlIFtCVUlMRFdJTiBTS1lQRSBQSE9ORV0gb24gdXNiLTAwMDA6
+MDA6MWQuMC0yCiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGxzbW9kIHwgZ3JlcCB1c2IKIHVzYmhpZCAg
+ICAgICAgICAgICAgICAgNDE4NTYgIDAgCiBzbmRfdXNiX2F1ZGlvICAgICAgICAgIDc4MDAwICAw
+IAogc25kX3VzYl9saWIgICAgICAgICAgICAxNzk0NCAgMSBzbmRfdXNiX2F1ZGlvCiBzbmRfcmF3
+bWlkaSAgICAgICAgICAgIDI2MDE2ICAxIHNuZF91c2JfbGliCiBzbmRfcGNtICAgICAgICAgICAg
+ICAgIDgyODYwICA1IHNuZF91c2JfYXVkaW8sc25kX2ludGVsOHgwbSxzbmRfaW50ZWw4eDAsc25k
+X2FjOTdfY29kZWMsc25kX3BjbV9vc3MKIHVzYmNvcmUgICAgICAgICAgICAgICAxMzc0MjAgIDYg
+dXNiaGlkLHNuZF91c2JfYXVkaW8sc25kX3VzYl9saWIsdWhjaV9oY2QsZWhjaV9oY2QKIC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogbHN1c2I6CiBCdXMgMDAzIERldmljZSAwMDE6IElEIDAw
+MDA6MDAwMCAgCiBCdXMgMDA0IERldmljZSAwMDE6IElEIDAwMDA6MDAwMCAgCiBCdXMgMDAyIERl
+dmljZSAwMDM6IElEIDE5MDg6MTM4OSAgCiBCdXMgMDAyIERldmljZSAwMDE6IElEIDAwMDA6MDAw
+MCAgCiBCdXMgMDAxIERldmljZSAwMDE6IElEIDAwMDA6MDAwMCAgCiAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CiBJcyB0aGUgcHJvYmxlbSBvbmx5IGluIHNwZWNpYWwgZHJpdmVycyBmcm9tIHRoZSB2ZW5kb3I/
+Ci0tIArQmi7QkC4sCmVuZmFudCB0ZXJyaWJsZS4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVXNpbmcgVG9t
+Y2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNl
+Y3VyaXR5PwpHZXQgc3R1ZmYgZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVncmF0ZWQgdGVjaG5v
+bG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llcgpEb3dubG9hZCBJQk0gV2ViU3BoZXJlIEFwcGxp
+Y2F0aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwpodHRwOi8vc2Vs
+LmFzLXVzLmZhbGthZy5uZXQvc2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3JmRhdD0x
+MjE2NDIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
