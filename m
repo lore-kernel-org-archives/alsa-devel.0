@@ -1,7 +1,7 @@
 From: Ricardo Cerqueira <alsa-users@cerqueira.org>
 Subject: Re: [Alsa-user] Poorly supported HDA intel
-Date: Fri, 20 Oct 2006 17:24:44 +0200
-Message-ID: <f06c4df747ae9f5b1600d2ad68a59c60@192.168.1.254>
+Date: Fri, 20 Oct 2006 17:48:00 +0200
+Message-ID: <637db6bed1ffdac45ee436063ae9e2c0@192.168.1.254>
 References: <s5h3b9j2f4t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,21 +17,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-
 On Fri, 20 Oct 2006 17:14:42 +0200, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> Let's move on alsa-devel.
-> [It's ASUS W5F laptop, in case someone didn't follow the thread on
->  alsa-users]
-> 
-> Ricardo, what PCI SSID does it have?  Check lspci -nvv output.
-> 
+> At Fri, 20 Oct 2006 17:03:40 +0200,
+> Ricardo Cerqueira wrote:
+>>
+>>
+>>
+>> On Fri, 20 Oct 2006 16:37:56 +0200, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Fri, 20 Oct 2006 16:31:44 +0200,
+>> > Ricardo Cerqueira wrote:
+>> >>
+>> >> On Fri, 20 Oct 2006 16:16:45 +0200, Takashi Iwai <tiwai@suse.de>
+> wrote:
+>> >> >
+>> >> > I don't think there is any matching model for your device, so far.
+>> >> >
+>> >> > There is a patch floating around alsa-devel ML for the addition of
+>> >> > "asus" model right now.  This might suit with your device.
+>> >>
+>> >> You mean this thread?
+>> >>
+>> >> http://thread.gmane.org/gmane.linux.alsa.devel/40507/focus=40553
+>> >
+>> > Check Tobin's post in today including a newer patch for ALSA HG tree.
+>> >
+>> > http://thread.gmane.org/gmane.linux.alsa.devel/40974/focus=41309
+>>
+>> OK, Tobin's patch works. There are are a couple of bugs I can see right
+>> away:
+>>
+>> 1 - The Headphones mute control doesn't do anything (the Front control
+>> mutes the speakers and the headphones)
+>> 2 - The Front Mic mute doesn't do anything, either. Both the built-in
+>> mic and an external Mic are controlled by the "Mic" control.
 
-Ooops, got lost in the earlier messages... It's 1043:1263
+Hmmm. I was trying to look into codec#0 to check the pin assignments, and I
+realized it's being cut off at byte 4096, and I'm missing information. Looks 
+like something is limiting that proc entry's size to 4k, do you have any idea 
+where?
+
 
 --
 RC
