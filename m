@@ -1,14 +1,14 @@
-From: "Markus Rechberger" <mrechberger@gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
 Subject: Re: Snd-usb-audio and usb-phones.
-Date: Fri, 20 Oct 2006 11:36:39 +0200
-Message-ID: <d9def9db0610200236h54ea2a29k5cf6c56132d4c593@mail.gmail.com>
+Date: Fri, 20 Oct 2006 11:53:49 +0200
+Message-ID: <1161338029.17815.273804883@webmail.messagingengine.com>
 References: <20061020083657.GA8792@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20061020083657.GA8792@localhost>
 Content-Disposition: inline
+In-Reply-To: <20061020083657.GA8792@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,79 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "K.A." <deb.lists@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: "K.A." <deb.lists@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpjb3VsZCB5b3UgcGFzdGUgdGhlIG91dHB1dCBvZiB1c2J2aWV3IG9uCmh0dHA6Ly9hbHNh
-Lm9wZW5zcmMub3JnL3VzYnBob25lIChjcmVhdGUgdGhpcyBzaXRlKQpEbyB5b3UgaGF2ZSBhbnkg
-bGluayBmb3IgdGhhdCB1c2JwaG9uZT8KSSB3cm90ZSBhIGRyaXZlciBmb3IgdGhlIGF1NjAwIHVz
-YiBwaG9uZSBnYXRld2F5IHdoaWNoIGNvdWxkIGJlIGhhY2tlZAp1cCB0byBnZXQgeW91ciBkZXZp
-Y2Ugd29yayB0b28uCmh0dHA6Ly9hbHNhLm9wZW5zcmMub3JnL2F1NjAwCgp0aGUgZm9sbG93aW5n
-IGxpbmsgcHJvdmlkZXMgc29tZSBtb3JlIGluZm9ybWF0aW9uIG9uIHdoYXQgZXh0cmEKaW5mb3Jt
-YXRpb24geW91IGNvdWxkIHByb3ZpZGUgKHVzYnNub29wIGxvZyk6Cmh0dHA6Ly93d3cubGludXh0
-di5vcmcvdjRsd2lraS9pbmRleC5waHAvVVNCVmlkZW8KCmNoZWVycywKTWFya3VzCgpPbiAxMC8y
-MC8wNiwgSy5BLiA8ZGViLmxpc3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBPY3QgMjAs
-IDIwMDYgYXQgMTA6MDg6NTlBTSArMDMwMCwgYWtiYXJhIHdyb3RlOgo+ICBPbiBUdWUsIE9jdCAx
-NywgMjAwNiBhdCAwOTo1NzozM0FNICswMzAwLCBha2JhcmEgd3JvdGU6Cj4gIEhlbGxvLCBUYWth
-c2hpIQo+ICBJIGJvdWdodCBhIG5vbmFtZSB1c2IgaXAtcGhvbmUuIFNvIHdoZW4gcGx1Z2dpbmcg
-aXQgaW4sIHlvdXIgZHJpdmVyCj4gIHNuZC11c2ItYXVkaW8gaXMgdXNlZC4gU28gSSBkZWNpZGVk
-IHRvIGFzayB3aGV0aGVyIHlvdSBrbm93IGlmIGRyaXZlcnMKPiAgZm9yIHN1Y2ggZGV2aWNlcyBl
-eGlzdC4KPiAgVGhlIHByb2JsZW0gaXMgdGhhdCB0aGUgcGhvbmUgaXMgZm91bmQgYXMgYW4gYXVk
-aW8gZGV2aWNlLCBpdCB1c2VzCj4gIHRoZSBoaWRkZXY5NiBkcml2ZXIsIGJ1dCBJIGNhbid0IGhl
-YXIgYW55IHNvdW5kIHdoZW4gdHJ5aW5nIHRvIGNhbGwgdG8KPiAgbXkgU2t5cGUgY29udGFjdCAt
-LSBvbmx5IG5vaXNlLCBhbmQgY3JhY2ssIGFuZCBmbGlja3Mgd2hpbGUgdGhlIGNhbGwgaXMKPiAg
-cHJvY2Vzc2luZy4KPiAgU28sIG15IHF1ZXN0aW9uIGlzOiBkbyBhbnkgZHJpdmVycyBmb3Igc3Vj
-aCBkZXZpY2VzIGV4aXN0PyBBbmQgLS0gd2hhdAo+ICBjYW4gSSBsb29rIGZvcj8KPiAgRGlzdHJv
-IC0tIERlYmlhbiBFdGNoLCAyLjYuMTggKHZhbmlsbGEpLgo+ICBBZnRlciBwbHVnZ2luZyBpbiB0
-aGUgcGhvbmU6Cj4gIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIGRtZXNnOgo+ICB1c2IgMi0yOiBuZXcgZnVsbCBzcGVl
-ZCBVU0IgZGV2aWNlIHVzaW5nIHVoY2lfaGNkIGFuZCBhZGRyZXNzIDIKPiAgdXNiIDItMjogY29u
-ZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNob2ljZQo+ICAyOjE6MTogY2Fubm90IGdldCBm
-cmVxIGF0IGVwIDB4Mgo+ICAyOjI6MTogY2Fubm90IGdldCBmcmVxIGF0IGVwIDB4ODIKPiAgdXNi
-Y29yZTogcmVnaXN0ZXJlZCBuZXcgZHJpdmVyIHNuZC11c2ItYXVkaW8KPiAgdXNiY29yZTogcmVn
-aXN0ZXJlZCBuZXcgZHJpdmVyIGhpZGRldgo+ICBoaWRkZXY5NjogVVNCIEhJRCB2Mi4wMSBEZXZp
-Y2UgW0JVSUxEV0lOIFNLWVBFIFBIT05FXSBvbiB1c2ItMDAwMDowMDoxZC4wLTIKPiAgdXNiY29y
-ZTogcmVnaXN0ZXJlZCBuZXcgZHJpdmVyIHVzYmhpZAo+ICBkcml2ZXJzL3VzYi9pbnB1dC9oaWQt
-Y29yZS5jOiB2Mi42OlVTQiBISUQgY29yZSBkcml2ZXIKPiAgdXNiIDItMjogVVNCIGRpc2Nvbm5l
-Y3QsIGFkZHJlc3MgMgo+ICB1c2IgMi0yOiBuZXcgZnVsbCBzcGVlZCBVU0IgZGV2aWNlIHVzaW5n
-IHVoY2lfaGNkIGFuZCBhZGRyZXNzIDMKPiAgdXNiIDItMjogY29uZmlndXJhdGlvbiAjMSBjaG9z
-ZW4gZnJvbSAxIGNob2ljZQo+ICAzOjE6MTogY2Fubm90IGdldCBmcmVxIGF0IGVwIDB4Mgo+ICAz
-OjI6MTogY2Fubm90IGdldCBmcmVxIGF0IGVwIDB4ODIKPiAgaGlkZGV2OTY6IFVTQiBISUQgdjIu
-MDEgRGV2aWNlIFtCVUlMRFdJTiBTS1lQRSBQSE9ORV0gb24gdXNiLTAwMDA6MDA6MWQuMC0yCj4g
-IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQo+ICBsc21vZCB8IGdyZXAgdXNiCj4gIHVzYmhpZCAgICAgICAg
-ICAgICAgICAgNDE4NTYgIDAKPiAgc25kX3VzYl9hdWRpbyAgICAgICAgICA3ODAwMCAgMAo+ICBz
-bmRfdXNiX2xpYiAgICAgICAgICAgIDE3OTQ0ICAxIHNuZF91c2JfYXVkaW8KPiAgc25kX3Jhd21p
-ZGkgICAgICAgICAgICAyNjAxNiAgMSBzbmRfdXNiX2xpYgo+ICBzbmRfcGNtICAgICAgICAgICAg
-ICAgIDgyODYwICA1Cj4gc25kX3VzYl9hdWRpbyxzbmRfaW50ZWw4eDBtLHNuZF9pbnRlbDh4MCxz
-bmRfYWM5N19jb2RlYyxzbmRfcGNtX29zcwo+ICB1c2Jjb3JlICAgICAgICAgICAgICAgMTM3NDIw
-ICA2Cj4gdXNiaGlkLHNuZF91c2JfYXVkaW8sc25kX3VzYl9saWIsdWhjaV9oY2QsZWhjaV9oY2QK
-PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgbHN1c2I6Cj4gIEJ1cyAwMDMgRGV2aWNl
-IDAwMTogSUQgMDAwMDowMDAwCj4gIEJ1cyAwMDQgRGV2aWNlIDAwMTogSUQgMDAwMDowMDAwCj4g
-IEJ1cyAwMDIgRGV2aWNlIDAwMzogSUQgMTkwODoxMzg5Cj4gIEJ1cyAwMDIgRGV2aWNlIDAwMTog
-SUQgMDAwMDowMDAwCj4gIEJ1cyAwMDEgRGV2aWNlIDAwMTogSUQgMDAwMDowMDAwCj4gIC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KPiAgSXMgdGhlIHByb2JsZW0gb25seSBpbiBzcGVjaWFsIGRyaXZlcnMgZnJv
-bSB0aGUgdmVuZG9yPwo+IC0tCj4g6y7hLiwKPiBlbmZhbnQgdGVycmlibGUuCj4KPiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCj4gVXNpbmcgVG9tY2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3Vw
-cG9ydCB3ZWIgc2VydmljZXMsIHNlY3VyaXR5Pwo+IEdldCBzdHVmZiBkb25lIHF1aWNrbHkgd2l0
-aCBwcmUtaW50ZWdyYXRlZCB0ZWNobm9sb2d5IHRvIG1ha2UgeW91ciBqb2IKPiBlYXNpZXIKPiBE
-b3dubG9hZCBJQk0gV2ViU3BoZXJlIEFwcGxpY2F0aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9u
-IEFwYWNoZSBHZXJvbmltbwo+IGh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9zZWw/Y21kPWxu
-ayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0Mgo+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBB
-bHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9y
-Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKCi0tIApNYXJrdXMgUmVjaGJlcmdl
-cgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVk
-IHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2ts
-eSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIK
-RG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBv
-biBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5r
-JmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
-c3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+K.A. wrote:
+>  I bought a noname usb ip-phone. So when plugging it in, your driver
+>  snd-usb-audio is used. So I decided to ask whether you know if drivers
+>  for such devices exist.
+
+Yes, a driver for USB audio devices does exist.
+Its name is snd-usb-audio.
+
+>  The problem is that the phone is found as an audio device, it uses
+>  the hiddev96 driver, but I can't hear any sound when trying to call to
+>  my Skype contact -- only noise, and crack, and flicks while the call is
+>  processing.
+> ...
+>  2:1:1: cannot get freq at ep 0x2
+>  2:2:1: cannot get freq at ep 0x82
+
+These error messages indicate that your device isn't quite compatible
+with the USB audio specification.
+
+Please show the output of "lsusb -v" for this device.
+
+Does this device require a separate driver for Windows, or does it work
+with the standard driver shipped with Windows?
+
+
+Regards,
+Clemens
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
