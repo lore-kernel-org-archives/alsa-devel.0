@@ -1,19 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Driver design question
-Date: Fri, 20 Oct 2006 16:12:48 -0400
-Message-ID: <1161375168.15860.359.camel@mindpipe>
-References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
-	<1158331680.7948.156.camel@mindpipe> <s5h64fjj3aj.wl%tiwai@suse.de>
-	<1159214063.2899.127.camel@mindpipe> <s5hhcytp6sy.wl%tiwai@suse.de>
-	<1159581790.7086.141.camel@mindpipe>
-	<1159889722.20801.59.camel@mindpipe>
-	<s5hodssl9t4.wl%tiwai@suse.de> <1161295951.15860.255.camel@mindpipe>
-	<s5hlknb2lk9.wl%tiwai@suse.de>
+From: <mariook@wp.pl>
+Subject: Re: [PATCH] Asus A6RP and
+	ALC861	headphones	problem	solved
+Date: Fri, 20 Oct 2006 22:21:21 +0200
+Message-ID: <003801c6f485$4ef87010$83030a54@MIREK>
+References: <005701c6eb15$be16e590$83030a54@MIREK><s5hlknpr4y0.wl%tiwai@suse.de><015701c6ed53$575da060$83030a54@MIREK><s5hk636kdhb.wl%tiwai@suse.de><s5hejt66aaj.wl%tiwai@suse.de><013c01c6f3cb$6dbde530$83030a54@MIREK><1161301150.26400.24.camel@razman>
+	<s5hejt32jtz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0035_01C6F496.122B7EF0"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hlknb2lk9.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,268 +18,342 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>, Tobin Davis <tdavis@dsl-only.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-10-20 at 14:55 +0200, Takashi Iwai wrote:
-> > Anyway, I still can't make it work with the PCM indirect API.  The best
-> > I've managed to produce is choppy sound that seems to underrun every
-> > period.  Do you see what could be wrong with my code?
-> 
-> You should give a fixed period size (0x2000), i.e. set both
-> period_bytes_min and period_bytes_max = 0x4000 (and periods_min = 2) in
-> snd_pcm_hardware.  In this way, the ack is called at least at each
-> time 0x2000 words are processed.
-> 
+This is a multi-part message in MIME format.
 
-I am doing this already.
+------=_NextPart_000_0035_01C6F496.122B7EF0
+Content-Type: text/plain; format=flowed; charset="ISO-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 
-> BTW, what does dream_get_mpu_data_poll_status_byte() do?
-> Does it check whether you can another push 0x2000 words?
-> 
-
-Yes, exactly.
-
-> If so, you should check this before claling
-> snd_pcm_indirect_playback_transfer() in dream_work_transfer().
-> 
-
-OK, I've made this change.
-
-> 
-> Possibly, the block transfer patch might be not needed if you add this
-> check.
-> 
-
-OK, I feel I am getting closer.  But it seems that only the first period
-is played.  Upon further inspection it looks like
-snd_pcm_indirect_playback_transfer only causes dream_playback_copy to be
-invoked the first time:
-
-~ # aplay /usr/share/sounds/test/phone.wav 
-Playing WAVE '/usr/share/sounds/test/phone.wav': Signed 16 bit Little
-Endian, Rate 44100 Hz, Stereo
-hw_params: stereo yes, format 16bit, rate 44100
-dream_pcm_open: channel 0x0 eight_bit 0x0 stereo 0x1 rate 0xac44
-dream_playback_ack
-dream_playback_copy: not running!
-dream_pcm_start: channel is 0
-dream_work_transfer: polling status byte returned 0
-calling snd_pcm_indirect_playback_transfer
-in dream_playback_copy: 0x4000 bytes DMA area 0xcdfb0000 sw_data 0x0
-dream_playback_ack
-dream_playback_ack
-dream_work_transfer: polling status byte returned 0
-calling snd_pcm_indirect_playback_transfer
-dream_playback_ack
-playback size is 0x1005
-dream_playback_ack
-playback size is 0x100a
-dream_playback_ack
-playback size is 0x100f
-dream_playback_ack
-playback size is 0x1015
-dream_playback_ack
-dream_playback_ack
-
-(eventually underruns and errors are reported)
-
-Here is the code:
-
-/* transfer the given size of data to the hardware */
-static void dream_playback_copy(snd_pcm_substream_t *substream,
-                                snd_pcm_indirect_t *rec, size_t bytes)
-{
-        struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        struct snd_card_dream_pcm *dpcm = runtime->private_data;
-        unsigned char *src = runtime->dma_area + rec->sw_data;
-
-        unsigned short * pcm_word = (unsigned short *) src;
-        int words = bytes / 2;
-
-        printk("in dream_playback_copy: 0x%x bytes DMA area 0x%p sw_data 0x%i\n", (int) bytes, runtime->dma_area, rec->sw_data);
-
-        if (dpcm->stopping)
-                words--;
-
-        while (words--) {
-                mpu_write16(dream, &dream->midi2, cpu_to_le16(*pcm_word++), 0); /* TBD: don't swap for 8 bits WAV */
-                dpcm->playback_chunk_left--;
-                if (! dpcm->playback_chunk_left) {
-                        dpcm->playback_chunk_left = 0x2000;
-                        dream_pcm_end_xfer(dpcm->dream, dpcm->channel);
-                }
-        }
-
-        if (dpcm->stopping) {
-                mdelay(100);
-                dream_pcm_close(dream, dpcm->channel);
-                dpcm->running = 0;
-        }
-}
-
-static void dream_work_transfer(void *data)
-{
-        struct snd_card_dream *dream = data;
-        int res;
-        snd_pcm_substream_t *substream = dream->playback_substream;
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        struct snd_card_dream_pcm *dpcm = runtime->private_data;
-
-        if (!substream || !runtime)
-                return;
-
-        if (! dpcm->running) {
-                printk("dream_playback_copy: not running!\n");
-                /* Send PCM_START */
-                dream_pcm_start(dream, dpcm->channel);
-                dpcm->running = 1;
-        }
-
-        res = dream_get_mpu_data_poll_status_byte(dream,
-                                                  &dream->midi2,
-                                                  MPU401_IT_MASK,
-                                                  MPU401_IT_VALUE, 100);
-
-        printk("dream_work_transfer: polling status byte returned %i\n", res);
-
-        if (res < 0)
-                return;
-
-        printk("calling snd_pcm_indirect_playback_transfer\n", res);
-        snd_pcm_indirect_playback_transfer(substream, &dream->playback_rec, dream_playback_copy);
-}
-
-/* ack callback - just schedule work */
-static int dream_playback_ack(snd_pcm_substream_t *substream)
-{
-        struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
-
-        printk("dream_playback_ack\n");
-        schedule_work(&dream->playback_work);
-
-        return 0;
-}
-
-/* cancel work */
-static void dream_playback_cancel(snd_pcm_substream_t *substream)
-{
-        struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
-
-        cancel_delayed_work(&dream->playback_work);
-}
-
-/* trigger callback */
-static int dream_playback_trigger(snd_pcm_substream_t *substream, int cmd)
-{
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        struct snd_card_dream_pcm *dpcm = runtime->private_data;
-
-        switch (cmd) {
-        case SNDRV_PCM_TRIGGER_START:
-                dream_playback_ack(substream); /* fill the data */
-                snd_card_dream_pcm_timer_start(substream);
-                break;
-        case SNDRV_PCM_TRIGGER_STOP:
-                dpcm->stopping = 1;
-                dream_playback_ack(substream); /* send final incomplete 1/2 bufffer and close */
-                snd_card_dream_pcm_timer_stop(substream);
-                //dream_playback_cancel(substream);
-                break;
-        default:
-                return -EINVAL;
-        }
-        return 0;
-}
-
-static snd_pcm_uframes_t dream_playback_pointer(snd_pcm_substream_t *substream)
-{
-        struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
-        snd_pcm_uframes_t pointer;
-
-        pointer = snd_pcm_indirect_playback_pointer(substream, &dream->playback_rec, dream->playback_hw_ptr);
-        //printk("dream_playback_pointer: 0x%x\n", (unsigned int) pointer);
-        return pointer;
-}
-
-#endif
-static int snd_card_dream_pcm_prepare(snd_pcm_substream_t * substream)
-{
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        struct snd_card_dream_pcm *dpcm = runtime->private_data;
-        struct snd_card_dream *dream = snd_pcm_substream_chip(substream);
-
-        dpcm->frames_per_period = runtime->rate / HZ;
-        dpcm->frac_per_period = runtime->rate % HZ;
-        dpcm->playback_chunk_left = 0x2000;
-
-        memset(&dream->playback_rec, 0, sizeof(snd_pcm_indirect_t));
-        dream->playback_rec.hw_buffer_size = 0x4000; /* byte size */
-        dream->playback_rec.sw_buffer_size = snd_pcm_lib_buffer_bytes(substream);
-        dream->playback_hw_ptr = 0;
-        dream->playback_hw_ptr_frac = 0;
-        return 0;
-}
+----- Original Message ----- 
+From: "Takashi Iwai" <tiwai@suse.de>
+To: "Tobin Davis" <tdavis@dsl-only.net>
+Cc: <mariook@wp.pl>; <alsa-devel@lists.sourceforge.net>
+Sent: Friday, October 20, 2006 3:33 PM
+Subject: Re: [Alsa-devel] [PATCH] Asus A6RP and ALC861 headphones problem 
+solved
 
 
-static void snd_card_dream_pcm_timer_function(unsigned long data)
-{
-        struct snd_card_dream_pcm *dpcm = (struct snd_card_dream_pcm *)data;
+> At Thu, 19 Oct 2006 16:39:10 -0700,
+> Tobin Davis wrote:
+>>
+>> What Takashi needs is a summary and description for the repository.
+>> Here's an example from one of my patches:
+>>
+>>         Summery: hda-codec - Add toshiba model to ALC861 codec
+>>
+>>          This patch adds support for Toshiba laptops. Code is from
+>>          RealTek's alsa-driver-1.0.12-4.05b tree.
+>>
+>>          Signed-off-by: Tobin Davis <tdavis@dsl-only.net>
+>
+> Yep, exactly.
+>
+>> Also, I made a minor revision to your patch, changing it from asus_a6rp
+>> to just asus.  I have been working on a similar patch for another Asus
+>> Laptop (F3J), and if this works for them, great (otherwise I'm back to
+>> square one).  Still, better to be more generic than model specific.
+>> Leave the model specific details for the config table array.  Attached
+>> are my changes.
+>
+> Don't forget to add an entry with modelname="asus", and change
+> ALSA-Configuration.txt appropriately, too.
+>
+>
+> Thanks,
+>
+> Takashi
 
-        dpcm->timer.expires = 1 + jiffies;
-        add_timer(&dpcm->timer);
+Ok, so here it is :)
 
-#ifdef RLR_PCM_REPLAY
-        if (!dpcm->substream) {
-                printk("substream null in timer func\n");
-                return;
-        }
-        struct snd_card_dream *dream = snd_pcm_substream_chip(dpcm->substream);
-        snd_pcm_runtime_t *runtime = dpcm->substream->runtime;
-        if (!runtime) {
-                printk("runtime null in timer func\n");
-                return;
-        }
-        unsigned int size;
-        dream->playback_hw_ptr += dpcm->frames_per_period;
-        dream->playback_hw_ptr_frac += dpcm->frac_per_period;
-        if (dream->playback_hw_ptr_frac >= HZ) {
-                dream->playback_hw_ptr++;
-                dream->playback_hw_ptr_frac -= HZ;
-        }
-        dream->playback_hw_ptr %= runtime->buffer_size;
+Summary: hda-codec - Add asus model to ALC861 codec
 
-        if (dream->playback_hw_ptr < dream->playback_last_hw_ptr)
-                size = runtime->buffer_size + dream->playback_hw_ptr - dream->playback_last_hw_ptr;
-        else
-                size = dream->playback_hw_ptr - dream->playback_last_hw_ptr;
-        dream->playback_last_hw_ptr = dream->playback_hw_ptr;
-        dream->playback_size += size;
-        if (dream->playback_size >= runtime->period_size) {
-                printk("playback size is 0x%x\n", dream->playback_size);
-                dream->playback_size %= runtime->period_size;
-                snd_pcm_period_elapsed(dpcm->substream);
-	}
-}
+          This patch adds support for Asus laptops (for example: Asus 
+A6Rp-AP002).
 
-static snd_pcm_ops_t dream_playback_ops = {
-        .open = snd_card_dream_playback_open,
-        .close = snd_card_dream_playback_close,
-        .ioctl = snd_pcm_lib_ioctl,
-        .hw_params = snd_card_dream_hw_params,
-        .hw_free = snd_card_dream_hw_free,
-        .prepare = snd_card_dream_playback_prepare,
-        .pointer = dream_playback_pointer,
-        .trigger = dream_playback_trigger,
-        .ack = dream_playback_ack,
-};
+          Signed-off-by: Mariusz Domanski <mariook@wp.pl>
 
+I modified patch_realtek.c from the newest hg tree and made asus.patch 
+basing on it (also included change made by Tobin - pci_subdevice for another 
+asus laptop).
+I also modified the newest ALSA-Configuration.txt and made patch.
+Patches are in the attachment.
 
+Thanks,
+Mariusz 
+
+------=_NextPart_000_0035_01C6F496.122B7EF0
+Content-Type: application/octet-stream;
+	name="asus.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="asus.patch"
+
+--- patch_realtek.c	2006-10-20 20:58:06.000000000 +0200=0A=
++++ alsa-kernel/pci/hda/patch_realtek.c	2006-10-20 21:17:27.000000000 =
++0200=0A=
+@@ -100,6 +100,7 @@=0A=
+ 	ALC861_6ST_DIG,=0A=
+ 	ALC861_UNIWILL_M31,=0A=
+ 	ALC861_TOSHIBA,=0A=
++	ALC861_ASUS,=0A=
+ 	ALC861_AUTO,=0A=
+ 	ALC861_MODEL_LAST,=0A=
+ };=0A=
+@@ -6650,6 +6651,44 @@=0A=
+ 	{ 4, alc861_uniwill_m31_ch4_init },=0A=
+ };=0A=
+ =0A=
++/* Set mic1 and line-in as input and unmute the mixer */=0A=
++static struct hda_verb alc861_asus_ch2_init[] =3D {=0A=
++	/* set pin widget 1Ah (line in) for input */=0A=
++	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },=0A=
++	/* set pin widget 18h (mic1/2) for input, for mic also enable the vref =
+*/=0A=
++	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },=0A=
++=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c },=0A=
++#if 0=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 << 8)) }, /*mic*/=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x02 << 8)) }, =
+/*line-in*/=0A=
++#endif=0A=
++	{ } /* end */=0A=
++};=0A=
++/* Set mic1 nad line-in as output and mute mixer */=0A=
++static struct hda_verb alc861_asus_ch6_init[] =3D {=0A=
++	/* set pin widget 1Ah (line in) for output (Back Surround)*/=0A=
++	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },=0A=
++	/* { 0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE }, */=0A=
++	/* set pin widget 18h (mic1) for output (CLFE)*/=0A=
++	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },=0A=
++	/* { 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE }, */=0A=
++	{ 0x0c, AC_VERB_SET_CONNECT_SEL, 0x00 },=0A=
++	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00 },=0A=
++=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080 },=0A=
++#if 0=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x01 << 8)) }, /*mic*/=0A=
++	{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x02 << 8)) }, /*line =
+in*/=0A=
++#endif=0A=
++	{ } /* end */=0A=
++};=0A=
++=0A=
++static struct hda_channel_mode alc861_asus_modes[2] =3D {=0A=
++	{ 2, alc861_asus_ch2_init },=0A=
++	{ 6, alc861_asus_ch6_init },=0A=
++};=0A=
++=0A=
+ /* patch-ALC861 */=0A=
+ =0A=
+ static struct snd_kcontrol_new alc861_base_mixer[] =3D {=0A=
+@@ -6790,6 +6829,49 @@=0A=
+ 	},=0A=
+ 	{ } /* end */=0A=
+ };			=0A=
++=0A=
++static struct snd_kcontrol_new alc861_asus_mixer[] =3D {=0A=
++        /* output mixer control */=0A=
++	HDA_CODEC_MUTE("Front Playback Switch", 0x03, 0x0, HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE("Surround Playback Switch", 0x06, 0x0, HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x05, 1, 0x0, =
+HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x05, 2, 0x0, HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE("Side Playback Switch", 0x04, 0x0, HDA_OUTPUT),=0A=
++=0A=
++	/* Input mixer control */=0A=
++	HDA_CODEC_VOLUME("Input Playback Volume", 0x15, 0x0, HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE("Input Playback Switch", 0x15, 0x0, HDA_OUTPUT),=0A=
++	HDA_CODEC_VOLUME("CD Playback Volume", 0x15, 0x0, HDA_INPUT),=0A=
++	HDA_CODEC_MUTE("CD Playback Switch", 0x15, 0x0, HDA_INPUT),=0A=
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x15, 0x02, HDA_INPUT),=0A=
++	HDA_CODEC_MUTE("Line Playback Switch", 0x15, 0x02, HDA_INPUT),=0A=
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x15, 0x01, HDA_INPUT),=0A=
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x15, 0x01, HDA_INPUT),=0A=
++	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x10, 0x01, HDA_OUTPUT),=0A=
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1a, 0x03, HDA_OUTPUT), =
+/* was HDA_INPUT (why?) */=0A=
++ =0A=
++	/* Capture mixer control */=0A=
++	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),=0A=
++	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),=0A=
++	{=0A=
++		.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,=0A=
++		.name =3D "Capture Source",=0A=
++		.count =3D 1,=0A=
++		.info =3D alc_mux_enum_info,=0A=
++		.get =3D alc_mux_enum_get,=0A=
++		.put =3D alc_mux_enum_put,=0A=
++	},=0A=
++	{=0A=
++		.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,=0A=
++		.name =3D "Channel Mode",=0A=
++		.info =3D alc_ch_mode_info,=0A=
++		.get =3D alc_ch_mode_get,=0A=
++		.put =3D alc_ch_mode_put,=0A=
++                .private_value =3D ARRAY_SIZE(alc861_asus_modes),=0A=
++	},=0A=
++	{ }=0A=
++};			=0A=
++=0A=
+ 	=0A=
+ /*=0A=
+  * generic initialization of ADC, input mixers and output mixers=0A=
+@@ -6979,6 +7061,68 @@=0A=
+ 	{ }=0A=
+ };=0A=
+ =0A=
++static struct hda_verb alc861_asus_init_verbs[] =3D {=0A=
++	/*=0A=
++	 * Unmute ADC0 and set the default input to mic-in=0A=
++	 */=0A=
++	/* port-A for surround (rear panel) | according to codec#0 this is the =
+HP jack*/=0A=
++	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0 }, /* was 0x00 */=0A=
++	/* route front PCM to HP */=0A=
++	{ 0x0e, AC_VERB_SET_CONNECT_SEL, 0x01 },=0A=
++	/* port-B for mic-in (rear panel) with vref */=0A=
++	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },=0A=
++	/* port-C for line-in (rear panel) */=0A=
++	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },=0A=
++	/* port-D for Front */=0A=
++	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },=0A=
++	{ 0x0b, AC_VERB_SET_CONNECT_SEL, 0x00 },=0A=
++	/* port-E for HP out (front panel) */=0A=
++	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 }, /* this has to be set =
+to VREF80 */=0A=
++	/* route front PCM to HP */=0A=
++	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x01 },=0A=
++	/* port-F for mic-in (front panel) with vref */=0A=
++	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },=0A=
++	/* port-G for CLFE (rear panel) */=0A=
++	{ 0x1f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },=0A=
++	/* port-H for side (rear panel) */=0A=
++	{ 0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40 },=0A=
++	/* CD-in */=0A=
++	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20 },=0A=
++	/* route front mic to ADC1*/=0A=
++	{0x08, AC_VERB_SET_CONNECT_SEL, 0x00},=0A=
++	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	/* Unmute DAC0~3 & spdif out*/=0A=
++	{0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},=0A=
++	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},=0A=
++	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},=0A=
++	{0x06, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},=0A=
++	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},=0A=
++	/* Unmute Mixer 14 (mic) 1c (Line in)*/=0A=
++	{0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++        {0x014, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++        {0x01c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	=0A=
++	/* Unmute Stereo Mixer 15 */=0A=
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},=0A=
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb00c          }, /* Output 0~12 =
+step */=0A=
++=0A=
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},=0A=
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},=0A=
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)}, /* hp used DAC 3 =
+(Front) */=0A=
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},=0A=
++	{ }=0A=
++};=0A=
++=0A=
++=0A=
+ /*=0A=
+  * generic initialization of ADC, input mixers and output mixers=0A=
+  */=0A=
+@@ -7350,10 +7494,13 @@=0A=
+ 	{ .pci_subvendor =3D 0x1584, .pci_subdevice =3D 0x9072,=0A=
+ 	  .config =3D ALC861_UNIWILL_M31 },=0A=
+ 	{ .modelname =3D "toshiba", .config =3D ALC861_TOSHIBA },=0A=
+-	{ .pci_subvendor =3D 0x1043, .pci_subdevice =3D 0x1338,=0A=
+-	  .config =3D ALC861_TOSHIBA },=0A=
+ 	{ .pci_subvendor =3D 0x1179, .pci_subdevice =3D 0xff10,=0A=
+ 	  .config =3D ALC861_TOSHIBA },=0A=
++	{ .modelname =3D "asus", .config =3D ALC861_ASUS},=0A=
++	{ .pci_subvendor =3D 0x1043, .pci_subdevice =3D 0x1393,=0A=
++	  .config =3D ALC861_ASUS },=0A=
++	{ .pci_subvendor =3D 0x1043, .pci_subdevice =3D 0x1338,=0A=
++	  .config =3D ALC861_ASUS },=0A=
+ 	{ .modelname =3D "auto", .config =3D ALC861_AUTO },=0A=
+ 	{}=0A=
+ };=0A=
+@@ -7434,6 +7581,20 @@=0A=
+ 		.unsol_event =3D alc861_toshiba_unsol_event,=0A=
+ 		.init_hook =3D alc861_toshiba_automute,=0A=
+ 	},=0A=
++	[ALC861_ASUS] =3D {=0A=
++		.mixers =3D { alc861_asus_mixer },=0A=
++		.init_verbs =3D { alc861_asus_init_verbs },=0A=
++		.num_dacs =3D ARRAY_SIZE(alc861_dac_nids),=0A=
++		.dac_nids =3D alc861_dac_nids,=0A=
++		.dig_out_nid =3D ALC861_DIGOUT_NID,=0A=
++		.num_channel_mode =3D ARRAY_SIZE(alc861_asus_modes),=0A=
++		.channel_mode =3D alc861_asus_modes,=0A=
++		.need_dac_fix =3D 1,=0A=
++		.hp_nid =3D 0x06,=0A=
++		.num_adc_nids =3D ARRAY_SIZE(alc861_adc_nids),=0A=
++		.adc_nids =3D alc861_adc_nids,=0A=
++		.input_mux =3D &alc861_capture_source,=0A=
++	},=0A=
+ };	=0A=
+ =0A=
+ =0A=
+
+------=_NextPart_000_0035_01C6F496.122B7EF0
+Content-Type: application/octet-stream;
+	name="ALSA-Configuration.txt.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="ALSA-Configuration.txt.patch"
+
+--- ALSA-Configuration.txt	2006-10-20 20:58:05.000000000 +0200=0A=
++++ alsa-kernel/Documentation/ALSA-Configuration.txt	2006-10-20 =
+21:21:54.000000000 +0200=0A=
+@@ -836,6 +836,7 @@=0A=
+ 	  3stack-660	3-jack (for ALC660)=0A=
+ 	  uniwill-m31	Uniwill M31 laptop=0A=
+ 	  toshiba	Toshiba laptop support=0A=
++	  asus		Asus laptop support=0A=
+ 	  auto		auto-config reading BIOS (default)=0A=
+ =0A=
+ 	CMI9880=0A=
+
+------=_NextPart_000_0035_01C6F496.122B7EF0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+------=_NextPart_000_0035_01C6F496.122B7EF0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------=_NextPart_000_0035_01C6F496.122B7EF0--
