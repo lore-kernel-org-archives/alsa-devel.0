@@ -1,22 +1,15 @@
-From: "Jaap Struyk" <japie@deserver.nl>
-Subject: Re: problems with via82xx alsa part
-Date: Sat, 21 Oct 2006 12:29:35 +0000 (UTC)
-Message-ID: <ehd3rf$6k4$1@sea.gmane.org>
-References: <ef3pll$kng$1@sea.gmane.org> <efos3e$g63$1@sea.gmane.org>
-	<s5hwt7ghsxd.wl%tiwai@suse.de>
-	<1160121885.1790.2.camel@japie.deserver.nl>
-	<s5hd595u1t3.wl%tiwai@suse.de>
-	<1160325289.2558.2.camel@japie.deserver.nl>
-	<s5hzmc5pb7c.wl%tiwai@suse.de>
-	<1160499844.2449.5.camel@japie.deserver.nl>
-	<s5hbqokm65g.wl%tiwai@suse.de> <eglrgk$vpi$1@sea.gmane.org>
-	<s5hfydtiic4.wl%tiwai@suse.de> <egt810$628$1@sea.gmane.org>
-	<s5hac3wbmpn.wl%tiwai@suse.de> <eh9s74$jcl$1@sea.gmane.org>
-	<s5hr6x32t4a.wl%tiwai@suse.de>
+From: "K.A." <deb.lists@gmail.com>
+Subject: Re: Snd-usb-audio and usb-phones.
+Date: Sat, 21 Oct 2006 17:28:46 +0300
+Message-ID: <20061021142845.GA32595@localhost>
+References: <20061020083657.GA8792@localhost>
+	<d9def9db0610200236h54ea2a29k5cf6c56132d4c593@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <d9def9db0610200236h54ea2a29k5cf6c56132d4c593@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,21 +19,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Markus Rechberger <mrechberger@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Op Fri, 20 Oct 2006 12:12:37 +0200, schreef Takashi Iwai:
-
-> ==>		int offset;			/* mmap offset */
-
-That does work, aplay doesn't bail out.
-But how is this related to adsp not being present?
--- 
-Japie
-
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+T24gRnJpLCBPY3QgMjAsIDIwMDYgYXQgMTE6MzY6MzlBTSArMDIwMCwgTWFya3VzIFJlY2hiZXJn
+ZXIgd3JvdGU6CkhpLAoKPiBjb3VsZCB5b3UgcGFzdGUgdGhlIG91dHB1dCBvZiB1c2J2aWV3IG9u
+Cj4gaHR0cDovL2Fsc2Eub3BlbnNyYy5vcmcvdXNicGhvbmUgKGNyZWF0ZSB0aGlzIHNpdGUpCgpZ
+ZXMsIEkgaGF2ZSBtYWRlIGl0LgoKPiBEbyB5b3UgaGF2ZSBhbnkgbGluayBmb3IgdGhhdCB1c2Jw
+aG9uZT8KCkkgdGhpbmssIHRoaXMgb25lOiBodHRwOi8vd3d3LmJ1aWxkd2luLmNvbS5jbi9Qcm9k
+dWN0LmFzcD9CaWdDbGFzc05hbWU9VVNCJUI1JUU3JUJCJUIwJUQ3JUE4JUQzJUMzJUQwJUJFJUM2
+JUFDCgo+IEkgd3JvdGUgYSBkcml2ZXIgZm9yIHRoZSBhdTYwMCB1c2IgcGhvbmUgZ2F0ZXdheSB3
+aGljaCBjb3VsZCBiZSBoYWNrZWQKPiB1cCB0byBnZXQgeW91ciBkZXZpY2Ugd29yayB0b28uCj4g
+aHR0cDovL2Fsc2Eub3BlbnNyYy5vcmcvYXU2MDAKIAo+IHRoZSBmb2xsb3dpbmcgbGluayBwcm92
+aWRlcyBzb21lIG1vcmUgaW5mb3JtYXRpb24gb24gd2hhdCBleHRyYQo+IGluZm9ybWF0aW9uIHlv
+dSBjb3VsZCBwcm92aWRlICh1c2Jzbm9vcCBsb2cpOgoJCQkJXl5eXl5eXl5eXl5eXgpIYXZlbid0
+IHlvdSBtaXNwcmludGVkPwotLSAK0Jou0JAuLAplbmZhbnQgdGVycmlibGUuCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQg
+d2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1p
+bnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIKRG93bmxvYWQgSUJN
+IFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vy
+b25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkm
+YmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
