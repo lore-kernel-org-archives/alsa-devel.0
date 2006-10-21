@@ -1,12 +1,11 @@
 From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: [Hda-intel] Toshiba U205 / HP nx6320 whitepaper
-Date: Sat, 21 Oct 2006 12:00:09 -0700
-Message-ID: <1161457209.26400.60.camel@razman>
-References: <6aca78dd0610210942j6eb530e7xb5bd635d8b0d920b@mail.gmail.com>
+Subject: Patch to fix build issues on Mandriva 2006
+	(2.6.12-12mdk)
+Date: Sat, 21 Oct 2006 12:47:48 -0700
+Message-ID: <1161460068.26400.68.camel@razman>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-m4B4OfF5JetldZgiztQr"
+Content-Type: multipart/mixed; boundary="=-ze/onxUXwAz9kVy1Fv/K"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <6aca78dd0610210942j6eb530e7xb5bd635d8b0d920b@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,130 +15,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Ali Shah <caffein@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-m4B4OfF5JetldZgiztQr
+--=-ze/onxUXwAz9kVy1Fv/K
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Here's a wild guess.  The HP patch code implies that the eapd bit
-function is reversed.  This patch should change that behavior to logical
-norm.  Test it with "model=toshiba" and let me know if there is any
-improvement.  If it works, I'll add your device id and submit an
-official patch.
+The patch to pcm_native.patch may need more fixing, but it works on my
+system now.  Not sure when latency.h was introduced to the kernel.
+These patches were needed for me to be able to test build my patches.
+The HG repository has been broken since before 1.0.13 release (I just
+never tested it until recently).
 
-Also, post the output from "lspci -s 0:1b -vn", as this will give us the
-proper sub-vendor and sub-device id's for the driver.
+Changelog entry follows:
 
-Tobin
+Summary:  Fix build issues
+        
+        This patch fixes build issues on older kernels.
 
-On Sat, 2006-10-21 at 12:42 -0400, Ali Shah wrote:
-> Hey guys, 
-> I am new to alsa development and I am in the midst of trying to debug
-> the sound on my Toshiba Satellite u205 (no sound of the speakers, very
-> very quiet sound of the headphone jack- it is an AD1981 chipset). My
-> initial assumption is that the internal amplifier is not kicking in to
-> boost the sound. So I have been reading the source code for the HP
-> nx6320 patch to understand ALSA better and I was wondering if anyone
-> would know if I could find the whitepaper for the chipset that the
-> nx6320 uses (so i can figure out why certain structures are coded the
-> way they are). 
-> So far I have tried to define new volume and mute definitions in the
-> snd_kcontrol_new ad1981_mixers[] ranging from 0x00 to 0x15 to "guess
-> and check" if i can some how raise the volume or unmute the amplifier
-> out. However there is something wrong with this approach that is not
-> working and I am not familiar with alsa enough to figure out why :). 
-> Attached is the results of #cat /proc/asound/card0/codec#0 for my
-> codec, if anyone has any hints as to how to proceed please let me
-> know!
-> Ali
-> -------------------------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________ Alsa-devel mailing list Alsa-devel@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Signed off by:
 -- 
 Tobin Davis <tdavis@dsl-only.net>
 
---=-m4B4OfF5JetldZgiztQr
-Content-Disposition: attachment; filename=toshiba-analog-test1.patch
-Content-Type: text/x-patch; name=toshiba-analog-test1.patch; charset=ISO-8859-1
+--=-ze/onxUXwAz9kVy1Fv/K
+Content-Disposition: attachment; filename=build-fix.patch
+Content-Type: text/x-patch; name=build-fix.patch; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
-diff -r d7fe584f7395 pci/hda/patch_analog.c
---- a/pci/hda/patch_analog.c	Thu Oct 19 20:35:56 2006 +0200
-+++ b/pci/hda/patch_analog.c	Sat Oct 21 11:29:12 2006 -0700
-@@ -1346,6 +1346,15 @@ static int ad1981_hp_init(struct hda_cod
- 	return 0;
- }
- 
-+/* configuration for Toshiba Laptops */
-+static struct hda_verb ad1981_toshiba_init_verbs[] = {
-+	{0x05, AC_VERB_SET_EAPD_BTLENABLE, 0x01 }, /* default on */
-+	/* pin sensing on HP and Mic jacks */
-+	{0x06, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | AD1981_HP_EVENT},
-+	{0x08, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | AD1981_MIC_EVENT},
-+	{}
-+};
-+
- /* configuration for Lenovo Thinkpad T60 */
- static struct snd_kcontrol_new ad1981_thinkpad_mixers[] = {
- 	HDA_CODEC_VOLUME("Master Playback Volume", 0x05, 0x0, HDA_OUTPUT),
-@@ -1386,12 +1395,17 @@ static struct hda_input_mux ad1981_think
- 	},
- };
- 
--/* models */
--enum { AD1981_BASIC, AD1981_HP, AD1981_THINKPAD };
-+/* AD1981 models */
-+enum {  AD1981_BASIC,
-+	AD1981_HP,
-+	AD1981_THINKPAD,
-+	AD1981_TOSHIBA };
- 
- static struct hda_board_config ad1981_cfg_tbl[] = {
-+	/* Basic AD1981 Configuration */
-+	{ .modelname = "basic", .config = AD1981_BASIC },
-+	/* All HP models */
- 	{ .modelname = "hp", .config = AD1981_HP },
--	/* All HP models */
- 	{ .pci_subvendor = 0x103c, .config = AD1981_HP },
- 	{ .pci_subvendor = 0x30b0, .pci_subdevice = 0x103c,
- 	  .config = AD1981_HP }, /* HP nx6320 (reversed SSID, H/W bug) */
-@@ -1400,7 +1414,8 @@ static struct hda_board_config ad1981_cf
- 	{ .pci_subvendor = 0x17aa, .config = AD1981_THINKPAD },
- 	{ .pci_subvendor = 0x1014, .pci_subdevice = 0x0597,
- 	  .config = AD1981_THINKPAD }, /* Z60m/t */
--	{ .modelname = "basic", .config = AD1981_BASIC },
-+	/* Toshiba Laptops */
-+	{ .modelname="toshiba", .config = AD1981_TOSHIBA },
- 	{}
- };
- 
-@@ -1449,8 +1464,16 @@ static int patch_ad1981(struct hda_codec
- 		spec->mixers[0] = ad1981_thinkpad_mixers;
- 		spec->input_mux = &ad1981_thinkpad_capture_source;
- 		break;
-+	case AD1981_TOSHIBA:
-+		spec->mixers[0] = ad1981_hp_mixers;
-+		spec->num_init_verbs = 2;
-+		spec->init_verbs[1] = ad1981_toshiba_init_verbs;
-+		spec->multiout.dig_out_nid = 0;
-+		spec->input_mux = &ad1981_hp_capture_source;
-+		codec->patch_ops.init = ad1981_hp_init;
-+		codec->patch_ops.unsol_event = ad1981_hp_unsol_event;
-+		break;
- 	}
--
- 	return 0;
- }
- 
+--- a/acore/pcm_native.patch	Mon Oct 16 21:36:50 2006 +0200
++++ b/acore/pcm_native.patch	Sat Oct 21 12:36:41 2006 -0700
+@@ -1,11 +1,23 @@
+---- ../alsa-kernel/core/pcm_native.c	2006-10-04 11:55:09.000000000 +0200
+-+++ pcm_native.c	2006-10-04 17:01:36.000000000 +0200
++--- ../alsa-kernel/core/pcm_native.c	2006-10-08 09:54:15.000000000 -0700
+++++ pcm_native.c	2006-10-21 12:26:28.000000000 -0700
+ @@ -1,3 +1,4 @@
+ +#define __NO_VERSION__
+  /*
+   *  Digital Audio (PCM) abstract layer
+   *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
+-@@ -363,7 +364,10 @@ static int period_to_usecs(struct snd_pc
++@@ -25,7 +26,11 @@
++ #include <linux/file.h>
++ #include <linux/slab.h>
++ #include <linux/time.h>
+++#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 18)
++ #include <linux/latency.h>
+++#else
+++#include <latency_compat.h>
+++#endif
++ #include <linux/uio.h>
++ #include <sound/core.h>
++ #include <sound/control.h>
++@@ -363,7 +368,10 @@
+  	return usecs;
+  }
+  
+--- a/acore/sound.patch	Mon Oct 16 21:36:50 2006 +0200
++++ b/acore/sound.patch	Sat Oct 21 12:36:41 2006 -0700
+@@ -1,16 +1,17 @@
+---- ../alsa-kernel/core/sound.c	2006-09-29 15:42:47.000000000 +0200
+-+++ sound.c	2006-09-29 15:43:57.000000000 +0200
+-@@ -41,6 +41,9 @@
++--- ../alsa-kernel/core/sound.c	2006-10-08 09:54:15.000000000 -0700
+++++ sound.c	2006-10-21 12:30:30.000000000 -0700
++@@ -41,6 +41,10 @@
+  EXPORT_SYMBOL(snd_major);
+  
+  static int cards_limit = 1;
+ +#ifdef CONFIG_DEVFS_FS
+ +static int device_mode = S_IFCHR | S_IRUGO | S_IWUGO;
+++static struct snd_minor *mptr;
+ +#endif
+  
+  MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>");
+  MODULE_DESCRIPTION("Advanced Linux Sound Architecture driver for soundcards.");
+-@@ -49,6 +52,10 @@
++@@ -49,6 +53,10 @@
+  MODULE_PARM_DESC(major, "Major # for sound driver.");
+  module_param(cards_limit, int, 0444);
+  MODULE_PARM_DESC(cards_limit, "Count of auto-loadable soundcards.");
 
---=-m4B4OfF5JetldZgiztQr
+--=-ze/onxUXwAz9kVy1Fv/K
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -150,7 +109,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-m4B4OfF5JetldZgiztQr
+--=-ze/onxUXwAz9kVy1Fv/K
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -161,4 +120,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-m4B4OfF5JetldZgiztQr--
+--=-ze/onxUXwAz9kVy1Fv/K--
