@@ -1,11 +1,12 @@
-From: "Ali Shah" <caffein@gmail.com>
-Subject: [Hda-intel] Toshiba U205 / HP nx6320 whitepaper
-Date: Sat, 21 Oct 2006 12:42:03 -0400
-Message-ID: <6aca78dd0610210942j6eb530e7xb5bd635d8b0d920b@mail.gmail.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: [Hda-intel] Toshiba U205 / HP nx6320 whitepaper
+Date: Sat, 21 Oct 2006 12:00:09 -0700
+Message-ID: <1161457209.26400.60.camel@razman>
+References: <6aca78dd0610210942j6eb530e7xb5bd635d8b0d920b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_235185_11718448.1161448923033"
+Content-Type: multipart/mixed; boundary="=-m4B4OfF5JetldZgiztQr"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <6aca78dd0610210942j6eb530e7xb5bd635d8b0d920b@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,160 +16,130 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Ali Shah <caffein@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_235185_11718448.1161448923033
-Content-Type: multipart/alternative;
-	boundary="----=_Part_235186_21006299.1161448923033"
 
-------=_Part_235186_21006299.1161448923033
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--=-m4B4OfF5JetldZgiztQr
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Hey guys,
-I am new to alsa development and I am in the midst of trying to debug the
-sound on my Toshiba Satellite u205 (no sound of the speakers, very very
-quiet sound of the headphone jack- it is an AD1981 chipset). My initial
-assumption is that the internal amplifier is not kicking in to boost the
-sound. So I have been reading the source code for the HP nx6320 patch to
-understand ALSA better and I was wondering if anyone would know if I could
-find the whitepaper for the chipset that the nx6320 uses (so i can figure
-out why certain structures are coded the way they are).
-So far I have tried to define new volume and mute definitions in the
-snd_kcontrol_new ad1981_mixers[] ranging from 0x00 to 0x15 to "guess and
-check" if i can some how raise the volume or unmute the amplifier out.
-However there is something wrong with this approach that is not working and
-I am not familiar with alsa enough to figure out why :).
-Attached is the results of #cat /proc/asound/card0/codec#0 for my codec, if
-anyone has any hints as to how to proceed please let me know!
-Ali
+Here's a wild guess.  The HP patch code implies that the eapd bit
+function is reversed.  This patch should change that behavior to logical
+norm.  Test it with "model=toshiba" and let me know if there is any
+improvement.  If it works, I'll add your device id and submit an
+official patch.
 
-------=_Part_235186_21006299.1161448923033
-Content-Type: text/html; charset=ISO-8859-1
+Also, post the output from "lspci -s 0:1b -vn", as this will give us the
+proper sub-vendor and sub-device id's for the driver.
+
+Tobin
+
+On Sat, 2006-10-21 at 12:42 -0400, Ali Shah wrote:
+> Hey guys, 
+> I am new to alsa development and I am in the midst of trying to debug
+> the sound on my Toshiba Satellite u205 (no sound of the speakers, very
+> very quiet sound of the headphone jack- it is an AD1981 chipset). My
+> initial assumption is that the internal amplifier is not kicking in to
+> boost the sound. So I have been reading the source code for the HP
+> nx6320 patch to understand ALSA better and I was wondering if anyone
+> would know if I could find the whitepaper for the chipset that the
+> nx6320 uses (so i can figure out why certain structures are coded the
+> way they are). 
+> So far I have tried to define new volume and mute definitions in the
+> snd_kcontrol_new ad1981_mixers[] ranging from 0x00 to 0x15 to "guess
+> and check" if i can some how raise the volume or unmute the amplifier
+> out. However there is something wrong with this approach that is not
+> working and I am not familiar with alsa enough to figure out why :). 
+> Attached is the results of #cat /proc/asound/card0/codec#0 for my
+> codec, if anyone has any hints as to how to proceed please let me
+> know!
+> Ali
+> -------------------------------------------------------------------------
+> Using Tomcat but need to do more? Need to support web services, security?
+> Get stuff done quickly with pre-integrated technology to make your job easier
+> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+> _______________________________________________ Alsa-devel mailing list Alsa-devel@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-m4B4OfF5JetldZgiztQr
+Content-Disposition: attachment; filename=toshiba-analog-test1.patch
+Content-Type: text/x-patch; name=toshiba-analog-test1.patch; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Hey guys, <br>I am new to alsa development and I am in the midst of trying to debug the sound on my Toshiba Satellite u205 (no sound of the speakers, very very quiet sound of the headphone jack- it is an AD1981 chipset). My initial assumption is that the internal amplifier is not kicking in to boost the sound. So I have been reading the source code for the HP nx6320 patch to understand ALSA better and I was wondering if anyone would know if I could find the whitepaper for the chipset that the nx6320 uses (so i can figure out why certain structures are coded the way they are). 
-<br>So far I have tried to define new volume and mute definitions in the snd_kcontrol_new ad1981_mixers[] ranging from 0x00 to 0x15 to &quot;guess and check&quot; if i can some how raise the volume or unmute the amplifier out. However there is something wrong with this approach that is not working and I am not familiar with alsa enough to figure out why :). 
-<br>Attached is the results of #cat /proc/asound/card0/codec#0 for my codec, if anyone has any hints as to how to proceed please let me know!<br>Ali<br>
+diff -r d7fe584f7395 pci/hda/patch_analog.c
+--- a/pci/hda/patch_analog.c	Thu Oct 19 20:35:56 2006 +0200
++++ b/pci/hda/patch_analog.c	Sat Oct 21 11:29:12 2006 -0700
+@@ -1346,6 +1346,15 @@ static int ad1981_hp_init(struct hda_cod
+ 	return 0;
+ }
+ 
++/* configuration for Toshiba Laptops */
++static struct hda_verb ad1981_toshiba_init_verbs[] = {
++	{0x05, AC_VERB_SET_EAPD_BTLENABLE, 0x01 }, /* default on */
++	/* pin sensing on HP and Mic jacks */
++	{0x06, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | AD1981_HP_EVENT},
++	{0x08, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | AD1981_MIC_EVENT},
++	{}
++};
++
+ /* configuration for Lenovo Thinkpad T60 */
+ static struct snd_kcontrol_new ad1981_thinkpad_mixers[] = {
+ 	HDA_CODEC_VOLUME("Master Playback Volume", 0x05, 0x0, HDA_OUTPUT),
+@@ -1386,12 +1395,17 @@ static struct hda_input_mux ad1981_think
+ 	},
+ };
+ 
+-/* models */
+-enum { AD1981_BASIC, AD1981_HP, AD1981_THINKPAD };
++/* AD1981 models */
++enum {  AD1981_BASIC,
++	AD1981_HP,
++	AD1981_THINKPAD,
++	AD1981_TOSHIBA };
+ 
+ static struct hda_board_config ad1981_cfg_tbl[] = {
++	/* Basic AD1981 Configuration */
++	{ .modelname = "basic", .config = AD1981_BASIC },
++	/* All HP models */
+ 	{ .modelname = "hp", .config = AD1981_HP },
+-	/* All HP models */
+ 	{ .pci_subvendor = 0x103c, .config = AD1981_HP },
+ 	{ .pci_subvendor = 0x30b0, .pci_subdevice = 0x103c,
+ 	  .config = AD1981_HP }, /* HP nx6320 (reversed SSID, H/W bug) */
+@@ -1400,7 +1414,8 @@ static struct hda_board_config ad1981_cf
+ 	{ .pci_subvendor = 0x17aa, .config = AD1981_THINKPAD },
+ 	{ .pci_subvendor = 0x1014, .pci_subdevice = 0x0597,
+ 	  .config = AD1981_THINKPAD }, /* Z60m/t */
+-	{ .modelname = "basic", .config = AD1981_BASIC },
++	/* Toshiba Laptops */
++	{ .modelname="toshiba", .config = AD1981_TOSHIBA },
+ 	{}
+ };
+ 
+@@ -1449,8 +1464,16 @@ static int patch_ad1981(struct hda_codec
+ 		spec->mixers[0] = ad1981_thinkpad_mixers;
+ 		spec->input_mux = &ad1981_thinkpad_capture_source;
+ 		break;
++	case AD1981_TOSHIBA:
++		spec->mixers[0] = ad1981_hp_mixers;
++		spec->num_init_verbs = 2;
++		spec->init_verbs[1] = ad1981_toshiba_init_verbs;
++		spec->multiout.dig_out_nid = 0;
++		spec->input_mux = &ad1981_hp_capture_source;
++		codec->patch_ops.init = ad1981_hp_init;
++		codec->patch_ops.unsol_event = ad1981_hp_unsol_event;
++		break;
+ 	}
+-
+ 	return 0;
+ }
+ 
 
-------=_Part_235186_21006299.1161448923033--
-
-------=_Part_235185_11718448.1161448923033
-Content-Type: text/plain; name="codec#0.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="codec#0.txt"
-X-Attachment-Id: f_etk8od19
-
-Q29kZWM6IEFuYWxvZyBEZXZpY2VzIEFEMTk4MQpBZGRyZXNzOiAwClZlbmRvciBJZDogMHgxMWQ0
-MTk4MQpTdWJzeXN0ZW0gSWQ6IDB4MTE3OTAzMTEKUmV2aXNpb24gSWQ6IDB4MTAwMjAwCkRlZmF1
-bHQgUENNOiByYXRlcyAweDA3ZiwgYml0cyAweDBlLCB0eXBlcyAweDEKRGVmYXVsdCBBbXAtSW4g
-Y2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKRGVmYXVs
-dCBBbXAtT3V0IGNhcHM6IG9mcz0weDNkLCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwNSwgbXV0
-ZT0xCk5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDMwMzExOiBTdGVyZW8gRGlnaXRh
-bAogIFBDTTogcmF0ZXMgMHgwNjAsIGJpdHMgMHgwMiwgdHlwZXMgMHg1CiAgQ29ubmVjdGlvbjog
-MgogICAgIDB4MDEqIDB4MDQKTm9kZSAweDAzIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDQxOiBT
-dGVyZW8KICBQb3dlcjogMHgwCk5vZGUgMHgwNCBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAwNTEx
-OiBTdGVyZW8KICBQQ006IHJhdGVzIDB4MDdmLCBiaXRzIDB4MDYsIHR5cGVzIDB4MQogIFBvd2Vy
-OiAweDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxNQpOb2RlIDB4MDUgW1BpbiBDb21wbGV4XSB3
-Y2FwcyAweDQwMDE4NzogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAgQW1wLUluIGNhcHM6IG9mcz0w
-eDAwLCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBb
-MHgwMCAweDAwXSBbMHgwMCAweDAwXQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4M2QsIG5zdGVwcz0w
-eDNmLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgzZiAweDNmXQog
-IFBpbmNhcCAweDA4MTE3M2Y6IElOIE9VVCBIUCBFQVBEIERldGVjdAogIFBpbiBEZWZhdWx0IDB4
-OTAxNzAxMTA6IFtGaXhlZF0gU3BlYWtlciBhdCBJbnQgTi9BCiAgICBDb25uID0gQW5hbG9nLCBD
-b2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHg0MDogT1VUCiAgQ29ubmVjdGlvbjogMgogICAg
-IDB4MDMgMHgwZSoKTm9kZSAweDA2IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODU6IFN0ZXJl
-byBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgzZCwgbnN0ZXBzPTB4M2YsIHN0ZXBzaXpl
-PTB4MDUsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDNmIDB4M2ZdCiAgUGluY2FwIDB4MDgx
-ZjogT1VUIEhQIERldGVjdAogIFBpbiBEZWZhdWx0IDB4MDIyMTEwMWY6IFtKYWNrXSBIUCBPdXQg
-YXQgRXh0IEZyb250CiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgUGluLWN0bHM6IDB4
-YzA6IE9VVCBIUAogIENvbm5lY3Rpb246IDIKICAgICAweDAzIDB4MGUqCk5vZGUgMHgwNyBbUGlu
-IENvbXBsZXhdIHdjYXBzIDB4NDAwMTA0OiBNb25vIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9m
-cz0weDNkLCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1wLU91dCB2YWxz
-OiAgWzB4YmZdCiAgUGluY2FwIDB4MDgxMDogT1VUCiAgUGluIERlZmF1bHQgMHg0MGYwMDBmZTog
-W04vQV0gT3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93
-bgogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwZgpOb2RlIDB4
-MDggW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDA4MzogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBj
-YXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1J
-biB2YWxzOiAKICBQaW5jYXAgMHgwODE3Mjc6IElOIERldGVjdAogIFBpbiBEZWZhdWx0IDB4MDJh
-MTEwMjA6IFtKYWNrXSBNaWMgYXQgRXh0IEZyb250CiAgICBDb25uID0gMS84LCBDb2xvciA9IEJs
-YWNrCiAgUGluLWN0bHM6IDB4MjQ6IElOCk5vZGUgMHgwOSBbUGluIENvbXBsZXhdIHdjYXBzIDB4
-NDAwMTg3OiBTdGVyZW8gQW1wLUluIEFtcC1PdXQKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5z
-dGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4
-MDBdIFsweDAwIDB4MDBdCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgzZCwgbnN0ZXBzPTB4M2YsIHN0
-ZXBzaXplPTB4MDUsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDNmIDB4M2ZdCiAgUGluY2Fw
-IDB4MDgxNzM3OiBJTiBPVVQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MGYwMDBmZDogW04vQV0g
-T3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBp
-bi1jdGxzOiAweDIwOiBJTgogIENvbm5lY3Rpb246IDIKICAgICAweDAzKiAweDBlCk5vZGUgMHgw
-YSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzAxOiBTdGVyZW8gRGlnaXRhbAogIFBpbmNhcCAw
-eDA4MTA6IE9VVAogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZmM6IFtOL0FdIE90aGVyIGF0IEV4dCBO
-L0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHg0MDog
-T1VUCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDIKTm9kZSAweDBiIFtBdWRpbyBTZWxlY3Rvcl0g
-d2NhcHMgMHgzMDAxMDE6IFN0ZXJlbwogIENvbm5lY3Rpb246IDYKICAgICAweDAzIDB4MGMgMHgw
-OSAweDBlKiAweDA1IDB4MTgKTm9kZSAweDBjIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMDE6
-IFN0ZXJlbwogIENvbm5lY3Rpb246IDIKICAgICAweDFlIDB4MWYKTm9kZSAweDBkIFtBdWRpbyBT
-ZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGM6IE1vbm8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2Zz
-PTB4MGYsIG5zdGVwcz0weDBmLCBzdGVwc2l6ZT0weDBiLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6
-ICBbMHgwZl0KICBDb25uZWN0aW9uOiAyCiAgICAgMHgxMCogMHgxNgpOb2RlIDB4MGUgW0F1ZGlv
-IE1peGVyXSB3Y2FwcyAweDIwMDEwMTogU3RlcmVvCiAgQ29ubmVjdGlvbjogOAogICAgIDB4MGQg
-MHgxMSAweDEyIDB4MTMgMHgxYSAweDFiIDB4MWMgMHgxZApOb2RlIDB4MGYgW0F1ZGlvIE1peGVy
-XSB3Y2FwcyAweDIwMDEwMDogTW9ubwogIENvbm5lY3Rpb246IDEKICAgICAweDBiCk5vZGUgMHgx
-MCBbQmVlcCBHZW5lcmF0b3IgV2lkZ2V0XSB3Y2FwcyAweDcwMDAwMDogTW9ubwpOb2RlIDB4MTEg
-W0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwZDogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0
-IGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1w
-LU91dCB2YWxzOiAgWzB4MWYgMHgxZl0KICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMwpOb2RlIDB4
-MTIgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwZDogU3RlcmVvIEFtcC1PdXQKICBBbXAt
-T3V0IGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAg
-QW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAxCiAgICAgMHgwOApOb2Rl
-IDB4MTMgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwZDogU3RlcmVvIEFtcC1PdXQKICBB
-bXAtT3V0IGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0x
-CiAgQW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAxCiAgICAgMHgwOQpO
-b2RlIDB4MTQgW1Bvd2VyIFdpZGdldF0gd2NhcHMgMHg1MDA1MDA6IE1vbm8KICBQb3dlcjogMHgw
-CiAgQ29ubmVjdGlvbjogMTMKICAgICAweDBkKiAweDBlIDB4MGYgMHgxMCAweDEzIDB4MTQgMHgx
-NSAweDE2IDB4MTcgMHgxOCAweDE5IDB4MWEgMHgxZApOb2RlIDB4MTUgW0F1ZGlvIFNlbGVjdG9y
-XSB3Y2FwcyAweDMwMDEwZDogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAw
-LCBuc3RlcHM9MHgwZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4
-MGYgMHgwZl0KICBDb25uZWN0aW9uOiA4CiAgICAgMHgwYyAweDA5IDB4MGUqIDB4MGYgMHgxOSAw
-eDA1IDB4MTggMHgxNwpOb2RlIDB4MTYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAwMDogTW9u
-bwogIFBpbmNhcCAweDA4MjA6IElOCiAgUGluIERlZmF1bHQgMHg5MGY3MDE1MDogW0ZpeGVkXSBP
-dGhlciBhdCBJbnQgTi9BCiAgICBDb25uID0gQW5hbG9nLCBDb2xvciA9IFVua25vd24KICBQaW4t
-Y3RsczogMHgyMDogSU4KTm9kZSAweDE3IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAwODE6IFN0
-ZXJlbwogIFBpbmNhcCAweDA4Mjc6IElOIERldGVjdAogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZmI6
-IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25v
-d24KICBQaW4tY3RsczogMHgyMDogSU4KTm9kZSAweDE4IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
-MDAxODc6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0
-ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4MDMgMHgw
-M10gWzB4MDMgMHgwM10KICBBbXAtT3V0IGNhcHM6IG9mcz0weDNkLCBuc3RlcHM9MHgzZiwgc3Rl
-cHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4M2YgMHgzZl0KICBQaW5jYXAg
-MHgwODE3Mzc6IElOIE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDkyYTcwMTJlOiBbRml4ZWRd
-IE1pYyBhdCBJbnQgRnJvbnQKICAgIENvbm4gPSBBbmFsb2csIENvbG9yID0gVW5rbm93bgogIFBp
-bi1jdGxzOiAweDI0OiBJTgogIENvbm5lY3Rpb246IDIKICAgICAweDAzKiAweDBlCk5vZGUgMHgx
-OSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwODIwOiBJ
-TgogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZmE6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENv
-bm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHgyMDogSU4KTm9kZSAw
-eDFhIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1w
-LU91dCBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQog
-IEFtcC1PdXQgdmFsczogIFsweDFmIDB4MWZdCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDUKTm9k
-ZSAweDFiIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0CiAg
-QW1wLU91dCBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUsIG11dGU9
-MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTcK
-Tm9kZSAweDFjIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0
-CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUsIG11
-dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMQogICAgIDB4
-MTgKTm9kZSAweDFkIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAt
-T3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUs
-IG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMQogICAg
-IDB4MTkKTm9kZSAweDFlIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBB
-bXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4
-MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogMQog
-ICAgIDB4MDgKTm9kZSAweDFmIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJl
-byBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXpl
-PTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjog
-MQogICAgIDB4MTgK
-------=_Part_235185_11718448.1161448923033
+--=-m4B4OfF5JetldZgiztQr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -179,7 +150,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------=_Part_235185_11718448.1161448923033
+--=-m4B4OfF5JetldZgiztQr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -190,4 +161,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------=_Part_235185_11718448.1161448923033--
+--=-m4B4OfF5JetldZgiztQr--
