@@ -1,15 +1,11 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Patch to fix build issues on Mandriva
-	2006	(2.6.12-12mdk)
-Date: Sat, 21 Oct 2006 14:13:49 -0700
-Message-ID: <1161465229.26400.72.camel@razman>
-References: <1161460068.26400.68.camel@razman>
-	<1161463377.20231.0.camel@mindpipe>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Multi-seated machine.
+Date: Sun, 22 Oct 2006 00:09:59 +0100
+Message-ID: <453AA8C7.4050408@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1161463377.20231.0.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,34 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I suppose it could, but what's the point?  If devfs has been removed in
-newer kernels, then it won't be defined, right?  Adding a kernel wrapper
-would be inefficient, plus it would be harder to contain vendor kernels
-that still implement devfs for compatibility.
+Hi,
 
-Tobin
+As linux can now be used in a mode whereby one has one base box, and 
+then multiple keyboard/mouse/screen, how might one separate the sound?
+I.e. Sound card 0 for screen 0, sound card 1 for screen 1 etc.
+Or one might want "Front" for screen 0, "Rear" for screen 1 etc.
 
-On Sat, 2006-10-21 at 16:42 -0400, Lee Revell wrote:
-> On Sat, 2006-10-21 at 12:47 -0700, Tobin Davis wrote:
-> >   
-> >   static int cards_limit = 1;
-> >  +#ifdef CONFIG_DEVFS_FS
-> >  +static int device_mode = S_IFCHR | S_IRUGO | S_IWUGO;
-> > ++static struct snd_minor *mptr;
-> >  +#endif
-> >    
-> 
-> Shouldn't this be wrapped in a version check or something?  Devfs has
-> been removed from recent kernels.
-> 
-> Lee
-> 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+How would we achieve this in ALSA?
+I expect we would need a different asoundrc for each screen, but I don't 
+know how well this might work or not.
+
+James
 
 
 -------------------------------------------------------------------------
