@@ -1,7 +1,7 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: PCM format 20 bit
-Date: Mon, 23 Oct 2006 08:43:18 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0610230840260.9521@tm8103.perex-int.cz>
+Date: Mon, 23 Oct 2006 09:24:44 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0610230909050.29404@denise.shiny.it>
 References: <B9FFC3F97441D04093A504CEA31B7C41EC837A@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,8 +18,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Assaf Hoffman <hoffman@marvell.com>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net, Rita Shtern <rita@marvell.com>
 List-Id: alsa-devel@alsa-project.org
+
+
 
 On Mon, 23 Oct 2006, Assaf Hoffman wrote:
 
@@ -28,55 +30,21 @@ On Mon, 23 Oct 2006, Assaf Hoffman wrote:
 > have such format, and by trying to extract the buffer (capture example)
 > the stack will assume 32-bit sample width, getting trash on the lower 12
 > bits.
+> Please explain.
 
-Could you describe exactly the location for 20-bit samples (use a 
-byte table) in the DMA buffer, as your hw expects it? It's not obvious 
-from your question.
+If the format is a 32 bits value, it is not important what the actual 
+resolution is from the software POV. It's a value that ranges from -2G 
+to +2G regardless the fact the x lowest bits are always 0. This is in case 
+the data is left-aligned.
+Instead, if the data is right-aligned, ALSA must have specific support for 
+it because the values range from -512K to +512K (I assume it's signed), so 
+either it has to communicate the actual format to apps, or it must be able 
+to convert the data to other formats.
+What is exactly the data format ?
 
-						Jaroslav
 
-> -----Original Message-----
-> From: Giuliano Pochini [mailto:pochini@shiny.it] 
-> Sent: Sunday, October 22, 2006 8:56 PM
-> To: Assaf Hoffman
-> Cc: alsa-devel@lists.sourceforge.net; Rita Shtern
-> Subject: Re: [Alsa-devel] PCM format 20 bit
-> Importance: Low
-> 
-> On Sun, 22 Oct 2006 18:11:55 +0200
-> "Assaf Hoffman" <hoffman@marvell.com> wrote:
-> 
-> > My HW supports 20-bit sample using 32-bit phy frame. As I understand,
-> > the only way the ALSA supports the 20-bit sample is 24-bit frame
-> > (SNDRV_PCM_FORMAT_x20_3xE).
-> >
-> > Please advice.
-> 
-> If it's 20 bits left-aligned in 32 bits, you can use S32_LE or similar
-> formats. For example the old echoaudio cards based on the DSP 56301 use
-> S32_LE but only the upper 20 bits contain data.
-> 
-> 
-> --
-> Giuliano.
-> 
-> -------------------------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
