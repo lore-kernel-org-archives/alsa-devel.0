@@ -1,14 +1,13 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+From: David Friggens <david.friggens@mcs.vuw.ac.nz>
 Subject: Re: Unsupported Realtek ALC260 (snd-hda-intel)
-Date: Tue, 24 Oct 2006 14:40:01 +0930 (CST)
-Message-ID: <200610240510.k9O5A1X2007019@turbo.physics.adelaide.edu.au>
-References: <453D9685.6060606@mcs.vuw.ac.nz>
+Date: Tue, 24 Oct 2006 19:05:20 +1300
+Message-ID: <453DAD20.7030907@mcs.vuw.ac.nz>
+References: <200610240510.k9O5A1X2007019@turbo.physics.adelaide.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <453D9685.6060606@mcs.vuw.ac.nz> from "David Friggens" at Oct 24,
-	2006 05:28:53 PM
+In-Reply-To: <200610240510.k9O5A1X2007019@turbo.physics.adelaide.edu.au>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,50 +17,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: David Friggens <david.friggens@mcs.vuw.ac.nz>
-Cc: alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi David
+Hi Jonathan
 
-> >  * the output of the lspci -nvv command
-> attached
+> Could you also sent the output of lspci
 
-Thanks.  Could you also sent the output of
-  lspci
-please?  It'll save me cross-referencing PCI IDs.
+00:00.0 Host bridge: ATI Technologies Inc Unknown device 5a31 (rev 01)
+00:01.0 PCI bridge: ATI Technologies Inc RS480 PCI Bridge
+00:04.0 PCI bridge: ATI Technologies Inc RS480 PCI Bridge
+00:05.0 PCI bridge: ATI Technologies Inc Unknown device 5a37
+00:12.0 IDE interface: ATI Technologies Inc ATI 4379 Serial ATA
+Controller (rev 80)
+00:13.0 USB Controller: ATI Technologies Inc IXP SB400 USB Host
+Controller (rev 80)
+00:13.1 USB Controller: ATI Technologies Inc IXP SB400 USB Host
+Controller (rev 80)
+00:13.2 USB Controller: ATI Technologies Inc IXP SB400 USB2 Host
+Controller (rev 80)
+00:14.0 SMBus: ATI Technologies Inc IXP SB400 SMBus Controller (rev 83)
+00:14.1 IDE interface: ATI Technologies Inc Standard Dual Channel PCI
+IDE Controller ATI (rev 80)
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
+00:14.3 ISA bridge: ATI Technologies Inc IXP SB400 PCI-ISA Bridge (rev 80)
+00:14.4 PCI bridge: ATI Technologies Inc IXP SB400 PCI-PCI Bridge (rev 80)
+01:05.0 VGA compatible controller: ATI Technologies Inc RC410 [Radeon
+Xpress 200M]
+02:00.0 Network controller: Broadcom Corporation BCM4310 UART (rev 01)
+08:07.0 FireWire (IEEE 1394): Ricoh Co Ltd Unknown device 0832
+08:07.1 Class 0805: Ricoh Co Ltd R5C822 SD/SDIO/MMC/MS/MSPro Host
+Adapter (rev 19)
+08:07.2 System peripheral: Ricoh Co Ltd Unknown device 0843 (rev 01)
+08:07.3 System peripheral: Ricoh Co Ltd R5C592 Memory Stick Bus Host
+Adapter (rev 0a)
+08:08.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
-> >  * a list of the audio inputs/outputs provided on your laptop (jacks,
-> >    internal speakers, internal microphones etc)
-> 
-> Internal speaker, headphone jack and microphone jack.
-> 
-> > Was the mic jack the only place you were able to get sound out of?
-> 
-> Yes - nothing from the headphone jack or speakers.
-> :
-> Yes - full volume everywhere and everything unmuted.
-> :
-> Yes, I tried all permutations of the four GPIO controls and nothing changed.
+> It would seem that both the headphone jack and the internal speaker are
+> being driven by an amplifier outside the ALC260 which is switched on using
+> mechanisms independent of the ALC260 chip itself.  This would be the second
+> laptop we've encountered with a similar issue - even though everything's
+> up these two outputs refuse to produce any sound.
 
-It would seem that both the headphone jack and the internal speaker are
-being driven by an amplifier outside the ALC260 which is switched on using
-mechanisms independent of the ALC260 chip itself.  This would be the second
-laptop we've encountered with a similar issue - even though everything's
-up these two outputs refuse to produce any sound.
+:-( I suppose it's unlikely that writing to Realtek and/or HP would be
+fruitful.
 
-I'll be pondering this issue over the next few days to see if there's
-something obvious that I've missed - perhaps there's an obscure object in
-the ALC260 that the test model doesn't unmute which is needed by these HP
-laptops.  Maybe others on the list have ideas as well.
+> Final thought for the day: could you use alsamixer to change all the
+> pin modes to "Line-in" and then back to "Line-out" or "headphones".  Then
+> try the tests again and see if you get audio from any additional jacks or
+> the internal speaker.
 
-Final thought for the day: could you use alsamixer to change all the
-pin modes to "Line-in" and then back to "Line-out" or "headphones".  Then
-try the tests again and see if you get audio from any additional jacks or
-the internal speaker.
+No change unfortunately. Audio comes only from the mic jack both with
+everything set to Line-out or to Headphone. (The only difference is some
+additional static when MIC1 pin mode is set to headphone.)
 
-Regards
-  jonathan
+Cheers
+David
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
