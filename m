@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: snd_hda_intel with software suspend
-Date: Tue, 24 Oct 2006 19:10:24 -0400
-Message-ID: <1161731425.3982.195.camel@mindpipe>
-References: <20061024230225.GB10156@gelma.net>
+From: Juergen Hennerich <juergen@hennerich.eu>
+Subject: Re: Flash 9
+Date: Wed, 25 Oct 2006 01:38:04 +0200
+Message-ID: <453EA3DC.9020206@hennerich.eu>
+References: <1161720441.3982.124.camel@mindpipe>	<453E87BD.8020900@hennerich.eu>	<1161729155.3982.186.camel@mindpipe>
+	<200610250036.45627.prakash@punnoor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20061024230225.GB10156@gelma.net>
+In-Reply-To: <200610250036.45627.prakash@punnoor.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,23 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andrea Gelmini <gelma_mailinglist@gelma.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-10-25 at 01:02 +0200, Andrea Gelmini wrote:
-> Hi all,
-> 	I sent this[] to Amarok mailing list and they told me to
-> contact you.
-> 	Here[] you can find all my hardware details.
+Prakash Punnoor schrieb:
+> Am Mittwoch 25 Oktober 2006 00:32 schrieb Lee Revell:
+>> On Tue, 2006-10-24 at 23:38 +0200, Juergen Hennerich wrote:
+>>> Because you find those strings in the library, doesn't necessarily
+>>> mean, that there is code from libasound in this library.
+>>>
+>>> -> man dlopen
+>> Ah, I see.  Why would one use dlopen() for some libraries but regular
+>> dynamic linking for others?
 > 
-> Thanks a lot for your wonderful work and time,
+> To not be dependant on the lib. The prog will still work in dlopen case.
+> 
+I guess, they could have achieved the same with weak linking. I don't 
+know if there are really any technical reasons to prefer dlopen/dlsym 
+over weak linking, or if that is just a matter of taste.
 
-Are you using the latest ALSA and kernel versions?  I think that driver
-should support suspend.  I see you use suspend2, does it work with
-regular in-kernel suspend?
-
-Lee
+Juergen
 
 
 -------------------------------------------------------------------------
