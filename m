@@ -1,15 +1,15 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: (no subject)
-Date: Tue, 24 Oct 2006 21:08:27 +0200
-Message-ID: <m2r6wx1qhg.fsf@vador.mandriva.com>
-References: <66e2865bf4a72dae46566dc04c1a0397@192.168.1.254>
-	<08893603f9fbf36bdfc7189f5ae6d856@192.168.1.254>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Conexant patch
+Date: Tue, 24 Oct 2006 15:15:38 -0400
+Message-ID: <1161717338.3982.108.camel@mindpipe>
+References: <1161368006.15860.341.camel@mindpipe>
+	<7573e9640610201144t5cbc3868wd7d301d0b20937b2@mail.gmail.com>
+	<m2vem91qow.fsf@vador.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <08893603f9fbf36bdfc7189f5ae6d856@192.168.1.254> (Ricardo
-	Cerqueira's message of "Fri, 20 Oct 2006 19:16:19 +0200")
+In-Reply-To: <m2vem91qow.fsf@vador.mandriva.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,41 +19,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Ricardo Cerqueira <ricardo@cerqueira.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Thierry Vignaud <tvignaud@mandriva.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ricardo Cerqueira <ricardo@cerqueira.org> writes:
-
-> >>> > Check alsa-kernel hg tree whether you have a changeset 4658
-> >>> > "Fix re-use of va_list" (although it should work even without
-> >>> > this patch on i386).
-> >>>
-> >>> Yes, I'm at changeset 4662... I checked core/info.c by hand, and
-> >>> the va_list change is there... I just tried cloning fresh copies
-> >>> of alsa-kernel and alsa-driver, and the result is the same.
-> >>
-> >> Weird.  Could you check whether really it's 4k boundary problem?
+On Tue, 2006-10-24 at 21:03 +0200, Thierry Vignaud wrote:
+> "Richard Fish" <bigfish@asmallpond.org> writes:
+> 
+> > > Is the patch from
+> > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2485 merged?
+> > > Looks like it makes sound work for many people.
 > > 
-> > Looks like it is:
+> > Just want to note that, at present, it doesn't appear legal to update,
+> > include, or even distribute separately this patch, as the source is
+> > marked "NO LICENSE NO WARRANTY".
 > 
-> OK... The resize call is never reached (the break clause is always
-> true).  I added a small printk before the size test, and got:
+> err quoting the original author (pototskiy) on that bug report:
+>  
+>         "What I wanted to say (NO LICENSE), that anyone can use this
+>          code as wants.
+>          Ok, let it be GP"
 > 
-> DEBUG - res=48 and len=74
-> DEBUG - res=25 and len=26
-> DEBUG - res=0 and len=1
-> DEBUG - res=0 and len=1
-> DEBUG - res=0 and len=1
+> It looks fine to me.
 > 
-> And from here on, vsnprintf always returns 0. From my understanding
-> of the documentation, it shouldn't happen, but... (maybe a glibc
-> bug?)
 
-core/info.c is kernel land, no glibc code is used there
+Yes, I wrote that before he added this comment to the bug report.  (BTW
+ALSA bug tracker is a really... sub-optimal way to do development)
 
-> Changing the "if (res < len)" to "if (res && res < len)" solves it,
-> but I don't know if there'll be other side effects.
+We still need a Signed-Off-By line from the original author, to certify
+that he is authorized to release the code under the GPL, and that it
+wasn't derived from code or specs that 'fell off the back of a
+truck' ;-)
+
+Lee
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
