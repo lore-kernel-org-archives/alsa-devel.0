@@ -1,14 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Direct Delivery of NoteOn events
-Date: Tue, 24 Oct 2006 10:00:27 +0200
-Message-ID: <1161676827.21456.274067836@webmail.messagingengine.com>
-References: <46195E17-B17F-40C2-A77A-7CABB4B9E742@comcast.net>
+From: "Andrew L. Neporada" <nepal@asplinux.ru>
+Subject: Re: Problems with Realtek ALC260 codec
+	(snd_hda_intel	driver)
+Date: Tue, 24 Oct 2006 14:14:10 +0400
+Message-ID: <1161684850.8728.36.camel@leeloo.asplinux.ru>
+References: <200610172313.k9HNDt82025158@turbo.physics.adelaide.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <46195E17-B17F-40C2-A77A-7CABB4B9E742@comcast.net>
+In-Reply-To: <200610172313.k9HNDt82025158@turbo.physics.adelaide.edu.au>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,38 +18,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: paul santa clara <kesserich1@comcast.net>, alsa-devel@lists.sourceforge.net
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-paul santa clara wrote:
-> I am having difficulty getting alsa to actually delivery a noteon
-> event for me.  I am came across a list posting from 2004 which
-> claimed that Queue's were necessary for NoteOn's to allow alsa to
-> schedule the concomitant Noteoff at the appropriate time.
 
-This applies only to note events, not to note on events.
-Note events are split into a note on and a note off event.
+> > It seems that I have a laptop with ALC260 codec that is absolutely
+> > silent either with alsa-driver-1.0.13 or with Realtek's
+> > alsa-driver-1.0.12-4.05b.
+> > 
+> > Playing with "model=" parameter does not help.
+> >
+> > lspci -nv:
+> > ...
+> > 00:1b.0 Class 0403: 8086:27d8 (rev 02)
+> >         Subsystem: 161f:2057
+> >         Flags: bus master, fast devsel, latency 0, IRQ 3
+> > :
+> > cat /proc/asound/card0/codec#0 (from 1.0.13) :
+> > 
+> > Codec: Realtek ALC260
+> > Address: 0
+> > Vendor Id: 0x10ec0260
+> > Subsystem Id: 0x161f0000
+> > Revision Id: 0x100400
+> 
+> Could you please try compiling alsa-driver-1.0.13 after configuring it
+> using
+>   ./configure --enable-debug
+> 
+> Then use model=test.  Turn every control up, unmute every control, change
+> all "pin mode" controls to "headphone" and see if you get any sound then
+> from anywhere.  If not, try turning all the GPIO controls ON (they default
+> to OFF).
+> 
 
-> Nevertheless, i can find nothing in the documentation which
-> collaborates this.
+Using model=test does not change anything - still no sound. Btw, thre is
+no "pin mode" or GPIO controls in alsamixer - here is output of "amixer
+scontrols" (with model=test):
 
-Well, there is no documentation ...
+Simple mixer control 'PCM',0
+Simple mixer control 'Front',0
+Simple mixer control 'Front Mic',0
+Simple mixer control 'Line',0
+Simple mixer control 'Mic',0
+Simple mixer control 'IEC958',0
+Simple mixer control 'Capture',0
+Simple mixer control 'Capture',1
+Simple mixer control 'Caller ID',0
+Simple mixer control 'Input Source',0
+Simple mixer control 'Input Source',1
+Simple mixer control 'Off-hook',0
 
-> Still, i did attempt to use to a Q but was unable  
-> to produce any results.  Here is the offending code:
-> ...
-> snd_seq_ev_set_direct( &event );
+Maybe I've missed something important while building ALSA?
 
-You shouldn't use this when using a queue. (However, the following
-call to snd_seq_ev_schedule_tick() will correct this.)
+> Once you get sound happening we can use the "test" model to work out the
+> details of precisely how your laptop uses the ALC260 and add the necessary
+> support to ALSA.
+> 
+> Could you please let us know the make and model of the laptop?
 
-> int queue = snd_seq_alloc_queue( our_parcel->seq );
+It is a some kind of Taiwan OEM laptop for local Russian brand. I'll try
+to find out its real model name.
 
-You must create the queue before you try to send events through it.
+I am sorry for late reply. Please let me know if you need any
+information from me. Thank you for your help.
 
+> 
+> Regards
+>   jonathan
 
-HTH
-Clemens
+Andrew.
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
