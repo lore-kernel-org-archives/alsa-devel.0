@@ -1,14 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Unsupported Realtek ALC260 (snd-hda-intel)
-Date: Tue, 24 Oct 2006 16:23:51 +0930 (CST)
-Message-ID: <200610240653.k9O6rpah011042@turbo.physics.adelaide.edu.au>
-References: <1161671494.6960.6.camel@razman>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Direct Delivery of NoteOn events
+Date: Tue, 24 Oct 2006 10:00:27 +0200
+Message-ID: <1161676827.21456.274067836@webmail.messagingengine.com>
+References: <46195E17-B17F-40C2-A77A-7CABB4B9E742@comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1161671494.6960.6.camel@razman> from "Tobin Davis" at Oct 23,
-	2006 11:31:34 PM
+Content-Disposition: inline
+In-Reply-To: <46195E17-B17F-40C2-A77A-7CABB4B9E742@comcast.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,34 +18,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: paul santa clara <kesserich1@comcast.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Hang tight.  With this info we should be able to get a driver working
-> for you.  Fortunately, Realtek is one of the friendly companies, and all
-> of their specs are online.
+paul santa clara wrote:
+> I am having difficulty getting alsa to actually delivery a noteon
+> event for me.  I am came across a list posting from 2004 which
+> claimed that Queue's were necessary for NoteOn's to allow alsa to
+> schedule the concomitant Noteoff at the appropriate time.
 
-This is all true.  However, the outcomes posted by David and Andrea suggest
-that in their particular laptops there is something *outside* the ALC260
-chip itself which is preventing the speaker and headphone jack from passing
-audio.  The alc260 test model provides access to almost all the control
-ports offered by the ALC260.  If one doesn't get audio when using the test
-mode with all pins configured as outputs, everything unmuted and all volumes
-set to maximum, there's not much left at the chip level to try.
+This applies only to note events, not to note on events.
+Note events are split into a note on and a note off event.
 
-For example there are some Acer laptops which appear to implement their own
-amplifier for the internal speaker which is only powered up when one of the
-ALC260's GPIO lines is raised.  However, there's nothing stopping the
-manufacturers from using some other enabling mechanism and if this is done
-it's outside the scope of the Realtek chip; thus in this case Realtek might
-not have the information themselves to provide assistance.
+> Nevertheless, i can find nothing in the documentation which
+> collaborates this.
 
-Having said all that I'm still hoping that there's something obvious I've
-missed in the test mode configuration.
+Well, there is no documentation ...
 
-Regards
-  jonathan
+> Still, i did attempt to use to a Q but was unable  
+> to produce any results.  Here is the offending code:
+> ...
+> snd_seq_ev_set_direct( &event );
+
+You shouldn't use this when using a queue. (However, the following
+call to snd_seq_ev_schedule_tick() will correct this.)
+
+> int queue = snd_seq_alloc_queue( our_parcel->seq );
+
+You must create the queue before you try to send events through it.
+
+
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
