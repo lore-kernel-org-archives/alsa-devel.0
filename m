@@ -1,15 +1,11 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Conexant patch
-Date: Tue, 24 Oct 2006 15:15:38 -0400
-Message-ID: <1161717338.3982.108.camel@mindpipe>
-References: <1161368006.15860.341.camel@mindpipe>
-	<7573e9640610201144t5cbc3868wd7d301d0b20937b2@mail.gmail.com>
-	<m2vem91qow.fsf@vador.mandriva.com>
+Subject: Flash 9
+Date: Tue, 24 Oct 2006 16:07:21 -0400
+Message-ID: <1161720441.3982.124.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <m2vem91qow.fsf@vador.mandriva.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,39 +15,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Thierry Vignaud <tvignaud@mandriva.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-10-24 at 21:03 +0200, Thierry Vignaud wrote:
-> "Richard Fish" <bigfish@asmallpond.org> writes:
-> 
-> > > Is the patch from
-> > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2485 merged?
-> > > Looks like it makes sound work for many people.
-> > 
-> > Just want to note that, at present, it doesn't appear legal to update,
-> > include, or even distribute separately this patch, as the source is
-> > marked "NO LICENSE NO WARRANTY".
-> 
-> err quoting the original author (pototskiy) on that bug report:
->  
->         "What I wanted to say (NO LICENSE), that anyone can use this
->          code as wants.
->          Ok, let it be GP"
-> 
-> It looks fine to me.
-> 
+Is it legal for a proprietary application to incorporate alsa-lib by
+static linking?  I thought this required an LGPL exception.
 
-Yes, I wrote that before he added this comment to the bug report.  (BTW
-ALSA bug tracker is a really... sub-optimal way to do development)
+Because contrary to what Adobe says, this is what the new Flash 9 beta
+does:
 
-We still need a Signed-Off-By line from the original author, to certify
-that he is authorized to release the code under the GPL, and that it
-wasn't derived from code or specs that 'fell off the back of a
-truck' ;-)
+$ ldd .mozilla/plugins/libflashplayer.so | grep asound 
+$
+
+$ strings .mozilla/plugins/libflashplayer.so | grep snd_
+snd_pcm_open
+snd_pcm_close
+snd_pcm_start
+snd_pcm_drop
+snd_pcm_prepare
+snd_pcm_resume
+snd_pcm_hw_params_sizeof
+snd_pcm_sw_params_sizeof
+snd_pcm_status_sizeof
+snd_pcm_info
+snd_pcm_info_get_id
+snd_pcm_info_get_name
+snd_pcm_hw_params_any
+snd_pcm_hw_params_set_access
+snd_pcm_hw_params_set_format
+snd_pcm_hw_params
+snd_pcm_sw_params_current
+snd_pcm_sw_params
+
+Etc.
 
 Lee
+
+
 
 
 -------------------------------------------------------------------------
