@@ -1,15 +1,11 @@
-From: "Andrew L. Neporada" <nepal@asplinux.ru>
-Subject: Re: Problems with Realtek ALC260
-	codec	(snd_hda_intel	driver)
-Date: Tue, 24 Oct 2006 14:56:22 +0400
-Message-ID: <1161687383.8728.42.camel@leeloo.asplinux.ru>
-References: <200610172313.k9HNDt82025158@turbo.physics.adelaide.edu.au>
-	<1161684850.8728.36.camel@leeloo.asplinux.ru>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GcAIV-0004CH-LG delayed 10 hours
+Date: Tue, 24 Oct 2006 04:30:49 -0700
+Message-ID: <E1GcKUb-0004aI-UP@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1161684850.8728.36.camel@leeloo.asplinux.ru>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,70 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-0JIg0JLRgtC+LCAyNC8xMC8yMDA2INCyIDE0OjE0ICswNDAwLCBBbmRyZXcgTC4gTmVwb3JhZGEg
-0L/QuNGI0LXRgjoKPiA+ID4gSXQgc2VlbXMgdGhhdCBJIGhhdmUgYSBsYXB0b3Agd2l0aCBBTEMy
-NjAgY29kZWMgdGhhdCBpcyBhYnNvbHV0ZWx5Cj4gPiA+IHNpbGVudCBlaXRoZXIgd2l0aCBhbHNh
-LWRyaXZlci0xLjAuMTMgb3Igd2l0aCBSZWFsdGVrJ3MKPiA+ID4gYWxzYS1kcml2ZXItMS4wLjEy
-LTQuMDViLgo+ID4gPiAKPiA+ID4gUGxheWluZyB3aXRoICJtb2RlbD0iIHBhcmFtZXRlciBkb2Vz
-IG5vdCBoZWxwLgo+ID4gPgo+ID4gPiBsc3BjaSAtbnY6Cj4gPiA+IC4uLgo+ID4gPiAwMDoxYi4w
-IENsYXNzIDA0MDM6IDgwODY6MjdkOCAocmV2IDAyKQo+ID4gPiAgICAgICAgIFN1YnN5c3RlbTog
-MTYxZjoyMDU3Cj4gPiA+ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBs
-YXRlbmN5IDAsIElSUSAzCj4gPiA+IDoKPiA+ID4gY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2Rl
-YyMwIChmcm9tIDEuMC4xMykgOgo+ID4gPiAKPiA+ID4gQ29kZWM6IFJlYWx0ZWsgQUxDMjYwCj4g
-PiA+IEFkZHJlc3M6IDAKPiA+ID4gVmVuZG9yIElkOiAweDEwZWMwMjYwCj4gPiA+IFN1YnN5c3Rl
-bSBJZDogMHgxNjFmMDAwMAo+ID4gPiBSZXZpc2lvbiBJZDogMHgxMDA0MDAKPiA+IAo+ID4gQ291
-bGQgeW91IHBsZWFzZSB0cnkgY29tcGlsaW5nIGFsc2EtZHJpdmVyLTEuMC4xMyBhZnRlciBjb25m
-aWd1cmluZyBpdAo+ID4gdXNpbmcKPiA+ICAgLi9jb25maWd1cmUgLS1lbmFibGUtZGVidWcKPiA+
-IAo+ID4gVGhlbiB1c2UgbW9kZWw9dGVzdC4gIFR1cm4gZXZlcnkgY29udHJvbCB1cCwgdW5tdXRl
-IGV2ZXJ5IGNvbnRyb2wsIGNoYW5nZQo+ID4gYWxsICJwaW4gbW9kZSIgY29udHJvbHMgdG8gImhl
-YWRwaG9uZSIgYW5kIHNlZSBpZiB5b3UgZ2V0IGFueSBzb3VuZCB0aGVuCj4gPiBmcm9tIGFueXdo
-ZXJlLiAgSWYgbm90LCB0cnkgdHVybmluZyBhbGwgdGhlIEdQSU8gY29udHJvbHMgT04gKHRoZXkg
-ZGVmYXVsdAo+ID4gdG8gT0ZGKS4KPiA+IAo+IAoKT29wcyEgUGxlYXNlIGlnbm9yZSBteSBsYXN0
-IG1lc3NhZ2UuIEkgY2FuIG5vdyBoZWFyIHNvdW5kIGZyb20gTWljIGphY2sKKCEpIGFuZCBmcm9t
-IExpbmUgT3V0IGphY2sgKHRob3VnaCB2ZXJ5IGZhaW50KS4gVGhlcmUgaXMgbm8gc291bmQgZnJv
-bQppbnRlcm5hbCBzcGVha2VycyBvciBmcm9tIGhlYWRwaG9uZSBqYWNrLgoKCj4gVXNpbmcgbW9k
-ZWw9dGVzdCBkb2VzIG5vdCBjaGFuZ2UgYW55dGhpbmcgLSBzdGlsbCBubyBzb3VuZC4gQnR3LCB0
-aHJlIGlzCj4gbm8gInBpbiBtb2RlIiBvciBHUElPIGNvbnRyb2xzIGluIGFsc2FtaXhlciAtIGhl
-cmUgaXMgb3V0cHV0IG9mICJhbWl4ZXIKPiBzY29udHJvbHMiICh3aXRoIG1vZGVsPXRlc3QpOgo+
-IAo+IFNpbXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAn
-RnJvbnQnLDAKPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnRnJvbnQgTWljJywwCj4gU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0xpbmUnLDAKPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnTWljJywwCj4gU2lt
-cGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMAo+IFNpbXBsZSBtaXhlciBjb250cm9sICdDYXB0
-dXJlJywwCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NhcHR1cmUnLDEKPiBTaW1wbGUgbWl4ZXIg
-Y29udHJvbCAnQ2FsbGVyIElEJywwCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJj
-ZScsMAo+IFNpbXBsZSBtaXhlciBjb250cm9sICdJbnB1dCBTb3VyY2UnLDEKPiBTaW1wbGUgbWl4
-ZXIgY29udHJvbCAnT2ZmLWhvb2snLDAKPiAKPiBNYXliZSBJJ3ZlIG1pc3NlZCBzb21ldGhpbmcg
-aW1wb3J0YW50IHdoaWxlIGJ1aWxkaW5nIEFMU0E/Cj4gCj4gPiBPbmNlIHlvdSBnZXQgc291bmQg
-aGFwcGVuaW5nIHdlIGNhbiB1c2UgdGhlICJ0ZXN0IiBtb2RlbCB0byB3b3JrIG91dCB0aGUKPiA+
-IGRldGFpbHMgb2YgcHJlY2lzZWx5IGhvdyB5b3VyIGxhcHRvcCB1c2VzIHRoZSBBTEMyNjAgYW5k
-IGFkZCB0aGUgbmVjZXNzYXJ5Cj4gPiBzdXBwb3J0IHRvIEFMU0EuCj4gPiAKPiA+IENvdWxkIHlv
-dSBwbGVhc2UgbGV0IHVzIGtub3cgdGhlIG1ha2UgYW5kIG1vZGVsIG9mIHRoZSBsYXB0b3A/Cj4g
-Cj4gSXQgaXMgYSBzb21lIGtpbmQgb2YgVGFpd2FuIE9FTSBsYXB0b3AgZm9yIGxvY2FsIFJ1c3Np
-YW4gYnJhbmQuIEknbGwgdHJ5Cj4gdG8gZmluZCBvdXQgaXRzIHJlYWwgbW9kZWwgbmFtZS4KPiAK
-PiBJIGFtIHNvcnJ5IGZvciBsYXRlIHJlcGx5LiBQbGVhc2UgbGV0IG1lIGtub3cgaWYgeW91IG5l
-ZWQgYW55Cj4gaW5mb3JtYXRpb24gZnJvbSBtZS4gVGhhbmsgeW91IGZvciB5b3VyIGhlbHAuCj4g
-Cj4gPiAKPiA+IFJlZ2FyZHMKPiA+ICAgam9uYXRoYW4KPiAKPiBBbmRyZXcuCj4gCj4gCj4gLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQo+IFVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRv
-IHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KPiBHZXQgc3R1ZmYgZG9uZSBxdWlja2x5
-IHdpdGggcHJlLWludGVncmF0ZWQgdGVjaG5vbG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llcgo+
-IERvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYuMS4wLjEgYmFzZWQg
-b24gQXBhY2hlIEdlcm9uaW1vCj4gaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9
-bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCj4gX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
-IEFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVXNp
-bmcgVG9tY2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2Vydmlj
-ZXMsIHNlY3VyaXR5PwpHZXQgc3R1ZmYgZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVncmF0ZWQg
-dGVjaG5vbG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llcgpEb3dubG9hZCBJQk0gV2ViU3BoZXJl
-IEFwcGxpY2F0aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwpodHRw
-Oi8vc2VsLmFzLXVzLmZhbGthZy5uZXQvc2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3
-JmRhdD0xMjE2NDIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1GcAIV-0004CH-LG
+The subject of the message is: knew it was a pretty the fiat!  It up now and laughed.
+The date of the message is:    Mon, 23 Oct 2006 22:37:30 -0300
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
