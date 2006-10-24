@@ -1,19 +1,21 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: delayed dma trigger
-Date: Tue, 24 Oct 2006 17:13:04 +0200
-Message-ID: <1161702784.2840.33.camel@ux156>
-References: <1161593391.6617.25.camel@ux156> <s5hbqo317yo.wl%tiwai@suse.de>
-	<1161611212.6617.53.camel@ux156> <s5h64eb15qs.wl%tiwai@suse.de>
-	<1161613867.6617.64.camel@ux156>  <s5hbqo1pxaz.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Driver design question
+Date: Tue, 24 Oct 2006 11:30:07 -0400
+Message-ID: <1161703808.3982.85.camel@mindpipe>
+References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
+	<1158331680.7948.156.camel@mindpipe> <s5h64fjj3aj.wl%tiwai@suse.de>
+	<1159214063.2899.127.camel@mindpipe> <s5hhcytp6sy.wl%tiwai@suse.de>
+	<1159581790.7086.141.camel@mindpipe>
+	<1159889722.20801.59.camel@mindpipe>
+	<s5hodssl9t4.wl%tiwai@suse.de> <1161295951.15860.255.camel@mindpipe>
+	<s5hlknb2lk9.wl%tiwai@suse.de> <1161375168.15860.359.camel@mindpipe>
+	<s5hejsz18n9.wl%tiwai@suse.de> <1161625574.2835.19.camel@mindpipe>
+	<s5hd58hpxk7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9995415C
-	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Oct 2006 17:12:04 +0200 (MEST)
-In-Reply-To: <s5hbqo1pxaz.wl%tiwai@suse.de>
+In-Reply-To: <s5hd58hpxk7.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,28 +26,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Paul Mackerras <paulus@samba.org>, Benjamin Berg <benjamin@sipsolutions.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-10-24 at 17:07 +0200, Takashi Iwai wrote:
-
-> It won't be called unless PCM_INFO_PAUSE bit flag is set.  It means
-> that the driver doesn't support the hardware pause/resume function.
-> The pseudo pause/resume is just like a stop -> reset -> start
-> sequence.
+On Tue, 2006-10-24 at 17:01 +0200, Takashi Iwai wrote:
+> At Mon, 23 Oct 2006 13:46:13 -0400,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2006-10-23 at 15:09 +0200, Takashi Iwai wrote:
+> > > At Fri, 20 Oct 2006 16:12:48 -0400,
+> > > Lee Revell wrote:
+> > > > ~ # aplay /usr/share/sounds/test/phone.wav 
+> > > > Playing WAVE '/usr/share/sounds/test/phone.wav': Signed 16 bit Little
+> > > > Endian, Rate 44100 Hz, Stereo
+> > > > hw_params: stereo yes, format 16bit, rate 44100
+> > > > dream_pcm_open: channel 0x0 eight_bit 0x0 stereo 0x1 rate 0xac44
+> > > > dream_playback_ack
+> > > > dream_playback_copy: not running!
+> > > > dream_pcm_start: channel is 0
+> > > > dream_work_transfer: polling status byte returned 0
+> > > > calling snd_pcm_indirect_playback_transfer
+> > > > in dream_playback_copy: 0x4000 bytes DMA area 0xcdfb0000 sw_data 0x0
+> > > > dream_playback_ack
+> > > > dream_playback_ack
+> > > > dream_work_transfer: polling status byte returned 0
+> > > > calling snd_pcm_indirect_playback_transfer
+> > > > dream_playback_ack
+> > > > playback size is 0x1005
+> > > > dream_playback_ack
+> > > > playback size is 0x100a
+> > > > dream_playback_ack
+> > > > playback size is 0x100f
+> > > > dream_playback_ack
+> > > > playback size is 0x1015
+> > > > dream_playback_ack
+> > > > dream_playback_ack
+> > > 
+> > > The problem looks like the calculation of dream->playback_hw_ptr
+> > > passed to snd_pcm_indirect_playback_pointer().  This must be a _byte_
+> > > offset in the "hardware" ring buffer.  That is, it's between 0 and
+> > > (rec->hw_buffer_size - 1).  You set hw_buffer_size = 0x4000, but
+> > > calculate playback_hw_ptr as [0, runtime->buffer_size] and in frames.
+> > > 
+> > 
+> > With your patches I still get a similar result:
+> > snd_pcm_indirect_playback_transfer is only called once or twice and the
+> > first chunk of sound repeats endlessly.
+> > 
+> > ~ # aplay /usr/share/sounds/test/phone.wav 
+> > Playing WAVE '/uhw_params: stereo yes, format 16bit, rate 44100
+> > sr/share/sounds/dream_pcm_open: channel 0x0 eight_bit 0x0 stereo 0x1
+> > rate 0xac44
+> > test/phone.wav' dream_playback_ack
+> > dream_playback_copy: not running!
+> > dream_pcm_start: channel is 0
+> > : Signed 16 bit calling snd_pcm_indirect_playback_transfer
+> > in dream_playback_copy: 0x4000 bytes DMA area 0xcdfb0000 sw_data 0x0
+> > Little Endian, Rdream_playback_copy: polling status byte returned 0
+> > ate 44100 Hz, Stereo
+> > dream_playback_copy done
+> > dream_playback_ack
+> > dream_playback_ack
+> > dream_playback_ack
+> > calling snd_pcm_indirect_playback_transfer
+> > in dream_playback_copy: 0x4000 bytes DMA area 0xcdfb0000 sw_data 0x16384
+> > dream_playback_ack
+> > dream_playback_pointer: 0x134
+> > 
+> > At this point playback hangs.
 > 
-> In other words, once when you set SNDRV_PCM_INFO_PAUSE flag, the
-> driver has to stop the stream by trigger(PAUSE_PUSH) and restart the
-> stream by trigger(PAUSE_RELEASE) call without prepare callback.
+> Hm, that's bad.  Is dream_get_mpu_data_poll_status_byte() function
+> atomic?
+> 
 
-Ok, then we can safely set that flag once we fix it as I outlined and if
-someone does pause-release very quickly we won't pause at all. should be
-fine.
+It won't sleep, but it could spin for milliseconds.  I think it's
+probably not optimal to call from interrupt context...
 
-Who wants to do the patch? :)
+> > Is it really necessary to make up a fake pointer like this?
+> 
+> The only reason for using a background transfer is the damn mmap
+> mode.  Since mmap mode requires a DMA transfer without manual write
+> operations, you must implement a pseudo DMA engine to transfer the
+> data chunk in background.
+> 
 
-Many thanks,
-Johannes
+I think it's not required to support mmap - read/write only is
+acceptable.
+
+Lee
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
