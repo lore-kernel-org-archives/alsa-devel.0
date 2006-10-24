@@ -1,13 +1,14 @@
-From: Juergen Hennerich <juergen@hennerich.eu>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Flash 9
-Date: Tue, 24 Oct 2006 23:38:05 +0200
-Message-ID: <453E87BD.8020900@hennerich.eu>
+Date: Tue, 24 Oct 2006 18:32:34 -0400
+Message-ID: <1161729155.3982.186.camel@mindpipe>
 References: <1161720441.3982.124.camel@mindpipe>
+	<453E87BD.8020900@hennerich.eu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1161720441.3982.124.camel@mindpipe>
+In-Reply-To: <453E87BD.8020900@hennerich.eu>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,52 +18,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Juergen Hennerich <juergen@hennerich.eu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell schrieb:
-> Is it legal for a proprietary application to incorporate alsa-lib by
-> static linking?  I thought this required an LGPL exception.
+On Tue, 2006-10-24 at 23:38 +0200, Juergen Hennerich wrote:
+> Because you find those strings in the library, doesn't necessarily
+> mean, that there is code from libasound in this library.
 > 
-They'd have to provide the object files and a linker script to relink 
-the lib.
+> -> man dlopen 
 
-> Because contrary to what Adobe says, this is what the new Flash 9 beta
-> does:
-> 
-> $ ldd .mozilla/plugins/libflashplayer.so | grep asound 
-> $
-> 
-> $ strings .mozilla/plugins/libflashplayer.so | grep snd_
-> snd_pcm_open
-> snd_pcm_close
-> snd_pcm_start
-> snd_pcm_drop
-> snd_pcm_prepare
-> snd_pcm_resume
-> snd_pcm_hw_params_sizeof
-> snd_pcm_sw_params_sizeof
-> snd_pcm_status_sizeof
-> snd_pcm_info
-> snd_pcm_info_get_id
-> snd_pcm_info_get_name
-> snd_pcm_hw_params_any
-> snd_pcm_hw_params_set_access
-> snd_pcm_hw_params_set_format
-> snd_pcm_hw_params
-> snd_pcm_sw_params_current
-> snd_pcm_sw_params
-> 
-> Etc.
-> 
-> Lee
-> 
-Because you find those strings in the library, doesn't necessarily mean, 
-that there is code from libasound in this library.
+Ah, I see.  Why would one use dlopen() for some libraries but regular
+dynamic linking for others?
 
--> man dlopen
-
-Juergen
+Lee
 
 
 -------------------------------------------------------------------------
