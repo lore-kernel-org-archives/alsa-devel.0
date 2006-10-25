@@ -1,21 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Driver design question
-Date: Tue, 24 Oct 2006 19:54:33 -0400
-Message-ID: <1161734074.3982.208.camel@mindpipe>
-References: <45095921020000C80000961F@emea1-mh.id2.novell.com>
-	<1158331680.7948.156.camel@mindpipe> <s5h64fjj3aj.wl%tiwai@suse.de>
-	<1159214063.2899.127.camel@mindpipe> <s5hhcytp6sy.wl%tiwai@suse.de>
-	<1159581790.7086.141.camel@mindpipe>
-	<1159889722.20801.59.camel@mindpipe>
-	<s5hodssl9t4.wl%tiwai@suse.de> <1161295951.15860.255.camel@mindpipe>
-	<s5hlknb2lk9.wl%tiwai@suse.de> <1161375168.15860.359.camel@mindpipe>
-	<s5hejsz18n9.wl%tiwai@suse.de> <1161625574.2835.19.camel@mindpipe>
-	<s5hd58hpxk7.wl%tiwai@suse.de>
+From: Andrea Gelmini <gelma_mailinglist@gelma.net>
+Subject: Re: snd_hda_intel with software suspend
+Date: Wed, 25 Oct 2006 00:00:39 +0000
+Message-ID: <20061025000039.GA17447@li14-150.members.linode.com>
+References: <20061024230225.GB10156@gelma.net>
+	<1161731425.3982.195.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hd58hpxk7.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <1161731425.3982.195.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,29 +19,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-10-24 at 17:01 +0200, Takashi Iwai wrote:
-> At Mon, 23 Oct 2006 13:46:13 -0400,
-> Lee Revell wrote:
-> > I just can't understand why the version with the copy callback worked
-> > perfectly, but this PCM indirect stuff has been nothing but trouble.
-> 
-> Yep.
+On Tue, Oct 24, 2006 at 07:10:24PM -0400, Lee Revell wrote:
+> Are you using the latest ALSA and kernel versions?  I think that driver
+Linux jnb 2.6.19-rc2-git7 #2 SMP Mon Oct 23 14:06:02 CEST 2006 i686 GNU/Linux
 
-Takashi-san,
+> should support suspend.  I see you use suspend2, does it work with
+> regular in-kernel suspend?
+with vanilla kernel I've got same problem.
 
-Thanks very much for your help.  I've actually revisited our original
-driver, and after fixing a few bugs (a few kernel stack overflows and
-some debug output that was disturbing the timing) I've got the original
-design using copy callback working perfectly.
-
-Thanks again,
-
-Lee
-
+> Lee
+thanks a lot for your attention,
+gelma
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
