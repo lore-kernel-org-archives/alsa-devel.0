@@ -1,10 +1,10 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GcAIV-0004CH-LG delayed 24 hours
-Date: Tue, 24 Oct 2006 19:27:45 -0700
-Message-ID: <E1GcYUb-0001OO-Ro@externalmx-1.sourceforge.net>
+From: "Fill Your Pipeline" <noreply@massgrowth.com>
+Subject: Fill Your Pipeline
+Date: 25 Oct 2006 00:49:03 -0400
+Message-ID: <20061025004903.57435EC535D8846F@massgrowth.com>
+Reply-To: Fill Your Pipeline <reply@massgrowth.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1756435306=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +18,87 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+--===============1756435306==
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The message identifier is:     1GcAIV-0004CH-LG
-The subject of the message is: knew it was a pretty the fiat!  It up now and laughed.
-The date of the message is:    Mon, 23 Oct 2006 22:37:30 -0300
+<HTML><HEAD>
+<META http-equiv=3DContent-Language content=3Den-us>
+<META content=3D"MSHTML 6.00.3790.2706" name=3DGENERATOR>
+<META content=3DFrontPage.Editor.Document name=3DProgId>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1252=
+"></HEAD>
+<BODY>
+<P> </P>
+<P><B><FONT face=3DTahoma size=3D+1>Select Lead Program - Special Limited-ti=
+me State Pricing</FONT></B> </P>
+<P><B><FONT face=3DTahoma color=3D#000000><FONT size=3D+1>How does your Book=
+ of Business look? Need to pump up your pipeline?</FONT></FONT></B> <BR><BR>=
+<FONT face=3DTahoma size=3D+1>LoanBright is offering special limited-time le=
+ad pricing in selected states.</FONT> <BR><FONT face=3DTahoma size=3D+1>Our =
+Select Lead Program has <FONT color=3D#000000><B>no set up fees and no long-=
+term commitment</B>.</FONT></FONT>&nbsp; <FONT face=3DTahoma size=3D+1>
+It is an easy and inexpensive way to get fresh quality leads that have been =
+through</FONT> <FONT face=3DTahoma size=3D+1>verification, in the door. Our =
+consumers are waiting for someone to help them with</FONT> <FONT face=3DTaho=
+ma size=3D+1>a mortgage!</FONT> </P>
+<P><FONT face=3DTahoma size=3D+1>For <FONT color=3D#000000><B>just $3.99-$7.=
+99 each</B>,</FONT> depending on the location, Loanbright can provide a</FON=
+T> <FONT face=3DTahoma size=3D+1>steady stream of new home buyers, people lo=
+oking to refinance their existing</FONT> <FONT face=3DTahoma size=3D+1>mortg=
+age, or consolidate debt. LoanBright's Select Leads program is simple,</FONT=
+> <FONT face=3DTahoma size=3D+1>affordable, and easy to implement.&nbsp; The=
+re are <FONT color=3D#000000><B>
+no up-front costs, just pay as you go</B>.</FONT></FONT>&nbsp; <FONT face=3D=
+Tahoma size=3D+1>Simply complete the order form, select your states, and a r=
+epresentative will contact</FONT> <FONT face=3DTahoma size=3D+1>you to get s=
+tarted. Your leads will be immediately sent to our lead center for you to</F=
+ONT> <FONT face=3DTahoma size=3D+1>access from anywhere, anytime.</FONT> </P=
+>
+<P><FONT face=3DTahoma size=3D+1><B>Don't wait!! Call or sign-up today!</B> =
+These are the same quality leads that Loanbright</FONT> <FONT face=3DTahoma =
+size=3D+1>generates day-in and day-out for hundreds of lenders, nationwide, =
+with proven success!</FONT> <FONT face=3DTahoma size=3D+1>They are subject t=
+o the same validation and scrubbing that much more expensive leads</FONT> <F=
+ONT face=3DTahoma size=3D+1>go through, but if you sign up today, you'll get=
+ this special offer. <B>Why pay more??</B></FONT> <B>
+<FONT face=3DTahoma size=3D+1>Take your business to the next level-and finis=
+h out 2006 with a bang!</FONT></B> </P>
+<P><B><FONT face=3DTahoma><FONT size=3D+1><FONT color=3D#000000>Please</FONT=
+><FONT color=3D#ff0000> </FONT></FONT><FONT color=3D#000000><FONT size=3D+2>=
+<A title=3Dhttp://209.35.106.182/loanbright_Contact.htm href=3D"http://209.3=
+5.106.182/loanbright_Contact.htm">click here </A></FONT><FONT size=3D+1>for =
+more info</FONT></FONT></FONT></B> </P>
+<P><B><FONT face=3DTahoma color=3D#000000><FONT size=3D+1>or call us toll fr=
+ee 1-800-211-4170</FONT></FONT></B> <BR>&nbsp; </P>
+<P><FONT face=3DTahoma size=3D+1>Loanbright | 27902 Meadow Drive | Suite 375=
+ | Evergreen | CO | 80439</FONT> <BR><BR><BR><FONT face=3DTahoma color=3D#00=
+0000 size=3D2>to unsubscribe <A href=3D"http://209.35.106.182/unsubscribe.ht=
+m">click here</A></FONT><FONT face=3DTahoma size=3D2> </FONT></P></BODY></HT=
+ML>
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+--===============1756435306==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1756435306==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1756435306==--
