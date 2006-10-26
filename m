@@ -1,12 +1,10 @@
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
-Subject: Re: Flash 9
-Date: Thu, 26 Oct 2006 02:03:34 +0100
-Message-ID: <yw1xlkn3yjkp.fsf@agrajag.inprovide.com>
-References: <1161720441.3982.124.camel@mindpipe>
-	<453E87BD.8020900@hennerich.eu>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GcAIV-0004CH-LG delayed 48 hours
+Date: Wed, 25 Oct 2006 18:38:16 -0700
+Message-ID: <E1GcuCG-0005Mg-LA@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,71 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Juergen Hennerich <juergen@hennerich.eu> writes:
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-> Lee Revell schrieb:
->> Is it legal for a proprietary application to incorporate alsa-lib by
->> static linking?  I thought this required an LGPL exception.
->> =
+The message identifier is:     1GcAIV-0004CH-LG
+The subject of the message is: knew it was a pretty the fiat!  It up now and laughed.
+The date of the message is:    Mon, 23 Oct 2006 22:37:30 -0300
 
-> They'd have to provide the object files and a linker script to relink =
+The address to which the message has not yet been delivered is:
 
-> the lib.
->
->> Because contrary to what Adobe says, this is what the new Flash 9 beta
->> does:
->> =
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
->> $ ldd .mozilla/plugins/libflashplayer.so | grep asound =
-
->> $
->> =
-
->> $ strings .mozilla/plugins/libflashplayer.so | grep snd_
->> snd_pcm_open
->> snd_pcm_close
->> snd_pcm_start
->> snd_pcm_drop
->> snd_pcm_prepare
->> snd_pcm_resume
->> snd_pcm_hw_params_sizeof
->> snd_pcm_sw_params_sizeof
->> snd_pcm_status_sizeof
->> snd_pcm_info
->> snd_pcm_info_get_id
->> snd_pcm_info_get_name
->> snd_pcm_hw_params_any
->> snd_pcm_hw_params_set_access
->> snd_pcm_hw_params_set_format
->> snd_pcm_hw_params
->> snd_pcm_sw_params_current
->> snd_pcm_sw_params
->> =
-
->> Etc.
->> =
-
->> Lee
->> =
-
-> Because you find those strings in the library, doesn't necessarily mean, =
-
-> that there is code from libasound in this library.
->
-> -> man dlopen
-
-Flash player does use dlopen() so everything is fine.
-
--- =
-
-M=E5ns Rullg=E5rd
-mru@inprovide.com
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
