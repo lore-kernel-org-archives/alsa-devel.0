@@ -1,22 +1,21 @@
-From: "McGuire M. Pabst" <extradave@grahambrothers.com>
-Subject: cheap Software
-Date: Thu, 26 Oct 2006 01:31:18 -0500
-Message-ID: <2660966332.20061026013118@grahambrothers.com>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: Re: [PATCH] hda: add sigmatel dig mic support and
+	refactor 9227
+Date: Thu, 26 Oct 2006 09:38:20 -0400
+Message-ID: <20061026133820.GA1507@matthew-porters-computer.local>
+References: <20061025202110.GA351@matthew-porters-computer.local>
+	<1161809636.18211.65.camel@razman>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EF61236
+Received: from oh.embeddedalley.com (cpe-088197.static.wadsnet.net
+	[65.114.88.197])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40F8F23C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Oct 2006 13:30:15 +0200 (MEST)
-Received: from -197956232 (unknown [81.52.165.30])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	0CDB3995A9 for <alsa-devel@alsa-project.org>;
-	Thu, 26 Oct 2006 13:30:14 +0200 (MEST)
-Received: from grahambrothers.com (-203272128 [-197259768])
-	by grancanaria-fishing.com (Qmailv1) with ESMTP id 13B3DEF0FF
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2006 01:31:18 -0500
+	Thu, 26 Oct 2006 15:38:23 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1161809636.18211.65.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,30 +25,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Software taking
+On Wed, Oct 25, 2006 at 01:53:56PM -0700, Tobin Davis wrote:
+> Couple of things, which version is this against?  I tried patching
+> against the tip and all areas were rejected.
 
-Some examples:
-PageMaker 7 (2CD) $69.95
-InDesign CS PageMaker Edition (2CD) $69.95
-Norton System Works 2003 $59.95
-Fireworks MX 2004 $69.95
-Windows 98 $49.95
-SQL Server 2000 Enterprise Edition $69.95
-Windows NT 4.0 Server $49.95
-Plus! XP $59.95
-Project 2003 Professional $69.95
-Studio MX 2004 with Director MX 2004 $139.95
-InDesign CS $69.95
-Flash MX 2004 $69.95
-Illustrator CS CE $69.95
-Windows 98 Second Edition $49.95
+Update your hg tree, I checked against a fresh tree and it applies
+cleanly.
 
-The rest is on our site:
-http://h2nd5v415hncizhcmhzcmhzh.iveresell.cd/
-
+-Matt
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
