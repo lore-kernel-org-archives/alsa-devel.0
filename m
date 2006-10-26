@@ -1,23 +1,21 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.13 and indigoio
-Date: Thu, 26 Oct 2006 17:54:39 +0400
-Message-ID: <70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
-References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
-	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
-	<s5hu02iu1ni.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
-	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
-	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
-	<20061009224039.74f7af57.pochini@shiny.it>
-	<70a871c80610100914v309f4519w97cc21a774c35a63@mail.gmail.com>
-	<20061012222126.77234cde.pochini@shiny.it>
-	<70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: Re: [PATCH] hda: add sigmatel dig mic support and
+	refactor 9227
+Date: Thu, 26 Oct 2006 10:36:24 -0400
+Message-ID: <20061026143624.GB1507@matthew-porters-computer.local>
+References: <20061025202110.GA351@matthew-porters-computer.local>
+	<s5hejsv7321.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
+Received: from oh.embeddedalley.com (cpe-088197.static.wadsnet.net
+	[65.114.88.197])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE0E8240
+	for <alsa-devel@alsa-project.org>;
+	Thu, 26 Oct 2006 16:36:28 +0200 (MEST)
 Content-Disposition: inline
+In-Reply-To: <s5hejsv7321.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,33 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On 10/13/06, Giuliano Pochini <pochini@shiny.it> wrote:
-> > I'm short of ideas. I searched for infos and I found this page:
-> >
-> > http://www.kernel.org/pub/linux/utils/kernel/pcmcia/powerbugs.html
-> >
-> > but it is quite old info.
+On Thu, Oct 26, 2006 at 01:02:30PM +0200, Takashi Iwai wrote:
+> You cannot remove XXX_MODELS.
+> The size of *_brd_tbl[] must be defined as the max number of models.
+> Otherwise you might access to outside the array since the driver
+> checks the value of *_brd_tbl[model].
 
-Sorry that few days lasted so long, but I have some results now.
+Ahh, yes. Whoops. 
 
-Adding cardbus bridge's memory as a reserved region solved the "unable
-to remove power" problem.
+> Also, some lines you added exceed 80-columns rule.  I know there are
+> still more lines over 80 chars,  but let's follow the standard coding
+> style at least for new codes.
 
-Strangely enough, the page says it is needed only when cardbus region
-overlaps with system RAM and says ("Eg, if you have 1GB of RAM, the
-PCMCIA bridge memory resource must be above 0x40000000."). In my case
-it is at 0xb0116000 - well above. But the solution works somehow.
+Ok, will do. I'm sending a separate patch which just adds 9205
+dmic support and we can address the 927x/9227 issue separately.
 
-I didn't test the RME Cardbus yet, but think the issue will also be
-solved. Because "unable to apply power" error showed up only after
-"unable to remove power" one.
-
-Regards,
-Dmitry.
+-Matt
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
