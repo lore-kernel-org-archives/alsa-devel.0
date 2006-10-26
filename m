@@ -1,18 +1,13 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Direct Delivery of NoteOn events
-Date: Thu, 26 Oct 2006 09:23:47 +0200
-Message-ID: <1161847427.29328.274258312@webmail.messagingengine.com>
-References: <46195E17-B17F-40C2-A77A-7CABB4B9E742@comcast.net>
-	<1161676827.21456.274067836@webmail.messagingengine.com>
-	<99C795AE-FCD2-4E95-ABE0-145AA81EFB58@comcast.net>
-	<1161764738.26435.274165147@webmail.messagingengine.com>
-	<68553F7D-DBC4-4D0E-A5A4-071B94359269@comcast.net>
+From: "Sergey Kolosov" <freeserj@gmail.com>
+Subject: Re: maximum quantity of sound cards supported by alsa
+Date: Thu, 26 Oct 2006 13:35:13 +0400
+Message-ID: <d39e2e70610260235j2507354fne7cec8ab97290611@mail.gmail.com>
+References: <d39e2e70610250619n7d28589dkc5ef8e492a6cd0bc@mail.gmail.com>
+	<1161782765.24018.274184927@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0723608954=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <68553F7D-DBC4-4D0E-A5A4-071B94359269@comcast.net>
+In-Reply-To: <1161782765.24018.274184927@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,41 +17,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: paul santa clara <kesserich1@comcast.net>
+To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-paul santa clara wrote:
-> On Oct 25, 2006, at 4:25 AM, Clemens Ladisch wrote:
-> > What is your program doing after this call?
-> 
-> The function enters into an infinite while{} which bombards alsa with  
-> events.
+--===============0723608954==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_63988_28065933.1161855313648"
 
-Should be OK.
+------=_Part_63988_28065933.1161855313648
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> > If you don't wait until the event has been delivered, the queue
-> > with the events still in it will be destroyed.
-> 
-> Hmmm...I'm not sure you what you mean here.
+ Whether it is planned to expand in the future this quantity?
 
-When the program exits, all resources are cleaned up.
+On 10/25/06, Clemens Ladisch <cladisch@fastmail.net> wrote:
+>
+> Sergey Kolosov wrote:
+> >  What maximum quantity of sound cards supported by alsa?
+>
+> 32 if CONFIG_SND_DYNAMIC_MINORS is set, otherwise 8.
+>
+>
+> HTH
+> Clemens
+>
 
-> Is there a function i can call to block the thread until ALSA has
-> delivered the events?
+------=_Part_63988_28065933.1161855313648
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-snd_seq_sync_output_queue(), but this doesn't seem to be your problem.
+<span id="r_text" name="r_text">
+Whether it is planned to expand in the future </span>this quantity?<br><br><div><span class="gmail_quote">On 10/25/06, <b class="gmail_sendername">Clemens Ladisch</b> &lt;<a href="mailto:cladisch@fastmail.net">cladisch@fastmail.net
+</a>&gt; wrote:</span><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">Sergey Kolosov wrote:<br>&gt;&nbsp;&nbsp;What maximum quantity of sound cards supported by alsa?
+<br><br>32 if CONFIG_SND_DYNAMIC_MINORS is set, otherwise 8.<br><br><br>HTH<br>Clemens<br></blockquote></div><br>
 
-Please check whether any of the ALSA functions returns an error code.
-
-What gets output when you play to an instance of aseqdump?
+------=_Part_63988_28065933.1161855313648--
 
 
-Regards,
-Clemens
+--===============0723608954==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0723608954==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0723608954==--
