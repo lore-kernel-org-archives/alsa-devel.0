@@ -1,21 +1,23 @@
-From: "Shamefully V. Itself" <pjones@gonferna.com>
-Subject: Weight Loss with HOODIA - $0.5 for one pill!
-Date: Thu, 26 Oct 2006 03:49:47 -0500
-Message-ID: <4937562086.20061026034947@gonferna.com>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.13 and indigoio
+Date: Thu, 26 Oct 2006 17:54:39 +0400
+Message-ID: <70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<70a871c80610050549i67273c2bs4eab40731685bb47@mail.gmail.com>
+	<s5hu02iu1ni.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
+	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
+	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
+	<20061009224039.74f7af57.pochini@shiny.it>
+	<70a871c80610100914v309f4519w97cc21a774c35a63@mail.gmail.com>
+	<20061012222126.77234cde.pochini@shiny.it>
+	<70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0386090201=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6187102
-	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Oct 2006 15:48:44 +0200 (MEST)
-Received: from -202272448 (unknown [61.83.176.253])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	70C0199421 for <alsa-devel@alsa-project.org>;
-	Thu, 26 Oct 2006 15:48:42 +0200 (MEST)
-Received: from gonferna.com (-196800328 [-202266136])
-	by graphiccoast.com (Qmailv1) with ESMTP id 6BB04A6360
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2006 03:49:47 -0500
+In-Reply-To: <70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,40 +27,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0386090201==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> On 10/13/06, Giuliano Pochini <pochini@shiny.it> wrote:
+> > I'm short of ideas. I searched for infos and I found this page:
+> >
+> > http://www.kernel.org/pub/linux/utils/kernel/pcmcia/powerbugs.html
+> >
+> > but it is quite old info.
 
-If you haven’t heard of Hoodia yet, you soon will because it is being touted as the new miracle supplement for safe, effective weight loss. Hoodia gordonii, (Hoodia) is the botanical name for a cactus like plant that grows in Southern Africa. Scientists have recently isolated several compounds in this amazing plant that are responsible for dramatic weight loss. 
+Sorry that few days lasted so long, but I have some results now.
 
-Our site: http://5utibjafbes0on5tb5ntt555.iveresell.cd/
-try to find cheaper than $0.5 for one pill!
+Adding cardbus bridge's memory as a reserved region solved the "unable
+to remove power" problem.
 
+Strangely enough, the page says it is needed only when cardbus region
+overlaps with system RAM and says ("Eg, if you have 1GB of RAM, the
+PCMCIA bridge memory resource must be above 0x40000000."). In my case
+it is at 0xb0116000 - well above. But the solution works somehow.
 
+I didn't test the RME Cardbus yet, but think the issue will also be
+solved. Because "unable to apply power" error showed up only after
+"unable to remove power" one.
 
---===============0386090201==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
+Dmitry.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0386090201==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0386090201==--
