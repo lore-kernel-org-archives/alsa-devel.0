@@ -1,21 +1,20 @@
 From: Tobin Davis <tdavis@dsl-only.net>
 Subject: Re: [PATCH] hda: add sigmatel dig mic support
 	and	refactor 9227
-Date: Thu, 26 Oct 2006 07:54:30 -0700
-Message-ID: <1161874470.18211.90.camel@razman>
+Date: Thu, 26 Oct 2006 08:03:34 -0700
+Message-ID: <1161875014.18211.100.camel@razman>
 References: <20061025202110.GA351@matthew-porters-computer.local>
-	<1161809636.18211.65.camel@razman>
-	<20061026133820.GA1507@matthew-porters-computer.local>
-	<s5hejsvdwkf.wl%tiwai@suse.de>
+	<s5hejsv7321.wl%tiwai@suse.de>
+	<20061026143624.GB1507@matthew-porters-computer.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 875BA224
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F486225
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Oct 2006 16:54:33 +0200 (MEST)
-In-Reply-To: <s5hejsvdwkf.wl%tiwai@suse.de>
+	Thu, 26 Oct 2006 17:03:36 +0200 (MEST)
+In-Reply-To: <20061026143624.GB1507@matthew-porters-computer.local>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,32 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Matt Porter <mporter@embeddedalley.com>
+To: Matt Porter <mporter@embeddedalley.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I figured out what I did wrong.  I should have saved the original
-email, trimmed the email header out, then apply the patch as opposed to
-highlighting it and copy/paste into gvim.
 
-That's what I get for coding before caffeine.
+> Ok, will do. I'm sending a separate patch which just adds 9205
+> dmic support and we can address the 927x/9227 issue separately.
+> 
+I understand the need for cutting the 9227 from the 927x series codecs.
+This can easily be done, just remember to keep the 965_5stack code with
+the 927x, as that is the codec they have
+(http://support.intel.com/products/motherboard/DG965WH/).  The 3-stack
+boards all use the 9227 codec.
 
-Tobin
-On Thu, 2006-10-26 at 15:40 +0200, Takashi Iwai wrote:
-> At Thu, 26 Oct 2006 09:38:20 -0400,
-> Matt Porter wrote:
-> > 
-> > On Wed, Oct 25, 2006 at 01:53:56PM -0700, Tobin Davis wrote:
-> > > Couple of things, which version is this against?  I tried patching
-> > > against the tip and all areas were rejected.
-> > 
-> > Update your hg tree, I checked against a fresh tree and it applies
-> > cleanly.
-> 
-> Yes, I could apply it without hitch, too.
-> 
-> 
-> Takashi
+At the time I wrote the 5-stack code, I had received a pre-release
+motherboard 1 week prior to product launch, and 3 days before my
+contract ended.  Sigmatel didn't have any information on their web site
+for the 9271, and the engineer that was supposed to provide me with
+specs didin't have this one.  It was a real shot in the dark.
+
+The code I wrote works with these boards, and I wouldn't worry about the
+digital mic on them, as the Intel 5 stack boards aren't wired to use
+them, except maybe through retasking of existing ports.  It isn't
+documented in the motherboard technical product specification.
+
 -- 
 Tobin Davis <tdavis@dsl-only.net>
 
