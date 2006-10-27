@@ -1,14 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: [Alsa-user] config.log
-Date: Fri, 27 Oct 2006 11:09:44 +0200
-Message-ID: <1161940184.6205.274354678@webmail.messagingengine.com>
-References: <20061026143710.89794.qmail@web51108.mail.yahoo.com>
+From: Anders Johansson <ajh@watri.org.au>
+Subject: vxpocket 440
+Date: Fri, 27 Oct 2006 17:37:47 +0800
+Message-ID: <20061027093747.GA29589@watri.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20061026143710.89794.qmail@web51108.mail.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,38 +16,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: sercan sen <sensercan@yahoo.com>
-Cc: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-sercan sen wrote:
-> > The configure script didn't detect [quite a few things].
-> > Please show the contents of your config.log file.
-> 
-> configure:6889: gcc -c -Wall -fno-strict-aliasing -g -O2
->   -I/lib/modules/2.6.9-34.EL.cern/build/include
->   -I/lib/modules/2.6.9-34.EL.cern/source/include
->   -I/lib/modules/2.6.9-34.EL.cern/source/include/asm-i386/mach-default
->   -nostdinc -iwithprefix include -DKBUILD_STR(s)=#s
->   -DKBUILD_BASENAME=KBUILD_STR(dummy) -Werror  conftest.c >&5
-> In file included from conftest.c:22:
-> /lib/modules/2.6.9-34.EL.cern/build/include/linux/kernel.h:10:20:
->   stdarg.h: No such file or directory
+Hi,
 
-This file should have been picked up from the compiler's own include
-directory.
+I am trying to configure a VX-Pocket 440 on a DELL laptop, Debian
+etch, Kernel version 2.6.17.
 
-I think there may be something wrong with your compiler configuration.
-If you create a test.c file with the following contents:
-
-	#include <stdarg.h>
-	int main() {}
-
-and compile it with "gcc -c test.c", does it work?
+I have the same card running on a SONY laptop with Debian sarge and a
+2.6.8 kernel, no problem.
 
 
-Regards,
-Clemens
+Syslog says:
+Oct 28 01:19:29 asil kernel: pccard: PCMCIA card inserted into slot 0
+Oct 28 01:19:29 asil kernel: pcmcia: registering new device pcmcia0.0
+Oct 28 01:19:29 asil kernel: vxpocket: too many cards found
+Oct 28 01:19:29 asil kernel: snd-vxpocket: probe of 0.0 failed with error -22
+Oct 28 01:19:29 asil kernel: vxpocket: too many cards found
+Oct 28 01:19:29 asil kernel: snd-vxpocket: probe of 0.0 failed with error -22
+
+
+vxloader says:
+vxloader: no VX-compatible cards found
+
+
+cardctl info:
+PRODID_1="Digigram"
+PRODID_2="VX-POCKET440"
+PRODID_3="V1.0"
+PRODID_4="R1.0"
+MANFID=01f1,0100
+FUNCID=254
+
+
+cardctl ident:
+Socket 0:
+  product info: "Digigram", "VX-POCKET440", "V1.0", "R1.0"
+  manfid: 0x01f1, 0x0100
+  function: 254 ((null))
+
+
+Which looks fine to me.
+
+ 
+I understand that hotplug is supposed to be able to load firmware
+nowdays, but where can I find the firmware? is it the same as in the
+alsa-frmware package? and in that case which files, and where do I put
+them?
+
+
+Cheers,
+//Anders
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
