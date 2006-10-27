@@ -1,14 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: silence callback
-Date: Fri, 27 Oct 2006 20:12:53 +0200
-Message-ID: <1161972773.26583.274390340@webmail.messagingengine.com>
-References: <1161971024.27225.136.camel@mindpipe>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: IRQ issue with the hda-intel module,
+	2.6.19 and	my mobo?
+Date: Fri, 27 Oct 2006 14:27:30 -0400
+Message-ID: <1161973651.27225.148.camel@mindpipe>
+References: <34389.86.7.220.119.1161973265.squirrel@wmbeta.mxes.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1161971024.27225.136.camel@mindpipe>
+In-Reply-To: <34389.86.7.220.119.1161973265.squirrel@wmbeta.mxes.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,18 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Andrew Nelless <andrew@nelless.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> In what circumstances does the ALSA middle layer call the silence
-> callback?
+On Fri, 2006-10-27 at 19:21 +0100, Andrew Nelless wrote:
+> Hi,
+> 
+> I've been testing the 2.6.19 RC kernels out (I always test early new mainline kernels early)
+> and have been getting the following MCE error consistantly when I load the snd_hda_intel
+> module
+> 
+> "Hardware Error
+> CPU 0 : Machine Check Exception
+> TSC 2df07369b0 4 Bank 4 b20000 00000000070f0f
+> This is not a software problem"
+> 
 
-When an application has set the silence threshold/size.
+This belongs on linux-kernel - the bug cannot be in ALSA.
+
+Lee
 
 
-HTH
-Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
