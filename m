@@ -1,21 +1,11 @@
-From: "Retypes J. Entitled" <haynes@getconfirm.com>
-Subject: Replica Watches
-Date: Thu, 26 Oct 2006 14:56:44 -0500
-Message-ID: <7512198746.20061026145644@getconfirm.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GcAIV-0004CH-LG delayed 72 hours
+Date: Thu, 26 Oct 2006 18:24:32 -0700
+Message-ID: <E1GdGSW-00026N-Tv@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0399907533=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7193914B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Oct 2006 02:55:44 +0200 (MEST)
-Received: from -190216624 (unknown [210.1.95.180])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	B63D0997E1 for <alsa-devel@alsa-project.org>;
-	Fri, 27 Oct 2006 02:55:27 +0200 (MEST)
-Received: from getconfirm.com (-190219672 [-190218552])
-	by 210.1.95.180.pldtvibe.com (Qmailv1) with ESMTP id D7561DAB25
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2006 14:56:44 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,63 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0399907533==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
-All genuine Swiss Rolex Replicas should have the following:
+The message identifier is:     1GcAIV-0004CH-LG
+The subject of the message is: knew it was a pretty the fiat!  It up now and laughed.
+The date of the message is:    Mon, 23 Oct 2006 22:37:30 -0300
 
-• Full 1-year Warranty 
-• Solid 14k or 18k Gold on two-toned models
-• Guaranteed triple-wrapped gold on all-gold models 
-• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
-• The color of the gold looks exactly like a genuine Rolex watch 
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Bvlgari 
-Cartier 
-Chopard 
-Chronoswiss 
-Corum 
-Rado
-Longines 
-Patek philippe 
-Rolex
-Vacheron constantin 
-And more for a fraction of the price!
-
-http://mza09h9hscshn44k94mk94mm.iveresell.cd/
-
-Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-
-
-
---===============0399907533==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0399907533==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0399907533==--
