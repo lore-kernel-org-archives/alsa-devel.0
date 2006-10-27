@@ -1,24 +1,14 @@
-From: "Smears P. Eridanus" <extreeder@greencoremalt.com>
-Subject: Microsoft, Adobe, Macromedia etc
-Date: Thu, 26 Oct 2006 17:22:43 -0500
-Message-ID: <3368002659.20061026172243@greencoremalt.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: [Alsa-user] config.log
+Date: Fri, 27 Oct 2006 11:09:44 +0200
+Message-ID: <1161940184.6205.274354678@webmail.messagingengine.com>
+References: <20061026143710.89794.qmail@web51108.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5957E257
-	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Oct 2006 05:21:38 +0200 (MEST)
-Received: from -200220824 (102.Red-80-38-201.staticIP.rima-tde.net
-	[80.38.201.102])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	AFB42997F0 for <alsa-devel@alsa-project.org>;
-	Fri, 27 Oct 2006 05:21:36 +0200 (MEST)
-Received: from greencoremalt.com (-200088544 [-200093960])
-	by 102.Red-80-38-201.staticIP.rima-tde.net (Qmailv1) with ESMTP id
-	C19A1671C4
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2006 17:22:43 -0500
+Content-Disposition: inline
+In-Reply-To: <20061026143710.89794.qmail@web51108.mail.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,31 +18,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: sercan sen <sensercan@yahoo.com>
+Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-OEM cd`s downloading and by post.
+sercan sen wrote:
+> > The configure script didn't detect [quite a few things].
+> > Please show the contents of your config.log file.
+> 
+> configure:6889: gcc -c -Wall -fno-strict-aliasing -g -O2
+>   -I/lib/modules/2.6.9-34.EL.cern/build/include
+>   -I/lib/modules/2.6.9-34.EL.cern/source/include
+>   -I/lib/modules/2.6.9-34.EL.cern/source/include/asm-i386/mach-default
+>   -nostdinc -iwithprefix include -DKBUILD_STR(s)=#s
+>   -DKBUILD_BASENAME=KBUILD_STR(dummy) -Werror  conftest.c >&5
+> In file included from conftest.c:22:
+> /lib/modules/2.6.9-34.EL.cern/build/include/linux/kernel.h:10:20:
+>   stdarg.h: No such file or directory
 
-Some examples:
-Photoshop 7 $69.95 
-Creative Suite Standard (3 CD) $129.95
-Dreamweaver MX 2004 $69.95
-Studio MX 2004 with Director MX 2004 $139.95
-Encarta Encyclopedia Delux 2004 (3CD) $89.95
-InDesign CS $69.95
-Premiere 6.5 $89.95
-Photoshop CS $99.95
-Premiere 6.5 $89.95
-Fireworks MX 2004 $69.95
-Photo Painter 8 $59.95
-Flash MX 2004 $69.95
-Norton System Works 2003 $59.95
-Windows NT 4.0 Terminal Server $49.95
+This file should have been picked up from the compiler's own include
+directory.
 
-The rest is on our site:
-http://orukcktqc6cj7oojboo1boo6.erisjiwasred.hk/
+I think there may be something wrong with your compiler configuration.
+If you create a test.c file with the following contents:
+
+	#include <stdarg.h>
+	int main() {}
+
+and compile it with "gcc -c test.c", does it work?
 
 
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
