@@ -1,14 +1,21 @@
-From: Anders Johansson <ajh@watri.org.au>
-Subject: Re: vxpocket 440
-Date: Sat, 28 Oct 2006 19:31:54 +0800
-Message-ID: <20061028113154.GC4356@watri.org.au>
-References: <20061027093747.GA29589@watri.org.au>
+From: "Intermingled L. Cohen" <lccheung@greatrocklinhomes.com>
+Subject: Replica Watches
+Date: Sat, 28 Oct 2006 06:54:36 -0500
+Message-ID: <2797043958.20061028065436@greatrocklinhomes.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1601658981=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20061027093747.GA29589@watri.org.au>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 782BA261
+	for <alsa-devel@alsa-project.org>;
+	Sat, 28 Oct 2006 18:53:25 +0200 (MEST)
+Received: from -194464272 (unknown [201.215.109.164])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	7D68099A8E for <alsa-devel@alsa-project.org>;
+	Sat, 28 Oct 2006 18:53:23 +0200 (MEST)
+Received: from greatrocklinhomes.com (-192041264 [-194488408])
+	by greattaste.com (Qmailv1) with ESMTP id 95876B7BAD
+	for <alsa-devel@alsa-project.org>; Sat, 28 Oct 2006 06:54:36 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,81 +25,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============1601658981==
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I have had some more luck getting this thing going. I rebooted and
-managed to get alsamixer working. Also compiled and installed kernel 
-2.6.18.1 (SMP, no preemption), with alsa message logging. 
+Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
+All genuine Swiss Rolex Replicas should have the following:
 
-
-This is what the boot messages in syslog looks like:
-
-Oct 28 18:21:07 asil kernel: ALSA sound/pcmcia/vx/vxpocket.c:220: vxpocket_config called
-Oct 28 18:21:07 asil kernel: ALSA sound/pcmcia/vx/vxpocket.c:245: VX-pocket 440 is detected
-Oct 28 18:21:07 asil kernel: ALSA sound/pcmcia/vx/vxpocket.c:188: vxpocket assign resources: port = 0x2100, irq = 3
-Oct 28 18:21:07 asil kernel: ALSA sound/pcmcia/vx/vxp_ops.c:170: check ISR_HF2
-Oct 28 18:21:07 asil kernel: ALSA sound/pcmcia/vx/vxp_ops.c:205: xilinx: dsp size received 0x577b, orig 0x577b
-Oct 28 18:21:07 asil kernel: ALSA sound/drivers/vx/vx_uer.c:214: set internal clock to 0x4b from freq 48000
-Oct 28 18:21:07 asil kernel: ALSA sound/drivers/vx/vx_core.c:700: checksum = 0xabaa657f
-Oct 28 18:21:07 asil kernel: ALSA sound/drivers/vx/vx_pcm.c:261: vx_set_ibl: size = 2016, max = 2016, min = 504, gran = 126
-Oct 28 18:21:07 asil kernel: ALSA sound/drivers/vx/vx_pcm.c:261: vx_set_ibl: size = 504, max = 2016, min = 504, gran = 126
+• Full 1-year Warranty 
+• Solid 14k or 18k Gold on two-toned models
+• Guaranteed triple-wrapped gold on all-gold models 
+• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
+• The color of the gold looks exactly like a genuine Rolex watch 
 
 
-Why is there ony one message about loaded firmware? I thought there
-were 4 firmware files?
+Bvlgari 
+Cartier 
+Chopard 
+Chronoswiss 
+Corum 
+Rado
+Longines 
+Patek philippe 
+Rolex
+Vacheron constantin 
+And more for a fraction of the price!
 
+http://mza09h9hscshn44k94mk94mm.qweschen.cd/
 
-
-I have tried accessing the card, both directly using arecord, aplay
-and using JACK, but with no luck, only some data gets in or out from the
-card. Trying to use JACK results in the following error messages:
-
-Oct 28 18:24:41 asil kernel: ALSA sound/drivers/vx/vx_uer.c:214: set internal clock to 0x571 from freq 8000
-Oct 28 18:24:42 asil kernel: ALSA sound/drivers/vx/vx_core.c:299: <7>ALSA sound/drivers/vx/vx_core.c:299: msg got error = 0x802a15 at
-cmd[0]
-Oct 28 18:24:42 asil kernel: ALSA sound/drivers/vx/vx_pcm.c:795: vx: cannot start stream
-Oct 28 18:24:42 asil kernel: ALSA sound/drivers/vx/vx_pcm.c:687: error hbuffer
-Oct 28 18:24:42 asil kernel: ALSA sound/drivers/vx/vx_core.c:299: msg got error = 0xcfe at cmd[0]
-Oct 28 18:24:43 asil kernel: ALSA sound/drivers/vx/vx_core.c:69: vx_check_reg_bit: timeout, reg=ISR, mask=0x10, val=0x7
-
-I have managed to get JACK working with bigger bigger buffer size
-(512 samples) but I don't get any sound through.
-
-
-Playing a wav file works, but results in the following error 
-messages:
-
-Oct 28 18:35:36 asil kernel: ALSA sound/drivers/vx/vx_core.c:299: msg got error = 0xc00 at cmd[0]
-Oct 28 18:35:36 asil kernel: ALSA sound/drivers/vx/vx_pcm.c:799: vx: cannot start pipe
-
-
-Recording works sometimes, but sometimes only for a fraction of a
-second, after that only noise is recorded.
-
-
-Playing and recording simultaneously (using arecord | aplay) hardly
-ever works, and no error messages are logged. When there is an error
-message it is most often the same as for playback.
-
-
-The biggest problem is that the machine often hangs when the sound
-card is used. I have not been able to reproduce the problem in any
-consistent way (use of uninitialised pointer perhaps)?
+Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
 
-I really need to get the card working, downgrading is not an option
-due to a very new chipset. 
 
-
-Please help me,
-//Anders
+--===============1601658981==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1601658981==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1601658981==--
