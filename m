@@ -1,20 +1,14 @@
-From: "Worsen A. Colossal" <mtangn@go-myhome.com>
-Subject: Replica Watches
-Date: Sun, 29 Oct 2006 01:27:59 -0600
-Message-ID: <7078146724.20061029012759@go-myhome.com>
+From: Daniel Barkalow <barkalow@iabervon.org>
+Subject: 1.0.13 doesn't work with my laptop
+Date: Sun, 29 Oct 2006 11:00:31 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0610291038450.9789@iabervon.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1910921334=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1420626F
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 13:26:46 +0100 (MET)
-Received: from -196758344 (unknown [125.176.111.169])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	CE76C99311
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 13:26:43 +0100 (MET)
-Received: from go-myhome.com (-196628160 [-194157000])
-	by glimpso.com (Qmailv1) with ESMTP id 291CFE04BC
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 01:27:59 -0600
+Received: from iabervon.org (iabervon.org [66.92.72.58])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CECAA28C
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 17:00:39 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,63 +18,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1910921334==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I've got a Lenovo 3000 N100 (sorry, don't know the model number), and the 
+sound works with 1.0.12, but not with 1.0.13. I get the message:
 
-Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
-All genuine Swiss Rolex Replicas should have the following:
+ALSA /var/tmp/portage/alsa-driver-1.0.13/work/alsa-driver-1.0.13/pci/hda/../../a
+lsa-kernel/pci/hda/patch_si3054.c:245: si3054: cannot initialize. EXT MID = 0000
+HDA Intel: probe of 0000:00:1b.0 failed with error -13
 
-• Full 1-year Warranty 
-• Solid 14k or 18k Gold on two-toned models
-• Guaranteed triple-wrapped gold on all-gold models 
-• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
-• The color of the gold looks exactly like a genuine Rolex watch 
+It looks to me like 1.0.12 doesn't detect the problematic device (11c1 ID 
+1040, codec#1), while 1.0.13 identifies it and can't initialize it 
+correctly. I think it's probably the modem, which I don't particularly 
+have a need for.
 
+Three things:
 
-Bvlgari 
-Cartier 
-Chopard 
-Chronoswiss 
-Corum 
-Rado
-Longines 
-Patek philippe 
-Rolex
-Vacheron constantin 
-And more for a fraction of the price!
+ Is there an easy way to tell 1.0.13 not to bother with the second codec?
 
-http://qlwmdlvlege3r88odq8ovq8q.gogusellop.hk/
+ It would probably be worth having the driver do what it can with the 
+  device if it succeeds in setting up anything, even if it fails to 
+  initialize some portions.
 
-Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+ Should I help debug the issue? It's pretty convenient for me to test, at 
+  least as far as whether it initializes; I don't actually have a handy 
+  phone line or anyone to call with it.
 
+(Please cc me even if that's not standard list practice; I'm not 
+subscribed)
 
-
-
---===============1910921334==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	-Daniel
+*This .sig left intentionally blank*
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1910921334==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1910921334==--
