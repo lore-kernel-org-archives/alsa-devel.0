@@ -1,17 +1,20 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [RFC/PATCH] Stop Apple i2s DMA gracefully
-Date: Sun, 29 Oct 2006 13:23:38 +0100
-Message-ID: <1162124618.14051.42.camel@johannes.berg>
-References: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
-	<1162111764.14051.32.camel@johannes.berg>
-	<17732.34486.450034.459264@cargo.ozlabs.ibm.com>
+From: "Worsen A. Colossal" <mtangn@go-myhome.com>
+Subject: Replica Watches
+Date: Sun, 29 Oct 2006 01:27:59 -0600
+Message-ID: <7078146724.20061029012759@go-myhome.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1230542021=="
+Content-Type: multipart/mixed; boundary="===============1910921334=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A72BC254
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 13:24:59 +0100 (MET)
-In-Reply-To: <17732.34486.450034.459264@cargo.ozlabs.ibm.com>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1420626F
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 13:26:46 +0100 (MET)
+Received: from -196758344 (unknown [125.176.111.169])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	CE76C99311
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 13:26:43 +0100 (MET)
+Received: from go-myhome.com (-196628160 [-194157000])
+	by glimpso.com (Qmailv1) with ESMTP id 291CFE04BC
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 01:27:59 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,81 +24,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Paul Mackerras <paulus@samba.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, benjamin@sipsolutions.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1230542021==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-+D0kmt1sNpcWYtfRNyx4"
-
-
---=-+D0kmt1sNpcWYtfRNyx4
+--===============1910921334==
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Sun, 2006-10-29 at 21:47 +1100, Paul Mackerras wrote:
-> Johannes Berg writes:
->=20
-> > Maybe we should clear the S0 bit and then check if it's active?
->=20
-> That's what I do, exactly.
+Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
+All genuine Swiss Rolex Replicas should have the following:
 
-Whoops, missed that, sorry.
+• Full 1-year Warranty 
+• Solid 14k or 18k Gold on two-toned models
+• Guaranteed triple-wrapped gold on all-gold models 
+• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
+• The color of the gold looks exactly like a genuine Rolex watch 
 
-> The possible race is that the DBDMA might see the S0 bit set just
-> before we clear it, but it will still take a little while for it to do
-> the branch, fetch the stop command, and execute it.  So it is possible
-> that we clear S0 and then check the ACTIVE bit and see that it is
-> still set, but in fact the DBDMA did see the S0 bit set and is in the
-> process of stopping, and if we do nothing it will stop and the input
-> or output will stall.
->=20
-> That's why I put the udelay(10) in there.  It may be possible to do
-> better by telling the DBDMA to do a flush and looking at the status
-> words in the DBDMA command list.  If we see the status from the flush
-> then the DBDMA didn't see S0; if the DBDMA stops before writing out
-> the status from the flush then it did see it.  However, the udelay
-> seems to work OK and is simple.
 
-Yeah, I just missed the S0 clearing, now I understand. Sorry about that.
-Thanks for clearing it up.
+Bvlgari 
+Cartier 
+Chopard 
+Chronoswiss 
+Corum 
+Rado
+Longines 
+Patek philippe 
+Rolex
+Vacheron constantin 
+And more for a fraction of the price!
 
-So just in case anyone cares
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
+http://qlwmdlvlege3r88odq8ovq8q.gogusellop.hk/
 
-Thanks a lot,
-johannes
-
---=-+D0kmt1sNpcWYtfRNyx4
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (powerbook)
-
-iQIVAwUARUSdSKVg1VMiehFYAQI/zQ//YFyw5CCRc7mfDnG98DuAdlWfw8EGIUUU
-quMtVjsT/CFaSRE9uy0eZU3dPJV21aNzJibVsgqTE1apdCQkCrzkJtHxNlKfDrjs
-gX5dQVsDQmvg0A/qDowcYjnw8xMn6xH3O0VJQE44b4PwJohcYWspF/9wx1kLMcb0
-mxm+tfwCramyqgZnaLXag70u2+tNmQZPYLuVXn5y5tRkcQq/5TUHZ5zBmGdTMILF
-X8eQzvu8X+TQFhXlaNcwQqTkOC+AuMOm6A1GvE+Ud+9ItaqbxDdu04TBo8klO4bY
-XJtW5TlrDULrR1IhpRMMr8muEkQXuwiGqUGSyXGmq6Amf3CiqsL7XJ0VPnaePsuI
-oBWLqOVB3EVYxE8K7OCsmx7DJh9BOQTRDJemI+UiVrfF/2nH6iJdAW2lHOpTtnAc
-k6WCOjKanZIzg4o1sCPcacDqoSHnPbjGXjMN93vzDzyaIK+KsShBn/S2xKC1gzr1
-wT7+ASyEvQRCWOdWZ40OwLrtj3CDaaspBLTrnGNGyB0JsbYVbqiLrJmI3gHxeCWf
-tLsOmstI0flSyedlUzqjAYX0VhG2rPvUn+0Za94nLq8BJtDCe+80B5t/fDhKnTQK
-CVoijbfwhnFt+P/lJmCcX8h87fk9uxwe/l7lQekrWzFSanlChZ6yPICQGRhY8PWf
-y2jt+8ZUPa0=
-=m4v0
------END PGP SIGNATURE-----
-
---=-+D0kmt1sNpcWYtfRNyx4--
+Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
 
---===============1230542021==
+
+--===============1910921334==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -106,7 +72,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1230542021==
+--===============1910921334==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -117,4 +83,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1230542021==--
+--===============1910921334==--
