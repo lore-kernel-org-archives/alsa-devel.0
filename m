@@ -1,10 +1,10 @@
 From: Thomas Creutz <thomas.creutz@gmx.de>
 Subject: snd-hda-intel and ALC861 ... strange mixer problem...
-Date: Sun, 29 Oct 2006 23:52:10 +0100
-Message-ID: <4545309A.5080504@gmx.de>
+Date: Mon, 30 Oct 2006 00:11:24 +0100
+Message-ID: <4545351C.9000300@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,127 +18,193 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gRGV2J3MsCgpJIGhhdmUgc29tZSBQcm9ibGVtcyB3aXRoIG15IHNvdW5kIGNhcmQuLi4g
-SSBjYW50IHVzZSB0aGUgaGFyZHdhcmUtbWl4ZXIuCgpJIHVzZSBhIGhnLWNsb25lIGZyb20gbm93
-OgoKQnkgbG9hZGluZyB0aGUgc291bmQtZHJpdmVyIEkgYmVjb21lCgpQQ0k6IEVuYWJsaW5nIGRl
-dmljZSAwMDAwOjAwOjFiLjAgKDAwMDAgLT4gMDAwMikKQUNQSTogUENJIEludGVycnVwdCAwMDAw
-OjAwOjFiLjBbQV0gLT4gR1NJIDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTY5ClBDSTogU2V0dGlu
-ZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAwMDAwOjAwOjFiLjAgdG8gNjQKaGRhX2NvZGVjOiBV
-bmtub3duIG1vZGVsIGZvciBBTEM4NjEsIHRyeWluZyBhdXRvLXByb2JlIGZyb20gQklPUy4uLgpB
-TFNBIC91c3Ivc3JjL2Fsc2EtaGcvYWxzYS1kcml2ZXIvcGNpL2hkYS9oZGFfY29kZWMuYzoyMTY0
-OiBhdXRvY29uZmlnOiAKbGluZV9vdXRzPTEgKDB4MjAvMHgwLzB4MC8weDAvMHgwKQpBTFNBIC91
-c3Ivc3JjL2Fsc2EtaGcvYWxzYS1kcml2ZXIvcGNpL2hkYS9oZGFfY29kZWMuYzoyMTY4OiAKc3Bl
-YWtlcl9vdXRzPTAgKDB4MC8weDAvMHgwLzB4MC8weDApCkFMU0EgL3Vzci9zcmMvYWxzYS1oZy9h
-bHNhLWRyaXZlci9wY2kvaGRhL2hkYV9jb2RlYy5jOjIxNzI6IGhwX291dHM9MSAKKDB4Yi8weDAv
-MHgwLzB4MC8weDApCkFMU0EgL3Vzci9zcmMvYWxzYS1oZy9hbHNhLWRyaXZlci9wY2kvaGRhL2hk
-YV9jb2RlYy5jOjIxODA6IGlucHV0czogCm1pYz0weGQsIGZtaWM9MHgwLCBsaW5lPTB4YywgZmxp
-bmU9MHgwLCBjZD0weDExLCBhdXg9MHgwCgpJIHBsYXllZCBhcm91bmQgd2l0aCBhbHNhbWl4ZXIg
-YW5kIGZpbmQgb3V0LCB0aGF0IHdoZW4gaSBwdXNoIExJTkUgdXAgCmFuZCBkb3duCgp0aGF0IG9u
-IFtkQiBnYWluPS02LjAwLCAtNi4wMF0gdG8gW2RCIGdhaW49LTMuMDAsIC0zLjAwXSB0aGUgc291
-bmQgd2FzIApsb3VkZXIKCkJ1dCB3aGVuIEkgb24gW2RCIGdhaW49MC4wMCwgMC4wMF0sIHRoZSBz
-b3VuZCBnZXRzIHZlcnkgbG91ZCEKCk9uIGFsbCBvdGhlciBnYWluIHNldHRpbmdzIHdhcyBub3Ro
-aW5nIAo8aHR0cDovL2RpY3QubGVvLm9yZy9lbmRlP2xwPWVuZGUmcD0vZ1FQVS4mc2VhcmNoPW5v
-dGhpbmc+IHRvIAo8aHR0cDovL2RpY3QubGVvLm9yZy9lbmRlP2xwPWVuZGUmcD0vZ1FQVS4mc2Vh
-cmNoPXRvPiBjaG9vc2UgCjxodHRwOi8vZGljdC5sZW8ub3JnL2VuZGU/bHA9ZW5kZSZwPS9nUVBV
-LiZzZWFyY2g9Y2hvb3NlPi4KCldpdGggQWxzYSAxLjAuMTJyYzEgZnJvbSAyLjYuMTgoYW5kIC4x
-KSBhbmQgQWxzYSAxLjAuMTMgdGhlcmUgd2FzIGEgCmFkZGl0aW9uYWwgbWl4ZXIgZm9yIG1hc3Rl
-ciAoc29ycnkgaSBmb3Jnb3QgdGhlIGxhYmVsKSwgYnV0IHRoaXMgZG9uwrR0IApjaGFuY2UgYW55
-dGhpbmcuLi4KCkFueSBJZGVhIHdoYXQgaSBjYW4gZG8/CgpncmVldGluZ3MsClRob21hcwoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpNeSBzeXN0ZW06CgpuYnR4YzovaG9tZS9hbGllbnR4
-YyMgdW5hbWUgLWEKTGludXggbmJ0eGMgMi42LjE4LTEtNjg2LXNtcCAjMiBTTVAgRnJpIE9jdCAy
-MCAxNjo0NDozNyBDRVNUIDIwMDYgaTY4NiAKR05VL0xpbnV4CgpuYnR4YzovaG9tZS9hbGllbnR4
-YyMgY2F0IC9wcm9jL2Fzb3VuZC92ZXJzaW9uCkFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVj
-dHVyZSBEcml2ZXIgVmVyc2lvbiAxLjAuMTMuCkNvbXBpbGVkIG9uIE9jdCAyOSAyMDA2IGZvciBr
-ZXJuZWwgMi42LjE4LTEtNjg2LXNtcCAoU01QKS4KCm5idHhjOi9ob21lL2FsaWVudHhjIyBjYXQg
-L3Byb2MvYXNvdW5kL2RldmljZXMKMDogWyAwXSA6IGNvbnRyb2wKMTY6IFsgMC0gMF06IGRpZ2l0
-YWwgYXVkaW8gcGxheWJhY2sKMTc6IFsgMC0gMV06IGRpZ2l0YWwgYXVkaW8gcGxheWJhY2sKMjI6
-IFsgMC0gNl06IGRpZ2l0YWwgYXVkaW8gcGxheWJhY2sKMjQ6IFsgMC0gMF06IGRpZ2l0YWwgYXVk
-aW8gY2FwdHVyZQozMDogWyAwLSA2XTogZGlnaXRhbCBhdWRpbyBjYXB0dXJlCjMzOiA6IHRpbWVy
-CgpuYnR4YzovaG9tZS9hbGllbnR4YyMgY2F0IC9wcm9jL2Fzb3VuZC9tb2R1bGVzCjAgc25kX2hk
-YV9pbnRlbAoKbmJ0eGM6L2hvbWUvYWxpZW50eGMjIGxzbW9kfGdyZXAgc25kCnNuZF9oZGFfaW50
-ZWwgMTk4MDAgNApzbmRfaGRhX2NvZGVjIDE3MDY4OCAxIHNuZF9oZGFfaW50ZWwKc25kX3BjbV9v
-c3MgNDU1MzYgMApzbmRfbWl4ZXJfb3NzIDE2MTI4IDEgc25kX3BjbV9vc3MKc25kX3BjbSA3NTUy
-NCA0IHNuZF9oZGFfaW50ZWwsc25kX2hkYV9jb2RlYyxzbmRfcGNtX29zcwpzbmRfdGltZXIgMjE3
-MzIgMSBzbmRfcGNtCnNuZCA1NjMzNiAxMyAKc25kX2hkYV9pbnRlbCxzbmRfaGRhX2NvZGVjLHNu
-ZF9wY21fb3NzLHNuZF9taXhlcl9vc3Msc25kX3BjbSxzbmRfdGltZXIKc291bmRjb3JlIDkyNDgg
-MSBzbmQKc25kX3BhZ2VfYWxsb2MgOTk2MCAyIHNuZF9oZGFfaW50ZWwsc25kX3BjbQoKbmJ0eGM6
-L2hvbWUvYWxpZW50eGMjIGxzcGNpIC12diAtcyAwMDoxYi4wCjAwOjFiLjAgQXVkaW8gZGV2aWNl
-OiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUcgKElDSDcgRmFtaWx5KSBIaWdoIApEZWZpbml0aW9u
-IEF1ZGlvIENvbnRyb2xsZXIgKHJldiAwMikKU3Vic3lzdGVtOiBVbml3aWxsIENvbXB1dGVyIENv
-cnAgVW5rbm93biBkZXZpY2UgOTA3OApDb250cm9sOiBJL08tIE1lbSsgQnVzTWFzdGVyKyBTcGVj
-Q3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIApTdGVwcGluZy0gU0VSUi0gRmFzdEIy
-Qi0KU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkItIFBhckVyci0gREVWU0VMPWZhc3Qg
-PlRBYm9ydC0gPFRBYm9ydC0gCjxNQWJvcnQtID5TRVJSLSA8UEVSUi0KTGF0ZW5jeTogMCwgQ2Fj
-aGUgTGluZSBTaXplOiAzMiBieXRlcwpJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJUlEgNjYK
-UmVnaW9uIDA6IE1lbW9yeSBhdCBmZWJmYzAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBb
-c2l6ZT0xNktdCkNhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgpG
-bGFnczogUE1FQ2xrLSBEU0ktIEQxLSBEMi0gQXV4Q3VycmVudD01NW1BIFBNRShEMCssRDEtLEQy
-LSxEM2hvdCssRDNjb2xkKykKU3RhdHVzOiBEMCBQTUUtRW5hYmxlLSBEU2VsPTAgRFNjYWxlPTAg
-UE1FLQpDYXBhYmlsaXRpZXM6IFs2MF0gTWVzc2FnZSBTaWduYWxsZWQgSW50ZXJydXB0czogTWFz
-ay0gNjRiaXQrIFF1ZXVlPTAvMCAKRW5hYmxlKwpBZGRyZXNzOiAwMDAwMDAwMGZlZTAwMDAwIERh
-dGE6IDQwNDIKQ2FwYWJpbGl0aWVzOiBbNzBdIEV4cHJlc3MgVW5rbm93biB0eXBlIElSUSAwCkRl
-dmljZTogU3VwcG9ydGVkOiBNYXhQYXlsb2FkIDEyOCBieXRlcywgUGhhbnRGdW5jIDAsIEV4dFRh
-Zy0KRGV2aWNlOiBMYXRlbmN5IEwwcyA8NjRucywgTDEgPDF1cwpEZXZpY2U6IEVycm9yczogQ29y
-cmVjdGFibGUtIE5vbi1GYXRhbC0gRmF0YWwtIFVuc3VwcG9ydGVkLQpEZXZpY2U6IFJseGRPcmQt
-IEV4dFRhZy0gUGhhbnRGdW5jLSBBdXhQd3ItIE5vU25vb3ArCkRldmljZTogTWF4UGF5bG9hZCAx
-MjggYnl0ZXMsIE1heFJlYWRSZXEgMTI4IGJ5dGVzCkxpbms6IFN1cHBvcnRlZCBTcGVlZCB1bmtu
-b3duLCBXaWR0aCB4MCwgQVNQTSB1bmtub3duLCBQb3J0IDAKTGluazogTGF0ZW5jeSBMMHMgPDY0
-bnMsIEwxIDwxdXMKTGluazogQVNQTSBEaXNhYmxlZCBDb21tQ2xrLSBFeHRTeW5jaC0KTGluazog
-U3BlZWQgdW5rbm93biwgV2lkdGggeDAKCm5idHhjOi9ob21lL2FsaWVudHhjIyBhbWl4ZXIKU2lt
-cGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRwaG9uZScsMApDYXBhYmlsaXRpZXM6IHBzd2l0Y2gKUGxh
-eWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodApNb25vOgpGcm9udCBMZWZ0
-OiBQbGF5YmFjayBbb25dCkZyb250IFJpZ2h0OiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBj
-b250cm9sICdGcm9udCcsMApDYXBhYmlsaXRpZXM6IHBzd2l0Y2gKUGxheWJhY2sgY2hhbm5lbHM6
-IEZyb250IExlZnQgLSBGcm9udCBSaWdodApNb25vOgpGcm9udCBMZWZ0OiBQbGF5YmFjayBbb25d
-CkZyb250IFJpZ2h0OiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdMaW5lJyww
-CkNhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoClBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBM
-ZWZ0IC0gRnJvbnQgUmlnaHQKTGltaXRzOiBQbGF5YmFjayAwIC0gMjMKTW9ubzoKRnJvbnQgTGVm
-dDogUGxheWJhY2sgMTUgWzY1JV0gWzkuMDBkQl0gW29uXQpGcm9udCBSaWdodDogUGxheWJhY2sg
-MTUgWzY1JV0gWzkuMDBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ0QnLDAKQ2FwYWJp
-bGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
-cm9udCBSaWdodApMaW1pdHM6IFBsYXliYWNrIDAgLSAyMwpNb25vOgpGcm9udCBMZWZ0OiBQbGF5
-YmFjayAxOSBbODMlXSBbMjEuMDBkQl0gW29uXQpGcm9udCBSaWdodDogUGxheWJhY2sgMTkgWzgz
-JV0gWzIxLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYycsMApDYXBhYmlsaXRp
-ZXM6IHB2b2x1bWUgcHN3aXRjaApQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250
-IFJpZ2h0CkxpbWl0czogUGxheWJhY2sgMCAtIDIzCk1vbm86CkZyb250IExlZnQ6IFBsYXliYWNr
-IDAgWzAlXSBbLTM2LjAwZEJdIFtvZmZdCkZyb250IFJpZ2h0OiBQbGF5YmFjayAwIFswJV0gWy0z
-Ni4wMGRCXSBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCkNhcGFiaWxpdGll
-czogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZApQbGF5YmFjayBjaGFubmVsczogTW9ubwpNb25vOiBQ
-bGF5YmFjayBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMApDYXBhYmlsaXRp
-ZXM6IGN2b2x1bWUgY3N3aXRjaApDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQg
-UmlnaHQKTGltaXRzOiBDYXB0dXJlIDAgLSAxMwpGcm9udCBMZWZ0OiBDYXB0dXJlIDAgWzAlXSBb
-LTYuMDBkQl0gW29uXQpGcm9udCBSaWdodDogQ2FwdHVyZSAwIFswJV0gWy02LjAwZEJdIFtvbl0K
-U2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NhbGxlciBJRCcsMApDYXBhYmlsaXRpZXM6IHBzd2l0Y2gg
-cHN3aXRjaC1qb2luZWQKUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KTW9ubzogUGxheWJhY2sgW29m
-Zl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMApDYXBhYmlsaXRpZXM6IGVu
-dW0KSXRlbXM6ICdNaWMnICdMaW5lJyAnQ0QnCkl0ZW0wOiAnTWljJwpTaW1wbGUgbWl4ZXIgY29u
-dHJvbCAnT2ZmLWhvb2snLDAKQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkClBs
-YXliYWNrIGNoYW5uZWxzOiBNb25vCk1vbm86IFBsYXliYWNrIFtvZmZdCgpuYnR4YzovaG9tZS9h
-bGllbnR4YyMgZHBrZyAtbCB8IGdyZXAgYWxzYQppaSBhbHNhLWJhc2UgMS4wLjEzLTEgQUxTQSBk
-cml2ZXIgY29uZmlndXJhdGlvbiBmaWxlcwppaSBhbHNhLW9zcyAxLjAuMTItMSBBTFNBIHdyYXBw
-ZXIgZm9yIE9TUyBhcHBsaWNhdGlvbnMKaWkgYWxzYS10b29scyAxLjAuMTMtMSBDb25zb2xlIGJh
-c2VkIEFMU0EgdXRpbGl0aWVzIGZvciBzcGVjaWZpYyBoYQppaSBhbHNhLXRvb2xzLWd1aSAxLjAu
-MTMtMSBHVUkgYmFzZWQgQUxTQSB1dGlsaXRpZXMgZm9yIHNwZWNpZmljIGhhcmR3YQppaSBhbHNh
-LXV0aWxzIDEuMC4xMy0xIEFMU0EgdXRpbGl0aWVzCmlpIGFsc2FwbGF5ZXItYWxzYSAwLjk5Ljc2
-LTkgUENNIHBsYXllciBkZXNpZ25lZCBmb3IgQUxTQSAoQUxTQSBvdXRwdXQgbW8KaWkgYWxzYXBs
-YXllci1jb21tb24gMC45OS43Ni05IFBDTSBwbGF5ZXIgZGVzaWduZWQgZm9yIEFMU0EgKGNvbW1v
-biBmaWxlcykKaWkgYWxzYXBsYXllci1lc2QgMC45OS43Ni05IFBDTSBwbGF5ZXIgZGVzaWduZWQg
-Zm9yIEFMU0EgKEVzb3VuRCBvdXRwdXQKaWkgYWxzYXBsYXllci1ndGsgMC45OS43Ni05IFBDTSBw
-bGF5ZXIgZGVzaWduZWQgZm9yIEFMU0EgKEdUSyB2ZXJzaW9uKQppaSBhbHNhcGxheWVyLW9zcyAw
-Ljk5Ljc2LTkgUENNIHBsYXllciBkZXNpZ25lZCBmb3IgQUxTQSAoT1NTIG91dHB1dCBtb2QKaWkg
-YWxzYXBsYXllci10ZXh0IDAuOTkuNzYtOSBQQ00gcGxheWVyIGRlc2lnbmVkIGZvciBBTFNBICh0
-ZXh0IHZlcnNpb24pCmlpIGdzdHJlYW1lcjAuMTAtYWxzYSAwLjEwLjEwLTEgR1N0cmVhbWVyIHBs
-dWdpbiBmb3IgQUxTQQppaSBsaWJwdC1wbHVnaW5zLWFsc2EgMS4xMC4yLTIgUG9ydGFibGUgV2lu
-ZG93cyBMaWJyYXJ5IEF1ZGlvIFBsdWdpbiBmb3IgdGgKaWkgbGlic2RsMS4yZGViaWFuLWFsc2Eg
-MS4yLjExLTQgU2ltcGxlIERpcmVjdE1lZGlhIExheWVyICh3aXRoIFgxMSBhbmQgQUxTQQppaSB2
-bGMtcGx1Z2luLWFsc2EgMC44LjYtc3ZuMjAwNjEwMTIuZGViaWFuLTEgZHVtbXkgdHJhbnNpdGlv
-bmFsIHBhY2thZ2UKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpVc2luZyBUb21jYXQgYnV0IG5lZWQgdG8g
-ZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNlcywgc2VjdXJpdHk/CkdldCBzdHVm
-ZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0ZWNobm9sb2d5IHRvIG1ha2UgeW91
-ciBqb2IgZWFzaWVyCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYu
-MS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5l
-dC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Dev's,
+
+I have some Problems with my sound card... I cant use the hardware-mixer.
+
+I use a hg-clone from now:
+
+By loading the sound-driver I become
+
+PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
+ALSA /usr/src/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2164: autoconfig:
+line_outs=3D1 (0x20/0x0/0x0/0x0/0x0)
+ALSA /usr/src/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2168:
+speaker_outs=3D0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /usr/src/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2172: hp_outs=3D1
+(0xb/0x0/0x0/0x0/0x0)
+ALSA /usr/src/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2180: inputs:
+mic=3D0xd, fmic=3D0x0, line=3D0xc, fline=3D0x0, cd=3D0x11, aux=3D0x0
+
+I played around with alsamixer and find out, that when i push LINE up
+and down
+
+that on [dB gain=3D-6.00, -6.00] to [dB gain=3D-3.00, -3.00] the sound was
+louder
+
+But when I on [dB gain=3D0.00, 0.00], the sound gets very loud!
+
+On all other gain settings was nothing to choose.
+
+With Alsa 1.0.12rc1 from 2.6.18(and .1) and Alsa 1.0.13 there was a
+additional mixer for master (sorry i forgot the label), but this don=B4t
+chance anything...
+
+Any Idea what i can do?
+
+greetings,
+Thomas
+
+PS: sorry for multiple post, but i see that the first mail was base64 =
+
+encoded :-(
+
+---------------------------
+
+My system:
+
+nbtxc:/home/alientxc# uname -a
+Linux nbtxc 2.6.18-1-686-smp #2 SMP Fri Oct 20 16:44:37 CEST 2006 i686
+GNU/Linux
+
+nbtxc:/home/alientxc# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.13.
+Compiled on Oct 29 2006 for kernel 2.6.18-1-686-smp (SMP).
+
+nbtxc:/home/alientxc# cat /proc/asound/devices
+0: [ 0] : control
+16: [ 0- 0]: digital audio playback
+17: [ 0- 1]: digital audio playback
+22: [ 0- 6]: digital audio playback
+24: [ 0- 0]: digital audio capture
+30: [ 0- 6]: digital audio capture
+33: : timer
+
+nbtxc:/home/alientxc# cat /proc/asound/modules
+0 snd_hda_intel
+
+nbtxc:/home/alientxc# lsmod|grep snd
+snd_hda_intel 19800 4
+snd_hda_codec 170688 1 snd_hda_intel
+snd_pcm_oss 45536 0
+snd_mixer_oss 16128 1 snd_pcm_oss
+snd_pcm 75524 4 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer 21732 1 snd_pcm
+snd 56336 13
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore 9248 1 snd
+snd_page_alloc 9960 2 snd_hda_intel,snd_pcm
+
+nbtxc:/home/alientxc# lspci -vv -s 00:1b.0
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+Subsystem: Uniwill Computer Corp Unknown device 9078
+Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+Latency: 0, Cache Line Size: 32 bytes
+Interrupt: pin A routed to IRQ 66
+Region 0: Memory at febfc000 (64-bit, non-prefetchable) [size=3D16K]
+Capabilities: [50] Power Management version 2
+Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D55mA PME(D0+,D1-,D2-,D3hot+,D3cold=
++)
+Status: D0 PME-Enable- DSel=3D0 DScale=3D0 PME-
+Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=3D0/0
+Enable+
+Address: 00000000fee00000 Data: 4042
+Capabilities: [70] Express Unknown type IRQ 0
+Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
+Device: Latency L0s <64ns, L1 <1us
+Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
+Link: Latency L0s <64ns, L1 <1us
+Link: ASPM Disabled CommClk- ExtSynch-
+Link: Speed unknown, Width x0
+
+nbtxc:/home/alientxc# amixer
+Simple mixer control 'Headphone',0
+Capabilities: pswitch
+Playback channels: Front Left - Front Right
+Mono:
+Front Left: Playback [on]
+Front Right: Playback [on]
+Simple mixer control 'Front',0
+Capabilities: pswitch
+Playback channels: Front Left - Front Right
+Mono:
+Front Left: Playback [on]
+Front Right: Playback [on]
+Simple mixer control 'Line',0
+Capabilities: pvolume pswitch
+Playback channels: Front Left - Front Right
+Limits: Playback 0 - 23
+Mono:
+Front Left: Playback 15 [65%] [9.00dB] [on]
+Front Right: Playback 15 [65%] [9.00dB] [on]
+Simple mixer control 'CD',0
+Capabilities: pvolume pswitch
+Playback channels: Front Left - Front Right
+Limits: Playback 0 - 23
+Mono:
+Front Left: Playback 19 [83%] [21.00dB] [on]
+Front Right: Playback 19 [83%] [21.00dB] [on]
+Simple mixer control 'Mic',0
+Capabilities: pvolume pswitch
+Playback channels: Front Left - Front Right
+Limits: Playback 0 - 23
+Mono:
+Front Left: Playback 0 [0%] [-36.00dB] [off]
+Front Right: Playback 0 [0%] [-36.00dB] [off]
+Simple mixer control 'IEC958',0
+Capabilities: pswitch pswitch-joined
+Playback channels: Mono
+Mono: Playback [off]
+Simple mixer control 'Capture',0
+Capabilities: cvolume cswitch
+Capture channels: Front Left - Front Right
+Limits: Capture 0 - 13
+Front Left: Capture 0 [0%] [-6.00dB] [on]
+Front Right: Capture 0 [0%] [-6.00dB] [on]
+Simple mixer control 'Caller ID',0
+Capabilities: pswitch pswitch-joined
+Playback channels: Mono
+Mono: Playback [off]
+Simple mixer control 'Input Source',0
+Capabilities: enum
+Items: 'Mic' 'Line' 'CD'
+Item0: 'Mic'
+Simple mixer control 'Off-hook',0
+Capabilities: pswitch pswitch-joined
+Playback channels: Mono
+Mono: Playback [off]
+
+nbtxc:/home/alientxc# dpkg -l | grep alsa
+ii alsa-base 1.0.13-1 ALSA driver configuration files
+ii alsa-oss 1.0.12-1 ALSA wrapper for OSS applications
+ii alsa-tools 1.0.13-1 Console based ALSA utilities for specific ha
+ii alsa-tools-gui 1.0.13-1 GUI based ALSA utilities for specific hardwa
+ii alsa-utils 1.0.13-1 ALSA utilities
+ii alsaplayer-alsa 0.99.76-9 PCM player designed for ALSA (ALSA output mo
+ii alsaplayer-common 0.99.76-9 PCM player designed for ALSA (common files)
+ii alsaplayer-esd 0.99.76-9 PCM player designed for ALSA (EsounD output
+ii alsaplayer-gtk 0.99.76-9 PCM player designed for ALSA (GTK version)
+ii alsaplayer-oss 0.99.76-9 PCM player designed for ALSA (OSS output mod
+ii alsaplayer-text 0.99.76-9 PCM player designed for ALSA (text version)
+ii gstreamer0.10-alsa 0.10.10-1 GStreamer plugin for ALSA
+ii libpt-plugins-alsa 1.10.2-2 Portable Windows Library Audio Plugin for th
+ii libsdl1.2debian-alsa 1.2.11-4 Simple DirectMedia Layer (with X11 and ALSA
+ii vlc-plugin-alsa 0.8.6-svn20061012.debian-1 dummy transitional package
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
