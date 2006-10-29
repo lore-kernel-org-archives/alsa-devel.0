@@ -1,11 +1,14 @@
-From: Bill McKie <mckie@sky.arc.nasa.gov>
-Subject: No sound on Gateway MP6954 laptop under FC6
-Date: Sat, 28 Oct 2006 20:21:29 -0700
-Message-ID: <200610290321.k9T3LT1D026735@sky.arc.nasa.gov>
+From: Paul Mackerras <paulus@samba.org>
+Subject: [RFC/PATCH] Stop Apple i2s DMA gracefully
+Date: Sun, 29 Oct 2006 15:19:40 +1100
+Message-ID: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E3E628E
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2006 07:56:19 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,257 +18,508 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, benjamin@sipsolutions.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+This fixes the problem of getting extra bytes inserted at the
+beginning of a recording when using the Apple i2s interface and DBDMA
+controller.  It turns out that we can't just abort the DMA; we have to
+let it stop at the end of a command, and then wait for the S7 bit to
+be set before turning off the DBDMA controller.  Doing that for
+playback doesn't seem to be necessary, but doesn't hurt either.
 
-I've recently installed FC6 Linux on my Gateway MP6954
-laptop.  The sound hardware on this machine is an 82801G
-(ICH7), and although the sound hardware is detected at
-system install time, there is no sound output (e.g. from
-the installer's sound test gui).  [Sound functions ok
-on this laptop when it runs Win-XP.]
+We use the technique used by the Darwin driver: make each transfer
+command branch to a stop command if the S0 status bit is set.  Thus we
+can ask the DMA controller to stop at the end of the current command
+by setting S0.
 
-Discussions with sound experts on www.linuxquestions.org
-(laptops forum) indicated that there is currently no
-support in the alsa driver bundled with FC6 for the sound
-hardware as configured in the above laptop, and that this
-list would be the place to request support.
+The interrupt routine now looks at and clears the status word of the
+DBDMA command ring.  This is necessary so it can know when the DBDMA
+controller has seen that S0 is set, and so when it should look for the
+DBDMA controller being stopped and S7 being set.  This also ended up
+simplifying the calculation in i2sbus_pcm_pointer.
 
-Following is hopefully helpful system and sound related
-info from the FC6 system running on the MP6954.
+Tested on a 15 inch albook.
 
-Thanks,
-Bill McKie
-
------
-
-cat /etc/fedora-release
-
-Fedora Core release 6 (Zod)
-
------
-
-uname -a
-
-Linux localhost.localdomain 2.6.18-1.2798.fc6 #1 SMP Mon Oct 16 14:54:20 EDT 2006 i686 i686 i386 GNU/Linux
-
------
-
-cat /etc/modprobe.conf
-
-alias eth0 sky2
-alias scsi_hostadapter ahci
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; }; /sbin/modprobe -r --ignore-remove snd-hda-intel
-
------
-
-rpm -q -a | grep alsa
-
-alsa-lib-1.0.12-2.fc6
-alsa-utils-1.0.12-3.fc6
-alsa-lib-devel-1.0.12-2.fc6
-
------
-
-lspci -s 0:1b -vn
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 107b:0366
-	Flags: bus master, fast devsel, latency 0, IRQ 58
-	Memory at d8240000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-	Capabilities: [70] Express Unknown type IRQ 0
-	Capabilities: [100] Virtual Channel
-	Capabilities: [130] Unknown (5)
-
------
-
-lsmod
-
-Module                  Size  Used by
-i915                   23360  2 
-drm                    72789  3 i915
-cisco_ipsec           561436  0 
-autofs4                25413  2 
-hidp                   24129  2 
-rfcomm                 45912  0 
-l2cap                  31681  10 hidp,rfcomm
-bluetooth              58917  5 hidp,rfcomm,l2cap
-ipv6                  267745  14 
-ip_conntrack_netbios_ns     7105  0 
-ipt_REJECT              9665  1 
-xt_state                6337  1 
-ip_conntrack           56993  2 ip_conntrack_netbios_ns,xt_state
-nfnetlink              11353  1 ip_conntrack
-iptable_filter          7233  1 
-ip_tables              17669  1 iptable_filter
-x_tables               18501  3 ipt_REJECT,xt_state,ip_tables
-dm_mirror              32913  0 
-dm_multipath           22601  0 
-dm_mod                 61529  2 dm_mirror,dm_multipath
-video                  21061  0 
-sbs                    20225  0 
-i2c_ec                  9281  1 sbs
-button                 10961  0 
-battery                14405  0 
-ac                      9541  0 
-parport_pc             31205  0 
-lp                     17033  0 
-parport                40841  2 parport_pc,lp
-snd_hda_intel          22613  1 
-snd_hda_codec         154049  1 snd_hda_intel
-snd_seq_dummy           8133  0 
-snd_seq_oss            37057  0 
-snd_seq_midi_event     11841  1 snd_seq_oss
-snd_seq                57137  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device         12621  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            46561  0 
-joydev                 13697  0 
-snd_mixer_oss          20673  1 snd_pcm_oss
-snd_pcm                80453  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              27077  2 snd_seq,snd_pcm
-sg                     38493  0 
-snd                    57029  11 snd_hda_intel,snd_hda_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-ohci1394               38661  0 
-soundcore              14113  1 snd
-ieee1394              301081  1 ohci1394
-pcspkr                  7361  0 
-snd_page_alloc         14281  2 snd_hda_intel,snd_pcm
-sky2                   44357  0 
-serio_raw              11205  0 
-i2c_i801               11853  0 
-ide_cd                 42337  2 
-i2c_core               25537  2 i2c_ec,i2c_i801
-cdrom                  38625  1 ide_cd
-ahci                   23365  3 
-libata                102745  1 ahci
-sd_mod                 24897  22 
-scsi_mod              138601  4 sg,ahci,libata,sd_mod
-ext3                  135369  2 
-jbd                    63081  1 ext3
-ehci_hcd               35533  0 
-ohci_hcd               25181  0 
-uhci_hcd               27725  0 
-
------
-
-cat /proc/asound/card0/codec*
-
-Codec: SigmaTel ID 7634
-Address: 0
-Vendor Id: 0x83847634
-Subsystem Id: 0x107b0461
-Revision Id: 0x100101
-Default PCM: rates 0x7e0, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0xd0401: Stereo
-  Power: 0x0
-Node 0x03 [Audio Input] wcaps 0x1d0541: Stereo
-  Power: 0x0
-  Connection: 1
-     0x14
-Node 0x04 [Audio Input] wcaps 0x140311: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x5
-  Connection: 1
-     0x07
-Node 0x05 [Audio Output] wcaps 0x40211: Stereo Digital
-  PCM: rates 0x1e0, bits 0x0e, types 0x5
-Node 0x06 [Audio Selector] wcaps 0x300901: Stereo
-  Connection: 3
-     0x02* 0x07 0x14
-Node 0x07 [Pin Complex] wcaps 0x430681: Stereo Digital
-  Pincap 0x0810024: IN EAPD Detect
-  Pin Default 0x40c003f0: [N/A] SPDIF In at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-Node 0x08 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x424503f2: [N/A] SPDIF Out at Ext Front
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 2
-     0x05* 0x14
-Node 0x09 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x0f 0x0f]
-  Connection: 1
-     0x0f
-Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x083f: IN OUT HP Detect
-  Pin Default 0x01813022: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x0e
-Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x02a19021: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0e
-Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x90a70320: [Fixed] Mic at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0e
-Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x083f: IN OUT HP Detect
-  Pin Default 0x02214210: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0e
-Node 0x0e [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x17 0x17]
-  Connection: 1
-     0x06
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x04 0x04]
-  Connection: 5
-     0x0b* 0x0c 0x0d 0x0a 0x11
-Node 0x10 [Pin Complex] wcaps 0x400104: Mono Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x400003f1: [N/A] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x12
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x9033032e: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x12 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x06
-Node 0x13 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
-  Amp-Out vals:  [0x00]
-Node 0x14 [Audio Selector] wcaps 0x30090d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 1
-     0x09
-Codec: Generic 1057 ID 3057
-Address: 1
-Vendor Id: 0x10573057
-Subsystem Id: 0x10001
-Revision Id: 0x100100
+Signed-off-by: Paul Mackerras <paulus@samba.org>
+---
+diff --git a/sound/aoa/soundbus/i2sbus/i2sbus-core.c b/sound/aoa/soundbus/i2sbus/i2sbus-core.c
+index 23190aa..1c24771 100644
+--- a/sound/aoa/soundbus/i2sbus/i2sbus-core.c
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-core.c
+@@ -41,8 +41,8 @@ static int alloc_dbdma_descriptor_ring(s
+ 				       struct dbdma_command_mem *r,
+ 				       int numcmds)
+ {
+-	/* one more for rounding */
+-	r->size = (numcmds+1) * sizeof(struct dbdma_cmd);
++	/* one more for rounding, one for branch back, one for stop command */
++	r->size = (numcmds + 3) * sizeof(struct dbdma_cmd);
+ 	/* We use the PCI APIs for now until the generic one gets fixed
+ 	 * enough or until we get some macio-specific versions
+ 	 */
+diff --git a/sound/aoa/soundbus/i2sbus/i2sbus-pcm.c b/sound/aoa/soundbus/i2sbus/i2sbus-pcm.c
+index 3049015..3bd49c7 100644
+--- a/sound/aoa/soundbus/i2sbus/i2sbus-pcm.c
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-pcm.c
+@@ -245,18 +245,66 @@ static int i2sbus_pcm_close(struct i2sbu
+ 	return err;
+ }
+ 
++static void i2sbus_wait_for_stop(struct i2sbus_dev *i2sdev,
++				 struct pcm_info *pi)
++{
++	unsigned long flags;
++	struct completion done;
++	long timeout;
++
++	spin_lock_irqsave(&i2sdev->low_lock, flags);
++	if (pi->dbdma_ring.stopping) {
++		init_completion(&done);
++		pi->stop_completion = &done;
++		spin_unlock_irqrestore(&i2sdev->low_lock, flags);
++		timeout = wait_for_completion_timeout(&done, HZ);
++		spin_lock_irqsave(&i2sdev->low_lock, flags);
++		pi->stop_completion = NULL;
++		if (timeout == 0) {
++			/* timeout expired, stop dbdma forcefully */
++			printk(KERN_ERR "i2sbus_wait_for_stop: timed out\n");
++			/* make sure RUN, PAUSE and S0 bits are cleared */
++			out_le32(&pi->dbdma->control, (RUN | PAUSE | 1) << 16);
++			pi->dbdma_ring.stopping = 0;
++			timeout = 10;
++			while (in_le32(&pi->dbdma->status) & ACTIVE) {
++				if (--timeout <= 0)
++					break;
++				udelay(1);
++			}
++		}
++	}
++	spin_unlock_irqrestore(&i2sdev->low_lock, flags);
++}
++
+ static int i2sbus_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params)
+ {
+ 	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+ }
+ 
+-static int i2sbus_hw_free(struct snd_pcm_substream *substream)
++static inline int i2sbus_hw_free(struct snd_pcm_substream *substream, int in)
+ {
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++	struct pcm_info *pi;
++
++	get_pcm_info(i2sdev, in, &pi, NULL);
++	if (pi->dbdma_ring.stopping)
++		i2sbus_wait_for_stop(i2sdev, pi);
+ 	snd_pcm_lib_free_pages(substream);
+ 	return 0;
+ }
+ 
++static int i2sbus_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	return i2sbus_hw_free(substream, 0);
++}
++
++static int i2sbus_record_hw_free(struct snd_pcm_substream *substream)
++{
++	return i2sbus_hw_free(substream, 1);
++}
++
+ static int i2sbus_pcm_prepare(struct i2sbus_dev *i2sdev, int in)
+ {
+ 	/* whee. Hard work now. The user has selected a bitrate
+@@ -264,7 +312,7 @@ static int i2sbus_pcm_prepare(struct i2s
+ 	 * I2S controller appropriately. */
+ 	struct snd_pcm_runtime *runtime;
+ 	struct dbdma_cmd *command;
+-	int i, periodsize;
++	int i, periodsize, nperiods;
+ 	dma_addr_t offset;
+ 	struct bus_info bi;
+ 	struct codec_info_item *cii;
+@@ -274,6 +322,7 @@ static int i2sbus_pcm_prepare(struct i2s
+ 	struct pcm_info *pi, *other;
+ 	int cnt;
+ 	int result = 0;
++	unsigned int cmd, stopaddr;
+ 
+ 	mutex_lock(&i2sdev->lock);
+ 
+@@ -283,6 +332,8 @@ static int i2sbus_pcm_prepare(struct i2s
+ 		result = -EBUSY;
+ 		goto out_unlock;
+ 	}
++	if (pi->dbdma_ring.stopping)
++		i2sbus_wait_for_stop(i2sdev, pi);
+ 
+ 	runtime = pi->substream->runtime;
+ 	pi->active = 1;
+@@ -297,24 +348,43 @@ static int i2sbus_pcm_prepare(struct i2s
+ 	i2sdev->rate = runtime->rate;
+ 
+ 	periodsize = snd_pcm_lib_period_bytes(pi->substream);
++	nperiods = pi->substream->runtime->periods;
+ 	pi->current_period = 0;
+ 
+ 	/* generate dbdma command ring first */
+ 	command = pi->dbdma_ring.cmds;
++	memset(command, 0, (nperiods + 2) * sizeof(struct dbdma_cmd));
++
++	/* commands to DMA to/from the ring */
++	/*
++	 * For input, we need to do a graceful stop; if we abort
++	 * the DMA, we end up with leftover bytes that corrupt
++	 * the next recording.  To do this we set the S0 status
++	 * bit and wait for the DMA controller to stop.  Each
++	 * command has a branch condition to
++	 * make it branch to a stop command if S0 is set.
++	 * On input we also need to wait for the S7 bit to be
++	 * set before turning off the DMA controller.
++	 * In fact we do the graceful stop for output as well.
++	 */
+ 	offset = runtime->dma_addr;
+-	for (i = 0; i < pi->substream->runtime->periods;
+-	     i++, command++, offset += periodsize) {
+-		memset(command, 0, sizeof(struct dbdma_cmd));
+-		command->command =
+-		    cpu_to_le16((in ? INPUT_MORE : OUTPUT_MORE) | INTR_ALWAYS);
++	cmd = (in? INPUT_MORE: OUTPUT_MORE) | BR_IFSET | INTR_ALWAYS;
++	stopaddr = pi->dbdma_ring.bus_cmd_start + 
++		(nperiods + 1) * sizeof(struct dbdma_cmd);
++	for (i = 0; i < nperiods; i++, command++, offset += periodsize) {
++		command->command = cpu_to_le16(cmd);
++		command->cmd_dep = cpu_to_le32(stopaddr);
+ 		command->phy_addr = cpu_to_le32(offset);
+ 		command->req_count = cpu_to_le16(periodsize);
+-		command->xfer_status = cpu_to_le16(0);
+ 	}
+-	/* last one branches back to first */
+-	command--;
+-	command->command |= cpu_to_le16(BR_ALWAYS);
++
++	/* branch back to beginning of ring */
++	command->command = cpu_to_le16(DBDMA_NOP | BR_ALWAYS);
+ 	command->cmd_dep = cpu_to_le32(pi->dbdma_ring.bus_cmd_start);
++	command++;
++
++	/* set stop command */
++	command->command = cpu_to_le16(DBDMA_STOP);
+ 
+ 	/* ok, let's set the serial format and stuff */
+ 	switch (runtime->format) {
+@@ -435,16 +505,10 @@ static int i2sbus_pcm_prepare(struct i2s
+ 	return result;
+ }
+ 
+-static struct dbdma_cmd STOP_CMD = {
+-	.command = __constant_cpu_to_le16(DBDMA_STOP),
+-};
+-
+ static int i2sbus_pcm_trigger(struct i2sbus_dev *i2sdev, int in, int cmd)
+ {
+ 	struct codec_info_item *cii;
+ 	struct pcm_info *pi;
+-	int timeout;
+-	struct dbdma_cmd tmp;
+ 	int result = 0;
+ 	unsigned long flags;
+ 
+@@ -464,92 +528,48 @@ static int i2sbus_pcm_trigger(struct i2s
+ 				cii->codec->start(cii, pi->substream);
+ 		pi->dbdma_ring.running = 1;
+ 
+-		/* reset dma engine */
+-		out_le32(&pi->dbdma->control,
+-			 0 | (RUN | PAUSE | FLUSH | WAKE) << 16);
+-		timeout = 100;
+-		while (in_le32(&pi->dbdma->status) & RUN && timeout--)
+-			udelay(1);
+-		if (timeout <= 0) {
+-			printk(KERN_ERR
+-			       "i2sbus: error waiting for dma reset\n");
+-			result = -ENXIO;
+-			goto out_unlock;
++		if (pi->dbdma_ring.stopping) {
++			/* Clear the S0 bit, then see if we stopped yet */
++			out_le32(&pi->dbdma->control, 1 << 16);
++			if (in_le32(&pi->dbdma->status) & ACTIVE) {
++				/* possible race here? */
++				udelay(10);
++				if (in_le32(&pi->dbdma->status) & ACTIVE)
++					goto out_unlock; /* keep running */
++			}
+ 		}
+ 
++		/* make sure RUN, PAUSE and S0 bits are cleared */
++		out_le32(&pi->dbdma->control, (RUN | PAUSE | 1) << 16);
++
++		/* set branch condition select register */
++		out_le32(&pi->dbdma->br_sel, (1 << 16) | 1);
++
+ 		/* write dma command buffer address to the dbdma chip */
+ 		out_le32(&pi->dbdma->cmdptr, pi->dbdma_ring.bus_cmd_start);
+-		/* post PCI write */
+-		mb();
+-		(void)in_le32(&pi->dbdma->status);
+-
+-		/* change first command to STOP */
+-		tmp = *pi->dbdma_ring.cmds;
+-		*pi->dbdma_ring.cmds = STOP_CMD;
+-
+-		/* set running state, remember that the first command is STOP */
+-		out_le32(&pi->dbdma->control, RUN | (RUN << 16));
+-		timeout = 100;
+-		/* wait for STOP to be executed */
+-		while (in_le32(&pi->dbdma->status) & ACTIVE && timeout--)
+-			udelay(1);
+-		if (timeout <= 0) {
+-			printk(KERN_ERR "i2sbus: error waiting for dma stop\n");
+-			result = -ENXIO;
+-			goto out_unlock;
+-		}
+-		/* again, write dma command buffer address to the dbdma chip,
+-		 * this time of the first real command */
+-		*pi->dbdma_ring.cmds = tmp;
+-		out_le32(&pi->dbdma->cmdptr, pi->dbdma_ring.bus_cmd_start);
+-		/* post write */
+-		mb();
+-		(void)in_le32(&pi->dbdma->status);
+-
+-		/* reset dma engine again */
+-		out_le32(&pi->dbdma->control,
+-			 0 | (RUN | PAUSE | FLUSH | WAKE) << 16);
+-		timeout = 100;
+-		while (in_le32(&pi->dbdma->status) & RUN && timeout--)
+-			udelay(1);
+-		if (timeout <= 0) {
+-			printk(KERN_ERR
+-			       "i2sbus: error waiting for dma reset\n");
+-			result = -ENXIO;
+-			goto out_unlock;
+-		}
+ 
+-		/* wake up the chip with the next descriptor */
+-		out_le32(&pi->dbdma->control,
+-			 (RUN | WAKE) | ((RUN | WAKE) << 16));
+-		/* get the frame count  */
++		/* initialize the frame count and current period */
++		pi->current_period = 0;
+ 		pi->frame_count = in_le32(&i2sdev->intfregs->frame_count);
+ 
++		/* set the DMA controller running */
++		out_le32(&pi->dbdma->control, (RUN << 16) | RUN);
++
+ 		/* off you go! */
+ 		break;
++
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		if (!pi->dbdma_ring.running) {
+ 			result = -EALREADY;
+ 			goto out_unlock;
+ 		}
++		pi->dbdma_ring.running = 0;
+ 
+-		/* turn off all relevant bits */
+-		out_le32(&pi->dbdma->control,
+-			 (RUN | WAKE | FLUSH | PAUSE) << 16);
+-		{
+-			/* FIXME: move to own function */
+-			int timeout = 5000;
+-			while ((in_le32(&pi->dbdma->status) & RUN)
+-			       && --timeout > 0)
+-				udelay(1);
+-			if (!timeout)
+-				printk(KERN_ERR
+-				       "i2sbus: timed out turning "
+-				       "off dbdma engine!\n");
+-		}
++		/* Set the S0 bit to make the DMA branch to the stop cmd */
++		out_le32(&pi->dbdma->control, (1 << 16) | 1);
++		pi->dbdma_ring.stopping = 1;
+ 
+-		pi->dbdma_ring.running = 0;
+ 		list_for_each_entry(cii, &i2sdev->sound.codec_list, list)
+ 			if (cii->codec->stop)
+ 				cii->codec->stop(cii, pi->substream);
+@@ -574,70 +594,82 @@ static snd_pcm_uframes_t i2sbus_pcm_poin
+ 	fc = in_le32(&i2sdev->intfregs->frame_count);
+ 	fc = fc - pi->frame_count;
+ 
+-	return (bytes_to_frames(pi->substream->runtime,
+-			pi->current_period *
+-			snd_pcm_lib_period_bytes(pi->substream))
+-		+ fc) % pi->substream->runtime->buffer_size;
++	if (fc >= pi->substream->runtime->buffer_size)
++		fc %= pi->substream->runtime->buffer_size;
++	return fc;
+ }
+ 
+ static inline void handle_interrupt(struct i2sbus_dev *i2sdev, int in)
+ {
+ 	struct pcm_info *pi;
+-	u32 fc;
+-	u32 delta;
++	u32 fc, nframes;
++	u32 status;
++	int timeout, i;
++	int dma_stopped = 0;
++	struct snd_pcm_runtime *runtime;
+ 
+ 	spin_lock(&i2sdev->low_lock);
+ 	get_pcm_info(i2sdev, in, &pi, NULL);
+-
+-	if (!pi->dbdma_ring.running) {
+-		/* there was still an interrupt pending
+-		 * while we stopped. or maybe another
+-		 * processor (not the one that was stopping
+-		 * the DMA engine) was spinning above
+-		 * waiting for the lock. */
++	if (!pi->dbdma_ring.running && !pi->dbdma_ring.stopping)
+ 		goto out_unlock;
+-	}
+ 
+-	fc = in_le32(&i2sdev->intfregs->frame_count);
+-	/* a counter overflow does not change the calculation. */
+-	delta = fc - pi->frame_count;
+-
+-	/* update current_period */
+-	while (delta >= pi->substream->runtime->period_size) {
+-		pi->current_period++;
+-		delta = delta - pi->substream->runtime->period_size;
+-	}
+-
+-	if (unlikely(delta)) {
+-		/* Some interrupt came late, so check the dbdma.
+-		 * This special case exists to syncronize the frame_count with
+-		 * the dbdma transfer, but is hit every once in a while. */
+-		int period;
+-
+-		period = (in_le32(&pi->dbdma->cmdptr)
+-		        - pi->dbdma_ring.bus_cmd_start)
+-				/ sizeof(struct dbdma_cmd);
+-		pi->current_period = pi->current_period
+-					% pi->substream->runtime->periods;
+-
+-		while (pi->current_period != period) {
+-			pi->current_period++;
+-			pi->current_period %= pi->substream->runtime->periods;
+-			/* Set delta to zero, as the frame_count value is too
+-			 * high (otherwise the code path will not be executed).
+-			 * This corrects the fact that the frame_count is too
+-			 * low at the beginning due to buffering. */
+-			delta = 0;
++	i = pi->current_period;
++	runtime = pi->substream->runtime;
++	while (pi->dbdma_ring.cmds[i].xfer_status) {
++		if (le16_to_cpu(pi->dbdma_ring.cmds[i].xfer_status) & BT)
++			/*
++			 * BT is the branch taken bit.  If it took a branch
++			 * it is because we set the S0 bit to make it
++			 * branch to the stop command.
++			 */
++			dma_stopped = 1;
++		pi->dbdma_ring.cmds[i].xfer_status = 0;
++
++		if (++i >= runtime->periods) {
++			i = 0;
++			pi->frame_count += runtime->buffer_size;
+ 		}
++		pi->current_period = i;
++
++		/*
++		 * Check the frame count.  The DMA tends to get a bit
++		 * ahead of the frame counter, which confuses the core.
++		 */
++		fc = in_le32(&i2sdev->intfregs->frame_count);
++		nframes = i * runtime->period_size;
++		if (fc < pi->frame_count + nframes)
++			pi->frame_count = fc - nframes;
+ 	}
+ 
+-	pi->frame_count = fc - delta;
+-	pi->current_period %= pi->substream->runtime->periods;
++	if (dma_stopped) {
++		timeout = 1000;
++		for (;;) {
++			status = in_le32(&pi->dbdma->status);
++			if (!(status & ACTIVE) && (!in || (status & 0x80)))
++				break;
++			if (--timeout <= 0) {
++				printk(KERN_ERR "i2sbus: timed out "
++				       "waiting for DMA to stop!\n");
++				break;
++			}
++			udelay(1);
++		}
+ 
++		/* Turn off DMA controller, clear S0 bit */
++		out_le32(&pi->dbdma->control, (RUN | PAUSE | 1) << 16);
++
++		pi->dbdma_ring.stopping = 0;
++		if (pi->stop_completion)
++			complete(pi->stop_completion);
++	}
++
++	if (!pi->dbdma_ring.running)
++		goto out_unlock;
+ 	spin_unlock(&i2sdev->low_lock);
+ 	/* may call _trigger again, hence needs to be unlocked */
+ 	snd_pcm_period_elapsed(pi->substream);
+ 	return;
++
+  out_unlock:
+ 	spin_unlock(&i2sdev->low_lock);
+ }
+@@ -718,7 +750,7 @@ static struct snd_pcm_ops i2sbus_playbac
+ 	.close =	i2sbus_playback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	i2sbus_hw_params,
+-	.hw_free =	i2sbus_hw_free,
++	.hw_free =	i2sbus_playback_hw_free,
+ 	.prepare =	i2sbus_playback_prepare,
+ 	.trigger =	i2sbus_playback_trigger,
+ 	.pointer =	i2sbus_playback_pointer,
+@@ -788,7 +820,7 @@ static struct snd_pcm_ops i2sbus_record_
+ 	.close =	i2sbus_record_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	i2sbus_hw_params,
+-	.hw_free =	i2sbus_hw_free,
++	.hw_free =	i2sbus_record_hw_free,
+ 	.prepare =	i2sbus_record_prepare,
+ 	.trigger =	i2sbus_record_trigger,
+ 	.pointer =	i2sbus_record_pointer,
+diff --git a/sound/aoa/soundbus/i2sbus/i2sbus.h b/sound/aoa/soundbus/i2sbus/i2sbus.h
+index 0c69d20..5a29544 100644
+--- a/sound/aoa/soundbus/i2sbus/i2sbus.h
++++ b/sound/aoa/soundbus/i2sbus/i2sbus.h
+@@ -10,6 +10,7 @@ #define __I2SBUS_H
+ #include <linux/interrupt.h>
+ #include <linux/spinlock.h>
+ #include <linux/mutex.h>
++#include <linux/completion.h>
+ 
+ #include <sound/pcm.h>
+ 
+@@ -34,6 +35,7 @@ struct dbdma_command_mem {
+ 	void *space;
+ 	int size;
+ 	u32 running:1;
++	u32 stopping:1;
+ };
+ 
+ struct pcm_info {
+@@ -45,6 +47,7 @@ struct pcm_info {
+ 	u32 frame_count;
+ 	struct dbdma_command_mem dbdma_ring;
+ 	volatile struct dbdma_regs __iomem *dbdma;
++	struct completion *stop_completion;
+ };
+ 
+ enum {
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
