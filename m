@@ -1,11 +1,22 @@
-From: Fons Adriaensen <fons.adriaensen@skynet.be>
-Subject: Demux plugin
-Date: Mon, 30 Oct 2006 23:45:11 +0100
-Message-ID: <20061030224510.GA9645@linux-1.site>
+From: "Fatih Asici" <asici.f@gmail.com>
+Subject: Re: [RFC: 2.6.19 patch] snd-hda-intel: default MSI to
+	off
+Date: Tue, 31 Oct 2006 08:56:55 +0200
+Message-ID: <5aa69f860610302256u61e30b2aj2501e5c1f5b7335@mail.gmail.com>
+References: <200610050938.10997.prakash@punnoor.de>
+	<s5h64eh5yzx.wl%tiwai@suse.de> <s5h3b9l5ykv.wl%tiwai@suse.de>
+	<200610222229.16927.prakash@punnoor.de> <s5hhcxv1bc3.wl%tiwai@suse.de>
+Reply-To: fatih.asici@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F4C6255
+	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 07:56:57 +0100 (MET)
+Received: by ug-out-1314.google.com with SMTP id j3so1281936ugf
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2006 22:56:56 -0800 (PST)
+In-Reply-To: <s5hhcxv1bc3.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,55 +27,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa Developres <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Stephen Hemminger <shemminger@osdl.org>, linux-kernel@vger.kernel.org, mingo@redhat.com, hnguyen@de.ibm.com, Prakash Punnoor <prakash@punnoor.de>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On 10/23/06, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sun, 22 Oct 2006 22:29:13 +0200,
+> Prakash Punnoor wrote:
+> >
+> > Am Mittwoch 18 Oktober 2006 19:21 schrieb Takashi Iwai:
+> >
+> > > > Yes, it would be better to check the value and reset chip->msi if
+> > > > not successful.  But it's not a fatal error, so the current code
+> > > > should work.
+> > >
+> > > The below is the revised patch.
+> >
+> > I tried it and it works fine for me now (with the driver not using msi
+> > automatically now).
+>
+> Thanks for checking.  I applied the patch to ALSA tree for the next
+> push round.
+>
 
-Is it possible to create a plugin for alsa-lib that would
-do the following:
+It does not solve my problem. I still need to boot with pci=nomsi option.
 
-- I have an ALSA-supported sound card with an SPDIF input
-  that provides 2 capture channels at 96 kHz.
-
-- These two signals are actually 4 channels at 48 kHz,
-  multiplexed into two in order to trick a 2-ch hardware
-  digital recorder to accept the signal.
-
-- The plugin is configured to use hw:N as a slave, and
-  presents to the user a new device with 4 channels at
-  48 kHz, demultiplexed from its two inputs.
-
-In other words, the plugin has to 'open' the slave with 
-modified parameters - the sample rate and period size
-requested by the user are doubled and the number of
-channels is halved - and to perform the conversion. 
-There is no resampling involved, just moving samples
-from input buffers to output buffers. The preferred
-interface to the plugin would be mmapped.
-
-
-Is this possible, and if yes how ?
-I've been looking at 
-
-  http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_external_plugins.html
-
-but that hasn't made me any wiser...
-
-If it can't be a plugin, what are the other options ?
-
-The reason I will need this is here:
-
-  http://www.core-sound.com/4Mic/2.php
-
-
-TIA,
-
--- 
-FA
-
-Lascia la spina, cogli la rosa.
-
+Prakash: did you use Takashi's patch or Andrian's patch?
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
