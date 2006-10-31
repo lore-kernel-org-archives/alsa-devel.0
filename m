@@ -1,12 +1,10 @@
-From: "Deanna Parra" <gfcgb@cardsource.com>
-Subject: essential, must read Growth alert that brings profit
-Date: Tue, 31 Oct 2006 10:10:29 +0000 (UTC)
-Message-ID: <20061031101017.4E8642A4@alsa.jcu.cz>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [PATCH] Fix mask to stop AT91 SSC clock on shutdown
+Date: Tue, 31 Oct 2006 13:16:51 +0000
+Message-ID: <1162300611.15041.43.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-TGWKhZ2CkgoFnJqBz7AU"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 31 Nov 2006 10:06:43 +0300
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,46 +14,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-a child every two or three years after Frank's birth until there wererear.The Cowperwoods, father and mother, were not so lean and narrow thatplace for a boy to live. It contained mostly small two and three-storywas quite often allowed to come to the bank on Saturdays, when he wouldthat great art was as natural to him as the emotions and subtleties
 
-Please read this letter attentively. Tailor AquaPonics is going to explode! It will grow up to 70%
+--=-TGWKhZ2CkgoFnJqBz7AU
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+This patch by Frank Mandarino and Hubert Kahlert fixes a bug in the AT91
+SSC (i2s) shutdown code that would erroneously disable other AT91
+peripheral clocks.  
 
-Company: TAILOR AQUAPONICS
-Stock symbol: TQWW.PK
-Current price: 0.07$
-Expected price: 0.26$
+Signed-off-by: Hubert Kahlert <hkahlert@hk-datentechnik.de>
+Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+ 
 
+--=-TGWKhZ2CkgoFnJqBz7AU
+Content-Disposition: attachment; filename=asoc-at91-sscclock.patch
+Content-Type: text/x-patch; name=asoc-at91-sscclock.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Check this inside news. It will be published on MARKETWIRE on the 1st of November 2006
+# HG changeset patch
+# User fam@star4.sky.endrelia.com
+# Date 1161951244 14400
+# Node ID a8c5e404fd61fd6844b94d36efe544bec03d0b68
+# Parent  24b6b107f951ce9198caaa99731dd0a9fbd08488
+Fixed mask to stop SSC clock on shutdown.
 
-Recent news: TQWW.PK is going to conquer the US market. TAILOR AQUAPONICS coming to America!!! 
+Current code will stop other clocks, such as AIC and PIO, depending
+on the SSC used.  Reported by Hubert Kahlert.
 
-Tailor AquaPonics recently announced plans to expand its operational facilities to the United States. The Nevada-based company with operations in Australia recently decided to translate its track record of success to the American market. TQWW.PK President Ron Almadova stated, "Our intention is to set up in southern Nevada to capitalize in the Las Vegas, Los Angeles, and San Diego Markets...There are more people in that triangle than in the whole Australian country. Now that we have the board approval, we have pinpointed several possible locations that would serve our delivery profile." 
+diff -r 24b6b107f951 -r a8c5e404fd61 soc/at91/at91rm9200-i2s.c
+--- a/soc/at91/at91rm9200-i2s.c	Fri Oct 27 10:45:00 2006 +0200
++++ b/soc/at91/at91rm9200-i2s.c	Fri Oct 27 08:14:04 2006 -0400
+@@ -373,7 +373,7 @@ static void at91rm9200_i2s_shutdown(stru
+ 	if (!ssc_p->dir_mask) {
+ 		/* Shutdown the SSC clock. */
+ 		DBG("Stopping pid %d clock\n", ssc_p->pid);
+-		at91_sys_write(AT91_PMC_PCDR, ssc_p->pid);
++		at91_sys_write(AT91_PMC_PCDR, 1<<ssc_p->pid);
+ 
+ 		if (ssc_p->initialized)
+ 			free_irq(ssc_p->pid, ssc_p);
 
-
-After the publishig of that review TQWW.PK will grow constantly for 3-4 weeks. Take it now cause it is still cheap and you can enter almost for free. 
-
-About Tailor AquaPonics Worldwide:
-
-Tailor AquaPonics Worldwide, Inc. owns a controlling interest in the international growth and development rights to Tailor Made Fish Farms, a company that has developed a technology-driven, easy to operate, land-based modular fish production system. This cutting-edge system is both sustainable and environmentally responsible in keeping with the spirit of maintaining an environmentally safe and friendly solution while producing high volumes of superior and healthier farmed fish. This allows an overwhelming production of 'year-round' premium quality fish and vegetables, achieved through compact and controlled production areas using much less water than conventional methods. Our technique conserves water, is environmentally responsible, fresh health products and provides two crops from a single water uptake.
-
-
-P.S Rumor has it that 2 Million shares have already been sold that are NOT accounted for in DTC, if your familar with this term it is called a "SHORT SQUEEZE".  We will be mailing TQWW.PK for the next 3 weeks and the price will grow. It is your unique chance to double or triple your investments next week. 
-
-
-
-
-
-
-with their children; and so this family, which increased at the rate of
-
+--=-TGWKhZ2CkgoFnJqBz7AU
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--=-TGWKhZ2CkgoFnJqBz7AU
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-TGWKhZ2CkgoFnJqBz7AU--
