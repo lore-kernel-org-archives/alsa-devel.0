@@ -1,22 +1,17 @@
-From: "Expressiveness F. Telekinesis" <winters@greenwoodfire.com>
-Subject: Replica Watches
-Date: Tue, 31 Oct 2006 09:56:26 -0600
-Message-ID: <1269811710.20061031095626@greenwoodfire.com>
+From: Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH] fix emu10k1 build in 1.0.13
+Date: Tue, 31 Oct 2006 23:34:21 +0100
+Message-ID: <20061031223421.GA3684@1wt.eu>
+References: <20061028213441.GA797@1wt.eu> <s5hy7qwtv9t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0934436329=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D16032DB
-	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 21:55:04 +0100 (MET)
-Received: from 148739600 (157.Red-83-41-201.dynamicIP.rima-tde.net
-	[83.41.201.157])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	07486997B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 21:55:03 +0100 (MET)
-Received: from greenwoodfire.com (147764008 [148838424])
-	by 157.Red-83-41-201.dynamicIP.rima-tde.net (Qmailv1) with ESMTP id
-	507EB71779
-	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 09:56:26 -0600
+Received: from 1wt.eu (1wt.eu [62.212.114.60])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECBF12CF
+	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 22:33:48 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hy7qwtv9t.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,63 +21,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, "Gabor Z. Papp" <gzp@papp.hu>
 List-Id: alsa-devel@alsa-project.org
 
---===============0934436329==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hi Takashi !
 
-Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
-All genuine Swiss Rolex Replicas should have the following:
+On Tue, Oct 31, 2006 at 03:27:58PM +0100, Takashi Iwai wrote:
+> At Sat, 28 Oct 2006 23:34:41 +0200,
+> Willy Tarreau wrote:
+> > 
+> > Hi guys,
+> > 
+> > Gabor Z.Papp reported to me that alsa-driver-1.0.13 did not build under
+> > 2.4.34-pre4. I found there was a missing export-objs in the emu10k1
+> > Makefile. This trivial patch fixes it.
+> 
+> Strange, this is already set in alsa-driver/pci/emu10k1/Makefile that
+> includes alsa-kernel/pci/emu10k1/Makefile.  Your patch would simply
+> override it...
 
-• Full 1-year Warranty 
-• Solid 14k or 18k Gold on two-toned models
-• Guaranteed triple-wrapped gold on all-gold models 
-• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
-• The color of the gold looks exactly like a genuine Rolex watch 
+Interesting... Here's what I get :
+
+$ ./configure --with-cards=emu10k1 --with-oss=yes --with-sequencer=yes --with-kernel=/lib/modules/2.4.33-wt2/build
+...
+$ make
+...
+make[2]: Entering directory `/data/src/audio/alsa/alsa-driver-1.0.13/pci/emu10k1'
+make[2]: Circular io.c <- io.c dependency dropped.
+gcc -D__KERNEL__ -DMODULE=1 -I/data/src/audio/alsa/alsa-driver-1.0.13/include  -I/lib/modules/2.4.33-wt2/build/include -O2 -mpreferred-stack-boundary=2 -march=i686 -malign-functions=4 -D__SMP__ -DCONFIG_SMP -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix include  -DKBUILD_BASENAME=io   -c -o io.o io.c
+In file included from io.c:2:
+../../alsa-kernel/pci/emu10k1/io.c:65: parse error before `this_object_must_be_defined_as_export_objs_in_the_Makefile'
+../../alsa-kernel/pci/emu10k1/io.c:65: warning: type defaults to `int' in declaration of `this_object_must_be_defined_as_export_objs_in_the_Makefile'
+../../alsa-kernel/pci/emu10k1/io.c:65: warning: data definition has no type or storage class
+../../alsa-kernel/pci/emu10k1/io.c:97: parse error before `this_object_must_be_defined_as_export_objs_in_the_Makefile'
+../../alsa-kernel/pci/emu10k1/io.c:97: warning: type defaults to `int' in declaration of `this_object_must_be_defined_as_export_objs_in_the_Makefile'
+../../alsa-kernel/pci/emu10k1/io.c:97: warning: data definition has no type or storage class
+make[2]: *** [io.o] Error 1
+make[2]: Leaving directory `/data/src/audio/alsa/alsa-driver-1.0.13/pci/emu10k1'
+make[1]: *** [_modsubdir_emu10k1] Error 2
+make[1]: Leaving directory `/data/src/audio/alsa/alsa-driver-1.0.13/pci'
+make: *** [compile] Error 1
 
 
-Bvlgari 
-Cartier 
-Chopard 
-Chronoswiss 
-Corum 
-Rado
-Longines 
-Patek philippe 
-Rolex
-Vacheron constantin 
-And more for a fraction of the price!
+Ah OK just found it, it was just a typo :
 
-http://gt4ult3b464bzgye3ggelggg.okopets.hk/
+--- ./pci/emu10k1/Makefile.orig	Tue Oct 31 23:30:10 2006
++++ ./pci/emu10k1/Makefile	Tue Oct 31 23:30:15 2006
+@@ -5,7 +5,7 @@
+ include $(SND_TOPDIR)/toplevel.config
+ include $(SND_TOPDIR)/Makefile.conf
+ 
+-export-objs  := memory.o voice.o io.c
++export-objs  := memory.o voice.o io.o
+ 
+ include $(SND_TOPDIR)/alsa-kernel/pci/emu10k1/Makefile
+ 
 
-Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+I've verified that it was the only one in this case. Please
+apply this patch instead.
 
+Regards,
+Willy
 
-
-
---===============0934436329==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0934436329==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0934436329==--
