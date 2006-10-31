@@ -1,61 +1,42 @@
-From: "Sergey Kolosov" <freeserj@gmail.com>
-Subject: Re: maximum quantity of sound cards supported by alsa
-Date: Tue, 31 Oct 2006 18:36:20 +0300
-Message-ID: <d39e2e70610310736v7b423496w37751e26854a6b04@mail.gmail.com>
-References: <d39e2e70610250619n7d28589dkc5ef8e492a6cd0bc@mail.gmail.com>
-	<1161782765.24018.274184927@webmail.messagingengine.com>
-	<d39e2e70610260235j2507354fne7cec8ab97290611@mail.gmail.com>
-	<1161859538.12967.274268898@webmail.messagingengine.com>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio controllers of
+ MCP67 support to hda_intel.c
+Date: Tue, 31 Oct 2006 07:43:45 -0800
+Message-ID: <20061031074345.18d57e88.randy.dunlap@oracle.com>
+References: <15F501D1A78BD343BE8F4D8DB854566B0C42D52B@hkemmail01.nvidia.com>
+	<s5hr6wotukx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1161859538.12967.274268898@webmail.messagingengine.com>
-Content-Disposition: inline
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1423498AbWJaPsm@vger.kernel.org>
+In-Reply-To: <s5hr6wotukx.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peer Chen <pchen@nvidia.com>, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Andy Currid <ACurrid@nvidia.com>, Brian Lazara <BLazara@nvidia.com>, jgarzik@pobox.com, Emily Jiang <ejiang@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/26/06, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> (quoting fixed)
-> (please don't send HTML mail)
-Ok, sorry.
->
-> Sergey Kolosov wrote:
-> > On 10/25/06, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> > > Sergey Kolosov wrote:
-> > > >  What maximum quantity of sound cards supported by alsa?
-> > >
-> > > 32 if CONFIG_SND_DYNAMIC_MINORS is set, otherwise 8.
-> >
-> >  Whether it is planned to expand in the future this quantity?
->
-> No.  It's unlikely that any computer would be ably to handle
-> the bandwdth for that many devices.
->
-> What are you trying to do?
->
->
-> Regards,
-> Clemens
->
+On Tue, 31 Oct 2006 15:42:54 +0100 Takashi Iwai wrote:
 
-I want to have some virtual sound cards (it is necessary for network
-terminals). We develop devices (vga, sound out, ps/2 mouse and
-keyboard) and for work of a sound it is necessary for me to have a few
-(by theory > 8) sound cards.
+> At Tue, 31 Oct 2006 15:33:58 +0800,
+> Peer Chen wrote:
+> > 
+> > Add the support for HD audio controllers of MCP51,MCP55,MCP61,MCP65 & MCP67.
+> > The following hda_intel.c patch is based on kernel 2.6.18.
+> > 
+> > Signed-off by: Peer Chen <pchen@nvidia.com>
+> 
+> Applied to ALSA tree.  But I didn't add it to push-to-2.6.19-tree
+> because apparently no one has tested the patch well yet.
+> 
+> (BTW, your patch attached there was broken, so I had to apply it
+> manually.  At the next time, please either inline the patch in a text
+> mail, or attach a plain text patch if inlining is not possible with
+> your MUA/MTA.)
 
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Patches should also be sent made to apply to a current kernel
+tree, like 2.6.19-rc3, 2.6.19-rc4, 2.6.19-rc3-git8,
+Linus's git tree, or Andrew's -mm tree if that is the only
+place where the patch fits, or even to a subsystem tree (e.g., ALSA).
+
+---
+~Randy
