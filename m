@@ -1,15 +1,11 @@
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: [patch] hda: fix typo for xw4400 PCI sub-ID
-Date: Wed, 1 Nov 2006 11:02:07 -0500
-Message-ID: <20061101160201.GE21668@tuxdriver.com>
+From: richard <richard.bown@blueyonder.co.uk>
+Subject: Envy 24 chipset~Delta 66
+Date: Wed, 01 Nov 2006 16:58:18 +0000
+Message-ID: <4548D22A.4030506@blueyonder.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ra.tuxdriver.com (ra.tuxdriver.com [70.61.120.52])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47BD92CE
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 17:02:20 +0100 (MET)
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,31 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
-Cc: perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The PCI sub-device ID for the HP xw4400 is actually 0x280c.
+Hi all
+I'm using a M-audio Delta 66 soundcard, os is Mandriva 2007.
+I'm getting a problem when selecting the inputs when using programs such 
+as Winrad, gmfsk,and fldigi that input 1has an input sensitivity about 20dB
+better than the other 3 inputs, the delta 66 is 4x4 IO  plus 2 digital IO.
+I've use both the envy24 control panel and the alsa mixer.
+There is no problem switching the outputs to any of the 4 outputs on the 
+break out box, but when using any of the programs above I have 1 input.
+Is anything known with similar problems.
+TIA
+Richard
 
-Signed-off-by: John W. Linville <linville@tuxdriver.com>
----
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 84a3eb8..020a487 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5870,7 +5870,7 @@ static struct hda_board_config alc262_cf
- 	{ .pci_subvendor = 0x10cf, .pci_subdevice = 0x1397,
- 	  .config = ALC262_FUJITSU },
- 	{ .modelname = "hp-bpc", .config = ALC262_HP_BPC },
--	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x208c,
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x280c,
- 	  .config = ALC262_HP_BPC }, /* xw4400 */
- 	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x3014,
- 	  .config = ALC262_HP_BPC }, /* xw6400 */
--- 
-John W. Linville
-linville@tuxdriver.com
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
