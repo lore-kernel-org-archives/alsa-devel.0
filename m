@@ -1,17 +1,11 @@
-From: Paul Mackerras <paulus@samba.org>
-Subject: Re: [RFC/PATCH] Stop Apple i2s DMA gracefully
-Date: Wed, 1 Nov 2006 12:05:40 +1100
-Message-ID: <17735.62180.65780.364256@cargo.ozlabs.ibm.com>
-References: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
-	<s5h4ptkvafz.wl%tiwai@suse.de>
+From: Matthew Strahan <mstrahan@cse.unsw.edu.au>
+Subject: Re: Test Patch6 for Conexant HD Audio on HP DV2000
+Date: Wed, 01 Nov 2006 14:23:29 +1100
+Message-ID: <45481331.8000100@cse.unsw.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ozlabs.org (ozlabs.org [203.10.76.45])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C4D42C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 02:21:01 +0100 (MET)
-In-Reply-To: <s5h4ptkvafz.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,33 +15,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, alsa-devel@alsa-project.org, benjamin@sipsolutions.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai writes:
+I am in a similar situation.  Though I'm a programmer I've never done 
+driver work before and I have no idea where to start with this.  I 
+really want sound to work properly since I use my laptop mostly in 
+trains and public rooms etc while using my desktop in private.
 
-> We need no irqsave/irqrestore but here since the function is supposed
-> to be called always in schedulable situation.  spin_lock_irq() should
-> be enough.
+I'm also willing to perform experiments, recompile and code for this.
 
-OK.
+Matthew
 
-> Any reason to put extra inline here?  It's no time-critical funciton,
-> so let compiler do optimization.
+From: Konstantin Shaposhnikov <k.shaposhnikov <at> gmail.com>
+Subject: Test Patch6 for Conexant HD Audio on HP DV2000 
+<http://news.gmane.org/find-root.php?message_id=%3cb12092cb0610281530u5f80b124o1dc7bf3b2a7052c1%40mail.gmail.com%3e>
 
-Sure.
+Hi,
 
-> BTW, shoud this go to 2.6.19 although the fix isn't so trivial, or
-> could wait for the next?
+I would like to help with testing of alsa driver for HDA Conexant chipset.
 
-I don't have a strong feeling either way.  It is a bug fix, but for a
-bug which doesn't seem to have affected many people (although perhaps
-people were avoiding using capture because it didn't work properly),
-but it's not a bug which can lead to any crash or vulnerability as far
-as I can see.
+I have HP DV2000 notebook. Current version of alsa driver (1.013)
+works almost fine, but there two issues that should be fixed:
 
-Paul.
+1. When I plug-in headphone jack sound can be heard both from speakers
+and headphones.
+2. Internal microphone doesn't work (at least arecord doesn't record anything)
+
+I've applied Test Patch6 for Conexant HD Audio
+(http://cache.gmane.org//gmane/linux/alsa/devel/41540-001.bin) to
+alsa-driver-1.0.13 but unfortunately above mentioned issues not yet
+fixed.
+
+It looks like patch tries to solve the first problem, and
+cxt5047_hp_automute function is called when HP jack is plugged in or
+plugged out, but following code in this function has no effect:
+        snd_hda_codec_amp_update(codec, 0x14, 0, HDA_OUTPUT, 0,
+         0x80, present ? 0x80 : 0);
+  snd_hda_codec_amp_update(codec, 0x14, 1, HDA_OUTPUT, 0,
+         0x80, present ? 0x80 : 0);
+
+If you want me to perform some experiments on my notebook, I am glad to do it.
+Any ideas how to fix decribed problems are appreciated.
+
+Regards,
+Konstantin
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
