@@ -1,21 +1,17 @@
-From: "Dedicate Q. McCullough" <chfarias@ginasmith.com>
-Subject: Re: Software
-Date: Tue, 31 Oct 2006 14:04:10 -0600
-Message-ID: <8644187836.20061031140410@ginasmith.com>
+From: Paul Mackerras <paulus@samba.org>
+Subject: Re: [RFC/PATCH] Stop Apple i2s DMA gracefully
+Date: Wed, 1 Nov 2006 12:05:40 +1100
+Message-ID: <17735.62180.65780.364256@cargo.ozlabs.ibm.com>
+References: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
+	<s5h4ptkvafz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9134F2BD
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 02:02:49 +0100 (MET)
-Received: from 148816064 (unknown [222.37.134.95])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	7FB3F99866
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 02:02:44 +0100 (MET)
-Received: from ginasmith.com (149573088 [149501776])
-	by goodroofer.com (Qmailv1) with ESMTP id 95487F8348
-	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2006 14:04:10 -0600
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C4D42C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 02:21:01 +0100 (MET)
+In-Reply-To: <s5h4ptkvafz.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,30 +21,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Johannes Berg <johannes@sipsolutions.net>, alsa-devel@alsa-project.org, benjamin@sipsolutions.net
 List-Id: alsa-devel@alsa-project.org
 
-All best software!
+Takashi Iwai writes:
 
-Some examples:
-PageMaker 7 (2CD) $69.95
-Office XP Professional $79.95
-Office 2000 Premium Edition PE (2CD) $59.95
-Windows NT 4.0 Terminal Server $49.95
-Premiere 6.5 $89.95
-Works 7 $69.95
-Studio MX 2004 with Director MX 2004 $139.95
-Director MX 2004 $69.95
-Windows Millenium $59.95
-Windows XP Professional With SP2 Full Version $79.95
-Norton System Works 2003 $59.95
-Money 2004 $69.95
-Freehand MX 11 $69.95
-Windows Millenium $59.95
+> We need no irqsave/irqrestore but here since the function is supposed
+> to be called always in schedulable situation.  spin_lock_irq() should
+> be enough.
 
-The rest is on our site:
-http://5qbjt1sptnbio55ia5n0annn.okopets.hk/
+OK.
 
+> Any reason to put extra inline here?  It's no time-critical funciton,
+> so let compiler do optimization.
+
+Sure.
+
+> BTW, shoud this go to 2.6.19 although the fix isn't so trivial, or
+> could wait for the next?
+
+I don't have a strong feeling either way.  It is a bug fix, but for a
+bug which doesn't seem to have affected many people (although perhaps
+people were avoiding using capture because it didn't work properly),
+but it's not a bug which can lead to any crash or vulnerability as far
+as I can see.
+
+Paul.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
