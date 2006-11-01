@@ -1,11 +1,17 @@
-From: Erik Slagter <erik@slagter.name>
-Subject: SPDIF/IEC958 sample rate on HDA/ALC882
-Date: Wed, 01 Nov 2006 17:58:55 +0100
-Message-ID: <4548D24F.7080409@slagter.name>
+From: "Eduardo Valentin" <edubezval@gmail.com>
+Subject: [PATCH 0/6] Alsa support for Maemo SDK (n770)
+Date: Wed, 1 Nov 2006 13:06:00 -0400
+Message-ID: <a0580c510611010906s50f666c7sd770b2786f2b880d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.192])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96D052CE
+	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2006 18:06:01 +0100 (MET)
+Received: by nz-out-0102.google.com with SMTP id i28so1710298nzi
+	for <alsa-devel@alsa-project.org>; Wed, 01 Nov 2006 09:06:00 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,51 +21,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, mikko.a.leppanen@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Sorry if this is considered to be "user" question, but I got no response
-at all from the "user" list. Guess the real cracks hang around here.
+Hello all,
 
-I have lots of questions I cannot resolve from all of the docs, but for
-the moment I'll stick to the most important one.
+   This patch series will add alsa support for Maemo SDK (nokia 770).
+This is an alsa plugin and the patch series is against
+alsa-plugins-1.0.13rc2 source code.
 
-The combination of HDA/ALC882 should be able to deliver sound at 96 kHz
-(hda..., right...) Also the ALC882 datasheet says it can deliver sound
-at 96 kHz.
+   The plugin adds alsa support by communicating with n770's audio system.
 
-In practise, though, I cannot get it to output any other sample rate
-than 48 kHz. Any other sample rate handed to hw:0,0 is simply converted
-(somewhere??? and badly...) to 48 kHz and the SPDIF is still driven at
-48 kHz.
+   To add ALSA support, an EXT PCM I/O plugin and EXT CTL plugin were
+written. The code is based on SDK documentation from the alsa-project
+site.
 
-iecset allows me to set the rate to 32/44.1/48 kHz, the spdif output is
-still at 48 kHz. Some other flags from iecset are actually honoured
-(like "data" and "emphasis").
+   There are basically three .c files:
+dsp-protocol.c: Protocol to communicate with n770 audio system.
+alsa-dsp.c: An External PCM I/O plugin
+dsp-ctl.c: An External Control plugin
 
-I can ask aplay to play at various rates (from a suitable PCM file), but
-it complains at any other rate than 44.1 or 48 (notably 32) kHz that the
-rate is not supported. It plays at 44.1 kHz though. And again converts
-it to 48 kHz! Sigh...
+   Here is the total diffstat:
+ Makefile.am          |    2
+ configure.in         |   10
+ doc/README-maemo     |  183 +++++++
+ maemo/Makefile.am    |   15
+ maemo/alsa-dsp.c     |  772 +++++++++++++++++++++++++++++++
+ maemo/constants.h    |  199 ++++++++
+ maemo/debug.h        |   52 ++
+ maemo/dsp-ctl.c      |  641 ++++++++++++++++++++++++++
+ maemo/dsp-protocol.c | 1246 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ maemo/dsp-protocol.h |   88 +++
+ maemo/list.h         |  244 +++++++++
+ maemo/reporting.h    |  241 +++++++++
+ maemo/types.h        |  126 +++++
+ 13 files changed, 3818 insertions(+), 1 deletion(-)
 
-Maybe I am using the wrong "hw", there is also a "hw:0,2" device, which
-I cannot make work properly at all (only one channel is output, large
-chunks are discarded, much much clipping).
-
-Please help, I am totally lost here...
-
-Info:
-
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 18: [ 0- 2]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 25: [ 0- 1]: digital audio capture
- 33:        : timer
-
-Alsa version 1.0.12rc1 (linux 2.6.18) on X86_64
-
-Other output on request.
+-- 
+Eduardo Bezerra Valentin
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
