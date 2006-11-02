@@ -1,22 +1,13 @@
 From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: 1.0.13 and indigoio
-Date: Thu, 2 Nov 2006 05:51:38 +0300
-Message-ID: <70a871c80611011851k77e3f8ddhd57866f0eb59504e@mail.gmail.com>
-References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
-	<s5hu02iu1ni.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
-	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
-	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
-	<20061009224039.74f7af57.pochini@shiny.it>
-	<70a871c80610100914v309f4519w97cc21a774c35a63@mail.gmail.com>
-	<20061012222126.77234cde.pochini@shiny.it>
-	<70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
-	<70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
+Subject: Re: snd_ctl_wait: Operation not permitted
+Date: Thu, 2 Nov 2006 05:50:13 +0300
+Message-ID: <70a871c80611011850m34b0b8c9oa3d007997ef2141e@mail.gmail.com>
+References: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
+In-Reply-To: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,16 +18,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Adding cardbus bridge's memory as a reserved region solved the "unable
-> to remove power" problem.
+Please cc me in your replies. I'm not on the list.
 
-No, it does not solve. Messages appear again. But reinsertion works.
-
-Seems it needs more testing.
+Thank you,
 
 Dmitry.
 
