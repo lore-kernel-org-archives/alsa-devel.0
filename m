@@ -1,13 +1,11 @@
 From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: Re: snd_ctl_wait: Operation not permitted
-Date: Thu, 2 Nov 2006 05:50:13 +0300
-Message-ID: <70a871c80611011850m34b0b8c9oa3d007997ef2141e@mail.gmail.com>
-References: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
+Subject: snd_ctl_wait: Operation not permitted
+Date: Thu, 2 Nov 2006 05:48:57 +0300
+Message-ID: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,10 +19,16 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Please cc me in your replies. I'm not on the list.
+Hello!
 
-Thank you,
+I'm trying to capture volume changes for hdsp matrix mixer.
+I subscribe to ctl events, and call snd_ctl_wait.
+After volume change (via hdspmixer) it returns with error code
+(Operation not permitted).
 
+What's this?
+
+Regards,
 Dmitry.
 
 -------------------------------------------------------------------------
