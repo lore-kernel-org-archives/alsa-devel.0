@@ -1,7 +1,7 @@
-From: "Dmitry Baikov" <dsbaikov@gmail.com>
-Subject: snd_ctl_wait: Operation not permitted
-Date: Thu, 2 Nov 2006 05:48:57 +0300
-Message-ID: <70a871c80611011848t714ccba3sbc242c58c4e19965@mail.gmail.com>
+From: enigma_0Z <enigma.0za@gmail.com>
+Subject: hda-intel: Clicky sound in games
+Date: Thu, 2 Nov 2006 01:26:34 -0500
+Message-ID: <a6f0b350611012226t7b9ff473k6e055e5ede95bf83@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,20 +16,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Hi all,
 
-I'm trying to capture volume changes for hdsp matrix mixer.
-I subscribe to ctl events, and call snd_ctl_wait.
-After volume change (via hdspmixer) it returns with error code
-(Operation not permitted).
+I've come across another problem with the hda-intel driver. Sound from
+programs such as KDE, amarok, etc are fine and clear. But if I am
+playing a game (such as neverball or sauerbraten), there are little
+poppy noises in the background. I am sure that this not the games
+sound files because I can play them outside of the game without those
+same pop noises.
 
-What's this?
-
-Regards,
-Dmitry.
+I've got an nvidia MCP51 card, and there are other bugs with this card and alsa.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
