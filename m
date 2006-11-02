@@ -1,12 +1,16 @@
-From: enigma_0Z <enigma.0za@gmail.com>
-Subject: hda-intel: Clicky sound in games
-Date: Thu, 2 Nov 2006 01:26:34 -0500
-Message-ID: <a6f0b350611012226t7b9ff473k6e055e5ede95bf83@mail.gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [RFC/PATCH] Stop Apple i2s DMA gracefully
+Date: Thu, 02 Nov 2006 09:29:28 +0100
+Message-ID: <1162456168.3241.2.camel@ux156>
+References: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A12B2F8
+	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2006 09:28:27 +0100 (MET)
+In-Reply-To: <17732.11228.441627.300383@cargo.ozlabs.ibm.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,19 +20,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Paul Mackerras <paulus@samba.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, benjamin@sipsolutions.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Sun, 2006-10-29 at 15:19 +1100, Paul Mackerras wrote:
 
-I've come across another problem with the hda-intel driver. Sound from
-programs such as KDE, amarok, etc are fine and clear. But if I am
-playing a game (such as neverball or sauerbraten), there are little
-poppy noises in the background. I am sure that this not the games
-sound files because I can play them outside of the game without those
-same pop noises.
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  		if (!pi->dbdma_ring.running) {
+>  			result = -EALREADY;
+>  			goto out_unlock;
+>  		}
+> +		pi->dbdma_ring.running = 0;
+>  
+> -		/* turn off all relevant bits */
+> -		out_le32(&pi->dbdma->control,
+> -			 (RUN | WAKE | FLUSH | PAUSE) << 16);
+> -		{
+> -			/* FIXME: move to own function */
+> -			int timeout = 5000;
+> -			while ((in_le32(&pi->dbdma->status) & RUN)
+> -			       && --timeout > 0)
+> -				udelay(1);
+> -			if (!timeout)
+> -				printk(KERN_ERR
+> -				       "i2sbus: timed out turning "
+> -				       "off dbdma engine!\n");
+> -		}
+> +		/* Set the S0 bit to make the DMA branch to the stop cmd */
+> +		out_le32(&pi->dbdma->control, (1 << 16) | 1);
+> +		pi->dbdma_ring.stopping = 1;
 
-I've got an nvidia MCP51 card, and there are other bugs with this card and alsa.
+Something that just crossed my mind because Ben was complaining about
+suspend/resume breakage... In the suspend case we actually have to make
+sure to have DMA stopped, no?
+
+johannes
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
