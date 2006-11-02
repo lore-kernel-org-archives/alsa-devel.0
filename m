@@ -1,20 +1,23 @@
-From: "Smugly T. Enlists" <byron@godscope.com>
-Subject: Weight Loss with HOODIA - $0.5 for one pill!
-Date: Wed, 01 Nov 2006 13:15:07 -0600
-Message-ID: <7541096111.20061101131507@godscope.com>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: Re: 1.0.13 and indigoio
+Date: Thu, 2 Nov 2006 05:51:38 +0300
+Message-ID: <70a871c80611011851k77e3f8ddhd57866f0eb59504e@mail.gmail.com>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<s5hu02iu1ni.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
+	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
+	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
+	<20061009224039.74f7af57.pochini@shiny.it>
+	<70a871c80610100914v309f4519w97cc21a774c35a63@mail.gmail.com>
+	<20061012222126.77234cde.pochini@shiny.it>
+	<70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
+	<70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0490635823=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C33C72FF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2006 01:13:41 +0100 (MET)
-Received: from 147415008 (bb220-255-60-138.singnet.com.sg [220.255.60.138])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	EF94799860
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2006 01:13:38 +0100 (MET)
-Received: from godscope.com (147555752 [147423808])
-	by bb220-255-60-138.singnet.com.sg (Qmailv1) with ESMTP id FBFB4B2DA7
-	for <alsa-devel@alsa-project.org>; Wed, 01 Nov 2006 13:15:07 -0600
+In-Reply-To: <70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,40 +27,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0490635823==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> Adding cardbus bridge's memory as a reserved region solved the "unable
+> to remove power" problem.
 
-If you haven’t heard of Hoodia yet, you soon will because it is being touted as the new miracle supplement for safe, effective weight loss. Hoodia gordonii, (Hoodia) is the botanical name for a cactus like plant that grows in Southern Africa. Scientists have recently isolated several compounds in this amazing plant that are responsible for dramatic weight loss. 
+No, it does not solve. Messages appear again. But reinsertion works.
 
-Our site: http://szgnyoxky1f5basggaayyaas.heyheytourist.tk/
-try to find cheaper than $0.5 for one pill!
+Seems it needs more testing.
 
-
-
---===============0490635823==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Dmitry.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0490635823==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0490635823==--
