@@ -1,11 +1,13 @@
-From: richard <richard.bown@blueyonder.co.uk>
-Subject: list
-Date: Fri, 03 Nov 2006 14:01:16 +0000
-Message-ID: <454B4BAC.9020803@blueyonder.co.uk>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: list
+Date: Fri, 03 Nov 2006 14:31:11 +0000
+Message-ID: <454B52AF.4090206@superbug.co.uk>
+References: <454B4BAC.9020803@blueyonder.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <454B4BAC.9020803@blueyonder.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,11 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: richard <richard.bown@blueyonder.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is there a list where you can get help on a alsa driver problem ?
-richard
+richard wrote:
+> Is there a list where you can get help on a alsa driver problem ?
+> richard
+>
+>   
+Depends what sort of problem.
+If you are writing an alsa driver, use this list.
+If you are having problems getting ALSA to work, use alsa-user list.
+If you think there is a bug in ALSA somewhere, use the alsa bug tracker 
+http://alsa-project.org
 
 
 -------------------------------------------------------------------------
