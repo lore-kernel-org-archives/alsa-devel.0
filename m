@@ -1,21 +1,21 @@
-From: "Undress L. Awakes" <m_niwa@gqdesign.com>
-Subject: Re: Software
-Date: Thu, 02 Nov 2006 15:55:20 -0600
-Message-ID: <8049546585.20061102155520@gqdesign.com>
+From: "Woodcutting V. Intimidation" <agase@girardinispa.com>
+Subject: Software you need
+Date: Thu, 02 Nov 2006 23:46:06 -0600
+Message-ID: <9642806109.20061102234606@girardinispa.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 058AF2C1
-	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 03:53:51 +0100 (MET)
-Received: from -194399648 (unknown [222.117.174.101])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91F482C3
+	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 11:44:35 +0100 (MET)
+Received: from -192218464 (89-38-33-141.quick-net.ro [89.38.33.141])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	7331499842
-	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 03:53:46 +0100 (MET)
-Received: from gqdesign.com (-194281512 [-194675864])
-	by gootee.com (Qmailv1) with ESMTP id 6848C8D0D6
-	for <alsa-devel@alsa-project.org>; Thu, 02 Nov 2006 15:55:20 -0600
+	5E0359991E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 11:44:34 +0100 (MET)
+Received: from girardinispa.com (-196906232 [-191930064])
+	by 89-38-33-141.quick-net.ro (Qmailv1) with ESMTP id 9A054E7C23
+	for <alsa-devel@alsa-project.org>; Thu, 02 Nov 2006 23:46:06 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,26 +28,26 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Photoshop, Windows, Office.  REALLY CHEAP.
+Need software? Click here.
 
 Some examples:
-Photoshop 7 $69.95 
-Works 7 $69.95
-Plus! XP $59.95
-Flash MX 2004 $69.95
+Windows 2000 Professional $59.95
+LiveMotion 2.0 $69.95
 Windows 2000 Advanced Server $69.95
-After Effects 6 $69.95
-WordPerfect Office 10 $69.95
-Photoshop CS with ImageReady CS $99.95
+Windows NT 4.0 Terminal Server $49.95
+Illustrator CS $69.95
+Flash MX 2004 $69.95
+Borland Delphi 7 Enterprise Edition (2CD) $69.95
+PageMaker 7 (2CD) $69.95
+Windows 2000 Advanced Server $69.95
 InDesign CS PageMaker Edition (2CD) $69.95
-Windows 98 $49.95
-Windows 98 $49.95
-Actobat 6.0 Pro $79.95
-SQL Server 2000 Enterprise Edition $69.95
-Creative Suite Premium (5 CD) $149.95
+PhotoRetouch Pro 3.0 $59.95
+Streets and Trips 2004 North America (2CD) $69.95
+Photo Painter 8 $59.95
+FreeHand MX $69.95
 
 The rest is on our site:
-http://o9u2ukbqu6uj766jt66jt666.torentost.in/
+http://sdg6g6fcgagntasnxssnxsss.torentost.in/
 
 
 -------------------------------------------------------------------------
