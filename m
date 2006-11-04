@@ -1,11 +1,23 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echoaudio, rawmidi race fix
-Date: Sat, 4 Nov 2006 21:45:03 +0100
-Message-ID: <20061104214503.0776410f.pochini@shiny.it>
+Subject: Re: 1.0.13 and indigoio
+Date: Sat, 4 Nov 2006 21:53:43 +0100
+Message-ID: <20061104215343.4ce48211.pochini@shiny.it>
+References: <70a871c80610050536w2968cd52n32a5960899b4e90b@mail.gmail.com>
+	<s5hu02iu1ni.wl%tiwai@suse.de>
+	<Pine.LNX.4.64.0610061220220.4839@denise.shiny.it>
+	<70a871c80610060712k2f04c1bbpa73fd1473f840871@mail.gmail.com>
+	<70a871c80610060802n22a3f184g8b206b11bd0608de@mail.gmail.com>
+	<20061009224039.74f7af57.pochini@shiny.it>
+	<70a871c80610100914v309f4519w97cc21a774c35a63@mail.gmail.com>
+	<20061012222126.77234cde.pochini@shiny.it>
+	<70a871c80610131257l2e71a705tbc41ec44f3a882bd@mail.gmail.com>
+	<70a871c80610260654n3e51e3bmab48254af79f01eb@mail.gmail.com>
+	<70a871c80611011851k77e3f8ddhd57866f0eb59504e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <70a871c80611011851k77e3f8ddhd57866f0eb59504e@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,49 +27,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Dmitry Baikov <dsbaikov@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2 Nov 2006 05:51:38 +0300
+"Dmitry Baikov" <dsbaikov@gmail.com> wrote:
 
-There is a very unlikely possibility that snd_echo_midi_output_write()
-dereferences a NULL pointer or it accesses a substream that doesn't exists
-anymore when the .close callback is executed while the timer handler is
-running on another cpu. The following patch replaces del_timer() with
-del_timer_sync() in the .trigger callback and it deletes a useless check in
-the timer handler.
+> > Adding cardbus bridge's memory as a reserved region solved the "unable
+> > to remove power" problem.
+>
+> No, it does not solve. Messages appear again. But reinsertion works.
+>
+> Seems it needs more testing.
 
-Short description for the changelog:
-
-This patch fixes a race condition between the timer handler and the close callback.
-
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
---- alsa-kernel/pci/echoaudio/midi.c__orig	2006-11-02 20:39:45.000000000 +0100
-+++ alsa-kernel/pci/echoaudio/midi.c	2006-11-02 20:44:22.000000000 +0100
-@@ -213,7 +213,7 @@ static void snd_echo_midi_output_write(u
- 	sent = bytes = 0;
- 	spin_lock_irqsave(&chip->lock, flags);
- 	chip->midi_full = 0;
--	if (chip->midi_out && !snd_rawmidi_transmit_empty(chip->midi_out)) {
-+	if (!snd_rawmidi_transmit_empty(chip->midi_out)) {
- 		bytes = snd_rawmidi_transmit_peek(chip->midi_out, buf,
- 						  MIDI_OUT_BUFFER_SIZE - 1);
- 		DE_MID(("Try to send %d bytes...\n", bytes));
-@@ -264,9 +264,11 @@ static void snd_echo_midi_output_trigger
- 		}
- 	} else {
- 		if (chip->tinuse) {
--			del_timer(&chip->timer);
- 			chip->tinuse = 0;
-+			spin_unlock_irq(&chip->lock);
-+			del_timer_sync(&chip->timer);
- 			DE_MID(("Timer removed\n"));
-+			return;
- 		}
- 	}
- 	spin_unlock_irq(&chip->lock);
-
+I hate this kind of problems. They are strange enough to require a trial and
+error approach, but it always happen on hardware I don't have access to :(
 
 
 --
