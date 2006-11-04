@@ -1,20 +1,11 @@
-From: "Scotched R. Tag" <kalbo@grazedean.com>
-Subject: Replica Watches
-Date: Sat, 04 Nov 2006 05:24:23 -0600
-Message-ID: <5769421874.20061104052423@grazedean.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: alsa-lib does not compile
+Date: Sat, 04 Nov 2006 18:42:21 +0000
+Message-ID: <454CDF0D.3000403@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1838354149=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B07278
-	for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2006 17:22:49 +0100 (MET)
-Received: from 145563040 (unknown [219.95.36.237])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	6BF7899B04
-	for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2006 17:22:45 +0100 (MET)
-Received: from grazedean.com (147883416 [148040328])
-	by tm.net.my (Qmailv1) with ESMTP id C2E9466366
-	for <alsa-devel@alsa-project.org>; Sat, 04 Nov 2006 05:24:23 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,63 +15,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============1838354149==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2592
 
-Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
-All genuine Swiss Rolex Replicas should have the following:
+The current alsa hg repository  alsa-lib fails to compile here.
+Details contained in alsa bug #2592
 
-• Full 1-year Warranty 
-• Solid 14k or 18k Gold on two-toned models
-• Guaranteed triple-wrapped gold on all-gold models 
-• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
-• The color of the gold looks exactly like a genuine Rolex watch 
-
-
-Bvlgari 
-Cartier 
-Chopard 
-Chronoswiss 
-Corum 
-Rado
-Longines 
-Patek philippe 
-Rolex
-Vacheron constantin 
-And more for a fraction of the price!
-
-http://er2a1r1rk42rfewu1eeu1www.ofollepqs.hk/
-
-Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-
-
-
---===============1838354149==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+make fails with:
+/bin/sh ../libtool --tag=CC --mode=link gcc -g -O2 -version-info 2:0:0 
+-o libasound.la -rpath /usr/lib conf.lo confmisc.lo input.lo output.lo 
+async.lo error.lo dlmisc.lo socket.lo shmarea.lo userfile.lo names.lo 
+control/libcontrol.la mixer/libmixer.la pcm/libpcm.la timer/libtimer.la 
+rawmidi/librawmidi.la hwdep/libhwdep.la seq/libseq.la instr/libinstr.la 
+alisp/libalisp.la compat/libcompat.la -lm -ldl -lpthread
+gcc -shared .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o 
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o 
+.libs/shmarea.o .libs/userfile.o .libs/names.o -Wl,--whole-archive 
+control/.libs/libcontrol.a mixer/.libs/libmixer.a pcm/.libs/libpcm.a 
+timer/.libs/libtimer.a rawmidi/.libs/librawmidi.a hwdep/.libs/libhwdep.a 
+seq/.libs/libseq.a instr/.libs/libinstr.a alisp/.libs/libalisp.a 
+compat/.libs/libcompat.a -Wl,--no-whole-archive -lm -ldl -lpthread 
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/lib/gcc/i686-pc-linux-gnu/4.1.1/../../../../i686-pc-linux-gnu/bin/ld: 
+.libs/libasound.so.2.0.0: undefined versioned symbol name 
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/lib/gcc/i686-pc-linux-gnu/4.1.1/../../../../i686-pc-linux-gnu/bin/ld: 
+failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/u/alsahg/alsa-lib.local/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/u/alsahg/alsa-lib.local/src'
+make: *** [all-recursive] Error 1
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1838354149==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1838354149==--
