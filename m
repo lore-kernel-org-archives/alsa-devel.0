@@ -1,11 +1,13 @@
-From: alsa@nymar.demon.co.uk
+From: Guyjo91 <guyjo91@free.fr>
 Subject: Re: Conexant test code.
-Date: Sat, 04 Nov 2006 17:56:33 +0000
-Message-ID: <E1GgPkv-000Fnr-72@pr-webmail-2.demon.net>
+Date: Sat, 04 Nov 2006 19:05:12 +0100
+Message-ID: <454CD658.4080404@free.fr>
+References: <1162633963.24604.163.camel@razman>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1162633963.24604.163.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,76 +17,141 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Here's test release 8. 
+Hi Tobin,
 
-Another Oops on loading under Toshiba P100
+Here are the results of Patch 8 test:  ========>   No sound   :-(
 
-> BUG: unable to handle kernel NULL pointer dereference at virtual address 00000000
->  printing eip:
-> f883ba12
-> *pde = 00000000
-> Oops: 0002 [#1]
-> SMP
-> Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss snd_seq_midi_event snd_seq snd_seq_device ieee80211_crypt_wep fuse vmnet vmmon nvidiafb nvidia ipw3945 ieee80211 ieee80211_crypt e1000 snd_hda_intel snd_hda_codec snd_pcm snd_timer snd snd_page_allocCPU:    0
-> EIP:    0060:[<f883ba12>]    Tainted: P      VLI
-> EFLAGS: 00010282   (2.6.18-gentoo-r1 #5)
-> EIP is at snd_info_register+0xbd/0xce [snd]
-> eax: f473a358   ebx: f4069754   ecx: 00000000   edx: f406979c
-> esi: f88463d6   edi: f473a2f0   ebp: f2737ed0   esp: f2737e34
-> ds: 007b   es: 007b   ss: 0068
-> Process modprobe (pid: 9069, ti=f2736000 task=c229d030 task.ti=f2736000)
-> Stack: f4069754 f473a214 f8eb237a 00000001 c02f9825 f2737ea8 00000082 c200c260
->        002dc6c0 00000001 dff08a90 6dcb5280 0000005d 00000000 c229d144 c200c260
->        002dc6c0 00000000 dffad560 f2737e90 c0110d91 6dcb5280 6dcb5280 00000282
-> Call Trace:
->  [<f8eb237a>] snd_pcm_oss_register_minor+0x105/0x131 [snd_pcm_oss]
->  [<c02f9825>] schedule+0x699/0x73d
->  [<c0110d91>] __activate_task+0x1c/0x29
->  [<c0111f27>] try_to_wake_up+0x2ed/0x2f7
->  [<c0112e90>] __cond_resched+0x16/0x34
->  [<c02f98f3>] cond_resched+0x2a/0x31
->  [<c02f9928>] wait_for_completion+0x18/0xa2
->  [<f885c316>] snd_pcm_notify+0xb4/0xd3 [snd_pcm]
->  [<f884e078>] alsa_pcm_oss_init+0x78/0x86 [snd_pcm_oss]
->  [<c012e3fa>] sys_init_module+0x1574/0x16fb
->  [<c014ab4a>] vfs_read+0x81/0x123
->  [<c0102805>] sysenter_past_esp+0x56/0x79
-> Code: 08 89 5a 3c 89 c1 c1 f9 1f 89 42 18 89 4a 1c 8b 43 18 89 53 2c 85 c0 74 > 14 83 c0 40 8b 48 04 8d
-> 53 48 89 50 04 89 43 48 89 4a 04 <89> 11 b8 60 42 84 f8 e8 3a e7 ab c7 31 c0 5b 5e c3 8b 40 14 e9
-> EIP: [<f883ba12>] snd_info_register+0xbd/0xce [snd] SS:ESP 0068:f2737e34
+Model: Toshiba Satellite P100-114
+Subsystem:   1179:ff31
+
+Alsamixer shows:
+
+    - Master:            ok
+    -  PCM:              ok
+    - Mic Bypass:     ok
+    - IEC958:           Just the mute/unmute case
+    - Capture:          ok
+    - ExtMic:           nothing
+    - IntMic:            nothing
 
 
-This time I did remember the "model=test" parameter. That crashed loading the OSS compatibility module
+# cat /proc/asound/card0/codec#0
 
-> # /etc/init.d/mpd start
->  * Loading ALSA modules ...
->  *   Loading: snd-card-0 ...                            [ ok ]
->  *   Loading: snd-seq-oss ...                           [ ok ]
->  *   Loading: snd-mixer-oss ...                         [ ok ]
->  *   Loading: snd-pcm-oss ...
-> /etc/init.d/alsasound: line 91:  9344 Segmentation fault      /sbin/modprobe ${DRIVER}
-                                                    [ !! ]
-I'm busy rebuilding mpd without oss support to see if I the patch works without it
+Codec: Conexant CXT5047
+Address: 0
+Vendor Id: 0x14f15047
+Subsystem Id: 0x1179ff31
+Revision Id: 0x100000
+Default PCM: rates 0x040, bits 0x02, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x0e 0x0e] [0x80
+0x80] [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+  Connection: 6
+     0x19 0x14 0x15 0x1a* 0x16 0x10
+Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  Pincap 0x081001c: OUT HP EAPD Detect
+  Pin Default 0xc3111010: [Both] Speaker at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 3
+     0x19* 0x10 0x16
+Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP Detect
+  Pin Default 0x03811011: [Jack] Line In at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 2
+     0x19* 0x16
+Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP Detect
+  Pin Default 0x03a11012: [Jack] Mic at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x21: IN
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x0860: IN
+  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
+  Pincap 0x08324: IN Detect
+  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x21: IN
+  Power: 0x0
+Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
+    Conn = RCA, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+  Connection: 1
+     0x11
+Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x17 0x17] [0x80 0x80] [0x00 0x00] [0x17 0x17]
+  Power: 0x0
+  Connection: 4
+     0x10 0x1b 0x1a 0x16
+Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
+  Amp-Out vals:  [0x03 0x03]
+  Power: 0x0
+  Connection: 3
+     0x15 0x14* 0x17
+Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
+  Power: 0x0
+  Connection: 2
+     0x14* 0x15
+Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x08314: OUT Detect
+  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
 
-Make/Model etc:
+Thank's for your work !
 
-Toshiba P100-240 (pspa3e) - Gentoo Linux
+Guy-jo.
 
-> # lspci -s 0:1b -vn
-> 00:1b.0 0403: 8086:27d8 (rev 02)
->         Subsystem: 1179:ff31
->         Flags: bus master, fast devsel, latency 0, IRQ 21
->         Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
->         Capabilities: [50] Power Management version 2
->         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
->         Capabilities: [70] Express Unknown type IRQ 0
->         Capabilities: [100] Virtual Channel
->         Capabilities: [130] Unknown (5)
-
-"cat /proc/asound/card0/codec#0" appears to have hung my command shell, and I think the desktop is going to crash soon. I can give the results under vanilla alsa-drivers if that helps. But first I want to post this before everything crashes
 
 
 -------------------------------------------------------------------------
