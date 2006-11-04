@@ -1,22 +1,11 @@
-From: "Hottentot G. Reluctantly" <issybi@giasinc.net>
-Subject: Weight Loss with HOODIA - $0.5 for one pill!
-Date: Fri, 03 Nov 2006 09:44:23 -0600
-Message-ID: <9201875543.20061103094423@giasinc.net>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1Gg166-00024k-U0 delayed 10 hours
+Date: Fri, 03 Nov 2006 18:03:28 -0800
+Message-ID: <E1GgAsa-0006zE-PH@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1278144364=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5224511B
-	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 21:42:51 +0100 (MET)
-Received: from 144903456 (82-44-94-61.cable.ubr04.croy.blueyonder.co.uk
-	[82.44.94.61])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	13410999B7
-	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2006 21:42:50 +0100 (MET)
-Received: from giasinc.net (147727744 [146812576])
-	by 82-44-94-61.cable.ubr04.croy.blueyonder.co.uk (Qmailv1) with ESMTP
-	id F5ED5B7897
-	for <alsa-devel@alsa-project.org>; Fri, 03 Nov 2006 09:44:23 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,40 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1278144364==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-If you haven’t heard of Hoodia yet, you soon will because it is being touted as the new miracle supplement for safe, effective weight loss. Hoodia gordonii, (Hoodia) is the botanical name for a cactus like plant that grows in Southern Africa. Scientists have recently isolated several compounds in this amazing plant that are responsible for dramatic weight loss. 
+The message identifier is:     1Gg166-00024k-U0
+The subject of the message is: din that: the mountaintop and against a hallucination.  But smell
+The date of the message is:    Fri, 03 Nov 2006 16:36:19 +0100
 
-Our site: http://wl2rkaj625jrxee22we22wew.ofollepqs.hk/
-try to find cheaper than $0.5 for one pill!
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-
---===============1278144364==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1278144364==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1278144364==--
