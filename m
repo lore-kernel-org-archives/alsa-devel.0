@@ -1,11 +1,14 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1Gg166-00024k-U0 delayed 48 hours
-Date: Sun, 05 Nov 2006 11:52:11 -0800
-Message-ID: <E1Ggo2N-0008De-2f@externalmx-1.sourceforge.net>
+From: GJ <guyjo91@free.fr>
+Subject: Re: Conexant test8 results for Toshiba owners.
+Date: Sun, 05 Nov 2006 21:42:53 +0100
+Message-ID: <454E4CCD.2070006@free.fr>
+References: <1162674506.15262.18.camel@razman>	<1162696862.15901.1.camel@razman>
+	<454D9AB7.5030807@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <454D9AB7.5030807@free.fr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,36 +18,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
-
-The message identifier is:     1Gg166-00024k-U0
-The subject of the message is: din that: the mountaintop and against a hallucination.  But smell
-The date of the message is:    Fri, 03 Nov 2006 16:36:19 +0100
-
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+SGkgLAoKSnVzdCB0byBzYXkgdGhhdCBJIGhhdmUgYSBQRVJGRUNUIFNPVU5ELCB3aXRoIGEgd29y
+a2luZyBzeXN0ZW0gKG5ldHdvcmsKYW5kIFgpLCBieSBhZGRpbmcgImlycXBvbGwiIGFmdGVyICJh
+Y3BpPW9mZiIgaW4gdGhlIGtlcm5lbCBvcHRpb25zICEKCkkgdGhpbmsgdGhhdCBpdCBpcyBub3Qg
+YSBnb29kIGlkZWEgdXNpbmcgbXkgbm90ZWJvb2sgd2l0aG91dCBhY3BpIGJ1dCBpdAppcyBmb3Ig
+dGhlIG1vbWVudCB0aGUgb25seSB3YXkgdG8gaGF2ZSBzb3VuZC4KCkArCkd1eWpvCgoKCgpHSiB3
+cm90ZToKPiBIaSBUb2JpbiwKPgo+IE1vZGVsOiBTYXRlbGxpdGUgVG9zaGliYSBQMTAwLTExNCAo
+Mi42LjE3LWdlbnRvby1yOCkKPiBTdWJzeXN0ZW06IDExNzktZmYzMQo+Cj4gSSBhbHJlYWR5IGtu
+ZXcgdGhlIOKAnGFjcGk9b2Zm4oCdIHRpcCAhICBJdCBnb2VzIH53ZWxsICB1bmRlciBVYnVudHUg
+YnV0Cj4gYmFkbHkgdW5kZXIgR2VudG9vLgo+Cj4gU29tZSByZXN1bHRzOgo+Cj4gKioqIEFsc2Et
+ZHJpdmVyIDEuMC4xMwo+IE5vIHNvdW5kICEKPiBBbHNhbWl4ZXI6IE1hc3RlciwgTGluZSwgTWlj
+Cj4gU2VlIGZpbGUg4oCcY29kZWMw4oCdCj4KPiAqKiogQWxzYS1kcml2ZXIgMS4wLjEzLCB3aXRo
+IOKAnGFjcGk9b2Zm4oCdCj4gSVJRIHByb2JsZW0sIE5vIG5ldHdvcmssIE5vIFgKPiBCdXQgc291
+bmQgKG5vdCB2ZXJ5IGxvdWQgYnV0IGNsZWFyKQo+IEFsc2FtaXhlcjogTWFzdGVyLCBQQ00sIExp
+bmUsIE1pYwo+IFNlZSBmaWxlIOKAnGNvZGVjMF9hY3BpX29mZuKAnQo+Cj4gKioqIEFsc2EtZHJp
+dmVyIDEuMC4xMywgUGF0Y2hlZAo+IE5vIHNvdW5kICEKPiBBbHNhbWl4ZXI6IE1hc3RlciwgUENN
+LCBQQ00gQ2FwdHVyZSwgTWljIEJ5cGFzcywgSUVDOTU4LCBDYXB0dXJlLAo+IEV4dE1pYywgSW50
+TWljCj4gU2VlIGZpbGUg4oCcY29kZWMwX3BhdGNoZWTigJ0KPgo+ICoqKiBBbHNhLWRyaXZlciAx
+LjAuMTMsIFBhdGNoZWQsIOKAnGFjcGk9b2Zm4oCdCj4gU2FtZSBwcm9ibGVtcyB3aXRoIHRoZSBJ
+UlEgMTYsIE5vIG5ldHdvcmssIE5vIFgKPiBCdXQgYSBsb3VkZXIgYW5kIGNsZWFyIHNvdW5kLCBl
+eGFjdGx5IGFzIHVuZGVyIFdpbmRvd3MKPiBBbHNhbWl4ZXI6IE1hc3RlciwgUENNLCBQQ00gQ2Fw
+dHVyZSwgTWljIEJ5cGFzcywgSUVDOTU4LCBDYXB0dXJlLAo+IEV4dE1pYywgSW50TWljCj4gU2Vl
+IGZpbGUg4oCcY29kZWMwX3BhdGNoZWRfYWNwaV9vZmbigJ0KPgo+IFNtYWxsIGVycm9yIHdoZW4g
+cGF0Y2hpbmc6IGFsc2Eta2VybmVsL0RvY3VtZW50YXRpb24vQUxTQS1Db25maWd1cmF0aW9uLnR4
+dAo+IEh1bmsgIzEgRkFJTEVEIEF0IDg2NQo+Cj4gSG9wZSB0aGlzIHdpbGwgaGVscCAhCj4KPiBA
+Kwo+IEd1eWpvCj4KPiAgIAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpVc2luZyBUb21jYXQgYnV0IG5lZWQg
+dG8gZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNlcywgc2VjdXJpdHk/CkdldCBz
+dHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0ZWNobm9sb2d5IHRvIG1ha2Ug
+eW91ciBqb2IgZWFzaWVyCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVy
+IHYuMS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2Fn
+Lm5ldC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
