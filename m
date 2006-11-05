@@ -1,14 +1,18 @@
-From: GJ <guyjo91@free.fr>
-Subject: Re: Conexant test8 results for Toshiba owners.
-Date: Sun, 05 Nov 2006 21:42:53 +0100
-Message-ID: <454E4CCD.2070006@free.fr>
-References: <1162674506.15262.18.camel@razman>	<1162696862.15901.1.camel@razman>
-	<454D9AB7.5030807@free.fr>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Audigy 4 - mic
+Date: Sun, 05 Nov 2006 20:44:37 +0000
+Message-ID: <454E4D35.8010200@superbug.co.uk>
+References: <1162578106.2781.6.camel@localhost.localdomain>
+	<454C943B.2070603@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <454D9AB7.5030807@free.fr>
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
+	[194.217.242.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 995452AC
+	for <alsa-devel@alsa-project.org>; Sun,  5 Nov 2006 21:44:38 +0100 (MET)
+In-Reply-To: <454C943B.2070603@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,41 +22,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org, Peter Zubaj <pzubaj@gaya.sk>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgLAoKSnVzdCB0byBzYXkgdGhhdCBJIGhhdmUgYSBQRVJGRUNUIFNPVU5ELCB3aXRoIGEgd29y
-a2luZyBzeXN0ZW0gKG5ldHdvcmsKYW5kIFgpLCBieSBhZGRpbmcgImlycXBvbGwiIGFmdGVyICJh
-Y3BpPW9mZiIgaW4gdGhlIGtlcm5lbCBvcHRpb25zICEKCkkgdGhpbmsgdGhhdCBpdCBpcyBub3Qg
-YSBnb29kIGlkZWEgdXNpbmcgbXkgbm90ZWJvb2sgd2l0aG91dCBhY3BpIGJ1dCBpdAppcyBmb3Ig
-dGhlIG1vbWVudCB0aGUgb25seSB3YXkgdG8gaGF2ZSBzb3VuZC4KCkArCkd1eWpvCgoKCgpHSiB3
-cm90ZToKPiBIaSBUb2JpbiwKPgo+IE1vZGVsOiBTYXRlbGxpdGUgVG9zaGliYSBQMTAwLTExNCAo
-Mi42LjE3LWdlbnRvby1yOCkKPiBTdWJzeXN0ZW06IDExNzktZmYzMQo+Cj4gSSBhbHJlYWR5IGtu
-ZXcgdGhlIOKAnGFjcGk9b2Zm4oCdIHRpcCAhICBJdCBnb2VzIH53ZWxsICB1bmRlciBVYnVudHUg
-YnV0Cj4gYmFkbHkgdW5kZXIgR2VudG9vLgo+Cj4gU29tZSByZXN1bHRzOgo+Cj4gKioqIEFsc2Et
-ZHJpdmVyIDEuMC4xMwo+IE5vIHNvdW5kICEKPiBBbHNhbWl4ZXI6IE1hc3RlciwgTGluZSwgTWlj
-Cj4gU2VlIGZpbGUg4oCcY29kZWMw4oCdCj4KPiAqKiogQWxzYS1kcml2ZXIgMS4wLjEzLCB3aXRo
-IOKAnGFjcGk9b2Zm4oCdCj4gSVJRIHByb2JsZW0sIE5vIG5ldHdvcmssIE5vIFgKPiBCdXQgc291
-bmQgKG5vdCB2ZXJ5IGxvdWQgYnV0IGNsZWFyKQo+IEFsc2FtaXhlcjogTWFzdGVyLCBQQ00sIExp
-bmUsIE1pYwo+IFNlZSBmaWxlIOKAnGNvZGVjMF9hY3BpX29mZuKAnQo+Cj4gKioqIEFsc2EtZHJp
-dmVyIDEuMC4xMywgUGF0Y2hlZAo+IE5vIHNvdW5kICEKPiBBbHNhbWl4ZXI6IE1hc3RlciwgUENN
-LCBQQ00gQ2FwdHVyZSwgTWljIEJ5cGFzcywgSUVDOTU4LCBDYXB0dXJlLAo+IEV4dE1pYywgSW50
-TWljCj4gU2VlIGZpbGUg4oCcY29kZWMwX3BhdGNoZWTigJ0KPgo+ICoqKiBBbHNhLWRyaXZlciAx
-LjAuMTMsIFBhdGNoZWQsIOKAnGFjcGk9b2Zm4oCdCj4gU2FtZSBwcm9ibGVtcyB3aXRoIHRoZSBJ
-UlEgMTYsIE5vIG5ldHdvcmssIE5vIFgKPiBCdXQgYSBsb3VkZXIgYW5kIGNsZWFyIHNvdW5kLCBl
-eGFjdGx5IGFzIHVuZGVyIFdpbmRvd3MKPiBBbHNhbWl4ZXI6IE1hc3RlciwgUENNLCBQQ00gQ2Fw
-dHVyZSwgTWljIEJ5cGFzcywgSUVDOTU4LCBDYXB0dXJlLAo+IEV4dE1pYywgSW50TWljCj4gU2Vl
-IGZpbGUg4oCcY29kZWMwX3BhdGNoZWRfYWNwaV9vZmbigJ0KPgo+IFNtYWxsIGVycm9yIHdoZW4g
-cGF0Y2hpbmc6IGFsc2Eta2VybmVsL0RvY3VtZW50YXRpb24vQUxTQS1Db25maWd1cmF0aW9uLnR4
-dAo+IEh1bmsgIzEgRkFJTEVEIEF0IDg2NQo+Cj4gSG9wZSB0aGlzIHdpbGwgaGVscCAhCj4KPiBA
-Kwo+IEd1eWpvCj4KPiAgIAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpVc2luZyBUb21jYXQgYnV0IG5lZWQg
-dG8gZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNlcywgc2VjdXJpdHk/CkdldCBz
-dHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0ZWNobm9sb2d5IHRvIG1ha2Ug
-eW91ciBqb2IgZWFzaWVyCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVy
-IHYuMS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2Fn
-Lm5ldC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+James Courtier-Dutton wrote:
+> Peter Zubaj wrote:
+>> Hi,
+>>
+>> Audigy 4 uses different Mic capture way as others Audigy. In source
+>> there is note "Mic input not tested.". Why this is not done old way ?
+>> I know one person who has problem with this. Old way worked fine for
+>> him. I can not test (I don't have this card).
+>>
+>> Peter Zubaj
+>>
+> 
+> It is a bug. I will be fixed at some point.
+> 
+
+Please try following the wiki entry:
+https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=audigy4capture
+
+The reason it is done a new way is that it uses a higher quality ADC.
+
+It works here on a SB0610 version of the Audigy 4.
+
+James
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
