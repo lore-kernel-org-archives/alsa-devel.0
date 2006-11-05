@@ -1,16 +1,20 @@
-From: Andi Kleen <ak@suse.de>
-Subject: double fault in 2.6.19rc4-git5 while
-	unplugging/replugging a USB headset
-Date: Mon, 6 Nov 2006 02:20:06 +0100
-Message-ID: <200611060220.07024.ak@suse.de>
+From: "Miscalculates A. Dryden" <iron_butchart@golfwestern.com>
+Subject: Replica Watches
+Date: Sun, 05 Nov 2006 17:20:55 -0600
+Message-ID: <2552872174.20061105172055@golfwestern.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1605602234=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC67D2BA
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 02:20:27 +0100 (MET)
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88BDD255
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 05:19:15 +0100 (MET)
+Received: from -196869176 (unknown [211.199.42.136])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	548D5998C3
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 05:19:13 +0100 (MET)
+Received: from golfwestern.com (-196875984 [-196835040])
+	by grendelcomp.com (Qmailv1) with ESMTP id 42AB1AFF02
+	for <alsa-devel@alsa-project.org>; Sun, 05 Nov 2006 17:20:55 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,68 +24,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1605602234==
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-FYI
+Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
+All genuine Swiss Rolex Replicas should have the following:
 
-usb 5-2: USB disconnect, address 2
-ALSA /home/lsrc/quilt/linux/sound/usb/usbaudio.c:845: cannot submit datapipe for urb 0, error -19: no device
-[... repeated a lot ...]
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-usb 5-2: new full speed USB device using uhci_hcd and address 3
-usb 5-2: configuration #1 chosen from 1 choice
-input: C-Media USB Headphone Set   as /class/input/input3
-input: USB HID v1.00 Device [C-Media USB Headphone Set  ] on usb-0000:00:1d.3-2
-usb 5-2: USB disconnect, address 3
-Unable to handle kernel paging request at ffffffff880e57d4 RIP: 
- [<ffffffff880e57d4>]
-PGD 203027 PUD 205027 PMD 7f41e067 PTE 0
-Oops: 0010 [1] SMP 
-CPU 0 
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq snd_atiixp snd_ac97_codec snd_ac97_bus speedstep_centrino pppoe pppox ppp_generic slhc ipt_MASQUERADE iptable_nat ip_nat_h323 ip_conntrack_h323 ip_nat_sip ip_conntrack_sip ip_nat_ftp ip_nat_irc i2c_isa ip_nat ip6t_LOG ip6t_REJECT ip6table_filter ip6_tables xt_tcpudp xt_state ip_conntrack_ftp ip_conntrack_irc ip_conntrack ipt_LOG ipt_REJECT iptable_filter ip_tables x_tables pl2303 snd_usb_audio snd_pcm snd_timer snd_page_alloc snd_usb_lib snd_rawmidi snd_seq_device snd_hwdep snd usbserial i2c_i801 i2c_core
-Pid: 8104, comm: xmms Not tainted 2.6.19-rc4-git5-BASIL #99
-RIP: 0010:[<ffffffff880e57d4>]  [<ffffffff880e57d4>]
-RSP: 0018:ffff81004730fd50  EFLAGS: 00010286
-RAX: ffffffff880e57d4 RBX: ffff810075368000 RCX: 0000000000000000
-RDX: 000000000000001d RSI: 0000000000000002 RDI: ffff810075368230
-RBP: ffff810075368230 R08: ffff81007a5711f0 R09: ffff81005e5345c0
-R10: 00000000454e8c24 R11: ffff81007bd030b8 R12: 00000000000001f8
-R13: ffff810057422460 R14: ffff810045b7a5c0 R15: ffff81007a4b9080
-FS:  0000000000000000(0000) GS:ffffffff80662000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: ffffffff880e57d4 CR3: 0000000000201000 CR4: 00000000000006e0
-Process xmms (pid: 8104, threadinfo ffff81004730e000, task ffff810076fee180)
-Stack:  ffffffff880a2cd6 0000000000000000 0000000000000001 ffff81007604bcf0
- ffffffff8024c42b 0000000000000000 ffffffff8058b290 0000001f45880508
- ffff810001f3fe50 0000000300000000 ffff81007a5711e8 0000000000000000
-Call Trace:
- [<ffffffff880a2cd6>] :snd_mixer_oss:snd_mixer_oss_notify_handler+0x23e/0x271
- [<ffffffff8024c42b>] free_pages_bulk+0x2c/0x1f4
- [<ffffffff802229d2>] __wake_up+0x36/0x4d
- [<ffffffff880166d7>] :snd:snd_card_do_free+0x17/0xe4
- [<ffffffff88016e3d>] :snd:snd_card_file_remove+0xfd/0x135
- [<ffffffff88041fc7>] :snd_pcm:snd_pcm_release+0xb6/0xc1
- [<ffffffff8026745a>] __fput+0xac/0x18a
- [<ffffffff802653d4>] filp_close+0x5c/0x64
- [<ffffffff8022a913>] put_files_struct+0x6b/0xbd
- [<ffffffff8022ba84>] do_exit+0x233/0x814
- [<ffffffff8022c0eb>] sys_exit_group+0x0/0xe
- [<ffffffff802093fe>] system_call+0x7e/0x83
+• Full 1-year Warranty 
+• Solid 14k or 18k Gold on two-toned models
+• Guaranteed triple-wrapped gold on all-gold models 
+• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
+• The color of the gold looks exactly like a genuine Rolex watch 
 
 
-Code:  Bad RIP value.
-RIP  [<ffffffff880e57d4>]
- RSP <ffff81004730fd50>
-CR2: ffffffff880e57d4
- <1>Fixing recursive fault but reboot is needed!
+Bvlgari 
+Cartier 
+Chopard 
+Chronoswiss 
+Corum 
+Rado
+Longines 
+Patek philippe 
+Rolex
+Vacheron constantin 
+And more for a fraction of the price!
 
--Andi
+http://v8j908i8131qwdvb0vvbivvv.proceedolusu.tk/
+
+Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+
+
+
+--===============1605602234==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1605602234==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1605602234==--
