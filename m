@@ -1,20 +1,21 @@
-From: "Miscalculates A. Dryden" <iron_butchart@golfwestern.com>
-Subject: Replica Watches
-Date: Sun, 05 Nov 2006 17:20:55 -0600
-Message-ID: <2552872174.20061105172055@golfwestern.com>
+From: "Mumbling V. Morbid" <carleend@gower1933.freeserve.co.uk>
+Subject: Microsoft, Adobe, Macromedia etc
+Date: Sun, 05 Nov 2006 20:03:15 -0600
+Message-ID: <7980936844.20061105200315@gower1933.freeserve.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1605602234=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88BDD255
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 05:19:15 +0100 (MET)
-Received: from -196869176 (unknown [211.199.42.136])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B125A2B4
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 08:01:35 +0100 (MET)
+Received: from -196302408 (unknown [121.139.22.142])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	548D5998C3
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 05:19:13 +0100 (MET)
-Received: from golfwestern.com (-196875984 [-196835040])
-	by grendelcomp.com (Qmailv1) with ESMTP id 42AB1AFF02
-	for <alsa-devel@alsa-project.org>; Sun, 05 Nov 2006 17:20:55 -0600
+	8C197998E9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 08:01:33 +0100 (MET)
+Received: from gower1933.freeserve.co.uk (-196273288 [-196289088])
+	by ghm2.mldnet.com (Qmailv1) with ESMTP id 2FD71C8FA7
+	for <alsa-devel@alsa-project.org>; Sun, 05 Nov 2006 20:03:15 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,60 +28,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============1605602234==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+You're sick of Soft high prices?Click here to get the best and the cheapest Software!!!
 
-Genuine Swiss made Rolex replicas are as close to the real thing as a replica watch can be. Sometimes even the professional jewelers are unable to tell the difference from the real Rolex watch. 
-All genuine Swiss Rolex Replicas should have the following:
+Some examples:
+Borland Delphi 7 Enterprise Edition (2CD) $69.95
+Photoshop CS $99.95
+Project 2003 Professional $69.95
+Picture It Premium 9 $59.95
+Windows 98 Second Edition $49.95
+Actobat 6.0 Pro $79.95
+Flash MX 2004 $69.95
+Project 2003 Professional $69.95
+LiveMotion 2.0 $69.95
+Windows Millenium $59.95
+Plus! XP $59.95
+Photoshop Elements 3.0 Windows $59.95
+Acrobat 6 Professional $79.95
+Windows 2000 Advanced Server $69.95
 
-• Full 1-year Warranty 
-• Solid 14k or 18k Gold on two-toned models
-• Guaranteed triple-wrapped gold on all-gold models 
-• Genuine sapphire crystal - a type of glass that is many times better at resisting scratches than regular glass.
-• The color of the gold looks exactly like a genuine Rolex watch 
+The rest is on our site:
+http://psdld3urv7v2q772u7p2c77p.proceedolusu.tk/
 
-
-Bvlgari 
-Cartier 
-Chopard 
-Chronoswiss 
-Corum 
-Rado
-Longines 
-Patek philippe 
-Rolex
-Vacheron constantin 
-And more for a fraction of the price!
-
-http://v8j908i8131qwdvb0vvbivvv.proceedolusu.tk/
-
-Also the cool thing about replicas is the fact that for the price of one original watch you can buy many replicas :)
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-
-
-
---===============1605602234==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1605602234==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1605602234==--
