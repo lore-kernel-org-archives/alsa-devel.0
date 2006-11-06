@@ -1,21 +1,13 @@
-From: "Mumbling V. Morbid" <carleend@gower1933.freeserve.co.uk>
-Subject: Microsoft, Adobe, Macromedia etc
-Date: Sun, 05 Nov 2006 20:03:15 -0600
-Message-ID: <7980936844.20061105200315@gower1933.freeserve.co.uk>
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
+Subject: Re: porting alsa
+Date: Mon, 06 Nov 2006 09:51:05 +0100
+Message-ID: <454EF779.2020503@purplelabs.com>
+References: <454B4067.6060000@freemail.gr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B125A2B4
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 08:01:35 +0100 (MET)
-Received: from -196302408 (unknown [121.139.22.142])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	8C197998E9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 08:01:33 +0100 (MET)
-Received: from gower1933.freeserve.co.uk (-196273288 [-196289088])
-	by ghm2.mldnet.com (Qmailv1) with ESMTP id 2FD71C8FA7
-	for <alsa-devel@alsa-project.org>; Sun, 05 Nov 2006 20:03:15 -0600
+In-Reply-To: <454B4067.6060000@freemail.gr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,29 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Constantine Kousoulos <wuwei@freemail.gr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-You're sick of Soft high prices?Click here to get the best and the cheapest Software!!!
+hi,
 
-Some examples:
-Borland Delphi 7 Enterprise Edition (2CD) $69.95
-Photoshop CS $99.95
-Project 2003 Professional $69.95
-Picture It Premium 9 $59.95
-Windows 98 Second Edition $49.95
-Actobat 6.0 Pro $79.95
-Flash MX 2004 $69.95
-Project 2003 Professional $69.95
-LiveMotion 2.0 $69.95
-Windows Millenium $59.95
-Plus! XP $59.95
-Photoshop Elements 3.0 Windows $59.95
-Acrobat 6 Professional $79.95
-Windows 2000 Advanced Server $69.95
+Constantine Kousoulos wrote:
+> Hello,
+>
+> Is it possible to port alsa-driver to a non-linux os? If so, what 
+> are ALSA's dependencies on the linux kernel that should also be 
+> ported in order for alsa-driver to work?
+>
+> Thanks,
+> Constantine
+>   
 
-The rest is on our site:
-http://psdld3urv7v2q772u7p2c77p.proceedolusu.tk/
+if we trust the ALSA full name (which is what i do), you can not...
+i think alsa driver is deeply linked to linux kernel functionning, and
+it will not be easy to port it on a non Linux OS
+
+-- Ben
 
 
 -------------------------------------------------------------------------
