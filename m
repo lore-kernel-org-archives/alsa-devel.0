@@ -1,17 +1,15 @@
-From: Peter Zubaj <pzubaj@gaya.sk>
-Subject: Re: Audigy 4 - mic
-Date: Mon, 06 Nov 2006 18:11:55 +0100
-Message-ID: <1162833115.2773.9.camel@localhost.localdomain>
-References: <1162578106.2781.6.camel@localhost.localdomain>
-	<454C943B.2070603@superbug.co.uk>  <454E4D35.8010200@superbug.co.uk>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/core/control.c: remove dead code
+Date: Mon, 6 Nov 2006 19:30:18 +0100
+Message-ID: <20061106183018.GB8099@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from arkady.gaya.sk (arkady.gaya.sk [62.168.75.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A82224A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 18:07:41 +0100 (MET)
-In-Reply-To: <454E4D35.8010200@superbug.co.uk>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 18394260
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 19:30:22 +0100 (MET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,52 +19,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: perex@suse.cz, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch removes some obviously dead code spotted by the Coverity 
+checker.
 
-You are still creating "AMic Playback Volume" and "Mic Capture Volume"
-in DSP program for Audigy 4. If I look correctly on source, there is
-only "Mic Capture Volume" for Audigy 4 and not "Mic Playback Volume".
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Old way was done in way how windows drivers worked. I do not know if
-they use this way today.
-
-Who cares if mic goes through AC97, most of users use only cheap mic for
-voip.
-
-If you don't change Audigy 1 driver part, then I don't care.
-
-Peter Zubaj
-
-On Sun, 2006-11-05 at 20:44 +0000, James Courtier-Dutton wrote:
-> James Courtier-Dutton wrote:
-> > Peter Zubaj wrote:
-> >> Hi,
-> >>
-> >> Audigy 4 uses different Mic capture way as others Audigy. In source
-> >> there is note "Mic input not tested.". Why this is not done old way ?
-> >> I know one person who has problem with this. Old way worked fine for
-> >> him. I can not test (I don't have this card).
-> >>
-> >> Peter Zubaj
-> >>
-> > 
-> > It is a bug. I will be fixed at some point.
-> > 
-> 
-> Please try following the wiki entry:
-> https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=audigy4capture
-> 
-> The reason it is done a new way is that it uses a higher quality ADC.
-> 
-> It works here on a SB0610 version of the Audigy 4.
-> 
-> James
-> 
-
+--- linux-2.6/sound/core/control.c.old	2006-11-06 19:11:32.000000000 +0100
++++ linux-2.6/sound/core/control.c	2006-11-06 19:11:52.000000000 +0100
+@@ -1267,23 +1267,23 @@ static ssize_t snd_ctl_read(struct file 
+ 			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
+ 				err = -EAGAIN;
+ 				goto __end_lock;
+ 			}
+ 			init_waitqueue_entry(&wait, current);
+ 			add_wait_queue(&ctl->change_sleep, &wait);
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			spin_unlock_irq(&ctl->read_lock);
+ 			schedule();
+ 			remove_wait_queue(&ctl->change_sleep, &wait);
+ 			if (signal_pending(current))
+-				return result > 0 ? result : -ERESTARTSYS;
++				return -ERESTARTSYS;
+ 			spin_lock_irq(&ctl->read_lock);
+ 		}
+ 		kev = snd_kctl_event(ctl->events.next);
+ 		ev.type = SNDRV_CTL_EVENT_ELEM;
+ 		ev.data.elem.mask = kev->mask;
+ 		ev.data.elem.id = kev->id;
+ 		list_del(&kev->list);
+ 		spin_unlock_irq(&ctl->read_lock);
+ 		kfree(kev);
+ 		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
+ 			err = -EFAULT;
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
