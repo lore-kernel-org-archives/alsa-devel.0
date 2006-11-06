@@ -1,12 +1,13 @@
-From: Benoit Fouet <benoit.fouet@purplelabs.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
 Subject: Re: porting alsa
-Date: Mon, 06 Nov 2006 09:51:05 +0100
-Message-ID: <454EF779.2020503@purplelabs.com>
+Date: Mon, 06 Nov 2006 10:38:05 +0100
+Message-ID: <1162805885.25270.275092271@webmail.messagingengine.com>
 References: <454B4067.6060000@freemail.gr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 In-Reply-To: <454B4067.6060000@freemail.gr>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Constantine Kousoulos <wuwei@freemail.gr>
-Cc: alsa-devel@lists.sourceforge.net
+To: Constantine Kousoulos <wuwei@freemail.gr>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
-
 Constantine Kousoulos wrote:
-> Hello,
->
-> Is it possible to port alsa-driver to a non-linux os? If so, what 
-> are ALSA's dependencies on the linux kernel that should also be 
-> ported in order for alsa-driver to work?
->
-> Thanks,
-> Constantine
->   
+> Is it possible to port alsa-driver to a non-linux os?
 
-if we trust the ALSA full name (which is what i do), you can not...
-i think alsa driver is deeply linked to linux kernel functionning, and
-it will not be easy to port it on a non Linux OS
+Yes, but it wouldn't be easy.
 
--- Ben
+IIRC some old ALSA version (0.5.x) was ported to OS/2.
 
+> If so, what are ALSA's dependencies on the linux kernel that should
+> also be ported in order for alsa-driver to work?
+
+ALSA is (part of) the Linux kernel.
+
+Grep for "#include <linux/something>" to see what other parts of the
+kernel are used.
+
+
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
