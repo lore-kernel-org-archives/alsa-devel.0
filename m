@@ -1,20 +1,13 @@
-From: =?iso-2022-jp?B?U0VGUkUbJEIheRsoQklE?= <drffff123@yahoo.co.jp>
-Subject: =?iso-2022-jp?b?GyRCJCIkSiQ/JE4lOyVVJWwkSyRKJGwbKEI=?=
-	=?iso-2022-jp?b?GyRCJGs9d0AtJCwkKkJUJEEkKyRNJEckORsoQg==?=
-Date: Mon,  6 Nov 2006 20:11:37 +0100 (MET)
-Message-ID: <20061106191137.4ED54997DC@mail.perex.cz>
-Reply-To: drffff123@yahoo.co.jp
+From: Volker Schroer <dl1ksv@gmx.de>
+Subject: Re: Problem with M5455 card
+Date: Mon, 06 Nov 2006 21:35:41 +0100
+Message-ID: <454F9C9D.8080008@gmx.de>
+References: <454DADAE.3020609@gmx.de> <s5h3b8whdq8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 297CF260
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 20:11:41 +0100 (MET)
-Received: from alsa-project.org (unknown [222.171.144.31])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	4ED54997DC
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 20:11:37 +0100 (MET)
+In-Reply-To: <s5h3b8whdq8.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,24 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-あなたにセフレ検索専用の男性ＩＤをお届けします。
 
-こちらのコースからお好きなものをお選び下さい。
+>> .
+>>
+>> I set the card to FLOAT_LE format.
+>>     
+>
+> What did you set exactly?  Set hw_params calls with format = FLOAT_LE
+> from application? 
+>   
+Yes, this is my .asoundrc
+pcm.LinPSK_card {
+        type hw
+        card M5455
+        }
+pcm.LinPSK {
+        type plug
+        slave.pcm LinPSK_card
+}
+ and I open LinPSK.
+>> If I read the samples with snd_pcm_readi, I get invalid values ( 10*e34 
+>> ) from time to time, although  the result code of readi does not signal 
+>> any errors.
+>>
+>> Is there a way to check if the read values  are valid inside the driver 
+>> ? I think, there is a problem inside the driver. Using a delta 44 
+>> soundcard, the problem is gone.
+>>     
+>
+> I guess it's rather a conincidence that it worked with another card.
+> Or, possibly, conversion between S16 and float in alsa-lib plugin
+> might be broken.
+>
+>   
+ Well, but not all samples contain bad values. Only after some times 
+some bad values appear.
 
-【萌え系】
-【エロかわいい系】
-【ＯＬ系】
-【人妻系】
-【熟女系】
 
-それでは、セフレ募集中の女性たちとのコンタクトに入ります。
-ＩＤを取得するには、こちらからスタートして下さい。
-
-http://1251.cc/?wa9sp01
-
+Volker
 
 
 -------------------------------------------------------------------------
