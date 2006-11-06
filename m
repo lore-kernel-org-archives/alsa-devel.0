@@ -1,11 +1,19 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1Gg166-00024k-U0 delayed 72 hours
-Date: Mon, 06 Nov 2006 07:59:55 -0800
-Message-ID: <E1Gh6t9-0007XO-7h@externalmx-1.sourceforge.net>
+From: Andi Kleen <ak@suse.de>
+Subject: Re:
+	=?iso-8859-1?q?double_fault_in_2=2E6=2E19rc4-git5_wh?=
+	=?iso-8859-1?q?ile=09unplugging/replugging_a_USB_headset?=
+Date: Mon, 6 Nov 2006 18:03:42 +0100
+Message-ID: <200611061803.42297.ak@suse.de>
+References: <200611060220.07024.ak@suse.de> <s5h4ptchdvz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A0FC162
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2006 18:03:46 +0100 (MET)
+In-Reply-To: <s5h4ptchdvz.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +23,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1Gg166-00024k-U0
-The subject of the message is: din that: the mountaintop and against a hallucination.  But smell
-The date of the message is:    Fri, 03 Nov 2006 16:36:19 +0100
+> 
+> How did it happen?  You plugged out a usb adaptor during xmms is
+> running with OSS output mode?
 
-The address to which the message has not yet been delivered is:
+xmms was running yes. But I think the oops happened on replug.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Long story: i had the headset connected during boot and my XMMS
+insisted on outputing its music on it, which wasn't intended -- 
+i wanted it on the speakers connected to the motherboard sound chip.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+So i unplug the headset and restarted alsa initialization,
+but it was very unhappy about cleaning up and couldn't initialize
+the other sound card. I replugged the headset and then
+I got the oops.
+
+-Andi
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
