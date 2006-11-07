@@ -1,12 +1,13 @@
-From: "Assaf Hoffman" <hoffman@marvell.com>
-Subject: ALSA HW buffer managment
-Date: Tue, 7 Nov 2006 08:48:00 +0200
-Message-ID: <B9FFC3F97441D04093A504CEA31B7C41F2677C@msilexch01.marvell.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: ALSA HW buffer managment
+Date: Tue, 07 Nov 2006 02:08:29 -0500
+Message-ID: <1162883310.22849.107.camel@mindpipe>
+References: <B9FFC3F97441D04093A504CEA31B7C41F2677C@msilexch01.marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <B9FFC3F97441D04093A504CEA31B7C41F2677C@msilexch01.marvell.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,20 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Rita Shtern <rita@marvell.com>
+To: Assaf Hoffman <hoffman@marvell.com>
+Cc: Rita Shtern <rita@marvell.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-As I understood, ALSA buffer management uses the 'periods' notion to
-control the latency between SW stack and HW DMA.
-My HW is not capable of interrupting the SW on a period basis. The only
-interrupt HW generates is on half or quarter of the DMA buffer (for
-example, in capture, after each half of the buffer is filled with
-samples the HW will signal interrupt).
-Please advise.
-Thanks.
+On Tue, 2006-11-07 at 08:48 +0200, Assaf Hoffman wrote:
+> Hi,
+> As I understood, ALSA buffer management uses the 'periods' notion to
+> control the latency between SW stack and HW DMA.
+> My HW is not capable of interrupting the SW on a period basis. The only
+> interrupt HW generates is on half or quarter of the DMA buffer (for
+> example, in capture, after each half of the buffer is filled with
+> samples the HW will signal interrupt).
 
+"Period" just refers to the interval between interrupts. So your
+hardware supports either 2 or 4 periods per buffer.
+
+Did you read "Writing an ALSA driver"?
+
+Lee
 
 
 -------------------------------------------------------------------------
