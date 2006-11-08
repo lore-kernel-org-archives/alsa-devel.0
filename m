@@ -1,14 +1,13 @@
-From: Volker Schroer <dl1ksv@gmx.de>
-Subject: Re: Problem with M5455 card
-Date: Tue, 07 Nov 2006 21:25:30 +0100
-Message-ID: <4550EBBA.8040907@gmx.de>
-References: <454DADAE.3020609@gmx.de>	<s5h3b8whdq8.wl%tiwai@suse.de>	<454F9C9D.8080008@gmx.de>
-	<s5hbqnjfstk.wl%tiwai@suse.de>
+From: Thomas Witzel <witzel.thomas@comcast.net>
+Subject: Intel ICH programming & ALSA driver
+Date: Tue, 7 Nov 2006 20:28:01 -0500
+Message-ID: <200611072028.01872.witzel.thomas@comcast.net>
+Reply-To: witzel.thomas@comcast.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hbqnjfstk.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,36 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai schrieb:
->>>>     
->>>>         
->>> I guess it's rather a conincidence that it worked with another card.
->>> Or, possibly, conversion between S16 and float in alsa-lib plugin
->>> might be broken.
->>>
->>>   
->>>       
->>  Well, but not all samples contain bad values. Only after some times 
->> some bad values appear.
->>     
->
-> Hm, then the problem could be in the rate conversion.
-> M5455 uses only 48kHz (by some reason).  Try to run with 48kHz.
->
->
->   
+Hello,
 
-I did that, but no change. Only the size of the bad valus gets smaller  
-(about 10e*16).
+I'm not sure this really belongs here, but I have nowhere else to ask. I'm 
+writing an Intel ICH sound driver for Xenomai (real time Linux) and got stuck 
+with no sound. I'm not doing this for a common audio application but rather 
+in an attempt to generate an experimental setup with low-cost arbitrary 
+waveform function generators (which are the sound chips).
+Long story short, I learned as much as I could from looking at the ALSA driver 
+and the datasheet. I'm setting up the DMA buffers, I give the chip the Buffer 
+Descriptor table and after I start the DMA I get a while later an interrupt 
+that the LVI was reached and handle that. I'm running the DMA on the PCM OUT 
+I believe, but I get no sound. I set all mixer volume controls to max (and 
+read them back to confirm) and make sure they are unmuted. Codec one is 
+ready, AC97 power is up. Everything looks fine.
+So now I'm wondering what I'm doing wrong. I filled the buffers for the sound 
+with random values, which might be wrong, but I was hoping to get some 
+crackling or noise at least.
 
-Volker
->
->   
+On a different note, it seems that the ALSA driver is writing to the CIV 
+register, even though the Intel datasheet indicates this to be read-only.
 
+Thank you for any useful hints in advance,
+Thomas
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
