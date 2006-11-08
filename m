@@ -1,13 +1,21 @@
-From: Himanshu Chauhan <hs.chauhan@gmail.com>
-Subject: Re: Using driver service from another driver
-Date: Thu, 09 Nov 2006 10:36:13 +0530
-Message-ID: <4552B745.60701@gmail.com>
-References: <4550BFBA.6050400@gmail.com> <1163029974.2823.67.camel@mindpipe>
+From: =?iso-2022-jp?B?GyRCJSglOSVVJWwzLURNGyhC?= <leif4519@yahoo.co.jp>
+Subject: =?iso-2022-jp?b?GyRCMCE1KjtSJDUkcyQrJGkkTkFqQ0wbKEI=?=
+	=?iso-2022-jp?b?GyRCISI1Lkp9TU0kWCROPFVOaSRON28kRzokJEMkRiQqGyhC?=
+	=?iso-2022-jp?b?GyRCJGokXiQ5GyhC?=
+Date: Wed,  8 Nov 2006 23:07:49 +0100 (MET)
+Message-ID: <20061108220749.0ADEA998CF@mail.perex.cz>
+Reply-To: leif4519@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1163029974.2823.67.camel@mindpipe>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D7E9283
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2006 23:07:53 +0100 (MET)
+Received: from alsa-project.org (unknown [124.21.164.31])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	0ADEA998CF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2006 23:07:49 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,39 +25,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Tue, 2006-11-07 at 22:47 +0530, Himanshu Chauhan wrote:
->   
->> Dear all,
->>
->> I am writing a virtual audio driver (similar to dummy.c in alsa tree).
->> But I need to
->> access the driver services of the soundcard installed on the system. How
->> can this
->> be done? Can I directly call the functions or I need to specifically
->> open the
->> device?
->>
->> This is for the first time I am doing ALSA drivers so I seek your help.
->>     
->
-> EXPORT_SYMBOL() the driver functions you wish to call from the other
-> driver.  "grep -r EXPORT_SYMBOL sound/drivers/" for examples.
->
-> Lee
->
->
->   
-But then that would require changes to the other driver. So
-it won't work on all systems. Different systems have different
-sound cards. Is there any "universally applicable" way?
+alsa-devel様
+失礼します、エスフレンズ、貝塚です。
 
-Regards
---Himanshu
+紹介しております【つま☆だいありー】ではセフレ募集の女性に連絡用アドレスを、
+期間限定で貸し出しておりまして、優先権のある貴方様にもその女性から直接メールが
+届いているかもしれません。現在は何かお話は進んでおりますか。
+
+セフレの輪に参加していただくのは至極簡単ですが、再度、簡単ご説明します。
+
+◇セキュリティのためパスワード認証が必要です。簡単な入力のあとパスワードが発行されます。
+◇アプローチには、初めに秘密のメールＢＯＸを作成してから行います。
+◇秘密のメールＢＯＸは、パソコンでも携帯でも使用ができます。
+◇パスワード取得までわずか１分、すぐに始められます。
+
+http://www.hoshihuru.com/room
+
+ご承知のとおり内緒のメールやお付き合いが多くなるので、専門のメールＢＯＸの使用が絶対必要になります。
+
+ちなみに今回優先で取り上げました女性の亜紀子さんから謝礼の件でご相談がありました。
+既にご存知かとは思いますが、貴方様との関係が上手くいく場合はある程度のお礼（50-100万円）
+したいとの内容でした。しかし当方では金銭関係についてはサポートできない旨連絡しております。
+お互いのお話合いの中で決めていただけますでしょうか。あくまでも当事者同士の責任でお願いします。
+
+
+宜しくお願いします。
+
+
 
 
 -------------------------------------------------------------------------
