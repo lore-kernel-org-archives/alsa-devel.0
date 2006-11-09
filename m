@@ -1,19 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Audigy 4 - mic
-Date: Thu, 09 Nov 2006 18:34:57 +0000
-Message-ID: <455374D1.3080405@superbug.co.uk>
-References: <1162578106.2781.6.camel@localhost.localdomain>	
-	<454C943B.2070603@superbug.co.uk> <454E4D35.8010200@superbug.co.uk>
-	<1162833115.2773.9.camel@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Rawmidi device naming
+Date: Thu, 09 Nov 2006 15:36:37 -0500
+Message-ID: <1163104597.16030.6.camel@mindpipe>
+References: <1158946723.1097.90.camel@mindpipe>
+	<1158948259.1036.271601876@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
-	[194.217.242.89])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BE042B4
-	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2006 19:34:58 +0100 (MET)
-In-Reply-To: <1162833115.2773.9.camel@localhost.localdomain>
+In-Reply-To: <1158948259.1036.271601876@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,37 +18,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Peter Zubaj <pzubaj@gaya.sk>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Peter Zubaj wrote:
-> Hi,
+On Fri, 2006-09-22 at 20:04 +0200, Clemens Ladisch wrote:
+> Lee Revell wrote:
+> >  # aplaymidi -l
+> >  Port    Client name                      Port name
+> >  64:0    Dreamchip MPU interface 1        Dreamchip MPU interface 1
+> >  64:32   Dreamchip MPU interface 1        Dreamchip MPU interface 2
+> > 
+> > Why do both ports get "Dreamchip MPU interface 1" for the client name? 
 > 
-> You are still creating "AMic Playback Volume" and "Mic Capture Volume"
-> in DSP program for Audigy 4. If I look correctly on source, there is
-> only "Mic Capture Volume" for Audigy 4 and not "Mic Playback Volume".
+> Because there is only one client.
 > 
-> Old way was done in way how windows drivers worked. I do not know if
-> they use this way today.
-> 
-> Who cares if mic goes through AC97, most of users use only cheap mic for
-> voip.
-> 
-> If you don't change Audigy 1 driver part, then I don't care.
-> 
-> Peter Zubaj
-> 
-The Audigy 1 has not been changed. I don't think that the Audigy 1 has 
-the option for this higher quality line-in/mic capture path so the 
-higher quality line-in/mic capture is only enabled on cards that have 
-been verified to work well with it.
-I don't really understand what the problem is that you have. Do you 
-simply want mixer controls renamed or something?
+> The client name comes from the card's shortname.
 
-James
+Sorry, but you are wrong - the client name does not come from the card's
+shortname.  The client gets the name of the first port registered.
 
+I changed my code to:
 
+212 
+213         if ((err = snd_dream_midi_init(dream, midi2, 1, "MIDI Out")) < 0)
+214                 return err;
+215         midi2->port = MPU1_DATA;
+216 
+217         if ((err = snd_dream_midi_init(dream, midi1, 0, "GM Synth")) < 0)
+218                 return err;
+219         midi1->port = MPU1_DATA;
+220 
+
+And now I get:
+
+ Port    Client name                      Port name                             
+ 64:0    GM Synth                         GM Synth                              
+ 64:32   GM Synth                         MIDI Out                              
+
+How can I name the client independently from the ports?
+
+Lee
 
 
 -------------------------------------------------------------------------
