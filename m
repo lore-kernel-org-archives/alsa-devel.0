@@ -1,9 +1,10 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH] mixer name changes for older OSS app support
-Date: Thu, 09 Nov 2006 14:02:32 +0000
-Message-ID: <1163080952.7722.29.camel@localhost.localdomain>
+From: Matthias Lemke <m@box.li>
+Subject: problem with alsa on Sony UX-90s
+Date: Thu, 09 Nov 2006 16:28:57 +0100
+Message-ID: <45534939.8000803@box.li>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-oPZWwdbKVloDNHmAVVku"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,103 +18,56 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---=-oPZWwdbKVloDNHmAVVku
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+i tried the last days linux on a sony UX90.
+It is a very small notebook computer.
 
-This patch suggested by Richard Purdie changes the names of some WM8731
-and WM8750 mixers so that they will be recognised by some older OSS
-mixer apps.
+Sound works perfekt with headphones, but the internal speaker does not
+his job.
+I use als 1.0.13.
 
-Changes:-
+from dmesg:
+[17179590.068000] hda_codec: Unknown model for ALC262, trying auto-probe
+from BIOS...
 
- o WM8731 Playback changed to Master Playback
- o WM8750 Out1 changed to Headphone
- o WM8750 Out2 changed to Speaker
+loaded modules:
 
-Signed-off-by Liam Girdwood <lg@opensource.wolfsonmicro.com>
+snd_seq_midi            9984  0
+snd_rawmidi            27136  1 snd_seq_midi
+snd_seq_midi_event      8960  2 snd_seq_oss,snd_seq_midi
+snd_seq                59632  6
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+snd_timer              24964  2 snd_pcm,snd_seq
+snd_seq_device          9868  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
+shpchp                 42144  0
+pci_hotplug            32828  1 shpchp
+snd                    60548  14
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_pcm,snd_mixer_oss,snd_seq_dummy,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+soundcore              11232  1 snd
+snd_page_alloc         11656  2 snd_hda_intel,snd_pcm
 
+cat /proc/asound/cards
 
---=-oPZWwdbKVloDNHmAVVku
-Content-Disposition: attachment; filename=oss-emu-mixer.patch
-Content-Type: text/x-patch; name=oss-emu-mixer.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xd4340000 irq 66
 
-diff -r 18d936558379 soc/codecs/wm8731.c
---- a/soc/codecs/wm8731.c	Wed Nov 08 15:50:41 2006 +0100
-+++ b/soc/codecs/wm8731.c	Thu Nov 09 13:42:31 2006 +0000
-@@ -310,8 +310,10 @@ static const struct soc_enum wm8731_enum
- 
- static const struct snd_kcontrol_new wm8731_snd_controls[] = {
- 
--SOC_DOUBLE_R("Playback Volume", WM8731_LOUT1V, WM8731_ROUT1V, 0, 127, 0),
--SOC_DOUBLE_R("Playback ZC Switch", WM8731_LOUT1V, WM8731_ROUT1V, 7, 1, 0),
-+SOC_DOUBLE_R("Master Playback Volume", WM8731_LOUT1V, WM8731_ROUT1V,
-+	0, 127, 0),
-+SOC_DOUBLE_R("Master Playback ZC Switch", WM8731_LOUT1V, WM8731_ROUT1V,
-+	7, 1, 0),
- 
- SOC_DOUBLE_R("Capture Volume", WM8731_LINVOL, WM8731_RINVOL, 0, 31, 0),
- SOC_DOUBLE_R("Line Capture Switch", WM8731_LINVOL, WM8731_RINVOL, 7, 1, 1),
-diff -r 18d936558379 soc/codecs/wm8750.c
---- a/soc/codecs/wm8750.c	Wed Nov 08 15:50:41 2006 +0100
-+++ b/soc/codecs/wm8750.c	Thu Nov 09 13:45:30 2006 +0000
-@@ -444,9 +444,9 @@ SOC_DOUBLE_R("Capture ZC Switch", WM8750
- SOC_DOUBLE_R("Capture ZC Switch", WM8750_LINVOL, WM8750_RINVOL, 6, 1, 0),
- SOC_DOUBLE_R("Capture Switch", WM8750_LINVOL, WM8750_RINVOL, 7, 1, 1),
- 
--SOC_DOUBLE_R("Out1 Playback ZC Switch", WM8750_LOUT1V,
-+SOC_DOUBLE_R("Headphone Playback ZC Switch", WM8750_LOUT1V,
- 	WM8750_ROUT1V, 7, 1, 0),
--SOC_DOUBLE_R("Out2 Playback ZC Switch", WM8750_LOUT2V,
-+SOC_DOUBLE_R("Speaker Playback ZC Switch", WM8750_LOUT2V,
- 	WM8750_ROUT2V, 7, 1, 0),
- 
- SOC_ENUM("Playback De-emphasis", wm8750_enum[15]),
-@@ -487,7 +487,7 @@ SOC_SINGLE("ZC Timeout Switch", WM8750_A
- SOC_SINGLE("ZC Timeout Switch", WM8750_ADCTL1, 0, 1, 0),
- SOC_SINGLE("Playback Invert Switch", WM8750_ADCTL1, 1, 1, 0),
- 
--SOC_SINGLE("Right Out2 Playback Invert Switch", WM8750_ADCTL2, 4, 1, 0),
-+SOC_SINGLE("Right Speaker Playback Invert Switch", WM8750_ADCTL2, 4, 1, 0),
- 
- /* Unimplemented */
- /* ADCDAC Bit 0 - ADCHPD */
-@@ -514,8 +514,10 @@ SOC_DOUBLE_R("Bypass Mono Playback Volum
- 
- SOC_SINGLE("Mono Playback ZC Switch", WM8750_MOUTV, 7, 1, 0),
- 
--SOC_DOUBLE_R("Out1 Playback Volume", WM8750_LOUT1V, WM8750_ROUT1V, 0, 127, 0),
--SOC_DOUBLE_R("Out2 Playback Volume", WM8750_LOUT2V, WM8750_ROUT2V, 0, 127, 0),
-+SOC_DOUBLE_R("Headphone Playback Volume", WM8750_LOUT1V, WM8750_ROUT1V,
-+	0, 127, 0),
-+SOC_DOUBLE_R("Speaker Playback Volume", WM8750_LOUT2V, WM8750_ROUT2V,
-+	0, 127, 0),
- 
- SOC_SINGLE("Mono Playback Volume", WM8750_MOUTV, 0, 127, 0),
- 
+head -3 /proc/asound/card0/codec*
+Codec: Realtek ALC262
+Address: 0
+Vendor Id: 0x10ec0262
+sina@ux90s:/proc/asound$
 
---=-oPZWwdbKVloDNHmAVVku
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+any ideas?
+
+regards
+
+matthias
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-oPZWwdbKVloDNHmAVVku
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-oPZWwdbKVloDNHmAVVku--
