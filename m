@@ -1,11 +1,19 @@
-From: Matthias Lemke <m@box.li>
-Subject: problem with alsa on Sony UX-90s
-Date: Thu, 09 Nov 2006 16:28:57 +0100
-Message-ID: <45534939.8000803@box.li>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Audigy 4 - mic
+Date: Thu, 09 Nov 2006 18:34:57 +0000
+Message-ID: <455374D1.3080405@superbug.co.uk>
+References: <1162578106.2781.6.camel@localhost.localdomain>	
+	<454C943B.2070603@superbug.co.uk> <454E4D35.8010200@superbug.co.uk>
+	<1162833115.2773.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
+	[194.217.242.89])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BE042B4
+	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2006 19:34:58 +0100 (MET)
+In-Reply-To: <1162833115.2773.9.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,55 +23,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Peter Zubaj <pzubaj@gaya.sk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Peter Zubaj wrote:
+> Hi,
+> 
+> You are still creating "AMic Playback Volume" and "Mic Capture Volume"
+> in DSP program for Audigy 4. If I look correctly on source, there is
+> only "Mic Capture Volume" for Audigy 4 and not "Mic Playback Volume".
+> 
+> Old way was done in way how windows drivers worked. I do not know if
+> they use this way today.
+> 
+> Who cares if mic goes through AC97, most of users use only cheap mic for
+> voip.
+> 
+> If you don't change Audigy 1 driver part, then I don't care.
+> 
+> Peter Zubaj
+> 
+The Audigy 1 has not been changed. I don't think that the Audigy 1 has 
+the option for this higher quality line-in/mic capture path so the 
+higher quality line-in/mic capture is only enabled on cards that have 
+been verified to work well with it.
+I don't really understand what the problem is that you have. Do you 
+simply want mixer controls renamed or something?
 
-i tried the last days linux on a sony UX90.
-It is a very small notebook computer.
+James
 
-Sound works perfekt with headphones, but the internal speaker does not
-his job.
-I use als 1.0.13.
 
-from dmesg:
-[17179590.068000] hda_codec: Unknown model for ALC262, trying auto-probe
-from BIOS...
-
-loaded modules:
-
-snd_seq_midi            9984  0
-snd_rawmidi            27136  1 snd_seq_midi
-snd_seq_midi_event      8960  2 snd_seq_oss,snd_seq_midi
-snd_seq                59632  6
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_timer              24964  2 snd_pcm,snd_seq
-snd_seq_device          9868  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
-shpchp                 42144  0
-pci_hotplug            32828  1 shpchp
-snd                    60548  14
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_pcm,snd_mixer_oss,snd_seq_dummy,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
-soundcore              11232  1 snd
-snd_page_alloc         11656  2 snd_hda_intel,snd_pcm
-
-cat /proc/asound/cards
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xd4340000 irq 66
-
-head -3 /proc/asound/card0/codec*
-Codec: Realtek ALC262
-Address: 0
-Vendor Id: 0x10ec0262
-sina@ux90s:/proc/asound$
-
-any ideas?
-
-regards
-
-matthias
 
 
 -------------------------------------------------------------------------
