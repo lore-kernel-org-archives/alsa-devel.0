@@ -1,14 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Rawmidi device naming
-Date: Thu, 09 Nov 2006 15:36:37 -0500
-Message-ID: <1163104597.16030.6.camel@mindpipe>
+Date: Thu, 09 Nov 2006 15:39:01 -0500
+Message-ID: <1163104741.16030.8.camel@mindpipe>
 References: <1158946723.1097.90.camel@mindpipe>
 	<1158948259.1036.271601876@webmail.messagingengine.com>
+	<1163104597.16030.6.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1158948259.1036.271601876@webmail.messagingengine.com>
+In-Reply-To: <1163104597.16030.6.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,41 +23,41 @@ To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-09-22 at 20:04 +0200, Clemens Ladisch wrote:
-> Lee Revell wrote:
-> >  # aplaymidi -l
-> >  Port    Client name                      Port name
-> >  64:0    Dreamchip MPU interface 1        Dreamchip MPU interface 1
-> >  64:32   Dreamchip MPU interface 1        Dreamchip MPU interface 2
-> > 
-> > Why do both ports get "Dreamchip MPU interface 1" for the client name? 
+On Thu, 2006-11-09 at 15:36 -0500, Lee Revell wrote:
+> 212 
+> 213         if ((err = snd_dream_midi_init(dream, midi2, 1, "MIDI Out")) < 0)
+> 214                 return err;
+> 215         midi2->port = MPU1_DATA;
+> 216 
+> 217         if ((err = snd_dream_midi_init(dream, midi1, 0, "GM Synth")) < 0)
+> 218                 return err;
+> 219         midi1->port = MPU1_DATA;
+> 220 
 > 
-> Because there is only one client.
-> 
-> The client name comes from the card's shortname.
 
-Sorry, but you are wrong - the client name does not come from the card's
-shortname.  The client gets the name of the first port registered.
+Here is snd_dream_midi_init:
 
-I changed my code to:
+static int __devinit snd_dream_midi_init(struct snd_card_dream *dream, struct snd_card_dream_midi *midi, int device, char *name)
+{
+        snd_rawmidi_t *rmidi;
+        int err;
 
-212 
-213         if ((err = snd_dream_midi_init(dream, midi2, 1, "MIDI Out")) < 0)
-214                 return err;
-215         midi2->port = MPU1_DATA;
-216 
-217         if ((err = snd_dream_midi_init(dream, midi1, 0, "GM Synth")) < 0)
-218                 return err;
-219         midi1->port = MPU1_DATA;
-220 
+        if ((err = snd_rawmidi_new(dream->card, name, device, 1, 1, &rmidi)) < 0)
+                return err;
+        midi->dream = dream;
+        strcpy(rmidi->name, name);
+        snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &snd_dream_midi_output);
+        snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &snd_dream_midi_input);
+        rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT |
+                             SNDRV_RAWMIDI_INFO_INPUT |
+                             SNDRV_RAWMIDI_INFO_DUPLEX;
+        rmidi->private_data = midi;
+//      rmidi->private_free = snd_dream_midi_free;
+        midi->rmidi = rmidi;
+        return 0;
+}
 
-And now I get:
-
- Port    Client name                      Port name                             
- 64:0    GM Synth                         GM Synth                              
- 64:32   GM Synth                         MIDI Out                              
-
-How can I name the client independently from the ports?
+Why does the client get the port name ?!?!?!?!?
 
 Lee
 
