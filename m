@@ -1,15 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Rawmidi device naming
-Date: Thu, 09 Nov 2006 15:39:01 -0500
-Message-ID: <1163104741.16030.8.camel@mindpipe>
-References: <1158946723.1097.90.camel@mindpipe>
-	<1158948259.1036.271601876@webmail.messagingengine.com>
-	<1163104597.16030.6.camel@mindpipe>
+From: Hiroyuki Yokota <GHB03630@nifty.ne.jp>
+Subject: ICE1724: Prodigyhd2 driver make problems?
+Date: Fri, 10 Nov 2006 05:42:50 +0900
+Message-ID: <455392CA.2060906@nifty.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1163104597.16030.6.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,47 +15,202 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-11-09 at 15:36 -0500, Lee Revell wrote:
-> 212 
-> 213         if ((err = snd_dream_midi_init(dream, midi2, 1, "MIDI Out")) < 0)
-> 214                 return err;
-> 215         midi2->port = MPU1_DATA;
-> 216 
-> 217         if ((err = snd_dream_midi_init(dream, midi1, 0, "GM Synth")) < 0)
-> 218                 return err;
-> 219         midi1->port = MPU1_DATA;
-> 220 
-> 
+Hi, all. I join alsa-devel today.
 
-Here is snd_dream_midi_init:
+I am doing develop Audiotark Prodigy HD2 driver now.
+Some problems can't goal to complete.
 
-static int __devinit snd_dream_midi_init(struct snd_card_dream *dream, struct snd_card_dream_midi *midi, int device, char *name)
-{
-        snd_rawmidi_t *rmidi;
-        int err;
+OS: Linux Ubuntu6.10 (Kernel 2.6.18)
+Source: Alsa driver souce included Kernel 2.6.18
+/usr/src/linux-2.6.18/sound/pci/ice1712/
 
-        if ((err = snd_rawmidi_new(dream->card, name, device, 1, 1, &rmidi)) < 0)
-                return err;
-        midi->dream = dream;
-        strcpy(rmidi->name, name);
-        snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &snd_dream_midi_output);
-        snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &snd_dream_midi_input);
-        rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT |
-                             SNDRV_RAWMIDI_INFO_INPUT |
-                             SNDRV_RAWMIDI_INFO_DUPLEX;
-        rmidi->private_data = midi;
-//      rmidi->private_free = snd_dream_midi_free;
-        midi->rmidi = rmidi;
-        return 0;
+Audiotrak prodigy hd2
+Envy24HT-S (VT1721)
+DAC AK4396 (SN 120dB)
+ADC AK5353
+output 2ch only, RCAx1, Headphonex1,Optx1
+input 2ch, Line-in (but Line goto ADC, Digital IN force to output 2ch)
+*input : for AD coverter, Headphone amp
+
+Problems 1 Sounds resolustion is loose
+
+Solution 1
+/usr/share/alsa/pcm/dmix.conf
+default S16_LE to default S32_LE
+
+@args.FORMAT {
+type string
+default S32_LE
 }
 
-Why does the client get the port name ?!?!?!?!?
+Promblems 2 /proc/asound/cards is displayed "ice1724"
 
-Lee
+~$ cat /proc/asound/cards
+0 [ICE1724 ]: ICE1724 - ICEnsemble ICE1724
+ICEnsemble ICE1724 at 0xac00, irq 233
+
+Challenge1 <This source is digest version>
+Modified Makefile, prodigyhd2.c & prodigyhd2.h (from revo.c), ice1724.c
+
+<prodigyhd2.h>
+#define PRODIGYHD2_DEVICE_DESC \
+"{{Audiotrak,Prodigy HD2},"
+#define VT1724_SUBDEVICE_PRODIGYHD2 0x12140124
+
+<prodigyhd2.c>
+static unsigned int prodigyhd2_num_stereo[] = {2};
+static char *prodigyhd2_channel_names[] = {"PCM Playback Volume"};
+
+static struct snd_akm4xxx akm_prodigyhd2 __devinitdata = {
+.type = SND_AK4358,
+.num_dacs = 2,
+.ops = {
+.set_rate_val = prodigyhd2_set_rate_val
+},
+.num_stereo = prodigyhd2_num_stereo,
+.channel_names = prodigyhd2_channel_names
+};
+
+static int __devinit prodigyhd2_init(struct snd_ice1712 *ice)
+{
+struct snd_akm4xxx *ak;
+int err;
+
+/* determine I2C, DACs and ADCs */
+switch (ice->eeprom.subvendor) {
+case VT1724_SUBDEVICE_PRODIGYHD2:
+ice->num_total_dacs = 2;
+ice->num_total_adcs = 2;
+break;
+default:
+snd_BUG();
+return -EINVAL;
+}
+
+/* second stage of initialization, analog parts and others */
+ak = ice->akm = kcalloc(2, sizeof(struct snd_akm4xxx), GFP_KERNEL);
+if (! ak)
+return -ENOMEM;
+ice->akm_codecs = 2;
+switch (ice->eeprom.subvendor) {
+case VT1724_SUBDEVICE_PRODIGYHD2:
+ice->akm_codecs = 1;
+if ((err = snd_ice1712_akm4xxx_init(ak, &akm_prodigyhd2,
+&akm_prodigyhd2_priv, ice)) < 0)
+return err;
+/* unmute all codecs - needed! */
+snd_ice1712_gpio_write_bits(ice, VT1724_PRODIGYHD2_MUTE,
+VT1724_PRODIGYHD2_MUTE);
+break;
+}
+
+return 0;
+}
+
+static int __devinit prodigyhd2_add_controls(struct snd_ice1712 *ice)
+{
+int err;
+
+switch (ice->eeprom.subvendor) {
+case VT1724_SUBDEVICE_PRODIGYHD2:
+err = snd_ice1712_akm4xxx_build_controls(ice);
+if (err < 0)
+return err;
+}
+return 0;
+}
+
+/* entry point */
+struct snd_ice1712_card_info snd_vt1724_prodigyhd2_cards[] __devinitdata = {
+{
+.subvendor = VT1724_SUBDEVICE_PRODIGYHD2,
+.name = "Audiotrak Prodigy HD2",
+.model = "prodigyhd2",
+.chip_init = prodigyhd2_init,
+.build_controls = prodigyhd2_add_controls,
+},
+{ } /* terminator */
+};
+
+<ice1724.c>
+static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
+snd_vt1724_revo_cards,
+snd_vt1724_amp_cards,
+snd_vt1724_aureon_cards,
+snd_vt1720_mobo_cards,
+snd_vt1720_pontis_cards,
+snd_vt1724_prodigy192_cards,
+snd_vt1724_prodigyhd2_cards,
+snd_vt1724_juli_cards,
+snd_vt1724_phase_cards,
+NULL,
+};
+
+Result 1
+
+~$ cat /proc/asound/cards
+0 [HD2 ]: ICE1724 - Audiotrak Prodigy HD2
+Audiotrak Prodigy HD2 at 0xdc00, irq 233
+
+Promblem 3
+
+$ dmesg
+ice1724: Invalid EEPROM version 1
+
+Chellenge 2
+
+I read source code with ice1724.c, and understand its message means.
+
+/var/lib/alsa/asound.state
+
+state.ICE1724 {
+control.1 {
+comment.access read
+comment.type BYTES
+comment.count 52
+iface CARD
+name 'ICE1724 EEPROM'
+value
+'240114121c01628030c3ff0000ff0000ff0000008100000000080000000000000000000000000000ff000000ff000000ff000000'
+}
+
+EEPROM dump prodigyhd2 (value is display by hexeditor)
+00000000 24 01 14 12 1C 01 62 80 30 C3 FF 00 00 FF 00 00 $.....b.0.......
+00000010 FF 00 00 00 81 00 00 00 00 08 00 00 00 00 00 00 ................
+00000020 00 00 00 00 00 00 00 00 FF 00 00 00 FF 00 00 00 ................
+00000030 FF 00 00 00 ....
+
+Refference ML LOG / SourceForge.net: alsa-cvslog
+http://sourceforge.net/mailarchive/mess … id=9338682
+<http://sourceforge.net/mailarchive/message.php?msg_id=9338682>
+
+ice->eeprom.version = snd_vt1724_read_i2c(ice, dev, 0x05)
+This version, vt1724 is judged vt1712 ! , and result is Invalid.
+
+"No Problem?"
+
+Problem 4 ALSA mix contorol cant mix, or enable?
+
+I dont control gnome volume applet, and fmod's mixing cant control.
+Music Player can volume cotrol, but multichannel is disabled. only one !
+
+Question: I want Envy24HT-S control Knowhow.
+"Transfer protcols is i2c, Conrotl interface GPIO, and Instruction is
+SPI or I2c. "
+by iwai (in slashdot.jp)
+
+Please teach me.
+
+<Detailed situation>
+Ubuntu Japan forum / Audiotrak Prodigy HD2
+http://forum.ubuntulinux.jp/viewtopic.php?id=11
+
+Thanks
+------------------
+oryaaaaa, I use PureBasic Linux :-D
 
 
 -------------------------------------------------------------------------
