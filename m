@@ -1,10 +1,9 @@
-From: Hiroyuki Yokota <GHB03630@nifty.ne.jp>
-Subject: ICE1724: Prodigyhd2 driver make problems?
-Date: Fri, 10 Nov 2006 05:42:50 +0900
-Message-ID: <455392CA.2060906@nifty.ne.jp>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: SB16 ISA max frequency bump to 48kHz
+Date: Fri, 10 Nov 2006 07:47:28 +0100
+Message-ID: <455420809a154@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="part455420809c851"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,206 +14,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, all. I join alsa-devel today.
+This is a multi-part message in MIME format.
 
-I am doing develop Audiotark Prodigy HD2 driver now.
-Some problems can't goal to complete.
+--part455420809c851
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OS: Linux Ubuntu6.10 (Kernel 2.6.18)
-Source: Alsa driver souce included Kernel 2.6.18
-/usr/src/linux-2.6.18/sound/pci/ice1712/
+Hello,
 
-Audiotrak prodigy hd2
-Envy24HT-S (VT1721)
-DAC AK4396 (SN 120dB)
-ADC AK5353
-output 2ch only, RCAx1, Headphonex1,Optx1
-input 2ch, Line-in (but Line goto ADC, Digital IN force to output 2ch)
-*input : for AD coverter, Headphone amp
+This patch  bumps maximum frequency for ISA SB16 to 48kHz. I
+tested it on three cards: SB16 non-pnp, SB16 pnp and SB AWE64
+(all ISA boards).
 
-Problems 1 Sounds resolustion is loose
+Regards,
+Krzysztof Helt
 
-Solution 1
-/usr/share/alsa/pcm/dmix.conf
-default S16_LE to default S32_LE
+----------------------------------------------------
+Champions On Ice - Olimpijscy mistrzowie ta=F1ca na lodzie!
+Zobacz spektakularne widowisko - Kliknij:
+http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2Fd33.html&s=
+id=3D927
 
-@args.FORMAT {
-type string
-default S32_LE
-}
+--part455420809c851
+Content-Type: text/x-patch; name="sb.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="sb.diff"
 
-Promblems 2 /proc/asound/cards is displayed "ice1724"
+ZGlmZiAtdXJwIGxpbnV4LTIuNi4xOC5vbGQvc291bmQvaXNhL3NiL3NiMTZfbWFpbi5jIGxpbnV4
+LTIuNi4xOC9zb3VuZC9pc2Evc2Ivc2IxNl9tYWluLmMKLS0tIGxpbnV4LTIuNi4xOC5vbGQvc291
+bmQvaXNhL3NiL3NiMTZfbWFpbi5jCTIwMDYtMTEtMDkgMTk6MzE6MTkuMDAwMDAwMDAwICswMTAw
+CisrKyBsaW51eC0yLjYuMTgvc291bmQvaXNhL3NiL3NiMTZfbWFpbi5jCTIwMDYtMTEtMDkgMTk6
+MzQ6NTYuMDAwMDAwMDAwICswMTAwCkBAIC00NzgsOSArNDc4LDkgQEAgc3RhdGljIHN0cnVjdCBz
+bmRfcGNtX2hhcmR3YXJlIHNuZF9zYjE2XwogCS5pbmZvID0JCQkoU05EUlZfUENNX0lORk9fTU1B
+UCB8IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKIAkJCQkgU05EUlZfUENNX0lORk9fTU1B
+UF9WQUxJRCksCiAJLmZvcm1hdHMgPQkJMCwKLQkucmF0ZXMgPQkJU05EUlZfUENNX1JBVEVfQ09O
+VElOVU9VUyB8IFNORFJWX1BDTV9SQVRFXzgwMDBfNDQxMDAsCisJLnJhdGVzID0JCVNORFJWX1BD
+TV9SQVRFX0NPTlRJTlVPVVMgfCBTTkRSVl9QQ01fUkFURV84MDAwXzQ4MDAwLAogCS5yYXRlX21p
+biA9CQk0MDAwLAotCS5yYXRlX21heCA9CQk0NDEwMCwKKwkucmF0ZV9tYXggPQkJNDgwMDAsCiAJ
+LmNoYW5uZWxzX21pbiA9CQkxLAogCS5jaGFubmVsc19tYXggPQkJMiwKIAkuYnVmZmVyX2J5dGVz
+X21heCA9CSgxMjgqMTAyNCksCkBAIC00OTYsOSArNDk2LDkgQEAgc3RhdGljIHN0cnVjdCBzbmRf
+cGNtX2hhcmR3YXJlIHNuZF9zYjE2XwogCS5pbmZvID0JCQkoU05EUlZfUENNX0lORk9fTU1BUCB8
+IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKIAkJCQkgU05EUlZfUENNX0lORk9fTU1BUF9W
+QUxJRCksCiAJLmZvcm1hdHMgPQkJMCwKLQkucmF0ZXMgPQkJU05EUlZfUENNX1JBVEVfQ09OVElO
+VU9VUyB8IFNORFJWX1BDTV9SQVRFXzgwMDBfNDQxMDAsCisJLnJhdGVzID0JCVNORFJWX1BDTV9S
+QVRFX0NPTlRJTlVPVVMgfCBTTkRSVl9QQ01fUkFURV84MDAwXzQ4MDAwLAogCS5yYXRlX21pbiA9
+CQk0MDAwLAotCS5yYXRlX21heCA9CQk0NDEwMCwKKwkucmF0ZV9tYXggPQkJNDgwMDAsCiAJLmNo
+YW5uZWxzX21pbiA9CQkxLAogCS5jaGFubmVsc19tYXggPQkJMiwKIAkuYnVmZmVyX2J5dGVzX21h
+eCA9CSgxMjgqMTAyNCksCg==
 
-~$ cat /proc/asound/cards
-0 [ICE1724 ]: ICE1724 - ICEnsemble ICE1724
-ICEnsemble ICE1724 at 0xac00, irq 233
-
-Challenge1 <This source is digest version>
-Modified Makefile, prodigyhd2.c & prodigyhd2.h (from revo.c), ice1724.c
-
-<prodigyhd2.h>
-#define PRODIGYHD2_DEVICE_DESC \
-"{{Audiotrak,Prodigy HD2},"
-#define VT1724_SUBDEVICE_PRODIGYHD2 0x12140124
-
-<prodigyhd2.c>
-static unsigned int prodigyhd2_num_stereo[] = {2};
-static char *prodigyhd2_channel_names[] = {"PCM Playback Volume"};
-
-static struct snd_akm4xxx akm_prodigyhd2 __devinitdata = {
-.type = SND_AK4358,
-.num_dacs = 2,
-.ops = {
-.set_rate_val = prodigyhd2_set_rate_val
-},
-.num_stereo = prodigyhd2_num_stereo,
-.channel_names = prodigyhd2_channel_names
-};
-
-static int __devinit prodigyhd2_init(struct snd_ice1712 *ice)
-{
-struct snd_akm4xxx *ak;
-int err;
-
-/* determine I2C, DACs and ADCs */
-switch (ice->eeprom.subvendor) {
-case VT1724_SUBDEVICE_PRODIGYHD2:
-ice->num_total_dacs = 2;
-ice->num_total_adcs = 2;
-break;
-default:
-snd_BUG();
-return -EINVAL;
-}
-
-/* second stage of initialization, analog parts and others */
-ak = ice->akm = kcalloc(2, sizeof(struct snd_akm4xxx), GFP_KERNEL);
-if (! ak)
-return -ENOMEM;
-ice->akm_codecs = 2;
-switch (ice->eeprom.subvendor) {
-case VT1724_SUBDEVICE_PRODIGYHD2:
-ice->akm_codecs = 1;
-if ((err = snd_ice1712_akm4xxx_init(ak, &akm_prodigyhd2,
-&akm_prodigyhd2_priv, ice)) < 0)
-return err;
-/* unmute all codecs - needed! */
-snd_ice1712_gpio_write_bits(ice, VT1724_PRODIGYHD2_MUTE,
-VT1724_PRODIGYHD2_MUTE);
-break;
-}
-
-return 0;
-}
-
-static int __devinit prodigyhd2_add_controls(struct snd_ice1712 *ice)
-{
-int err;
-
-switch (ice->eeprom.subvendor) {
-case VT1724_SUBDEVICE_PRODIGYHD2:
-err = snd_ice1712_akm4xxx_build_controls(ice);
-if (err < 0)
-return err;
-}
-return 0;
-}
-
-/* entry point */
-struct snd_ice1712_card_info snd_vt1724_prodigyhd2_cards[] __devinitdata = {
-{
-.subvendor = VT1724_SUBDEVICE_PRODIGYHD2,
-.name = "Audiotrak Prodigy HD2",
-.model = "prodigyhd2",
-.chip_init = prodigyhd2_init,
-.build_controls = prodigyhd2_add_controls,
-},
-{ } /* terminator */
-};
-
-<ice1724.c>
-static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
-snd_vt1724_revo_cards,
-snd_vt1724_amp_cards,
-snd_vt1724_aureon_cards,
-snd_vt1720_mobo_cards,
-snd_vt1720_pontis_cards,
-snd_vt1724_prodigy192_cards,
-snd_vt1724_prodigyhd2_cards,
-snd_vt1724_juli_cards,
-snd_vt1724_phase_cards,
-NULL,
-};
-
-Result 1
-
-~$ cat /proc/asound/cards
-0 [HD2 ]: ICE1724 - Audiotrak Prodigy HD2
-Audiotrak Prodigy HD2 at 0xdc00, irq 233
-
-Promblem 3
-
-$ dmesg
-ice1724: Invalid EEPROM version 1
-
-Chellenge 2
-
-I read source code with ice1724.c, and understand its message means.
-
-/var/lib/alsa/asound.state
-
-state.ICE1724 {
-control.1 {
-comment.access read
-comment.type BYTES
-comment.count 52
-iface CARD
-name 'ICE1724 EEPROM'
-value
-'240114121c01628030c3ff0000ff0000ff0000008100000000080000000000000000000000000000ff000000ff000000ff000000'
-}
-
-EEPROM dump prodigyhd2 (value is display by hexeditor)
-00000000 24 01 14 12 1C 01 62 80 30 C3 FF 00 00 FF 00 00 $.....b.0.......
-00000010 FF 00 00 00 81 00 00 00 00 08 00 00 00 00 00 00 ................
-00000020 00 00 00 00 00 00 00 00 FF 00 00 00 FF 00 00 00 ................
-00000030 FF 00 00 00 ....
-
-Refference ML LOG / SourceForge.net: alsa-cvslog
-http://sourceforge.net/mailarchive/mess … id=9338682
-<http://sourceforge.net/mailarchive/message.php?msg_id=9338682>
-
-ice->eeprom.version = snd_vt1724_read_i2c(ice, dev, 0x05)
-This version, vt1724 is judged vt1712 ! , and result is Invalid.
-
-"No Problem?"
-
-Problem 4 ALSA mix contorol cant mix, or enable?
-
-I dont control gnome volume applet, and fmod's mixing cant control.
-Music Player can volume cotrol, but multichannel is disabled. only one !
-
-Question: I want Envy24HT-S control Knowhow.
-"Transfer protcols is i2c, Conrotl interface GPIO, and Instruction is
-SPI or I2c. "
-by iwai (in slashdot.jp)
-
-Please teach me.
-
-<Detailed situation>
-Ubuntu Japan forum / Audiotrak Prodigy HD2
-http://forum.ubuntulinux.jp/viewtopic.php?id=11
-
-Thanks
-------------------
-oryaaaaa, I use PureBasic Linux :-D
-
+--part455420809c851
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--part455420809c851
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--part455420809c851--
