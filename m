@@ -1,13 +1,16 @@
-From: Thomas Witzel <witzel.thomas@comcast.net>
-Subject: Re: Intel ICH programming & ALSA driver
-Date: Fri, 10 Nov 2006 12:25:55 -0500
-Message-ID: <200611101225.55072.witzel.thomas@comcast.net>
-Reply-To: witzel.thomas@comcast.net
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Rawmidi device naming
+Date: Fri, 10 Nov 2006 12:54:15 -0500
+Message-ID: <1163181255.21285.34.camel@mindpipe>
+References: <1158946723.1097.90.camel@mindpipe>
+	<1158948259.1036.271601876@webmail.messagingengine.com>
+	<1163104597.16030.6.camel@mindpipe>
+	<1163147128.14459.275481443@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1163147128.14459.275481443@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,13 +20,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-BTW, If anyone cares to help me on this one, I made the code available at:
-https://www.nmr.mgh.harvard.edu/~twitzel/rti8xx.tar.bz2
+On Fri, 2006-11-10 at 09:25 +0100, Clemens Ladisch wrote:
+> Lee Revell wrote:
+> > On Fri, 2006-09-22 at 20:04 +0200, Clemens Ladisch wrote:
+> > > The client name comes from the card's shortname.
+> > 
+> > Sorry, but you are wrong - the client name does not come from the card's
+> > shortname.  The client gets the name of the first port registered.
+> 
+> Then I guess your kernel does not yet contain this changeset
+> <http://hg.alsa-project.org/alsa-kernel?cs=54aa2cdfe8d7> from ALSA 1.0.12.
 
-Thanks, Thomas
+I'm working with ALSA 1.0.9b.  The code seems to have completely
+changed.  Can you suggest how I might fix this in my ALSA version?
+
+Lee
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
