@@ -1,14 +1,11 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: SB16 ISA max frequency bump to 48kHz
-Date: Sat, 11 Nov 2006 04:53:02 +0100
-Message-ID: <4555491E.8060800@keyaccess.nl>
-References: <455420809a154@wp.pl> <s5hirhncyyl.wl%tiwai@suse.de>
-	<4554961A.5070509@keyaccess.nl>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GibZP-00089N-Ef delayed 10 hours
+Date: Fri, 10 Nov 2006 21:21:18 -0800
+Message-ID: <E1GilIs-00011p-Vu@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4554961A.5070509@keyaccess.nl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,34 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote:
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-> Takashi Iwai wrote:
-> 
->> Krzysztof Helt wrote:
-> 
->>> This patch  bumps maximum frequency for ISA SB16 to 48kHz. I
->>> tested it on three cards: SB16 non-pnp, SB16 pnp and SB AWE64
->>> (all ISA boards).
->>
->> Looks fine.  Could you give sign-off for commit?
-> 
-> Sorry, but I'd have to be very mistaken if the SB16 supports 48000 in 
-> hardware. The 4000-44100 is correct.
+The message identifier is:     1GibZP-00089N-Ef
+The subject of the message is: devoured always existed and emperors were
+The date of the message is:    Fri, 10 Nov 2006 19:57:30 +0100
 
-Confirmed. Although nothing complains with the proposed patch, audio 
-sampled at 48000 just plays too slow. Not exactly 48000/44100 too slow 
-(a song that lasts 3:21 takes 3:33, which would be 45295) but too slow.
+The address to which the message has not yet been delivered is:
 
-So, please don't apply (when I was searching around, I did find that it 
-probably should be 5000-44100 instead of 4000-44100).
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Rene.
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
