@@ -1,21 +1,16 @@
-From: =?iso-2022-jp?B?GyRCJSglOSVVJWwzLURNGyhC?= <ince6137@yahoo.co.jp>
-Subject: =?iso-2022-jp?b?GyRCJTslVSVsQzUkNyROMXxNTSVWJW0bKEI=?=
-	=?iso-2022-jp?b?GyRCJTAlOSVaITwlOSEiMEZGYj51JHI8dSQxPGgkaSRsGyhC?=
-	=?iso-2022-jp?b?GyRCJEY1Lkp9TU0kSyRPGyhC?=
-Date: Fri, 10 Nov 2006 18:57:52 +0100 (MET)
-Message-ID: <20061110175752.0C051996F3@mail.perex.cz>
-Reply-To: ince6137@yahoo.co.jp
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: Re: SB16 ISA max frequency bump to 48kHz
+Date: Sat, 11 Nov 2006 15:34:11 +0100
+Message-ID: <4555df637b95d@wp.pl>
+References: <455420809a154@wp.pl> <s5hirhncyyl.wl%tiwai@suse.de>
+	<4554961A.5070509@keyaccess.nl> <4555491E.8060800@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5329296
-	for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2006 18:57:59 +0100 (MET)
-Received: from alsa-project.org (unknown [219.131.177.66])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	0C051996F3
-	for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2006 18:57:52 +0100 (MET)
+In-reply-to: <455420809a154@wp.pl> <s5hirhncyyl.wl%tiwai@suse.de>
+	<4554961A.5070509@keyaccess.nl> <4555491E.8060800@keyaccess.nl>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,42 +20,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-alsa-devel様
-いつも有難うございます。エスフレンズの貝塚です。
-今月から私、貝塚雅子が事務局の運営を任されることになりました。
-どうぞ、宜しくお願いします。
+Dnia 11-11-2006 o godz. 4:53 Rene Herman napisa=B3(a):
+> =
 
-今月から、無料掲示板をパワーアップ、セフレ探しの奥様たちにブログスペースを
-開放しまして、セフレ生活をもっと身近に感じてほしい、そしてどんどんセフレの輪を
-広げていこうと考えています。
+> Confirmed. Although nothing complains with the proposed patch,
+audio =
 
-スタートとしまして、まずは掲示板にいらっしゃっていただいた方にお知らせしています。
-こちら、つま☆だいありーの公開が始まりました。
+> sampled at 48000 just plays too slow. Not exactly 48000/44100
+too slow =
 
-http://www.kimimachi.com/abox
+> (a song that lasts 3:21 takes 3:33, which would be 45295) but
+too slow.
+> =
 
-また、セフレ無料掲示板から以下のスペースがリニューアルいたしました。
-【つま☆だいありー】
-【パーティらいん】
-【秘密２ショット】
-【極キワ写真館】
-【いきなり生電話】NEW!
 
-今や、他人には言えない、うしろめたい...などといったことはありません。
-堂々とセフレ探しを楽しみましょう。そのひとりから、次の人へ、そのまた次へ...
+I must confirm the same. I tested it on CT2260, CT2890 and CT4500
+and on all it plays slower that it should (3:55 instead of 3:42
+which gives 46.7kHz - exactly the same on all three boards). I
+used simple "time play file.wav" to check this.
 
-すべてに費用は掛かりませんからご心配無用です。何か不明な点がありましたら、
-私、貝塚雅子までお問い合わせください。
+In my defense, I used this "bump up" for years watching movies
+and I never noticed the difference. Your finding my explain why
+so many movies seemed slow paced too me ;-)
 
-宜しくお願いします。
+Please reject the patch.
+
+Regards,
+Krzysztof
+
+----------------------------------------------------
+Tegoroczne odkrycie TopTrendy - debiutancja p=B3yta Lidii "Intuicja"
+http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2Fd34.html&sid=
+=3D928
 
 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
