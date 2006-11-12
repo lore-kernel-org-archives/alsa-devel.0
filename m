@@ -1,22 +1,21 @@
-From: "Tessa" <fredfwruy@tvbreakfast.com>
-Subject: Health Care
-Date: Sun, 12 Nov 2006 03:33:20 -0600
-Message-ID: <2443736163.375206940278@tvbreakfast.com>
-Reply-To: Tessa Mcghee <fredfwruy@tvbreakfast.com>
+From: "Rectums C. Palate" <knoll@gocreative.com>
+Subject: Re: (no subject)
+Date: Sun, 12 Nov 2006 05:26:21 -0500
+Message-ID: <8195791658.20061112052621@gocreative.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 62-43-158-104.user.ono.com (62-43-158-104.user.ono.com
-	[62.43.158.104])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1B54E242
-	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 10:32:04 +0100 (MET)
-Received: from eforwardct.name-services.com
-	by 62-43-158-104.user.ono.com (8.9.3/8.9.3) with SMTP id aYpsnOjph7PO
-	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 03:33:20 -0600
-Received: from nobody (233.83.120.105)
-	by eforwardct.name-services.com with SMTP id O82beya0TIfG
-	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 03:33:20 -0600
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CE1F264
+	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 11:25:21 +0100 (MET)
+Received: from -1211147200 (unknown [218.149.169.172])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	EA862997F0
+	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 11:25:18 +0100 (MET)
+Received: from gocreative.com (-1213538592 [-1213559320])
+	by greenflag.com (Qmailv1) with ESMTP id C59A6D5DF9
+	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2006 05:26:21 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,14 +25,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-http://yorikrx.com
-We have the lowest prices on the net.
-
-Our focus is customer service, the products you order are the products you get.
-We do not spend anything on marketing, there are no taxes to be paid as the manufacturer is located in an offshore zone and the production costs are way lower. No child labor is used.
+welc ome to the best pharmacy http://<html>/?IJESRKUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
 -------------------------------------------------------------------------
