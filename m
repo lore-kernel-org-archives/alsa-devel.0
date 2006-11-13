@@ -1,10 +1,9 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GibZP-00089N-Ef delayed 48 hours
-Date: Sun, 12 Nov 2006 19:57:11 -0800
-Message-ID: <E1GjSwZ-0003Yx-Iq@externalmx-1.sourceforge.net>
+From: Mailer Daemon <Mailer-Daemon@punt-3.mail.demon.net>
+Subject: Mail delivery failure
+Date: Mon, 13 Nov 2006 02:42:01 -0000
+Message-ID: <1163385721-22243-9017-dsn@lon1-punt3-2.mail.demon.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1221058811=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,36 +14,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+--===============1221058811==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="=_1163385721_22243_9017_="
+
+--=_1163385721_22243_9017_=
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
 This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1GibZP-00089N-Ef
-The subject of the message is: devoured always existed and emperors were
-The date of the message is:    Fri, 10 Nov 2006 19:57:30 +0100
+A message you sent could not be delivered to the following recipients:
+    g4klx@g4klx.demon.co.uk
 
-The address to which the message has not yet been delivered is:
+The message has not been collected after 30 days
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+--=_1163385721_22243_9017_=
+Content-Type: message/delivery-status
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Reporting-MTA: dns; punt-3.mail.demon.net
+
+Final-Recipient: rfc822; g4klx@g4klx.demon.co.uk
+Action: failed
+Status: 5.4.7
+
+--=_1163385721_22243_9017_=
+Content-Type: text/rfc822-headers; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Received: from punt3.mail.demon.net by mailstore
+	for g4klx@g4klx.demon.co.uk id 1GYDvD-30p000-05-GK8;
+	Fri, 13 Oct 2006 03:41:19 +0000
+Received: from [194.217.242.71] (lhlo=anchor-hub.mail.demon.net)
+	by punt3.mail.demon.net with lmtp id 1GYDvD-30p000-05
+	for g4klx@g4klx.demon.co.uk; Fri, 13 Oct 2006 03:41:19 +0000
+Received: from [59.162.214.115] (helo=g4klx.demon.co.uk)
+	by anchor-hub.mail.demon.net with esmtp id 1GYDv9-0005yr-Vw
+	for g4klx@g4klx.demon.co.uk; Fri, 13 Oct 2006 03:41:19 +0000
+From: alsa-devel@lists.sf.net
+To: g4klx@g4klx.demon.co.uk
+Subject: Re: Notice
+Date: Fri, 13 Oct 2006 09:18:01 -0700
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+
+--=_1163385721_22243_9017_=--
+
+
+
+--===============1221058811==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1221058811==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1221058811==--
