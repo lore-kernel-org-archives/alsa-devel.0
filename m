@@ -1,14 +1,11 @@
-From: "Andrew L. Neporada" <nepal@asplinux.ru>
-Subject: Re: ALC883 codec and jack sense issue
-Date: Mon, 13 Nov 2006 18:26:23 +0300
-Message-ID: <1163431583.8358.50.camel@leeloo.asplinux.ru>
-References: <1163423050.8358.44.camel@leeloo.asplinux.ru>
-	<s5hirhjbezn.wl%tiwai@suse.de>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GjFo7-0001FL-AY delayed 24 hours
+Date: Mon, 13 Nov 2006 07:35:39 -0800
+Message-ID: <E1GjdqV-0006qu-ML@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hirhjbezn.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,28 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-0JIg0J/QvdC0LCAxMy8xMS8yMDA2INCyIDE1OjI1ICswMTAwLCBUYWthc2hpIEl3YWkg0L/QuNGI
-0LXRgjoKPiBBdCBNb24sIDEzIE5vdiAyMDA2IDE2OjA0OjEwICswMzAwLAo+IEFuZHJldyBMLiBO
-ZXBvcmFkYSB3cm90ZToKPiA+IAo+ID4gSGkhCj4gPiAKPiA+IEl0IHNlZW1zIHRoYXQgc25kX2hk
-YV9pbnRlbCBkcml2ZXIgZmFpbHMgdG8gZGV0ZWN0IGhwL21pYy9saW5lIGphY2sKPiA+IHByZXNl
-bnNlIHdpdGggQUxDODgzIGNvZGVjLgo+ID4gCj4gPiBBY2NvcmRpbmcgdG8gUmVhbHRlaydzIHNw
-ZWNzIChhbmQgcHJhY3RpY2UpIEFMQzg4MyBkb2Vzbid0IGdlbmVyYXRlCj4gPiB1bnNvbGljaXRl
-ZCBldmVudHMgaW4gdGhpcyBjYXNlLAo+IAo+IFJlYWxseT8gIEFGQUlLLCBhbGwgcG9ydCBwaW5z
-IGNhbiBnZW5lcmF0ZSB1bnNvbGljaXRlZCBldmVudHMsCj4gYWNjb3JkaW5nIHRvIHRoZSBkYXRh
-c2hlZXQgdmVyc2lvbiAxLjIgKHNlZSBzZWN0aW9uIDguMjEpLgo+IAoKWW91IGFyZSByaWdodC4g
-SSBoYWQgbWlzc2VkIHRoaXMgc2VjdGlvbi4gQUxDODgzIGdlbmVyYXRlcyB1bnNvbGljaXRlZApl
-dmVudHMgYXMgZXhwZWN0ZWQuIFRoYW5rcy4KCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IEFuZHJldy4KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBt
-b3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRv
-bmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpv
-YiBlYXNpZXIKRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAu
-MSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3Nl
-bD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
-Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1GjFo7-0001FL-AY
+The subject of the message is: went down from that I thou, that his my that came the Lord is
+The date of the message is:    Sun, 12 Nov 2006 06:55:23 -0700
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
