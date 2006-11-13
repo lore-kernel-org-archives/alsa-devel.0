@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GjFo7-0001FL-AY delayed 10 hours
-Date: Sun, 12 Nov 2006 19:31:49 -0800
-Message-ID: <E1GjSY1-0005u2-AD@externalmx-1.sourceforge.net>
+Subject: Warning: message 1GibZP-00089N-Ef delayed 48 hours
+Date: Sun, 12 Nov 2006 19:57:11 -0800
+Message-ID: <E1GjSwZ-0003Yx-Iq@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1GjFo7-0001FL-AY
-The subject of the message is: went down from that I thou, that his my that came the Lord is
-The date of the message is:    Sun, 12 Nov 2006 06:55:23 -0700
+The message identifier is:     1GibZP-00089N-Ef
+The subject of the message is: devoured always existed and emperors were
+The date of the message is:    Fri, 10 Nov 2006 19:57:30 +0100
 
 The address to which the message has not yet been delivered is:
 
