@@ -1,14 +1,14 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Virmidi problem
-Date: Mon, 13 Nov 2006 09:37:20 +0100
-Message-ID: <1163407040.20850.275658369@webmail.messagingengine.com>
-References: <1163192217.21285.47.camel@mindpipe>
+Subject: Re: TERRATEC Phase 88 SE
+Date: Mon, 13 Nov 2006 09:49:05 +0100
+Message-ID: <1163407745.21720.275661041@webmail.messagingengine.com>
+References: <20061112112520.43514.qmail@web27612.mail.ukl.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1163192217.21285.47.camel@mindpipe>
+In-Reply-To: <20061112112520.43514.qmail@web27612.mail.ukl.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,19 +18,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Markus Bergholz <markuman85@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> I have a driver where I create 4 rawmidi devices and use snd-virmidi to
-> connect them to the ALSA sequencer.  However I have found that virmidi
-> will not create the sequencer ports if the rawmidi device is input only.
+Markus Bergholz wrote:
+> Is the Terratec Phase 88 SE actually supportet or not?
 
-There are no obvious errors in seq_midi.c.  Please put a few printk()s
-into the snd_seq_midisynth_register_port() function.
+The Phase 88 is supported.
+I don't know if the "SE" has any meaning.
 
 
-Regards,
+HTH
 Clemens
 
 -------------------------------------------------------------------------
