@@ -1,7 +1,7 @@
-From: Stephen McGovern <h7th@yahoo.com>
-Subject: Testing Emu 1212m drivers
-Date: Mon, 13 Nov 2006 09:39:12 -0800 (PST)
-Message-ID: <20061113173913.87405.qmail@web30409.mail.mud.yahoo.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GibZP-00089N-Ef delayed 72 hours
+Date: Mon, 13 Nov 2006 11:13:25 -0800
+Message-ID: <E1GjhFF-0005GJ-3L@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,23 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I wanted to test
-out the drivers for the Emu 1212m.  I have heard that these drivers
-exist but are thus far unreleased.  I pretty new to ALSA.  Is there a
-way I could obtain the drivers and install them on my system?
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
+The message identifier is:     1GibZP-00089N-Ef
+The subject of the message is: devoured always existed and emperors were
+The date of the message is:    Fri, 10 Nov 2006 19:57:30 +0100
 
+The address to which the message has not yet been delivered is:
 
-Steve McGovern
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-
-
-
- 
-____________________________________________________________________________________
-Do you Yahoo!?
-Everyone is raving about the all-new Yahoo! Mail beta.
-http://new.mail.yahoo.com
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
