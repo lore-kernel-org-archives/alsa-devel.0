@@ -1,11 +1,16 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GjFo7-0001FL-AY delayed 24 hours
-Date: Mon, 13 Nov 2006 07:35:39 -0800
-Message-ID: <E1GjdqV-0006qu-ML@externalmx-1.sourceforge.net>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Intel ICH programming & ALSA driver
+Date: Mon, 13 Nov 2006 17:40:18 +0100
+Message-ID: <1163436018.6764.275695992@webmail.messagingengine.com>
+References: <200611101225.55072.witzel.thomas@comcast.net>
+	<1163407894.22401.275661099@webmail.messagingengine.com>
+	<200611131558.44643.witzel.thomas@comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200611131558.44643.witzel.thomas@comcast.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +20,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: witzel.thomas@comcast.net
+Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+Thomas Witzel wrote:
+> On Monday 13 November 2006 08:51, you wrote:
+> > I don't think it's a good idea to reset the DMA when _any_ interrupt
+> > occurs; this could be too early.  You could just wait for it to halt by
+> > itself when the last buffer entry is reached, and reset the DMA when the
+> > device is closed.
+> 
+> Without this it would get me about 100000 interrupts in just a few seconds 
+> telling me that it has finished.
 
-The message identifier is:     1GjFo7-0001FL-AY
-The subject of the message is: went down from that I thou, that his my that came the Lord is
-The date of the message is:    Sun, 12 Nov 2006 06:55:23 -0700
+Apparently, the interrupt handler is supposed to either add more valid
+buffers or to stop the DMA.
 
-The address to which the message has not yet been delivered is:
+I think the appropriate thing to do is top stop (not reset) the DMA when
+the end-of-list bit has been set, but not at the first interrupt (that
+will occur after the first buffer has been fetched).
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
