@@ -1,13 +1,11 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: TERRATEC Phase 88 SE
-Date: Sun, 12 Nov 2006 14:53:09 +0000
-Message-ID: <45573555.9010909@superbug.co.uk>
-References: <20061112112520.43514.qmail@web27612.mail.ukl.yahoo.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GjFo7-0001FL-AY delayed 10 hours
+Date: Sun, 12 Nov 2006 19:31:49 -0800
+Message-ID: <E1GjSY1-0005u2-AD@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20061112112520.43514.qmail@web27612.mail.ukl.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,30 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Markus Bergholz <markuman85@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Markus Bergholz wrote:
-> Hi.
-> I=B4ve asked allready in the irc channel on Freenode, but someone said, i=
- should ask the devels.
-> Is the Terratec Phase 88 SE actually supportet or not?
-> =
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-> greetings
-> Markus Bergholz
-> =
+The message identifier is:     1GjFo7-0001FL-AY
+The subject of the message is: went down from that I thou, that his my that came the Lord is
+The date of the message is:    Sun, 12 Nov 2006 06:55:23 -0700
 
+The address to which the message has not yet been delivered is:
 
-More exactly, could the appropriate developer please update the sound =
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-card matrix with the status "yes/no supported"
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easi=
-er
+Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
-21642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
