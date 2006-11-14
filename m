@@ -1,10 +1,9 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Patch to add Conexant codec support to the HD audio
-	driver
-Date: Mon, 13 Nov 2006 16:04:01 -0800
-Message-ID: <1163462641.21193.111.camel@razman>
+From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
+Subject: Undelivered Mail Returned to Sender
+Date: Tue, 14 Nov 2006 07:56:08 +0100 (MET)
+Message-ID: <20061114065608.7C35C2AB@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-aMZXBl+ly8gtJEHO6l4T"
+Content-Type: multipart/mixed; boundary="===============0953021305=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,1379 +14,304 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-encapsulated message.
 
---=-aMZXBl+ly8gtJEHO6l4T
+--===============0953021305==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="80EA52AA.1163487368/alsa.jcu.cz"
+
+This is a MIME-encapsulated message.
+
+--80EA52AA.1163487368/alsa.jcu.cz
+Content-Description: Notification
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
 
-Summary:  Add Conexant audio support to the HD Audio driver
+This is the ALSA's E-mail Delivery System program at host alsa.jcu.cz.
 
-This driver adds limited support for the Conexant 5045 and 5047 HD Audio
-codecs.  Some issues still need to be resolved.  The code is based
-primarily on code from the Analog Devices AD1981 support and the Realtek
-ALC260 support.  Some code came from the original code developed by Alex
-Pototskiy (see alsa bugtracker 2485).
+I'm sorry to have to inform you that your message could not be
+be delivered to one or more recipients. It's attached below.
 
-Signed off by:
+For further assistance, please send mail to <postmaster>
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+If you do so, please include this problem report. You can
+delete your own text from the attached returned message.
 
---=-aMZXBl+ly8gtJEHO6l4T
-Content-Disposition: attachment; filename=conexant-driver-test1.patch
-Content-Type: text/x-patch; name=conexant-driver-test1.patch;
-	charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+			The ALSA's E-mail Delivery System program
 
---- /dev/null	2006-09-13 00:29:45.000000000 -0700
-+++ b/pci/hda/patch_conexant.c	2006-10-21 21:30:35.000000000 -0700
-@@ -0,0 +1,2 @@
-+#define __NO_VERSION__
-+#include "../../alsa-kernel/pci/hda/patch_conexant.c"
+<alsa-devel@lists.sourceforge.net> (expanded from
+    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
+    said: 550-SPAM: This message appears to be spam (7.6 points). 550-- 550-If
+    you believe this message was classified as spam in error, 550-please open a
+    Support Request at the URL below. 550-(Please include this message in any
+    Support Request). 550-- 550-- 550-Spam Filtering performed by
+    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
+    550-Report problems to
+    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.2
+    EXTRA_MPART_TYPE       Header has extraneous Content-type:...type=
+    550-entry 550-5.0 INVALID_DATE           Invalid Date: header (not RFC
+    2822) 550-0.0 RCVD_BY_IP             Received by mail server with no name
+    550-0.0 HTML_MESSAGE           BODY: HTML included in message 550-2.0
+    HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
+    550-0.2 HTML_FONT_BIG          BODY: HTML tag for a big font size 550 0.2
+    HTML_90_100            BODY: Message is 90% to 100% HTML (in reply to end
+    of DATA command)
 
---=-aMZXBl+ly8gtJEHO6l4T
-Content-Disposition: attachment; filename=conexant-kernel-test9.patch
-Content-Type: text/x-patch; name=conexant-kernel-test9.patch;
-	charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+--80EA52AA.1163487368/alsa.jcu.cz
+Content-Description: Delivery report
+Content-Type: message/delivery-status
 
-diff -r c5ea10eebbf7 Documentation/ALSA-Configuration.txt
---- a/Documentation/ALSA-Configuration.txt	Sat Nov 11 10:52:06 2006 +0000
-+++ b/Documentation/ALSA-Configuration.txt	Mon Nov 13 12:27:28 2006 -0800
-@@ -867,6 +867,20 @@ Prior to version 0.9.0rc4 options had a 
- 	  laptop	3-jack with hp-jack automute
- 	  laptop-dig	ditto with SPDIF
- 	  auto		auto-config reading BIOS (default)
-+	
-+	Conexant 5045
-+	  laptop	Laptop config 
-+	  test		for testing/debugging purpose, almost all controls can be
-+			adjusted.  Appearing only when compiled with
-+			$CONFIG_SND_DEBUG=y
-+
-+	Conexant 5047
-+	  laptop	Basic Laptop config 
-+	  laptop-hp	Laptop config for some HP models (subdevice 30A5)
-+	  laptop-eapd	Laptop config with EAPD support
-+	  test		for testing/debugging purpose, almost all controls can be
-+			adjusted.  Appearing only when compiled with
-+			$CONFIG_SND_DEBUG=y
- 
- 	STAC9200/9205/9220/9221/9254
- 	  ref		Reference board
-diff -r c5ea10eebbf7 pci/hda/Makefile
---- a/pci/hda/Makefile	Sat Nov 11 10:52:06 2006 +0000
-+++ b/pci/hda/Makefile	Mon Nov 13 12:27:28 2006 -0800
-@@ -1,5 +1,5 @@ snd-hda-intel-objs := hda_intel.o
- snd-hda-intel-objs := hda_intel.o
--snd-hda-codec-objs := hda_codec.o hda_generic.o patch_realtek.o patch_cmedia.o patch_analog.o patch_sigmatel.o patch_si3054.o patch_atihdmi.o
-+snd-hda-codec-objs := hda_codec.o hda_generic.o patch_realtek.o patch_cmedia.o patch_analog.o patch_sigmatel.o patch_si3054.o patch_atihdmi.o patch_conexant.o
- ifdef CONFIG_PROC_FS
- snd-hda-codec-objs += hda_proc.o
- endif
-diff -r c5ea10eebbf7 pci/hda/hda_patch.h
---- a/pci/hda/hda_patch.h	Sat Nov 11 10:52:06 2006 +0000
-+++ b/pci/hda/hda_patch.h	Mon Nov 13 12:27:28 2006 -0800
-@@ -14,6 +14,8 @@ extern struct hda_codec_preset snd_hda_p
- extern struct hda_codec_preset snd_hda_preset_si3054[];
- /* ATI HDMI codecs */
- extern struct hda_codec_preset snd_hda_preset_atihdmi[];
-+/* Conexant audio codec */
-+extern struct hda_codec_preset snd_hda_preset_conexant[];
- 
- static const struct hda_codec_preset *hda_preset_tables[] = {
- 	snd_hda_preset_realtek,
-@@ -22,5 +24,6 @@ static const struct hda_codec_preset *hd
- 	snd_hda_preset_sigmatel,
- 	snd_hda_preset_si3054,
- 	snd_hda_preset_atihdmi,
-+	snd_hda_preset_conexant,
- 	NULL
- };
---- /dev/null	2006-11-05 06:13:16.000000000 -0800
-+++ b/pci/hda/patch_conexant.c	2006-11-13 12:16:49.000000000 -0800
-@@ -0,0 +1,1276 @@
-+/*
-+ * HD audio interface patch for Conexant HDA audio codec
-+ *
-+ * Copyright (c) 2006 Alex Pototskiy <alex.pototskiy@gmail.com>
-+ * 		      Takashi Iwai <tiwai@suse.de>
-+ * 		      Tobin Davis  <tdavis@dsl-only.net>
-+ *
-+ *  This driver is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ *  This driver is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *  GNU General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software
-+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ */
-+
-+#include <sound/driver.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/pci.h>
-+#include <sound/core.h>
-+#include "hda_codec.h"
-+#include "hda_local.h"
-+
-+#define CXT_PIN_DIR_IN              0x00
-+#define CXT_PIN_DIR_OUT             0x01
-+#define CXT_PIN_DIR_INOUT           0x02
-+#define CXT_PIN_DIR_IN_NOMICBIAS    0x03
-+#define CXT_PIN_DIR_INOUT_NOMICBIAS 0x04
-+
-+#define CONEXANT_HP_EVENT	0x37
-+#define CONEXANT_MIC_EVENT	0x38
-+
-+
-+
-+struct conexant_spec {
-+
-+	struct snd_kcontrol_new *mixers[5];
-+	int num_mixers;
-+
-+	const struct hda_verb *init_verbs[5];	/* initialization verbs
-+						 * don't forget NULL termination!
-+						 */
-+	unsigned int num_init_verbs;
-+
-+	/* playback */
-+	struct hda_multi_out multiout;	/* playback set-up
-+					 * max_channels, dacs must be set
-+					 * dig_out_nid and hp_nid are optional
-+					 */
-+	unsigned int cur_eapd;
-+	unsigned int need_dac_fix;
-+
-+	/* capture */
-+	unsigned int num_adc_nids;
-+	hda_nid_t *adc_nids;
-+	hda_nid_t dig_in_nid;		/* digital-in NID; optional */
-+
-+	/* capture source */
-+	const struct hda_input_mux *input_mux;
-+	hda_nid_t *capsrc_nids;
-+	unsigned int cur_mux[3];
-+
-+	/* channel model */
-+	const struct hda_channel_mode *channel_mode;
-+	int num_channel_mode;
-+
-+	/* PCM information */
-+	struct hda_pcm pcm_rec[2];	/* used in build_pcms() */
-+
-+	struct mutex amp_mutex;	/* PCM volume/mute control mutex */
-+	unsigned int spdif_route;
-+
-+	/* dynamic controls, init_verbs and input_mux */
-+	struct auto_pin_cfg autocfg;
-+	unsigned int num_kctl_alloc, num_kctl_used;
-+	struct snd_kcontrol_new *kctl_alloc;
-+	struct hda_input_mux private_imux;
-+	hda_nid_t private_dac_nids[4];
-+
-+};
-+
-+static int conexant_playback_pcm_open(struct hda_pcm_stream *hinfo,
-+				    struct hda_codec *codec,
-+				    struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream);
-+}
-+
-+static int conexant_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
-+				       struct hda_codec *codec,
-+				       unsigned int stream_tag,
-+				       unsigned int format,
-+				       struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_multi_out_analog_prepare(codec, &spec->multiout, stream_tag,
-+						format, substream);
-+}
-+
-+static int conexant_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
-+				       struct hda_codec *codec,
-+				       struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_multi_out_analog_cleanup(codec, &spec->multiout);
-+}
-+
-+/*
-+ * Digital out
-+ */
-+static int conexant_dig_playback_pcm_open(struct hda_pcm_stream *hinfo,
-+					struct hda_codec *codec,
-+					struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_multi_out_dig_open(codec, &spec->multiout);
-+}
-+
-+static int conexant_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
-+					 struct hda_codec *codec,
-+					 struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_multi_out_dig_close(codec, &spec->multiout);
-+}
-+
-+/*
-+ * Analog capture
-+ */
-+static int conexant_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
-+				      struct hda_codec *codec,
-+				      unsigned int stream_tag,
-+				      unsigned int format,
-+				      struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	snd_hda_codec_setup_stream(codec, spec->adc_nids[substream->number],
-+				   stream_tag, 0, format);
-+	return 0;
-+}
-+
-+static int conexant_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
-+				      struct hda_codec *codec,
-+				      struct snd_pcm_substream *substream)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	snd_hda_codec_setup_stream(codec, spec->adc_nids[substream->number],
-+				   0, 0, 0);
-+	return 0;
-+}
-+
-+
-+
-+static struct hda_pcm_stream conexant_pcm_analog_playback = {
-+	.substreams = 1,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.nid = 0, /* fill later */
-+	.ops = {
-+		.open = conexant_playback_pcm_open,
-+		.prepare = conexant_playback_pcm_prepare,
-+		.cleanup = conexant_playback_pcm_cleanup
-+	},
-+
-+};
-+
-+static struct hda_pcm_stream conexant_pcm_analog_capture = {
-+	.substreams = 1,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.nid = 0, /* fill later */
-+	.ops = {
-+		.prepare = conexant_capture_pcm_prepare,
-+		.cleanup = conexant_capture_pcm_cleanup
-+	},
-+
-+};
-+
-+
-+static struct hda_pcm_stream conexant_pcm_digital_playback = {
-+	.substreams = 1,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.nid = 0, /* fill later */
-+	.ops = {
-+		.open = conexant_dig_playback_pcm_open,
-+		.close = conexant_dig_playback_pcm_close
-+	},
-+};
-+
-+static struct hda_pcm_stream conexant_pcm_digital_capture = {
-+	.substreams = 1,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	/* NID is set in alc_build_pcms */
-+};
-+
-+static int conexant_build_pcms(struct hda_codec *codec) {
-+	struct conexant_spec *spec = codec->spec;
-+	struct hda_pcm *info = spec->pcm_rec;
-+
-+	codec->num_pcms = 1;
-+	codec->pcm_info = info;
-+
-+	info->name = "CONEXANT Analog";
-+	info->stream[SNDRV_PCM_STREAM_PLAYBACK] = conexant_pcm_analog_playback;
-+	info->stream[SNDRV_PCM_STREAM_PLAYBACK].channels_max = spec->multiout.max_channels;
-+	info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->multiout.dac_nids[0];
-+	info->stream[SNDRV_PCM_STREAM_CAPTURE] = conexant_pcm_analog_capture;
-+	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = spec->num_adc_nids;
-+	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adc_nids[0];
-+
-+	if (spec->multiout.dig_out_nid) {
-+		info++;
-+		codec->num_pcms++;
-+		info->name = "Conexant Digital";
-+		info->stream[SNDRV_PCM_STREAM_PLAYBACK] = conexant_pcm_digital_playback;
-+		info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->multiout.dig_out_nid;
-+		if (spec->dig_in_nid) {
-+			info->stream[SNDRV_PCM_STREAM_CAPTURE] = conexant_pcm_digital_capture;
-+			info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->dig_in_nid;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int conexant_mux_enum_info(struct snd_kcontrol *kcontrol,
-+	       			  struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+
-+	return snd_hda_input_mux_info(spec->input_mux, uinfo);
-+}
-+
-+static int conexant_mux_enum_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-+
-+	ucontrol->value.enumerated.item[0] = spec->cur_mux[adc_idx];
-+	return 0;
-+}
-+
-+static int conexant_mux_enum_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-+
-+	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
-+				     spec->capsrc_nids[adc_idx],
-+				     &spec->cur_mux[adc_idx]);
-+}
-+
-+static int conexant_init(struct hda_codec *codec) {
-+	struct conexant_spec *spec = codec->spec;
-+	int i;
-+
-+	for (i = 0; i < spec->num_init_verbs; i++)
-+		snd_hda_sequence_write(codec, spec->init_verbs[i]);
-+	return 0;
-+}
-+
-+static void conexant_free(struct hda_codec *codec) {
-+        struct conexant_spec *spec = codec->spec;
-+        unsigned int i;
-+
-+        if (spec->kctl_alloc) {
-+                for (i = 0; i < spec->num_kctl_used; i++)
-+                        kfree(spec->kctl_alloc[i].name);
-+                kfree(spec->kctl_alloc);
-+        }
-+
-+	kfree(codec->spec);
-+}
-+
-+#ifdef CONFIG_PM
-+static int conexant_resume(struct hda_codec *codec)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+	int i;
-+
-+	codec->patch_ops.init(codec);
-+	for (i = 0; i < spec->num_mixers; i++)
-+		snd_hda_resume_ctls(codec, spec->mixers[i]);
-+	if (spec->multiout.dig_out_nid)
-+		snd_hda_resume_spdif_out(codec);
-+	if (spec->dig_in_nid)
-+		snd_hda_resume_spdif_in(codec);
-+	return 0;
-+}
-+#endif
-+
-+static int conexant_build_controls(struct hda_codec *codec) {
-+	struct conexant_spec *spec = codec->spec;
-+	unsigned int i;
-+	int err;
-+
-+	for (i = 0; i < spec->num_mixers; i++) {
-+		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
-+		if (err < 0)
-+			return err;
-+	}
-+	if (spec->multiout.dig_out_nid) {
-+		err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid);
-+		if (err < 0)
-+			return err;
-+	} 
-+	if (spec->dig_in_nid) {
-+		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+static struct hda_codec_ops conexant_patch_ops = {
-+	.build_controls = conexant_build_controls,
-+	.build_pcms = conexant_build_pcms,
-+	.init = conexant_init,
-+	.free = conexant_free,
-+#ifdef CONFIG_PM
-+	.resume = conexant_resume,
-+#endif
-+};
-+
-+/*
-+ * EAPD control
-+ * the private value = nid | (invert << 8)
-+ */
-+
-+
-+
-+static int conexant_eapd_info(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+static int conexant_eapd_get(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	int invert = (kcontrol->private_value >> 8) & 1;
-+	if (invert)
-+		ucontrol->value.integer.value[0] = ! spec->cur_eapd;
-+	else
-+		ucontrol->value.integer.value[0] = spec->cur_eapd;
-+	return 0;
-+}
-+
-+static int conexant_eapd_put(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	int invert = (kcontrol->private_value >> 8) & 1;
-+	hda_nid_t nid = kcontrol->private_value & 0xff;
-+	unsigned int eapd;
-+	eapd = ucontrol->value.integer.value[0];
-+	if (invert)
-+		eapd = !eapd;
-+	if (eapd == spec->cur_eapd && ! codec->in_resume)
-+		return 0;
-+	spec->cur_eapd = eapd;
-+	snd_hda_codec_write(codec, nid,
-+			    0, AC_VERB_SET_EAPD_BTLENABLE,
-+			    eapd ? 0x02 : 0x00);
-+	return 1;
-+}
-+
-+static int conexant_ch_mode_info(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_ch_mode_info(codec, uinfo, spec->channel_mode,
-+				    spec->num_channel_mode);
-+}
-+
-+static int conexant_ch_mode_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	return snd_hda_ch_mode_get(codec, ucontrol, spec->channel_mode,
-+				   spec->num_channel_mode, spec->multiout.max_channels);
-+}
-+
-+static int conexant_ch_mode_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+	int err = snd_hda_ch_mode_put(codec, ucontrol, spec->channel_mode,
-+				      spec->num_channel_mode,
-+				      &spec->multiout.max_channels);
-+	if (err >= 0 && spec->need_dac_fix)
-+		spec->multiout.num_dacs = spec->multiout.max_channels / 2;
-+	return err;
-+}
-+
-+#define CXT_PIN_MODE(xname, nid, dir) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
-+	  .info = conexant_ch_mode_info, \
-+	  .get = conexant_ch_mode_get, \
-+	  .put = conexant_ch_mode_put, \
-+	  .private_value = nid | (dir<<16) }
-+
-+static int cxt_gpio_data_info(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}                                
-+
-+static int cxt_gpio_data_get(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = kcontrol->private_value & 0xffff;
-+	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
-+	long *valp = ucontrol->value.integer.value;
-+	unsigned int val = snd_hda_codec_read(codec, nid, 0,
-+					      AC_VERB_GET_GPIO_DATA, 0x00);
-+
-+	*valp = (val & mask) != 0;
-+	return 0;
-+}
-+
-+static int cxt_gpio_data_put(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	signed int change;
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = kcontrol->private_value & 0xffff;
-+	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
-+	long val = *ucontrol->value.integer.value;
-+	unsigned int gpio_data = snd_hda_codec_read(codec, nid, 0,
-+						    AC_VERB_GET_GPIO_DATA,
-+						    0x00);
-+
-+	/* Set/unset the masked GPIO bit(s) as needed */
-+	change = (val == 0 ? 0 : mask) != (gpio_data & mask);
-+	if (val == 0)
-+		gpio_data &= ~mask;
-+	else
-+		gpio_data |= mask;
-+	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
-+
-+	return change;
-+}
-+
-+#define CXT_GPIO_DATA_SWITCH(xname, nid, mask) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
-+	  .info = cxt_gpio_data_info, \
-+	  .get = cxt_gpio_data_get, \
-+	  .put = cxt_gpio_data_put, \
-+	  .private_value = nid | (mask<<16) }
-+
-+static int cxt_spdif_ctrl_info(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}                                
-+
-+static int cxt_spdif_ctrl_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = kcontrol->private_value & 0xffff;
-+	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
-+	long *valp = ucontrol->value.integer.value;
-+	unsigned int val = snd_hda_codec_read(codec, nid, 0,
-+					      AC_VERB_GET_DIGI_CONVERT, 0x00);
-+
-+	*valp = (val & mask) != 0;
-+	return 0;
-+}
-+
-+static int cxt_spdif_ctrl_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	signed int change;
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = kcontrol->private_value & 0xffff;
-+	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
-+	long val = *ucontrol->value.integer.value;
-+	unsigned int ctrl_data = snd_hda_codec_read(codec, nid, 0,
-+						    AC_VERB_GET_DIGI_CONVERT,
-+						    0x00);
-+
-+	/* Set/unset the masked control bit(s) as needed */
-+	change = (val == 0 ? 0 : mask) != (ctrl_data & mask);
-+	if (val==0)
-+		ctrl_data &= ~mask;
-+	else
-+		ctrl_data |= mask;
-+	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1,
-+			    ctrl_data);
-+
-+	return change;
-+}
-+
-+#define CXT_SPDIF_CTRL_SWITCH(xname, nid, mask) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
-+	  .info = cxt_spdif_ctrl_info, \
-+	  .get = cxt_spdif_ctrl_get, \
-+	  .put = cxt_spdif_ctrl_put, \
-+	  .private_value = nid | (mask<<16) }
-+
-+/* Conexant 5045 specific */
-+
-+static hda_nid_t cxt5045_dac_nids[1] = { 0x19 };
-+static hda_nid_t cxt5045_adc_nids[1] = { 0x1a };
-+static hda_nid_t cxt5045_capsrc_nids[1] = { 0x1a };
-+#define CXT5045_SPDIF_OUT	0x13
-+
-+
-+static struct hda_input_mux cxt5045_capture_source = {
-+	.num_items = 2,
-+	.items = {
-+		{ "ExtMic", 0x1 },
-+		{ "LineIn", 0x2 },
-+	}
-+};
-+
-+/* turn on/off EAPD (+ mute HP) as a master switch */
-+static int cxt5045_hp_master_sw_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (! conexant_eapd_put(kcontrol, ucontrol))
-+		return 0;
-+
-+	/* toggle HP mute appropriately */
-+	snd_hda_codec_amp_update(codec, 0x11, 0, HDA_OUTPUT, 0,
-+				 0x80, spec->cur_eapd ? 0 : 0x80);
-+	snd_hda_codec_amp_update(codec, 0x11, 1, HDA_OUTPUT, 0,
-+				 0x80, spec->cur_eapd ? 0 : 0x80);
-+	return 1;
-+}
-+
-+/* bind volumes of both NID 0x10 and 0x11 */
-+static int cxt5045_hp_master_vol_put(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	long *valp = ucontrol->value.integer.value;
-+	int change;
-+
-+	change = snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0,
-+					  0x7f, valp[0] & 0x7f);
-+	change |= snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0,
-+					   0x7f, valp[1] & 0x7f);
-+	snd_hda_codec_amp_update(codec, 0x11, 0, HDA_OUTPUT, 0,
-+				 0x7f, valp[0] & 0x7f);
-+	snd_hda_codec_amp_update(codec, 0x11, 1, HDA_OUTPUT, 0,
-+				 0x7f, valp[1] & 0x7f);
-+	return change;
-+}
-+
-+
-+/* mute internal speaker if HP is plugged */
-+static void cxt5045_hp_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x11, 0,
-+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0,
-+				 0x80, present ? 0x80 : 0);
-+	snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0,
-+				 0x80, present ? 0x80 : 0);
-+}
-+
-+/* unsolicited event for HP jack sensing */
-+static void cxt5045_hp_unsol_event(struct hda_codec *codec,
-+				  unsigned int res)
-+{
-+	res >>= 26;
-+	switch (res) {
-+	case CONEXANT_HP_EVENT:
-+		cxt5045_hp_automute(codec);
-+		break;
-+	}
-+}
-+
-+static struct snd_kcontrol_new cxt5045_mixers[] = {
-+	{
-+	  .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	  .name = "Capture Source",
-+	  .info = conexant_mux_enum_info,
-+	  .get = conexant_mux_enum_get,
-+	  .put = conexant_mux_enum_put
-+	},
-+	HDA_CODEC_VOLUME("Mic Bypass Capture Volume",0x17,0x02,HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Bypass Capture Switch",0x17,0x02,HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume",0x1a,0x02,HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch",0x1a,0x02,HDA_INPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Volume",
-+		.info = snd_hda_mixer_amp_volume_info,
-+		.get = snd_hda_mixer_amp_volume_get,
-+		.put = cxt5045_hp_master_vol_put,
-+		.private_value = HDA_COMPOSE_AMP_VAL(0x11, 3, 0, HDA_OUTPUT),
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Switch",
-+		.info = conexant_eapd_info,
-+		.get = conexant_eapd_get,
-+		.put = cxt5045_hp_master_sw_put,
-+		.private_value = 0x11,
-+	},
-+
-+	{}
-+};
-+
-+static struct hda_verb cxt5045_init_verbs[] = {
-+	/* Line in, Mic */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
-+	/* HP, Amp  */
-+	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{0x1A, AC_VERB_SET_CONNECT_SEL,0x01},
-+	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_OUTPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x00},
-+	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_OUTPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x03},
-+	/* Record selector: Front mic */
-+	{0x14, AC_VERB_SET_CONNECT_SEL,0x03},
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_INPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x17},
-+	/* SPDIF route: PCM */
-+	{ 0x13, AC_VERB_SET_CONNECT_SEL, 0x0 },
-+	/* pin sensing on HP and Mic jacks */
-+	{0x11, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | CONEXANT_HP_EVENT},
-+	/* EAPD */
-+	{0x10, AC_VERB_SET_EAPD_BTLENABLE, 0x0 }, /* default on */
-+	{ } /* end */
-+};
-+
-+#ifdef CONFIG_SND_DEBUG
-+/* Test configuration for debugging, modelled after the ALC260 test
-+ * configuration.
-+ */
-+static struct hda_input_mux cxt5045_test_capture_source = {
-+	.num_items = 5,
-+	.items = {
-+		{ "MIXER", 0x0 },
-+		{ "MIC1 pin", 0x1 },
-+		{ "LINE1 pin", 0x2 },
-+		{ "HP-OUT pin", 0x3 },
-+		{ "CD pin", 0x4 },
-+        },
-+};
-+
-+static struct snd_kcontrol_new cxt5045_test_mixer[] = {
-+
-+	/* Output controls */
-+	HDA_CODEC_VOLUME("OutAmp-1 Volume", 0x19, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("OutAmp-1 Switch", 0x19,0x00, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x10, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Speaker Playback Switch", 0x10, 0x0, HDA_OUTPUT),
-+	
-+	/* Modes for retasking pin widgets */
-+	CXT_PIN_MODE("HP-OUT pin mode", 0x11, CXT_PIN_DIR_INOUT),
-+	CXT_PIN_MODE("LINE1 pin mode", 0x12, CXT_PIN_DIR_INOUT),
-+
-+	/* Loopback mixer controls */
-+	HDA_CODEC_VOLUME("MIC1 Playback Volume", 0x17, 0x01, HDA_INPUT),
-+	HDA_CODEC_MUTE("MIC1 Playback Switch", 0x17, 0x01, HDA_INPUT),
-+	HDA_CODEC_VOLUME("LINE loopback Playback Volume", 0x17, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("LINE loopback Playback Switch", 0x17, 0x02, HDA_INPUT),
-+	HDA_CODEC_VOLUME("HP-OUT loopback Playback Volume", 0x17, 0x03, HDA_INPUT),
-+	HDA_CODEC_MUTE("HP-OUT loopback Playback Switch", 0x17, 0x03, HDA_INPUT),
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x17, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x17, 0x04, HDA_INPUT),
-+
-+	/* Controls for GPIO pins, assuming they exist and are configured as outputs */
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 0", 0x01, 0x01),
-+#if 0   /* limit this to one GPIO pin for now */	
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 1", 0x01, 0x02),
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
-+#endif
-+	CXT_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x13, 0x01),
-+
-+	HDA_CODEC_VOLUME("Capture Volume", 0x17, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x17, 0x0, HDA_OUTPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Input Source",
-+		.info = conexant_mux_enum_info,
-+		.get = conexant_mux_enum_get,
-+		.put = conexant_mux_enum_put,
-+	},
-+
-+	{ } /* end */
-+};
-+
-+static struct hda_verb cxt5045_test_init_verbs[] = {
-+	/* Enable all GPIOs as outputs with an initial value of 0 */
-+	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x0f},
-+	{0x01, AC_VERB_SET_GPIO_DATA, 0x00},
-+	{0x01, AC_VERB_SET_GPIO_MASK, 0x0f},
-+
-+	/* Enable retasking pins as output, initially without power amp */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+
-+	/* Disable digital (SPDIF) pins initially, but users can enable
-+	 * them via a mixer switch.  In the case of SPDIF-out, this initverb
-+	 * payload also sets the generation to 0, output to be in "consumer"
-+	 * PCM format, copyright asserted, no pre-emphasis and no validity
-+	 * control.
-+	 */
-+	{0x13, AC_VERB_SET_DIGI_CONVERT_1, 0},
-+
-+	/* Start with output sum widgets muted and their output gains at min */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+
-+	/* Unmute retasking pin widget output buffers since the default
-+	 * state appears to be output.  As the pin mode is changed by the
-+	 * user the pin mode control will take care of enabling the pin's
-+	 * input/output buffers as needed.
-+	 */
-+	{0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+
-+	/* Mute capture amp left and right */
-+	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+
-+	/* Set ADC connection select to match default mixer setting (mic1
-+	 * pin)
-+	 */
-+	{0x1a, AC_VERB_SET_CONNECT_SEL, 0x00},
-+
-+	/* Mute all inputs to mixer widget (even unconnected ones) */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* Mixer pin */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}, /* Mic1 pin */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)}, /* Line pin */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)}, /* HP pin */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)}, /* CD pin */
-+
-+	{ }
-+};
-+#endif
-+
-+
-+/* initialize jack-sensing, too */
-+static int cxt5045_init(struct hda_codec *codec)
-+{
-+	conexant_init(codec);
-+	cxt5045_hp_automute(codec);
-+	return 0;
-+}
-+
-+
-+enum {  CXT5045_LAPTOP,
-+#ifdef CONFIG_SND_DEBUG
-+	CXT5045_TEST,
-+#endif
-+	};
-+
-+static struct hda_board_config cxt5045_cfg_tbl[] = {
-+	/* Laptops w/ EAPD support */
-+	{ .modelname = "laptop", .config = CXT5045_LAPTOP },
-+	 /* HP DV6000Z */
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x30b7, 
-+	  .config = CXT5045_LAPTOP },
-+#ifdef CONFIG_SND_DEBUG
-+	{ .modelname = "test", .config = CXT5045_TEST },
-+#endif
-+	
-+	{}
-+};
-+
-+static int patch_cxt5045(struct hda_codec *codec) {
-+	struct conexant_spec *spec;
-+	int board_config;
-+
-+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	if ( !spec )
-+		return -ENOMEM;
-+	mutex_init(&spec->amp_mutex);
-+	codec->spec = spec;
-+
-+	spec->multiout.max_channels = 2;
-+	spec->multiout.num_dacs = ARRAY_SIZE(cxt5045_dac_nids);
-+	spec->multiout.dac_nids = cxt5045_dac_nids;
-+	spec->multiout.dig_out_nid = CXT5045_SPDIF_OUT;
-+	spec->num_adc_nids = 1;
-+	spec->adc_nids = cxt5045_adc_nids;
-+	spec->capsrc_nids = cxt5045_capsrc_nids;
-+	spec->input_mux = &cxt5045_capture_source;
-+	spec->num_mixers = 1;
-+	spec->mixers[0] = cxt5045_mixers;
-+	spec->num_init_verbs = 1;
-+	spec->init_verbs[0] = cxt5045_init_verbs;
-+	spec->spdif_route = 0;
-+
-+	codec->patch_ops = conexant_patch_ops;
-+	codec->patch_ops.unsol_event = cxt5045_hp_unsol_event;
-+
-+	board_config = snd_hda_check_board_config(codec, cxt5045_cfg_tbl);
-+	switch (board_config) {
-+	case CXT5045_LAPTOP:
-+		spec->input_mux = &cxt5045_capture_source;
-+		spec->num_init_verbs = 2;
-+		spec->init_verbs[1] = cxt5045_init_verbs;
-+		spec->mixers[0] = cxt5045_mixers;
-+		codec->patch_ops.init = cxt5045_init;
-+		break;
-+#ifdef CONFIG_SND_DEBUG
-+	case CXT5045_TEST:
-+		spec->input_mux = &cxt5045_test_capture_source;
-+		spec->mixers[0] = cxt5045_test_mixer;
-+		spec->init_verbs[0] = cxt5045_test_init_verbs;
-+#endif	
-+	}
-+	return 0;
-+}
-+
-+
-+/* Conexant 5047 specific */
-+
-+static hda_nid_t cxt5047_dac_nids[1] = { 0x10 };
-+static hda_nid_t cxt5047_adc_nids[1] = { 0x12 };
-+static hda_nid_t cxt5047_capsrc_nids[1] = { 0x1a };
-+#define CXT5047_SPDIF_OUT	0x11
-+
-+
-+static struct hda_input_mux cxt5047_capture_source = {
-+	.num_items = 2,
-+	.items = {
-+		{ "ExtMic", 0x1 },
-+		{ "IntMic", 0x2 },
-+	}
-+};
-+
-+static struct hda_input_mux cxt5047_hp_capture_source = {
-+	.num_items = 1,
-+	.items = {
-+		{ "ExtMic", 0x1 },
-+	}
-+};
-+
-+/* turn on/off EAPD (+ mute HP) as a master switch */
-+static int cxt5047_hp_master_sw_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (! conexant_eapd_put(kcontrol, ucontrol))
-+		return 0;
-+
-+	/* toggle HP mute appropriately */
-+	snd_hda_codec_amp_update(codec, 0x13, 0, HDA_OUTPUT, 0,
-+				 0x80, spec->cur_eapd ? 0 : 0x80);
-+	snd_hda_codec_amp_update(codec, 0x13, 1, HDA_OUTPUT, 0,
-+				 0x80, spec->cur_eapd ? 0 : 0x80);
-+	return 1;
-+}
-+
-+#if 0
-+/* bind volumes of both NID 0x13 and 0x1d */
-+static int cxt5047_hp_master_vol_put(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	long *valp = ucontrol->value.integer.value;
-+	int change;
-+
-+	change = snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0,
-+					  0x7f, valp[0] & 0x7f);
-+	change |= snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0,
-+					   0x7f, valp[1] & 0x7f);
-+	snd_hda_codec_amp_update(codec, 0x13, 0, HDA_OUTPUT, 0,
-+				 0x7f, valp[0] & 0x7f);
-+	snd_hda_codec_amp_update(codec, 0x13, 1, HDA_OUTPUT, 0,
-+				 0x7f, valp[1] & 0x7f);
-+	return change;
-+}
-+#endif
-+
-+/* mute internal speaker if HP is plugged */
-+static void cxt5047_hp_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x13, 0,
-+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0,
-+				 0x80, present ? 0x80 : 0);
-+	snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0,
-+				 0x80, present ? 0x80 : 0);
-+}
-+
-+/* toggle input of built-in and mic jack appropriately */
-+static void cxt5047_hp_automic(struct hda_codec *codec)
-+{
-+	static struct hda_verb mic_jack_on[] = {
-+		{0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080},
-+		{0x17, AC_VERB_SET_AMP_GAIN_MUTE, 0xb000},
-+		{}
-+	};
-+	static struct hda_verb mic_jack_off[] = {
-+		{0x17, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080},
-+		{0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb000},
-+		{}
-+	};
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x08, 0,
-+			    	 AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	if (present)
-+		snd_hda_sequence_write(codec, mic_jack_on);
-+	else
-+		snd_hda_sequence_write(codec, mic_jack_off);
-+}
-+
-+/* unsolicited event for HP jack sensing */
-+static void cxt5047_hp_unsol_event(struct hda_codec *codec,
-+				  unsigned int res)
-+{
-+	res >>= 26;
-+	switch (res) {
-+	case CONEXANT_HP_EVENT:
-+		cxt5047_hp_automute(codec);
-+		break;
-+	case CONEXANT_MIC_EVENT:
-+		cxt5047_hp_automic(codec);
-+		break;
-+	}
-+}
-+
-+static struct snd_kcontrol_new cxt5047_mixers[] = {
-+	{
-+	  .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	  .name = "Capture Source",
-+	  .info = conexant_mux_enum_info,
-+	  .get = conexant_mux_enum_get,
-+	  .put = conexant_mux_enum_put
-+	},
-+	HDA_CODEC_VOLUME("Mic Bypass Capture Volume",0x19,0x02,HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Bypass Capture Switch",0x19,0x02,HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume",0x12,0x03,HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch",0x12,0x03,HDA_INPUT),
-+	HDA_CODEC_VOLUME("PCM Volume",0x10,0x00,HDA_OUTPUT),
-+	HDA_CODEC_MUTE("PCM Switch",0x10,0x00,HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Master Playback Volume",0x13,0x00,HDA_OUTPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Switch",
-+		.info = conexant_eapd_info,
-+		.get = conexant_eapd_get,
-+		.put = cxt5047_hp_master_sw_put,
-+		.private_value = 0x13,
-+	},
-+
-+	{}
-+};
-+
-+static struct snd_kcontrol_new cxt5047_hp_mixers[] = {
-+	{
-+	  .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	  .name = "Capture Source",
-+	  .info = conexant_mux_enum_info,
-+	  .get = conexant_mux_enum_get,
-+	  .put = conexant_mux_enum_put
-+	},
-+	HDA_CODEC_VOLUME("Mic Bypass Capture Volume",0x19,0x02,HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Bypass Capture Switch",0x19,0x02,HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume",0x12,0x03,HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch",0x12,0x03,HDA_INPUT),
-+	HDA_CODEC_VOLUME("PCM Volume",0x10,0x00,HDA_OUTPUT),
-+	HDA_CODEC_MUTE("PCM Switch",0x10,0x00,HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Master Playback Volume",0x13,0x00,HDA_OUTPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Switch",
-+		.info = conexant_eapd_info,
-+		.get = conexant_eapd_get,
-+		.put = cxt5047_hp_master_sw_put,
-+		.private_value = 0x13,
-+	},
-+	{ } /* end */
-+};
-+
-+static struct hda_verb cxt5047_init_verbs[] = {
-+	/* Line in, Mic, Built-in Mic */
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
-+	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
-+	/* HP, Amp  */
-+	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{0x1A, AC_VERB_SET_CONNECT_SEL,0x01},
-+	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_OUTPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x00},
-+	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_OUTPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x03},
-+	/* Record selector: Front mic */
-+	{0x12, AC_VERB_SET_CONNECT_SEL,0x03},
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AC_AMP_SET_INPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x17},
-+	/* SPDIF route: PCM */
-+	{ 0x18, AC_VERB_SET_CONNECT_SEL, 0x0 },
-+	{ } /* end */
-+};
-+
-+/* configuration for Toshiba Laptops */
-+static struct hda_verb cxt5047_toshiba_init_verbs[] = {
-+	{0x13, AC_VERB_SET_EAPD_BTLENABLE, 0x0 }, /* default on */
-+	/* pin sensing on HP and Mic jacks */
-+	{0x13, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | CONEXANT_HP_EVENT},
-+	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | CONEXANT_MIC_EVENT},
-+	{}
-+};
-+
-+/* configuration for HP Laptops */
-+static struct hda_verb cxt5047_hp_init_verbs[] = {
-+	/* pin sensing on HP and Mic jacks */
-+	{0x13, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | CONEXANT_HP_EVENT},
-+	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | CONEXANT_MIC_EVENT},
-+	{}
-+};
-+/* Test configuration for debugging, modelled after the ALC260 test
-+ * configuration.
-+ */
-+#ifdef CONFIG_SND_DEBUG
-+static struct hda_input_mux cxt5047_test_capture_source = {
-+	.num_items = 6,
-+	.items = {
-+		{ "MIXER", 0x0 },
-+		{ "LINE1 pin", 0x1 },
-+		{ "MIC1 pin", 0x2 },
-+		{ "MIC2 pin", 0x3 },
-+		{ "CD pin", 0x4 },
-+        },
-+};
-+
-+static struct snd_kcontrol_new cxt5047_test_mixer[] = {
-+
-+	/* Output only controls */
-+	HDA_CODEC_VOLUME("OutAmp-1 Volume", 0x10, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("OutAmp-1 Switch", 0x10,0x00, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("OutAmp-2 Volume", 0x1c, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("OutAmp-2 Switch", 0x1c, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x1d, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Speaker Playback Switch", 0x1d, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("HeadPhone Playback Volume", 0x13, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("HeadPhone Playback Switch", 0x13, 0x0, HDA_OUTPUT),
-+
-+	/* Modes for retasking pin widgets */
-+	CXT_PIN_MODE("LINE1 pin mode", 0x14, CXT_PIN_DIR_INOUT),
-+	CXT_PIN_MODE("MIC1 pin mode", 0x15, CXT_PIN_DIR_INOUT),
-+
-+	/* Loopback mixer controls */
-+	HDA_CODEC_VOLUME("MIC1 Playback Volume", 0x19, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("MIC1 Playback Switch", 0x19, 0x02, HDA_INPUT),
-+	HDA_CODEC_VOLUME("MIC2 Playback Volume", 0x19, 0x03, HDA_INPUT),
-+	HDA_CODEC_MUTE("MIC2 Playback Switch", 0x19, 0x03, HDA_INPUT),
-+	HDA_CODEC_VOLUME("LINE Playback Volume", 0x19, 0x01, HDA_INPUT),
-+	HDA_CODEC_MUTE("LINE Playback Switch", 0x19, 0x01, HDA_INPUT),
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x19, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x19, 0x04, HDA_INPUT),
-+
-+	/* Controls for GPIO pins, assuming they exist and are configured as outputs */
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 0", 0x01, 0x01),
-+#if 0   /* limit this to one GPIO pin for now */	
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 1", 0x01, 0x02),
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
-+	CXT_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
-+#endif
-+	CXT_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x18, 0x01),
-+
-+	HDA_CODEC_VOLUME("Capture Volume", 0x19, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x19, 0x0, HDA_OUTPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Input Source",
-+		.info = conexant_mux_enum_info,
-+		.get = conexant_mux_enum_get,
-+		.put = conexant_mux_enum_put,
-+	},
-+
-+	{ } /* end */
-+};
-+
-+static struct hda_verb cxt5047_test_init_verbs[] = {
-+	/* Enable all GPIOs as outputs with an initial value of 0 */
-+	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x0f},
-+	{0x01, AC_VERB_SET_GPIO_DATA, 0x00},
-+	{0x01, AC_VERB_SET_GPIO_MASK, 0x0f},
-+
-+	/* Enable retasking pins as output, initially without power amp */
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+
-+	/* Disable digital (SPDIF) pins initially, but users can enable
-+	 * them via a mixer switch.  In the case of SPDIF-out, this initverb
-+	 * payload also sets the generation to 0, output to be in "consumer"
-+	 * PCM format, copyright asserted, no pre-emphasis and no validity
-+	 * control.
-+	 */
-+	{0x18, AC_VERB_SET_DIGI_CONVERT_1, 0},
-+
-+	/* Ensure mic1, mic2, line1 pin widgets take input from the 
-+	 * OUT1 sum bus when acting as an output.
-+	 */
-+	{0x1a, AC_VERB_SET_CONNECT_SEL, 0},
-+	{0x1b, AC_VERB_SET_CONNECT_SEL, 0},
-+
-+	/* Start with output sum widgets muted and their output gains at min */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+
-+	/* Unmute retasking pin widget output buffers since the default
-+	 * state appears to be output.  As the pin mode is changed by the
-+	 * user the pin mode control will take care of enabling the pin's
-+	 * input/output buffers as needed.
-+	 */
-+	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+
-+	/* Mute capture amp left and right */
-+	{0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+
-+	/* Set ADC connection select to match default mixer setting (mic1
-+	 * pin)
-+	 */
-+	{0x12, AC_VERB_SET_CONNECT_SEL, 0x00},
-+
-+	/* Mute all inputs to mixer widget (even unconnected ones) */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}, /* mic2 pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)}, /* line1 pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)}, /* line2 pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)}, /* CD pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)}, /* Beep-gen pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(6)}, /* Line-out pin */
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(7)}, /* HP-pin pin */
-+
-+	{ }
-+};
-+#endif
-+
-+
-+/* initialize jack-sensing, too */
-+static int cxt5047_hp_init(struct hda_codec *codec)
-+{
-+	conexant_init(codec);
-+	cxt5047_hp_automute(codec);
-+	cxt5047_hp_automic(codec);
-+	return 0;
-+}
-+
-+
-+enum {  CXT5047_LAPTOP,
-+#ifdef CONFIG_SND_DEBUG
-+	CXT5047_TEST,
-+#endif
-+	CXT5047_LAPTOP_HP,
-+	CXT5047_LAPTOP_EAPD };
-+
-+static struct hda_board_config cxt5047_cfg_tbl[] = {
-+	/* Laptops w/o EAPD support */
-+	{ .modelname = "laptop", .config = CXT5047_LAPTOP },
-+	 /*HP DV1000 */
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x30a0, 
-+	  .config = CXT5047_LAPTOP },
-+	/*HP DV2000T/DV3000T */
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x30b2,
-+	  .config = CXT5047_LAPTOP }, 
-+	/* Not all HP's are created equal */
-+	{ .modelname = "laptop-hp", .config = CXT5047_LAPTOP_HP },
-+	/*HP DV5200TX/DV8000T / Compaq V5209US/V5204NR */
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x30a5,
-+	  .config = CXT5047_LAPTOP_HP }, 
-+	/* Laptops with EAPD support */
-+	{ .modelname = "laptop-eapd", .config = CXT5047_LAPTOP_EAPD },
-+	{ .pci_subvendor = 0x1179, .pci_subdevice = 0xff31,
-+	  .config = CXT5047_LAPTOP_EAPD }, /* Toshiba P100 */
-+#ifdef CONFIG_SND_DEBUG
-+	{ .modelname = "test", .config = CXT5047_TEST },
-+#endif
-+	
-+	{}
-+};
-+
-+static int patch_cxt5047(struct hda_codec *codec) {
-+	struct conexant_spec *spec;
-+	int board_config;
-+
-+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	if ( !spec )
-+		return -ENOMEM;
-+	mutex_init(&spec->amp_mutex);
-+	codec->spec = spec;
-+
-+	spec->multiout.max_channels = 2;
-+	spec->multiout.num_dacs = ARRAY_SIZE(cxt5047_dac_nids);
-+	spec->multiout.dac_nids = cxt5047_dac_nids;
-+	spec->multiout.dig_out_nid = CXT5047_SPDIF_OUT;
-+	spec->num_adc_nids = 1;
-+	spec->adc_nids = cxt5047_adc_nids;
-+	spec->capsrc_nids = cxt5047_capsrc_nids;
-+	spec->input_mux = &cxt5047_capture_source;
-+	spec->num_mixers = 1;
-+	spec->mixers[0] = cxt5047_mixers;
-+	spec->num_init_verbs = 1;
-+	spec->init_verbs[0] = cxt5047_init_verbs;
-+	spec->spdif_route = 0;
-+
-+	codec->patch_ops = conexant_patch_ops;
-+	codec->patch_ops.unsol_event = cxt5047_hp_unsol_event;
-+
-+	board_config = snd_hda_check_board_config(codec, cxt5047_cfg_tbl);
-+	switch (board_config) {
-+	case CXT5047_LAPTOP:
-+		break;
-+	case CXT5047_LAPTOP_HP:
-+		spec->input_mux = &cxt5047_hp_capture_source;
-+		spec->num_init_verbs = 2;
-+		spec->init_verbs[1] = cxt5047_hp_init_verbs;
-+		spec->mixers[0] = cxt5047_hp_mixers;
-+		codec->patch_ops.init = cxt5047_hp_init;
-+		break;
-+	case CXT5047_LAPTOP_EAPD:
-+		spec->num_init_verbs = 2;
-+		spec->init_verbs[1] = cxt5047_toshiba_init_verbs;
-+		break;
-+#ifdef CONFIG_SND_DEBUG
-+	case CXT5047_TEST:
-+		spec->input_mux = &cxt5047_test_capture_source;
-+		spec->mixers[0] = cxt5047_test_mixer;
-+		spec->init_verbs[0] = cxt5047_test_init_verbs;
-+#endif	
-+	}
-+	return 0;
-+}
-+
-+struct hda_codec_preset snd_hda_preset_conexant[] = {
-+	{ .id = 0x14f15045, .name = "CXT5045", .patch = patch_cxt5045 },
-+	{ .id = 0x14f15047, .name = "CXT5047", .patch = patch_cxt5047 },
-+	{} /* terminator */
-+};
+Reporting-MTA: dns; alsa.jcu.cz
+X-ALSA's-E-mail-Delivery-System-Queue-ID: 80EA52AA
+X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
+Arrival-Date: Tue, 14 Nov 2006 07:56:05 +0100 (MET)
 
---=-aMZXBl+ly8gtJEHO6l4T
+Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
+Original-Recipient: rfc822; alsa-devel@alsa-project.org
+Action: failed
+Status: 5.0.0
+Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
+	mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message
+	appears to
+	be spam (7.6 points). 550-- 550-If you believe this message was
+	classified
+	as spam in error, 550-please open a Support Request at the URL below.
+	550-(Please include this message in any Support Request). 550-- 550--
+	550-Spam Filtering performed by sourceforge.net. 550-See
+	http://spamassassin.org/tag/ for more details. 550-Report problems to
+	http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.2
+	EXTRA_MPART_TYPE       Header has extraneous Content-type:...type=
+	550-entry 550-5.0 INVALID_DATE Invalid Date: header (not RFC
+	2822) 550-0.0 RCVD_BY_IP Received by mail server with no name
+	550-0.0 HTML_MESSAGE           BODY: HTML included in message 550-2.0
+	HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
+	550-0.2 HTML_FONT_BIG BODY: HTML tag for a big font size 550 0.2
+	HTML_90_100 BODY: Message is 90% to 100% HTML (in reply to end
+	of DATA command)
+
+--80EA52AA.1163487368/alsa.jcu.cz
+Content-Description: Undelivered Message
+Content-Type: message/rfc822
+
+Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
+	id 80EA52AA; Tue, 14 Nov 2006 07:56:05 +0100 (MET)
+Delivered-To: alsa-devel@alsa-project.org
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C8D02A6
+	for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2006 07:56:05 +0100 (MET)
+Received: from 121.151.72.53 (unknown [121.151.72.53])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	DF9B79975D
+	for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2006 07:56:02 +0100 (MET)
+Received: from northstar01.northstarcm.com (port=7206 helo=uerhocjjunc)
+	by 121.151.72.53 with smtp id dG6j-V57CCXJyL-71
+	for alsa-devel@alsa-project.org; Tue, 14 Nov 2006 15:55:73 +0900
+Message-ID: <000a01c707b9$eeeca9a0$02b4aa3c@uerhocjjunc>
+From: "Larry Bryant" <fhxvagbepg@northwarks.gov.uk>
+To: alsa-devel@alsa-project.org
+Subject: and smite Amnon (thy servant yet the law: might gain of her hand upon
+Date: Tue, 14 Nov 2006 15:55:73 +0900
+MIME-Version: 1.0
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000C_01C70805.5ED451A0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.2869
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2962
+
+------=_NextPart_000_000C_01C70805.5ED451A0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000D_01C70805.5ED451A0"
+
+
+------=_NextPart_001_000D_01C70805.5ED451A0
+Content-Type: text/plain;
+	charset="windows-1254"
+Content-Transfer-Encoding: quoted-printable
+
+saved sundered.
+
+------=_NextPart_001_000D_01C70805.5ED451A0
+Content-Type: text/html;
+	charset="windows-1254"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1254">
+<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial Black size=3D4>
+saved sundered.
+<IMG alt=3D"" hspace=3D0=20 width=486 height=420 src=3D"cid:000b01c707b9$eeeca9a0$02b4aa3c@uerhocjjunc" =
+align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_000D_01C70805.5ED451A0--
+
+------=_NextPart_000_000C_01C70805.5ED451A0
+Content-Type: image/gif;
+	name="kmhtws.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000b01c707b9$eeeca9a0$02b4aa3c@uerhocjjunc>
+
+R0lGODlh5gGkAfcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAALSqKAgAAPUX5gAAdQgceAgAAAVCELSqAAAAAGhF6GhF6AgBeAAA
+2/UkOPUkjAAAAAAAAAABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEbQAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAABpAABYLbzmAAB5rSszLSoJLbznN1GMQAAALbzqN0JW99B0CwAAAAA5gGkAQAI/wD7CRxI
+sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihzZEQDJkyhTqlzJsqXLlzBjypxJs6bN
+mzhz6tzJk6fJnkCDCh1KtKjRo0iTKl3KtKnTpzB/Qp1KtarVq1izat3KtavXr2DDih1LtqzZs2jT
+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
+l9zkJ0d5ylVOkYAAADs=
+
+------=_NextPart_000_000C_01C70805.5ED451A0--
+
+
+--80EA52AA.1163487368/alsa.jcu.cz--
+
+
+--===============0953021305==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1398,7 +322,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-aMZXBl+ly8gtJEHO6l4T
+--===============0953021305==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1409,4 +333,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-aMZXBl+ly8gtJEHO6l4T--
+--===============0953021305==--
