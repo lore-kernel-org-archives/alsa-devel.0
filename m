@@ -1,11 +1,12 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GkGQZ-0000T8-Pz delayed 10 hours
-Date: Wed, 15 Nov 2006 13:12:11 -0800
-Message-ID: <E1GkS3H-0007ei-H3@externalmx-1.sourceforge.net>
+From: "Paul Wang" <Paul.Wang@navman.com>
+Subject: Re: ref: pxa255 Alsa Driver
+Date: Thu, 16 Nov 2006 11:32:19 +1300
+Message-ID: <BB064186AE6A424382B0BC22417BB7A114EF3A@bnt-nav-chc-exh.navman.bnt.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +16,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+Hi, Liam,
 
-The message identifier is:     1GkGQZ-0000T8-Pz
-The subject of the message is: this she did it so often than the precious book out to put
-The date of the message is:    Wed, 15 Nov 2006 09:46:55 +0100
+I have further questions about this:
 
-The address to which the message has not yet been delivered is:
+How can I merge the driver you mentioned into Arm Linux source
+Architecture?
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+To use it, do I have to use the application on the alsa-kernel HG
+repository?
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+regards.
+
+Paul Wang
+
+
+-----Original Message-----
+From: Liam Girdwood [mailto:liam.girdwood@wolfsonmicro.com] 
+Sent: Thursday, 16 November 2006 1:23 a.m.
+To: Paul Wang
+Cc: alsa-devel
+Subject: Re: [Alsa-devel] ref: pxa255 Alsa Driver
+
+Hi Paul,
+
+On Wed, 2006-11-15 at 14:48 +1300, Paul Wang wrote:
+> Hi, all,
+> 
+> I am new to Linux sound drivers.
+> What I am looking for is a pxa255 sound driver based on pxa255
+I2Sound.
+> Does any Alsa driver implement this on kernel 2.6?
+> 
+
+There is an I2S driver for the pxa255 in the alsa-kernel HG repository. 
+
+http://hg-mirror.alsa-project.org/alsa-kernel
+
+Alternatively, the driver can also be found in this patch :-
+
+http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.3.patch
+
+This patch also includes more supported codecs than the HG repo atm.
+
+HTH
+
+Liam
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
