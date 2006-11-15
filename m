@@ -1,14 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: S/PDIF support for Intel HDA Realtek ALC880?
-Date: Wed, 15 Nov 2006 12:20:53 -0500
-Message-ID: <1163611254.14674.143.camel@mindpipe>
-References: <D0623A7E119D564AA1966968BC37AE29C32CDA@srvsegbg19.space.se>
-	<004b01c70899$c51c8e70$4c5215ac@realtek.com.tw>
+From: Richi Plana <richip@richip.dhs.org>
+Subject: Frequency Problems with 0d8c:0201 and snd-usb-audio
+Date: Wed, 15 Nov 2006 11:00:13 -0700
+Message-ID: <1163613613.3406.14.camel@richip.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <004b01c70899$c51c8e70$4c5215ac@realtek.com.tw>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,16 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Kailang <kailang@realtek.com.tw>
-Cc: Takashi Iwai <tiwai@suse.de>, PeiSen Hou <pshou@realtek.com.tw>, Peter Carlsson <peter.carlsson@space.se>, alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-11-15 at 17:38 +0800, Kailang wrote:
-> What entries do I have to put in the ~/.asoundrc file?
+Hi,
 
-None.  .asoundrc is NOT required to make sound work.
+I have an ASRock 939Dual-VSTA mobo that comes with a C-Media Electronics
+based sound system. Its USB Vendor and Product ID is 0d8c:0201, I'm
+using Fedora Core 6 with ALSA drivers and libs version 1.0.13 and am
+experiencing some problems with it.
 
-Lee
+The one major problem I have is that any audio played at 48000 Hz sounds
+distorted. Playing the same audio at 44100 Hz is fine. I'm using this
+computer as a MythTV machine with a WinTV PVR-350 video capture card
+that seems to want to sample at 48000 Hz.
+
+The second problem is with the mixer. I just can't get audio to come out
+of the side, rear and center speakers. I'll have to play around with
+this more, but it's not as bad as the first problem.
+
+Thanks for any help/advice. I've a technical background so I
+troubleshoot given good leads.
+--
+
+Richi
 
 
 -------------------------------------------------------------------------
