@@ -1,7 +1,7 @@
-From: Richi Plana <richip@richip.dhs.org>
-Subject: Frequency Problems with 0d8c:0201 and snd-usb-audio
-Date: Wed, 15 Nov 2006 11:00:13 -0700
-Message-ID: <1163613613.3406.14.camel@richip.dhs.org>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GjFo7-0001FL-AY delayed 72 hours
+Date: Wed, 15 Nov 2006 12:34:25 -0800
+Message-ID: <E1GkRSj-0001Bj-VY@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,28 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-I have an ASRock 939Dual-VSTA mobo that comes with a C-Media Electronics
-based sound system. Its USB Vendor and Product ID is 0d8c:0201, I'm
-using Fedora Core 6 with ALSA drivers and libs version 1.0.13 and am
-experiencing some problems with it.
+The message identifier is:     1GjFo7-0001FL-AY
+The subject of the message is: went down from that I thou, that his my that came the Lord is
+The date of the message is:    Sun, 12 Nov 2006 06:55:23 -0700
 
-The one major problem I have is that any audio played at 48000 Hz sounds
-distorted. Playing the same audio at 44100 Hz is fine. I'm using this
-computer as a MythTV machine with a WinTV PVR-350 video capture card
-that seems to want to sample at 48000 Hz.
+The address to which the message has not yet been delivered is:
 
-The second problem is with the mixer. I just can't get audio to come out
-of the side, rear and center speakers. I'll have to play around with
-this more, but it's not as bad as the first problem.
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Thanks for any help/advice. I've a technical background so I
-troubleshoot given good leads.
---
-
-Richi
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
