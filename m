@@ -1,17 +1,14 @@
-From: "Aditya Shankar" <mc.aditya@gmail.com>
-Subject: Re: OSS MIxer API(OSS Emulation mode)
-Date: Wed, 15 Nov 2006 14:27:28 +0530
-Message-ID: <24a2bfdf0611150057t7c664c9cj3ae886bd4e16598a@mail.gmail.com>
-References: <24a2bfdf0611060451l4400868brb45f5668f3504d9a@mail.gmail.com>
-	<s5hr6wfe9f6.wl%tiwai@suse.de>
-	<24a2bfdf0611090152n15efec46me9ea7fadbd882124@mail.gmail.com>
-	<s5hhcx8vr11.wl%tiwai@suse.de>
-	<24a2bfdf0611132346q65ec8a33j9bc439b2a85ea86c@mail.gmail.com>
-	<s5hfycm9dwz.wl%tiwai@suse.de>
+From: "Peter Carlsson" <peter.carlsson@space.se>
+Subject: Re: S/PDIF support for Intel HDA Realtek ALC880?
+Date: Wed, 15 Nov 2006 10:31:27 +0100
+Message-ID: <D0623A7E119D564AA1966968BC37AE29C32CDA@srvsegbg19.space.se>
+References: <004301c7088e$f52a5940$4c5215ac@realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1204355549=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfycm9dwz.wl%tiwai@suse.de>
+Content-class: urn:content-classes:message
+In-Reply-To: <004301c7088e$f52a5940$4c5215ac@realtek.com.tw>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,104 +18,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Kailang <kailang@realtek.com.tw>, PeiSen Hou <pshou@realtek.com.tw>, Takashi Iwai <tiwai@suse.de>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: Peter Carlsson <peter.carlsson@space.se>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1204355549==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_101997_17673099.1163581048911"
+Hello!
 
-------=_Part_101997_17673099.1163581048911
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On my Debian system there is no file named modprobe.conf. Instead
+there is a directory named /etc/modprobe.conf with the following
+files:
 
-Takashi-san,
+htpc:/etc/modprobe.d# ls -go
+total 30
+-rw-r--r-- 1  4360 2006-02-05 14:00 aliases
+-rw-r--r-- 1 16153 2006-09-11 10:44 alsa-base
+-rw-r--r-- 1   156 2005-12-16 10:05 alsa-base-blacklist
+drwxr-xr-x 2  1024 2006-06-14 16:51 arch
+lrwxrwxrwx 1     9 2006-06-14 16:51 arch-aliases -> arch/i386
+-rw-r--r-- 1  1406 2006-02-20 16:15 blacklist
+-rw-r--r-- 1   284 2006-02-20 16:15 display_class
+lrwxrwxrwx 1    41 2006-10-15 20:07 linux-sound-base_noOSS ->
+/lib/linux-sound-base/noOSS.modprobe.conf
+-rw-r--r-- 1    29 2005-10-29 04:48 nvidia-kernel-nkc
+-rw-r--r-- 1   363 2006-02-20 16:15 pnp-hotplug
+-rw-r--r-- 1    61 2006-04-22 14:54 sound
 
-I tried giving the name as "Master Capture Route" and it got mapped to the
-proper put function of the kcontrol  *:)*. *Thanks* for the suggestion. But
-I do not see any new control( for Master Capture Route ) being created when
-I run alsamixer. Is there any other change necessary for this?
+The sound file contains what you told me to look for.
 
-Regards,
-Aditya
+htpc:/etc/modprobe.d# cat sound 
+alias snd-card-0 snd-hda-intel
+options snd-hda-intel index=0
 
+After modifying this file as suggested I get:
 
-On 11/14/06, Takashi Iwai <tiwai@suse.de> wrote:
+htpc:/home/mythtv# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: ALC880 Analog [ALC880 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 1: ALC880 Digital [ALC880 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+alsamixer now contains IEC958 which I toggled from <Off> to <On>.
+
+htpc:/home/mythtv# lspci -s 00:10 -vn
+00:10.0 0604: 10de:026f (rev a2) (prog-if 01 [Subtractive decode])
+	Flags: bus master, 66MHz, fast devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+	I/O behind bridge: 0000a000-0000afff
+	Memory behind bridge: e9000000-e90fffff
+	Prefetchable memory behind bridge: e0000000-e3ffffff
+	Capabilities: [b8] Subsystem: 0000:0000
+	Capabilities: [8c] HyperTransport: MSI Mapping
+
+00:10.1 0403: 10de:026c (rev a2)
+	Subsystem: 1458:a102
+	Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 193
+	Memory at e9100000 (32-bit, non-prefetchable) [size=16K]
+	Capabilities: [44] Power Management version 2
+	Capabilities: [50] Message Signalled Interrupts: Mask+ 64bit+
+Queue=0/0 Enable-
+	Capabilities: [6c] HyperTransport: MSI Mapping
+
+What entries do I have to put in the ~/.asoundrc file?
+
+I am not able to test if all this works until I get home. But it
+surely looks very promising indeed.
+
+Thanks for all the wonderful help!
+
+Best regards,
+Peter Carlsson
+
+>-----Original Message-----
+>From: Kailang [mailto:kailang@realtek.com.tw] 
+>Sent: Wednesday, November 15, 2006 9:21 AM
+>To: Peter Carlsson; PeiSen Hou; Takashi Iwai; Jonathan Woithe
+>Cc: Peter Carlsson
+>Subject: Re: S/PDIF support for Intel HDA Realtek ALC880?
 >
-> At Tue, 14 Nov 2006 13:16:50 +0530,
-> Aditya Shankar wrote:
-> >
-> >  Takashi-san,
-> >
-> >       Thanks for the info on that.
-> >      I am trying to invoke the ioctl command SOUND_MIXER_WRITE_RECSRC .
-> The name or
-> > the identifier string in the kcontrol record is "Master Input Capture
-> Route".  But
-> > with this also, it's not getting mapped to the put func of the kcontrol.
-> Is the
-> > name for the kcontrol correct or is there something additional that must
-> be done? pls
-> > let me know..
+>Please find the modprobe.conf file first.
+>Then to edit the file as below.
 >
-> Right, "Master Input Capture Route" is a non-standard name and
-> wouldn't be referred from OSS mixer emulation layer.  Try
-> "Master Capture Route", for example.
+>find this line.
+>options snd-hda-intel index=0
 >
-> But, it'd be better that you show the all control elements, for
-> example, via "alsactl store".  The mapping of ALSA <-> OSS mixer
-> elements is pretty complex (as you can find in core/oss/mixer_oss.c).
+>To add the model at this line.
+>options snd-hda-intel index=0 model=6stack-digout
+>
+>try it.
+>
+>kailang
+>
+>----- Original Message ----- 
+>From: "Peter Carlsson" <peter.carlsson@space.se>
+>To: "Kailang" <kailang@realtek.com.tw>; "PeiSen Hou" 
+><pshou@realtek.com.tw>;
+>"Takashi Iwai" <tiwai@suse.de>; "Jonathan Woithe"
+><jwoithe@physics.adelaide.edu.au>
+>Cc: "Peter Carlsson" <peter.carlsson@space.se>
+>Sent: Wednesday, November 15, 2006 2:08 PM
+>Subject: RE: S/PDIF support for Intel HDA Realtek ALC880?
 >
 >
-> Takashi
+>>Could you check the [alsamixer] mixer AP which have the item of
+>>iec958(SPDIF)?
 >
-
-------=_Part_101997_17673099.1163581048911
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<div>Takashi-san,&nbsp;</div>
-<div>&nbsp;</div>
-<div>I tried giving the name as &quot;Master Capture Route&quot; and it got mapped to the proper put function of the kcontrol&nbsp; <strong>:)</strong>. <strong>Thanks</strong> for the suggestion. But I do not see any new control( for Master Capture Route ) being created when I run alsamixer. Is there any&nbsp;other change necessary for this? 
-</div>
-<div>&nbsp;</div>
-<div>Regards,</div>
-<div>Aditya<br><br>&nbsp;</div>
-<div><span class="gmail_quote">On 11/14/06, <b class="gmail_sendername">Takashi Iwai</b> &lt;<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt; wrote:</span>
-<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">At Tue, 14 Nov 2006 13:16:50 +0530,<br>Aditya Shankar wrote:<br>&gt;<br>&gt;&nbsp;&nbsp;Takashi-san,<br>&gt;<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thanks for the info on that.
-<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I am trying to invoke the ioctl command SOUND_MIXER_WRITE_RECSRC . The name or<br>&gt; the identifier string in the kcontrol record is &quot;Master Input Capture Route&quot;.&nbsp;&nbsp;But<br>&gt; with this also, it's not getting mapped to the put func of the kcontrol. Is the
-<br>&gt; name for the kcontrol correct or is there something additional that must be done? pls<br>&gt; let me know..<br><br>Right, &quot;Master Input Capture Route&quot; is a non-standard name and<br>wouldn't be referred from OSS mixer emulation layer.&nbsp;&nbsp;Try
-<br>&quot;Master Capture Route&quot;, for example.<br><br>But, it'd be better that you show the all control elements, for<br>example, via &quot;alsactl store&quot;.&nbsp;&nbsp;The mapping of ALSA &lt;-&gt; OSS mixer<br>elements is pretty complex (as you can find in core/oss/mixer_oss.c).
-<br><br><br>Takashi<br></blockquote></div>
-<div>&nbsp;</div>
-<div><br>&nbsp;</div>
-
-------=_Part_101997_17673099.1163581048911--
-
-
---===============1204355549==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>mythtv@htpc:~$ alsamixer
+>
+>This results in the following controls:
+>
+>PCM, Front, Front Mic, Surround, Center, LFE, Side, Line, CD,
+>Mic, PC Speaker, Channel Mode, Input Source, Input Source 1
+>and Input Source 2
+>
+>No indication of iec958 (S/PDIF)
+>
+>>Hello!
+>>
+>>I am running Debian (testing) on a Gigabyte GA-K8N51PVMT-9
+>>motherboard with integrated Intel HDA Realtek ALC880 sound.
+>>On the motherboard is also a connector for S/PDIF where I
+>>have attached a back plate. I am using ALSA 1.0.13.
+>>
+>>Could you please tell me if S/PDIF is supported for this
+>>configuration and if so, how can I enable it?
+>
+>Best regards,
+>Peter Carlsson
+>
+>
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1204355549==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1204355549==--
