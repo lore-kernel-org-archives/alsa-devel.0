@@ -1,12 +1,23 @@
-From: "Paul Wang" <Paul.Wang@navman.com>
-Subject: Re: ref: pxa255 Alsa Driver
-Date: Thu, 16 Nov 2006 11:32:19 +1300
-Message-ID: <BB064186AE6A424382B0BC22417BB7A114EF3A@bnt-nav-chc-exh.navman.bnt.local>
+From: "Kelly Davison" <ewienerhczi@visualux.com>
+Subject: Thanks for Your order. Your Canadian Store Online.
+Date: Wed, 15 Nov 2006 15:41:07 -0600
+Message-ID: <6853996932.8060771207@visualux.com>
+Reply-To: Kelly Davison <ewienerhczi@visualux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from pool-141-155-142-12.ny5030.east.verizon.net
+	(pool-141-155-142-12.ny5030.east.verizon.net [141.155.142.12])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4F86B172
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2006 03:39:18 +0100 (MET)
+Received: from relay-1.mailbox.net.uk (relay-1.mailbox.net.uk [212.85.249.130])
+	by pool-141-155-142-12.ny5030.east.verizon.net (8.9.3/8.9.3) with ESMTP
+	id LS8oXosNj5my
+	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2006 15:41:07 -0600
+Received: from 36.22.97.14 ([202.4.30.11])
+	by relay-1.mailbox.net.uk (8.9.3/8.9.3) id wNjOF7jlyyUa
+	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2006 15:41:07 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,56 +27,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Liam,
+Our key to keeping customers satisfied is:
+EASY ordering online
+SAVE 80% on regular price
+We have MASSiVE stocks of drugs for SAME DAY dispatch
+FAST delivery straight to your door with DiSCRETE packaging
+We are the BiGGEST internet retailler with THOUSANDS of regular customers
+No consultation fee
+No intimate questions or examinations
+No appointment
+PRiVATE and CONFiDENTiAL service
+Please come by our shop, see for yourself the massive range of products that we have available.  We do have the LOWEST price and huge stocks ready for SAME-DAY dispatch.
 
-I have further questions about this:
-
-How can I merge the driver you mentioned into Arm Linux source
-Architecture?
-
-To use it, do I have to use the application on the alsa-kernel HG
-repository?
-
-regards.
-
-Paul Wang
-
-
------Original Message-----
-From: Liam Girdwood [mailto:liam.girdwood@wolfsonmicro.com] 
-Sent: Thursday, 16 November 2006 1:23 a.m.
-To: Paul Wang
-Cc: alsa-devel
-Subject: Re: [Alsa-devel] ref: pxa255 Alsa Driver
-
-Hi Paul,
-
-On Wed, 2006-11-15 at 14:48 +1300, Paul Wang wrote:
-> Hi, all,
-> 
-> I am new to Linux sound drivers.
-> What I am looking for is a pxa255 sound driver based on pxa255
-I2Sound.
-> Does any Alsa driver implement this on kernel 2.6?
-> 
-
-There is an I2S driver for the pxa255 in the alsa-kernel HG repository. 
-
-http://hg-mirror.alsa-project.org/alsa-kernel
-
-Alternatively, the driver can also be found in this patch :-
-
-http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.3.patch
-
-This patch also includes more supported codecs than the HG repo atm.
-
-HTH
-
-Liam
+Thousands of customers can't be wrong! See our full range at:
+http://cyclodol.org
 
 
 -------------------------------------------------------------------------
