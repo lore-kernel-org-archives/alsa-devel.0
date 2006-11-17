@@ -1,18 +1,13 @@
-From: Richi Plana <richip@richip.dhs.org>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Frequency Problems with 0d8c:0201 and	snd-usb-audio
-Date: Fri, 17 Nov 2006 11:57:47 -0700
-Message-ID: <1163789867.3406.55.camel@richip.dhs.org>
+Date: Fri, 17 Nov 2006 14:39:29 -0500
+Message-ID: <1163792369.8128.8.camel@mindpipe>
 References: <1163613613.3406.14.camel@richip.dhs.org>
-	<1163668222.21027.276016817@webmail.messagingengine.com>
-	<1163696903.3406.29.camel@richip.dhs.org>
-	<1163697994.10962.276090935@webmail.messagingengine.com>
-	<1163701408.3406.41.camel@richip.dhs.org>
-	<1163784381.27992.276274101@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-reply-to: <1163784381.27992.276274101@webmail.messagingengine.com>
+In-Reply-To: <1163613613.3406.14.camel@richip.dhs.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,26 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Richi Plana <richip@richip.dhs.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-11-17 at 18:26 +0100, Clemens Ladisch wrote:
-> This device has two configuration that are supposed to support 48 kHz,
-> but the second one (that is used by the driver) has a packet size that
-> would be about right for 96 kHz.
+On Wed, 2006-11-15 at 11:00 -0700, Richi Plana wrote:
+> Hi,
 > 
-> Please try the patch below.
+> I have an ASRock 939Dual-VSTA mobo that comes with a C-Media Electronics
+> based sound system. Its USB Vendor and Product ID is 0d8c:0201, I'm
+> using Fedora Core 6 with ALSA drivers and libs version 1.0.13 and am
+> experiencing some problems with it.
 
-That did it! Thanks!
+Weird, I've never heard of mobos with onboard USB sound.  Does it come
+integrated or as a separate package?
 
-I'll email the motherboard manufacturer and maybe C-Media. Will update
-the mailing list if I get a reply.
-
-Will the patch make the next version (1.0.14)?
---
-
-Richard
+Lee
 
 
 -------------------------------------------------------------------------
