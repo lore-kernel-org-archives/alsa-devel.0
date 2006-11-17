@@ -1,10 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Add support for Evesham Voyager C530RD laptops
-Date: Fri, 17 Nov 2006 15:01:27 -0800
-Message-ID: <1163804487.5390.86.camel@razman>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [-mm patch] make
+	sound/pci/hda/patch_sigmatel.c:stac92xx_dmic_labels[] static
+Date: Sat, 18 Nov 2006 00:58:20 +0100
+Message-ID: <20061117235820.GL31879@stusta.de>
+References: <20061114014125.dd315fff.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-yFR3oPjK5SB+kkb9mogN"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E9B07272
+	for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2006 00:58:22 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20061114014125.dd315fff.akpm@osdl.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,59 +22,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>, perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 14, 2006 at 01:41:25AM -0800, Andrew Morton wrote:
+>...
+> Changes since 2.6.19-rc5-mm2:
+>...
+>  git-alsa.patch
+>...
+>  git trees
+>...
 
---=-yFR3oPjK5SB+kkb9mogN
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+This patch makes the needlessly global stac92xx_dmic_labels[] static.
 
-This patch adds support for the Evesham Voyager C530RD series laptops.
-So far, only playback has been tested, but microphone should also work.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Signed off by:
--- 
-Tobin Davis <tdavis@dsl-only.net>
+--- linux-2.6.19-rc5-mm2/sound/pci/hda/patch_sigmatel.c.old	2006-11-17 18:36:16.000000000 +0100
++++ linux-2.6.19-rc5-mm2/sound/pci/hda/patch_sigmatel.c	2006-11-17 18:36:26.000000000 +0100
+@@ -1201,7 +1201,7 @@
+ }
+ 
+ /* labels for dmic mux inputs */
+-const char *stac92xx_dmic_labels[5] = {
++static const char *stac92xx_dmic_labels[5] = {
+ 	"Analog Inputs", "Digital Mic 1", "Digital Mic 2",
+ 	"Digital Mic 3", "Digital Mic 4"
+ };
 
---=-yFR3oPjK5SB+kkb9mogN
-Content-Disposition: attachment; filename=Evesham.patch
-Content-Type: text/x-patch; name=Evesham.patch; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-diff -r 21f48c206e92 pci/hda/patch_realtek.c
---- a/pci/hda/patch_realtek.c	Thu Nov 16 17:24:20 2006 +0100
-+++ b/pci/hda/patch_realtek.c	Fri Nov 17 15:01:08 2006 -0800
-@@ -5478,6 +5478,8 @@ static struct hda_board_config alc883_cf
- 	{ .pci_subvendor = 0x161f, .pci_subdevice = 0x2054,
- 	  .modelname = "medion", .config = ALC883_MEDION },
- 	{ .modelname = "laptop-eapd", .config = ALC883_LAPTOP_EAPD },
-+	{ .pci_subvendor = 0x1071, .pci_subdevice = 0x8258,
-+	  .config = ALC883_LAPTOP_EAPD }, /* Evesham Voyager C530RD */
- 	{ .pci_subvendor = 0x1558, .pci_subdevice = 0,
- 	  .config = ALC883_LAPTOP_EAPD }, /* Clevo */
- 	{ .modelname = "auto", .config = ALC883_AUTO },
-
---=-yFR3oPjK5SB+kkb9mogN
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-yFR3oPjK5SB+kkb9mogN
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-yFR3oPjK5SB+kkb9mogN--
