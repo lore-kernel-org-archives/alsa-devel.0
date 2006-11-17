@@ -1,13 +1,11 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: ref: pxa255 Alsa Driver
-Date: Fri, 17 Nov 2006 00:14:50 +0000
-Message-ID: <1163722490.3477.21.camel@localhost.localdomain>
-References: <BB064186AE6A424382B0BC22417BB7A114EF3A@bnt-nav-chc-exh.navman.bnt.local>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GkWwK-0001at-LY delayed 24 hours
+Date: Thu, 16 Nov 2006 22:05:29 -0800
+Message-ID: <E1Gkwqv-00053S-Aq@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <BB064186AE6A424382B0BC22417BB7A114EF3A@bnt-nav-chc-exh.navman.bnt.local>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,50 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Paul Wang <Paul.Wang@navman.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-11-16 at 11:32 +1300, Paul Wang wrote:
-> Hi, Liam,
-> 
-> I have further questions about this:
-> 
-> How can I merge the driver you mentioned into Arm Linux source
-> Architecture?
-> 
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The ASoC patch can be merged into your recent 2.6 kernel source with the
-patch command.
+The message identifier is:     1GkWwK-0001at-LY
+The subject of the message is: compounded the glare of LESTAT.  We've told
+The date of the message is:    Thu, 16 Nov 2006 13:25:71 +1000
 
-i.e.
+The address to which the message has not yet been delivered is:
 
-cd linux
-patch -p1 < asoc.patch 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-> To use it, do I have to use the application on the alsa-kernel HG
-> repository?
-
-The HG repository can be checked out using the instructions (link below)
-on the download page and can be copied to your kernel sound directory.
-
-http://www.alsa-project.org/download.php
-
-The core code is the same in the patch and the HG repository. The only
-difference between them is that the patch has some extra codec drivers
-atm (that will be merged into the HG repo in the future).
-
-You will however need to write a small machine driver that will glue the
-codec driver to the pxa2xx i2s and audio DMA code (e.g. corgi.c,
-poodle.c) and may have to write a codec driver if your codec is
-currently unsupported.
-
-The driver can be used by using any audio application that supports
-alsa. 
-
-Liam
-
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
