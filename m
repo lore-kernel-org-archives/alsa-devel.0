@@ -1,16 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [RFC: 2.6 patch] make
-	sound/core/control.c:snd_ctl_new() static
-Date: Fri, 17 Nov 2006 18:02:26 +0100
-Message-ID: <20061117170226.GG31879@stusta.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Frequency Problems with 0d8c:0201 and snd-usb-audio
+Date: Fri, 17 Nov 2006 18:26:21 +0100
+Message-ID: <1163784381.27992.276274101@webmail.messagingengine.com>
+References: <1163613613.3406.14.camel@richip.dhs.org>
+	<1163668222.21027.276016817@webmail.messagingengine.com>
+	<1163696903.3406.29.camel@richip.dhs.org>
+	<1163697994.10962.276090935@webmail.messagingengine.com>
+	<1163701408.3406.41.camel@richip.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EE2E8244
-	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2006 18:02:28 +0100 (MET)
 Content-Disposition: inline
+In-Reply-To: <1163701408.3406.41.camel@richip.dhs.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,73 +22,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Richi Plana <richip@richip.dhs.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Now that everyone uses snd_ctl_new1() and noone is using snd_ctl_new() 
-anymore, we can make it static.
+Richi Plana wrote:
+> On Thu, 2006-11-16 at 18:26 +0100, Clemens Ladisch wrote:
+> > What kind of distortion?
+> 
+> As objectively as I can describe it: the audio played at 48 kHz seems to
+> be coming out at the right speed, but the sound itself is played at a
+> higher pitch.
+> 
+> Playback:
+>   Status: Running
+>     Packet Size = 392
+>     Momentary freq = 48000 Hz (0x30.0000)
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+This device has two configuration that are supposed to support 48 kHz,
+but the second one (that is used by the driver) has a packet size that
+would be about right for 96 kHz.
 
----
+Please try the patch below.
 
- Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl |   10 ----------
- include/sound/control.h                                      |    1 -
- sound/core/control.c                                         |    5 ++---
- 3 files changed, 2 insertions(+), 14 deletions(-)
 
---- linux-2.6.19-rc5-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl.old	2006-11-17 16:48:12.000000000 +0100
-+++ linux-2.6.19-rc5-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl	2006-11-17 16:48:22.000000000 +0100
-@@ -3691,16 +3691,6 @@
-         </para>
- 
-         <para>
--          Here, the chip instance is retrieved via
--        <function>snd_kcontrol_chip()</function> macro.  This macro
--        just accesses to kcontrol-&gt;private_data. The
--        kcontrol-&gt;private_data field is 
--        given as the argument of <function>snd_ctl_new()</function>
--        (see the later subsection
--        <link linkend="control-interface-constructor"><citetitle>Constructor</citetitle></link>).
--        </para>
--
--        <para>
- 	The <structfield>value</structfield> field is depending on
-         the type of control as well as on info callback.  For example,
- 	the sb driver uses this field to store the register offset,
---- linux-2.6.19-rc5-mm2/include/sound/control.h.old	2006-11-17 16:48:35.000000000 +0100
-+++ linux-2.6.19-rc5-mm2/include/sound/control.h	2006-11-17 16:48:39.000000000 +0100
-@@ -108,7 +108,6 @@
- 
- void snd_ctl_notify(struct snd_card * card, unsigned int mask, struct snd_ctl_elem_id * id);
- 
--struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol * kcontrol, unsigned int access);
- struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, void * private_data);
- void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
- int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
---- linux-2.6.19-rc5-mm2/sound/core/control.c.old	2006-11-17 16:48:46.000000000 +0100
-+++ linux-2.6.19-rc5-mm2/sound/core/control.c	2006-11-17 16:49:39.000000000 +0100
-@@ -183,7 +183,8 @@
-  *
-  * Returns the pointer of the new instance, or NULL on failure.
-  */
--struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control, unsigned int access)
-+static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
-+					unsigned int access)
- {
- 	struct snd_kcontrol *kctl;
- 	unsigned int idx;
-@@ -201,8 +202,6 @@
- 	return kctl;
- }
- 
--EXPORT_SYMBOL(snd_ctl_new);
--
- /**
-  * snd_ctl_new1 - create a control instance from the template
-  * @ncontrol: the initialization record
+HTH
+Clemens
 
+
+--- alsa.orig/alsa-kernel/usb/usbaudio.c	2006-11-14 21:02:42.000000000 +0100
++++ alsa/alsa-kernel/usb/usbaudio.c	2006-11-16 23:04:29.000000000 +0100
+@@ -2478,7 +2478,13 @@ static int parse_audio_format_rates(stru
+ 		fp->nr_rates = nr_rates;
+ 		fp->rate_min = fp->rate_max = combine_triple(&fmt[8]);
+ 		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
+-			unsigned int rate = fp->rate_table[r] = combine_triple(&fmt[idx]);
++			unsigned int rate = combine_triple(&fmt[idx]);
++			/* C-Media CM6501 mislabels its 96 kHz altsetting */
++			if (rate == 48000 && nr_rates == 1 &&
++			    chip->usb_id == USB_ID(0x0d8c, 0x0201) &&
++			    fp->altsetting == 5 && fp->maxpacksize == 392)
++				rate = 96000;
++			fp->rate_table[r] = rate;
+ 			if (rate < fp->rate_min)
+ 				fp->rate_min = rate;
+ 			else if (rate > fp->rate_max)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
