@@ -1,7 +1,9 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GkWwK-0001at-LY delayed 72 hours
-Date: Sat, 18 Nov 2006 18:36:14 -0800
-Message-ID: <E1GlcXW-00025M-9U@externalmx-1.sourceforge.net>
+From: "van harper" <lottiesmith@love.dolyna.net>
+Subject: Inovative,
+	un-known and electrifying great profit career.
+Date: Sat, 18 Nov 2006 14:36:11 +0400
+Message-ID: <110701c70b1e$e4c8ae70$5fbdc240@lottiesmith>
+Reply-To: van harper <lottiesmith@love.dolyna.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,33 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Henry Hunt <abramo@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, andy@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1GkWwK-0001at-LY
-The subject of the message is: compounded the glare of LESTAT.  We've told
-The date of the message is:    Thu, 16 Nov 2006 13:25:71 +1000
+Inovative, un-known, electrifying and great profit career.
 
-The address to which the message has not yet been delivered is:
+Hear overview when ever you have time.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+303-395-3900
+Just above to study more or to bring to a hault receiving additional
+information and then to see location
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
+I see you have returned safely from your trip, continued the Apparition,
+cheerfully, although at one time I thought you would be unable to escape.
+Indeed, unless I had knocked that tube from the rascally Turk's hand as he
+clambered to the top of the wall, I believe you would have been at the
+Yarkand oasis yet--either dead or alive, as chance might determinem7
+
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
