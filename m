@@ -1,8 +1,7 @@
-From: "Giovanni Maruzzelli" <gmaruzz.lists@gmail.com>
-Subject: too much latency with default:0,
-	problem with period_time on dmix-dsnoop
-Date: Sat, 18 Nov 2006 21:26:18 +0100
-Message-ID: <7c5010d60611181226x65d6bf54q7cd4d394bbe67134@mail.gmail.com>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Where is /usr/share/alsa/cards/?
+Date: Sat, 18 Nov 2006 22:07:37 +0100
+Message-ID: <20061118210734.GE9190@home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,60 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi,
 
-I have a problem of too much latency using from C the "default:n"
-devices under ALSA (if I understood correctly, this is because the
-"default:n" devices uses dmix and dsnoop, and I need dmix and dsnoop,
-but dmix and dsnoop have a fixed period_time=125000).
+I'm working on a driver for some hardware MPEG decompression boards, 
+with an ALSA driver for the audio part of the chip. For a good support 
+with most applications, I need a special configuration for this driver, 
+that would be in /usr/share/alsa/cards/EM8300.conf.
 
-I was able to solve this problem with an asound.conf, specifying the
-period_time in both the dmix and dsnoop that constitute the asym that
-I made the default.
+Unfortunately, this location varies with the distros. I heard that it 
+was somewhere in /etc for RedHat and Fedora. Moreover, alsa-lib maight 
+be installed by some user in their home directory.
 
-There is a way to do the same from the command line, in a way similar to:
-aplay -D"plug:'dmix:RATE=44100'"
+That's why I'd like to know if there is some programmatic way to find 
+out where I should install my configuration. Any idea?
 
-Also (and maybe better), there is a way to "build" a device similar to
-the one builded by this asound.conf from the C api?
+If there is none, I guess I could default to installing in 
+/usr/share/alsa/cards and let the user specify another location through 
+my ./configure script if needed.
 
-Any help very much appreciated ;)
-Giovanni
 
-My sample asound.conf:
+Cheers,
 
-pcm.dmixed {
-        ipc_key 1025
-        type dmix
-        slave {
-                pcm "hw:0"
-                period_time 20000
-        }
+Nicolas
 
-}
-
-pcm.dsnooped {
-        ipc_key 1027
-        type dsnoop
-        slave {
-                pcm "hw:0"
-                period_time 20000
-        }
-}
-
-pcm.asymed {
-        type asym
-        playback.pcm "dmixed"
-        capture.pcm "dsnooped"
-}
-
-pcm.!default {
-        type plug
-        slave.pcm "asymed"
-}
+PS: I'm not subscribed so please reply to me directly (M-F-T header set 
+accordingly).
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
