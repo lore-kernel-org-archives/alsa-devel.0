@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GkWwK-0001at-LY delayed 48 hours
-Date: Fri, 17 Nov 2006 21:49:02 -0800
-Message-ID: <E1GlJ4Y-0008ES-4C@externalmx-1.sourceforge.net>
+Subject: Warning: message 1GkGQZ-0000T8-Pz delayed 72 hours
+Date: Sat, 18 Nov 2006 02:07:23 -0800
+Message-ID: <E1GlN6Z-0003jB-Ha@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1GkWwK-0001at-LY
-The subject of the message is: compounded the glare of LESTAT.  We've told
-The date of the message is:    Thu, 16 Nov 2006 13:25:71 +1000
+The message identifier is:     1GkGQZ-0000T8-Pz
+The subject of the message is: this she did it so often than the precious book out to put
+The date of the message is:    Wed, 15 Nov 2006 09:46:55 +0100
 
 The address to which the message has not yet been delivered is:
 
