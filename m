@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GlF3W-0000pf-3M delayed 24 hours
-Date: Sat, 18 Nov 2006 18:31:58 -0800
-Message-ID: <E1GlcTO-0001T3-Iy@externalmx-1.sourceforge.net>
+Subject: Warning: message 1GkWwK-0001at-LY delayed 72 hours
+Date: Sat, 18 Nov 2006 18:36:14 -0800
+Message-ID: <E1GlcXW-00025M-9U@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1GlF3W-0000pf-3M
-The subject of the message is: [VAR114]
-The date of the message is:    Sat, 18 Nov 2006 02:31:60 +0100
+The message identifier is:     1GkWwK-0001at-LY
+The subject of the message is: compounded the glare of LESTAT.  We've told
+The date of the message is:    Thu, 16 Nov 2006 13:25:71 +1000
 
 The address to which the message has not yet been delivered is:
 
