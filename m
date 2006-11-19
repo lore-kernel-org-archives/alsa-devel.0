@@ -1,12 +1,11 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: Where is /usr/share/alsa/cards/?
-Date: Sat, 18 Nov 2006 22:07:37 +0100
-Message-ID: <20061118210734.GE9190@home>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GlF3W-0000pf-3M delayed 24 hours
+Date: Sat, 18 Nov 2006 18:31:58 -0800
+Message-ID: <E1GlcTO-0001T3-Iy@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,31 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-I'm working on a driver for some hardware MPEG decompression boards, 
-with an ALSA driver for the audio part of the chip. For a good support 
-with most applications, I need a special configuration for this driver, 
-that would be in /usr/share/alsa/cards/EM8300.conf.
+The message identifier is:     1GlF3W-0000pf-3M
+The subject of the message is: [VAR114]
+The date of the message is:    Sat, 18 Nov 2006 02:31:60 +0100
 
-Unfortunately, this location varies with the distros. I heard that it 
-was somewhere in /etc for RedHat and Fedora. Moreover, alsa-lib maight 
-be installed by some user in their home directory.
+The address to which the message has not yet been delivered is:
 
-That's why I'd like to know if there is some programmatic way to find 
-out where I should install my configuration. Any idea?
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-If there is none, I guess I could default to installing in 
-/usr/share/alsa/cards and let the user specify another location through 
-my ./configure script if needed.
-
-
-Cheers,
-
-Nicolas
-
-PS: I'm not subscribed so please reply to me directly (M-F-T header set 
-accordingly).
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
