@@ -1,18 +1,10 @@
-From: "Valerie Williams" <dchandler@rs.net.ua>
-Subject: Or escapade it delineate
-Date: Mon, 20 Nov 2006 17:42:12 +0200
-Message-ID: <001801c70ccb$35de3d40$01409fc4@sano>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Add missing array to conexant driver
+Date: Mon, 20 Nov 2006 08:09:48 -0800
+Message-ID: <1164038988.5390.212.camel@razman>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-eEwWnmK8jvUofj7KthDp"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (unknown [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99DB2309
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2006 16:40:50 +0100 (MET)
-Received: from promenergomash.PPPoE.rs.net.ua (unknown [193.178.229.107])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	31013999AF
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2006 16:40:50 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,32 +14,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Does Size Matter7
-  .  .  .  ..  .  .  .  ..  .  .  .  ..  .  .  .  ..  .  .  .  .
 
-60% of WOMEN said thay were UNHAPPY with their lover"s P* size!
+--=-eEwWnmK8jvUofj7KthDp
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Introducing the Newest, Safest. and Most Advanced
-Solution in Pnis En1argment. Anywhere!
+This patch adds a missing array to the conexant driver.
 
-Millions of men are already applying male enhan(ement pat(hes daily and watching their
-size and drive go through the roof! P.atches deliver the product into your system in a quicker
-and more efficient manner than a pi11 ever could. They are also safer and more discrete!
+Signed off by:  
+-- 
+Tobin Davis <tdavis@dsl-only.net>
 
-Unreal p,rice dis(ounts we are offering for a 1imited time only!
+--=-eEwWnmK8jvUofj7KthDp
+Content-Disposition: attachment; filename=conexant-hg-test10.patch
+Content-Type: text/x-patch; name=conexant-hg-test10.patch; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-http://www.lopsont.com/ - Go here now and Get it!
+diff -r 21f48c206e92 pci/hda/patch_conexant.c
+--- a/pci/hda/patch_conexant.c	Thu Nov 16 17:24:20 2006 +0100
++++ b/pci/hda/patch_conexant.c	Sun Nov 19 00:07:45 2006 -0800
+@@ -552,6 +552,9 @@ static hda_nid_t cxt5045_capsrc_nids[1] 
+ static hda_nid_t cxt5045_capsrc_nids[1] = { 0x1a };
+ #define CXT5045_SPDIF_OUT	0x13
+ 
++static struct hda_channel_mode cxt5045_modes[1] = {
++	{ 2, NULL },
++};
+ 
+ static struct hda_input_mux cxt5045_capture_source = {
+ 	.num_items = 2,
+@@ -842,6 +845,9 @@ static int patch_cxt5045(struct hda_code
+ 	spec->num_init_verbs = 1;
+ 	spec->init_verbs[0] = cxt5045_init_verbs;
+ 	spec->spdif_route = 0;
++	spec->num_channel_mode = ARRAY_SIZE(cxt5045_modes),
++	spec->channel_mode = cxt5045_modes,
++
+ 
+ 	codec->patch_ops = conexant_patch_ops;
+ 	codec->patch_ops.unsol_event = cxt5045_hp_unsol_event;
+@@ -873,6 +879,9 @@ static hda_nid_t cxt5047_capsrc_nids[1] 
+ static hda_nid_t cxt5047_capsrc_nids[1] = { 0x1a };
+ #define CXT5047_SPDIF_OUT	0x11
+ 
++static struct hda_channel_mode cxt5047_modes[1] = {
++	{ 2, NULL },
++};
+ 
+ static struct hda_input_mux cxt5047_capture_source = {
+ 	.num_items = 2,
+@@ -1039,7 +1048,7 @@ static struct hda_verb cxt5047_init_verb
+ 	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
+ 	/* HP, Amp  */
+ 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+-	{0x1A, AC_VERB_SET_CONNECT_SEL,0x01},
++	{0x1A, AC_VERB_SET_CONNECT_SEL,0x03},
+ 	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE,
+ 	 AC_AMP_SET_OUTPUT|AC_AMP_SET_RIGHT|AC_AMP_SET_LEFT|0x00},
+ 	{0x1A, AC_VERB_SET_AMP_GAIN_MUTE,
+@@ -1111,9 +1120,9 @@ static struct snd_kcontrol_new cxt5047_t
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x19, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x19, 0x04, HDA_INPUT),
+ 
++#if 0   
+ 	/* Controls for GPIO pins, assuming they exist and are configured as outputs */
+ 	CXT_GPIO_DATA_SWITCH("GPIO pin 0", 0x01, 0x01),
+-#if 0   /* limit this to one GPIO pin for now */	
+ 	CXT_GPIO_DATA_SWITCH("GPIO pin 1", 0x01, 0x02),
+ 	CXT_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
+ 	CXT_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
+@@ -1262,6 +1271,8 @@ static int patch_cxt5047(struct hda_code
+ 	spec->num_init_verbs = 1;
+ 	spec->init_verbs[0] = cxt5047_init_verbs;
+ 	spec->spdif_route = 0;
++	spec->num_channel_mode = ARRAY_SIZE(cxt5047_modes),
++	spec->channel_mode = cxt5047_modes,
+ 
+ 	codec->patch_ops = conexant_patch_ops;
+ 	codec->patch_ops.unsol_event = cxt5047_hp_unsol_event;
 
-====================================
-Sticks and stones may break my bones, but names will break my spirit.
-Kill two birds with one stone.
-Possible Interpretation: Do the task while it is possible.
+--=-eEwWnmK8jvUofj7KthDp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--=-eEwWnmK8jvUofj7KthDp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-eEwWnmK8jvUofj7KthDp--
