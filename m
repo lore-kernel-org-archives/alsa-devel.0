@@ -1,7 +1,7 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Frequency Problems with 0d8c:0201 and	snd-usb-audio
-Date: Mon, 20 Nov 2006 14:54:56 +0100
-Message-ID: <1164030896.32416.276594929@webmail.messagingengine.com>
+Subject: Re: Frequency Problems with 0d8c:0201 and snd-usb-audio
+Date: Mon, 20 Nov 2006 14:55:01 +0100
+Message-ID: <1164030901.32341.276594929@webmail.messagingengine.com>
 References: <1163613613.3406.14.camel@richip.dhs.org>
 	<1163668222.21027.276016817@webmail.messagingengine.com>
 	<1163696903.3406.29.camel@richip.dhs.org>
