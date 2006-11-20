@@ -1,14 +1,15 @@
-From: "Marvin Stodolsky" <marvin.stodolsky@gmail.com>
-Subject: Re: [PATCH] hda/patch_si3054: new codec vendor IDs
-Date: Mon, 20 Nov 2006 08:19:13 -0500
-Message-ID: <c27106ee0611200519m65c6b168jedaa6f9870d4999b@mail.gmail.com>
-References: <20060925080101.GA7996@sk>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Frequency Problems with 0d8c:0201 and snd-usb-audio
+Date: Mon, 20 Nov 2006 14:54:57 +0100
+Message-ID: <1164030897.32341.276591015@webmail.messagingengine.com>
+References: <1163613613.3406.14.camel@richip.dhs.org>
+	<1163792369.8128.8.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20060925080101.GA7996@sk>
 Content-Disposition: inline
+In-Reply-To: <1163792369.8128.8.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,72 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Sasha Khapyorsky <sashakh@gmail.com>, Eduard Bloch <blade@debian.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Jacques Goldberg <Jacques.Goldberg@cern.ch>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-RWR1YXJkLAoKIEZvcm1hbGx5LCB0aGUgU21hcnRsaW5rIG1vZGVtIHJpZ2h0cyBoYXZlIGJlZW4g
-c29sZCB0byBDb25leGFudC4KCk5vdGUgU2FzaGEncyBuZXcgZW1haWwgYWRkcmVzcy4gSGUgY2Fu
-IG1vc3QgcmVzcG9uc2l2ZWx5IHJlc3BvbmQgb24Kc2xtb2RlbWQgbGVnYWwgIGlzc3Vlcy4gIEph
-Y3F1ZSBpcyBrbm93bGVkZ2VhYmxlIGFib3V0IHRoZSBzaXR1YXRpb24KCkZyb20gdHJhZmZpYyBv
-biBEaXNjdXNzQGxpbm1vZGVtcyAub3JnLCAgb25seSBhIHNtYWxsIGZyYWN0aW9uIG9mIHRoZQpt
-b2RlbXMgaW4gbmV3IFBDcyB1c2UgdGhlIHNsYW1yLmtvIGRyaXZlciB3aXRoIGEgY2xvc2VkIHNv
-dXJjZQpvbXBvbmVudC4gIE1vc3QgbmV3IHNvZnQgbW9kZW1zIGFyZSBzdXBwb3J0ZWQgYnkgYSBj
-b21iaW5hdGlvbiBvZiBhbgpBTFNBIG1vZGVtIGRyaXZlciBhbmQgc2xtb2RlbWQuClRha2FzaGkg
-YW5kIFNhc2hhIGNvbnRyaWJ1dGUgdG8gdGhlIEFMU0EgZHJpdmVyIGNvZGUuCgpBbW9uZyB0aGUg
-QUxTQSBzdXBwb3J0ZWQgbW9kZW1zIHRoZXJlIGlzIGFuIGluY3JlYXNpbmcgcHJvcG9ydGlvbiBv
-ZgpTeXN0ZW1zIHdpdGggSGlnaCBEZWZpbml0aW9uIEF1ZGlvIGNhcmRzIHdpdGggZW1iZWRkZWQg
-bW9kZW1zLiAgRnJvbQp0aGlzIHRyZW5kLCBteSBndWVzcyBpcyB0aGF0IG1vc3QgbmV3IGNoZWFw
-IG1vZGVtcyB3aWxsIGJlIG9mIHRoaXMKdHlwZS4KClBsZWFzZSBmZWVsIGZyZWUgdG8gaW5jb3Jw
-b3JhdGUgYW55IG9mIHRoZSAoZXZvbHZpbmcpIGRpYWdub3N0aWNzIGZyb20KbXkgc2Nhbk1vZGVt
-IGludG8geW91ciBzbC1tb2RlbS1kYWVtb24gcGFja2FnZS4KCk1hcnZTCgpPbiAxMS8yMC8wNiwg
-RWR1YXJkIEJsb2NoIDxlZGlAZ214LmRlPiB3cm90ZToKPiBIZWxsbyBNYXJ2aW4gU3RvZG9sc2t5
-LAo+Cj4gUGxlYXNlIGZvcndhcmQgdGhlIG1haWwgdG8gdGhvc2Ugd2hvbSBpdCBtYXkgY29uY2Vy
-bi4KPgo+IEkgY29uc2lkZXJlZCBmaW5hbGx5IG1lcmdpbmcgd2l0aCAyLjkuMTEgaW4gdGhlIERl
-YmlhbiBwYWNrYWdlcyAoYW5kIHNvCj4gVWJ1bnR1LCBldGMuKS4gQnV0IHRoZXJlIGFyZSBwcm9i
-bGVtcywgc2ltcGx5IGVzc2VudGlhbCBxdWVzdGlvbnM6Cj4KPiAgLSB3aG8gaXMgdGhlIGN1cnJl
-bnQgbWFpbnRhaW5lcj8gVGhlcmUgaXMgbm8gcmVjZW50IG5hbWUgY2hhbmdlIGluIHRoZQo+ICAg
-IFJFQURNRS4gSXQgaXMgb2J2aW9zbHkgbm8gbG9uZ2VyIHNtbGluay5jb20sIGJ1dCB3aG8gaXMg
-aXQgdGhlbj8gV2hvCj4gICAgY3JlYXRlcyB0aGUgbmV3IHJlbGVhc2VzLCB3aG8gaXMgdGhlIGNv
-bnRhY3QgcGVyc29uPwo+Cj4gIC0gdGhlIGxlZ2FsIHN0YXR1cyBpcyBzdGlsbCB1bmtub3duLiBJ
-IGhlYXJkIHJ1bW9ycyBhYm91dCAidGhlIGxhc3QgbGFiCj4gICAgdmVyc2lvbiIgdGFrZW4gYnkg
-U2FzaGFLIHRvIG1ha2UgYW4gb3duIGZyZWUgcmVsZWFzZS4gQnV0Li4uIEkgY2Fubm90Cj4gICAg
-cmVseSBvbiBydW1vcnMuIEkgbmVlZCBzaW1wbGUgZmFjdHMsIGFuIG9mZmljaWFsIG1haW50YWlu
-ZXIgb2YgdGhlCj4gICAgcGFja2FnZSAoZXZlbiB0aGUgZm9ya2VkIG9uZSkgd2hvIGNhbiBndWFy
-YW50ZWUgdGhlIGxlZ2FsIHN0YXRlLgo+Cj4gQSBkZXRhaWxlZCBSRUFETUUuTUFJTlRBSU5FUiB3
-aXRoIGF1dG9yL21haW50YWluZXIgbmFtZXMsIGhpc3RvcnkgYW5kCj4gbGVnYWxpdHkgc3RhdGUg
-ZXhwbGFuYXRpb24gb3Igc28gc2hvdWxkIGJlIHN1ZmZpY2llbnQuCj4KPiBFZHVhcmQuCj4gLS0K
-PiBXYXMgcGFzc2llcnQsIHdlbm4gTSQgZGFzIFkySy1Qcm9ibGVtIG5pY2h0IGzDtnNlbiBrYW5u
-Pwo+IERpZSBuZXVlIFZlcnNpb24gd2lyZCBXaW5kb3dzIDE5MDAgaGVpw59lbi4KPgoKCk9uIDkv
-MjUvMDYsIFNhc2hhIEtoYXB5b3Jza3kgPHNhc2hha2hAZ21haWwuY29tPiB3cm90ZToKPiBIaSBU
-YWthc2hpLAo+Cj4gVGhlcmUgYXJlIG5ldyBJRHMgZm9yIFNpMzA1NCBiYXNlZCBIREEgbW9kZW1z
-Lgo+Cj4gU2FzaGEKPgo+IC0tLQo+IFRoZXJlIGFyZSBhZGRpdGlvbmFsIElEcyBmb3IgU2kzMDU0
-IGNvZGVjIGJhc2VkIEhEQSBtb2RlbXMuIE1vc3Qgb2YKPiB0aGVtIHdlcmUgZGlzY292ZXJlZCBv
-biBkaXNjdXNzQGxpbm1vZGVtcy5vcmcgbGlzdCAtIFRoYW5rcyB0byBNYXJ2Uwo+IGFuZCBhbGwg
-bGlubW9kZW1zLm9yZyBmb2xrcy4KPgo+IFNpZ25lZC1vZmYtYnk6IFNhc2hhIEtoYXB5b3Jza3kg
-PHNhc2hha0BhbHNhLXByb2plY3Qub3JnPgo+Cj4gLS0tCj4gZGlmZiAtciA2M2U1OGIwMDgyNTkg
-cGNpL2hkYS9wYXRjaF9zaTMwNTQuYwo+IC0tLSBhL3BjaS9oZGEvcGF0Y2hfc2kzMDU0LmMgICAg
-TW9uIFNlcCAwNCAxMzowMzo1MSAyMDA2ICswMjAwCj4gKysrIGIvcGNpL2hkYS9wYXRjaF9zaTMw
-NTQuYyAgICBTdW4gU2VwIDI0IDAzOjIwOjI1IDIwMDYgKzAzMDAKPiBAQCAtMjk3LDcgKzI5Nywx
-MiBAQCBzdHJ1Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRfaGRhX3ByZXNldF9zCj4gIHN0cnVjdCBo
-ZGFfY29kZWNfcHJlc2V0IHNuZF9oZGFfcHJlc2V0X3NpMzA1NFtdID0gewo+ICAgICAgICAgeyAu
-aWQgPSAweDE2M2MzMDU1LCAubmFtZSA9ICJTaTMwNTQiLCAucGF0Y2ggPSBwYXRjaF9zaTMwNTQg
-fSwKPiAgICAgICAgIHsgLmlkID0gMHgxNjNjMzE1NSwgLm5hbWUgPSAiU2kzMDU0IiwgLnBhdGNo
-ID0gcGF0Y2hfc2kzMDU0IH0sCj4gKyAgICAgICB7IC5pZCA9IDB4MTFjMTEwNDAsIC5uYW1lID0g
-IlNpMzA1NCIsIC5wYXRjaCA9IHBhdGNoX3NpMzA1NCB9LAo+ICAgICAgICAgeyAuaWQgPSAweDEx
-YzEzMDI2LCAubmFtZSA9ICJTaTMwNTQiLCAucGF0Y2ggPSBwYXRjaF9zaTMwNTQgfSwKPiArICAg
-ICAgIHsgLmlkID0gMHgxMWMxMzA1NSwgLm5hbWUgPSAiU2kzMDU0IiwgLnBhdGNoID0gcGF0Y2hf
-c2kzMDU0IH0sCj4gKyAgICAgICB7IC5pZCA9IDB4MTFjMTMxNTUsIC5uYW1lID0gIlNpMzA1NCIs
-IC5wYXRjaCA9IHBhdGNoX3NpMzA1NCB9LAo+ICsgICAgICAgeyAuaWQgPSAweDEwNTczMDU1LCAu
-bmFtZSA9ICJTaTMwNTQiLCAucGF0Y2ggPSBwYXRjaF9zaTMwNTQgfSwKPiArICAgICAgIHsgLmlk
-ID0gMHgxMDU3MzE1NSwgLm5hbWUgPSAiU2kzMDU0IiwgLnBhdGNoID0gcGF0Y2hfc2kzMDU0IH0s
-Cj4gICAgICAgICB7fQo+ICB9Owo+Cj4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUYWtlIFN1cnZleXMuIEVh
-cm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKSm9pbiBTb3VyY2VGb3JnZS5uZXQn
-cyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFuY2UgdG8gc2hhcmUgeW91cgpv
-cGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVmIHN1cnZleXMgLSBh
-bmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVmYXVsdC5waHA/cGFnZT1qb2lu
-LnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+Lee Revell wrote:
+> On Wed, 2006-11-15 at 11:00 -0700, Richi Plana wrote:
+> > I have an ASRock 939Dual-VSTA mobo that comes with a C-Media Electronics
+> > based sound system. Its USB Vendor and Product ID is 0d8c:0201,
+> 
+> Weird, I've never heard of mobos with onboard USB sound.  Does it come
+> integrated or as a separate package?
+
+It's just a chip on the mobo.
+
+It makes sense - USB devices are completely self-contained; unlike HDA
+codecs, they don't need initialization tables or any other configuration
+code in the BIOS.  (And nobody will miss the eighth USB port, especially
+on a cheap mobo like this.)
+
+
+Regards,
+Clemens
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
