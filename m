@@ -1,15 +1,20 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Frequency Problems with 0d8c:0201 and snd-usb-audio
-Date: Mon, 20 Nov 2006 14:54:57 +0100
-Message-ID: <1164030897.32341.276591015@webmail.messagingengine.com>
+Subject: Re: Frequency Problems with 0d8c:0201 and	snd-usb-audio
+Date: Mon, 20 Nov 2006 14:54:56 +0100
+Message-ID: <1164030896.32416.276594929@webmail.messagingengine.com>
 References: <1163613613.3406.14.camel@richip.dhs.org>
-	<1163792369.8128.8.camel@mindpipe>
+	<1163668222.21027.276016817@webmail.messagingengine.com>
+	<1163696903.3406.29.camel@richip.dhs.org>
+	<1163697994.10962.276090935@webmail.messagingengine.com>
+	<1163701408.3406.41.camel@richip.dhs.org>
+	<1163784381.27992.276274101@webmail.messagingengine.com>
+	<1163789867.3406.55.camel@richip.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1163792369.8128.8.camel@mindpipe>
+In-Reply-To: <1163789867.3406.55.camel@richip.dhs.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,24 +24,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
+To: Richi Plana <richip@richip.dhs.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Wed, 2006-11-15 at 11:00 -0700, Richi Plana wrote:
-> > I have an ASRock 939Dual-VSTA mobo that comes with a C-Media Electronics
-> > based sound system. Its USB Vendor and Product ID is 0d8c:0201,
+Richi Plana wrote:
+> On Fri, 2006-11-17 at 18:26 +0100, Clemens Ladisch wrote:
+> > Please try the patch below.
 > 
-> Weird, I've never heard of mobos with onboard USB sound.  Does it come
-> integrated or as a separate package?
+> That did it! Thanks!
 
-It's just a chip on the mobo.
+Does 96 kHz now work, too?
 
-It makes sense - USB devices are completely self-contained; unlike HDA
-codecs, they don't need initialization tables or any other configuration
-code in the BIOS.  (And nobody will miss the eighth USB port, especially
-on a cheap mobo like this.)
+> Will the patch make the next version (1.0.14)?
+
+Yes.
 
 
 Regards,
