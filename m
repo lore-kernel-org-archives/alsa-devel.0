@@ -1,15 +1,12 @@
-From: "Peer Chen" <pchen@nvidia.com>
-Subject: Re: [Patch] Audio: Add nvidia HD Audio controllers
-	of	MCP67 support to hda_intel.c
-Date: Mon, 20 Nov 2006 10:02:38 +0800
-Message-ID: <15F501D1A78BD343BE8F4D8DB854566B0CEB970A@hkemmail01.nvidia.com>
-References: <s5hy7qas5u8.wl%tiwai@suse.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Speaker Sound on acer travelmate c202 with ALC260
+	using test model
+Date: Mon, 20 Nov 2006 13:14:50 +1030 (CST)
+Message-ID: <200611200244.kAK2ipjp001190@turbo.physics.adelaide.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
-In-Reply-To: <s5hy7qas5u8.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,120 +16,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@lists.sourceforge.net, jgarzik@pobox.com, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
+Cc: valemie@yahoo.com.sg, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your explanation.
+> I managed to get speaker sound on my acer travelmate c202 tablet pc using
+> the test model. Except for hard disk and memory size, the c202 is the same
+> as the c204 discussed earlier as unable to get sound on the built-in
+> speaker. I think the key to having speaker sound on this model is to have
+> the "mono" control enabled on this "acer" model.
 
-BRs
-Peer Chen
+Further to my previous email on this subject I have been able to
+independently confirm that the "mono" control does indeed control the
+internal speaker in these C20x-series laptops.
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Friday, November 17, 2006 6:53 PM
-To: Peer Chen
-Cc: Randy Dunlap; jgarzik@pobox.com; alsa-devel@lists.sourceforge.net;
-linux-kernel@vger.kernel.org
-Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio controllers
-of MCP67 support to hda_intel.c
+Valentin: if you can, could you please try the following patch (against
+alsa-driver 1.0.13 in alsa-driver-1.0.13/alsa-kernel/pci/hda/)?  With it:
 
-At Fri, 17 Nov 2006 16:46:00 +0800,
-Peer Chen wrote:
-> 
-> Takashi:
-> When this patch will be included into the -mm tree?
+ * you will be presented with the "Acer" model variant without having
+   to specify "model=acer" when loading the snd-intel-hda modules.
 
-Yes, it is already included, at least in 2.6.19-rc5-mm2.
+ * there will be new alsamixer controls for a "mono speaker" which is
+   what the C20x series appears to be equipped with.
 
-> Is it possible to be
-> included in kernel source before final release of  kernel 2.6.19.
+If all is well, please see if the new "mono speaker" controls affect the
+internal speaker.
 
-No, we had no enough time for testing this in 2.6.19 cycle.
-It'll be merged to 2.6.20 unless we get bug reports regarding this.
+Note that this patch will unconditionally add the "mono speaker" controls
+to all configurations which utilise the "Acer" ALC260 model.  I've named
+them "Mono Speaker ..." on the basis that one would expect them to only
+have an effect if one has a single mono speaker.  On first thoughts it seems
+silly to define a whole new model just to add two controls, but the presence
+of "non-working" controls on laptops which don't have the mono speaker
+may confuse end users.
 
+What is the general consensus of the list?  Should I define a new model for
+these C20x tablet PCs or is the unconditional addition of "mono speaker"
+controls to the existing "acer" model acceptable?
 
-Takashi
+Regards
+  jonathan
 
-> 
-> BRs
-> Peer Chen
-> 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Wednesday, November 01, 2006 12:02 AM
-> To: Randy Dunlap
-> Cc: Peer Chen; alsa-devel@lists.sourceforge.net;
-> linux-kernel@vger.kernel.org; Andy Currid; Brian Lazara;
-> jgarzik@pobox.com; Emily Jiang
-> Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio
-controllers
-> of MCP67 support to hda_intel.c
-> 
-> At Tue, 31 Oct 2006 07:43:45 -0800,
-> Randy Dunlap wrote:
-> > 
-> > On Tue, 31 Oct 2006 15:42:54 +0100 Takashi Iwai wrote:
-> > 
-> > > At Tue, 31 Oct 2006 15:33:58 +0800,
-> > > Peer Chen wrote:
-> > > > 
-> > > > Add the support for HD audio controllers of
-> MCP51,MCP55,MCP61,MCP65 & MCP67.
-> > > > The following hda_intel.c patch is based on kernel 2.6.18.
-> > > > 
-> > > > Signed-off by: Peer Chen <pchen@nvidia.com>
-> > > 
-> > > Applied to ALSA tree.  But I didn't add it to push-to-2.6.19-tree
-> > > because apparently no one has tested the patch well yet.
-> > > 
-> > > (BTW, your patch attached there was broken, so I had to apply it
-> > > manually.  At the next time, please either inline the patch in a
-> text
-> > > mail, or attach a plain text patch if inlining is not possible
-with
-> > > your MUA/MTA.)
-> > 
-> > Patches should also be sent made to apply to a current kernel
-> > tree, like 2.6.19-rc3, 2.6.19-rc4, 2.6.19-rc3-git8,
-> > Linus's git tree, or Andrew's -mm tree if that is the only
-> > place where the patch fits, or even to a subsystem tree (e.g.,
-ALSA).
-> 
-> Since I already applied it to ALSA tree, the next mm tree will include
-> it (automatically taken it from alsa.git#mm branch).
-> 
-> 
-> Takashi
->
-------------------------------------------------------------------------
------------
-> This email message is for the sole use of the intended recipient(s)
-and may contain
-> confidential information.  Any unauthorized review, use, disclosure or
-distribution
-> is prohibited.  If you are not the intended recipient, please contact
-the sender by
-> reply email and destroy all copies of the original message.
->
-------------------------------------------------------------------------
------------
-> 
->
-------------------------------------------------------------------------
--
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to
-share your
-> opinions on IT & business topics through brief surveys - and earn cash
->
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
-V
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+--- patch_realtek.c-orig	2006-11-20 11:52:16.000000000 +1030
++++ patch_realtek.c	2006-11-20 12:57:01.000000000 +1030
+@@ -3090,11 +3090,18 @@
+  * and the output jack.  If this turns out to be the case for all such
+  * models the "Line Jack Mode" mode could be changed from ALC_PIN_DIR_INOUT
+  * to ALC_PIN_DIR_INOUT_NOMICBIAS.
++ *
++ * The C20x Tablet series have a mono internal speaker which is controlled
++ * via the chip's Mono sum widget and pin complex, so include the necessary
++ * controls for such models.  On models without a "mono speaker" the control
++ * won't do anything.
+  */
+ static struct snd_kcontrol_new alc260_acer_mixer[] = {
+ 	HDA_CODEC_VOLUME("Master Playback Volume", 0x08, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2, HDA_INPUT),
+ 	ALC_PIN_MODE("Headphone Jack Mode", 0x0f, ALC_PIN_DIR_INOUT),
++	HDA_CODEC_VOLUME_MONO("Mono Speaker Playback Volume", 0x0a, 1, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Mono Speaker Playback Switch", 0x0a, 1, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0, HDA_INPUT),
+@@ -3409,11 +3416,11 @@
+ 	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF50},
+ 	/* Line In jack is connected to Line1 pin */
+ 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	/* Some Acers (eg: C20x Tablets) use Mono pin for internal speaker */
++	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
+ 	/* Ensure all other unused pins are disabled and muted. */
+ 	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+ 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+-	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+-	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+ 	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+@@ -3441,6 +3448,8 @@
+ 
+ 	/* Unmute Line-out pin widget amp left and right (no equiv mixer ctrl) */
+ 	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	/* Unmute mono pin widget amp output (no equiv mixer ctrl) */
++	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+ 	/* Unmute Mic1 and Line1 pin widget input buffers since they start as
+ 	 * inputs. If the pin mode is changed by the user the pin mode control
+ 	 * will take care of enabling the pin's input/output buffers as needed.
+@@ -3950,6 +3959,7 @@
+ 	{ .modelname = "fujitsu", .config = ALC260_FUJITSU_S702X },
+ 	{ .pci_subvendor = 0x10cf, .pci_subdevice = 0x1326, .config = ALC260_FUJITSU_S702X },
+ 	{ .modelname = "acer", .config = ALC260_ACER },
++	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x007b, .config = ALC260_ACER },
+ 	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x008f, .config = ALC260_ACER },
+ #ifdef CONFIG_SND_DEBUG
+ 	{ .modelname = "test", .config = ALC260_TEST },
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
