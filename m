@@ -1,20 +1,15 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Frequency Problems with 0d8c:0201 and snd-usb-audio
-Date: Mon, 20 Nov 2006 14:55:01 +0100
-Message-ID: <1164030901.32341.276594929@webmail.messagingengine.com>
-References: <1163613613.3406.14.camel@richip.dhs.org>
-	<1163668222.21027.276016817@webmail.messagingengine.com>
-	<1163696903.3406.29.camel@richip.dhs.org>
-	<1163697994.10962.276090935@webmail.messagingengine.com>
-	<1163701408.3406.41.camel@richip.dhs.org>
-	<1163784381.27992.276274101@webmail.messagingengine.com>
-	<1163789867.3406.55.camel@richip.dhs.org>
+Subject: Re: Long-standing 5.1ch huge LFE/rear swap annoyance
+ (ALSA vs. Windows!)
+Date: Mon, 20 Nov 2006 15:06:50 +0100
+Message-ID: <1164031610.1310.276596069@webmail.messagingengine.com>
+References: <20061118013834.GA22785@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1163789867.3406.55.camel@richip.dhs.org>
+In-Reply-To: <20061118013834.GA22785@rhlx01.hs-esslingen.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,24 +19,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Richi Plana <richip@richip.dhs.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Andreas Mohr <andi@rhlx01.fht-esslingen.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Richi Plana wrote:
-> On Fri, 2006-11-17 at 18:26 +0100, Clemens Ladisch wrote:
-> > Please try the patch below.
+Andreas Mohr wrote:
+> as I'm trying to improve support for my el-cheapo USB audio adapter,
+> I found that one of the bigger issues is swapping of Center/LFE vs.
+> rear speakers, as can be seen when running
 > 
-> That did it! Thanks!
+> speaker-test -c 6 -D pcm.USBAudio
+> 
+> My theory is that since wave extensible is an established format with different
+> channel ordering that some soundcards chose to use this swapped ordering in hardware.
 
-Does 96 kHz now work, too?
+Some do, some don't.
 
-> Will the patch make the next version (1.0.14)?
+> And ALSA didn't care much since it didn't want to have to expensively remix samples
+> into correct order?
 
-Yes.
+Rerouting channels is actually quite cheap.
+
+> But OTOH *if* the comment above is correct and ALSA *does* employ a modified channel
+> order vs. Windows and Mac OS X, then it seems as if it might be speaker-test which
+> *doesn't* obey this ALSA ordering???
+
+speaker-test _does_ obey the ALSA ordering.  However, USB devices do not,
+and there is not yet an ALSA configuration file for remapping channels
+on USB devices.
+
+This is a bug in the ALSA library.
+
+> Could we please try to put an end to this insanity?
+
+I'm working on this.
+
+> Is there anyone who has extensive experience with 5.1 surround channel ordering status
+> of many different soundcards on ALSA? How many "ok", how many swapped?
+
+AFAIK USB devices are the only ones where channels are swapped.
+
+> Oh, and if the answer is that I should try to fix this on a per-driver (per-card)
+> basis, then could anyone tell me where the heck I'd have to tweak snd-usb-audio
+> for correct channel order?
+
+You would have to write /usr/share/alsa/cards/USB-Audio.conf.
 
 
-Regards,
+HTH
 Clemens
 
 -------------------------------------------------------------------------
