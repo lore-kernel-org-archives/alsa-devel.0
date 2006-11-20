@@ -1,8 +1,7 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Speaker Sound on acer travelmate c202 with ALC260
-	using test model
-Date: Mon, 20 Nov 2006 13:14:50 +1030 (CST)
-Message-ID: <200611200244.kAK2ipjp001190@turbo.physics.adelaide.edu.au>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Mail delivery failed: returning message to sender
+Date: Sun, 19 Nov 2006 19:36:42 -0800
+Message-ID: <E1Glzxa-0001b4-VC@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,98 +16,295 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
-Cc: valemie@yahoo.com.sg, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-> I managed to get speaker sound on my acer travelmate c202 tablet pc using
-> the test model. Except for hard disk and memory size, the c202 is the same
-> as the c204 discussed earlier as unable to get sound on the built-in
-> speaker. I think the key to having speaker sound on this model is to have
-> the "mono" control enabled on this "acer" model.
+This message was created automatically by mail delivery software.
 
-Further to my previous email on this subject I have been able to
-independently confirm that the "mono" control does indeed control the
-internal speaker in these C20x-series laptops.
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
 
-Valentin: if you can, could you please try the following patch (against
-alsa-driver 1.0.13 in alsa-driver-1.0.13/alsa-kernel/pci/hda/)?  With it:
+  alsa-devel@lists.sourceforge.net
+    SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to : retry timeout exceeded
 
- * you will be presented with the "Acer" model variant without having
-   to specify "model=acer" when loading the snd-intel-hda modules.
+------ This is a copy of the message, including all the headers. ------
+------ The body of the message is 31964 characters long; only the first
+------ 16384 or so are included here.
 
- * there will be new alsamixer controls for a "mono speaker" which is
-   what the C20x series appears to be equipped with.
+Return-path: <alsa-devel@lists.sourceforge.net>
+Received: from marsha5.lnk.telstra.net ([165.228.90.53])
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1GkWwK-0001at-LY
+	for alsa-devel@lists.sourceforge.net; Wed, 15 Nov 2006 18:25:24 -0800
+Received: from INBOUND.THEROCKLANDGROUP.COM.NETSOLMAIL.NET (port=22468 helo=nuofnhuarnjy)
+	by marsha5.lnk.telstra.net with smtp
+	id hPqkH-4X76MX4P-81
+	for alsa-devel@lists.sourceforge.net; Thu, 16 Nov 2006 13:25:71 +1000
+Message-ID: <000a01c70926$8d0ee7c0$01dbaa50@nuofnhuarnjy>
+From: "Lee West" <twagfkhu@therocklandgroup.com>
+To: alsa-devel@lists.sourceforge.net
+Subject: compounded the glare of LESTAT.  We've told
+Date: Thu, 16 Nov 2006 13:25:71 +1000
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000C_01C70982.C07CEEC0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.2180
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+X-Spam-Score: 4.4 (++++)
+X-Spam-Report: Spam Filtering performed by sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	Report problems to https://sf.net/tracker/?func=add&group_id=1&atid=200001
+	0.2 EXTRA_MPART_TYPE       Header has extraneous Content-type:...type= entry
+	0.2 INVALID_DATE           Invalid Date: header (not RFC 2822)
+	0.0 SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with '
+	0.2 HTML_90_100            BODY: Message is 90% to 100% HTML
+	0.3 MIME_HTML_MOSTLY       BODY: Multipart message mostly text/html MIME
+	0.0 HTML_MESSAGE           BODY: HTML included in message
+	2.0 HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
+	1.5 MPART_ALT_DIFF         BODY: HTML and text parts are different
 
-If all is well, please see if the new "mono speaker" controls affect the
-internal speaker.
+------=_NextPart_000_000C_01C70982.C07CEEC0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000D_01C70982.C07CEEC0"
 
-Note that this patch will unconditionally add the "mono speaker" controls
-to all configurations which utilise the "Acer" ALC260 model.  I've named
-them "Mono Speaker ..." on the basis that one would expect them to only
-have an effect if one has a single mono speaker.  On first thoughts it seems
-silly to define a whole new model just to add two controls, but the presence
-of "non-working" controls on laptops which don't have the mono speaker
-may confuse end users.
 
-What is the general consensus of the list?  Should I define a new model for
-these C20x tablet PCs or is the unconditional addition of "mono speaker"
-controls to the existing "acer" model acceptable?
+------=_NextPart_001_000D_01C70982.C07CEEC0
+Content-Type: text/plain;
+	charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-Regards
-  jonathan
 
---- patch_realtek.c-orig	2006-11-20 11:52:16.000000000 +1030
-+++ patch_realtek.c	2006-11-20 12:57:01.000000000 +1030
-@@ -3090,11 +3090,18 @@
-  * and the output jack.  If this turns out to be the case for all such
-  * models the "Line Jack Mode" mode could be changed from ALC_PIN_DIR_INOUT
-  * to ALC_PIN_DIR_INOUT_NOMICBIAS.
-+ *
-+ * The C20x Tablet series have a mono internal speaker which is controlled
-+ * via the chip's Mono sum widget and pin complex, so include the necessary
-+ * controls for such models.  On models without a "mono speaker" the control
-+ * won't do anything.
-  */
- static struct snd_kcontrol_new alc260_acer_mixer[] = {
- 	HDA_CODEC_VOLUME("Master Playback Volume", 0x08, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2, HDA_INPUT),
- 	ALC_PIN_MODE("Headphone Jack Mode", 0x0f, ALC_PIN_DIR_INOUT),
-+	HDA_CODEC_VOLUME_MONO("Mono Speaker Playback Volume", 0x0a, 1, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE_MONO("Mono Speaker Playback Switch", 0x0a, 1, 2, HDA_INPUT),
- 	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04, HDA_INPUT),
- 	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0, HDA_INPUT),
-@@ -3409,11 +3416,11 @@
- 	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF50},
- 	/* Line In jack is connected to Line1 pin */
- 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	/* Some Acers (eg: C20x Tablets) use Mono pin for internal speaker */
-+	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
- 	/* Ensure all other unused pins are disabled and muted. */
- 	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
- 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
--	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
- 	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-@@ -3441,6 +3448,8 @@
- 
- 	/* Unmute Line-out pin widget amp left and right (no equiv mixer ctrl) */
- 	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	/* Unmute mono pin widget amp output (no equiv mixer ctrl) */
-+	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	/* Unmute Mic1 and Line1 pin widget input buffers since they start as
- 	 * inputs. If the pin mode is changed by the user the pin mode control
- 	 * will take care of enabling the pin's input/output buffers as needed.
-@@ -3950,6 +3959,7 @@
- 	{ .modelname = "fujitsu", .config = ALC260_FUJITSU_S702X },
- 	{ .pci_subvendor = 0x10cf, .pci_subdevice = 0x1326, .config = ALC260_FUJITSU_S702X },
- 	{ .modelname = "acer", .config = ALC260_ACER },
-+	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x007b, .config = ALC260_ACER },
- 	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x008f, .config = ALC260_ACER },
- #ifdef CONFIG_SND_DEBUG
- 	{ .modelname = "test", .config = ALC260_TEST },
+------=_NextPart_001_000D_01C70982.C07CEEC0
+Content-Type: text/html;
+	charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1251">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DTahoma size=3D2><IMG alt=3D"" hspace=3D0=20 width=400 height=341 src=3D"cid:000b01c70926$8d0ee7c0$01dbaa50@nuofnhuarnjy" =
+align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_000D_01C70982.C07CEEC0--
+
+------=_NextPart_000_000C_01C70982.C07CEEC0
+Content-Type: image/png;
+	name="sytflaqrw.png"
+Content-Transfer-Encoding: base64
+Content-ID: <000b01c70926$8d0ee7c0$01dbaa50@nuofnhuarnjy>
+
+iVBORw0KGgoAAAANSUhEUgAAAZAAAAFVCAYAAADBmrnLAAAAAXNSR0IArs4c6QAAAARnQU1BAACx
+jwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAWIRJREFU
+eF7tvS9YNEuW7Z3XMY52tEQyjnYcyee4jnYcyTjG0Y6RjGMc7WjJONrRjpZcx3WMoyXX0e5tV9/6
+5aGers7OzL0jKxMSap3n1EtVZmTEjr3X3iv+ZET8r/2tavGr7ap63q2qf/m/VXW+X1Vn/1JVf3yr
+qtetqvqtvu/o72+eqqpSmt/+T1Xd6u8fdO3qb/r9a6X/S1VdKv0fflNVp3/StYOq+un/VNW98v2N
+0p39qqq2lPbXr1V1qGz+puev9AzP/nmnqvb0/b90/e7/Kf1RVR3r99+U/n+U/kjP6//q8Sf+qar/
+2NP1v+o53TtTmp90/fdKTx4/K8mxCvjf+n6ufP9Hsv5eZR9Jjkp10+N12du6V6msX+nvT7r+k65V
+Snumsn+nPK9/kLCq/qRn71XO/4fcKucPuvyiev5VOtmSULdK8zfd+wld/as+z0qnfP+d7CTHvu5R
+x6M/K1/pZBsdqJxLlfeke/9X+uK/Y93/X7q/kCz/qjTHyvtUMv+b7j0rv1PZpJIs/60KHEuOQ5Xz
+O+XxN927UVrq9CvlsY9d9PxfVP9Xff8/+hzp+53K+pvS/Rmd6nOJDvX3VPV/Vpn8PtTvv+qzp7r8
+OzqSjn8rGS517U0y/7dk2FU+JxIFPfwaver6T8rjV6rjm9Id6u+/S3fbkutS1w+Fgd8r7W/1edDn
+J+XxM3rW9/+Wfs6ElZ8l176u/1nX/0vPY4sXyfzfYFIy1PrQtf+SXI/UVfeepLc/6dlr6QxdX6m8
+J+TW81u6/0fl9yr5wOLvVc6TZDrU779If7vKA12+Kf2vle9PKvcv+vsb/X1UmX9W3j/pOflF9ZM+
+lF0pz/+nvO/198+k1fVdfQcfZFdJL1eyy6uu/afqfUGdJTuyHus7mP8fPfdXfe5VDv/9pGf+oBs/
+y25Sf/Ub3UMH2+hINvmz6namv+jk/D3tb0kLNpT3z0r/s67f6X7tE+82/0n6OtP136gu98pXqqmu
+fqlC9Sp77FGYnv0X6WJL+fxB3+8k85/wA5WNfL99x8hfdE3/V0/Ki2d+p/R7yvvXKpN48Z/S6z54
+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
+gGkC6T7DPmO3vkbMmM93kXcm2EbkH
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
