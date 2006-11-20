@@ -1,13 +1,16 @@
 From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: alsa conexant HP dv2035LA
-Date: Mon, 20 Nov 2006 10:14:06 -0800
-Message-ID: <1164046446.5390.234.camel@razman>
-References: <4ea46bd50611201008t45951bafsf502f979a32e7bf5@mail.gmail.com>
+Subject: Re: [Patch] Audio: Add nvidia HD Audio controllers
+	of	MCP67 support to hda_intel.c
+Date: Mon, 20 Nov 2006 10:16:37 -0800
+Message-ID: <1164046597.5390.238.camel@razman>
+References: <a6f0b350611191811k695c8df5xb0015c45b895ed65@mail.gmail.com>
+	<15F501D1A78BD343BE8F4D8DB854566B0CEB9754@hkemmail01.nvidia.com>
+	<a6f0b350611200954h38366a32s4b6f8737f45caee7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4ea46bd50611201008t45951bafsf502f979a32e7bf5@mail.gmail.com>
+In-Reply-To: <a6f0b350611200954h38366a32s4b6f8737f45caee7@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,143 +20,201 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Antonio Sampayo <antonio.sampayo@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: enigma_0Z <enigma.0za@gmail.com>
+Cc: Peer Chen <pchen@nvidia.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I've been working to get a test mode operational in the driver, so that
-users can independently toggle the speakers and headphones.  It seems
-that HP DV1/2/3000 series laptops are wired differently then the
-DV5/8000 series as muting works on the latter series.
-
-I just sent out a new patch to hopefully get test mode working.  I'll
-add you to my separate mailing list and send you a copy of that email.
+Could you refresh my memory a bit here?  Is this system using the
+Conexant audio codec, or is this a different system?  If it's the
+Conexant, I need to know where the latest patch (test10) stands and
+which codec version (5045 or 5047) it is.
 
 Tobin
 
-On Mon, 2006-11-20 at 12:08 -0600, Antonio Sampayo wrote:
-> Hi I'm a new tester and I will appreciate any help whit the headphones
-> problem( the  mute speakers issue)
+On Mon, 2006-11-20 at 12:54 -0500, enigma_0Z wrote:
+> (I am cc'ing this to alsa-devel because some of us (well mostly tobin)
+> were trying to get it working)
 > 
+> Several users of laptop-based nvidia sound hardware (MCP51 mostly)
+> have issues with their sound cards, mine included. The problem is that
+> there is either:
 > 
-> This is my /proc/asound/card0/codec#0
+> 1. No headphone output
+> 2. No speaker output
+> 3. No headphone/speaker controls
+> 4. Plugging/unplugging headphones does not automute speakers.
 > 
-> Codec: Conexant CXT5047
-> Address: 0
-> Vendor Id: 0x14f15047
-> Subsystem Id: 0x103c30b2
-> Revision Id: 0x100000
-> Default PCM: rates 0x040, bits 0x02, types 0x1
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x0c 0x0c]
->   PCM: rates 0x040, bits 0x02, types 0x1
->   Power: 0x0
-> Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
->   PCM: rates 0x040, bits 0x02, types 0x1
->   Power: 0x0
-> Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
->   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-> 0x80] [0x80 0x80]
->   PCM: rates 0x040, bits 0x02, types 0x1
->   Power: 0x0
->   Connection: 6
->      0x19 0x14 0x15 0x1a* 0x16 0x10
-> Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1e 0x1e]
->   Pincap 0x081001c: OUT HP EAPD Detect
->   Pin Default 0x0221101f: [Jack] HP Out at Ext Front
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 3
->      0x19* 0x10 0x16
-> Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1f 0x1f]
->   Pincap 0x0833c: IN OUT HP Detect
->   Pin Default 0x02a1102e: [Jack] Mic at Ext Front
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x20: IN
->   Power: 0x0
->   Connection: 2
->      0x19* 0x16
-> Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1f 0x1f]
->   Pincap 0x0833c: IN OUT HP Detect
->   Pin Default 0x40000180: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->   Pin-ctls: 0x21: IN
->   Power: 0x0
->   Connection: 3
->      0x1c 0x19* 0x16
-> Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
->   Pincap 0x0860: IN
->   Pin Default 0x94330121: [Fixed] CD at Int Right
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x20: IN
->   Power: 0x0
-> Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
->   Pincap 0x08324: IN Detect
->   Pin Default 0x95a70122: [Fixed] Mic at Int Top
->     Conn = Analog, Color = Unknown
->   Pin-ctls: 0x21: IN
->   Power: 0x0
-> Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x04440131: [Jack] SPDIF Out at Ext Right
->     Conn = RCA, Color = Unknown
->   Pin-ctls: 0x00:
->   Power: 0x0
->   Connection: 1
->      0x11
-> Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
->   Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-In vals:  [0x17 0x17] [0x80 0x80] [0x88 0x88] [0x17 0x17]
->   Power: 0x0
->   Connection: 4
->      0x10 0x1b 0x1a 0x16
-> Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
->   Amp-Out vals:  [0x03 0x03]
->   Power: 0x0
->   Connection: 3
->      0x15 0x14 0x17*
-> Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
->   Power: 0x0
->   Connection: 2
->      0x14* 0x15
-> Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   PCM: rates 0x040, bits 0x02, types 0x1
->   Power: 0x0
-> Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1f 0x1f]
->   Pincap 0x08314: OUT Detect
->   Pin Default 0x92170110: [Fixed] Speaker at Int Front
->     Conn = Analog, Color = Unknown
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 3
->      0x1c 0x19* 0x16
-> Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+> In 1.0.11 and 1.0.12, there are no controls, and only one output is
+> on, no matter what is plugged in. In 1.0.13, the option disable_msi=1
+> has to be included, or there is an endless loop of the first second or
+> so of the audio. By patching 1.0.12 or 1.0.13, we can get speaker
+> controls, but not all the time. For me, I have to reboot the system
+> once, and then after it comes up warm, all controls exist. On patched
+> versions of 1.0.12 and 13, automatically muting speakers/headphones
+> does not work.
 > 
-> -- 
->  --------------
-> < Debian Rules >
->  --------------
->         \   ^__^
->          \  (oo)\_______
->             (__)\       )\/\
->                 ||----w |
->                 ||     ||
+> Thanks.
+> 
+> On 11/19/06, Peer Chen <pchen@nvidia.com> wrote:
+> > Do you mean alsa 1.0.12 & 1.0.13 can not work fine on all nvidia
+> > platform?
+> > How about 1.0.11?
+> >
+> > BRs
+> > Peer Chen
+> >
+> > -----Original Message-----
+> > From: enigma_0Z [mailto:enigma.0za@gmail.com]
+> > Sent: Monday, November 20, 2006 10:12 AM
+> > To: Peer Chen
+> > Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio controllers
+> > of MCP67 support to hda_intel.c
+> >
+> > Peer,
+> >
+> > The patch you provided simply identifies the chips, the existing
+> > nvidia code in alsa 12 or 13 does not communicate with the audio
+> > hardware properly. Is it possible for you or the guys at nvidia to
+> > write a complete driver?
+> >
+> > On 11/19/06, Peer Chen <pchen@nvidia.com> wrote:
+> > > Thanks for your explanation.
+> > >
+> > > BRs
+> > > Peer Chen
+> > >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Friday, November 17, 2006 6:53 PM
+> > > To: Peer Chen
+> > > Cc: Randy Dunlap; jgarzik@pobox.com; alsa-devel@lists.sourceforge.net;
+> > > linux-kernel@vger.kernel.org
+> > > Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio
+> > controllers
+> > > of MCP67 support to hda_intel.c
+> > >
+> > > At Fri, 17 Nov 2006 16:46:00 +0800,
+> > > Peer Chen wrote:
+> > > >
+> > > > Takashi:
+> > > > When this patch will be included into the -mm tree?
+> > >
+> > > Yes, it is already included, at least in 2.6.19-rc5-mm2.
+> > >
+> > > > Is it possible to be
+> > > > included in kernel source before final release of  kernel 2.6.19.
+> > >
+> > > No, we had no enough time for testing this in 2.6.19 cycle.
+> > > It'll be merged to 2.6.20 unless we get bug reports regarding this.
+> > >
+> > >
+> > > Takashi
+> > >
+> > > >
+> > > > BRs
+> > > > Peer Chen
+> > > >
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Wednesday, November 01, 2006 12:02 AM
+> > > > To: Randy Dunlap
+> > > > Cc: Peer Chen; alsa-devel@lists.sourceforge.net;
+> > > > linux-kernel@vger.kernel.org; Andy Currid; Brian Lazara;
+> > > > jgarzik@pobox.com; Emily Jiang
+> > > > Subject: Re: [Alsa-devel] [Patch] Audio: Add nvidia HD Audio
+> > > controllers
+> > > > of MCP67 support to hda_intel.c
+> > > >
+> > > > At Tue, 31 Oct 2006 07:43:45 -0800,
+> > > > Randy Dunlap wrote:
+> > > > >
+> > > > > On Tue, 31 Oct 2006 15:42:54 +0100 Takashi Iwai wrote:
+> > > > >
+> > > > > > At Tue, 31 Oct 2006 15:33:58 +0800,
+> > > > > > Peer Chen wrote:
+> > > > > > >
+> > > > > > > Add the support for HD audio controllers of
+> > > > MCP51,MCP55,MCP61,MCP65 & MCP67.
+> > > > > > > The following hda_intel.c patch is based on kernel 2.6.18.
+> > > > > > >
+> > > > > > > Signed-off by: Peer Chen <pchen@nvidia.com>
+> > > > > >
+> > > > > > Applied to ALSA tree.  But I didn't add it to
+> > push-to-2.6.19-tree
+> > > > > > because apparently no one has tested the patch well yet.
+> > > > > >
+> > > > > > (BTW, your patch attached there was broken, so I had to apply it
+> > > > > > manually.  At the next time, please either inline the patch in a
+> > > > text
+> > > > > > mail, or attach a plain text patch if inlining is not possible
+> > > with
+> > > > > > your MUA/MTA.)
+> > > > >
+> > > > > Patches should also be sent made to apply to a current kernel
+> > > > > tree, like 2.6.19-rc3, 2.6.19-rc4, 2.6.19-rc3-git8,
+> > > > > Linus's git tree, or Andrew's -mm tree if that is the only
+> > > > > place where the patch fits, or even to a subsystem tree (e.g.,
+> > > ALSA).
+> > > >
+> > > > Since I already applied it to ALSA tree, the next mm tree will
+> > include
+> > > > it (automatically taken it from alsa.git#mm branch).
+> > > >
+> > > >
+> > > > Takashi
+> > > >
+> > >
+> > ------------------------------------------------------------------------
+> > > -----------
+> > > > This email message is for the sole use of the intended recipient(s)
+> > > and may contain
+> > > > confidential information.  Any unauthorized review, use, disclosure
+> > or
+> > > distribution
+> > > > is prohibited.  If you are not the intended recipient, please
+> > contact
+> > > the sender by
+> > > > reply email and destroy all copies of the original message.
+> > > >
+> > >
+> > ------------------------------------------------------------------------
+> > > -----------
+> > > >
+> > > >
+> > >
+> > ------------------------------------------------------------------------
+> > > -
+> > > > Take Surveys. Earn Cash. Influence the Future of IT
+> > > > Join SourceForge.net's Techsay panel and you'll get the chance to
+> > > share your
+> > > > opinions on IT & business topics through brief surveys - and earn
+> > cash
+> > > >
+> > >
+> > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
+> > > V
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> > > >
+> > >
+> > >
+> > ------------------------------------------------------------------------
+> > -
+> > > Take Surveys. Earn Cash. Influence the Future of IT
+> > > Join SourceForge.net's Techsay panel and you'll get the chance to
+> > share your
+> > > opinions on IT & business topics through brief surveys - and earn cash
+> > >
+> > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
+> > V
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> > >
+> >
 > 
 > -------------------------------------------------------------------------
 > Take Surveys. Earn Cash. Influence the Future of IT
