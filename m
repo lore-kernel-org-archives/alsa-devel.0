@@ -1,21 +1,11 @@
-From: "Langland S. Alums" <extron@goldenteak.com>
-Subject: cheap Software
-Date: Tue, 21 Nov 2006 13:58:44 -0500
-Message-ID: <4543708650.20061121135844@goldenteak.com>
+From: Pavel Polischouk <pavelvp@inbox.ru>
+Subject: snd-usb-audio and M-Audio Quattro problems.
+Date: Tue, 21 Nov 2006 14:53:37 -0500
+Message-ID: <45635941.70406@inbox.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (unknown [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EC3C2C6
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2006 19:59:01 +0100 (MET)
-Received: from 140710520 (gs220-101.toshima.ne.jp [202.140.220.101])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	4CDF599A5E
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2006 19:58:58 +0100 (MET)
-Received: from goldenteak.com (144316120 [144316080])
-	by gs220-101.toshima.ne.jp (Qmailv1) with ESMTP id 11A7E0B56F
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2006 13:58:44 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,30 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Corel Draw! Just at the best price for
+Hi!
 
-Some examples:
-Flash MX 2004 $69.95
-Windows NT 4.0 Terminal Server $49.95
-Office XP Professional $79.95
-InDesign CS $69.95
-Premiere 6.5 $89.95
-SQL Server 2000 Enterprise Edition $69.95
-Works 7 $69.95
-WordPerfect Office 10 $69.95
-PhotoRetouch Pro 3.0 $59.95
-Office 97 SR2 $49.95
-Illustrator CS CE $69.95
-Photoshop Elements 3.0 Windows $59.95
-Windows XP Professional $69.95
-Studio MX 2004 with Director MX 2004 $139.95
+I'm trying to make my Quattro work with ALSA 1.0.13. While this seems 
+possible with some hacks, it's not a straightforward and hassle-free 
+experience.
 
-The rest is on our site:
-http://h2nd5v415hncizhcmhzcmhzh.soxrannieo.bz/
+I submitted a bug report on the matter some time ago 
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2607), see there 
+for detailed description. Short description: Quattro initializes itself 
+to an unusable (or semi-usable) state and refuses to change its mode 
+afterwards.
 
+After seeing no activity on the bug for some time I decided to 
+investigate the problem further. First I tried to extend the Audiophile 
+hack to Quattro (that disables all altsettings on driver init except the 
+one desired). Surprisingly it worked - almost. It only works the first 
+time after Quattro has been powered up, after that, re-loading the 
+driver doesn't help - the device sticks to the old state.
+
+My temporary patch is available here:
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1630&type=bug
+
+Are there any suggestions on how to make the device accept the changing 
+settings? Perhaps there's a need for hardware reset or something similar 
+between mode changes? Any suggestions/patches are appreciated.
+
+Thanks,
+Pavel
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
