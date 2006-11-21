@@ -1,14 +1,15 @@
 From: marioluca.bernardi@gmail.com
 Subject: Re: Terratec Phase 88 Rack FW
-Date: Tue, 21 Nov 2006 15:11:03 +0100
-Message-ID: <200611211511.04610.marioluca.bernardi@gmail.com>
+Date: Tue, 21 Nov 2006 15:15:51 +0100
+Message-ID: <200611211515.51844.marioluca.bernardi@gmail.com>
 References: <200611211330.04086.marioluca@gmail.com> <4562FD65.8060007@joow.be>
+	<200611211511.04610.marioluca.bernardi@gmail.com>
 Reply-To: marioluca.bernardi@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4562FD65.8060007@joow.be>
+In-Reply-To: <200611211511.04610.marioluca.bernardi@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,20 +23,22 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In data Tuesday 21 November 2006 14:21 , Pieter Palmers wrote:
+In data Tuesday 21 November 2006 15:11 , marioluca.bernardi@gmail.com scriveva:
+> In data Tuesday 21 November 2006 14:21 , Pieter Palmers wrote:
+> > 
+> > The terratec phase 88 is supported by the freebob project 
+> > (freebob.sourceforge.net). Currently this support is established through 
+> > jackd, there is some very basic ALSA support, but not really usefull. 
+> > The jackd support already get's you a long way.
 > 
-> The terratec phase 88 is supported by the freebob project 
-> (freebob.sourceforge.net). Currently this support is established through 
-> jackd, there is some very basic ALSA support, but not really usefull. 
-> The jackd support already get's you a long way.
+> Are you sure you are talking about phase 88 rack fw ? Because the model i've ordered is 
+> a firewire (ieee1394) rack version of the phase 88 model. I don't even know if the two model
+> have the same chipset.
+> Thank you Pieter.
 
-Are you sure you are talking about phase 88 rack fw ? Because the model i've ordered is 
-a firewire (ieee1394) rack version of the phase 88 model. I don't even know if the two model
-have the same chipset.
-Thank you Pieter.
+I've checked it out and it's fine.
 
-
-Mario L. Bernardi
+Thank you again ;)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
