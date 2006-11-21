@@ -1,13 +1,12 @@
-From: marioluca@gmail.com
-Subject: Terratec Phase 88 Rack FW
-Date: Tue, 21 Nov 2006 13:29:55 +0100
-Message-ID: <200611211330.04086.marioluca@gmail.com>
-Reply-To: marioluca@gmail.com
+From: Mario L.Bernardi <marioluca.bernardi@gmail.com>
+Subject: Re: Terratec Phase 88 Rack FW
+Date: Tue, 21 Nov 2006 12:51:59 +0000 (UTC)
+Message-ID: <loom.20061121T134607-95@post.gmane.org>
+References: <200611211320.34730.frades76@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,21 +16,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Sorry all for all that noise,
+i've sent the e-mail with two wrong identities by mistake.
+Actually i've registered to alsa MLs with marioluca.bernardi@gmail.com 
+[i forgot to change in the mailer...yes, i've too much accounts ;) ].
 
-i would like to know if the terratec phase 88 Rack fw is actually supported (maybe partially) or not.
-I've ordered one and would like to use it with jack for multitrack recording.
+Sorry again.
 
-If it is not supported yet i'm also interested in helping the development being guided by alsa developers to adapt the
-support for the existing phase 88 driver to use the new firewire model (there is someone that knows if it is possible [i.e. 
-if the phase88 FW Rack has the same chip of the PCI version ] or there is a need to develop a driver from scratch? )
 
-Many thanks to all for precious (and hard) work,
-mrlc
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
