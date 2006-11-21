@@ -1,8 +1,8 @@
-From: frades76@gmail.com
+From: marioluca@gmail.com
 Subject: Terratec Phase 88 Rack FW
-Date: Tue, 21 Nov 2006 13:20:33 +0100
-Message-ID: <200611211320.34730.frades76@gmail.com>
-Reply-To: frades76@gmail.com
+Date: Tue, 21 Nov 2006 13:29:55 +0100
+Message-ID: <200611211330.04086.marioluca@gmail.com>
+Reply-To: marioluca@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -31,7 +31,7 @@ support for the existing phase 88 driver to use the new firewire model (there is
 if the phase88 FW Rack has the same chip of the PCI version ] or there is a need to develop a driver from scratch? )
 
 Many thanks to all for precious (and hard) work,
-Frank
+mrlc
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
