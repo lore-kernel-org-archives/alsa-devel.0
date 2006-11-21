@@ -1,14 +1,11 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: Re: Where is /usr/share/alsa/cards/?
-Date: Tue, 21 Nov 2006 00:16:58 +0100
-Message-ID: <20061120231657.GF3695@home>
-References: <20061118210734.GE9190@home> <s5h1wnys806.wl%tiwai@suse.de>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GlF3W-0000pf-3M delayed 72 hours
+Date: Mon, 20 Nov 2006 20:07:44 -0800
+Message-ID: <E1GmMvA-0004Hr-Qa@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1wnys806.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,27 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-On Mon, Nov 20, 2006 at 11:54:49AM +0100, Takashi Iwai wrote:
-> 
-> I don't think there is no proper way to detect the path.
+The message identifier is:     1GlF3W-0000pf-3M
+The subject of the message is: [VAR114]
+The date of the message is:    Sat, 18 Nov 2006 02:31:60 +0100
 
-OK, too bad. :-(
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-> In addition, you can add an automatic search of the path
-> (i.e. checking /usr/share/alsa/alsa.conf, /etc/alsa/alsa.conf, ...)
-> in configure script.
-
-That'd certainly be nice, but I should first learn how to write complex 
-configure scripts... ;-)
-
-
-
-Thanks,
-
-Nicolas
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
