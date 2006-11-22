@@ -1,15 +1,21 @@
-From: Jason Gaston <jason.d.gaston@intel.com>
-Subject: [PATCH 2.6.19-rc6] hda_intel: ALSA HD Audio patch for
-	Intel ICH9
-Date: Tue, 21 Nov 2006 16:27:43 -0800
-Message-ID: <1164155264.28490.6.camel@localhost.localdomain>
+From: "Laugh I. Supposing" <extraneus@golfscaffolding.com>
+Subject: Weight Loss with HOODIA - $0.5 for one pill!
+Date: Tue, 21 Nov 2006 19:47:14 -0500
+Message-ID: <9076046293.20061121194714@golfscaffolding.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0759068555=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 725CD2B2
-	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2006 01:27:53 +0100 (MET)
+Received: from gate.perex.cz (unknown [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69BC82B2
+	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2006 01:47:30 +0100 (MET)
+Received: from 147454528 (p7110-ipad38souka.saitama.ocn.ne.jp [60.32.28.110])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	909FC99394
+	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2006 01:47:27 +0100 (MET)
+Received: from golfscaffolding.com (143469152 [146100648])
+	by p7110-ipad38souka.saitama.ocn.ne.jp (Qmailv1) with ESMTP id
+	A07F06C166
+	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2006 19:47:14 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,46 +25,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, jason.d.gaston@intel.com
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the Intel ICH9 HD Audio controller DID's for ALSA.
+--===============0759068555==
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by:  Jason Gaston <jason.d.gaston@intel.com>
+If you haven’t heard of Hoodia yet, you soon will because it is being touted as the new miracle supplement for safe, effective weight loss. Hoodia gordonii, (Hoodia) is the botanical name for a cactus like plant that grows in Southern Africa. Scientists have recently isolated several compounds in this amazing plant that are responsible for dramatic weight loss. 
 
---- linux-2.6.19-rc6/sound/pci/hda/hda_intel.c.orig	2006-11-21
-07:06:26.000000000 -0800
-+++ linux-2.6.19-rc6/sound/pci/hda/hda_intel.c	2006-11-21
-07:10:03.000000000 -0800
-@@ -83,6 +83,7 @@
- 			 "{Intel, ICH7},"
- 			 "{Intel, ESB2},"
- 			 "{Intel, ICH8},"
-+			 "{Intel, ICH9},"
- 			 "{ATI, SB450},"
- 			 "{ATI, SB600},"
- 			 "{ATI, RS600},"
-@@ -1710,6 +1711,8 @@
- 	{ 0x8086, 0x27d8, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /*
-ICH7 */
- 	{ 0x8086, 0x269a, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /*
-ESB2 */
- 	{ 0x8086, 0x284b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /*
-ICH8 */
-+	{ 0x8086, 0x293e, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /*
-ICH9 */
-+	{ 0x8086, 0x293f, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /*
-ICH9 */
- 	{ 0x1002, 0x437b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /*
-ATI SB450 */
- 	{ 0x1002, 0x4383, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /*
-ATI SB600 */
- 	{ 0x1002, 0x793b, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RS600 HDMI */
+Our site: http://076vow5ao95d10i6o0i6oii0.soxrannieo.bz/
+try to find cheaper than $0.5 for one pill!
 
+
+
+--===============0759068555==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0759068555==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0759068555==--
