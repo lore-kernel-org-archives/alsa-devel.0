@@ -1,11 +1,13 @@
-From: "Johan Brannlund" <johan_brn@yahoo.com>
-Subject: No sound on Motorola V300 cellphone
-Date: Thu, 23 Nov 2006 05:45:31 +0000 (UTC)
-Message-ID: <ek3chr$ctk$1@sea.gmane.org>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: [PATCH 2/3] echoaudio, add TLV support
+Date: Thu, 23 Nov 2006 09:52:16 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0611230943001.18187@denise.shiny.it>
+References: <20061122231417.1cdcd775.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20061122231417.1cdcd775.pochini@shiny.it>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,23 +17,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi. When I connect my Motorola V300 phone via a USB cable, I'm not able to
-get it to play any sounds and alsamixer tells me "No mixer elems found".
-More details of this problem can be found at
-https://launchpad.net/bugs/61009 . Daniel Chen (crimsun) told me that he
-won't have any time to look into this during the current Ubuntu release so
-I thought I'd post here.
 
-Is the fix as simple as adding some ID's to a list or is something more
-required?
 
-Thank you in advance,
+On Wed, 22 Nov 2006, Giuliano Pochini wrote:
 
-Johan
+> This patch adds TLV support to the echoaudio driver (controls).
 
+
+Why 1/3 didn't reach the list ??  I'll try to send it again this night.
+
+
+--
+Giuliano.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
