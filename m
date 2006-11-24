@@ -1,9 +1,9 @@
 From: Pavel Polischouk <pavelvp@inbox.ru>
-Subject: [PATCH 1/2] M-Audio USB
-Date: Fri, 24 Nov 2006 15:26:42 -0500
-Message-ID: <45675582.9060707@inbox.ru>
+Subject: [PATCH 2/2] M-Audio USB Documentation
+Date: Fri, 24 Nov 2006 15:26:46 -0500
+Message-ID: <45675586.7020506@inbox.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040702070902070409050006"
+Content-Type: multipart/mixed; boundary="------------070901090702000701050502"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,270 +18,857 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------040702070902070409050006
+--------------070901090702000701050502
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Re-send, "hg export" format
 
-
---------------040702070902070409050006
+--------------070901090702000701050502
 Content-Type: text/plain;
- name="maudio.patch"
+ name="maudio-doc.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="maudio.patch"
+ filename="maudio-doc.patch"
 
 # HG changeset patch
 # User Pavel Polischouk <pavelvp@inbox.ru>
-# Date 1164392350 18000
-# Node ID d447f5a178f0d40ec98c4cde2e3d6e4d012a7f65
-# Parent  6f81f7397f82b392e40c582e48a02a7c1cbd7c3e
-This patch adds the following capabilities to usbaudio.c:
-- Merges support for M-Audio FastTrack USB
-- Adds proper support for M-Audio Quattro USB
-- Adds hot-reload support for all Audiophile, FastTrack and Quattro.
-- FastTrack "select configuration #2" quirk is present but #ifdef'd out
-pending inclusion of "usb_driver_set_configuration" function in mainline
-kernel. This quirk could possibly be handled in user space anyway.
+# Date 1164387029 18000
+# Node ID 6f81f7397f82b392e40c582e48a02a7c1cbd7c3e
+# Parent  9a4c87387be903c78c07a018f30457370c7e54a3
+Documentation update
 
-diff -r 6f81f7397f82 -r d447f5a178f0 usb/usbaudio.c
---- a/usb/usbaudio.c	Fri Nov 24 11:50:29 2006 -0500
-+++ b/usb/usbaudio.c	Fri Nov 24 13:19:10 2006 -0500
-@@ -2346,11 +2346,16 @@ static int is_big_endian_format(struct s
- {
- 	switch (chip->usb_id) {
- 	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
--		if (fp->endpoint & USB_DIR_IN)
--			return 1;
--		break;
- 	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
- 		return 1;
+diff -r 9a4c87387be9 -r 6f81f7397f82 Documentation/M-Audio-Usb.txt
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/Documentation/M-Audio-Usb.txt	Fri Nov 24 11:50:29 2006 -0500
+@@ -0,0 +1,461 @@
++	Guide to using M-Audio USB devices with ALSA and Jack	v1.4
++	=====================================================
 +
-+ 	case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro */
-+ 		/* it depends on altsetting wether the device is big-endian or not */
-+ 		if(fp->altsetting==2 || fp->altsetting==3 ||
-+ 		   fp->altsetting==5 || fp->altsetting==6)
-+ 			return 1;
-+ 		break;
++	    Thibault Le Meur <Thibault.LeMeur@supelec.fr>
++		Pavel Polischouk <pavelvp@inbox.ru>
 +
- 	}
- 	return 0;
- }
-@@ -2608,8 +2613,12 @@ static int parse_audio_format(struct snd
- 	return 0;
- }
- 
-+static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
-+					 int iface, int altno);
- static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
- 					 int iface, int altno);
-+static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
-+ int iface, int altno);
- static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- {
- 	struct usb_device *dev;
-@@ -2645,10 +2654,21 @@ static int parse_audio_endpoints(struct 
- 			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
- 		altno = altsd->bAlternateSetting;
- 	
-+		/* quattro usb: skip altsets incompatible with device_setup
-+		 */
-+		if (chip->usb_id == USB_ID(0x0763, 0x2001) && 
-+		    quattro_skip_setting_quirk(chip, iface_no, altno))
-+			continue;
++This document is a guide to using the M-Audio Audiophile USB (tm) device with 
++ALSA and JACK.
 +
- 		/* audiophile usb: skip altsets incompatible with device_setup
- 		 */
- 		if (chip->usb_id == USB_ID(0x0763, 0x2003) && 
- 		    audiophile_skip_setting_quirk(chip, iface_no, altno))
-+			continue;
++1 - M-Audio USB Specs and correct usage
++==========================================
++This part is a reminder of important facts about the functions and limitations 
++of the device.
 +
-+		/* M-Audio Fast Track Pro: skip alsets incompatible with device_setup */
-+		if (chip->usb_id == USB_ID(0x0763, 0x2012) &&
-+		    fasttrackpro_skip_setting_quirk(chip, iface_no, altno))
- 			continue;
- 
- 		/* get audio formats */
-@@ -3175,44 +3195,140 @@ static int snd_usb_cm106_boot_quirk(stru
- 	return snd_usb_cm106_write_int_reg(dev, 2, 0x8004);
- }
- 
-+static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev, int ifnum)
-+{
-+#if 0
-+    int err;
++M-Audio Quattro has 4 audio interfaces and 2 MIDI ports:
++ * 2 Analog Stereo Inputs (Ai1, Ai2, both: Ai), 
++ * 2 Analog Stereo Outputs (Ao1, Ao2, both: Ao)
++ * Midi In (Mi)
++ * Midi Out (Mo)
 +
-+    if(dev->actconfig->desc.bConfigurationValue==1) {
-+	if(ifnum==0) {
-+	    snd_printk(KERN_INFO "Switching to config #2\n");
-+	    /* This function has to be available by the usb core module.
-+	       if it is not avialable the boot quirk has to be left out and the
-+	       configuration has to be set by udev or hotplug rules */
-+	    err=usb_driver_set_configuration(dev,2);
-+	    if(err < 0) {
-+		snd_printdd("error usb_driver_set_configuration: %d\n", err);
-+		return -ENODEV;
-+	    }
-+	}
-+    } else {
-+	snd_printk(KERN_INFO "Fast Track Pro config OK\n");
-+    }
-+#endif
++M-Audio Audiophile USB has 4 audio interfaces, and 2 MIDI ports:
++ * Analog Stereo Input (Ai)
++   - This port supports 2 pairs of line-level audio inputs (1/4" TS and RCA) 
++   - When the 1/4" TS (jack) connectors are connected, the RCA connectors
++     are disabled
++ * Analog Stereo Output (Ao)
++ * Digital Stereo Input (Di)
++ * Digital Stereo Output (Do)
++ * Midi In (Mi)
++ * Midi Out (Mo)
 +
-+    return 0;
-+}
- 
- /*
-  * Setup quirks
-  */
--#define AUDIOPHILE_SET			0x01 /* if set, parse device_setup */
--#define AUDIOPHILE_SET_DTS              0x02 /* if set, enable DTS Digital Output */
--#define AUDIOPHILE_SET_96K              0x04 /* 48-96KHz rate if set, 8-48KHz otherwise */
--#define AUDIOPHILE_SET_24B		0x08 /* 24bits sample if set, 16bits otherwise */
--#define AUDIOPHILE_SET_DI		0x10 /* if set, enable Digital Input */
--#define AUDIOPHILE_SET_MASK		0x1F /* bit mask for setup value */
--#define AUDIOPHILE_SET_24B_48K_DI	0x19 /* value for 24bits+48KHz+Digital Input */
--#define AUDIOPHILE_SET_24B_48K_NOTDI	0x09 /* value for 24bits+48KHz+No Digital Input */
--#define AUDIOPHILE_SET_16B_48K_DI	0x11 /* value for 16bits+48KHz+Digital Input */
--#define AUDIOPHILE_SET_16B_48K_NOTDI	0x01 /* value for 16bits+48KHz+No Digital Input */
++The internal DAC/ADC of all M-Audio USB devices has the following characteristics:
++* sample depth of 16 or 24 bits
++* sample rate from 8kHz to 96kHz
++* Two ports can't use different sample depths at the same time. Moreover, the 
++M-Audio USB documentation gives the following Warning: "Please exit any 
++audio application running before switching between bit depths"
++
++Due to the USB 1.1 bandwidth limitation, a limited number of interfaces can be 
++activated at the same time depending on the audio mode selected:
++ * 16-bit/48kHz ==> 4 channels in/4 channels out
++   - Ai+Ao for Quattro
++   - Ai+Ao+Di+Do for Audiophile
++ * 24-bit/48kHz ==> 4 channels in/2 channels out, 
++                    or 2 channels in/4 channels out
++   - Ai+Ao1, Ai+Ao2, Ai1+Ao, Ai2+Ao
++   - Ai+Ao+Do or Ai+Di+Ao or Ai+Di+Do or Di+Ao+Do for Audiophile
++ * 24-bit/96kHz ==> 2 channels in, or 2 channels out (half duplex only)
++   - Ai1 or Ai2 or Ao1 or Ao2 for Quattro
++   - Ai or Ao or Di or Do for Audiophile
++
++Important facts about the Audiophile Digital interface:
++--------------------------------------------
++ * The Do port additionally supports surround-encoded AC-3 and DTS passthrough, 
++though I haven't tested it under Linux
++   - Note that in this setup only the Do interface can be enabled
++ * Apart from recording an audio digital stream, enabling the Di port is a way 
++to synchronize the device to an external sample clock
++   - As a consequence, the Di port must be enable only if an active Digital 
++source is connected
++   - Enabling Di when no digital source is connected can result in a 
++synchronization error (for instance sound played at an odd sample rate)
++
++
++2 - M-Audio USB support in ALSA
++==================================
++
++2.1 - MIDI ports
++----------------
++The M-Audio (formerly Midiman) USB MIDI ports will be automatically supported
++once the following modules have been loaded:
++ * snd-usb-audio
++ * snd-seq-midi
++
++No additional setting is required.
++
++2.2 - Audio ports
++-----------------
++
++Audio functions of the M-Audio USB devices are handled by the snd-usb-audio 
++module. This module can work in a default mode (without any device-specific 
++parameter), or in an "advanced" mode with the device-specific parameter called 
++"device_setup".
++
++2.2.1 - Default Alsa driver mode
++
++The default behavior of the snd-usb-audio driver is to parse the device 
++capabilities at startup and enable all functions inside the device (including 
++all ports at any supported sample rates and sample depths). This approach 
++has the advantage to let the driver easily switch from sample rates/depths 
++automatically according to the need of the application claiming the device.
++
++In this case the Audiophile ports are mapped to alsa pcm devices in the 
++following way (I suppose the device's index is 1):
++ * hw:1,0 is Ao in playback and Di in capture
++ * hw:1,1 is Do in playback and Ai in capture
++ * hw:1,2 is Do in AC3/DTS passthrough mode
++Quattro device mapping:
++ * hw:1,0 is Ao1 and Ai1
++ * hw:1,1 is Ao2 and Ai2
++
++You must note as well that the device uses Big Endian byte encoding so that 
++supported audio format are S16_BE  for 16-bit depth modes and S24_3BE for 
++24-bits depth mode. An exception for Audiophile is the hw:1,2 port which is 
++Little Endian compliant and thus uses S16_LE.
++
++Examples:
++ * playing a S24_3BE encoded raw file to the Ao port of Audiophile
++   % aplay -D hw:1,0 -c2 -t raw -r48000 -fS24_3BE test.raw
++ * recording a  S24_3BE encoded raw file from the Ai port of Audiophile
++   % arecord -D hw:1,1 -c2  -t raw -r48000 -fS24_3BE test.raw
++ * playing a S16_BE encoded raw file to the Do port of Audiophile
++   % aplay -D hw:1,1 -c2 -t raw -r48000 -fS16_BE test.raw
++
++ * playing S24_3LE encoded raw file to the Ao1 port of Quattro
++   % aplay -D hw:1,0 -c2 -t raw -r48000 -fS24_3BE test.raw
++ * recording a  S24_3BE encoded raw file from the Ai2 port of Quattro
++   % arecord -D hw:1,1 -c2  -t raw -r48000 -fS24_3BE test.raw
++
++If you're happy with the default Alsa driver setup and don't experience any 
++issue with this mode, then you can skip the following chapter. It is very
++unlikely that this setup will give useful results for Quattro though.
++
++2.2.2 - Advanced module setup
++
++Due to the hardware constraints described above, the device initialization made 
++by the Alsa driver in default mode may result in a corrupted state of the 
++device. For instance, a particularly annoying issue is that the sound captured 
++from the Ai port sounds distorted (as if boosted with an excessive high volume 
++gain).
++
++For people having this problem, the snd-usb-audio module has a new module 
++parameter called "device_setup".
++
++2.2.2.1 - Initializing the working mode of the M-Audio USB devices
++
++As far as the M-Audio USB devices are concerned, this value let the user 
++specify:
++ * the sample depth
++ * the sample rate
++ * whether the Di port is used or not (except Quattro)
++
++A list of supported device_setup values for Audiophile USB:
++ * device_setup=0x00 (or omitted)
++   - Alsa driver default mode
++   - maintains backward compatibility with setups that do not use this 
++     parameter by not introducing any change
++   - results sometimes in corrupted sound as described earlier
++ * device_setup=0x01
++   - 16bits 48kHz mode with Di disabled
++   - Ai,Ao,Do can be used at the same time
++   - hw:1,0 is not available in capture mode
++   - hw:1,2 is not available
++ * device_setup=0x11
++   - 16bits 48kHz mode with Di enabled
++   - Ai,Ao,Di,Do can be used at the same time
++   - hw:1,0 is available in capture mode
++   - hw:1,2 is not available
++ * device_setup=0x09
++   - 24bits 48kHz mode with Di disabled
++   - Ai,Ao,Do can be used at the same time
++   - hw:1,0 is not available in capture mode
++   - hw:1,2 is not available
++ * device_setup=0x19
++   - 24bits 48kHz mode with Di enabled
++   - 3 ports from {Ai,Ao,Di,Do} can be used at the same time
++   - hw:1,0 is available in capture mode and an active digital source must be 
++     connected to Di
++   - hw:1,2 is not available
++ * device_setup=0x0D or 0x10
++   - 24bits 96kHz mode
++   - Di is enabled by default for this mode but does not need to be connected 
++     to an active source
++   - Only 1 port from {Ai,Ao,Di,Do} can be used at the same time
++   - hw:1,0 is available in captured mode
++   - hw:1,2 is not available
++ * device_setup=0x03
++   - 16bits 48kHz mode with only the Do port enabled 
++   - AC3 with DTS passthru (not tested)
++   - Caution with this setup the Do port is mapped to the pcm device hw:1,0
++
++A list of supported device_setup values for Quattro USB:
++ * device_setup=0x00 (or omitted)
++   - Alsa driver default mode
++   - maintains backward compatibility with setups that do not use this 
++     parameter by not introducing any change
++   - results sometimes in corrupted sound as decribed earlier
++ * device_setup=0x01
++   - 16bits 48kHz
++   - Ai,Ao can be used at the same time
++ * device_setup=0x09
++   - 24bits 48kHz mode
++   - 3 ports from {Ai1,Ao1,Ai2,Ao2} can be used at the same time
++ * device_setup=0x05
++   - 24bits 96kHz mode
++   - Only 1 port from {Ai1,Ao1,Ai2,Ao2} can be used at the same time
++ * device_setup=0x81
++   - Windows "usbaudio.sys" compatibility mode
++   - 16bits up to 44.1kHz
++   - Ai1,Ao1 can be used at the same time
++   - Ai2,Ao2 not available
++
++2.2.2.2 - Setting and switching configurations with the device_setup parameter
++
++The parameter can be given:
++ * By manually probing the device (as root):
++   # modprobe -r snd-usb-audio
++   # modprobe snd-usb-audio index=1 device_setup=0x09
++ * Or while configuring the modules options in your modules configuration file
++   - For Fedora distributions, edit the /etc/modprobe.conf file:
++       alias snd-card-1 snd-usb-audio
++       options snd-usb-audio index=1 device_setup=0x09
++   - udev will automatically load the driver when the device is connected.
++
++IMPORTANT NOTE WHEN SWITCHING CONFIGURATION:
++-------------------------------------------
++To switch the sample rate setting between 8-48 and 88-96, or to switch between
++bit sample width configurations (16->24) you MUST unload the driver with
++`rmmod' and re-load it with new parameters as outlined above. You don't need
++to turn off the device, but in some cases when the device seems to get "stuck"
++with previous configuration and refuses to switch to the new one the following 
++sequence may be used:
++ * You may need to _first_ initialize the module with the correct device_setup 
++   parameter and _only_after_ turn on the Audiophile USB device
++ * This is especially true when switching the sample depth:
++   - first turn off the device
++   - de-register the snd-usb-audio module (modprobe -r)
++   - change the device_setup parameter by changing the device_setup
++     option in /etc/modprobe.conf 
++   - turn on the device
++
++2.2.2.3 - M-Audio USB's device_setup structure
++
++If you want to understand the device_setup magic numbers for the M-Audio 
++USB, you need some very basic understanding of binary computation. However, 
++this is not required to use the parameter and you may skip this section.
++
++The device_setup is one byte long and its structure is the following:
++
++       +---+---+---+---+---+---+---+---+
++       | b7| b6| b5| b4| b3| b2| b1| b0|
++       +---+---+---+---+---+---+---+---+
++       |CMP| 0 | 0 | Di|24B|96K|DTS|SET|
++       +---+---+---+---+---+---+---+---+
++
++Where:
++ * b0 is the "SET" bit
++   - it MUST be set if device_setup is initialized 
++ * b1 is the "DTS" bit
++   - it is set only for Digital output with DTS/AC3
++   - this setup is not tested
++ * b2 is the Rate selection flag
++   - When set to "1" the rate range is 48.1-96kHz
++   - Otherwise the sample rate range is 8-48kHz
++ * b3 is the bit depth selection flag
++   - When set to "1" samples are 24bits long
++   - Otherwise they are 16bits long
++   - Note that b2 implies b3 as the 96kHz mode is only supported for 24 bits 
++     samples
++ * b4 is the Digital input flag
++   - When set to "1" the device assumes that an active digital source is 
++     connected 
++   - You shouldn't enable Di if no source is seen on the port (this leads to 
++     synchronization issues)
++   - b4 is implied by b2 (since only one port is enabled at a time no synch 
++     error can occur) 
++ * b5 to b6 are reserved for future uses, and must be set to "0"
++ * b7 is the Windows "usbaudio.sys" compatibility mode. Generally not useful
++   because it's just a sub-set of 16/48 configuration, limited to 44.1 kHz and
++   one stereo device. Kept mostly for debugging purpose.
++
++Caution:
++ * there is no check on the value you will give to device_setup
++   - for instance choosing 0x05 (16bits 96kHz) will fail back to 0x0d since 
++     b2 implies b3. But _there_will_be_no_warning_ in /var/log/messages
++ * Hardware constraints due to the USB bus limitation aren't checked
++   - choosing b2 will prepare all interfaces for 24bits/96kHz but you'll
++     only be able to use one at the same time
++
++2.2.3 -  USB implementation details for this device
++
++You may safely skip this section if you're not interested in driver 
++development.
++
++This section describes some internal aspects of the device and summarize the 
++data I got by usb-snooping the windows and Linux drivers.
++
++2.2.3.1. M-Audio Audiophile
++
++The M-Audio Audiophile USB has 7 USB Interfaces:
++a "USB interface":
++ * USB Interface nb.0
++ * USB Interface nb.1
++   - Audio Control function
++ * USB Interface nb.2
++   - Analog Output
++ * USB Interface nb.3
++   - Digital Output
++ * USB Interface nb.4
++   - Analog Input
++ * USB Interface nb.5
++   - Digital Input
++ * USB Interface nb.6
++   - MIDI interface compliant with the MIDIMAN quirk 
++
++Each interface has 5 altsettings (AltSet 1,2,3,4,5) except:
++ * Interface 3 (Digital Out) has an extra Alset nb.6 
++ * Interface 5 (Digital In) does not have Alset nb.3 and 5 
++
++Here is a short description of the AltSettings capabilities:
++ * AltSettings 1 corresponds to
++  - 24-bit depth, 48.1-96kHz sample mode
++  - Adaptive playback (Ao and Do), Synch capture (Ai), or Asynch capture (Di)
++ * AltSettings 2 corresponds to
++  - 24-bit depth, 8-48kHz sample mode
++  - Asynch capture and playback  (Ao,Ai,Do,Di)
++ * AltSettings 3 corresponds to
++  - 24-bit depth, 8-48kHz sample mode
++  - Synch capture (Ai) and Adaptive playback (Ao,Do)
++ * AltSettings 4 corresponds to
++  - 16-bit depth, 8-48kHz sample mode
++  - Asynch capture and playback  (Ao,Ai,Do,Di)
++ * AltSettings 5 corresponds to
++  - 16-bit depth, 8-48kHz sample mode
++  - Synch capture (Ai) and Adaptive playback (Ao,Do)
++ * AltSettings 6 corresponds to
++  - 16-bit depth, 8-48kHz sample mode
++  - Synch playback (Do), audio format type III IEC1937_AC-3
++
++In order to ensure a correct initialization of the device, the driver 
++_must_know_ how the device will be used:
++ * if DTS is chosen, only Interface 2 with AltSet nb.6 must be
++   registered
++ * if 96KHz only AltSets nb.1 of each interface must be selected
++ * if samples are using 24bits/48KHz then AltSet 2 must me used if
++   Digital input is connected, and only AltSet nb.3 if Digital input
++   is not connected
++ * if samples are using 16bits/48KHz then AltSet 4 must me used if
++   Digital input is connected, and only AltSet nb.5 if Digital input
++   is not connected
++
++When device_setup is given as a parameter to the snd-usb-audio module, the 
++parse_audio_endpoints function uses a quirk called 
++"audiophile_skip_setting_quirk" in order to prevent AltSettings not 
++corresponding to device_setup from being registered in the driver.
++
++2.2.3.1. M-Audio Quattro
++
++The M-Audio Quattro USB has 10 USB Interfaces:
++a "USB interface":
++ * USB Interface nb.0
++   - Audio Control function
++ * USB Interface nb.1
++   - Analog Output, usbaudio.sys compatible
++ * USB Interface nb.2
++   - Analog Input, usbaudio.sys compatible
++ * USB Interface nb.3
++   - Audio Control function
++ * USB Interface nb.4
++   - Analog Output #1
++ * USB Interface nb.5
++   - Analog Input #1
++ * USB Interface nb.6
++   - Audio Control function
++ * USB Interface nb.7
++   - Analog Output #2
++ * USB Interface nb.8
++   - Analog Input #2
++ * USB Interface nb.9
++   - MIDI interface compliant with the MIDIMAN quirk 
++
++Each interface has 3 altsettings (AltSet 1,3,4) except interfaces 1 and 2 (usbaudio.sys compatible) that have only one Alset nb.4
++
++Here is a short description of the AltSettings capabilities:
++ * AltSettings 1 corresponds to
++  - 24-bit depth, 88.2-96kHz sample mode
++  - Adaptive playback (Ao), Synch capture (Ai)
++ * AltSettings 3 corresponds to
++  - 24-bit depth, 8-48kHz sample mode
++  - Adaptive playback (Ao), Synch capture (Ai)
++ * AltSettings 4 corresponds to
++  - 16-bit depth, 8-48kHz sample mode
++  - Adaptive playback (Ao), Synch capture (Ai)
++
++In order to ensure a correct initialization of the device, the driver 
++_must_know_ how the device will be used:
++ * if 96KHz only AltSets nb.1 of each interface must be selected
++ * if samples are using 24bits/48KHz then AltSet nb.3 must be used
++ * if samples are using 16bits/48KHz then AltSet 4 must be used.
++
++
++When device_setup is given as a parameter to the snd-usb-audio module, the 
++parse_audio_endpoints function uses a quirk called 
++"quattro_skip_setting_quirk" in order to prevent AltSettings not 
++corresponding to device_setup from being registered in the driver.
++
++3 - M-Audio USB and Jack support
++===================================
++
++This section deals with support of the Audiophile USB device in Jack.
++The main issue regarding this support is that the device is Big Endian 
++compliant.
++
++3.1 - Using the plug alsa plugin
++--------------------------------
++
++Jack doesn't directly support big endian devices. Thus, one way to have support 
++for this device with Alsa is to use the Alsa "plug" converter.
++
++For instance here is one way to run Jack with 2 playback channels on Ao and 2 
++capture channels from Ai:
++  % jackd -R -dalsa -dplughw:1 -r48000 -p256 -n2 -D -Cplughw:1,1
++
++
++However you may see the following warning message:
++"You appear to be using the ALSA software "plug" layer, probably a result of 
++using the "default" ALSA device. This is less efficient than it could be. 
++Consider using a hardware device instead rather than using the plug layer."
++
++3.2 - Patching alsa to use direct pcm device
++--------------------------------------------
++A patch for Jack by Andreas Steinmetz adds support for Big Endian devices. 
++However it has not been included in the CVS tree.
++
++You can find it at the following URL:
++http://sourceforge.net/tracker/index.php?func=detail&aid=1289682&group_id=39687&
++atid=425939
++
++After having applied the patch you can run jackd with the following command 
++line:
++  % jackd -R -dalsa -Phw:1,0 -r48000 -p128 -n2 -D -Chw:1,1
++
++3.2 - Getting 2 input and/or output interfaces in Jack
++------------------------------------------------------
++
++As you can see, starting the Jack server this way will only enable 1 stereo
++input (Di or Ai) and 1 stereo output (Ao or Do).
++
++This is due to the following restrictions:
++* Jack can only open one capture device and one playback device at a time
++* The Audiophile USB is seen as 2 (or three) Alsa devices: hw:1,0, hw:1,1
++  (and optionally hw:1,2)
++If you want to get Ai+Di and/or Ao+Do support with Jack, you would need to
++combine the Alsa devices into one logical "complex" device.
++
++If you want to give it a try, I recommend reading the information from
++this page: http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
++It is related to another device (ice1712) but can be adapted to suit
++the Audiophile USB.
++
++Enabling multiple M-Audio USB interfaces for Jackd will certainly require:
++* patching Jack with the previously mentioned "Big Endian" patch
++* patching Jackd with the MMAP_COMPLEX patch (see the ice1712 page)
++* patching the alsa-lib/src/pcm/pcm_multi.c file (see the ice1712 page)
++* define a multi device (combination of hw:1,0 and hw:1,1) in your .asoundrc
++  file 
++* start jackd with this device
++
++I had no success in testing this for now, but this may be due to my OS
++configuration. If you have any success with this kind of setup, please
++drop me an email.
+diff -r 9a4c87387be9 -r 6f81f7397f82 Documentation/Audiophile-Usb.txt
+--- a/Documentation/Audiophile-Usb.txt	Fri Nov 24 15:49:39 2006 +0100
++++ /dev/null	Thu Jan 01 00:00:00 1970 +0000
+@@ -1,360 +0,0 @@
+-	Guide to using M-Audio Audiophile USB with ALSA and Jack	v1.3
+-	========================================================
 -
-+#define MAUDIO_SET			0x01 /* if set, parse device_setup */
-+#define MAUDIO_SET_COMPATIBLE		0x80 /* if set, use only "win-compatible" interfaces */
-+#define MAUDIO_SET_DTS              0x02 /* if set, enable DTS Digital Output */
-+#define MAUDIO_SET_96K              0x04 /* 48-96KHz rate if set, 8-48KHz otherwise */
-+#define MAUDIO_SET_24B		0x08 /* 24bits sample if set, 16bits otherwise */
-+#define MAUDIO_SET_DI		0x10 /* if set, enable Digital Input */
-+#define MAUDIO_SET_MASK		0x1F /* bit mask for setup value */
-+#define MAUDIO_SET_24B_48K_DI	0x19 /* value for 24bits+48KHz+Digital Input */
-+#define MAUDIO_SET_24B_48K_NOTDI	0x09 /* value for 24bits+48KHz+No Digital Input */
-+#define MAUDIO_SET_16B_48K_DI	0x11 /* value for 16bits+48KHz+Digital Input */
-+#define MAUDIO_SET_16B_48K_NOTDI	0x01 /* value for 16bits+48KHz+No Digital Input */
-+
-+static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
-+					 int iface, int altno)
-+{
-+	/* Reset ALL ifaces to 0 altsetting. 
-+	   Call it for every possible altsetting of every interface. */
-+	usb_set_interface(chip->dev, iface, 0); 
-+	if (device_setup[chip->index] & MAUDIO_SET) {
-+		if ((device_setup[chip->index] & MAUDIO_SET_COMPATIBLE)) {
-+			if((iface != 1) && (iface != 2)) 
-+				return 1; /* skip all interfaces but 1 and 2 */
-+		} else {
-+			if ((iface == 1) || (iface == 2))
-+				return 1; /* skip interfaces 1 and 2 */
-+			if ((device_setup[chip->index] & MAUDIO_SET_96K)
-+			    && altno != 1)
-+				return 1; /* skip this altsetting */
-+			if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+			    MAUDIO_SET_24B_48K_DI && altno != 2)
-+				return 1; /* skip this altsetting */
-+			if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+			    MAUDIO_SET_24B_48K_NOTDI && altno != 3)
-+				return 1; /* skip this altsetting */
-+			if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+			    MAUDIO_SET_16B_48K_NOTDI && altno != 4)
-+				return 1; /* skip this altsetting */
-+		}
-+	}	
-+	snd_printdd(KERN_INFO "using altsetting %d for interface %d config %d\n", altno, iface, device_setup[chip->index]);
-+	return 0; /* keep this altsetting */
-+}
- static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
- 					 int iface, int altno)
- {
--	if (device_setup[chip->index] & AUDIOPHILE_SET) {
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_DTS)
-+	/* Reset ALL ifaces to 0 altsetting. 
-+	   Call it for every possible altsetting of every interface. */
-+	usb_set_interface(chip->dev, iface, 0); 
-+	if (device_setup[chip->index] & MAUDIO_SET) {
-+		if ((device_setup[chip->index] & MAUDIO_SET_DTS)
- 		    && altno != 6)
- 			return 1; /* skip this altsetting */
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_96K)
-+		if ((device_setup[chip->index] & MAUDIO_SET_96K)
- 		    && altno != 1)
- 			return 1; /* skip this altsetting */
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_24B_48K_DI && altno != 2)
-+		if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+		    MAUDIO_SET_24B_48K_DI && altno != 2)
- 			return 1; /* skip this altsetting */
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_24B_48K_NOTDI && altno != 3)
-+		if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+		    MAUDIO_SET_24B_48K_NOTDI && altno != 3)
- 			return 1; /* skip this altsetting */
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_16B_48K_DI && altno != 4)
-+		if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+		    MAUDIO_SET_16B_48K_DI && altno != 4)
- 			return 1; /* skip this altsetting */
--		if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_16B_48K_NOTDI && altno != 5)
-+		if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
-+		    MAUDIO_SET_16B_48K_NOTDI && altno != 5)
- 			return 1; /* skip this altsetting */
- 	}	
-+	snd_printdd(KERN_INFO "using altsetting %d for interface %d config %d\n", altno, iface, device_setup[chip->index]);
-+	return 0; /* keep this altsetting */
-+}
-+
-+static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
-+		int iface, int altno)
-+{
-+
-+	/* Reset ALL ifaces to 0 altsetting. 
-+           Call it for every possible altsetting of every interface. */
-+	usb_set_interface(chip->dev, iface, 0); 
-+	/* possible configuration where both inputs and only one output is
-+	   used is not supported by the current setup */
-+
-+	if (device_setup[chip->index] & (MAUDIO_SET | MAUDIO_SET_24B)) {
-+		if(device_setup[chip->index] & MAUDIO_SET_96K){
-+			if((altno != 3) && (altno != 6))
-+				return 1;
-+		} else if(device_setup[chip->index] & MAUDIO_SET_DI){
-+			if(iface == 4)
-+				return 1; /* no analog input */
-+
-+			if((altno != 2) && (altno != 5))
-+				return 1; /* enable only altsets 2 and 5 */
-+		} else {
-+			if(iface == 5)
-+				return 1; /* disable digialt input */
-+
-+			if((altno != 2) && (altno != 5))
-+				return 1; /* enalbe only altsets 2 and 5 */
-+		}
-+	} else {
-+		/* keep only 16-Bit mode */
-+		if(altno !=1)
-+			return 1;
-+	}
-+
-+	snd_printdd(KERN_INFO "using altsetting %d for interface %d config %d\n", altno, iface, device_setup[chip->index]);
- 	return 0; /* keep this altsetting */
- }
- 
-@@ -3452,6 +3568,12 @@ static void *snd_usb_audio_probe(struct 
- 			goto __err_val;
- 	}
- 
-+	/* M-Audio Fast Track Pro */
-+	if (id == USB_ID(0x0763, 0x2012)) {
-+		if (snd_usb_fasttrackpro_boot_quirk(dev, ifnum) < 0)
-+			goto __err_val;
-+	}
-+
- 	/*
- 	 * found a config.  now register to ALSA
- 	 */
+-	    Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+-
+-This document is a guide to using the M-Audio Audiophile USB (tm) device with 
+-ALSA and JACK.
+-
+-1 - Audiophile USB Specs and correct usage
+-==========================================
+-This part is a reminder of important facts about the functions and limitations 
+-of the device.
+-
+-The device has 4 audio interfaces, and 2 MIDI ports:
+- * Analog Stereo Input (Ai)
+-   - This port supports 2 pairs of line-level audio inputs (1/4" TS and RCA) 
+-   - When the 1/4" TS (jack) connectors are connected, the RCA connectors
+-     are disabled
+- * Analog Stereo Output (Ao)
+- * Digital Stereo Input (Di)
+- * Digital Stereo Output (Do)
+- * Midi In (Mi)
+- * Midi Out (Mo)
+-
+-The internal DAC/ADC has the following characteristics:
+-* sample depth of 16 or 24 bits
+-* sample rate from 8kHz to 96kHz
+-* Two ports can't use different sample depths at the same time. Moreover, the 
+-Audiophile USB documentation gives the following Warning: "Please exit any 
+-audio application running before switching between bit depths"
+-
+-Due to the USB 1.1 bandwidth limitation, a limited number of interfaces can be 
+-activated at the same time depending on the audio mode selected:
+- * 16-bit/48kHz ==> 4 channels in/4 channels out
+-   - Ai+Ao+Di+Do
+- * 24-bit/48kHz ==> 4 channels in/2 channels out, 
+-                    or 2 channels in/4 channels out
+-   - Ai+Ao+Do or Ai+Di+Ao or Ai+Di+Do or Di+Ao+Do
+- * 24-bit/96kHz ==> 2 channels in, or 2 channels out (half duplex only)
+-   - Ai or Ao or Di or Do
+-
+-Important facts about the Digital interface:
+---------------------------------------------
+- * The Do port additionally supports surround-encoded AC-3 and DTS passthrough, 
+-though I haven't tested it under Linux
+-   - Note that in this setup only the Do interface can be enabled
+- * Apart from recording an audio digital stream, enabling the Di port is a way 
+-to synchronize the device to an external sample clock
+-   - As a consequence, the Di port must be enable only if an active Digital 
+-source is connected
+-   - Enabling Di when no digital source is connected can result in a 
+-synchronization error (for instance sound played at an odd sample rate)
+-
+-
+-2 - Audiophile USB support in ALSA
+-==================================
+-
+-2.1 - MIDI ports
+-----------------
+-The Audiophile USB MIDI ports will be automatically supported once the 
+-following modules have been loaded:
+- * snd-usb-audio
+- * snd-seq-midi
+-
+-No additional setting is required.
+-
+-2.2 - Audio ports
+------------------
+-
+-Audio functions of the Audiophile USB device are handled by the snd-usb-audio 
+-module. This module can work in a default mode (without any device-specific 
+-parameter), or in an "advanced" mode with the device-specific parameter called 
+-"device_setup".
+-
+-2.2.1 - Default Alsa driver mode
+-
+-The default behavior of the snd-usb-audio driver is to parse the device 
+-capabilities at startup and enable all functions inside the device (including 
+-all ports at any supported sample rates and sample depths). This approach 
+-has the advantage to let the driver easily switch from sample rates/depths 
+-automatically according to the need of the application claiming the device.
+-
+-In this case the Audiophile ports are mapped to alsa pcm devices in the 
+-following way (I suppose the device's index is 1):
+- * hw:1,0 is Ao in playback and Di in capture
+- * hw:1,1 is Do in playback and Ai in capture
+- * hw:1,2 is Do in AC3/DTS passthrough mode
+-
+-You must note as well that the device uses Big Endian byte encoding so that 
+-supported audio format are S16_BE  for 16-bit depth modes and S24_3BE for 
+-24-bits depth mode. One exception is the hw:1,2 port which is Little Endian 
+-compliant and thus uses S16_LE.
+-
+-Examples:
+- * playing a S24_3BE encoded raw file to the Ao port
+-   % aplay -D hw:1,0 -c2 -t raw -r48000 -fS24_3BE test.raw
+- * recording a  S24_3BE encoded raw file from the Ai port
+-   % arecord -D hw:1,1 -c2  -t raw -r48000 -fS24_3BE test.raw
+- * playing a S16_BE encoded raw file to the Do port
+-   % aplay -D hw:1,1 -c2 -t raw -r48000 -fS16_BE test.raw
+-
+-If you're happy with the default Alsa driver setup and don't experience any 
+-issue with this mode, then you can skip the following chapter.
+-
+-2.2.2 - Advanced module setup
+-
+-Due to the hardware constraints described above, the device initialization made 
+-by the Alsa driver in default mode may result in a corrupted state of the 
+-device. For instance, a particularly annoying issue is that the sound captured 
+-from the Ai port sounds distorted (as if boosted with an excessive high volume 
+-gain).
+-
+-For people having this problem, the snd-usb-audio module has a new module 
+-parameter called "device_setup".
+-
+-2.2.2.1 - Initializing the working mode of the Audiophile USB
+-
+-As far as the Audiophile USB device is concerned, this value let the user 
+-specify:
+- * the sample depth
+- * the sample rate
+- * whether the Di port is used or not 
+-
+-Here is a list of supported device_setup values for this device:
+- * device_setup=0x00 (or omitted)
+-   - Alsa driver default mode
+-   - maintains backward compatibility with setups that do not use this 
+-     parameter by not introducing any change
+-   - results sometimes in corrupted sound as described earlier
+- * device_setup=0x01
+-   - 16bits 48kHz mode with Di disabled
+-   - Ai,Ao,Do can be used at the same time
+-   - hw:1,0 is not available in capture mode
+-   - hw:1,2 is not available
+- * device_setup=0x11
+-   - 16bits 48kHz mode with Di enabled
+-   - Ai,Ao,Di,Do can be used at the same time
+-   - hw:1,0 is available in capture mode
+-   - hw:1,2 is not available
+- * device_setup=0x09
+-   - 24bits 48kHz mode with Di disabled
+-   - Ai,Ao,Do can be used at the same time
+-   - hw:1,0 is not available in capture mode
+-   - hw:1,2 is not available
+- * device_setup=0x19
+-   - 24bits 48kHz mode with Di enabled
+-   - 3 ports from {Ai,Ao,Di,Do} can be used at the same time
+-   - hw:1,0 is available in capture mode and an active digital source must be 
+-     connected to Di
+-   - hw:1,2 is not available
+- * device_setup=0x0D or 0x10
+-   - 24bits 96kHz mode
+-   - Di is enabled by default for this mode but does not need to be connected 
+-     to an active source
+-   - Only 1 port from {Ai,Ao,Di,Do} can be used at the same time
+-   - hw:1,0 is available in captured mode
+-   - hw:1,2 is not available
+- * device_setup=0x03
+-   - 16bits 48kHz mode with only the Do port enabled 
+-   - AC3 with DTS passthru (not tested)
+-   - Caution with this setup the Do port is mapped to the pcm device hw:1,0
+-
+-2.2.2.2 - Setting and switching configurations with the device_setup parameter
+-
+-The parameter can be given:
+- * By manually probing the device (as root):
+-   # modprobe -r snd-usb-audio
+-   # modprobe snd-usb-audio index=1 device_setup=0x09
+- * Or while configuring the modules options in your modules configuration file
+-   - For Fedora distributions, edit the /etc/modprobe.conf file:
+-       alias snd-card-1 snd-usb-audio
+-       options snd-usb-audio index=1 device_setup=0x09
+-
+-IMPORTANT NOTE WHEN SWITCHING CONFIGURATION:
+--------------------------------------------
+- * You may need to _first_ initialize the module with the correct device_setup 
+-   parameter and _only_after_ turn on the Audiophile USB device
+- * This is especially true when switching the sample depth:
+-   - first turn off the device
+-   - de-register the snd-usb-audio module (modprobe -r)
+-   - change the device_setup parameter by changing the device_setup
+-     option in /etc/modprobe.conf 
+-   - turn on the device
+-
+-2.2.2.3 - Audiophile USB's device_setup structure
+-
+-If you want to understand the device_setup magic numbers for the Audiophile 
+-USB, you need some very basic understanding of binary computation. However, 
+-this is not required to use the parameter and you may skip this section.
+-
+-The device_setup is one byte long and its structure is the following:
+-
+-       +---+---+---+---+---+---+---+---+
+-       | b7| b6| b5| b4| b3| b2| b1| b0|
+-       +---+---+---+---+---+---+---+---+
+-       | 0 | 0 | 0 | Di|24B|96K|DTS|SET|
+-       +---+---+---+---+---+---+---+---+
+-
+-Where:
+- * b0 is the "SET" bit
+-   - it MUST be set if device_setup is initialized 
+- * b1 is the "DTS" bit
+-   - it is set only for Digital output with DTS/AC3
+-   - this setup is not tested
+- * b2 is the Rate selection flag
+-   - When set to "1" the rate range is 48.1-96kHz
+-   - Otherwise the sample rate range is 8-48kHz
+- * b3 is the bit depth selection flag
+-   - When set to "1" samples are 24bits long
+-   - Otherwise they are 16bits long
+-   - Note that b2 implies b3 as the 96kHz mode is only supported for 24 bits 
+-     samples
+- * b4 is the Digital input flag
+-   - When set to "1" the device assumes that an active digital source is 
+-     connected 
+-   - You shouldn't enable Di if no source is seen on the port (this leads to 
+-     synchronization issues)
+-   - b4 is implied by b2 (since only one port is enabled at a time no synch 
+-     error can occur) 
+- * b5 to b7 are reserved for future uses, and must be set to "0"
+-   - might become Ao, Do, Ai, for b7, b6, b4 respectively
+-
+-Caution:
+- * there is no check on the value you will give to device_setup
+-   - for instance choosing 0x05 (16bits 96kHz) will fail back to 0x09 since 
+-     b2 implies b3. But _there_will_be_no_warning_ in /var/log/messages
+- * Hardware constraints due to the USB bus limitation aren't checked
+-   - choosing b2 will prepare all interfaces for 24bits/96kHz but you'll
+-     only be able to use one at the same time
+-
+-2.2.3 -  USB implementation details for this device
+-
+-You may safely skip this section if you're not interested in driver 
+-development.
+-
+-This section describes some internal aspects of the device and summarize the 
+-data I got by usb-snooping the windows and Linux drivers.
+-
+-The M-Audio Audiophile USB has 7 USB Interfaces:
+-a "USB interface":
+- * USB Interface nb.0
+- * USB Interface nb.1
+-   - Audio Control function
+- * USB Interface nb.2
+-   - Analog Output
+- * USB Interface nb.3
+-   - Digital Output
+- * USB Interface nb.4
+-   - Analog Input
+- * USB Interface nb.5
+-   - Digital Input
+- * USB Interface nb.6
+-   - MIDI interface compliant with the MIDIMAN quirk 
+-
+-Each interface has 5 altsettings (AltSet 1,2,3,4,5) except:
+- * Interface 3 (Digital Out) has an extra Alset nb.6 
+- * Interface 5 (Digital In) does not have Alset nb.3 and 5 
+-
+-Here is a short description of the AltSettings capabilities:
+- * AltSettings 1 corresponds to
+-  - 24-bit depth, 48.1-96kHz sample mode
+-  - Adaptive playback (Ao and Do), Synch capture (Ai), or Asynch capture (Di)
+- * AltSettings 2 corresponds to
+-  - 24-bit depth, 8-48kHz sample mode
+-  - Asynch capture and playback  (Ao,Ai,Do,Di)
+- * AltSettings 3 corresponds to
+-  - 24-bit depth, 8-48kHz sample mode
+-  - Synch capture (Ai) and Adaptive playback (Ao,Do)
+- * AltSettings 4 corresponds to
+-  - 16-bit depth, 8-48kHz sample mode
+-  - Asynch capture and playback  (Ao,Ai,Do,Di)
+- * AltSettings 5 corresponds to
+-  - 16-bit depth, 8-48kHz sample mode
+-  - Synch capture (Ai) and Adaptive playback (Ao,Do)
+- * AltSettings 6 corresponds to
+-  - 16-bit depth, 8-48kHz sample mode
+-  - Synch playback (Do), audio format type III IEC1937_AC-3
+-
+-In order to ensure a correct initialization of the device, the driver 
+-_must_know_ how the device will be used:
+- * if DTS is chosen, only Interface 2 with AltSet nb.6 must be
+-   registered
+- * if 96KHz only AltSets nb.1 of each interface must be selected
+- * if samples are using 24bits/48KHz then AltSet 2 must me used if
+-   Digital input is connected, and only AltSet nb.3 if Digital input
+-   is not connected
+- * if samples are using 16bits/48KHz then AltSet 4 must me used if
+-   Digital input is connected, and only AltSet nb.5 if Digital input
+-   is not connected
+-
+-When device_setup is given as a parameter to the snd-usb-audio module, the 
+-parse_audio_endpoints function uses a quirk called 
+-"audiophile_skip_setting_quirk" in order to prevent AltSettings not 
+-corresponding to device_setup from being registered in the driver.
+-
+-3 - Audiophile USB and Jack support
+-===================================
+-
+-This section deals with support of the Audiophile USB device in Jack.
+-The main issue regarding this support is that the device is Big Endian 
+-compliant.
+-
+-3.1 - Using the plug alsa plugin
+---------------------------------
+-
+-Jack doesn't directly support big endian devices. Thus, one way to have support 
+-for this device with Alsa is to use the Alsa "plug" converter.
+-
+-For instance here is one way to run Jack with 2 playback channels on Ao and 2 
+-capture channels from Ai:
+-  % jackd -R -dalsa -dplughw:1 -r48000 -p256 -n2 -D -Cplughw:1,1
+-
+-
+-However you may see the following warning message:
+-"You appear to be using the ALSA software "plug" layer, probably a result of 
+-using the "default" ALSA device. This is less efficient than it could be. 
+-Consider using a hardware device instead rather than using the plug layer."
+-
+-3.2 - Patching alsa to use direct pcm device
+---------------------------------------------
+-A patch for Jack by Andreas Steinmetz adds support for Big Endian devices. 
+-However it has not been included in the CVS tree.
+-
+-You can find it at the following URL:
+-http://sourceforge.net/tracker/index.php?func=detail&aid=1289682&group_id=39687&
+-atid=425939
+-
+-After having applied the patch you can run jackd with the following command 
+-line:
+-  % jackd -R -dalsa -Phw:1,0 -r48000 -p128 -n2 -D -Chw:1,1
+-
+-3.2 - Getting 2 input and/or output interfaces in Jack
+-------------------------------------------------------
+-
+-As you can see, starting the Jack server this way will only enable 1 stereo
+-input (Di or Ai) and 1 stereo output (Ao or Do).
+-
+-This is due to the following restrictions:
+-* Jack can only open one capture device and one playback device at a time
+-* The Audiophile USB is seen as 2 (or three) Alsa devices: hw:1,0, hw:1,1
+-  (and optionally hw:1,2)
+-If you want to get Ai+Di and/or Ao+Do support with Jack, you would need to
+-combine the Alsa devices into one logical "complex" device.
+-
+-If you want to give it a try, I recommend reading the information from
+-this page: http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
+-It is related to another device (ice1712) but can be adapted to suit
+-the Audiophile USB.
+-
+-Enabling multiple Audiophile USB interfaces for Jackd will certainly require:
+-* patching Jack with the previously mentioned "Big Endian" patch
+-* patching Jackd with the MMAP_COMPLEX patch (see the ice1712 page)
+-* patching the alsa-lib/src/pcm/pcm_multi.c file (see the ice1712 page)
+-* define a multi device (combination of hw:1,0 and hw:1,1) in your .asoundrc
+-  file 
+-* start jackd with this device
+-
+-I had no success in testing this for now, but this may be due to my OS
+-configuration. If you have any success with this kind of setup, please
+-drop me an email.
 
-
---------------040702070902070409050006
+--------------070901090702000701050502
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -292,7 +879,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---------------040702070902070409050006
+--------------070901090702000701050502
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -303,4 +890,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---------------040702070902070409050006--
+--------------070901090702000701050502--
