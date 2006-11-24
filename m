@@ -1,21 +1,11 @@
-From: "Scrounger D. Aboded" <douglas@gjainc.com>
-Subject: Re: (no subject)
-Date: Thu, 23 Nov 2006 22:07:56 -0600
-Message-ID: <2194871004.20061123220756@gjainc.com>
+From: Pavel Polischouk <pavelvp@inbox.ru>
+Subject: [PATCH 1.0.13 1/2] M-Audio USB
+Date: Thu, 23 Nov 2006 23:35:30 -0500
+Message-ID: <45667692.8090600@inbox.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----------2F6822AB7D58287"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (unknown [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BAE229A
-	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 04:07:20 +0100 (MET)
-Received: from -1215470584 (unknown [60.13.166.32])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	557BF997EB
-	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 04:07:08 +0100 (MET)
-Received: from gjainc.com (-1215468544 [-1215467384])
-	by gl53.freeserve.co.uk (Qmailv1) with ESMTP id 8CEF969F48
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2006 22:07:56 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,137 +15,292 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This patch adds the following capabilities to usbaudio.c:
+- Merges support for M-Audio FastTrack USB
+- Adds proper support for M-Audio Quattro USB
+- Adds hot-reload support for all Audiophile, FastTrack and Quattro. 
+This works quite well on Quattro;
+Thibault, could you please verify that it works for Audiophile?
+- FastTrack "select configuration #2" quirk is present but #ifdef'd out 
+pending inclusion of
+"usb_driver_set_configuration" function in mainline kernel. This quirk 
+could possibly be handled in user space anyway.
 
-------------2F6822AB7D58287
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----------89D9A5163109AFD"
+Part 2 of the patch contains documentation update.
 
-------------89D9A5163109AFD
-Content-Type: multipart/alternative;
-	boundary="----------32C9AEB5922EB46"
-
-------------32C9AEB5922EB46
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
+diff -Naur --exclude '*.maudio' --exclude version.h 
+alsa-driver-1.0.13.ref/alsa-kernel/usb/usbaudio.c 
+alsa-driver-1.0.13/alsa-kernel/usb/usbaudio.c
+--- alsa-driver-1.0.13.ref/alsa-kernel/usb/usbaudio.c    2006-09-29 
+07:40:38.000000000 -0400
++++ alsa-driver-1.0.13/alsa-kernel/usb/usbaudio.c    2006-11-23 
+20:19:33.000000000 -0500
+@@ -2339,11 +2339,16 @@
+ {
+     switch (chip->usb_id) {
+     case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
+-        if (fp->endpoint & USB_DIR_IN)
+-            return 1;
+-        break;
+     case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+         return 1;
++
++     case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro */
++         /* it depends on altsetting wether the device is big-endian or 
+not */
++         if(fp->altsetting==2 || fp->altsetting==3 ||
++            fp->altsetting==5 || fp->altsetting==6)
++             return 1;
++         break;
++
+     }
+     return 0;
+ }
+@@ -2595,8 +2600,12 @@
+     return 0;
+ }
  
-------------32C9AEB5922EB46
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
++static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
++                     int iface, int altno);
+ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
+                      int iface, int altno);
++static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
++ int iface, int altno);
+ static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ {
+     struct usb_device *dev;
+@@ -2632,12 +2641,23 @@
+             SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+         altno = altsd->bAlternateSetting;
+     
++        /* quattro usb: skip altsets incompatible with device_setup
++         */
++        if (chip->usb_id == USB_ID(0x0763, 0x2001) &&
++            quattro_skip_setting_quirk(chip, iface_no, altno))
++            continue;
++
+         /* audiophile usb: skip altsets incompatible with device_setup
+          */
+         if (chip->usb_id == USB_ID(0x0763, 0x2003) &&
+             audiophile_skip_setting_quirk(chip, iface_no, altno))
+             continue;
+ 
++        /* M-Audio Fast Track Pro: skip alsets incompatible with 
+device_setup */
++        if (chip->usb_id == USB_ID(0x0763, 0x2012) &&
++            fasttrackpro_skip_setting_quirk(chip, iface_no, altno))
++            continue;
++
+         /* get audio formats */
+         fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, 
+NULL, AS_GENERAL);
+         if (!fmt) {
+@@ -3164,44 +3184,145 @@
+     return snd_usb_cm106_write_int_reg(dev, 2, 0x8004);
+ }
+ 
++static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev, int 
+ifnum)
++{
++#if 0
++    int err;
++
++    if(dev->actconfig->desc.bConfigurationValue==1) {
++    if(ifnum==0) {
++        snd_printk(KERN_INFO "Switching to config #2\n");
++        /* This function has to be available by the usb core module.
++           if it is not avialable the boot quirk has to be left out and the
++           configuration has to be set by udev or hotplug rules */
++        err=usb_driver_set_configuration(dev,2);
++        if(err < 0) {
++        snd_printdd("error usb_driver_set_configuration: %d\n", err);
++        return -ENODEV;
++        }
++    }
++    } else {
++    snd_printk(KERN_INFO "Fast Track Pro config OK\n");
++    }
++#endif
++
++    return 0;
++}
+ 
+ /*
+  * Setup quirks
+  */
+-#define AUDIOPHILE_SET            0x01 /* if set, parse device_setup */
+-#define AUDIOPHILE_SET_DTS              0x02 /* if set, enable DTS 
+Digital Output */
+-#define AUDIOPHILE_SET_96K              0x04 /* 48-96KHz rate if set, 
+8-48KHz otherwise */
+-#define AUDIOPHILE_SET_24B        0x08 /* 24bits sample if set, 16bits 
+otherwise */
+-#define AUDIOPHILE_SET_DI        0x10 /* if set, enable Digital Input */
+-#define AUDIOPHILE_SET_MASK        0x1F /* bit mask for setup value */
+-#define AUDIOPHILE_SET_24B_48K_DI    0x19 /* value for 
+24bits+48KHz+Digital Input */
+-#define AUDIOPHILE_SET_24B_48K_NOTDI    0x09 /* value for 
+24bits+48KHz+No Digital Input */
+-#define AUDIOPHILE_SET_16B_48K_DI    0x11 /* value for 
+16bits+48KHz+Digital Input */
+-#define AUDIOPHILE_SET_16B_48K_NOTDI    0x01 /* value for 
+16bits+48KHz+No Digital Input */
++#define MAUDIO_SET            0x01 /* if set, parse device_setup */
++#define MAUDIO_SET_COMPATIBLE        0x80 /* if set, use only 
+"win-compatible" interfaces */
++#define MAUDIO_SET_DTS              0x02 /* if set, enable DTS Digital 
+Output */
++#define MAUDIO_SET_96K              0x04 /* 48-96KHz rate if set, 
+8-48KHz otherwise */
++#define MAUDIO_SET_24B        0x08 /* 24bits sample if set, 16bits 
+otherwise */
++#define MAUDIO_SET_DI        0x10 /* if set, enable Digital Input */
++#define MAUDIO_SET_MASK        0x1F /* bit mask for setup value */
++#define MAUDIO_SET_24B_48K_DI    0x19 /* value for 24bits+48KHz+Digital 
+Input */
++#define MAUDIO_SET_24B_48K_NOTDI    0x09 /* value for 24bits+48KHz+No 
+Digital Input */
++#define MAUDIO_SET_16B_48K_DI    0x11 /* value for 16bits+48KHz+Digital 
+Input */
++#define MAUDIO_SET_16B_48K_NOTDI    0x01 /* value for 16bits+48KHz+No 
+Digital Input */
+ 
++static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
++                     int iface, int altno)
++{
++    /* Reset ALL ifaces to 0 altsetting.
++       Call it for every possible altsetting of every interface. */
++    usb_set_interface(chip->dev, iface, 0);
++    snd_printdd(KERN_INFO "resetting to altsetting 0 for interface 
+%d\n", iface);
++    if (device_setup[chip->index] & MAUDIO_SET) {
++        if ((device_setup[chip->index] & MAUDIO_SET_COMPATIBLE)) {
++            if((iface != 1) && (iface != 2))
++                return 1; /* skip all interfaces but 1 and 2 */
++        } else {
++            if ((iface == 1) || (iface == 2)){
++                return 1; /* skip interfaces 1 and 2 */
++            }
++            if ((device_setup[chip->index] & MAUDIO_SET_96K)
++                    && altno != 1){
++                return 1; /* skip this altsetting */
++            }
++            if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++                    MAUDIO_SET_24B_48K_DI && altno != 2){
++                return 1; /* skip this altsetting */
++            }
++            if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++                    MAUDIO_SET_24B_48K_NOTDI && altno != 3){
++                return 1; /* skip this altsetting */
++            }
++            if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++                    MAUDIO_SET_16B_48K_NOTDI && altno != 4){
++                return 1; /* skip this altsetting */
++            }
++        }
++    }    
++    snd_printdd(KERN_INFO "using altsetting %d for interface %d config 
+%d\n", altno, iface, device_setup[chip->index]);
++    return 0; /* keep this altsetting */
++}
+ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
+                      int iface, int altno)
+ {
+-    if (device_setup[chip->index] & AUDIOPHILE_SET) {
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_DTS)
++    /* Reset ALL ifaces to 0 altsetting.
++       Call it for every possible altsetting of every interface. */
++    usb_set_interface(chip->dev, iface, 0);
++    if (device_setup[chip->index] & MAUDIO_SET) {
++        if ((device_setup[chip->index] & MAUDIO_SET_DTS)
+             && altno != 6)
+             return 1; /* skip this altsetting */
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_96K)
++        if ((device_setup[chip->index] & MAUDIO_SET_96K)
+             && altno != 1)
+             return 1; /* skip this altsetting */
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
+-            AUDIOPHILE_SET_24B_48K_DI && altno != 2)
++        if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++            MAUDIO_SET_24B_48K_DI && altno != 2)
+             return 1; /* skip this altsetting */
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
+-            AUDIOPHILE_SET_24B_48K_NOTDI && altno != 3)
++        if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++            MAUDIO_SET_24B_48K_NOTDI && altno != 3)
+             return 1; /* skip this altsetting */
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
+-            AUDIOPHILE_SET_16B_48K_DI && altno != 4)
++        if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++            MAUDIO_SET_16B_48K_DI && altno != 4)
+             return 1; /* skip this altsetting */
+-        if ((device_setup[chip->index] & AUDIOPHILE_SET_MASK) ==
+-            AUDIOPHILE_SET_16B_48K_NOTDI && altno != 5)
++        if ((device_setup[chip->index] & MAUDIO_SET_MASK) ==
++            MAUDIO_SET_16B_48K_NOTDI && altno != 5)
+             return 1; /* skip this altsetting */
+     }    
++    snd_printdd(KERN_INFO "using altsetting %d for interface %d config 
+%d\n", altno, iface, device_setup[chip->index]);
++    return 0; /* keep this altsetting */
++}
++
++static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
++        int iface, int altno)
++{
++
++    /* Reset ALL ifaces to 0 altsetting.
++           Call it for every possible altsetting of every interface. */
++    usb_set_interface(chip->dev, iface, 0);
++    /* possible configuration where both inputs and only one output is
++       used is not supported by the current setup */
++
++    if (device_setup[chip->index] & (MAUDIO_SET | MAUDIO_SET_24B)) {
++        if(device_setup[chip->index] & MAUDIO_SET_96K){
++            if((altno != 3) && (altno != 6))
++                return 1;
++        } else if(device_setup[chip->index] & MAUDIO_SET_DI){
++            if(iface == 4)
++                return 1; /* no analog input */
++
++            if((altno != 2) && (altno != 5))
++                return 1; /* enable only altsets 2 and 5 */
++        } else {
++            if(iface == 5)
++                return 1; /* disable digialt input */
++
++            if((altno != 2) && (altno != 5))
++                return 1; /* enalbe only altsets 2 and 5 */
++        }
++    } else {
++        /* keep only 16-Bit mode */
++        if(altno !=1)
++            return 1;
++    }
++
+     return 0; /* keep this altsetting */
+ }
+ 
+@@ -3441,6 +3562,12 @@
+             goto __err_val;
+     }
+ 
++    /* M-Audio Fast Track Pro */
++    if (id == USB_ID(0x0763, 0x2012)) {
++        if (snd_usb_fasttrackpro_boot_quirk(dev, ifnum) < 0)
++            goto __err_val;
++    }
++
+     /*
+      * found a config.  now register to ALSA
+      */
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-<body>
-<p><img src="cid:tern.gif"></p>
-<p><font size="4" face="Times New Roman, Times, serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http:///?IJESRKUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV">Shop with us</a></font></p>
-<p>&nbsp;</p>
-<p><font color="#146242">Togda on Pridumal novoe razvlechenie dlia sheltian ohotu na inoplanetnikov.  Da ia tak i dumal, tolko zhdal, kogda kto-nibud iz vas skazhet.  Zdes reshaiu ia.  Da i lysuny, liubiteli chelovechinki, postoianno v Okruge shastaiut, eti merzkie tvari tolko ostruiu stal i uvazhaiut.  Delo sdelano.  Tugoj vodianoj iazyk, kovarno vyzvannyj magiej dal-rokta, projdias po nastilu, Unes ves mnogoletnij musor i griaz, s kotoroj ne spravlialas metla, unes i Oblomki dosok.  Magiia Nkota, kak ia uzhe skazal.  Taj obespokoenno tronula Ego za ruku i otdernula palcy, slovno obozhglas, kist Niksarda byla Ledianoj, okostenevshej.  Ochen stranno, chto tebe eto neponiatno.  Moj nachalnik, Naprimer, tak i postupaet, stoit mne tolko zaiknutsia o pribavke k Zhalovaniu.  Za nego tozhe predstoialo otomstit.  On obnaruzhil, chto piatitsia, tolko kogda natknulsia spinoj na dvernoj kosiak.  D
- ogadyvaius, chto Cherez neskolko let emu udalos poluchit korochki pilota i on otpravilsia 
- v Svoj pervyj nezabyvaemyj rejs.  A gde on sejchas? Proshlo mnogo let s teh por, kak ia ego videl, no ia redko oshibaius.  I tem samym okazatsia v neposredstvennoj blizosti ot shefira.  Rezkij povorot dorogi vynes otriad na priamuiu dorogu, vedushchuiu k zastave Nubesov, i Initoks do boli stisnul klyki, nakonec svoimi glazami uvidev vperedi Dvuh sedokov v odnom sedle, nesushchihsia na charse, predavshem svoj Rod.  Nu? Duel.  K pristani napravlialsia Gront.  Kak vizhu, chuzhoj eshche ne poiavlialsia? Otshelnik otodvinul oto rta gorlyshko fliagi rovno nastolko, chtoby eto Ne pomeshalo emu korotko kivnut v znak soglasiia, a zatem prisosalsia snova.  Na Ferme.  Mne dejstvitelno Prishlos tiazhko, no ia dazhe ne sprosil, kakovo bylo tebe.  Ia podumal, chto sejchas podsotnik opiat shlopochet za samoupravstvo, no Onni Lish razdrazhenno vyrvalas iz ego ruk i ostalas stoiat.  No slova gostia Ej p
- rishlis po dushe.  O spasenii etogo mira.  Mozhet byt, prevyshenie sily Tozhe sledstvie de
- jstviia Duha makora? Poteria kontrolia nad svoej siloj.  Chuvstva i oshchushcheniia ne prosto pritupilis oni Ischezli.  Ne proshlo i minuty, kak nedaleko ot Mezhkabaka pokazalas shirokoplechaia Figura v plashche i shirokopolom soro.  A znachit, tot, kto mozhet Stat provodnikom etogo Prorochestva, dolzhen umeret, i kak mozhno bystree.  Da chto so mnoj takoe tvoritsia? Ia Chto, shozhu s uma? Dlia prostogo sna etot bezumnyj bred byl slishkom realen.  I chtoby mest byla polnoj, svershit ee Dolzhen tot, kto bolee vsego etogo zasluzhivaet.  Sleduj za mnoj i ne vzdumaj soprotivliatsia.  Kapiushon zashchishchal golovu ot syrosti, chutok Uskorennyj metabolizm ot holoda.  Tishina vdrug rascvela strannymi zvukami, iskriashchimisia ottenkami Neobychnyh cvetov, ravnina slovno zapela.  Poverhnost bankosa na oshchup Okazalas uprugoj i teploj, tochno v ruke okazalos zhivoe sushchestvo.  I etu Tvar my s
- obiraemsia iskorenit?! Vrag vse vremia nahoditsia riadom, neobhodimo byt nacheku, derzhat 
- svoi Mysli pod neoslabevaiushchim kontrolem.  Arhitektor? Eto slovo ona povtorila za mnoj s komichno-nedoumevaiushchim vyrazheniem.  </font></p>
-</body>
-</html>
-------------32C9AEB5922EB46--
-
-------------89D9A5163109AFD
-Content-Type: image/gif; name="tern.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="tern.gif"
-Content-ID: <tern.gif>
-
-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
-mIzZmI75mJAZmZI5mZSZlxEAADs=
-
-------------89D9A5163109AFD--
-
-------------2F6822AB7D58287
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------------2F6822AB7D58287
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-------------2F6822AB7D58287--
