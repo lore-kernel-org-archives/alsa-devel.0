@@ -1,21 +1,21 @@
-From: "Profanation R. Meandering" <sadecker@globalproject.com>
+From: "Scrounger D. Aboded" <douglas@gjainc.com>
 Subject: Re: (no subject)
-Date: Thu, 23 Nov 2006 19:17:09 -0600
-Message-ID: <1548898476.20061123191709@globalproject.com>
+Date: Thu, 23 Nov 2006 22:07:56 -0600
+Message-ID: <2194871004.20061123220756@gjainc.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----------AEBD86DA49094F8"
+	boundary="----------2F6822AB7D58287"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (unknown [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFEF928B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 01:16:28 +0100 (MET)
-Received: from 149184472 (unknown [68.145.46.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BAE229A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 04:07:20 +0100 (MET)
+Received: from -1215470584 (unknown [60.13.166.32])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	E641B9985E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 01:16:26 +0100 (MET)
-Received: from globalproject.com (149184472 [148899096])
-	by globaxiscorp.com (Qmailv1) with ESMTP id BE48FE364A
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2006 19:17:09 -0600
+	557BF997EB
+	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2006 04:07:08 +0100 (MET)
+Received: from gjainc.com (-1215468544 [-1215467384])
+	by gl53.freeserve.co.uk (Qmailv1) with ESMTP id 8CEF969F48
+	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2006 22:07:56 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,20 +30,20 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------------AEBD86DA49094F8
+------------2F6822AB7D58287
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----------0BA232E16614978"
+	boundary="----------89D9A5163109AFD"
 
-------------0BA232E16614978
+------------89D9A5163109AFD
 Content-Type: multipart/alternative;
-	boundary="----------417FFF5C995A399"
+	boundary="----------32C9AEB5922EB46"
 
-------------417FFF5C995A399
+------------32C9AEB5922EB46
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
  
-------------417FFF5C995A399
+------------32C9AEB5922EB46
 Content-Type: text/html
 Content-Transfer-Encoding: 7bit
 
@@ -52,25 +52,25 @@ Content-Transfer-Encoding: 7bit
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <body>
-<p><img src="cid:anticipation.gif"></p>
-<p><font size="4" face="Times New Roman, Times, serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http:///?IJESRKUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV">Our site</a></font></p>
+<p><img src="cid:tern.gif"></p>
+<p><font size="4" face="Times New Roman, Times, serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http:///?IJESRKUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV">Shop with us</a></font></p>
 <p>&nbsp;</p>
-<p><font color="#553952">Za plechami pod poryvami slabogo Veterka poloskalsia dlinnyj chernyj plashch, otorochennyj po kraiam serebrom.  Ia netoroplivo Podnialsia, Klinok prygnul rukoiatiu v ladon, nalivaias purpurnym svecheniem.  Ne razdumyvaia, ia soskochil na zemliu.  Tut est o chem zadumatsia, Niks, ne pravda li? ona torzhestvuiushche Ulybnulas.  Isstuplenno zarychav, on rezko nagnulsia, Shvatil menia za ruki i chto est sily rvanul k sebe.  Hudoj, istoshchennyj starik s grivoj sedyh vsklokochennyh volos, odetyj v Lohmotia neopredelennogo cveta, pochemu-to pytalsia prikinutsia proizvedeniem Iskusstva.  Ni emocij, ni otgoloskov myslej.  Taj, pri ego poiavlenii otstavshaia ot moego charsa na polkorpusa, tiho ahnula.  Kengsh vriad li osoznaval, chto delaet.  No, chestno govoria, esli by on prikazal mne ubratsia, ia by sdelal eto Tak zhe molcha, kak on menia prinial.  Ia tozhe priderzhal 
- Zlydnia, pytaias poniat, chto ee Tak vstrevozhilo.  Kak tolko soberus s silami.  Po vsej v
- idimosti, pokinuv Menia posle bitvy, energiia Klinka kakim-to obrazom prihvatila s soboj i moiu Sobstvennuiu podobno ravnodushnoj volne okeanskogo otliva, bezdumno Zabiraiushchej s soboj vody fiordov.  Ia pozvolil sebe Usmehnutsia i prislonilsia plechom k stene koridora, pytaias sniat s noiushchih Natruzhennyh nog hot chast nagruzki, gadaia, chto mne suzhdeno uslyshat v etot raz.  Kak tam vy mezh soboj menia klichete? Gladkolicyj? Ladno, ne delaj Stol udivlennyj vid, budto dlia tebia eto novost, sam zhe, verno, eto prozvishche i Pri­dumal.  V krajnem sluchae pri vozvrashchenii vospolzuius bankosom Nori.  Otshelnik dejstvitelno vygliadel dovolno Bodro posle teleportacii, a Celitel.  Sliianie tozhe ne stoit primeniat, slishkom blizko ot Prokolda.  Tolko recept izgotovleniia kakogo-to Opredelennogo sorta derzhitsia v strozhajshem sekrete.  Aga, tak oni uzhe vernulis, poka on tut dremal! A 
- mag? Vzgliad instinktivno peremestilsia v glubinu zala, tuda, gde raspolagalis Samye moshc
- hnye Istochniki.  Kstati, dlia tebia samoe razumnoe otpravitsia sejchas k granice Nubesara eto po puti v Neurejiu.  Samyj Iskusnyj mag vriad li takoe sotvorit, stol sovershennuiu illiuziiu.  Tak chto poslednij spektakl, kotoryj tebe tak ne Ponravilsia, i vpriam ne oboshelsia bez ego uchastiia.  Mozhet, inop.  Tak chto imenno zdes, posredi ploshchadi, my i Prepodadim nagliadnyj urok shefiru.  Spokojno, svetochtimyj, prerval ego gnevnye izliianiia mag, Bolshe Etot chelovek nas ne potrevozhit.  Ia skormil gipertransliatoru etalon i povtoril zapros.  No oshalevshee ot Nervnogo napriazheniia serdce v konce koncov ustalo buhat v grudi, chto kuznechnyj Molot, i teper lish gluho vorochalos gde-to pod zheludkom.  No chuzhoj byl inogo mneniia o vremeni privala.  Otlichnaia ideia, Stilen! U menia zadnica ne Kazennaia, i ia celikom i polnostiu za to, chtoby sokratit nash put! Ot etogo Dolbanogo sed
- la, chtob im lysun podavilsia, nu, kotoroe ia vzial vmesto starogo Pered poezdkoj, u menia
-  uzhe mozoli na.  Etot zasfernik priamo pritiagivaet K sebe nepriiatnosti! My eshche daleko ot nih, svetlejshij? Net.  Vot eto, to i eto stavte na stol, ostalnoe proch.  Nikto nikogda Eshche ne videl mertvogo frajdena, schitaetsia, chto oni umiraiut tolko na svoej Planete i tolko ot starosti.  Samoe vremia Ubiratsia iz kabineta shefira.  Prosto Sejchas ty ob etom nichego ne pomnish.  Ty nikogda ego ne Uvidish, etot adskij shar, potomu chto tunnel, po kotoromu on nesetsia, vsegda Zalit sploshnym mrakom.  </font></p>
+<p><font color="#146242">Togda on Pridumal novoe razvlechenie dlia sheltian ohotu na inoplanetnikov.  Da ia tak i dumal, tolko zhdal, kogda kto-nibud iz vas skazhet.  Zdes reshaiu ia.  Da i lysuny, liubiteli chelovechinki, postoianno v Okruge shastaiut, eti merzkie tvari tolko ostruiu stal i uvazhaiut.  Delo sdelano.  Tugoj vodianoj iazyk, kovarno vyzvannyj magiej dal-rokta, projdias po nastilu, Unes ves mnogoletnij musor i griaz, s kotoroj ne spravlialas metla, unes i Oblomki dosok.  Magiia Nkota, kak ia uzhe skazal.  Taj obespokoenno tronula Ego za ruku i otdernula palcy, slovno obozhglas, kist Niksarda byla Ledianoj, okostenevshej.  Ochen stranno, chto tebe eto neponiatno.  Moj nachalnik, Naprimer, tak i postupaet, stoit mne tolko zaiknutsia o pribavke k Zhalovaniu.  Za nego tozhe predstoialo otomstit.  On obnaruzhil, chto piatitsia, tolko kogda natknulsia spinoj na dvernoj kosiak.  D
+ ogadyvaius, chto Cherez neskolko let emu udalos poluchit korochki pilota i on otpravilsia 
+ v Svoj pervyj nezabyvaemyj rejs.  A gde on sejchas? Proshlo mnogo let s teh por, kak ia ego videl, no ia redko oshibaius.  I tem samym okazatsia v neposredstvennoj blizosti ot shefira.  Rezkij povorot dorogi vynes otriad na priamuiu dorogu, vedushchuiu k zastave Nubesov, i Initoks do boli stisnul klyki, nakonec svoimi glazami uvidev vperedi Dvuh sedokov v odnom sedle, nesushchihsia na charse, predavshem svoj Rod.  Nu? Duel.  K pristani napravlialsia Gront.  Kak vizhu, chuzhoj eshche ne poiavlialsia? Otshelnik otodvinul oto rta gorlyshko fliagi rovno nastolko, chtoby eto Ne pomeshalo emu korotko kivnut v znak soglasiia, a zatem prisosalsia snova.  Na Ferme.  Mne dejstvitelno Prishlos tiazhko, no ia dazhe ne sprosil, kakovo bylo tebe.  Ia podumal, chto sejchas podsotnik opiat shlopochet za samoupravstvo, no Onni Lish razdrazhenno vyrvalas iz ego ruk i ostalas stoiat.  No slova gostia Ej p
+ rishlis po dushe.  O spasenii etogo mira.  Mozhet byt, prevyshenie sily Tozhe sledstvie de
+ jstviia Duha makora? Poteria kontrolia nad svoej siloj.  Chuvstva i oshchushcheniia ne prosto pritupilis oni Ischezli.  Ne proshlo i minuty, kak nedaleko ot Mezhkabaka pokazalas shirokoplechaia Figura v plashche i shirokopolom soro.  A znachit, tot, kto mozhet Stat provodnikom etogo Prorochestva, dolzhen umeret, i kak mozhno bystree.  Da chto so mnoj takoe tvoritsia? Ia Chto, shozhu s uma? Dlia prostogo sna etot bezumnyj bred byl slishkom realen.  I chtoby mest byla polnoj, svershit ee Dolzhen tot, kto bolee vsego etogo zasluzhivaet.  Sleduj za mnoj i ne vzdumaj soprotivliatsia.  Kapiushon zashchishchal golovu ot syrosti, chutok Uskorennyj metabolizm ot holoda.  Tishina vdrug rascvela strannymi zvukami, iskriashchimisia ottenkami Neobychnyh cvetov, ravnina slovno zapela.  Poverhnost bankosa na oshchup Okazalas uprugoj i teploj, tochno v ruke okazalos zhivoe sushchestvo.  I etu Tvar my s
+ obiraemsia iskorenit?! Vrag vse vremia nahoditsia riadom, neobhodimo byt nacheku, derzhat 
+ svoi Mysli pod neoslabevaiushchim kontrolem.  Arhitektor? Eto slovo ona povtorila za mnoj s komichno-nedoumevaiushchim vyrazheniem.  </font></p>
 </body>
 </html>
-------------417FFF5C995A399--
+------------32C9AEB5922EB46--
 
-------------0BA232E16614978
-Content-Type: image/gif; name="anticipation.gif"
+------------89D9A5163109AFD
+Content-Type: image/gif; name="tern.gif"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="anticipation.gif"
-Content-ID: <anticipation.gif>
+Content-Disposition: attachment; filename="tern.gif"
+Content-ID: <tern.gif>
 
 R0lGODlhKAHQALMAAKDT7ius5VW243rH6cnk8ufy+EOr3GW+5mS24SQkJO4hIQwA/wCwa8gf
 ynt7e////yH5BAAAAAAALAAAAAAoAdAAAAT/8MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt
@@ -134,9 +134,9 @@ RLl+6aeO/IeTCDmKIpmUgAiR25hphz6JkUypiT25khQZlJEYjnrIibtxjeDXjJvodWA5ljtQ
 lsGYlmq5lmzZlm75lnAZl3I5l3RZl3Z5l3iZl3q5l3zZl375l4AZmII5mIRZmIZ5mIiZmIq5
 mIzZmI75mJAZmZI5mZSZlxEAADs=
 
-------------0BA232E16614978--
+------------89D9A5163109AFD--
 
-------------AEBD86DA49094F8
+------------2F6822AB7D58287
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -147,7 +147,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------------AEBD86DA49094F8
+------------2F6822AB7D58287
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -158,4 +158,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------------AEBD86DA49094F8--
+------------2F6822AB7D58287--
