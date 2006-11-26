@@ -1,15 +1,21 @@
-From: owner@bugs.debian.org (Debian Bug Tracking System)
-Subject: Bug#399342: marked as done (alsa-base: no (or
- horrible) sound with Ali M5455 AC'97)
-Date: Thu, 23 Nov 2006 14:03:38 -0800
-Message-ID: <handler.399342.D399342.116431907714591.ackdone@bugs.debian.org>
-References: <20061123215742.GA26934@frodo.home.lxtec.de>
-	<20061119113805.4186.27741.reportbug@Estello>
+From: "Glenn K. Transporting" <extrication@gourmetfoods101.com>
+Subject: Re: (no subject)
+Date: Sat, 25 Nov 2006 21:25:36 -0600
+Message-ID: <7496045872.20061125212536@gourmetfoods101.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1164319418-21084-0"
+Content-Type: multipart/mixed;
+	boundary="----------76A0DC19021CBE5"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Resent-Message-ID: <20061125124256.GB3957@frodo.home.lxtec.de>
-Resent-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Received: from gate.perex.cz (unknown [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C143F2BE
+	for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2006 03:24:49 +0100 (MET)
+Received: from -1215987344 (unknown [220.73.224.32])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	8F4079998F
+	for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2006 03:24:47 +0100 (MET)
+Received: from gourmetfoods101.com (-1215963272 [-1215439696])
+	by gms-security.com (Qmailv1) with ESMTP id A35660D5EC
+	for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2006 21:25:36 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,243 +25,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Elimar Riesebieter <riesebie@lxtec.de>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
+This is a multi-part message in MIME format.
 
-------------=_1164319418-21084-0
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=utf-8
+------------76A0DC19021CBE5
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----------56C4DFE145742D2"
 
-Your message dated Thu, 23 Nov 2006 22:57:43 +0100
-with message-id <20061123215742.GA26934@frodo.home.lxtec.de>
-and subject line Bug#399342: [Pkg-alsa-devel] Bug#399342: alsa-base: no (or=
- horrible) sound with Ali M5455 AC'97
-has caused the attached Bug report to be marked as done.
+------------56C4DFE145742D2
+Content-Type: multipart/alternative;
+	boundary="----------E4884555F57012E"
 
-This means that you claim that the problem has been dealt with.
-If this is not the case it is now your responsibility to reopen the
-Bug report if necessary, and/or fix the problem forthwith.
-
-(NB: If you are a system administrator and have no idea what I am
-talking about this indicates a serious mail system misconfiguration
-somewhere.  Please contact me immediately.)
-
-Debian bug tracking system administrator
-(administrator, Debian Bugs database)
-
-
-------------=_1164319418-21084-0
-Content-Type: message/rfc822
-Content-Disposition: inline
+------------E4884555F57012E
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Received: (at submit) by bugs.debian.org; 19 Nov 2006 11:42:26 +0000
-Return-path: <alexandre.pineau@free.fr>
-Received: from smtp6-g19.free.fr ([212.27.42.36])
-	by spohr.debian.org with esmtp (Exim 4.50) id 1GlkzQ-0001Ck-UM
-	for submit@bugs.debian.org; Sun, 19 Nov 2006 03:37:37 -0800
-Received: from Estello (nas-cbv-7-62-147-100-144.dial.proxad.net
-	[62.147.100.144])
-	by smtp6-g19.free.fr (Postfix) with ESMTP id 0A70B435E7
-	for <submit@bugs.debian.org>; Sun, 19 Nov 2006 12:37:34 +0100 (CET)
-Received: by Estello (Postfix, from userid 1000)
-	id AC14B7E515; Sun, 19 Nov 2006 12:38:05 +0100 (CET)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-From: Alexandre Pineau <alexandre.pineau@free.fr>
-To: Debian Bug Tracking System <submit@bugs.debian.org>
-Subject: alsa-base: no (or horrible) sound with Ali M5455 AC'97
-Message-ID: <20061119113805.4186.27741.reportbug@Estello>
-X-Mailer: reportbug 3.31
-Date: Sun, 19 Nov 2006 12:38:05 +0100
-Content-Transfer-Encoding: quoted-printable
-Delivered-To: submit@bugs.debian.org
-X-Spam-Checker-Version: SpamAssassin 2.60-bugs.debian.org_2005_01_02
-	(1.212-2003-09-23-exp) on spohr.debian.org
-X-Spam-Level: 
-X-Spam-Status: No, hits=-7.0 required=4.0 tests=BAYES_00,HAS_PACKAGE,
-	RCVD_IN_SORBS autolearn=no version=2.60-bugs.debian.org_2005_01_02
-
-Package: alsa-base
-Version: 1.0.13-1
-Severity: grave
-Justification: renders package unusable
-
-After an upgrade to the last version of alsa / kernel, I have no sound=20
-(or more exactly horrible sound after the use of alsa-config).
-
-result of lspci :
-00:04.0 Multimedia audio controller: ALi Corporation M5455 PCI AC-Link=20
-Controller Audio Device (rev 20)
-
-result of dsmeg :
-AC'97 1 does not respond - RESET
-AC'97 1 access is not valid [0xffffffff], removing mixer.
-Unable to initialize codec #1
-intel8x0_measure_ac97_clock: measured 54888 usecs
-intel8x0: clocking to 48000
-
-result of lsmod | grep snd
-snd_intel8x0           29596  0
-snd_ac97_codec         82336  1 snd_intel8x0
-snd_ac97_bus            2304  1 snd_ac97_codec
-snd_pcm_oss            35616  0
-snd_mixer_oss          15616  1 snd_pcm_oss
-snd_pcm                71432  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              19716  1 snd_pcm
-snd                    45668  6=20
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               8800  1 snd
-snd_page_alloc          9480  2 snd_intel8x0,snd_pcm
-
-Many thanks for your help.
-
-	Best regards,
-
-Alexandre Pineau
-
-(The sound works perfectly before the upgrade, that's why I have choose=20
-to say that it is a grave bug. You can lower the severity if you want)
-
--- Package-specific info:
---- Begin additional package status ---
-Souhait=3DinconnU/Install=C3=A9/suppRim=C3=A9/Purg=C3=A9/H=3D=C3=A0 garde=
-r
-| =C3=89tat=3DNon/Install=C3=A9/fichier-Config/d=C3=A9paqUet=C3=A9/=C3=A9=
-chec-conFig/H=3Dsemi-install=C3=A9
-|/ Err?=3D(aucune)/H=3D=C3=A0 garder/besoin R=C3=A9installation/X=3Dles d=
-eux (=C3=89tat,Err: majuscule=3Dmauvais)
-||/ Nom            Version        Description
-+++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-ii  libasound2     1.0.13-1       ALSA library
---- End additional package status ---
---- Begin /proc/asound/version ---
-Advanced Linux Sound Architecture Driver Version 1.0.11rc4 (Wed Mar 22 10=
-:27:24 2006 UTC).
---- End /proc/asound/version ---
---- Begin /proc/asound/cards ---
- 0 [M5455          ]: ICH - ALi M5455
-                      ALi M5455 with ALC850 at 0x0, irq 217
---- End /proc/asound/cards ---
---- Begin /dev/snd/ listing ---
-total 0
-crw-rw---- 1 root audio 116,  0 2006-11-19 11:32 controlC0
-crw-rw---- 1 root audio 116, 24 2006-11-19 11:32 pcmC0D0c
-crw-rw---- 1 root audio 116, 16 2006-11-19 11:32 pcmC0D0p
-crw-rw---- 1 root audio 116, 25 2006-11-19 11:32 pcmC0D1c
-crw-rw---- 1 root audio 116, 18 2006-11-19 11:32 pcmC0D2p
-crw-rw---- 1 root audio 116, 33 2006-11-19 11:32 timer
---- End /dev/snd/ listing ---
-
--- System Information:
-Debian Release: testing/unstable
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Shell:  /bin/sh linked to /bin/bash
-Kernel: Linux 2.6.17-2-486
-Locale: LANG=3Dfr_FR.UTF-8, LC_CTYPE=3Dfr_FR.UTF-8 (charmap=3DUTF-8)
-
-Versions of packages alsa-base depends on:
-ii  linux-sound-base           1.0.13-1      base package for ALSA and OS=
-S soun
-ii  lsof                       4.77.dfsg.1-3 List open files
-ii  module-init-tools          3.2.2-3       tools for managing Linux ker=
-nel mo
-ii  modutils                   2.4.27.0-6    Linux module utilities
-
-Versions of packages alsa-base recommends:
-ii  alsa-utils                    1.0.13-1   ALSA utilities
-
-Versions of packages libasound2 depends on:
-ii  libc6                        2.3.6.ds1-4 GNU C Library: Shared librar=
-ies
-
--- no debconf information
-
-
-------------=_1164319418-21084-0
-Content-Type: message/rfc822
-Content-Disposition: inline
+ 
+------------E4884555F57012E
+Content-Type: text/html
 Content-Transfer-Encoding: 7bit
 
-Received: (at 399342-done) by bugs.debian.org; 23 Nov 2006 21:57:57 +0000
-Return-path: <riesebie@lxtec.de>
-Received: from h01.hostsharing.net ([212.42.230.152])
-	by spohr.debian.org with esmtp (Exim 4.50)
-	id 1GnMZx-0003mb-1b; Thu, 23 Nov 2006 13:57:57 -0800
-Received: from mail.home.lxtec.de (p3EE06416.dip.t-dialin.net [62.224.100.22])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by h01.hostsharing.net (Postfix) with ESMTP id 30531161B88FE;
-	Thu, 23 Nov 2006 22:57:54 +0100 (CET)
-Received: from localhost ([127.0.0.1])
-	by mail.home.lxtec.de with esmtp (Exim 4.63 1 (LXTEC))
-	id 1GnMZt-00007T-4w; Thu, 23 Nov 2006 22:57:53 +0100
-X-Virus-Scanned: amavisd-new 2.4.2 (Debian/LXTEC) at mail.home.lxtec.de
-Received: from mail.home.lxtec.de ([127.0.0.1])
-	by localhost (mail.home.lxtec.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ZESSAIrA3Id9; Thu, 23 Nov 2006 22:57:43 +0100 (CET)
-Received: from frodo.home.lxtec.de ([192.168.200.202] ident=Debian-exim)
-	by mail.home.lxtec.de with esmtps (Exim 4.63 1 (LXTEC))
-	id 1GnMZj-00007K-Oe; Thu, 23 Nov 2006 22:57:43 +0100
-Received: from riesebie by frodo.home.lxtec.de with local (Exim 4.63 1 (LXTEC))
-	id 1GnMZj-0007jP-80; Thu, 23 Nov 2006 22:57:43 +0100
-Date: Thu, 23 Nov 2006 22:57:43 +0100
-From: Elimar Riesebieter <riesebie@lxtec.de>
-To: 399342-submitter@bugs.debian.org
-Cc: 399342-done@bugs.debian.org
-Subject: Re: Bug#399342: [Pkg-alsa-devel] Bug#399342: alsa-base: no (or
-	horrible) sound with Ali M5455 AC'97
-Message-ID: <20061123215742.GA26934@frodo.home.lxtec.de>
-References: <20061119113805.4186.27741.reportbug@Estello>
-	<20061122185007.GB4758@frodo.home.lxtec.de>
-	<20061123223147.5e3ee0c1.alexandre.pineau.p@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20061123223147.5e3ee0c1.alexandre.pineau.p@free.fr>
-Organization: LXTEC
-X-gnupg-key-fingerprint: BE65 85E4 4867 7E9B 1F2A  B2CE DC88 3C6E C54F 7FB0
-X-Editor: VIM - Vi IMproved 7.0 (2006 May 7, compiled Nov 15 2006 16:11:06)
-User-Agent: Mutt/1.5.13-muttng (2006-11-15)
-X-Spam-Checker-Version: SpamAssassin 2.60-bugs.debian.org_2005_01_02
-	(1.212-2003-09-23-exp) on spohr.debian.org
-X-Spam-Level: 
-X-Spam-Status: No, hits=-3.5 required=4.0 tests=BAYES_10,HAS_BUG_NUMBER,
-	RCVD_IN_SORBS autolearn=no version=2.60-bugs.debian.org_2005_01_02
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<p><img src="cid:drearier.gif"></p>
+<p><font size="4" face="Times New Roman, Times, serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http:///?IJESRKUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV">Visit the Site</a></font></p>
+<p>&nbsp;</p>
+<p><font color="#120423">Sposobnoe rezat stal lezvie voshlo marnu v ego miagkoe serdce, i krovavyj Svet v ego mertvyh glazah umer okonchatelno.  Hudoj, istoshchennyj starik s grivoj sedyh vsklokochennyh volos, odetyj v Lohmotia neopredelennogo cveta, pochemu-to pytalsia prikinutsia proizvedeniem Iskusstva.  V vozduhe chuvstvovalsia zapah nedavno prolivshegosia dozhdia, Zametno holodalo.  Raznesti na kuski.  Navernoe, i vpravdu est radi chego tak zanositsia.  Glaza Mihkaia chut ne vylezli iz orbit, kogda on soobrazil, chto ta zhe samaia Zhutkaia uchast ozhidala i ploskodon, i ego komandu iz treh palubnikov so znakomym Lohanshchikom, Ulengrikom Belym, vo glave.  Tak chto Ferma Dolzhna predstavliatsia ej edinstvennym vyhodom.  K Tomu zhe mne izvestny tvoi mysli naschet etogo halda.  Otshelnik hmuro kivnul, raspravil obtianutye korichnevoj kozhej shirochennye Plechi, slovno sobiraias vstreti
+ t voznikshuiu opasnost grudiu.  Ne nuzhno mne eto pravo.  Vseh i srazu.  chem dolshe ty bu
+ desh zdes ostavatsia, tem menshe Shansov u tebia budet skryt svoiu sushchnost, verno? Znachit, dazhe vecher uzhe Bolshoj minus.  Cherez nekotoroe vremia, kogda kokon razbuh pochti vtroe, polnostiu rastvoriv V sebe ostanki mertveca i prevrativshis v vysokoe veretenoobraznoe telo, Stoiavshee torchkom, proizoshli ocherednye izmeneniia.  I ia chto-to ne zametil, chto ona ploho sebia zdes chuvstvuet.  Dos podstrahovalsia i Pustil vperedi sebia pustuiu mashinu.  Kak-nikak Ia sam byvshij fermer.  Nashi glaza vstretilis, i prygun nanes dva korotkih rezhushchih udara Koncom shesta.  Potok serosti zhadno zaglatyval uchastki Soznaniia odin za drugim, skorost ego vse narastala.  Byt otverzhennym vsego za sotniu etalonov slishkom nakladno dlia takoj Poganoj roli, netoroplivo prodolzhal Bigman razvivat svoiu mysl.  Kogda-to ona provela Zdes deviat dolgih let uchenichestva, i pamiat do sih por hranila
+  raspolozhenie Ulic, usluzhlivo podskazyvaia napravlenie dazhe v temnote, carivshej v piat
+ om chasu Nochi prakticheski bezrazdelno.  Snachala on unichtozhil pervyh, zatem Prinialsia za svoih sozdatelej.  Eshche net.  Vriad li kto eshche tak dolgo protivostoial natisku koordinatora, tak Dolgo, krome Nkota.  A ostavshiesia doski siiali pervozdannoj chistotoj.  Da-a, mysli Zla, Celitel smotrel kak v vodu, predskazyvaia Reakciiu sheltian.  shefir? Pochemu.  Kuda tolko Podevalas ta nadmennaia gordiachka, s kotoroj ia poznakomilsia na Vojere.  Raskalennye sgustki plazmy Dlinnohvostymi kometami poneslis nad mostovoj, vrezaias v steny zdanij, Razbryzgivaia plastit i naproch vybivaia ne dolomannye razruhoj okna.  A zatem mag po imeni Stilen nanes udar.  Propustiv moi slova mimo ushej, Onni neprivetlivo ustavilas na udivlennogo Reakciej materi Kvina i bez vsiakogo pochteniia k ego novomu statusu progovorila: Ladno, Svetoch ty tam ili kto.  Itak, ia lezhal na spine, nebo zaslonialo gruz
+ noe telo Kengsha, i ogromnye Kulaki po-prezhnemu byli zaneseny dlia udara.  Vse-taki Sumel
+  rasshevelit e? liubopytstvo esli i ne sobstvennoj personoj, to siglajzerom.  No na etot raz on tozhe udostoil menia vzgliadom.  Strannyj dlia mestnosti Zapah, zapah neprovetrivaemoj godami komnaty s istlevshimi v pyl veshchami Zabivaet obonianie.  Bezbiletnik? Kto ty? I chto tebe nuzhno? V Leshu zvuk teriaet svoe znachenie, stanovias pochti ne vosprinimaemym na Sluh, ia ne uznal svoego golosa tak nizko i nerazborchivo on prozvuchal.  Na predele byl ne tolko ia odin Bigman, po-prezhnemu vyshagivavshij peredo Mnoj v ustanovlennom poriadke, neskolko raz spotknulsia na rovnom meste.  </font></p>
+</body>
+</html>
+------------E4884555F57012E--
 
-On Thu, 23 Nov 2006 the mental interface of
-Alexandre Pineau told:
+------------56C4DFE145742D2
+Content-Type: image/gif; name="drearier.gif"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="drearier.gif"
+Content-ID: <drearier.gif>
 
-> On Wed, 22 Nov 2006 19:50:07 +0100
-> Elimar Riesebieter <riesebie@lxtec.de> wrote:
-> 
-> > > After an upgrade to the last version of alsa / kernel, I have no sound 
-> > > (or more exactly horrible sound after the use of alsa-config).
-> > > 
-> [...]
-> > Should be the right drivers for your card. Anyway, did you upgraded
-> > to Version: 1.0.13-2?
-> 
-> Well, there is no problem in alsa, but I have a problem of sound with my package...
-> I'm sorry for the disturb. You can close this bug report!
+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
+mIzZmI75mJAZmZI5mZSZlxEAADs=
 
-THX, done ;)
+------------56C4DFE145742D2--
 
-Elimar
-
-
--- 
-  Alles was viel bedacht wird ist bedenklich!;-)
-         Friedrich Nietzsche
-
-------------=_1164319418-21084-0
+------------76A0DC19021CBE5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -266,7 +147,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------------=_1164319418-21084-0
+------------76A0DC19021CBE5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -277,4 +158,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------------=_1164319418-21084-0--
+------------76A0DC19021CBE5--
