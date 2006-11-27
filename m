@@ -1,14 +1,12 @@
-From: enigma_0Z <enigma.0za@gmail.com>
-Subject: Re: Alsa 1.0.14?
-Date: Mon, 27 Nov 2006 12:35:34 -0500
-Message-ID: <a6f0b350611270935q1df77ae1k8bdc7874dd88b9b7@mail.gmail.com>
-References: <1164643487.413.99.camel@razman> <s5h7ixg6fcj.wl%tiwai@suse.de>
+From: "Jonas Eymann" <sm501_dev@gmx-topmail.de>
+Subject: Re: SM501 driver development: problem with start
+	of	playback
+Date: Mon, 27 Nov 2006 19:34:51 +0100
+Message-ID: <20061127183451.71080@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h7ixg6fcj.wl%tiwai@suse.de>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,54 +16,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 11/27/06, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 27 Nov 2006 08:04:47 -0800,
-> Tobin Davis wrote:
-> >
-> > With as much that has changed since alsa-1.0.13, can we expect to start
-> > rolling out 1.0.14 soon?  The more users testing the changes, the
-> > cleaner it gets.
->
-> Yes, I'm for release 1.0.14, at least, for drivers.
->
-> The question is still about device enumeration API in alsa-lib.
-> We have no real implementations in the application side, except for
-> aplay.  IMO, we'll need to create patches to major apps / system by
-> ourselves to push this API, instead of just waiting for their
-> implementations.  Otherwise no one will use such a new stuff at all
-> and the API will get rotten, as usual.
->
->
+> At Wed, 22 Nov 2006 10:44:55 +0100,
+> Jonas Eymann wrote:
+> > =
+
+> > Hi everyone,
+> > =
+
+> > I'm currently developing/ enhancing an ALSA driver for a Silicon
+> > Motion SM501 compagnion chip which contains also an 8051 =B5C acting
+> > as AC97 controller. It doesn't support DMA and so the copy of audio
+> > data is done in the driver. There is a small hardware buffer of 1920
+> > bytes which is devided into two halves and used as ring buffer. When
+> > the hardware has finished playing one half, it sends an interrupt to
+> > the driver so it can fill this half with new audio data while the
+> > hardware plays from the other one and so on. In the driver, I use an
+> > intermediate buffer with vmalloc(). =
+
+> > =
+
+> > Actually, I have a working driver now, but one small problem remains
+> > and I'm absolutely running out of ideas how to fix it: when the
+> > playback starts, the hardware expects the buffer to be filled
+> > completely (both halves), but the copy routine which does this first
+> > filling (snd_sm501_pfill()) only gets one period, not the two which
+> > are needed to fill the buffer completely. The second half it just
+> > reads zeros. It seems that the intermediate buffer is not yet filled
+> > with more data. This results in a gap of one period at the beginning
+> > of the playback (it's the second period that doesn't get copied).  =
+
+> =
+
+> Hm, this kind of implementation gets more common nowadays for small
+> devices, so we may need a better/simpler framework in furture.
+> =
+
+> Usually, the filler routine should fill the data as much as possible
+> at the time it's called.  The size of available data on the
+> itermediate buffer can be calculated via PCM appl_ptr.
+> =
+
+> Possibly, helper functions defined in pcm-indirect.h could be used in
+> your case.  Check the alsa-devel list archive in the last months,
+> threads "Driver design question".  The discussions went on there
+> regarding a driver implementation without DMA.  (The pcm-indirect.h
+> routines didn't work for his case well, unforutnately, though...)
+> =
+
+> =
+
 > Takashi
->
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> opinions on IT & business topics through brief surveys - and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
-Can we wait until the conexant patches are finalized? There are still
-some problems.
+Thanks for your answer, Takashi!
 
-Mainly that the new patch (patch10) that has been integrated into hg
-causes some opengl apps to slow down. I'm not sure how, and no
-messages show up in the logs, but reinstalling a different version
-(1.0.12, and i'm not sure how it's been patched) fixes the problem. It
-seems like there's some polling going on in the new driver that eats
-up cpu time from opengl apps.
+when I check the appl_ptr in the trigger callback, it gives me exactly one =
+period of available data. As soon as we are in the copy function called fro=
+m the isr (snd_sm501_copy_pdata), the appl_ptr is a few thousand periods fu=
+rther. Is there a simple way to change the default value for this first por=
+tion of available value?
+I'm also trying to implement the driver using the pcm-indirect.h. I just th=
+ought maybe there is a simpler solution.
 
-Of course, sound with the older hacked version does not work with wine...
+Thx for your answers!
+
+Jonas
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
