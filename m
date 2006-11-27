@@ -1,11 +1,10 @@
-From: "Jonas Eymann" <sm501_dev@gmx-topmail.de>
-Subject: Re: SM501 driver development: problem with start
-	of	playback
-Date: Mon, 27 Nov 2006 19:34:51 +0100
-Message-ID: <20061127183451.71080@gmx.net>
+From: Oliver Schinagl <oliver@schinagl.nl>
+Subject: Volume and other questions.
+Date: Mon, 27 Nov 2006 20:07:05 +0100
+Message-ID: <456B3759.1060304@schinagl.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,74 +18,73 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> At Wed, 22 Nov 2006 10:44:55 +0100,
-> Jonas Eymann wrote:
-> > =
+Hi,
 
-> > Hi everyone,
-> > =
+first of all, hello, I'm a new to alsa development and was hoping I
+could learn a thing or two here.
 
-> > I'm currently developing/ enhancing an ALSA driver for a Silicon
-> > Motion SM501 compagnion chip which contains also an 8051 =B5C acting
-> > as AC97 controller. It doesn't support DMA and so the copy of audio
-> > data is done in the driver. There is a small hardware buffer of 1920
-> > bytes which is devided into two halves and used as ring buffer. When
-> > the hardware has finished playing one half, it sends an interrupt to
-> > the driver so it can fill this half with new audio data while the
-> > hardware plays from the other one and so on. In the driver, I use an
-> > intermediate buffer with vmalloc(). =
+So here's the questions I have.
 
-> > =
+What's up with the documentation, specifically the API docs. It's ...
+not easy figureing stuff out from the doxygen generated docs. Right now
+I'm looking specifically at the:
+void snd_mixer_selem_get_id (snd_mixer_elem_t *elem,
+	snd_mixer_selem_id_t *id)  	
 
-> > Actually, I have a working driver now, but one small problem remains
-> > and I'm absolutely running out of ideas how to fix it: when the
-> > playback starts, the hardware expects the buffer to be filled
-> > completely (both halves), but the copy routine which does this first
-> > filling (snd_sm501_pfill()) only gets one period, not the two which
-> > are needed to fill the buffer completely. The second half it just
-> > reads zeros. It seems that the intermediate buffer is not yet filled
-> > with more data. This results in a gap of one period at the beginning
-> > of the playback (it's the second period that doesn't get copied).  =
 
-> =
+Get mixer simple element identifier.
 
-> Hm, this kind of implementation gets more common nowadays for small
-> devices, so we may need a better/simpler framework in furture.
-> =
+*Parameters:*
+	/elem/	Mixer simple element handle
+	/id/	returned mixer simple element identifier
 
-> Usually, the filler routine should fill the data as much as possible
-> at the time it's called.  The size of available data on the
-> itermediate buffer can be calculated via PCM appl_ptr.
-> =
+unsigned int snd_mixer_selem_id_get_index(const snd_mixer_selem_id_t 
+*obj)  	
 
-> Possibly, helper functions defined in pcm-indirect.h could be used in
-> your case.  Check the alsa-devel list archive in the last months,
-> threads "Driver design question".  The discussions went on there
-> regarding a driver implementation without DMA.  (The pcm-indirect.h
-> routines didn't work for his case well, unforutnately, though...)
-> =
+Get index part of a mixer simple element identifier.
 
-> =
+*Parameters:*
 
-> Takashi
+  	/obj/	Mixer simple element identifier
 
-Thanks for your answer, Takashi!
+*Returns:*
+    index part
 
-when I check the appl_ptr in the trigger callback, it gives me exactly one =
-period of available data. As soon as we are in the copy function called fro=
-m the isr (snd_sm501_copy_pdata), the appl_ptr is a few thousand periods fu=
-rther. Is there a simple way to change the default value for this first por=
-tion of available value?
-I'm also trying to implement the driver using the pcm-indirect.h. I just th=
-ought maybe there is a simpler solution.
+For example. Would you know what these functions do?
 
-Thx for your answers!
+I THINK (and thus the question) that snd_mixer_selem_get_id(); fills (so 
+why not snd_mixer_selem_id_fill()) the elem id based on the elem we have 
+(via snd_mixer_first_elem() for example) and then we can query the two 
+fields from the struct via snd_mixer_selem_id_get_index and 
+snd_mixer_selem_id_get_name.
+But then I wonder, how is this linked to an elem? What's the point of
+get id? Isn't this info in elem also? If I wanted to do some accounting,
+I'd have to have a struct with the elem and the sid (pointers) in it and
+than use the sid to identify the elem? Since there's also an
+snd_mixer_selem_get_name()
+call, what's the point in having 2 identical structures? I don't get it,
+and the documentation doesn't help at all regarding to this.
 
-Jonas
+
+Then my second question is the following: If I'd write an application,
+that uses alsa to output audio (for simplicities sake, let's look at
+xmms), would I be able to add a (software) mixer element for the audio
+output and be able to control the volume? I'm wondering this since
+there's all these snd_mixer_selem_id_copy()
+for example calls. I don't think I as a user am able to copy kernel
+contents, so what's the point of this function? If I can do this (why
+doens't xmms use it, they do a software volume control it seems, e.g.
+very delayed, or is this exactly what I'm asking) can I think of what is
+being said about the new Vista volume control crap, except for they dump
+it right in the windows mixer, whereas here it's a private mixer/control
+to the app that created it (much cleaner I think).
+
+Thanks,
+
+Oliver
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
