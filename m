@@ -1,10 +1,14 @@
-From: "" <panbohui@hotmail.com>
-Subject: different between "default" and "hw:0,0"?
-Date: Tue, 28 Nov 2006 13:26:29 +0800
-Message-ID: <BAY127-W126B9E39CB4FA3B9ED5A58C9E50@phx.gbl>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: SM501 driver development: problem with start of
+ playback
+Date: Tue, 28 Nov 2006 09:32:39 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0611280930160.29580@tm8103.perex-int.cz>
+References: <20061127183451.71080@gmx.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1199481504=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20061127183451.71080@gmx.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,60 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Jonas Eymann <sm501_dev@gmx-topmail.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1199481504==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
+On Mon, 27 Nov 2006, Jonas Eymann wrote:
 
+> when I check the appl_ptr in the trigger callback, it gives me exactly 
+> one period of available data. As soon as we are in the copy function 
 
-Hi all,
-I'm new to alsa, and get some confused with "default" device and and the
-"hw:0,0" device, do they have any difference?
-i write a very simple media player app, using xine-lib, i modify the
-xine config file, set the "audio.device.alsa_front_device" value to
-"hw:0,0".=20
-i found that, when the value is "hw:0,0", the program can NOT run more
-than one process at same time(I mean only one process can play
-sound,others hang),
-when the value set to "default", i can run more than one process, and
-every app can play sound at same time.
-so, it seems that, the "default" and he "hw0,0" are not same, and i
-don't know the detail.
+Which tool do you use for tests? Could you try aplay and send us also 
+debug output (aplay -v <xxxx>)? It might be sw_params setup problem.
 
-can anybody help me? thanks a lot!
-Bhpan=20
+						Jaroslav
 
-
-
-
-_________________________________________________________________
-=C2=CA=CF=C8=B3=A2=CA=D4 Windows Live Mail=A1=A3
-http://ideas.live.com/programpage.aspx?versionId=3D5d21c51a-b161-4314-9b0=
-e-4911fb2b2e6d
-
-
---===============1199481504==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1199481504==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1199481504==--
