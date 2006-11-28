@@ -1,12 +1,16 @@
-From: David Cullen <david.cullen@teligy.com>
-Subject: Call to mmap in ALSA lib 1.0.13 fails in
- src/pcm/pcm_mmap.c line 367
-Date: Mon, 27 Nov 2006 17:01:52 -0500
-Message-ID: <456B6050.9040309@teligy.com>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [PATCH] Make internal speaker work on Acer C20x
+	tablets
+Date: Tue, 28 Nov 2006 12:44:27 +1030 (CST)
+Message-ID: <200611280214.kAS2ERLS027289@turbo.physics.adelaide.edu.au>
+References: <mailman.102557.1164632747.8777.alsa-devel@lists.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <mailman.102557.1164632747.8777.alsa-devel@lists.sourceforge.net>
+	from "alsa-devel-request@lists.sourceforge.net" at Nov 27,
+	2006 05:05:47 AM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,48 +21,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Folks,
+Hi Takashi
 
-I am trying to get ALSA version 1.0.13 working on an AMCC PowerPC
-PPC405EP Taihu board with a Sound Blaster Live! 24-bit 7.1 PCI card.
- I am using a patched 2.6.13 kernel that comes with the board.  I
-built the kernel with the sound core built in and I used the
-cross-compiler tools to build the ALSA driver, library, and utils.
-When I run "speaker-test", it crashes in the ALSA library.  The
-problem is that the call to mmap in
+> > The following patch creates a new "Mono speaker" control in alsamixer 
+> > when the Realtek "acer" model is used with hda_intel.  This is needed so
+> > the internal mono speaker (when present) can be controlled.
+> > :
+> > The patch is against ALSA 1.0.13 and applies to patch_realtek.c in the
+> > hda/ driver directory.
+> 
+> The config table was recently changed to use a new standard
+> struct snd_pci_quirk.  I fixed the patch as follows.  Could you check
+> whether it's OK for HG version?
 
-   alsa-lib-1.0.13/src/pcm/pcm_mmap.c line 367
+The revised patch looks good.  I will see about getting it explicitly tested
+but I can see no reason not to apply it to HG now.
 
-which looks like
+Regards
+  jonathan
 
-   ptr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED,
-i->u.mmap.fd, i->u.mmap.offset);
 
-returns a pointer that appears to be valid (0x3001E000) but causes a
-kernel OOPS when accessed.
+Signed-off-by: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 
-Previous calls to mmap in pcm_hw.c on lines 822 and 854 both
-succeed, and the pointers returned can be successfully accessed, but
-they use the status and control offsets as parameters to mmap.
+diff -r 840a08bfad3d pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Sat Nov 25 22:02:47 2006 +0000
++++ b/pci/hda/patch_realtek.c	Mon Nov 27 11:58:51 2006 +0100
+@@ -3271,11 +3271,20 @@ static struct snd_kcontrol_new alc260_fu
+  * and the output jack.  If this turns out to be the case for all such
+  * models the "Line Jack Mode" mode could be changed from ALC_PIN_DIR_INOUT
+  * to ALC_PIN_DIR_INOUT_NOMICBIAS.
++ *
++ * The C20x Tablet series have a mono internal speaker which is controlled
++ * via the chip's Mono sum widget and pin complex, so include the necessary
++ * controls for such models.  On models without a "mono speaker" the control
++ * won't do anything.
+  */
+ static struct snd_kcontrol_new alc260_acer_mixer[] = {
+ 	HDA_CODEC_VOLUME("Master Playback Volume", 0x08, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2, HDA_INPUT),
+ 	ALC_PIN_MODE("Headphone Jack Mode", 0x0f, ALC_PIN_DIR_INOUT),
++	HDA_CODEC_VOLUME_MONO("Mono Speaker Playback Volume", 0x0a, 1, 0x0,
++			      HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Mono Speaker Playback Switch", 0x0a, 1, 2,
++			   HDA_INPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0, HDA_INPUT),
+@@ -3590,11 +3599,11 @@ static struct hda_verb alc260_acer_init_
+ 	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF50},
+ 	/* Line In jack is connected to Line1 pin */
+ 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	/* Some Acers (eg: C20x Tablets) use Mono pin for internal speaker */
++	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
+ 	/* Ensure all other unused pins are disabled and muted. */
+ 	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+ 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+-	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+-	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+ 	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+@@ -3622,6 +3631,8 @@ static struct hda_verb alc260_acer_init_
+ 
+ 	/* Unmute Line-out pin widget amp left and right (no equiv mixer ctrl) */
+ 	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	/* Unmute mono pin widget amp output (no equiv mixer ctrl) */
++	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+ 	/* Unmute Mic1 and Line1 pin widget input buffers since they start as
+ 	 * inputs. If the pin mode is changed by the user the pin mode control
+ 	 * will take care of enabling the pin's input/output buffers as needed.
+@@ -4122,6 +4133,7 @@ static const char *alc260_models[ALC260_
+ };
+ 
+ static struct snd_pci_quirk alc260_cfg_tbl[] = {
++	SND_PCI_QUIRK(0x1025, 0x007b, "Acer C20x", ALC260_ACER),
+ 	SND_PCI_QUIRK(0x1025, 0x008f, "Acer", ALC260_ACER),
+ 	SND_PCI_QUIRK(0x103c, 0x3010, "HP", ALC260_HP_3013),
+ 	SND_PCI_QUIRK(0x103c, 0x3011, "HP", ALC260_HP),
 
-I haved traced the problem on the target into the ALSA library using
-gdb and into the kernel using kgdb and everything looks like it
-works properly.  If I disable the semaphore acquisition in do_mmap2,
-I can print the contents of the address in kgdb using
-
-   (gdb) print ((char *)vma->vm_start)[0]
-
-after the call to vm_link in do_mmap_pgoff.  However, the board
-locks up after the print command.
-
-Anyone have any experience with this type of problem on PowerPC systems?
-
--- 
-Thank you,
-David Cullen
-Teligy
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
