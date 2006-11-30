@@ -1,10 +1,10 @@
-From: "Bingham Gertie" <xzsr@pannenkoekenhuizen.cjb.net>
-Subject: said chick turns out to really be hot and your one
-	goal is to have sex under the tower in back.
-Date: Thu, 30 Nov 2006 15:45:42 +0800
-Message-ID: <000601c71453$cd158850$9de9d5d2@wtidf>
+From: "Brooks Lambert" <mwpn@boseckesong.com>
+Subject: Funeral Counseling,
+	a non-profit charitable organization and Memorial Link.
+Date: Thu, 30 Nov 2006 15:47:05 +0800
+Message-ID: <000601c71453$d8ba7d50$eab1d5d2@hweft>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0299820576=="
+Content-Type: multipart/mixed; boundary="===============1176272911=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,59 +15,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0299820576==
+--===============1176272911==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0002_01C71496.DB30D910"
+	boundary="----=_NextPart_000_0002_01C71496.E6D531D0"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0002_01C71496.DB30D910
+------=_NextPart_000_0002_01C71496.E6D531D0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0003_01C71496.DB32D4E0"
+	boundary="----=_NextPart_001_0003_01C71496.E6D754B0"
 
 
-------=_NextPart_001_0003_01C71496.DB32D4E0
+------=_NextPart_001_0003_01C71496.E6D754B0
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-you know what temperature it is. At Christmas dinner, you backsell the =
-Christmas presents, explaining that "Unopened ones around the corner, =
-stick around".
-you can recite all the spots in a break.
-this could be the one".
-Oracle Warehouse builder supported this unified environment with its =
-dimensional and cube based modeling features. when your at home and you =
-answer the phone and give the stations call letters.
-you have dozens of tapes of radio stations that play music you don't =
-like. you make your friends listen to airchecks and they have no idea =
-what you are talking about.
-Looking for ONE PLOT in St Bernards Cemetery in Tariffville, =
-Connecticut. you base your trip plans on what stations you want to hear. =
-you have lived in six cities in eight years. you know how long it takes =
-you to take a dump by song title. you answer the phone and tell someone =
-their caller . you have recurring nightmares about bad airshifts filled =
-with dead air. Then the paper introduces the primary interface to the =
-Automatic SQL Tuning using the Enterprise Manager and illustrates it =
-with examples. your chief engineer has ever had to talk you through how =
-to fix a transmitter from over a cell phone.
-the one time you need the power generator is the one day the electrician =
-didnt have time to hook it up. the equipment at your station decides to =
-stop working properly and just go to hell on a holiday weekend when no =
-one can be reached.
-you swear at the competition while driving when you hear a song they =
-beat you to.
-when the hotline rings you break into a cold sweat.
-you are a "seasoned pro" after two years in the business.
-you have ever taped a boring conversation with someone and turned it =
-into something funny. 
-------=_NextPart_001_0003_01C71496.DB32D4E0
+said chick turns out to really be hot and your one goal is to have sex =
+under the tower in back. you have a CD player in your car, but no tape =
+deck, and are mad!
+To date, most predictive analytic operations require the extraction of =
+data to a separate analytic server where the data cannot be easily =
+joined back to the other sources.
+you have a dozen radios, but you need them all.
+Then the paper introduces the primary interface to the Automatic SQL =
+Tuning using the Enterprise Manager and illustrates it with examples. =
+you can recite the five-day forecast from memory.
+you base your trip plans on what stations you want to hear. It is =
+designed to work equally well for OLTP and Data Warehouse type =
+applications.
+You get excited at sunset and drive by the towers just to hear the phase =
+shift. To date, most predictive analytic operations require the =
+extraction of data to a separate analytic server where the data cannot =
+be easily joined back to the other sources. you have ever taped a boring =
+conversation with someone and turned it into something funny. This =
+structure is intended to simplify the analysis process for end users. =
+Please Register with The Final Arrangements Network. you listen to the =
+radio "invertedly", turning up the volume during promos, sweepers, and =
+talksets, and flipping to another station during music. you have copies =
+of both the album version and radio edit. said chick turns out to really =
+be hot and your one goal is to have sex under the tower in back.
+two months ago when you worked at the car wash you could jog a mile =
+without being out of breath and now it is tough for you to get from your =
+car to the LazEboy. Virgin was using a hosted service to analyze its =
+point of sale data, but the time delay in receiving the data limited =
+Virgin's managers' ability to act on it effectively.
+Only one other program, The Cosby Show, has tied All In The Family in =
+terms of years at the top of the ratings.
+you listen to the radio "invertedly", turning up the volume during =
+promos, sweepers, and talksets, and flipping to another station during =
+music.
+you can tell what time it is when listening to the radio even if they =
+don't give the time.
+you have recurring nightmares about bad airshifts filled with dead air. 
+------=_NextPart_001_0003_01C71496.E6D754B0
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -76,75 +83,88 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"rouge" hspace=3D0=20
-src=3D"cid:000101c71453$cd0b9d40$9de9d5d2@wtidf" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"flasher" hspace=3D0=20
+src=3D"cid:000101c71453$d8afcef0$eab1d5d2@hweft" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you know what temperature it is. At =
-Christmas=20
-dinner, you backsell the Christmas presents, explaining that "Unopened =
-ones around=20
-the corner, stick around".</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you can recite all the spots in a=20
-break.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>this could be the one".</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Oracle Warehouse builder supported this =
-unified=20
-environment with its dimensional and cube based modeling features. when =
-your at home=20
-and you answer the phone and give the stations call =
-letters.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you have dozens of tapes of radio =
-stations that=20
-play music you don't like. you make your friends listen to airchecks and =
-they have=20
-no idea what you are talking about.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Looking for ONE PLOT in St Bernards =
-Cemetery in=20
-Tariffville, Connecticut. you base your trip plans on what stations you =
-want to=20
-hear. you have lived in six cities in eight years. you know how long it =
-takes you to=20
-take a dump by song title. you answer the phone and tell someone their =
-caller . you=20
-have recurring nightmares about bad airshifts filled with dead air. Then =
-the paper=20
-introduces the primary interface to the Automatic SQL Tuning using the =
-Enterprise=20
-Manager and illustrates it with examples. your chief engineer has ever =
-had to talk=20
-you through how to fix a transmitter from over a cell =
-phone.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>the one time you need the power =
-generator is the=20
-one day the electrician didnt have time to hook it up. the equipment at =
-your station=20
-decides to stop working properly and just go to hell on a holiday =
-weekend when no=20
-one can be reached.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you swear at the competition while =
-driving when you=20
-hear a song they beat you to.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>when the hotline rings you break into a =
-cold=20
-sweat.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you are a "seasoned pro" after two =
-years in the=20
-business.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>you have ever taped a boring =
+<DIV><FONT face=3DArial size=3D2>said chick turns out to really be hot =
+and your one=20
+goal is to have sex under the tower in back. you have a CD player in =
+your car, but=20
+no tape deck, and are mad!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>To date, most predictive analytic =
+operations=20
+require the extraction of data to a separate analytic server where the =
+data cannot=20
+be easily joined back to the other sources.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>you have a dozen radios, but you need =
+them=20
+all.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Then the paper introduces the primary =
+interface to=20
+the Automatic SQL Tuning using the Enterprise Manager and illustrates it =
+with=20
+examples. you can recite the five-day forecast from memory.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>you base your trip plans on what =
+stations you want=20
+to hear. It is designed to work equally well for OLTP and Data Warehouse =
+type=20
+applications.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You get excited at sunset and drive by =
+the towers=20
+just to hear the phase shift. To date, most predictive analytic =
+operations require=20
+the extraction of data to a separate analytic server where the data =
+cannot be easily=20
+joined back to the other sources. you have ever taped a boring =
 conversation with=20
-someone and turned it into something funny. </FONT></DIV></BODY></HTML>
+someone and turned it into something funny. This structure is intended =
+to simplify=20
+the analysis process for end users. Please Register with The Final =
+Arrangements=20
+Network. you listen to the radio "invertedly", turning up the volume =
+during promos,=20
+sweepers, and talksets, and flipping to another station during music. =
+you have=20
+copies of both the album version and radio edit. said chick turns out to =
+really be=20
+hot and your one goal is to have sex under the tower in =
+back.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>two months ago when you worked at the =
+car wash you=20
+could jog a mile without being out of breath and now it is tough for you =
+to get from=20
+your car to the LazEboy. Virgin was using a hosted service to analyze =
+its point of=20
+sale data, but the time delay in receiving the data limited Virgin's =
+managers'=20
+ability to act on it effectively.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Only one other program, The Cosby Show, =
+has tied=20
+All In The Family in terms of years at the top of the =
+ratings.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>you listen to the radio "invertedly", =
+turning up=20
+the volume during promos, sweepers, and talksets, and flipping to =
+another station=20
+during music.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>you can tell what time it is when =
+listening to the=20
+radio even if they don't give the time.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>you have recurring nightmares about bad =
+airshifts=20
+filled with dead air. </FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0003_01C71496.DB32D4E0--
+------=_NextPart_001_0003_01C71496.E6D754B0--
 
-------=_NextPart_000_0002_01C71496.DB30D910
+------=_NextPart_000_0002_01C71496.E6D531D0
 Content-Type: image/gif;
-	name="array.gif"
+	name="ease.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000101c71453$cd0b9d40$9de9d5d2@wtidf>
+Content-ID: <000101c71453$d8afcef0$eab1d5d2@hweft>
 
 R0lGODdhdQGrAIQAAHySehB5cIPfrJ2ziLmNt72G2JWbutLSoLqcurHGgYDw39fZxH5EV3UdRGQE
 1Y6ITJ24+69uEKzSAvFH3wAa+gGutXXn0jtMBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -540,11 +560,11 @@ giaFV36GJFOI0JQtBjUvR4ZzAcMy7PTtFL1ZyM6OzALY0nLU23CeYuOinaU/3X3xoCCf4r4Dmi08
 FAAAfMDrewiNq5z2AQVQGNrdMeQyIQUkRIAxHaEYye6sl7d51zj37Hpbskwgq912gPnSDAYZAEMc
 HHsTmHlRLdM8hAAAOw==
 
-------=_NextPart_000_0002_01C71496.DB30D910--
+------=_NextPart_000_0002_01C71496.E6D531D0--
 
 
 
---===============0299820576==
+--===============1176272911==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -555,7 +575,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0299820576==
+--===============1176272911==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -566,4 +586,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0299820576==--
+--===============1176272911==--
