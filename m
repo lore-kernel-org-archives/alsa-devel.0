@@ -1,14 +1,12 @@
-From: Valentin Rodriguez <valemie@yahoo.com.sg>
-Subject: Re: [PATCH] Make internal speaker work on Acer C20x
-	tablets
-Date: Fri, 1 Dec 2006 15:21:38 +0800 (CST)
-Message-ID: <638836.1365.qm@web30408.mail.mud.yahoo.com>
-References: <s5h8xhxb179.wl%tiwai@suse.de>
+From: TonTon <tonton@bdefracte.org>
+Subject: snd_hda_intel and Asus F3Jv problem on 2.6.19
+Date: Fri, 1 Dec 2006 22:11:03 +0100
+Message-ID: <200612012211.03655.tonton@bdefracte.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h8xhxb179.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,174 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan/Takashi,
+Hello,
 
-I am sorry I have not replied earlier. I had
-difficulty with the patch in my OpenSuse 10.1. I now
-have a hard-disk installed Knoppix 5.0.1 and I can now
-apply and test the patch properly.
+I have a problem when the module loads on my F3Jv :
 
-Except for the lower volume in the headphone jack,
-everything works fine. I just use the line jack for
-the headphone if I require a louder output. The
-speaker sound is actually much louder than in Windows.
+Unable to handle kernel NULL pointer dereference at 0000000000000000 RIP:
+ [<ffffffff88053cd5>] :snd_hda_codec:get_input_type+0x77/0x9f
 
-Thank you for all the help. I now have a simpler mixer
-control. Please let me know if you require any other
-test.
+When looking at the code, there is really a problem. Code making trouble was 
+introduced by patch "hda-codec - Fix mic capture with generic parser"
+Details :
+changeset 4486: 	e917e2de6efa
+parent 4485:	dc9d57a416b5
+child 4487:	c0ade5c872e4
+author: 	tiwai
+date: 	Wed Aug 23 18:34:06 2006 +0200
+files: 	pci/hda/hda_generic.c
 
-Regards,
-Val  
---- Takashi Iwai <tiwai@suse.de> wrote:
+In file hda_generic.c, in function build_loopback_controls there is a call to 
+get_input_type with NULL parameter, and in get_input_type there is :
+*pinctl |= AC_PINCTL_VREF_80;
 
-> Hi Jonathan,
-> 
-> At Mon, 27 Nov 2006 09:38:03 +1030 (CST),
-> Jonathan Woithe wrote:
-> > 
-> > Takashi
-> > 
-> > The following patch creates a new "Mono speaker"
-> control in alsamixer 
-> > when the Realtek "acer" model is used with
-> hda_intel.  This is needed so
-> > the internal mono speaker (when present) can be
-> controlled.
-> > 
-> > This new control won't do anything in Acer laptops
-> which are not fitted with
-> > a mono speaker. Acer models which are known to
-> have a mono speaker are the
-> > C20x tablet series but there may be others.  I
-> guess we could define a new
-> > model specifically for Acers with mono speakers
-> but this seems a bit silly
-> > given that such a model will be identical to the
-> normal "acer" model except
-> > for this added control.
-> > 
-> > This patch also adds the C20x tablets to the list
-> of PCI ids associated with
-> > the "acer" model.  This means that owners of C20x
-> machines will no longer
-> > have to supply "model=acer" when loading
-> hda_intel.
-> > 
-> > The patch is against ALSA 1.0.13 and applies to
-> patch_realtek.c in the
-> > hda/ driver directory.
-> 
-> The config table was recently changed to use a new
-> standard
-> struct snd_pci_quirk.  I fixed the patch as follows.
->  Could you check
-> whether it's OK for HG version?
-> 
-> Also, don't forget your sign-off, please.
-> 
-> thanks,
-> 
-> 
-> Takashi
-> 
-> diff -r 840a08bfad3d pci/hda/patch_realtek.c
-> --- a/pci/hda/patch_realtek.c	Sat Nov 25 22:02:47
-> 2006 +0000
-> +++ b/pci/hda/patch_realtek.c	Mon Nov 27 11:58:51
-> 2006 +0100
-> @@ -3271,11 +3271,20 @@ static struct
-> snd_kcontrol_new alc260_fu
->   * and the output jack.  If this turns out to be
-> the case for all such
->   * models the "Line Jack Mode" mode could be
-> changed from ALC_PIN_DIR_INOUT
->   * to ALC_PIN_DIR_INOUT_NOMICBIAS.
-> + *
-> + * The C20x Tablet series have a mono internal
-> speaker which is controlled
-> + * via the chip's Mono sum widget and pin complex,
-> so include the necessary
-> + * controls for such models.  On models without a
-> "mono speaker" the control
-> + * won't do anything.
->   */
->  static struct snd_kcontrol_new alc260_acer_mixer[]
-> = {
->  	HDA_CODEC_VOLUME("Master Playback Volume", 0x08,
-> 0x0, HDA_OUTPUT),
->  	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2,
-> HDA_INPUT),
->  	ALC_PIN_MODE("Headphone Jack Mode", 0x0f,
-> ALC_PIN_DIR_INOUT),
-> +	HDA_CODEC_VOLUME_MONO("Mono Speaker Playback
-> Volume", 0x0a, 1, 0x0,
-> +			      HDA_OUTPUT),
-> +	HDA_BIND_MUTE_MONO("Mono Speaker Playback Switch",
-> 0x0a, 1, 2,
-> +			   HDA_INPUT),
->  	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04,
-> HDA_INPUT),
->  	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04,
-> HDA_INPUT),
->  	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0,
-> HDA_INPUT),
-> @@ -3590,11 +3599,11 @@ static struct hda_verb
-> alc260_acer_init_
->  	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL,
-> PIN_VREF50},
->  	/* Line In jack is connected to Line1 pin */
->  	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-> +	/* Some Acers (eg: C20x Tablets) use Mono pin for
-> internal speaker */
-> +	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
->  	/* Ensure all other unused pins are disabled and
-> muted. */
->  	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
->  	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-> -	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-> -	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
->  	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
->  	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
->  	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-> @@ -3622,6 +3631,8 @@ static struct hda_verb
-> alc260_acer_init_
->  
->  	/* Unmute Line-out pin widget amp left and right
-> (no equiv mixer ctrl) */
->  	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-> +	/* Unmute mono pin widget amp output (no equiv
-> mixer ctrl) */
-> +	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
->  	/* Unmute Mic1 and Line1 pin widget input buffers
-> since they start as
->  	 * inputs. If the pin mode is changed by the user
-> the pin mode control
->  	 * will take care of enabling the pin's
-> input/output buffers as needed.
-> @@ -4122,6 +4133,7 @@ static const char
-> *alc260_models[ALC260_
->  };
->  
->  static struct snd_pci_quirk alc260_cfg_tbl[] = {
-> +	SND_PCI_QUIRK(0x1025, 0x007b, "Acer C20x",
-> ALC260_ACER),
->  	SND_PCI_QUIRK(0x1025, 0x008f, "Acer",
-> ALC260_ACER),
->  	SND_PCI_QUIRK(0x103c, 0x3010, "HP",
-> ALC260_HP_3013),
->  	SND_PCI_QUIRK(0x103c, 0x3011, "HP", ALC260_HP),
-> 
+So the module crash on load on my laptop.
+A simple fix can be to test if pointer is NULL, but I 'm not sure what it 
+implies. The fix makes the module work (with sound), but I can't test with a 
+mic (I guess it is related)
 
+I don't know if its right or not but I have only 2 entries in the mixer, I 
+have to check in Windows.
 
+I can provide more informations if needed
 
-		
-____________________________________________________ 
-Yahoo! Singapore Answers 
-Real people. Real questions. Real answers. Share what you know at http://answers.yahoo.com.sg
+Thanks
+Arnaud Lech
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
