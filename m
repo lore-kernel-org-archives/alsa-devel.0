@@ -1,11 +1,14 @@
-From: James C Georgas <jgeorgas@rogers.com>
-Subject: ac97_codec.c bit update mask fix
-Date: Fri, 01 Dec 2006 02:07:24 -0500
-Message-ID: <1164956844.22052.19.camel@Rainsong>
+From: Valentin Rodriguez <valemie@yahoo.com.sg>
+Subject: Re: [PATCH] Make internal speaker work on Acer C20x
+	tablets
+Date: Fri, 1 Dec 2006 15:21:38 +0800 (CST)
+Message-ID: <638836.1365.qm@web30408.mail.mud.yahoo.com>
+References: <s5h8xhxb179.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5h8xhxb179.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,52 +18,174 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-/**
- * snd_ac97_update_bits - update the bits on the given register
- * @ac97: the ac97 instance
- * @reg: the register to change
- * @mask: the bit-mask to change
- * @value: the value to set
- *
- * Updates the masked-bits on the given register only when the value
- * is changed.
- *
- * Returns 1 if the bits are changed, 0 if no change, or a negative
- * code on failure.
- */
+Jonathan/Takashi,
 
-If the intent is to update _only_ the bits given in the mask, as the
-comment seems to suggest, then the current code won't do it. 
+I am sorry I have not replied earlier. I had
+difficulty with the patch in my OpenSuse 10.1. I now
+have a hard-disk installed Knoppix 5.0.1 and I can now
+apply and test the patch properly.
 
-Specifically, it'll clobber unset bits that are _not_ in the mask, if
-the new bit is set. Here's a fix:
+Except for the lower volume in the headphone jack,
+everything works fine. I just use the line jack for
+the headphone if I require a louder output. The
+speaker sound is actually much louder than in Windows.
 
-diff -r bc7ef767d0cf pci/ac97/ac97_codec.c
---- a/pci/ac97/ac97_codec.c     Wed Nov 29 15:29:40 2006 +0100
-+++ b/pci/ac97/ac97_codec.c     Fri Dec  1 02:04:30 2006 -0500
-@@ -389,7 +389,7 @@ int snd_ac97_update_bits_nolock(struct s
-        unsigned short old, new;
+Thank you for all the help. I now have a simpler mixer
+control. Please let me know if you require any other
+test.
 
-        old = snd_ac97_read_cache(ac97, reg);
--       new = (old & ~mask) | value;
-+       new = (old & ~mask) | (value & mask);
-        change = old != new;
-        if (change) {
-                ac97->regs[reg] = new;
-@@ -406,7 +406,7 @@ static int snd_ac97_ad18xx_update_pcm_bi
+Regards,
+Val  
+--- Takashi Iwai <tiwai@suse.de> wrote:
 
-        mutex_lock(&ac97->page_mutex);
-        old = ac97->spec.ad18xx.pcmreg[codec];
--       new = (old & ~mask) | value;
-+       new = (old & ~mask) | (value & mask);
-        change = old != new;
-        if (change) {
-                mutex_lock(&ac97->reg_mutex);
+> Hi Jonathan,
+> 
+> At Mon, 27 Nov 2006 09:38:03 +1030 (CST),
+> Jonathan Woithe wrote:
+> > 
+> > Takashi
+> > 
+> > The following patch creates a new "Mono speaker"
+> control in alsamixer 
+> > when the Realtek "acer" model is used with
+> hda_intel.  This is needed so
+> > the internal mono speaker (when present) can be
+> controlled.
+> > 
+> > This new control won't do anything in Acer laptops
+> which are not fitted with
+> > a mono speaker. Acer models which are known to
+> have a mono speaker are the
+> > C20x tablet series but there may be others.  I
+> guess we could define a new
+> > model specifically for Acers with mono speakers
+> but this seems a bit silly
+> > given that such a model will be identical to the
+> normal "acer" model except
+> > for this added control.
+> > 
+> > This patch also adds the C20x tablets to the list
+> of PCI ids associated with
+> > the "acer" model.  This means that owners of C20x
+> machines will no longer
+> > have to supply "model=acer" when loading
+> hda_intel.
+> > 
+> > The patch is against ALSA 1.0.13 and applies to
+> patch_realtek.c in the
+> > hda/ driver directory.
+> 
+> The config table was recently changed to use a new
+> standard
+> struct snd_pci_quirk.  I fixed the patch as follows.
+>  Could you check
+> whether it's OK for HG version?
+> 
+> Also, don't forget your sign-off, please.
+> 
+> thanks,
+> 
+> 
+> Takashi
+> 
+> diff -r 840a08bfad3d pci/hda/patch_realtek.c
+> --- a/pci/hda/patch_realtek.c	Sat Nov 25 22:02:47
+> 2006 +0000
+> +++ b/pci/hda/patch_realtek.c	Mon Nov 27 11:58:51
+> 2006 +0100
+> @@ -3271,11 +3271,20 @@ static struct
+> snd_kcontrol_new alc260_fu
+>   * and the output jack.  If this turns out to be
+> the case for all such
+>   * models the "Line Jack Mode" mode could be
+> changed from ALC_PIN_DIR_INOUT
+>   * to ALC_PIN_DIR_INOUT_NOMICBIAS.
+> + *
+> + * The C20x Tablet series have a mono internal
+> speaker which is controlled
+> + * via the chip's Mono sum widget and pin complex,
+> so include the necessary
+> + * controls for such models.  On models without a
+> "mono speaker" the control
+> + * won't do anything.
+>   */
+>  static struct snd_kcontrol_new alc260_acer_mixer[]
+> = {
+>  	HDA_CODEC_VOLUME("Master Playback Volume", 0x08,
+> 0x0, HDA_OUTPUT),
+>  	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2,
+> HDA_INPUT),
+>  	ALC_PIN_MODE("Headphone Jack Mode", 0x0f,
+> ALC_PIN_DIR_INOUT),
+> +	HDA_CODEC_VOLUME_MONO("Mono Speaker Playback
+> Volume", 0x0a, 1, 0x0,
+> +			      HDA_OUTPUT),
+> +	HDA_BIND_MUTE_MONO("Mono Speaker Playback Switch",
+> 0x0a, 1, 2,
+> +			   HDA_INPUT),
+>  	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04,
+> HDA_INPUT),
+>  	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04,
+> HDA_INPUT),
+>  	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0,
+> HDA_INPUT),
+> @@ -3590,11 +3599,11 @@ static struct hda_verb
+> alc260_acer_init_
+>  	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL,
+> PIN_VREF50},
+>  	/* Line In jack is connected to Line1 pin */
+>  	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
+> +	/* Some Acers (eg: C20x Tablets) use Mono pin for
+> internal speaker */
+> +	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
+>  	/* Ensure all other unused pins are disabled and
+> muted. */
+>  	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+>  	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+> -	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+> -	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+>  	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+>  	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+>  	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+> @@ -3622,6 +3631,8 @@ static struct hda_verb
+> alc260_acer_init_
+>  
+>  	/* Unmute Line-out pin widget amp left and right
+> (no equiv mixer ctrl) */
+>  	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+> +	/* Unmute mono pin widget amp output (no equiv
+> mixer ctrl) */
+> +	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+>  	/* Unmute Mic1 and Line1 pin widget input buffers
+> since they start as
+>  	 * inputs. If the pin mode is changed by the user
+> the pin mode control
+>  	 * will take care of enabling the pin's
+> input/output buffers as needed.
+> @@ -4122,6 +4133,7 @@ static const char
+> *alc260_models[ALC260_
+>  };
+>  
+>  static struct snd_pci_quirk alc260_cfg_tbl[] = {
+> +	SND_PCI_QUIRK(0x1025, 0x007b, "Acer C20x",
+> ALC260_ACER),
+>  	SND_PCI_QUIRK(0x1025, 0x008f, "Acer",
+> ALC260_ACER),
+>  	SND_PCI_QUIRK(0x103c, 0x3010, "HP",
+> ALC260_HP_3013),
+>  	SND_PCI_QUIRK(0x103c, 0x3011, "HP", ALC260_HP),
+> 
 
 
+
+		
+____________________________________________________ 
+Yahoo! Singapore Answers 
+Real people. Real questions. Real answers. Share what you know at http://answers.yahoo.com.sg
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
