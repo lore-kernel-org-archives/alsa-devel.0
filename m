@@ -1,14 +1,17 @@
-From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Subject: Re: RE :  [PATCH 1.0.13 1/2] M-Audio USB
-Date: Sun, 03 Dec 2006 12:49:06 +0100
-Message-ID: <20061203124906.uqfxupazcc4444wc@webmail.supelec.fr>
-References: <004801c70fe1$038e8ac0$161ce4a0@supelec.fr>
+From: "Leslie Whitfield" <jfpy@bbfertil.com.br>
+Subject: However,
+	it has increasingly become recognized that humans often act
+	irrationally, as a consequence of biasing influences.
+Date: Sun, 3 Dec 2006 14:47:14 +0100
+Message-ID: <002701c716e2$c9e3adb0$54bb1c54@pcxpj>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <004801c70fe1$038e8ac0$161ce4a0@supelec.fr>
-Content-Disposition: inline
+Received: from cp240091-a.roemd1.lb.home.nl (cp240091-a.roemd1.lb.home.nl
+	[84.28.24.237])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B1031259
+	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2006 14:56:06 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,110 +21,123 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->
->> -----Message d'origine-----
->> De : alsa-devel-bounces@lists.sourceforge.net
->> [mailto:alsa-devel-bounces@lists.sourceforge.net] De la part
->> de Pavel Polischouk
->> Envoy=E9 : vendredi 24 novembre 2006 05:36
->> =C0 : alsa-devel@lists.sourceforge.net
->> Objet : [Alsa-devel] [PATCH 1.0.13 1/2] M-Audio USB
->>
->>
->> This patch adds the following capabilities to usbaudio.c:
->> - Merges support for M-Audio FastTrack USB
->> - Adds proper support for M-Audio Quattro USB
->> - Adds hot-reload support for all Audiophile, FastTrack and Quattro.
->
-> This sounds great and I've had a quick look at the patches which look ok =
-for
-> me (at least it shouldn't break anything ;-) ).
->
->> This works quite well on Quattro;
->> Thibault, could you please verify that it works for Audiophile?
+I had not known very much then.
+Because of the size of many practical portfolios, and the complexity of
+modern financial instruments, the computing time to solve these problems
+can take many hours, even days.
+The UCL study suggests that rational behaviour may stem from an ability
+to override automatic emotional responses, rather than an absence of
+emotion per se.
 
-Sorry for the delay but I had to re-install my linux system from scratch...
+uuuuu
 
-Here is my test report:
+*MAKU* IMMENSE COVERAGE *MAKU*
 
-Summary
-=3D=3D=3D=3D=3D=3D=3D
+Trade Date:   Monday, December 4, 2006
+Company Name: MAKEUP LIMITED (OTC BB:MAKU.OB)
+Symbol:       MAKU
+Last Trade:   $0.61
+MAKU Target:  $2
 
-With this patch one can now switch Sample depth/rate modes without  =
+Why get in MAKU? Don't if "profit" is not in your vocabulary.
 
-having to turn the device off and then on again.
+JUST WATCH MAKU TRADE NEXT MONDAY, DECEMBER 4TH!
 
-However, it does not correct the corrupted initialization state that  =
+uuuuu
 
-occur when the device is turned on before the snd-usb-audio module is  =
-
-initialized with a valid device_setup parameter.
-
-Tests
-=3D=3D=3D=3D=3D
-
-A- This test shows that the device must still be correctly initialized  =
-
-at first use
-
-* turn on the device without no specific snd-usb-audio parameters  =
-
-(equivalent to device_setup =3D0x00)
-* the sound captured from the Analog interface is corrupted (as  =
-
-described in  =
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1801)
-* unregister the snd-usb-audio interface
-* register the snd-usb-audio interface with device_setup=3D0x09
-* the sound captured from the Analog interface is still corrupted
-* turning the device off, then on again gets back to a working analog  =
-
-capture in
-terface
-
-B- This test shows that once correctly initialized, it is now possible  =
-
-to switch modes without having to turn off the device
-
-* the device is turned on after having initialized the snd-usb-audio  =
-
-driver with a valid device_setup parameter (for instance 24bits with  =
-
-no digital Input)
-   # modprobe -r snd-usb-audio
-   # modprobe snd-usb-audio device_setup=3D0x09
-
-* It is then possible to switch mode without having to turn off the  =
-
-device. For instance swicthing from 24bits to 16 bits (without Digital  =
-
-Input) with the following commands make the analog capture interface  =
-
-work in 16bits mode.
-   # modprobe -r snd-usb-audio
-   # modprobe snd-usb-audio device_setup=3D0x01
-
-As far as the documentation is concerned, shouldn't be better to keep  =
-
-an Audiophile-USB.txt file with only the "Updated documentation on  =
-
-this device can now be found in the M-Audio.txt file" sentence?
-This could be useful for people finding references to the  =
-
-Audiopphile-USB.txt file in mailing lists, Alsa bug-tracker, ...
-
-Regards,
-Thibault
+Yet after entering the World Series of Poker in Las Vegas, the game's
+most prominent tournament, on a whim, Mr. It has long been assumed in
+classical theories of economics that people act entirely rationally when
+taking decisions.
+- ''Financial Times, UK''. Wayne Hochwarter, an associate professor of
+management in the College of Business at Florida State University in
+Tallahassee, Fla. How will the value of my portfolio of convertibles
+change going forward if interest rates climb but the underlying declines
+and volatility increases?
+Moreover, we found that people are rational, or irrational, to widely
+differing amounts.
+Bridge, in fact, is his game of choice. "In a live game once every two
+to three months, often in charity events, very occasionally online," he
+said.
+I had ridden the tide and currents of financial markets. Bridge, in
+fact, is his game of choice. com is definitely worth a read.
+Moreover, Lucas is chairman of Wealth Strategist Network, an
+organization that helps wealthy families manage their fortunes.
+For example, people are strongly and consistently affected by the way in
+which a question is presented.
+I had ridden the tide and currents of financial markets.
+We want to show in this paper that this fraction is in fact meaningless.
+One reason why that might be the case is that they are still index or
+strategy-based investments. However, it has increasingly become
+recognized that humans often act irrationally, as a consequence of
+biasing influences.
+What do I need to know? Furthermore, there was a marked difference in
+behaviour between participants. I had ridden the tide and currents of
+financial markets. These businesses use derivatives to make money or
+protect them from risk. Wayne Hochwarter, an associate professor of
+management in the College of Business at Florida State University in
+Tallahassee, Fla. That is equivalent to the country's entire annual
+transport budget.
+Lucas is an unusual financial advisor: a wealthy man who dispenses
+advice on building wealth. Already heightened by the U.
+"In a live game once every two to three months, often in charity events,
+very occasionally online," he said.
+Unlike the military kind, financial WMD are not hard to find.
+Can I visualize some of these dependencies and relationships evolving
+over the next few years?
+Days, even hours, may be impractical.
+Bridge, in fact, is his game of choice.
+And in hedge fund investing, a business that has been dulled of late by
+copycat strategies and mediocre returns, Mr.
+The Indonesians were at the fag end of that career. "In a live game once
+every two to three months, often in charity events, very occasionally
+online," he said. Moreover, we found that people are rational, or
+irrational, to widely differing amounts. The Indonesians were at the fag
+end of that career.
+Except that he doesn't play a lot of poker.
+However, it has increasingly become recognized that humans often act
+irrationally, as a consequence of biasing influences. It has long been
+assumed in classical theories of economics that people act entirely
+rationally when taking decisions.
+Wayne Hochwarter, an associate professor of management in the College of
+Business at Florida State University in Tallahassee, Fla.
+" According to him the Basel II risk management application software
+market is still evolving and many technology providers claim to have
+partial or all necessary product components. I had followed the money.
+"I got more than I bargained for," he said.
+In the study, published in the journal Science, UCL researchers used a
+gambling experiment to establish the cognitive basis for rational
+decision-making. The Indonesians were at the fag end of that career.
+Therefore the composition of the ETF portfolio is solely model driven.
+In the study, published in the journal Science, UCL researchers used a
+gambling experiment to establish the cognitive basis for rational
+decision-making.
+Can I visualize some of these dependencies and relationships evolving
+over the next few years?
+What do I need to know? Except that he doesn't play a lot of poker. We
+solve for equilibrium in two versions of this economy. It has long been
+assumed in classical theories of economics that people act entirely
+rationally when taking decisions. In the second version, agents can
+trade in both the market portfolio and a new zero-net-supply derivative.
+It was a very long story.
+Unlike the military kind, financial WMD are not hard to find. I had
+ridden the tide and currents of financial markets.
+In the study, published in the journal Science, UCL researchers used a
+gambling experiment to establish the cognitive basis for rational
+decision-making. This distribution is non trivial and has an option
+like, asymmetric structure. I had ridden the tide and currents of
+financial markets.
+Already heightened by the U.
+In the study, published in the journal Science, UCL researchers used a
+gambling experiment to establish the cognitive basis for rational
+decision-making.
 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
