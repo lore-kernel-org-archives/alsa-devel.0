@@ -1,11 +1,14 @@
-From: "Nona Kay" <cultivateslanguorously@absappraisal.com>
-Subject: fwd: Kay
-Date: Sun, 3 Dec 2006 18:23:01 +0300
-Message-ID: <01c71708$11111d60$6c822ecf@cultivateslanguorously>
+From: Sean D'Epagnier <sean@depagnier.com>
+Subject: Reading from the output buffer
+Date: Sun, 3 Dec 2006 11:34:33 -0700
+Message-ID: <20061203183433.GA14091@inferno.domain.actdsltmp>
+References: <000e01c7165d$ceeebaf0$dedde354@dwnze>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <000e01c7165d$ceeebaf0$dedde354@dwnze>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,31 +21,13 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Smart Money Equities would like to thank our valued 
-readers for making 2006 a great year.  Please continue 
-to support Smart Money Equities by visiting our sponsors 
-and featured advertisers.  Here's our next Hot Pick!
+Hi, I thought it would be cool to write a simple spectrum analizer to work
+with any alsa player, and display it with an ncurses interface.  I have checked
+various alsa docs, and I can't figure out how to read the output buffer data
+back in.
 
-
-Company: Premium Petroleum, Inc. 
-
-Symbol: PPTL   
-Current Price: Around $0.01
-Target Price: $0.06
-
-A major release is coming out or the company this week.  
-While we can't divulge the complete report we can say 
-that it is going to push this one much higher!
- 
-PPTL will be benefiting from a massive PR campaign that 
-will have investors lining up to get in.  We are giving 
-our members the heads up early so that you can get the 
-maximum benefit!
-It's first day of this campaign you know what will happend
-next several days...
-
-Go Smart Money!
-
+Thanks,
+Sean
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
