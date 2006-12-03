@@ -1,12 +1,11 @@
-From: "Lynette Henson" <OdysseusLyons@aadcock3.wanadoo.co.uk>
-Subject: fwd: Henson
-Date: Sun, 3 Dec 2006 14:57:06 +0000 (UTC)
-Message-ID: <01c716eb$8900b8c0$6c822ecf@OdysseusLyons>
+From: "Lynn Gary" <ague'sampule's@aalesund.toyota.no>
+Subject: fwd: Gary
+Date: Sun, 3 Dec 2006 16:12:58 +0000
+Message-ID: <01c716f5$e6120e10$6c822ecf@ague'sampule's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Sun, 3 Dec 2006 14:58:47 +0360
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
