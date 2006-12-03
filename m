@@ -1,23 +1,16 @@
-From: "Mitchel" <amaletttamc@willlayzell.com>
-Subject: Microsoft Office 2007 Enterprise ready to download
-Date: Sat, 2 Dec 2006 21:10:50 -0600
-Message-ID: <8454943061.20061202211050@egbnrqtlbzrojp>
-Reply-To: Mitchel Dawson <amaletttamc@willlayzell.com>
+From: Chuck Ebbert <76306.1226@compuserve.com>
+Subject: HDA Intel sound driver fails on Acer notebook
+Date: Sun, 3 Dec 2006 02:30:34 -0500
+Message-ID: <200612030233_MC3-1-D3BB-DE9@compuserve.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from host-85-30-162-37.sydskane.nu (host-85-30-162-37.sydskane.nu
-	[85.30.162.37])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 740AA27F
-	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2006 04:08:27 +0100 (MET)
-Received: from dns23.co.uk (dns23.co.uk [213.232.107.201])
-	by host-85-30-162-37.sydskane.nu (8.9.3/8.9.3) with SMTP id
-	FmL1ZtveJBSU
-	for <alsa-devel@alsa-project.org>; Sat, 2 Dec 2006 21:10:50 -0600
-Received: from 207.232.79.54
-	by dns23.co.uk (8.12.3 da nor stuldap/8.12.3) with SMTP id pknm9ZQaJrkM
-	for <alsa-devel@alsa-project.org>; Sat, 2 Dec 2006 21:10:50 -0600
+Received: from liaag2aa.mx.compuserve.com (liaag2aa.mx.compuserve.com
+	[149.174.40.154])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EFE6162
+	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2006 08:36:13 +0100 (MET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,20 +20,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear customers and friends of DS Team,
-Please let us represent our new special offer you can't afford to miss. Announcing Microsoft Office 2007 Enterprise Edition. Office 2007 will be available for enterprise users by November 30, 2006. The end user version will be available in the beginning of 2007. The 2007 Microsoft Office System, also known as Microsoft Office 2007, is the most recent version of Microsoft's productivity suite. Formerly known as Office 12 in the initial stages of its beta cycle, it is scheduled to be made available to volume license customers on November 30, 2006, with general availability following in early 2007. Office 2007 contains a number of new features, the most notable of which is the entirely new graphical user interface called the Ribbon, replacing the menus and toolbars that have been the cornerstone of Office since its inception.Office 2007 also includes new applications and server-side tools. 
- Chief amongst these is Groove, a collaboration and communication suite for smaller busines
- ses which was originally developed by Groove Networks before being acquired by Microsoft in 2005. Also included is Office Sharepoint Server 2007, a major revision to the server platform for Office applications, which supports "Excel Services", a client-server architecture for supporting Excel workbooks that are shared in real time between multiple machines, and are also viewable and editable through a web page.While Office 2007 includes many new features, one has been removed entirely: Microsoft FrontPage is no longer being developed; its successor is the Microsoft Expression line of products.
-Microsoft Office 2007 Enterprise
-Retail Price $899.00
-Our Price $79.95
-You save $819.05
-http://streamingnewsq.org
-Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
+The HDA Intel sound driver still fails to load on my Acer Aspire 5102
+notebook (Turion64 X2, ATI chipset):
 
+Here is the PCI info while running x86_64.  I tried i386 and x86_64 and it fails
+on both:
+
+00:14.2 Audio device: ATI Technologies Inc Unknown device 437b (rev 01)
+        Subsystem: Acer Incorporated [ALI] Unknown device 009f
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, Cache Line Size 08
+        Interrupt: pin ? routed to IRQ 16
+        Region 0: Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+00: 02 10 7b 43 06 00 10 04 01 00 03 04 08 40 00 00
+10: 04 00 00 c0 00 00 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 25 10 9f 00
+30: 00 00 00 00 50 00 00 00 00 00 00 00 0a 00 00 00
+40: 00 00 02 40 00 00 00 00 00 00 00 00 00 00 00 00
+50: 01 60 42 c8 00 00 00 00 00 00 00 00 00 00 00 00
+60: 05 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+On i386 I get this after doing
+        insmod snd-hda-codec.ko ;  insmod snd-hda-intel.ko
+
+Dec  1 17:38:29 ac kernel: ACPI: PCI Interrupt 0000:00:14.2[A] -> GSI 16 (level, low) -> IRQ 18
+Dec  1 17:38:29 ac kernel: codec_mask = 0xb
+Dec  1 17:38:30 ac kernel: hda_codec: PCI 1025:9f, codec config 5 is selected
+Dec  1 17:38:31 ac kernel: hda_intel: azx_get_response timeout, switching to polling mode...
+Dec  1 17:38:32 ac kernel: hda_intel: azx_get_response timeout, switching to single_cmd mode...
+Dec  1 17:38:32 ac kernel: hda-intel: get_response timeout: IRS=0x0
+Dec  1 17:38:36 ac last message repeated 24618 times
+Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
+Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
+Dec  1 17:38:36 ac kernel: hda-intel: get_response timeout: IRS=0x0
+Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
+Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
+Dec  1 17:38:36 ac kernel: hda-intel: get_response timeout: IRS=0x0
+
+The last three lines repeat many thousands of times, followed by:
+
+Dec  1 17:38:39 ac kernel: hda_generic: no proper input path found
+Dec  1 17:38:39 ac kernel: hda_generic: no proper output path found
+Dec  1 17:38:39 ac kernel: hda_generic: no PCM found
+
+Looking at /proc/interrupts, I see exactly 110 interrupts were processed
+by the driver while all this was happening:
+
+ 18:          0        110   IO-APIC-fasteoi   HDA Intel
+
+On x86_64 I forgot to enable verbose messages, so there's less information
+but it fails the same way.
+
+-- 
+Chuck
+"Even supernovas have their duller moments."
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
