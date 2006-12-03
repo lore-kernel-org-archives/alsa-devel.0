@@ -1,22 +1,14 @@
-From: "Alden Woodall" <jajestempzgy@woodsclan.com>
-Subject: Microsoft Office 2007 Enterprise ready to download
-Date: Sun, 3 Dec 2006 16:32:13 -0600
-Message-ID: <7302814419.2888596102@woodsclan.com>
-Reply-To: Alden Woodall <jajestempzgy@woodsclan.com>
+From: Peter Oehry <peter.oehry@gmx.li>
+Subject: Re: [PATCH 1/2] M-Audio USB
+Date: Sun, 3 Dec 2006 23:42:25 +0100
+Message-ID: <20061203224225.67E1CA0D58E@zeus.olymp.home>
+References: <45675582.9060707@inbox.ru>
+	<s5h7ixhb0ns.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from cpe-72-225-161-245.si.res.rr.com
-	(cpe-72-225-161-245.si.res.rr.com [72.225.161.245])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42C6E267
-	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2006 23:31:39 +0100 (MET)
-Received: from mail.woodsclan.com
-	by cpe-72-225-161-245.si.res.rr.com (Postfix) with ESMTP id 88FBB17C2F
-	for <alsa-devel@alsa-project.org>; Sun, 3 Dec 2006 16:32:13 -0600
-Received: from (root@localhost)
-	by mail.woodsclan.com with ESMTP (Exim 4.05) id a3Rm611zMDDr
-	for <alsa-devel@alsa-project.org>; Sun, 3 Dec 2006 16:32:13 -0600
+In-Reply-To: <s5h7ixhb0ns.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,20 +18,119 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Pavel Polischouk <pavelvp@inbox.ru>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear customers and friends of DS Team,
-Please let us represent our new special offer you can't afford to miss. Announcing Microsoft Office 2007 Enterprise Edition. Office 2007 will be available for enterprise users by November 30, 2006. The end user version will be available in the beginning of 2007. The 2007 Microsoft Office System, also known as Microsoft Office 2007, is the most recent version of Microsoft's productivity suite. Formerly known as Office 12 in the initial stages of its beta cycle, it is scheduled to be made available to volume license customers on November 30, 2006, with general availability following in early 2007. Office 2007 contains a number of new features, the most notable of which is the entirely new graphical user interface called the Ribbon, replacing the menus and toolbars that have been the cornerstone of Office since its inception.Office 2007 also includes new applications and server-side tools. 
- Chief amongst these is Groove, a collaboration and communication suite for smaller busines
- ses which was originally developed by Groove Networks before being acquired by Microsoft in 2005. Also included is Office Sharepoint Server 2007, a major revision to the server platform for Office applications, which supports "Excel Services", a client-server architecture for supporting Excel workbooks that are shared in real time between multiple machines, and are also viewable and editable through a web page.While Office 2007 includes many new features, one has been removed entirely: Microsoft FrontPage is no longer being developed; its successor is the Microsoft Expression line of products.
-Microsoft Office 2007 Enterprise
-Retail Price $899.00
-Our Price $79.95
-You save $819.05
-http://happyassbug.net
-Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
+Hi Pavel
 
+Finally I had some time to test your patch with my FastTrackPro. I also tested the Boot Quirk to change the configuration automatically. It works out of the box with a 2.6.19 Kernel. Sorry for my bad coding style. It should be a small work to correct.
+
+Back to my tests:
+The main functionality of the FastTrack works well as it did with my original patch. There are still some problems with the device I was not able to solve:
+
+- Changing the device_setup without resetting the device will mostly not work.
+- Sometimes the device gets messed up. In this state ther is a complete mess in 24-Bit mode and chagned byte-Order for 16-Bit. These problems are not reproduceable.
+- The device seems to switch the sampling rate of inputs only after initialising an ouput with the same sampling rate.
+
+To solve these problems I'll need a lot more time. Maybe I have to go back to investigate the behaviour of the windows driver.
+
+
+Summary:
+- The driver works with the FastTrack but is way of to be a stable and final solution.
+
+Peter
+
+
+On Mon, 27 Nov 2006 12:15:51 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Fri, 24 Nov 2006 15:26:42 -0500,
+> Pavel Polischouk wrote:
+> > 
+> > Re-send, "hg export" format
+> 
+> Thanks, this time the patch is intact.
+> 
+> > [2 maudio.patch <text/plain (7bit)>]
+> > # HG changeset patch
+> > # User Pavel Polischouk <pavelvp@inbox.ru>
+> > # Date 1164392350 18000
+> > # Node ID d447f5a178f0d40ec98c4cde2e3d6e4d012a7f65
+> > # Parent  6f81f7397f82b392e40c582e48a02a7c1cbd7c3e
+> > This patch adds the following capabilities to usbaudio.c:
+> > - Merges support for M-Audio FastTrack USB
+> > - Adds proper support for M-Audio Quattro USB
+> > - Adds hot-reload support for all Audiophile, FastTrack and Quattro.
+> > - FastTrack "select configuration #2" quirk is present but #ifdef'd out
+> > pending inclusion of "usb_driver_set_configuration" function in mainline
+> > kernel. This quirk could possibly be handled in user space anyway.
+> 
+> usb_driver_set_configuration() is already in mainline (2.6.19).
+> So, no need to disable it.  If you need to disable it for older
+> version, modify usbaudio.patch in alsa-driver tree, or add a dummy
+> wrapper in alsa-driver/include/adriver.h.
+> 
+> 
+> > diff -r 6f81f7397f82 -r d447f5a178f0 usb/usbaudio.c
+> > --- a/usb/usbaudio.c	Fri Nov 24 11:50:29 2006 -0500
+> > +++ b/usb/usbaudio.c	Fri Nov 24 13:19:10 2006 -0500
+> > @@ -2346,11 +2346,16 @@ static int is_big_endian_format(struct s
+> >  {
+> >  	switch (chip->usb_id) {
+> >  	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
+> > -		if (fp->endpoint & USB_DIR_IN)
+> > -			return 1;
+> > -		break;
+> >  	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+> >  		return 1;
+> > +
+> > + 	case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro */
+> > + 		/* it depends on altsetting wether the device is big-endian or not */
+> > + 		if(fp->altsetting==2 || fp->altsetting==3 ||
+> > + 		   fp->altsetting==5 || fp->altsetting==6)
+> > + 			return 1;
+> 
+> Minor coding-style fixes:
+>  Put a space between if and (.  Also, put spaces around '==', too.
+> 
+> 
+> > @@ -3175,44 +3195,140 @@ static int snd_usb_cm106_boot_quirk(stru
+> >  	return snd_usb_cm106_write_int_reg(dev, 2, 0x8004);
+> >  }
+> >  
+> > +static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev, int ifnum)
+> > +{
+> > +#if 0
+> > +    int err;
+> > +
+> > +    if(dev->actconfig->desc.bConfigurationValue==1) {
+> > +	if(ifnum==0) {
+> > +	    snd_printk(KERN_INFO "Switching to config #2\n");
+> > +	    /* This function has to be available by the usb core module.
+> > +	       if it is not avialable the boot quirk has to be left out and the
+> > +	       configuration has to be set by udev or hotplug rules */
+> > +	    err=usb_driver_set_configuration(dev,2);
+> > +	    if(err < 0) {
+> > +		snd_printdd("error usb_driver_set_configuration: %d\n", err);
+> > +		return -ENODEV;
+> > +	    }
+> > +	}
+> > +    } else {
+> > +	snd_printk(KERN_INFO "Fast Track Pro config OK\n");
+> > +    }
+> 
+> Please use indent level 8.
+> 
+> Otherwise, the patch looks fine to me.
+> Thibault, does it work for your device (at least no regression)?
+> 
+> 
+> thanks,
+> 
+> Takashi
+
+> 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
