@@ -1,15 +1,13 @@
-From: Chuck Ebbert <76306.1226@compuserve.com>
-Subject: HDA Intel sound driver fails on Acer notebook
-Date: Sun, 3 Dec 2006 02:30:34 -0500
-Message-ID: <200612030233_MC3-1-D3BB-DE9@compuserve.com>
+From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+Subject: Re: RE :  [PATCH 1.0.13 1/2] M-Audio USB
+Date: Sun, 03 Dec 2006 12:49:06 +0100
+Message-ID: <20061203124906.uqfxupazcc4444wc@webmail.supelec.fr>
+References: <004801c70fe1$038e8ac0$161ce4a0@supelec.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from liaag2aa.mx.compuserve.com (liaag2aa.mx.compuserve.com
-	[149.174.40.154])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EFE6162
-	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2006 08:36:13 +0100 (MET)
+In-Reply-To: <004801c70fe1$038e8ac0$161ce4a0@supelec.fr>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,82 +18,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The HDA Intel sound driver still fails to load on my Acer Aspire 5102
-notebook (Turion64 X2, ATI chipset):
+>
+>> -----Message d'origine-----
+>> De : alsa-devel-bounces@lists.sourceforge.net
+>> [mailto:alsa-devel-bounces@lists.sourceforge.net] De la part
+>> de Pavel Polischouk
+>> Envoy=E9 : vendredi 24 novembre 2006 05:36
+>> =C0 : alsa-devel@lists.sourceforge.net
+>> Objet : [Alsa-devel] [PATCH 1.0.13 1/2] M-Audio USB
+>>
+>>
+>> This patch adds the following capabilities to usbaudio.c:
+>> - Merges support for M-Audio FastTrack USB
+>> - Adds proper support for M-Audio Quattro USB
+>> - Adds hot-reload support for all Audiophile, FastTrack and Quattro.
+>
+> This sounds great and I've had a quick look at the patches which look ok =
+for
+> me (at least it shouldn't break anything ;-) ).
+>
+>> This works quite well on Quattro;
+>> Thibault, could you please verify that it works for Audiophile?
 
-Here is the PCI info while running x86_64.  I tried i386 and x86_64 and it fails
-on both:
+Sorry for the delay but I had to re-install my linux system from scratch...
 
-00:14.2 Audio device: ATI Technologies Inc Unknown device 437b (rev 01)
-        Subsystem: Acer Incorporated [ALI] Unknown device 009f
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64, Cache Line Size 08
-        Interrupt: pin ? routed to IRQ 16
-        Region 0: Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-                Address: 0000000000000000  Data: 0000
-00: 02 10 7b 43 06 00 10 04 01 00 03 04 08 40 00 00
-10: 04 00 00 c0 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 25 10 9f 00
-30: 00 00 00 00 50 00 00 00 00 00 00 00 0a 00 00 00
-40: 00 00 02 40 00 00 00 00 00 00 00 00 00 00 00 00
-50: 01 60 42 c8 00 00 00 00 00 00 00 00 00 00 00 00
-60: 05 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Here is my test report:
 
-On i386 I get this after doing
-        insmod snd-hda-codec.ko ;  insmod snd-hda-intel.ko
+Summary
+=3D=3D=3D=3D=3D=3D=3D
 
-Dec  1 17:38:29 ac kernel: ACPI: PCI Interrupt 0000:00:14.2[A] -> GSI 16 (level, low) -> IRQ 18
-Dec  1 17:38:29 ac kernel: codec_mask = 0xb
-Dec  1 17:38:30 ac kernel: hda_codec: PCI 1025:9f, codec config 5 is selected
-Dec  1 17:38:31 ac kernel: hda_intel: azx_get_response timeout, switching to polling mode...
-Dec  1 17:38:32 ac kernel: hda_intel: azx_get_response timeout, switching to single_cmd mode...
-Dec  1 17:38:32 ac kernel: hda-intel: get_response timeout: IRS=0x0
-Dec  1 17:38:36 ac last message repeated 24618 times
-Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
-Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
-Dec  1 17:38:36 ac kernel: hda-intel: get_response timeout: IRS=0x0
-Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
-Dec  1 17:38:36 ac kernel: hda_codec: invalid dep_range_val 0:7fff
-Dec  1 17:38:36 ac kernel: hda-intel: get_response timeout: IRS=0x0
+With this patch one can now switch Sample depth/rate modes without  =
 
-The last three lines repeat many thousands of times, followed by:
+having to turn the device off and then on again.
 
-Dec  1 17:38:39 ac kernel: hda_generic: no proper input path found
-Dec  1 17:38:39 ac kernel: hda_generic: no proper output path found
-Dec  1 17:38:39 ac kernel: hda_generic: no PCM found
+However, it does not correct the corrupted initialization state that  =
 
-Looking at /proc/interrupts, I see exactly 110 interrupts were processed
-by the driver while all this was happening:
+occur when the device is turned on before the snd-usb-audio module is  =
 
- 18:          0        110   IO-APIC-fasteoi   HDA Intel
+initialized with a valid device_setup parameter.
 
-On x86_64 I forgot to enable verbose messages, so there's less information
-but it fails the same way.
+Tests
+=3D=3D=3D=3D=3D
 
--- 
-Chuck
-"Even supernovas have their duller moments."
+A- This test shows that the device must still be correctly initialized  =
+
+at first use
+
+* turn on the device without no specific snd-usb-audio parameters  =
+
+(equivalent to device_setup =3D0x00)
+* the sound captured from the Analog interface is corrupted (as  =
+
+described in  =
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1801)
+* unregister the snd-usb-audio interface
+* register the snd-usb-audio interface with device_setup=3D0x09
+* the sound captured from the Analog interface is still corrupted
+* turning the device off, then on again gets back to a working analog  =
+
+capture in
+terface
+
+B- This test shows that once correctly initialized, it is now possible  =
+
+to switch modes without having to turn off the device
+
+* the device is turned on after having initialized the snd-usb-audio  =
+
+driver with a valid device_setup parameter (for instance 24bits with  =
+
+no digital Input)
+   # modprobe -r snd-usb-audio
+   # modprobe snd-usb-audio device_setup=3D0x09
+
+* It is then possible to switch mode without having to turn off the  =
+
+device. For instance swicthing from 24bits to 16 bits (without Digital  =
+
+Input) with the following commands make the analog capture interface  =
+
+work in 16bits mode.
+   # modprobe -r snd-usb-audio
+   # modprobe snd-usb-audio device_setup=3D0x01
+
+As far as the documentation is concerned, shouldn't be better to keep  =
+
+an Audiophile-USB.txt file with only the "Updated documentation on  =
+
+this device can now be found in the M-Audio.txt file" sentence?
+This could be useful for people finding references to the  =
+
+Audiopphile-USB.txt file in mailing lists, Alsa bug-tracker, ...
+
+Regards,
+Thibault
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
