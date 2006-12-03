@@ -1,12 +1,12 @@
-From: "Marietta Berger" <simplestgastritis's@abita.com>
-Subject: fwd: Berger
-Date: Sun, 3 Dec 2006 14:36:59 +0000 (UTC)
-Message-ID: <01c716e8$75edc910$6c822ecf@simplestgastritis's>
+From: "Lynette Henson" <OdysseusLyons@aadcock3.wanadoo.co.uk>
+Subject: fwd: Henson
+Date: Sun, 3 Dec 2006 14:57:06 +0000 (UTC)
+Message-ID: <01c716eb$8900b8c0$6c822ecf@OdysseusLyons>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Sun, 3 Dec 2006 14:36:47 +0180
+Date: Sun, 3 Dec 2006 14:58:47 +0360
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Smart Money Equities would like to thank our valued 
