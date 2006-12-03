@@ -1,7 +1,7 @@
-From: "Lynn Gary" <ague'sampule's@aalesund.toyota.no>
-Subject: fwd: Gary
-Date: Sun, 3 Dec 2006 16:12:58 +0000
-Message-ID: <01c716f5$e6120e10$6c822ecf@ague'sampule's>
+From: "Nona Kay" <cultivateslanguorously@absappraisal.com>
+Subject: fwd: Kay
+Date: Sun, 3 Dec 2006 18:23:01 +0300
+Message-ID: <01c71708$11111d60$6c822ecf@cultivateslanguorously>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
