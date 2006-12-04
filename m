@@ -1,10 +1,14 @@
-From: "Reilly" <moy@salientinteractivesolutions.com>
-Subject: sandy
-Date: Sun, 3 Dec 2006 23:29:14 -0600
-Message-ID: <000f01c71766$6511b1f0$b84e6d4b@pocrme>
+From: "Gilmore" <hxqsi@zygous.co.uk>
+Subject: AC
+Date: Mon, 4 Dec 2006 00:33:45 -0500
+Message-ID: <000f01c71766$b7852d90$add84a48@mjlv>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0462294989=="
+Content-Type: multipart/mixed; boundary="===============1448953916=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from pool-72-74-217-143.bstnma.east.verizon.net
+	(pool-72-74-217-143.bstnma.east.verizon.net [72.74.217.143])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D5775186
+	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2006 06:40:35 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,55 +18,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0462294989==
+--===============1448953916==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C71734.1A645630"
+	boundary="----=_NextPart_000_000B_01C7173C.CEA1B810"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000B_01C71734.1A645630
+------=_NextPart_000_000B_01C7173C.CEA1B810
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C71734.1A691120"
+	boundary="----=_NextPart_001_000C_01C7173C.CEA51370"
 
 
-------=_NextPart_001_000C_01C71734.1A691120
+------=_NextPart_001_000C_01C7173C.CEA51370
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-Unfortunately, not everyone will know to do this. Then you can wake up =
-to your favorite music! This way you can toggle the size quickly =
-whenever you like.
-If you click the Add button, it will make a duplicate of your files =
-before changing them. In the past if you replaced an image you had to =
-delete the old thumbnails manually, which was kind of a pain in the ass =
-really. This is a major update with a totally new look and help system. =
-Just modify the bottom section to your liking.
-At that point the only thing left will be finding bugs and squashing =
-them, so a final release should be just around the corner!
-They tell you that the page is gone, and not much else.
-Unfortunately, not everyone will know to do this. It is missing a lot of =
-features that BBEdit has, but the good news is you can expand it quite a =
-bit using AppleScript.
-The script menu has an icon that looks like a scroll of parchment.
-I use this mainly to convert Photoshop roughs so I can show them to =
-clients.
-If Automator was already open, quit and re-open it. There are a ton of =
-cool things you can do! There are a ton of cool things you can do! In =
-not, just create one. In the meantime you can look at the provided =
-templates to see how most of the tags are used.
-Some people may simply give up after seeing an error message.
-You can import posts and categories from WordPress too. If I access the =
-same URL in a browser I can see all the form fields filled in exactly =
-how I sent them, and all I have to do is click the button to bring up =
-the order. 
-------=_NextPart_001_000C_01C71734.1A691120
+Believe me I was almost feeling like I am in a deep trouble for nothing. =
+This dog says "What an amazing degustation menu that was! This dog says =
+"What an amazing degustation menu that was!
+My compliments to the sommelier for an excellent choice of wines too. =
+Expecting every Flash developer to move to Flex is not reasonable and =
+will not work for sure and I don't think this is what Adobe's strategy =
+is. I find that if my outfit is really stiff and paperlike then it makes =
+it harder for me to let down my guard and say something uncalled for. " =
+it should say "Why don't you go have a coffee and come back while I =
+compile?
+I would have been happy if Adobe spend some little extra time and made =
+the Flash version accessible and show the world that Flash is capable of =
+being made accessible.
+While astronomers expected that dust particles were generating most of =
+the infrared emission, the study of this object indicates that much of =
+the infrared is instead generated in heated gas.
+This picture of dark energy would be consistent with Albert Einstein's =
+prediction, nearly a century ago, that a repulsive form of gravity =
+emanates from empty space. In this complicated configuration, the two =
+instruments were integrated into a single assembly.
+My compliments to the sommelier for an excellent choice of wines too.
+However master chefs recommend against this because of the danger of =
+having knives around animals - instead of chopping the vegetables you =
+could end up giving them an unfortunate haircut.
+After subjecting them to your tawdry games of dress-up the least you can =
+do is make them something nice to eat. If only humans found meat hor =
+d'oeuvres to be so intensely mesmerising. There have been many instances =
+where I just printed the PPT to a FlashPaper and used it for the =
+presentation rather than the real PPT. This comment was not made by =
+Adobe but a developer in a conference, but this is the impression which =
+prevails. For six months now, ESA's Venus Express has been studying this =
+enigmatic atmospheric structure.
+All along these guys have been doing a wonderful job with the newsletter =
+making bind blowing designs and high quality content.
+I wanted to present the image of the ideal flight attendant so I tied a =
+scarf neatly around my neck, secured my bust and displayed my flesh =
+pockets. I think its very important for Adobe to give a clear picture of =
+its roadmap for Flash to the Flash community and what the future holds =
+from a Flash perspective. 
+------=_NextPart_001_000C_01C7173C.CEA51370
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -71,70 +88,90 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"baggage" hspace=3D0=20
-src=3D"cid:000a01c71766$64fa0b40$b84e6d4b@pocrme" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"productive" hspace=3D0=20
+src=3D"cid:000a01c71766$b77464b0$add84a48@mjlv" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Unfortunately, not everyone will know =
-to do this.=20
-Then you can wake up to your favorite music! This way you can toggle the =
-size=20
-quickly whenever you like.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If you click the Add button, it will =
-make a=20
-duplicate of your files before changing them. In the past if you =
-replaced an image=20
-you had to delete the old thumbnails manually, which was kind of a pain =
-in the ass=20
-really. This is a major update with a totally new look and help system. =
-Just modify=20
-the bottom section to your liking.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>At that point the only thing left will =
-be finding=20
-bugs and squashing them, so a final release should be just around the=20
-corner!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>They tell you that the page is gone, =
-and not much=20
-else.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Unfortunately, not everyone will know =
-to do this.=20
-It is missing a lot of features that BBEdit has, but the good news is =
-you can expand=20
-it quite a bit using AppleScript.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The script menu has an icon that looks =
-like a=20
-scroll of parchment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I use this mainly to convert Photoshop =
-roughs so I=20
-can show them to clients.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If Automator was already open, quit and =
-re-open it.=20
-There are a ton of cool things you can do! There are a ton of cool =
-things you can=20
-do! In not, just create one. In the meantime you can look at the =
-provided templates=20
-to see how most of the tags are used.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some people may simply give up after =
-seeing an=20
-error message.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You can import posts and categories =
-from WordPress=20
-too. If I access the same URL in a browser I can see all the form fields =
-filled in=20
-exactly how I sent them, and all I have to do is click the button to =
-bring up the=20
-order. </FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Believe me I was almost feeling like I =
+am in a deep=20
+trouble for nothing. This dog says "What an amazing degustation menu =
+that was! This=20
+dog says "What an amazing degustation menu that was!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My compliments to the sommelier for an =
+excellent=20
+choice of wines too. Expecting every Flash developer to move to Flex is =
+not=20
+reasonable and will not work for sure and I don't think this is what =
+Adobe's=20
+strategy is. I find that if my outfit is really stiff and paperlike then =
+it makes it=20
+harder for me to let down my guard and say something uncalled for. " it =
+should say=20
+"Why don't you go have a coffee and come back while I =
+compile?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I would have been happy if Adobe spend =
+some little=20
+extra time and made the Flash version accessible and show the world that =
+Flash is=20
+capable of being made accessible.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>While astronomers expected that dust =
+particles were=20
+generating most of the infrared emission, the study of this object =
+indicates that=20
+much of the infrared is instead generated in heated gas.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This picture of dark energy would be =
+consistent=20
+with Albert Einstein's prediction, nearly a century ago, that a =
+repulsive form of=20
+gravity emanates from empty space. In this complicated configuration, =
+the two=20
+instruments were integrated into a single assembly.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My compliments to the sommelier for an =
+excellent=20
+choice of wines too.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>However master chefs recommend against =
+this because=20
+of the danger of having knives around animals - instead of chopping the =
+vegetables=20
+you could end up giving them an unfortunate haircut.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>After subjecting them to your tawdry =
+games of=20
+dress-up the least you can do is make them something nice to eat. If =
+only humans=20
+found meat hor d'oeuvres to be so intensely mesmerising. There have been =
+many=20
+instances where I just printed the PPT to a FlashPaper and used it for =
+the=20
+presentation rather than the real PPT. This comment was not made by =
+Adobe but a=20
+developer in a conference, but this is the impression which prevails. =
+For six months=20
+now, ESA's Venus Express has been studying this enigmatic atmospheric=20
+structure.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>All along these guys have been doing a =
+wonderful=20
+job with the newsletter making bind blowing designs and high quality=20
+content.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I wanted to present the image of the =
+ideal flight=20
+attendant so I tied a scarf neatly around my neck, secured my bust and =
+displayed my=20
+flesh pockets. I think its very important for Adobe to give a clear =
+picture of its=20
+roadmap for Flash to the Flash community and what the future holds from =
+a Flash=20
+perspective. </FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000C_01C71734.1A691120--
+------=_NextPart_001_000C_01C7173C.CEA51370--
 
-------=_NextPart_000_000B_01C71734.1A645630
+------=_NextPart_000_000B_01C7173C.CEA1B810
 Content-Type: image/gif;
-	name="linger.gif"
+	name="deflate.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000a01c71766$64fa0b40$b84e6d4b@pocrme>
+Content-ID: <000a01c71766$b77464b0$add84a48@mjlv>
 
 R0lGODdh+QCnAIQAAPvFuWv9IExvzc1X1jLpj0yMfUW8uA4FRh4vImJhfF0VVSMnUfSEsrPZGxe8
 YWVepid+FwblbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -272,11 +309,11 @@ POABdwCCaJG3UhK0cX7yMK3w9CVO1hKWpt2LrVtxJ9bFQmoKcXGVbnc7yIDkc4eKfIFwG1Dc4h4X
 uQMQGWmb66mWSreX1J0pUR2o00Q2FlEqAC9uldKWZGyUvNQMbgMGot71tpcIbotvJfEgzglTOFpI
 a0EBqBiFCjtHAAvgyYcVtZbojBhiQHjBeh8QAgA7
 
-------=_NextPart_000_000B_01C71734.1A645630--
+------=_NextPart_000_000B_01C7173C.CEA1B810--
 
 
 
---===============0462294989==
+--===============1448953916==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -287,7 +324,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0462294989==
+--===============1448953916==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -298,4 +335,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0462294989==--
+--===============1448953916==--
