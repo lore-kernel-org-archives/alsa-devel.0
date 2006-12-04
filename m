@@ -1,12 +1,16 @@
-From: "Robbie Schmitz" <literature'sflecks@accuratetechnologies.com>
-Subject: fwd: Schmitz
-Date: Mon, 4 Dec 2006 10:03:33 +0000 (UTC)
-Message-ID: <01c7178b$69b48640$6c822ecf@literature'sflecks>
+From: "Chase Pina" <salterscarifies@accesskenya.com>
+Subject: fwd: Pina
+Date: Mon, 4 Dec 2006 10:17:35 +0000 (UTC)
+Message-ID: <01c7178d$2a494160$6c822ecf@salterscarifies>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 4 Dec 2006 10:03:14 -0060
+Received: from 213.130.49.133 (HELO ukns1.accesskenya.com)
+	by alsa-project.org with esmtp (9<08:0M+20'5 )*ZVL)
+	id 5E<C@4-0H*'6--WF
+	for alsa-devel@alsa-project.org; Mon, 4 Dec 2006 10:15:47 -0180
+Date: Mon, 4 Dec 2006 10:15:47 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +20,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Smart Money Equities would like to thank our valued
