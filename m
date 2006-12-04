@@ -1,12 +1,11 @@
-From: "Edwina Berry" <philatelistscrystal's@accratec.com>
-Subject: fwd: Berry
-Date: Mon, 4 Dec 2006 20:36:47 +0000 (UTC)
-Message-ID: <01c717db$46d4db20$6c822ecf@philatelistscrystal's>
+From: Shaw Terwilliger <sterwill@sourcegear.com>
+Subject: Intel HDA on Mac Pro
+Date: Mon, 04 Dec 2006 14:34:53 -0600
+Message-ID: <4574866D.5070506@sourcegear.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 4 Dec 2006 19:34:55 +0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,34 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Smart Money Equities would like to thank our valued
-readers for making 2006 a great year.  Please continue
-to support Smart Money Equities by visiting our sponsors
-and featured advertisers.  Here's our next Hot Pick!
+I just got a new Mac Pro (not MacBook Pro) that appears to contain an
+on-board Intel High Definition Audio interface (Realtek variation, as
+far as I can tell via "detect" debug).  The ALSA drivers in 2.6.17
+detect the card correctly and my mixer shows all the right channels, but
+no sound comes out.  I compiled and installed the latest ALSA (1.0.13)
+and have the same issue.  I have only found a few others running Linux
+on the Mac Pro, and they seem to have the same issue.
 
+Other people have reported the MacBook Pro had similar issues (no sound
+out the line-out jack), and a patch was floating around that rewired
+some of the mixing to make it work.  The MacBook Pro seems to use a
+different HDA implementation (Sigmatel, I think) so I'm not sure if the
+patch logic makes sense on the Mac Pro.
 
-Company: Premium Petroleum, Inc.
+I figured this list was probably the best place to ask: has anyone
+hacked on this driver before?  Where should I start digging?
 
-Symbol: PPTL
-Current Price: Around $0.01
-Target Price: $0.06
-
-A major release is coming out or the company this week.
-While we can't divulge the complete report we can say
-that it is going to push this one much higher!
-
-PPTL will be benefiting from a massive PR campaign that
-will have investors lining up to get in.  We are giving
-our members the heads up early so that you can get the
-maximum benefit!
-It's first day of this campaign you know what will happend
-next several days...
-
-Go Smart Money!
-
+-- 
+Shaw Terwilliger <sterwill@sourcegear.com>
+SourceGear LLC
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
