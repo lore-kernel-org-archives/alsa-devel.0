@@ -1,12 +1,24 @@
-From: =?iso-2022-jp?B?bWlraQ==?= <miki@yahoo.co.jp>
-Subject: Re: (no subject)
-Date: Sun,  3 Dec 2006 23:01:23 -0800 (PST)
-Message-ID: <E1Gr7pE-00083T-NP@mail.sourceforge.net>
-Reply-To: miki@yahoo.co.jp
+From: "Estelle" <marek.foltindmqs@pigswings.com>
+Subject: Microsoft Office 2007 Enterprise ready to download
+Date: Mon, 4 Dec 2006 01:32:15 -0600
+Message-ID: <3859808691.063236252104@pigswings.com>
+Reply-To: Estelle Hammond <marek.foltindmqs@pigswings.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from cp252497-a.roose1.nb.home.nl (cp252497-a.roose1.nb.home.nl
+	[84.26.131.239])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42F0817B
+	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2006 08:31:44 +0100 (MET)
+Received: from mail-fwd.mx.g19.rapidsite.net (mail-fwd.mx.g19.rapidsite.net
+	[199.239.254.18])
+	by cp252497-a.roose1.nb.home.nl (Postfix) with ESMTP id FC3D294E1D
+	for <alsa-devel@alsa-project.org>; Mon, 4 Dec 2006 01:32:15 -0600
+Received: from 60.190.228.12
+	by mail-fwd.mx.g19.rapidsite.net (8.12.8/8.12.8/Submit) id
+	B4G3XLuC36D6Jp
+	for <alsa-devel@alsa-project.org>; Mon, 4 Dec 2006 01:32:15 -0600
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,154 +28,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-:―― INFORMATION  ―――――――――――――――――――――――――:
- 不正・悪質なサイトを一切排除しておりますので
- 安心してご利用ください。   http://love-match.bz/pc/04
-:――――――――――――――――――――――――――――――――――:
-
-*・゜゜・*:.。. .。.:*・゜゜・*:.。..。:*・゜゜・*:.。..。:**・゜゜・*
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 不倫・ワリキリ専門の無料出会いサイト『Love☆Match』
-　-----------------------------------------------------------------
-　　登録料・利用料　・・・・・・・・・【無料】
-　　メールの送受信　・・・・・・・・・【無料】
-　　ユーザーの検索　・・・・・・・・・【無料】
-　　掲示板の閲覧・書込み　・・・・・・【無料】
-　　画像交換・アップロード　・・・・・【無料】
-　　アドレス交換・電話番号交換　・・・【無料】
-　-----------------------------------------------------------------
-　　どれだけ使っても全て無料！　http://love-match.bz/pc/04
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ いつでも女性ユーザーがいっぱい。その理由は？
-
-　-----------------------------------------------------------------
-　ＰＣ＆モバイルに対応！いつでもどこでも気軽に楽しめる！
-　-----------------------------------------------------------------
-　仕事中は携帯電話から、プライベートは自宅からのんびりと。
-　気になる相手といつでも繋がっているから、新密度も急速にＵＰ。
-　http://love-match.bz/pc/04
-
-　-----------------------------------------------------------------
-　ＰＣから簡単プロフィール作成。ネット初心者でもラクラク参加ＯＫ
-　-----------------------------------------------------------------
-　面倒な登録は一切不要。パソコンから簡単なプロフィールを作成して
-　初心者の方や女性でもすぐに参加できます。
-　http://love-match.bz/pc/04
-　-----------------------------------------------------------------
-　自由恋愛対応！直電・直メ交換支援ツール
-　-----------------------------------------------------------------
-　基本的にメールアドレスや電話番号は非公開ですが
-　仲良くなった人だけにメールアドレスや電話番号を教える事ができます。
-　http://love-match.bz/pc/04
-
-　-----------------------------------------------------------------
-　写真アップロードに対応！好みの相手を素早くＣＨＥＣＫ！
-　-----------------------------------------------------------------
-　待ち合わせ場所にイメージとまったく違う人が来たら…。
-　ピュアックスなら会う前に写真交換ができるから、そんな不安も解消。
-　http://love-match.bz/pc/04
-
-　-----------------------------------------------------------------
-　スレッド掲示板で秘密のパートナー検索も効率ＵＰ！
-　-----------------------------------------------------------------
-　メインの掲示板のほかにスレッド型の掲示板を設置。
-　メル友から秘密のパートナーまで目的別のユーザーが集う掲示板です。
-　http://love-match.bz/pc/04
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-　□■ 毎日500人近くのユーザーが続々参加中！！
-
-□-----------------------------------------------------------------
-
-　リエ（２１歳/会社員）
-　いつも１人でエッチなことを考えてます。
-　メールだといろいろ話せるんだけど、実際に会うとあまりしゃべれなく
-　なっちゃうので、盛り上げてくれるような楽しい男の人いないかな？
-　引っ込み思案のせいか、男性経験はあまり無いんです。
-　優しく＆楽しくリードしてくれる男性からのメール待ってます。
-　[写真有り] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　真菜（２４歳/フリーター）
-　彼氏が浮気してて超アタマきたっ！まなだって遊びたい盛りだし、ずっと
-　ガマンしてたのにさ！かっこいい人見つけて思いっきりふってやるつもりで
-　登録してみた（笑）
-　[写真有り] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　みさ（３４歳/専業主婦）
-　殆ど家に帰ってこない仕事人間のだんなさまと二人きりの毎日で、ほんと
-　寂しい思いをしています。年下の男の子がいれば仲良くなりたいな。
-　年下の人とは付き合ったことがないので興味津々です(^^)
-　[写真無し] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　恭子（２８歳/会社員）
-　彼氏とはいつも同じようなセックスばかりでかなり冷め気味です。
-　誰かあたしと熱いセックスを楽しみませんか？めんどくさい事は
-　言いません。ただ、いつもと違うドキドキするような事がしたい
-　だけなんです。
-　[写真無し] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　ななこ（２８歳/主婦）
-　半年前にだんなと別れて今は×1です。
-　夜のお仕事なので、昼間まったりと過ごしませんか？
-　心身ともに疲れ気味で、今、激しく癒されたいです。
-　[写真有り] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　祥子（３１歳/クリエイター）
-　平日は18時くらいまでは大体仕事してるので、その後に食事したり
-　楽しく飲んだりできるパートナー希望です。年上でも年下でも
-　かまいませんので気軽にメールを送って頂けると嬉しいです。
-　[写真有り] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-　ゅヵ`（２０歳/学生）
-　まずゎ会ってみないとはじまらなぃょね？！
-　横浜近辺の人で、いろんな意味でオトナな人は
-　プロフ付きでめぇる送って☆
-　[写真有り] http://love-match.bz/pc/04
-
-□-----------------------------------------------------------------
-
-
-   出会いサイトのサクラに騙されないように↓
-　┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-　　【裏】無料の出会い情報
-　　-------------------------------------------------------------
-　　お金と時間を持て余している人妻の間で、噂になってるあのサイト
-　　[登録・利用料全て無料]　http://love-match.bz/pc/?04
-　　-------------------------------------------------------------
-　　彼女達が求めているのはこんな男性です。
-　　?年上女性にリードしてもらいたい、経験少なめの男性
-　　?体力・テクニックに自信が有る男性
-　　男性会員が不足しています。我こそは、と思う方は今すぐ参加！
-　　[登録・利用料全て無料]　http://love-match.bz/pc/04
-　┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-広東省茂名市人民大街3-6-4-533
-友誼網絡公司
-139-3668-7892
-
-
-
-
-
+Dear customers and friends of DS Team,
+Please let us represent our new special offer you can't afford to miss. Announcing Microsoft Office 2007 Enterprise Edition. Office 2007 will be available for enterprise users by November 30, 2006. The end user version will be available in the beginning of 2007. The 2007 Microsoft Office System, also known as Microsoft Office 2007, is the most recent version of Microsoft's productivity suite. Formerly known as Office 12 in the initial stages of its beta cycle, it is scheduled to be made available to volume license customers on November 30, 2006, with general availability following in early 2007. Office 2007 contains a number of new features, the most notable of which is the entirely new graphical user interface called the Ribbon, replacing the menus and toolbars that have been the cornerstone of Office since its inception.Office 2007 also includes new applications and server-side tools. 
+ Chief amongst these is Groove, a collaboration and communication suite for smaller busines
+ ses which was originally developed by Groove Networks before being acquired by Microsoft in 2005. Also included is Office Sharepoint Server 2007, a major revision to the server platform for Office applications, which supports "Excel Services", a client-server architecture for supporting Excel workbooks that are shared in real time between multiple machines, and are also viewable and editable through a web page.While Office 2007 includes many new features, one has been removed entirely: Microsoft FrontPage is no longer being developed; its successor is the Microsoft Expression line of products.
+Microsoft Office 2007 Enterprise
+Retail Price $899.00
+Our Price $79.95
+You save $819.05
+http://petstoperdumb.com
+Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
 
 
 -------------------------------------------------------------------------
