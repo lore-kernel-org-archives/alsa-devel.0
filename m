@@ -1,16 +1,12 @@
-From: "Tim Myers" <burgeonscounterattacking@accelenation.com>
-Subject: fwd: Myers
-Date: Mon, 4 Dec 2006 11:26:27 +0000 (UTC)
-Message-ID: <01c71795$4c4e14e0$6c822ecf@burgeonscounterattacking>
+From: "Mattie Underwood" <outcomePsyche's@abrahamandrose.com>
+Subject: fwd: Underwood
+Date: Mon, 4 Dec 2006 11:27:20 +0000 (UTC)
+Message-ID: <01c71795$6bb99980$6c822ecf@outcomePsyche's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 208.207.96.59 (HELO cluster.gtw.net)
-	by alsa-project.org with esmtp (E0),)-87*RI= DGJSA*)
-	id 080,E,-RAQ.5;-)B
-	for alsa-devel@alsa-project.org; Mon, 4 Dec 2006 11:14:00 -0060
-Date: Mon, 4 Dec 2006 11:14:00 -0060
+Date: Mon, 4 Dec 2006 11:14:52 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Smart Money Equities would like to thank our valued
