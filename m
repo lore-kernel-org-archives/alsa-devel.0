@@ -1,11 +1,12 @@
-From: "Marco Downing" <diacriticsigneous@accentpartners.com>
-Subject: it's me Marco
-Date: Tue, 5 Dec 2006 16:24:41 +0000
-Message-ID: <01c71889$ddfb2b40$6c822ecf@diacriticsigneous>
+From: "Cary Feldman" <badnessTsimshian@absound.ca>
+Subject: it's me Cary
+Date: Tue, 5 Dec 2006 16:45:08 +0000 (UTC)
+Message-ID: <01c7188c$aa53dfa0$6c822ecf@badnessTsimshian>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Tue, 5 Dec 2006 16:44:43 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 You cannot make big returns on an oil company AFTER huge
