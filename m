@@ -1,15 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [RFC: 2.6 patch] sound/: possible cleanups
-Date: Tue, 5 Dec 2006 12:20:16 +0100
-Message-ID: <20061205112016.GA24140__10331.4980086454$1165317672$gmane$org@stusta.de>
+From: Gian Jaskulski <gianfj@gmail.com>
+Subject: Re: Asus W7j
+Date: Tue, 05 Dec 2006 09:58:16 -0200
+Message-ID: <1165319897.3988.5.camel@localhost>
+References: <1165279947.3361.7.camel@localhost>
+	<1165284357.32312.123.camel@razman>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9186024D
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2006 12:20:10 +0100 (MET)
-Content-Disposition: inline
+In-Reply-To: <1165284357.32312.123.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,575 +18,478 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch contains the following possible cleanups:
-- core/memory.c should #include <sound/core.h> for getting the
-  prototypes of all of its global functions
-- proper prototypes for the following functions:
-  - core/init.c: snd_card_info_read_oss()
-  - core/oss/mixer_oss.c: snd_mixer_oss_ioctl_card()
-  - core/seq/seq_memory.c: snd_seq_info_pool()
-  - sound/core/sgbuf.c: snd_free_sgbuf_pages()
-  - sound/core/sgbuf.c: snd_malloc_sgbuf_pages()
-  - isa/gus/gus_timer.c: snd_gf1_timers_init()
-  - isa/gus/gus_timer.c: snd_gf1_timers_done()
-- make the following needlessly global functions static:
-  - core/device.c: snd_device_disconnect()
-  - core/pcm_memory.c: snd_pcm_lib_preallocate_free()
-  - core/pcm_native.c: snd_pcm_suspend()
-  - core/pcm_native.c: snd_pcm_hw_constraints_init()
-  - core/pcm_native.c: snd_pcm_hw_constraints_complete()
-  - pci/ca0106/ca0106_main.c: snd_ca0106_spi_write()
-  - pci/hda/hda_codec.c: snd_hda_query_supported_pcm()
-  - pci/hda/hda_codec.c: snd_hda_is_supported_format()
-- #if 0 the following unused global functions:
-  - pci/ac97/ac97_codec.c: snd_ac97_remove_ctl()
-  - pci/ac97/ac97_codec.c: snd_ac97_rename_ctl()
-  - pci/ac97/ac97_codec.c: snd_ac97_swap_ctl()
-  - pci/cs46xx/dsp_spos.c: cs46xx_dsp_set_iec958_volume()
-  - pci/emu10k1/io.c: snd_emu10k1_voice_half_loop_intr_enable()
-  - pci/emu10k1/io.c: snd_emu10k1_voice_set_loop_stop()
-- remove the following unused EXPORT_SYMBOL's:
-  - core/pcm_memory.c: snd_pcm_lib_preallocate_free_for_all
-  - pci/ac97/ac97_codec.c: snd_ac97_update
-  - pci/hda/hda_codec.c: snd_hda_codec_read
-  - pci/hda/hda_codec.c: snd_hda_codec_write
-  - pci/hda/hda_codec.c: snd_hda_sequence_write
-  - pci/hda/hda_codec.c: snd_hda_get_sub_nodes
-  - pci/hda/hda_codec.c: snd_hda_codec_setup_stream
+Tried use model asus-laptop. When I use model 3stack I can use the alsa
+interface with totem and I can change the master volume with software
+control (not the driver's control). With model asus-laptop just the OSS
+api works. And with both models my controls are completly messed up (can
+just mute and unmute the master and all others are disabled). Above are
+the dmesg results of loading and unloading the snd-hda-intel module:
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 23
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA /root/alsa-hg/alsa-driver/pci/hda/hda_codec.c:1743: hda_codec:
+model 'asus-laptop' is selected
 
----
 
- Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl |    3 -
- include/sound/core.h                                         |    5 ++
- include/sound/emu10k1.h                                      |    2 -
- include/sound/gus.h                                          |    3 +
- include/sound/memalloc.h                                     |    5 ++
- include/sound/mixer_oss.h                                    |    3 +
- include/sound/pcm.h                                          |    7 ---
- sound/core/device.c                                          |    2 -
- sound/core/info_oss.c                                        |    2 -
- sound/core/memalloc.c                                        |   11 -----
- sound/core/memory.c                                          |    1 
- sound/core/oss/pcm_oss.c                                     |    2 -
- sound/core/pcm_memory.c                                      |    4 --
- sound/core/pcm_native.c                                      |    8 +---
- sound/core/seq/seq_clientmgr.c                               |    3 -
- sound/core/seq/seq_memory.h                                  |    2 +
- sound/isa/gus/gus_reset.c                                    |    5 --
- sound/pci/ac97/ac97_codec.c                                  |   11 +++--
- sound/pci/ac97/ac97_local.h                                  |    3 -
- sound/pci/ca0106/ca0106_main.c                               |    4 +-
- sound/pci/cs46xx/cs46xx_lib.h                                |    1 
- sound/pci/cs46xx/dsp_spos.c                                  |    2 +
- sound/pci/emu10k1/io.c                                       |    4 ++
- sound/pci/hda/hda_codec.c                                    |   19 ++--------
- sound/pci/hda/hda_codec.h                                    |    4 --
- 25 files changed, 44 insertions(+), 72 deletions(-)
 
---- linux-2.6.19-rc6-mm2/sound/core/memory.c.old	2006-12-04 17:48:05.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/memory.c	2006-12-04 17:30:23.000000000 +0100
-@@ -20,6 +20,7 @@
-  *
-  */
- 
-+#include <sound/core.h>
- #include <linux/module.h>
- #include <asm/io.h>
- #include <asm/uaccess.h>
---- linux-2.6.19-rc6-mm2/include/sound/gus.h.old	2006-12-04 17:33:13.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/gus.h	2006-12-04 17:34:22.000000000 +0100
-@@ -661,6 +661,9 @@
- int snd_gus_dram_read(struct snd_gus_card *gus, char __user *ptr,
- 		      unsigned int addr, unsigned int size, int rom);
- 
-+void snd_gf1_timers_init(struct snd_gus_card * gus);
-+void snd_gf1_timers_done(struct snd_gus_card * gus);
-+
- #if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
- 
- /* gus_sample.c */
---- linux-2.6.19-rc6-mm2/sound/isa/gus/gus_reset.c.old	2006-12-04 17:34:37.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/isa/gus/gus_reset.c	2006-12-04 17:35:00.000000000 +0100
-@@ -25,11 +25,6 @@
- #include <sound/core.h>
- #include <sound/gus.h>
- 
--extern void snd_gf1_timers_init(struct snd_gus_card * gus);
--extern void snd_gf1_timers_done(struct snd_gus_card * gus);
--extern int snd_gf1_synth_init(struct snd_gus_card * gus);
--extern void snd_gf1_synth_done(struct snd_gus_card * gus);
--
- /*
-  *  ok.. default interrupt handlers...
-  */
---- linux-2.6.19-rc6-mm2/include/sound/mixer_oss.h.old	2006-12-04 17:31:27.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/mixer_oss.h	2006-12-04 17:31:52.000000000 +0100
-@@ -73,6 +73,9 @@
- 	struct snd_mixer_oss *mixer;
- };
- 
-+int snd_mixer_oss_ioctl_card(struct snd_card *card, unsigned int cmd,
-+			     unsigned long arg);
-+
- #endif /* CONFIG_SND_MIXER_OSS */
- 
- #endif /* __SOUND_MIXER_OSS_H */
---- linux-2.6.19-rc6-mm2/sound/core/oss/pcm_oss.c.old	2006-12-04 17:32:09.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/oss/pcm_oss.c	2006-12-04 17:53:34.000000000 +0100
-@@ -42,6 +42,7 @@
- #include <sound/info.h>
- #include <linux/soundcard.h>
- #include <sound/initval.h>
-+#include <sound/mixer_oss.h>
- 
- #define OSS_ALSAEMULVER		_SIOR ('M', 249, int)
- 
-@@ -61,7 +62,6 @@
- MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM);
- MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM1);
- 
--extern int snd_mixer_oss_ioctl_card(struct snd_card *card, unsigned int cmd, unsigned long arg);
- static int snd_pcm_oss_get_rate(struct snd_pcm_oss_file *pcm_oss_file);
- static int snd_pcm_oss_get_channels(struct snd_pcm_oss_file *pcm_oss_file);
- static int snd_pcm_oss_get_format(struct snd_pcm_oss_file *pcm_oss_file);
---- linux-2.6.19-rc6-mm2/sound/core/seq/seq_memory.h.old	2006-12-04 17:23:50.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/seq/seq_memory.h	2006-12-04 17:24:56.000000000 +0100
-@@ -99,5 +99,7 @@
- /* polling */
- int snd_seq_pool_poll_wait(struct snd_seq_pool *pool, struct file *file, poll_table *wait);
- 
-+void snd_seq_info_pool(struct snd_info_buffer *buffer,
-+		       struct snd_seq_pool *pool, char *space);
- 
- #endif
---- linux-2.6.19-rc6-mm2/sound/core/seq/seq_clientmgr.c.old	2006-12-04 17:24:15.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/seq/seq_clientmgr.c	2006-12-04 17:24:55.000000000 +0100
-@@ -2487,9 +2487,6 @@
- }
- 
- 
--void snd_seq_info_pool(struct snd_info_buffer *buffer,
--		       struct snd_seq_pool *pool, char *space);
--
- /* exported to seq_info.c */
- void snd_seq_info_clients_read(struct snd_info_entry *entry, 
- 			       struct snd_info_buffer *buffer)
---- linux-2.6.19-rc6-mm2/include/sound/memalloc.h.old	2006-12-04 17:26:03.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/memalloc.h	2006-12-04 17:27:28.000000000 +0100
-@@ -114,5 +114,10 @@
- void *snd_malloc_pages(size_t size, gfp_t gfp_flags);
- void snd_free_pages(void *ptr, size_t size);
- 
-+int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab);
-+void *snd_malloc_sgbuf_pages(struct device *device,
-+                             size_t size, struct snd_dma_buffer *dmab,
-+			     size_t *res_size);
-+
- #endif /* __SOUND_MEMALLOC_H */
- 
---- linux-2.6.19-rc6-mm2/sound/core/memalloc.c.old	2006-12-04 17:26:51.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/memalloc.c	2006-12-04 17:27:33.000000000 +0100
-@@ -42,17 +42,6 @@
- MODULE_LICENSE("GPL");
- 
- 
--/*
-- */
--
--void *snd_malloc_sgbuf_pages(struct device *device,
--                             size_t size, struct snd_dma_buffer *dmab,
--			     size_t *res_size);
--int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab);
--
--/*
-- */
--
- static DEFINE_MUTEX(list_mutex);
- static LIST_HEAD(mem_list_head);
- 
---- linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.h.old	2006-12-04 17:03:15.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.h	2006-12-04 17:03:23.000000000 +0100
-@@ -614,10 +614,6 @@
- 				int channel_id, int format);
- unsigned int snd_hda_calc_stream_format(unsigned int rate, unsigned int channels,
- 					unsigned int format, unsigned int maxbps);
--int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
--				u32 *ratesp, u64 *formatsp, unsigned int *bpsp);
--int snd_hda_is_supported_format(struct hda_codec *codec, hda_nid_t nid,
--				unsigned int format);
- 
- /*
-  * Misc
---- linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.c.old	2006-12-04 16:43:13.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.c	2006-12-04 16:46:23.000000000 +0100
-@@ -89,8 +89,6 @@
- 	return res;
- }
- 
--EXPORT_SYMBOL(snd_hda_codec_read);
--
- /**
-  * snd_hda_codec_write - send a single command without waiting for response
-  * @codec: the HDA codec
-@@ -113,8 +111,6 @@
- 	return err;
- }
- 
--EXPORT_SYMBOL(snd_hda_codec_write);
--
- /**
-  * snd_hda_sequence_write - sequence writes
-  * @codec: the HDA codec
-@@ -129,8 +125,6 @@
- 		snd_hda_codec_write(codec, seq->nid, 0, seq->verb, seq->param);
- }
- 
--EXPORT_SYMBOL(snd_hda_sequence_write);
--
- /**
-  * snd_hda_get_sub_nodes - get the range of sub nodes
-  * @codec: the HDA codec
-@@ -149,8 +143,6 @@
- 	return (int)(parm & 0x7fff);
- }
- 
--EXPORT_SYMBOL(snd_hda_get_sub_nodes);
--
- /**
-  * snd_hda_get_connections - get connection list
-  * @codec: the HDA codec
-@@ -627,8 +619,6 @@
- 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_STREAM_FORMAT, format);
- }
- 
--EXPORT_SYMBOL(snd_hda_codec_setup_stream);
--
- /*
-  * amp access functions
-  */
-@@ -1439,8 +1429,9 @@
-  *
-  * Returns 0 if successful, otherwise a negative error code.
-  */
--int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
--				u32 *ratesp, u64 *formatsp, unsigned int *bpsp)
-+static int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
-+				       u32 *ratesp, u64 *formatsp,
-+				       unsigned int *bpsp)
- {
- 	int i;
- 	unsigned int val, streams;
-@@ -1532,8 +1523,8 @@
-  *
-  * Returns 1 if supported, 0 if not.
-  */
--int snd_hda_is_supported_format(struct hda_codec *codec, hda_nid_t nid,
--				unsigned int format)
-+static int snd_hda_is_supported_format(struct hda_codec *codec, hda_nid_t nid,
-+				       unsigned int format)
- {
- 	int i;
- 	unsigned int val = 0, rate, stream;
---- linux-2.6.19-rc6-mm2/include/sound/emu10k1.h.old	2006-12-04 16:47:03.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/emu10k1.h	2006-12-04 16:47:53.000000000 +0100
-@@ -1541,10 +1541,8 @@
- void snd_emu10k1_voice_intr_enable(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_voice_intr_disable(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_voice_intr_ack(struct snd_emu10k1 *emu, unsigned int voicenum);
--void snd_emu10k1_voice_half_loop_intr_enable(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_voice_half_loop_intr_disable(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_voice_half_loop_intr_ack(struct snd_emu10k1 *emu, unsigned int voicenum);
--void snd_emu10k1_voice_set_loop_stop(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_voice_clear_loop_stop(struct snd_emu10k1 *emu, unsigned int voicenum);
- void snd_emu10k1_wait(struct snd_emu10k1 *emu, unsigned int wait);
- static inline unsigned int snd_emu10k1_wc(struct snd_emu10k1 *emu) { return (inl(emu->port + WC) >> 6) & 0xfffff; }
---- linux-2.6.19-rc6-mm2/sound/pci/emu10k1/io.c.old	2006-12-04 16:47:11.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/emu10k1/io.c	2006-12-04 16:48:05.000000000 +0100
-@@ -291,6 +291,7 @@
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
- 
-+#if 0
- void snd_emu10k1_voice_half_loop_intr_enable(struct snd_emu10k1 *emu, unsigned int voicenum)
- {
- 	unsigned long flags;
-@@ -310,6 +311,7 @@
- 	outl(val, emu->port + DATA);
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
-+#endif  /*  0  */
- 
- void snd_emu10k1_voice_half_loop_intr_disable(struct snd_emu10k1 *emu, unsigned int voicenum)
- {
-@@ -348,6 +350,7 @@
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
- 
-+#if 0
- void snd_emu10k1_voice_set_loop_stop(struct snd_emu10k1 *emu, unsigned int voicenum)
- {
- 	unsigned long flags;
-@@ -367,6 +370,7 @@
- 	outl(sol, emu->port + DATA);
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
-+#endif  /*  0  */
- 
- void snd_emu10k1_voice_clear_loop_stop(struct snd_emu10k1 *emu, unsigned int voicenum)
- {
---- linux-2.6.19-rc6-mm2/sound/pci/cs46xx/cs46xx_lib.h.old	2006-12-04 16:49:09.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/cs46xx/cs46xx_lib.h	2006-12-04 16:49:18.000000000 +0100
-@@ -199,5 +199,4 @@
- 				       int period_size);
- int cs46xx_dsp_pcm_ostream_set_period (struct snd_cs46xx * chip, int period_size);
- int cs46xx_dsp_set_dac_volume (struct snd_cs46xx * chip, u16 left, u16 right);
--int cs46xx_dsp_set_iec958_volume (struct snd_cs46xx * chip, u16 left, u16 right);
- #endif /* __CS46XX_LIB_H__ */
---- linux-2.6.19-rc6-mm2/sound/pci/cs46xx/dsp_spos.c.old	2006-12-04 16:49:29.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/cs46xx/dsp_spos.c	2006-12-04 16:49:44.000000000 +0100
-@@ -1878,6 +1878,7 @@
- 	return 0;
- }
- 
-+#if 0
- int cs46xx_dsp_set_iec958_volume (struct snd_cs46xx * chip, u16 left, u16 right)
- {
- 	struct dsp_spos_instance * ins = chip->dsp_spos_instance;
-@@ -1895,3 +1896,4 @@
- 
- 	return 0;
- }
-+#endif  /*  0  */
---- linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_local.h.old	2006-12-04 16:53:59.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_local.h	2006-12-04 16:54:52.000000000 +0100
-@@ -65,9 +65,6 @@
- int snd_ac97_get_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
- int snd_ac97_put_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
- int snd_ac97_try_bit(struct snd_ac97 * ac97, int reg, int bit);
--int snd_ac97_remove_ctl(struct snd_ac97 *ac97, const char *name, const char *suffix);
--int snd_ac97_rename_ctl(struct snd_ac97 *ac97, const char *src, const char *dst, const char *suffix);
--int snd_ac97_swap_ctl(struct snd_ac97 *ac97, const char *s1, const char *s2, const char *suffix);
- void snd_ac97_rename_vol_ctl(struct snd_ac97 *ac97, const char *src, const char *dst);
- void snd_ac97_restore_status(struct snd_ac97 *ac97);
- void snd_ac97_restore_iec958(struct snd_ac97 *ac97);
---- linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_codec.c.old	2006-12-04 16:53:01.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_codec.c	2006-12-04 16:55:01.000000000 +0100
-@@ -352,8 +352,6 @@
- 	return change;
- }
- 
--EXPORT_SYMBOL(snd_ac97_update);
--
- /**
-  * snd_ac97_update_bits - update the bits on the given register
-  * @ac97: the ac97 instance
-@@ -2537,7 +2535,8 @@
- }	
- 
- /* remove the control with the given name and optional suffix */
--int snd_ac97_remove_ctl(struct snd_ac97 *ac97, const char *name, const char *suffix)
-+static int snd_ac97_remove_ctl(struct snd_ac97 *ac97, const char *name,
-+			       const char *suffix)
- {
- 	struct snd_ctl_elem_id id;
- 	memset(&id, 0, sizeof(id));
-@@ -2556,7 +2555,8 @@
- }
- 
- /* rename the control with the given name and optional suffix */
--int snd_ac97_rename_ctl(struct snd_ac97 *ac97, const char *src, const char *dst, const char *suffix)
-+static int snd_ac97_rename_ctl(struct snd_ac97 *ac97, const char *src,
-+			       const char *dst, const char *suffix)
- {
- 	struct snd_kcontrol *kctl = ctl_find(ac97, src, suffix);
- 	if (kctl) {
-@@ -2574,7 +2574,8 @@
- }
- 
- /* swap controls */
--int snd_ac97_swap_ctl(struct snd_ac97 *ac97, const char *s1, const char *s2, const char *suffix)
-+static int snd_ac97_swap_ctl(struct snd_ac97 *ac97, const char *s1,
-+			     const char *s2, const char *suffix)
- {
- 	struct snd_kcontrol *kctl1, *kctl2;
- 	kctl1 = ctl_find(ac97, s1, suffix);
---- linux-2.6.19-rc6-mm2/include/sound/core.h.old	2006-12-04 17:13:39.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/core.h	2006-12-04 17:49:07.000000000 +0100
-@@ -22,6 +22,7 @@
-  *
-  */
- 
-+#include <sound/driver.h>
- #include <linux/sched.h>		/* wake_up() */
- #include <linux/mutex.h>		/* struct mutex */
- #include <linux/rwsem.h>		/* struct rw_semaphore */
-@@ -35,6 +36,7 @@
- #ifdef CONFIG_SBUS
- struct sbus_dev;
- #endif
-+struct snd_info_buffer;
- 
- /* device allocation stuff */
- 
-@@ -287,6 +289,8 @@
- int snd_card_file_add(struct snd_card *card, struct file *file);
- int snd_card_file_remove(struct snd_card *card, struct file *file);
- 
-+void snd_card_info_read_oss(struct snd_info_buffer *buffer);
-+
- #ifndef snd_card_set_dev
- #define snd_card_set_dev(card,devptr) ((card)->parent = (devptr))
- #endif
-@@ -297,7 +301,6 @@
- 		   void *device_data, struct snd_device_ops *ops);
- int snd_device_register(struct snd_card *card, void *device_data);
- int snd_device_register_all(struct snd_card *card);
--int snd_device_disconnect(struct snd_card *card, void *device_data);
- int snd_device_disconnect_all(struct snd_card *card);
- int snd_device_free(struct snd_card *card, void *device_data);
- int snd_device_free_all(struct snd_card *card, snd_device_cmd_t cmd);
---- linux-2.6.19-rc6-mm2/sound/core/info_oss.c.old	2006-12-04 17:29:38.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/info_oss.c	2006-12-04 17:29:43.000000000 +0100
-@@ -66,8 +66,6 @@
- 
- EXPORT_SYMBOL(snd_oss_info_register);
- 
--extern void snd_card_info_read_oss(struct snd_info_buffer *buffer);
--
- static int snd_sndstat_show_strings(struct snd_info_buffer *buf, char *id, int dev)
- {
- 	int idx, ok = -1;
---- linux-2.6.19-rc6-mm2/sound/core/device.c.old	2006-12-04 17:13:58.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/device.c	2006-12-04 17:14:10.000000000 +0100
-@@ -120,7 +120,7 @@
-  * Returns zero if successful, or a negative error code on failure or if the
-  * device not found.
-  */
--int snd_device_disconnect(struct snd_card *card, void *device_data)
-+static int snd_device_disconnect(struct snd_card *card, void *device_data)
- {
- 	struct snd_device *dev;
- 
---- linux-2.6.19-rc6-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl.old	2006-12-04 17:17:34.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl	2006-12-04 17:18:34.000000000 +0100
-@@ -5648,8 +5648,7 @@
-     <para>
- 	As shown in the above, it's better to save registers after
- 	suspending the PCM operations via
--	<function>snd_pcm_suspend_all()</function> or
--	<function>snd_pcm_suspend()</function>.  It means that the PCM
-+	<function>snd_pcm_suspend_all()</function>.  It means that the PCM
- 	streams are already stoppped when the register snapshot is
- 	taken.  But, remind that you don't have to restart the PCM
- 	stream in the resume callback. It'll be restarted via 
---- linux-2.6.19-rc6-mm2/include/sound/pcm.h.old	2006-12-04 17:14:50.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/include/sound/pcm.h	2006-12-04 17:20:10.000000000 +0100
-@@ -467,10 +467,7 @@
- int snd_pcm_start(struct snd_pcm_substream *substream);
- int snd_pcm_stop(struct snd_pcm_substream *substream, int status);
- int snd_pcm_drain_done(struct snd_pcm_substream *substream);
--#ifdef CONFIG_PM
--int snd_pcm_suspend(struct snd_pcm_substream *substream);
- int snd_pcm_suspend_all(struct snd_pcm *pcm);
--#endif
- int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream, unsigned int cmd, void *arg);
- int snd_pcm_open_substream(struct snd_pcm *pcm, int stream, struct file *file,
- 			   struct snd_pcm_substream **rsubstream);
-@@ -831,9 +828,6 @@
- 
- int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
- 
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
--
- int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
- 			       u_int32_t mask);
- int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-@@ -953,7 +947,6 @@
-  *  Memory
-  */
- 
--int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream);
- int snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm);
- int snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
- 				  int type, struct device *data,
---- linux-2.6.19-rc6-mm2/sound/core/pcm_memory.c.old	2006-12-04 17:15:07.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/pcm_memory.c	2006-12-04 17:16:45.000000000 +0100
-@@ -97,7 +97,7 @@
-  *
-  * Returns zero if successful, or a negative error code on failure.
-  */
--int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream)
-+static int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream)
- {
- 	snd_pcm_lib_preallocate_dma_free(substream);
- #ifdef CONFIG_SND_VERBOSE_PROCFS
-@@ -128,8 +128,6 @@
- 	return 0;
- }
- 
--EXPORT_SYMBOL(snd_pcm_lib_preallocate_free_for_all);
--
- #ifdef CONFIG_SND_VERBOSE_PROCFS
- /*
-  * read callback for prealloc proc file
---- linux-2.6.19-rc6-mm2/sound/core/pcm_native.c.old	2006-12-04 17:19:02.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/core/pcm_native.c	2006-12-04 17:20:15.000000000 +0100
-@@ -1097,7 +1097,7 @@
-  * Trigger SUSPEND to all linked streams.
-  * After this call, all streams are changed to SUSPENDED state.
-  */
--int snd_pcm_suspend(struct snd_pcm_substream *substream)
-+static int snd_pcm_suspend(struct snd_pcm_substream *substream)
- {
- 	int err;
- 	unsigned long flags;
-@@ -1111,8 +1111,6 @@
- 	return err;
- }
- 
--EXPORT_SYMBOL(snd_pcm_suspend);
--
- /**
-  * snd_pcm_suspend_all
-  * @pcm: the PCM instance
-@@ -1815,7 +1813,7 @@
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
- }		
- 
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
-+static int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-@@ -1939,7 +1937,7 @@
- 	return 0;
- }
- 
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
-+static int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hardware *hw = &runtime->hw;
---- linux-2.6.19-rc6-mm2/sound/pci/ca0106/ca0106_main.c.old	2006-12-04 17:35:43.000000000 +0100
-+++ linux-2.6.19-rc6-mm2/sound/pci/ca0106/ca0106_main.c	2006-12-04 17:35:53.000000000 +0100
-@@ -313,8 +313,8 @@
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
- 
--int snd_ca0106_spi_write(struct snd_ca0106 * emu,
--				   unsigned int data)
-+static int snd_ca0106_spi_write(struct snd_ca0106 * emu,
-+				unsigned int data)
- {
- 	unsigned int reset, set;
- 	unsigned int reg, tmp;
+On Mon, 2006-12-04 at 18:05 -0800, Tobin Davis wrote:
+> Try loading the sound driver with "model=asus-laptop".   If this works
+> for you, I'll add your system to the driver source.  If not, let me
+> know and we can go further.
+> 
+> Tobin Davis
+> 
+> On Mon, 2006-12-04 at 22:52 -0200, Gian Jaskulski wrote: 
+> > Dears:
+> > 
+> > I am working on this nice piece for while and I can make the sound work
+> > using the snd-hda-intel module with the 3stack model but I can't change
+> > any volume and all the controls are messed up. I think it is something
+> > related to the sound card model (INTEL ICH7). Can anyone can help me?
+> > 
+> > Thanks in advice.
+> > 
+> > 
+> > Gian.
+> > 
+> > Some information above:
+> > 
+> > 
+> > Result of lspci -vn:
+> > 
+> > 00:00.0 0600: 8086:27a0 (rev 03)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, fast devsel, latency 0
+> >         Capabilities: [e0] Vendor Specific Information
+> > 
+> > 00:01.0 0604: 8086:27a1 (rev 03)
+> >         Flags: bus master, fast devsel, latency 0
+> >         Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+> >         Memory behind bridge: f6700000-fa7fffff
+> >         Prefetchable memory behind bridge:
+> > 000000009ff00000-00000000bfe00000
+> >         Capabilities: [88] #0d [0000]
+> >         Capabilities: [80] Power Management version 2
+> >         Capabilities: [90] Message Signalled Interrupts: 64bit-
+> > Queue=0/0 Enable+
+> >         Capabilities: [a0] Express Root Port (Slot+) IRQ 0
+> > 
+> > 00:1b.0 0403: 8086:27d8 (rev 02)
+> >         Subsystem: 1043:1253
+> >         Flags: bus master, fast devsel, latency 0, IRQ 23
+> >         Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
+> >         Capabilities: [50] Power Management version 2
+> >         Capabilities: [60] Message Signalled Interrupts: 64bit+
+> > Queue=0/0 Enable-
+> >         Capabilities: [70] Express Unknown type IRQ 0
+> > 
+> > 00:1c.0 0604: 8086:27d0 (rev 02)
+> >         Flags: bus master, fast devsel, latency 0
+> >         Bus: primary=00, secondary=02, subordinate=04, sec-latency=0
+> >         I/O behind bridge: 0000a000-0000bfff
+> >         Memory behind bridge: fa800000-fe7fffff
+> >         Prefetchable memory behind bridge:
+> > 00000000bff00000-00000000dfe00000
+> >         Capabilities: [40] Express Root Port (Slot+) IRQ 0
+> >         Capabilities: [80] Message Signalled Interrupts: 64bit-
+> > Queue=0/0 Enable+
+> >         Capabilities: [90] #0d [0000]
+> >         Capabilities: [a0] Power Management version 2
+> > 
+> > 00:1c.1 0604: 8086:27d2 (rev 02)
+> >         Flags: bus master, fast devsel, latency 0
+> >         Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
+> >         I/O behind bridge: 0000c000-0000cfff
+> >         Memory behind bridge: fe800000-fe8fffff
+> >         Capabilities: [40] Express Root Port (Slot+) IRQ 0
+> >         Capabilities: [80] Message Signalled Interrupts: 64bit-
+> > Queue=0/0 Enable+
+> >         Capabilities: [90] #0d [0000]
+> >         Capabilities: [a0] Power Management version 2
+> > 
+> > 00:1c.2 0604: 8086:27d4 (rev 02)
+> >         Flags: bus master, fast devsel, latency 0
+> >         Bus: primary=00, secondary=06, subordinate=06, sec-latency=0
+> >         Memory behind bridge: fe900000-fe9fffff
+> >         Capabilities: [40] Express Root Port (Slot+) IRQ 0
+> >         Capabilities: [80] Message Signalled Interrupts: 64bit-
+> > Queue=0/0 Enable+
+> >         Capabilities: [90] #0d [0000]
+> >         Capabilities: [a0] Power Management version 2
+> > 
+> > 00:1d.0 0c03: 8086:27c8 (rev 02)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 20
+> >         I/O ports at e080 [size=32]
+> > 
+> > 00:1d.1 0c03: 8086:27c9 (rev 02)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 19
+> >         I/O ports at e000 [size=32]
+> > 
+> > 00:1d.2 0c03: 8086:27ca (rev 02)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 18
+> >         I/O ports at dc00 [size=32]
+> > 
+> > 00:1d.3 0c03: 8086:27cb (rev 02)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 21
+> >         I/O ports at d880 [size=32]
+> > 
+> > 00:1d.7 0c03: 8086:27cc (rev 02) (prog-if 20)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 20
+> >         Memory at febff800 (32-bit, non-prefetchable) [size=1K]
+> >         Capabilities: [50] Power Management version 2
+> >         Capabilities: [58] Debug port
+> > 
+> > 00:1e.0 0604: 8086:2448 (rev e2) (prog-if 01)
+> >         Flags: bus master, fast devsel, latency 0
+> >         Bus: primary=00, secondary=07, subordinate=07, sec-latency=32
+> >         Memory behind bridge: fea00000-feafffff
+> >         Capabilities: [50] #0d [0000]
+> > 
+> > 00:1f.0 0601: 8086:27b9 (rev 02)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0
+> >         Capabilities: [e0] Vendor Specific Information
+> > 
+> > 00:1f.1 0101: 8086:27df (rev 02) (prog-if 8a)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 18
+> >         I/O ports at <unassigned>
+> >         I/O ports at <unassigned>
+> >         I/O ports at <unassigned>
+> >         I/O ports at <unassigned>
+> >         I/O ports at ffa0 [size=16]
+> > 
+> > 00:1f.2 0101: 8086:27c4 (rev 02) (prog-if 8f)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 19
+> >         I/O ports at ec00 [size=8]
+> >         I/O ports at e880 [size=4]
+> >         I/O ports at e800 [size=8]
+> >         I/O ports at e480 [size=4]
+> >         I/O ports at e400 [size=16]
+> >         Memory at febffc00 (32-bit, non-prefetchable) [size=1K]
+> >         Capabilities: [70] Power Management version 2
+> > 
+> > 01:00.0 0300: 10de:01d8 (rev a1)
+> >         Subsystem: 1043:1211
+> >         Flags: bus master, fast devsel, latency 0, IRQ 16
+> >         Memory at f9000000 (32-bit, non-prefetchable) [size=16M]
+> >         Memory at a0000000 (64-bit, prefetchable) [size=256M]
+> >         Memory at f8000000 (64-bit, non-prefetchable) [size=16M]
+> >         [virtual] Expansion ROM at fa7e0000 [disabled] [size=128K]
+> >         Capabilities: [60] Power Management version 2
+> >         Capabilities: [68] Message Signalled Interrupts: 64bit+
+> > Queue=0/0 Enable-
+> >         Capabilities: [78] Express Endpoint IRQ 0
+> > 
+> > 05:00.0 0200: 10ec:8168 (rev 01)
+> >         Subsystem: 1043:11f5
+> >         Flags: bus master, fast devsel, latency 0, IRQ 17
+> >         I/O ports at c800 [size=256]
+> >         Memory at fe8ff000 (64-bit, non-prefetchable) [size=4K]
+> >         Expansion ROM at fe8e0000 [disabled] [size=64K]
+> >         Capabilities: [40] Power Management version 2
+> >         Capabilities: [48] Vital Product Data
+> >         Capabilities: [50] Message Signalled Interrupts: 64bit+
+> > Queue=0/1 Enable-
+> >         Capabilities: [60] Express Endpoint IRQ 0
+> >         Capabilities: [84] Vendor Specific Information
+> > 
+> > 06:00.0 0280: 8086:4222 (rev 02)
+> >         Subsystem: 8086:1001
+> >         Flags: bus master, fast devsel, latency 0, IRQ 18
+> >         Memory at fe9ff000 (32-bit, non-prefetchable) [size=4K]
+> >         Capabilities: [c8] Power Management version 2
+> >         Capabilities: [d0] Message Signalled Interrupts: 64bit+
+> > Queue=0/0 Enable-
+> >         Capabilities: [e0] Express Legacy Endpoint IRQ 0
+> > 
+> > 07:03.0 0c00: 1180:0832 (prog-if 10)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 64, IRQ 21
+> >         Memory at feaff800 (32-bit, non-prefetchable) [size=2K]
+> >         Capabilities: [dc] Power Management version 2
+> > 
+> > 07:03.1 0805: 1180:0822 (rev 19)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 64, IRQ 22
+> >         Memory at feaff400 (32-bit, non-prefetchable) [size=256]
+> >         Capabilities: [80] Power Management version 2
+> > 
+> > 07:03.2 0880: 1180:0843 (rev 01)
+> >         Subsystem: 1043:12e7
+> >         Flags: bus master, medium devsel, latency 0, IRQ 3
+> >         Memory at feaff000 (32-bit, non-prefetchable) [size=256]
+> >         Capabilities: [80] Power Management version 2
+> > 
+> > 07:03.3 0880: 1180:0592 (rev 0a)
+> >         Subsystem: 1043:12e7
+> >         Flags: medium devsel, IRQ 3
+> >         Memory at feafec00 (32-bit, non-prefetchable) [size=256]
+> >         Capabilities: [80] Power Management version 2
+> > 
+> > 07:03.4 0880: 1180:0852 (rev 05)
+> >         Subsystem: 1043:12e7
+> >         Flags: medium devsel, IRQ 3
+> >         Memory at feafe800 (32-bit, non-prefetchable) [size=256]
+> >         Capabilities: [80] Power Management version 2
+> > 
+> > 
+> > Results of lspci:
+> > 00:00.0 Host bridge: Intel Corporation Mobile 945GM/PM/GMS/940GML and
+> > 945GT Express Memory Controller Hub (rev 03)
+> > 00:01.0 PCI bridge: Intel Corporation Mobile 945GM/PM/GMS/940GML and
+> > 945GT Express PCI Express Root Port (rev 03)
+> > 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+> > Definition Audio Controller (rev 02)
+> > 00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+> > Port 1 (rev 02)
+> > 00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+> > Port 2 (rev 02)
+> > 00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+> > Port 3 (rev 02)
+> > 00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+> > #1 (rev 02)
+> > 00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+> > #2 (rev 02)
+> > 00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+> > #3 (rev 02)
+> > 00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+> > #4 (rev 02)
+> > 00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+> > Controller (rev 02)
+> > 00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
+> > 00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+> > Bridge (rev 02)
+> > 00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+> > Controller (rev 02)
+> > 00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family)
+> > Serial ATA Storage Controller IDE (rev 02)
+> > 01:00.0 VGA compatible controller: nVidia Corporation GeForce Go 7400
+> > (rev a1)
+> > 05:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+> > RTL8111/8168B PCI Express Gigabit Ethernet controller (rev 01)
+> > 06:00.0 Network controller: Intel Corporation PRO/Wireless 3945ABG
+> > Network Connection (rev 02)
+> > 07:03.0 FireWire (IEEE 1394): Ricoh Co Ltd Unknown device 0832
+> > 07:03.1 Class 0805: Ricoh Co Ltd R5C822 SD/SDIO/MMC/MS/MSPro Host
+> > Adapter (rev 19)
+> > 07:03.2 System peripheral: Ricoh Co Ltd Unknown device 0843 (rev 01)
+> > 07:03.3 System peripheral: Ricoh Co Ltd R5C592 Memory Stick Bus Host
+> > Adapter (rev 0a)
+> > 07:03.4 System peripheral: Ricoh Co Ltd xD-Picture Card Controller (rev
+> > 05)
+> > 
+> > 
+> > Results of cat /proc/asound/card0/codec*
+> > 
+> > Codec: Realtek ALC660
+> > Address: 0
+> > Vendor Id: 0x10ec0861
+> > Subsystem Id: 0x10431205
+> > Revision Id: 0x100340
+> > Default PCM:
+> >     rates [0x140]: 48000 96000
+> >     bits [0xe]: 16 20 24
+> >     formats [0x1]: PCM
+> > Default Amp-In caps: N/A
+> > Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> > Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
+> >   Amp-Out caps: N/A
+> >   Amp-Out vals:  [0x00 0x00]
+> >   Power: 0x0
+> > Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
+> >   Amp-Out caps: N/A
+> >   Amp-Out vals:  [0x00 0x00]
+> >   Power: 0x0
+> > Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
+> >   Amp-Out caps: N/A
+> >   Amp-Out vals:  [0x00 0x00]
+> >   Power: 0x0
+> > Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
+> >   Amp-Out caps: N/A
+> >   Amp-Out vals:  [0x00 0x00]
+> >   Power: 0x0
+> > Node 0x07 [Audio Output] wcaps 0x605: Stereo Digital Amp-Out
+> >   Amp-Out caps: N/A
+> >   Amp-Out vals:  [0x00 0x00]
+> >   Power: 0x0
+> > Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x02, nsteps=0x0d, stepsize=0x0b, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+> > 0x00] [0x00 0x00]
+> >   PCM:
+> >     rates [0x140]: 48000 96000
+> >     bits [0x2]: 16
+> >     formats [0x1]: PCM
+> >   Power: 0x0
+> >   Connection: 6
+> >      0x0d 0x0c 0x0f 0x10 0x11* 0x15
+> > Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x081f: OUT HP Detect
+> >   Pin Default 0x01214110: [Jack] HP Out at Ext Rear
+> >     Conn = 1/8, Color = Green
+> >   Pin-ctls: 0x40: OUT
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x16
+> > Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0837: IN OUT Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0x20: IN
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x19
+> > Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x08337: IN OUT Detect
+> >   Pin Default 0x01a1993e: [Jack] Mic at Ext Rear
+> >     Conn = 1/8, Color = Pink
+> >   Pin-ctls: 0x24: IN
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x18
+> > Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0817: OUT Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0x00:
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x19
+> > Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0833f: IN OUT HP Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0xc0: OUT HP
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x1a
+> > Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0833f: IN OUT HP Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0x24: IN
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x1b
+> > Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
+> >   Pincap 0x0863: IN
+> >   Pin Default 0x99330130: [Fixed] CD at Int ATAPI
+> >     Conn = ATAPI, Color = Unknown
+> >   Pin-ctls: 0x00:
+> > Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+> >   Pincap 0x0810: OUT
+> >   Pin Default 0x99430120: [Fixed] SPDIF Out at Int ATAPI
+> >     Conn = ATAPI, Color = Unknown
+> >   Pin-ctls: 0x40: OUT
+> >   Connection: 1
+> >      0x07
+> > Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x14 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x0d 0x10
+> > Node 0x15 [Audio Mixer] wcaps 0x20050f: Stereo Amp-In Amp-Out
+> >   Amp-In caps: ofs=0x0c, nsteps=0x17, stepsize=0x0b, mute=1
+> >   Amp-In vals:  [0x11 0x11] [0x80 0x80] [0x00 0x00]
+> >   Amp-Out caps: ofs=0x0c, nsteps=0x0c, stepsize=0x0b, mute=1
+> >   Amp-Out vals:  [0x0c 0x0c]
+> >   Power: 0x0
+> >   Connection: 3
+> >      0x11 0x14 0x1c
+> > Node 0x16 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x03 0x15
+> > Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x04 0x15
+> > Node 0x18 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x05 0x15
+> > Node 0x19 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x06 0x15
+> > Node 0x1a [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x00 0x00]
+> >   Connection: 4
+> >      0x04 0x06 0x15 0x03
+> > Node 0x1b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+> >   Connection: 4
+> >      0x04 0x06 0x15 0x03
+> > Node 0x1c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> >   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >   Connection: 2
+> >      0x0c 0x0f
+> > Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x1f [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0817: OUT Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0x00:
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x18
+> > Node 0x20 [Pin Complex] wcaps 0x400581: Stereo
+> >   Pincap 0x0817: OUT Detect
+> >   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >     Conn = 1/8, Color = Black
+> >   Pin-ctls: 0x00:
+> >   Power: 0x0
+> >   Connection: 1
+> >      0x17
+> > Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> > Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+> >   Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+> >   Amp-Out vals:  [0x8f]
+> > Codec: Motorola Si3054
+> > Address: 1
+> > Vendor Id: 0x10573055
+> > Subsystem Id: 0x104310c6
+> > Revision Id: 0x100700
+> > 
+> > 
+> > 
+> > 
+> > -------------------------------------------------------------------------
+> > Take Surveys. Earn Cash. Influence the Future of IT
+> > Join SourceForge.net's Techsay panel and you'll get the chance to share your
+> > opinions on IT & business topics through brief surveys - and earn cash
+> > http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> -- 
+> Tobin Davis <tdavis@dsl-only.net>
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
