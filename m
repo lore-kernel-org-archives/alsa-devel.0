@@ -1,8 +1,8 @@
-From: "Houston Geffrey" <ehw@mjnn.org.cn>
-Subject: I was standing near mark Arm and Steve Turner during
-	the other two sets.
-Date: Tue, 5 Dec 2006 08:27:30 +0100
-Message-ID: <001101c7183f$19762d50$5a6056d9@fhw>
+From: "Hubbard Owen" <usrxgq@aoba.org>
+Subject: The boys did it sexy on this one and collaborated with
+	Outkast and N.
+Date: Tue, 5 Dec 2006 08:27:01 +0100
+Message-ID: <001d01c7183f$370b6b50$d02156d9@dbe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,15 +16,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The reading was followed by a thumb wrestling demonstration and thumb
-battle royal. Thompson put on an hour long folky extraveganza that
-dwarfed the prior perfromance by Costello. Drummer Greg Saunier is
-unbelieveable. I also love the fact that they give away so much music.
-This outfit seemed more in the vein of the John Zorn stuff Ribot has
-been experimenting with.
+I was standing near mark Arm and Steve Turner during the other two sets.
+I can watch any video, listen to any song, read any info and even create
+my own music for the world to hear. I was thrilled to be there. All of
+his words were conveyed to me via his handy notepad.
+Instead we all crashed and burned in our own ways before I had decided
+that I had had enough and left for Berlin.
 
 uu
 
@@ -57,74 +57,80 @@ SAY WE DIDN'T TELL YOU!
 
 uu
 
-I believe the latter is a local group.
-She liked to dance on me. I thought it was more like brothers. His
-guitar playing was amazing.
-And the band seems to be very serious about what they have to say: every
-song on the recording is performed like they were navigating burning
-ships or something.
-I back paged it, and everything was deleted. I love the opening biker
-movie lines. I back paged it, and everything was deleted. Two wonderful
-students followed with their poetry. I believe the latter is a local
-group.
-Soon after, Din moved to New York City and was joined by Mohsin the
-following year when he relocated to New York to attend Fordham
-University. US Tour dates below as well.
-US Tour dates below as well. Mark forgot the opening verse, but who
-cares? I was standing right on front of Steve. I can see why that label
-jumped the hip train to record these folks. Every song is a slap in the
-face of our government, at a time when the artists of this nation need
-to come out and have their voices heard. Not one drop of disappointment.
+It was amazing seeing him only on vox.
+I also love the fact that they give away so much music. You can do the
+same if you like. This outfit seemed more in the vein of the John Zorn
+stuff Ribot has been experimenting with.
+I was standing right on front of Steve.
+The architecture is more classical European with its baroque ceiling and
+strange balcony over the stage. Have you ever played music in a live
+venue? Mark and Steve have known each other for a long time. Villalon is
+the book review editor for the San Francisco Chronicle. I guess we just
+wanted to let you know that we exist and make sound, that is all.
+With all the weepy stuff said I would like to present just three out of
+many many songs that my band put together. Good old fun punk from down
+under.
+I guess we just wanted to let you know that we exist and make sound,
+that is all. Theyhad a varied indie sound, varrying between tweaker
+guitar mayhem, and musical masterbation. Most of the album was produced
+by John Cale and featured musicians that later formed the Talking Heads
+and The Cars. He broke a string and soloed all the way through it. I was
+thrilled to be there. The Vox was screaming throughout everysong, while
+throwing his git around, like a rapid dog on a long leash.
+Satsomi Matsuzaki was as quirky and cute as could be.
 The boys did it sexy on this one and collaborated with Outkast and N.
-You can do the same if you like.
-They recently played a show with Mike Watt and the Stooges.
-One a skinny fedora wearing, tattoo enhanced indie brunette. Satsomi
-Matsuzaki was as quirky and cute as could be. Thompson put on an hour
-long folky extraveganza that dwarfed the prior perfromance by Costello.
-Turns out, they lasted him the set.
-Added biotech RSS news feeds.
-I also love the fact that they give away so much music. She seemed
-pretty confident on bass, but what draws people is her wonderful dance
-bits and bunny hops.
-I was standing near mark Arm and Steve Turner during the other two sets.
-Theyhad a varied indie sound, varrying between tweaker guitar mayhem,
-and musical masterbation.
-Villalon is the book review editor for the San Francisco Chronicle.
-I can watch any video, listen to any song, read any info and even create
-my own music for the world to hear.
-I remember asking Mike how long he thought his vocals would hold out.
+I believe the latter is a local group.
+All of his words were conveyed to me via his handy notepad. They
+recently played a show with Mike Watt and the Stooges. He was every bit
+as depressed in person as his voice seems to project on recordings. I
+remember asking Mike how long he thought his vocals would hold out.
+They are genuine and beautifully harmonious.
+The two got a rehearsal space, started playing shows, completed an EP
+and began work on a full-length record. It was a strange exchange, but
+our conversation was much more direct and honest than talking over the
+loud chatter of drinkers would have allowed.
+I noticed a few special things about this band: first, two generations
+were featured.
+Mark forgot the opening verse, but who cares?
+The other night that changed because what I witnessed was a true
+performer.
+They are genuine and beautifully harmonious.
+She liked to dance on me.
 Perhaps he was a bit upset about Patton Oswalt mispronouncing his name
 when he was introduced, but I doubt it.
-Soon after, Din moved to New York City and was joined by Mohsin the
-following year when he relocated to New York to attend Fordham
-University. I can see why that label jumped the hip train to record
-these folks.
-I noticed a few special things about this band: first, two generations
-were featured. I thought it was more like brothers.
-I can see why that label jumped the hip train to record these folks.
-They are genuine and beautifully harmonious. The Dead, btw never kicked
-my ass, but nevertheless.
-Mark forgot the opening verse, but who cares? I remember asking Mike how
-long he thought his vocals would hold out.
-Two wonderful students followed with their poetry.
-I figured it was worth standing through, since I knew what was coming up
-would thoroughly blow my mind. The first EP, Raised By Wolves, showcases
-their influences which I would describe as a more aggressive Belle and
-Sebastian or Morrisey on his happiest day. The Vox was screaming
-throughout everysong, while throwing his git around, like a rapid dog on
-a long leash.
+Satsomi Matsuzaki was as quirky and cute as could be. I can see why that
+label jumped the hip train to record these folks.
+The singer obviously leads the bunch, and needs to take the handcuffs
+off of the drummer. The after party at the Elbo Room was filled with
+writers I could not identify, but the noise level and impossibility of
+ordering a drink required us to turn in early.
+She was just wanting to move!
+We could barely hear the readers who were at times interrupted by a
+drunken, literate jock who made loud, hollering yelps as if the on stage
+poet were expected to play Free Bird. The other night that changed
+because what I witnessed was a true performer.
+The first EP, Raised By Wolves, showcases their influences which I would
+describe as a more aggressive Belle and Sebastian or Morrisey on his
+happiest day. Umm, on second thought, escaping with my life, and little
+scars, was thanks enough.
+I was standing right behind these tow lovely lasses.
 He was every bit as depressed in person as his voice seems to project on
-recordings.
+recordings. Umm, on second thought, escaping with my life, and little
+scars, was thanks enough. They recently played a show with Mike Watt and
+the Stooges.
+The Dead, btw never kicked my ass, but nevertheless.
 Instead we all crashed and burned in our own ways before I had decided
-that I had had enough and left for Berlin. Satsomi Matsuzaki was as
-quirky and cute as could be. Thompson put on an hour long folky
-extraveganza that dwarfed the prior perfromance by Costello. see, last
-night when I came home and wrote this, I knew exactly what they opened
-with, but now.
+that I had had enough and left for Berlin. Thompson put on an hour long
+folky extraveganza that dwarfed the prior perfromance by Costello. I
+remember asking Mike how long he thought his vocals would hold out. The
+second EP Mothers, Sisters, Daughters and Wives is a bit softer, oddly
+enough reminds me of Supertramp at times.
 The Vox was screaming throughout everysong, while throwing his git
 around, like a rapid dog on a long leash.
-Drummer Greg Saunier is unbelieveable.
-Drummer Greg Saunier is unbelieveable.
+We could barely hear the readers who were at times interrupted by a
+drunken, literate jock who made loud, hollering yelps as if the on stage
+poet were expected to play Free Bird.
+Enjoy the pic, and if everything goes as planned, the tune too.
 
 
 -------------------------------------------------------------------------
