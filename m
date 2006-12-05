@@ -1,9 +1,11 @@
-From: "Mail Delivery System" <MAILER-DAEMON@mailironport.loria.fr>
-Subject: Delivery Status Notification (Failure)
-Date: 05 Dec 2006 08:09:12 +0100
-Message-ID: <598kkh$58sp6@mailironport.loria.fr>
+From: "Houston Geffrey" <ehw@mjnn.org.cn>
+Subject: I was standing near mark Arm and Steve Turner during
+	the other two sets.
+Date: Tue, 5 Dec 2006 08:27:30 +0100
+Message-ID: <001101c7183f$19762d50$5a6056d9@fhw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0633242430=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,129 +16,119 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0633242430==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="L7Cb.48zOahrdZ.FQvF6.CW3p2Bw"
+The reading was followed by a thumb wrestling demonstration and thumb
+battle royal. Thompson put on an hour long folky extraveganza that
+dwarfed the prior perfromance by Costello. Drummer Greg Saunier is
+unbelieveable. I also love the fact that they give away so much music.
+This outfit seemed more in the vein of the John Zorn stuff Ribot has
+been experimenting with.
 
---L7Cb.48zOahrdZ.FQvF6.CW3p2Bw
-content-type: text/plain
+uu
 
-The following message to <olivier.coulaud@loria.fr> was undeliverable.
-The reason for the problem:
-5.1.0 - Unknown address error 550-'<olivier.coulaud@loria.fr>: Recipient address rejected: User unknown in local recipient table'
+HOT STOCK ALERT!
+EXCITING NEW ISSUE ARSS, GET IN NOW!
+IT'S JUST BEGINNING OF 1 WEEK PROMOTION!!!
 
---L7Cb.48zOahrdZ.FQvF6.CW3p2Bw
-content-type: message/delivery-status
+Trade Date: Tuesday, December 05, 2006
+Company: AMEROSSI EC INC (ARSS.PK)
+Symbol: ARSS
+Category: Oil and Gas Industry
+Region: United States, Europe and Russia
+Current Price: $0.50
+Short Term Target: $2.50 - $4.00
+Long Term Target: $10 or more
 
-Final-Recipient: rfc822;olivier.coulaud@loria.fr
-Action: failed
-Status: 5.0.0 (permanent failure)
-Diagnostic-Code: smtp; 5.1.0 - Unknown address error
-	550-'<olivier.coulaud@loria.fr>: Recipient address rejected:
-	User unknown in local recipient table' (delivery attempts: 0)
-Reporting-MTA: dns; mailironport.loria.fr
+You may not be aware of AMEROSSI EC INC (ARSS.PK), but you should be,
+because this company represents a terrific profit opportunity for early
+investors! Sick of hedge funds and flippers getting all the great new
+issues? Most stock brokers give out their new issues to their largest
+commission paying clients - and if you trade through an online broker or
+discount broker - good luck ever getting 1 share of a new issue.
 
---L7Cb.48zOahrdZ.FQvF6.CW3p2Bw
-content-type: message/rfc822
+WELL ALL THAT IS CHANGING - IF YOU ARE RECEIVING THIS EMAIL, YOU ARE
+AMONG THE FIRST PUBLIC INVESTORS TO KNOW ABOUT ARSS !!! $$$ GET IN
+NOW!!! You know the old saying, buy the rumor and sell on the news. Once
+the news is out it is time to get ready for next rally... JUST DO
+YOURSELF A FAVOR AND WATCH ARSS START TRADING TUESDAY MORNING, and DON'T
+SAY WE DIDN'T TELL YOU!
 
-Received: from 221-134-246-209.sify.net (HELO loria.fr) ([221.134.246.209])
-	by mailironport.loria.fr with ESMTP; 05 Dec 2006 08:09:12 +0100
-Content-Type: multipart/mixed; boundary="L7Ca.48zOahowx.13iUCN.AxlVn0"
-MIME-Version: 1.0
-To: olivier.coulaud@loria.fr
-Subject: Answer
-Date: 05 Dec 2006 08:09:12 +0100
-From: "Mail Delivery System" <MAILER-DAEMON@mailironport.loria.fr>
-X-IronPort-AV: i="4.09,496,1157320800";
-	v="W32/Netsky-T'3'rd?W32/Sality-AA'3'rd";
-	d="txt'?pif'96?scan'96,96,208"; a="5534491:sNHsT127295518"
+uu
 
-This is a multipart MIME message.
---L7Ca.48zOahowx.13iUCN.AxlVn0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+I believe the latter is a local group.
+She liked to dance on me. I thought it was more like brothers. His
+guitar playing was amazing.
+And the band seems to be very serious about what they have to say: every
+song on the recording is performed like they were navigating burning
+ships or something.
+I back paged it, and everything was deleted. I love the opening biker
+movie lines. I back paged it, and everything was deleted. Two wonderful
+students followed with their poetry. I believe the latter is a local
+group.
+Soon after, Din moved to New York City and was joined by Mohsin the
+following year when he relocated to New York to attend Fordham
+University. US Tour dates below as well.
+US Tour dates below as well. Mark forgot the opening verse, but who
+cares? I was standing right on front of Steve. I can see why that label
+jumped the hip train to record these folks. Every song is a slap in the
+face of our government, at a time when the artists of this nation need
+to come out and have their voices heard. Not one drop of disappointment.
+The boys did it sexy on this one and collaborated with Outkast and N.
+You can do the same if you like.
+They recently played a show with Mike Watt and the Stooges.
+One a skinny fedora wearing, tattoo enhanced indie brunette. Satsomi
+Matsuzaki was as quirky and cute as could be. Thompson put on an hour
+long folky extraveganza that dwarfed the prior perfromance by Costello.
+Turns out, they lasted him the set.
+Added biotech RSS news feeds.
+I also love the fact that they give away so much music. She seemed
+pretty confident on bass, but what draws people is her wonderful dance
+bits and bunny hops.
+I was standing near mark Arm and Steve Turner during the other two sets.
+Theyhad a varied indie sound, varrying between tweaker guitar mayhem,
+and musical masterbation.
+Villalon is the book review editor for the San Francisco Chronicle.
+I can watch any video, listen to any song, read any info and even create
+my own music for the world to hear.
+I remember asking Mike how long he thought his vocals would hold out.
+Perhaps he was a bit upset about Patton Oswalt mispronouncing his name
+when he was introduced, but I doubt it.
+Soon after, Din moved to New York City and was joined by Mohsin the
+following year when he relocated to New York to attend Fordham
+University. I can see why that label jumped the hip train to record
+these folks.
+I noticed a few special things about this band: first, two generations
+were featured. I thought it was more like brothers.
+I can see why that label jumped the hip train to record these folks.
+They are genuine and beautifully harmonious. The Dead, btw never kicked
+my ass, but nevertheless.
+Mark forgot the opening verse, but who cares? I remember asking Mike how
+long he thought his vocals would hold out.
+Two wonderful students followed with their poetry.
+I figured it was worth standing through, since I knew what was coming up
+would thoroughly blow my mind. The first EP, Raised By Wolves, showcases
+their influences which I would describe as a more aggressive Belle and
+Sebastian or Morrisey on his happiest day. The Vox was screaming
+throughout everysong, while throwing his git around, like a rapid dog on
+a long leash.
+He was every bit as depressed in person as his voice seems to project on
+recordings.
+Instead we all crashed and burned in our own ways before I had decided
+that I had had enough and left for Berlin. Satsomi Matsuzaki was as
+quirky and cute as could be. Thompson put on an hour long folky
+extraveganza that dwarfed the prior perfromance by Costello. see, last
+night when I came home and wrote this, I knew exactly what they opened
+with, but now.
+The Vox was screaming throughout everysong, while throwing his git
+around, like a rapid dog on a long leash.
+Drummer Greg Saunier is unbelieveable.
+Drummer Greg Saunier is unbelieveable.
 
-The attached message may be infected with a Virus.
-The original message information was:
-
-From: alsa-devel@lists.sourceforge.net
-To: olivier.coulaud@loria.fr
-Subject: Answer
-
---L7Ca.48zOahowx.13iUCN.AxlVn0
-Content-Type: message/rfc822
-MIME-Version: 1.0
-Content-Disposition: attachment; filename="ModifiedMessage.txt"
-
-From: alsa-devel@lists.sourceforge.net
-To: olivier.coulaud@loria.fr
-Subject: Answer
-Date: Tue, 5 Dec 2006 12:41:10 +0530
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-
-Hello!
-Please have a look at the answer.
-Thank you
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-MIME-Version: 1.0
-Content-Type: text/plain; name="answer6.pif"; charset="iso-8859-1"
-Content-Description: Removed Attachment
-Content-Disposition: attachment; filename="Removed Attachment.txt"
-Content-Transfer-Encoding: quoted-printable
-
-This attachment contained a virus and was stripped.
-	Filename: answer6.pif
-	Content-Type: application/octet-stream
-	Virus(es): W32/Netsky-T
-		W32/Sality-AA
-
-------=_NextPart_000_0016----=_NextPart_000_0016--
-
-
---L7Ca.48zOahowx.13iUCN.AxlVn0--
-
---L7Cb.48zOahrdZ.FQvF6.CW3p2Bw--
-
-
-
---===============0633242430==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0633242430==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0633242430==--
