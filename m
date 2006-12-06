@@ -1,15 +1,12 @@
-From: "Opal Fournier" <slicedLt@accusonic.com>
-Subject: Opal check this.
-Date: Wed, 6 Dec 2006 16:04:52 +0000 (UTC)
-Message-ID: <01c7194f$9ef92f70$6c822ecf@slicedLt>
+From: "Sonja Saunders" <Laurahubbub@abm.es>
+Subject: Sonja check this.
+Date: Wed, 6 Dec 2006 16:08:23 +0000 (UTC)
+Message-ID: <01c71950$1d404da0$6c822ecf@Laurahubbub>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 206.166.194.225 (HELO antespam.com)
-	by alsa-project.org with esmtp (JMF-U;9+0 .T1WO) id *007)R-*7X'6,-+E
-	for alsa-devel@alsa-project.org; Wed, 6 Dec 2006 16:00:16 -0060
-Date: Wed, 6 Dec 2006 16:00:16 -0060
+Date: Wed, 6 Dec 2006 16:03:48 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 We told you yesterday that this one was going to move!  Now 
