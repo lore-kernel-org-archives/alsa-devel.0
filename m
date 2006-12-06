@@ -1,10 +1,12 @@
-From: "Glenn Nettie" <vtfap@lasor.net>
-Subject: photosynthesis
-Date: Wed, 6 Dec 2006 17:58:38 -0500
-Message-ID: <000a01c7198a$a74f93e0$27a5f0c9@brv>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Samsung Audio Problem (update)
+Date: Wed, 06 Dec 2006 15:31:08 -0800
+Message-ID: <1165447868.32312.250.camel@razman>
+References: <5FD5754DDBA0B1499B5A0B4BB541948529308C@fmsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0377350519=="
+Content-Type: multipart/mixed; boundary="=-+f1+t9ZW7QcrpkKP4u8H"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <5FD5754DDBA0B1499B5A0B4BB541948529308C@fmsmsx411.amr.corp.intel.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,505 +16,771 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: "Allyn, Mark A" <mark.a.allyn@intel.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============0377350519==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0006_01C71960.BE740DA0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0006_01C71960.BE740DA0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0007_01C71960.BE756D30"
+--=-+f1+t9ZW7QcrpkKP4u8H
+Content-Type: multipart/alternative; boundary="=-6v7mf+It8IcW/uWAoiUJ"
 
 
-------=_NextPart_001_0007_01C71960.BE756D30
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+--=-6v7mf+It8IcW/uWAoiUJ
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+Mark,
+After looking through the documentation and the Windows regestry
+settings for that system's driver, I found some interesting differences
+to the microphone selector.
 
-Are you playing next year?
-There are two major kinds of software platforms incorporated into =
-products these days. A New Travel Camera To Lust Over - And a Printer to =
-Die ForYou know how I harp on the idea of packing a travel camera with a =
-wide angle lens to capture the street scenes and landscapes of Europe.
-us compatible endpoint I created a new HttpHandler, del.
-So what are handheld device users to do?
-The Olympic Museum Lausanne has frequently changing exhibits and =
-educational programs. Returns postid as a string. She has always been a =
-dominant player that could recover from her errors easily, this year she =
-was making error after error. The same is true for the back row.
-If you ahven't gotten yours, be sure to do it soon. us to successfully =
-create posts here. ashx HttpHandler which just delegates back to the =
-original one.
-The museum is open all year, is easily accessible for disabled people, =
-and offers many programs for school children.
-Click the link to learn how to interpret things people are darn likely =
-to say to you in Ireland. The two-hour experience begins with a purple =
-crystal bath treatment. Setters usually play right back because that is =
-where they would play in more advanced systems. Step-by-Steps Approach =
-to Spiking; The Secret to Fooling Your Opponents.
-However, Apple uses Toshiba drives in its higher-end iPods and has =
-historically snapped up the latest models.
-How to Use an MDI InhalerOne of the most important skills when you have =
-asthma is knowing how to use an MDI inhaler correctly. Garibaldi retired =
-to Caprera and is buried in a granite tomb there.
-Most adults who wanted flu shots this year have probably gotten them by =
-now.
-Measurement of airway variability is key to both asthma diagnosis and =
-the assessment of asthma control. 
-------=_NextPart_001_0007_01C71960.BE756D30
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Try this patch against the alsa-driver-hg20061130 snapshot
+(ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/alsa-driver-hg20061129.tar.bz2).
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
+To apply:
+tar -jxvf alsa-driver-hg20061130.tar.bz2
+ cd alsa-driver-hg20061130/alsa-kernel
+patch -p1 <SamsungQ1.patch
+cd ..
+./configure --with-cards=hda-intel --with-debug=detect ; make ; make
+install
+
+Let me know if this fixes your microphone.  I also added the subdevice
+id so you shouldn't need to add any model parameters.
+
+Tobin
+
+On Tue, 2006-12-05 at 10:46 -0800, Allyn, Mark A wrote:
+
+> Tobin:
+> 
+> Here is the result of the debug=detect & codec#0:
+> 
+> =====================================================
+> 
+> [17179640.512000] PCI: Setting latency timer of device 0000:00:1b.0 to
+> 64
+> [17179640.544000] ALSA
+> /mnt1/src/asianux/BUILD/alsa-driver-hg20061130/pci/hda/../..
+>                        /alsa-kernel/pci/hda/hda_intel.c:696: codec_mask
+> = 0x1
+> [17179640.740000] ALSA
+> /mnt1/src/asianux/BUILD/alsa-driver-hg20061130/pci/hda/hda_codec.c:1743:
+> 
+>                        hda_codec: model 'laptop-eapd' is selected
+> 
+> ========================================================================
+> output of codec#0
+> Codec: Analog Devices AD1986A
+> Address: 0
+> Vendor Id: 0x11d41986
+> Subsystem Id: 0x144dc027
+> Revision Id: 0x100500
+> Default PCM:
+>     rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
+>     bits [0xe]: 16 20 24
+>     formats [0x1]: PCM
+> Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+> Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
+>   PCM:
+>     rates [0x60]: 44100 48000
+>     bits [0x2]: 16
+>     formats [0x5]: PCM AC3
+>   Connection: 2
+>      0x01* 0x06
+> Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Power: 0x0
+> Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Power: 0x0
+> Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Power: 0x0
+> Node 0x06 [Audio Input] wcaps 0x100511: Stereo
+>   PCM:
+>     rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
+>     bits [0x6]: 16 20
+>     formats [0x1]: PCM
+>   Power: 0x0
+>   Connection: 1
+>      0x12
+> Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
+>   Connection: 8
+>      0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
+> Node 0x08 [Audio Mixer] wcaps 0x200100: Mono
+>   Connection: 1
+>      0x07
+> Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
+>   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-In vals:  [0x80] [0x80]
+>   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-Out vals:  [0x80]
+>   Connection: 2
+>      0x04 0x05
+> Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
+>   Connection: 3
+>      0x07* 0x04 0x05
+> Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
+>   Connection: 2
+>      0x07* 0x04
+> Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
+>   Connection: 2
+>      0x04* 0x07
+> Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
+>   Connection: 2
+>      0x05* 0x08
+> Node 0x0e [Audio Selector] wcaps 0x300100: Mono
+>   Connection: 2
+>      0x08* 0x11
+> Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+>   Amp-Out vals:  [0x00 0x00]
+>   Connection: 8
+>      0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
+> Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
+>   Connection: 3
+>      0x20* 0x1c 0x1f
+> Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
+>   Connection: 2
+>      0x0f* 0x2b
+> Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 8
+>      0x11* 0x22 0x00 0x21 0x10 0x07 0x08 0x23
+> Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 1
+>      0x11
+> Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80]
+>   Connection: 1
+>      0x23
+> Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 1
+>      0x22
+> Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 1
+>      0x21
+> Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Connection: 1
+>      0x10
+> Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
+>   Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+>   Amp-Out vals:  [0x8f]
+>   Connection: 2
+>      0x19* 0x24
+> Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono
+> Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Pincap 0x081f: OUT HP Detect
+>   Pin Default 0x02214021: [Jack] HP Out at Ext Front
+>     Conn = 1/8, Color = Green
+>   Pin-ctls: 0xc0: OUT HP
+>   Connection: 1
+>      0x0a
+> Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Pincap 0x081001f: OUT HP EAPD Detect
+>   Pin Default 0x01014011: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Green
+>   Pin-ctls: 0x40: OUT
+>   Connection: 1
+>      0x0b
+> Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Pincap 0x0837: IN OUT Detect
+>   Pin Default 0x41013012: [N/A] Line Out at Ext Rear
+>     Conn = 1/8, Color = Blue
+>   Pin-ctls: 0x40: OUT
+>   Connection: 1
+>      0x0c
+> Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out
+>   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Pincap 0x081737: IN OUT Detect
+>   Pin Default 0x01019015: [Jack] Line Out at Ext Rear
+>     Conn = 1/8, Color = Pink
+>   Pin-ctls: 0x40: OUT
+>   Connection: 1
+>      0x0d
+> Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out
+>   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+>   Amp-Out vals:  [0x80]
+>   Pincap 0x0810: OUT
+>   Pin Default 0x511710f0: [N/A] Speaker at Int Rear
+>     Conn = Analog, Color = Black
+>   Pin-ctls: 0x40: OUT
+>   Connection: 1
+>      0x0e
+> Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
+>   Pincap 0x081727: IN Detect
+>   Pin Default 0x02a190f0: [Jack] Mic at Ext Front
+>     Conn = 1/8, Color = Pink
+>   Pin-ctls: 0x24: IN
+> Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
+>   Pincap 0x081727: IN Detect
+>   Pin Default 0x418130f0: [N/A] Line In at Ext Rear
+>     Conn = 1/8, Color = Blue
+>   Pin-ctls: 0x20: IN
+> Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
+>   Pincap 0x0827: IN Detect
+>   Pin Default 0x5997e0f0: [N/A] Aux at Int ATAPI
+>     Conn = Analog, Color = White
+>   Pin-ctls: 0x20: IN
+> Node 0x22 [Pin Complex] wcaps 0x400001: Stereo
+>   Pincap 0x0820: IN
+>   Pin Default 0x593310f0: [N/A] CD at Int ATAPI
+>     Conn = ATAPI, Color = Black
+>   Pin-ctls: 0x20: IN
+> Node 0x23 [Pin Complex] wcaps 0x400000: Mono
+>   Pincap 0x0820: IN
+>   Pin Default 0x59b770f0: [N/A] Telephony at Int ATAPI
+>     Conn = Analog, Color = Yellow
+>   Pin-ctls: 0x20: IN
+> Node 0x24 [Pin Complex] wcaps 0x400000: Mono
+>   Pincap 0x0820: IN
+>   Pin Default 0x51f710f0: [N/A] Other at Int Rear
+>     Conn = Analog, Color = Black
+>   Pin-ctls: 0x20: IN
+> Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
+>   Pincap 0x0810: OUT
+>   Pin Default 0x4145f0f0: [N/A] SPDIF Out at Ext Rear
+>     Conn = Optical, Color = Other
+>   Pin-ctls: 0x40: OUT
+>   Connection: 1
+>      0x02
+> Node 0x26 [Power Widget] wcaps 0x500500: Mono
+>   Power: 0x0
+>   Connection: 8
+>      0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
+> Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
+>   Connection: 2
+>      0x1f 0x1d
+> Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
+>   Connection: 2
+>      0x1f 0x20
+> Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
+>   Connection: 2
+>      0x1d 0x20
+> Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
+>   Connection: 3
+>      0x1f 0x1d 0x20
+> Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
+>   Connection: 1
+>      0x0f
+> 
+> ====================================================== 
+> 
+> ________________________________
+> 
+> From: Tobin Davis [mailto:tdavis@dsl-only.net] 
+> Sent: Tuesday, December 05, 2006 7:26 AM
+> To: Allyn, Mark A
+> Cc: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] Samsung Audio Problem (update)
+> 
+> 
+> Could you send a couple of things to the mailing list?  Specifically,
+> recompile the driver with "--with-debug=detect", reinstall it, and send
+> the output from dmesg after installing the driver.  Also, send the
+> output from 'cat /proc/asound/card0/codec*'.
+> 
+> I have a laptop (Asus Z62F) with the exact same codec,   and I had to do
+> some fiddling with the alsamixer controls before I could use either the
+> internal mic or the external mic.  You might also check that.  The mic
+> gain is listed as an output for some reason (it's been marked as "fixme"
+> in the code for quite some time).
+> 
+> Tobin
+> 
+> On Mon, 2006-12-04 at 13:43 -0800, Allyn, Mark A wrote: 
+> 
+> 	Hello:
+> 	 
+> 	With thanks to Tobin Davis, I was able to resolve part of my
+> problem.
+> 	
+> 	With using the latest snapshot of the alsa driver as well as
+> adding
+> 	
+> 	options snd-hda-intel model=laptop-eapd
+> 	
+> 	to the /etc/modprobe.conf file, I was able to get rid of the
+> high
+> 	pitched
+> 	squeal and have proper audio playback on the internal speakers.
+> 	
+> 	I am still unable to record. For your benefit, I do have some
+> more
+> 	Information on the audio device. From the lspci -qn, I got:
+> 	
+> 	Class: 0403
+> 	8086:2668	rev03
+> 	Subsystem: 144D:C027
+> 	
+> 	Has anyone got audio recording working on this codec and
+> subsystem?
+> 	
+> 	Thank you
+> 	
+> 	Mark Allyn
+> 	
+> 	
+> ------------------------------------------------------------------------
+> -
+> 	Take Surveys. Earn Cash. Influence the Future of IT
+> 	Join SourceForge.net's Techsay panel and you'll get the chance
+> to share your
+> 	opinions on IT & business topics through brief surveys - and
+> earn cash
+> 	
+> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
+> V
+> 	_______________________________________________
+> 	Alsa-devel mailing list
+> 	Alsa-devel@lists.sourceforge.net
+> 	https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 	
+> 
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-6v7mf+It8IcW/uWAoiUJ
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
 </HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"presumption" hspace=3D0=20
-src=3D"cid:000501c7198a$a748b610$27a5f0c9@brv" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Are you playing next year?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>There are two major kinds of software =
-platforms=20
-incorporated into products these days. A New Travel Camera To Lust Over =
-- And a=20
-Printer to Die ForYou know how I harp on the idea of packing a travel =
-camera with a=20
-wide angle lens to capture the street scenes and landscapes of =
-Europe.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>us compatible endpoint I created a new =
-HttpHandler,=20
-del.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So what are handheld device users to=20
-do?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The Olympic Museum Lausanne has =
-frequently changing=20
-exhibits and educational programs. Returns postid as a string. She has =
-always been a=20
-dominant player that could recover from her errors easily, this year she =
-was making=20
-error after error. The same is true for the back row.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If you ahven't gotten yours, be sure to =
-do it soon.=20
-us to successfully create posts here. ashx HttpHandler which just =
-delegates back to=20
-the original one.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The museum is open all year, is easily =
-accessible=20
-for disabled people, and offers many programs for school =
-children.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Click the link to learn how to =
-interpret things=20
-people are darn likely to say to you in Ireland. The two-hour experience =
-begins with=20
-a purple crystal bath treatment. Setters usually play right back because =
-that is=20
-where they would play in more advanced systems. Step-by-Steps Approach =
-to Spiking;=20
-The Secret to Fooling Your Opponents.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>However, Apple uses Toshiba drives in =
-its=20
-higher-end iPods and has historically snapped up the latest =
-models.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>How to Use an MDI InhalerOne of the =
-most important=20
-skills when you have asthma is knowing how to use an MDI inhaler =
-correctly.=20
-Garibaldi retired to Caprera and is buried in a granite tomb =
-there.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Most adults who wanted flu shots this =
-year have=20
-probably gotten them by now.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Measurement of airway variability is =
-key to both=20
-asthma diagnosis and the assessment of asthma control. =
-</FONT></DIV></BODY></HTML>
+<BODY>
+Mark,<BR>
+After looking through the documentation and the Windows regestry settings for that system's driver, I found some interesting differences to the microphone selector.<BR>
+<BR>
+Try this patch against the alsa-driver-hg20061130 snapshot (<A HREF="ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/alsa-driver-hg20061129.tar.bz2).">ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/alsa-driver-hg20061129.tar.bz2).</A><BR>
+<BR>
+To apply:<BR>
+tar -jxvf alsa-driver-hg20061130.tar.bz2<BR>
+ cd alsa-driver-hg20061130/alsa-kernel<BR>
+patch -p1 &lt;SamsungQ1.patch<BR>
+cd ..<BR>
+./configure --with-cards=hda-intel --with-debug=detect ; make ; make install<BR>
+<BR>
+Let me know if this fixes your microphone.&nbsp; I also added the subdevice id so you shouldn't need to add any model parameters.<BR>
+<BR>
+Tobin<BR>
+<BR>
+On Tue, 2006-12-05 at 10:46 -0800, Allyn, Mark A wrote:
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Tobin:</FONT>
 
-------=_NextPart_001_0007_01C71960.BE756D30--
+<FONT COLOR="#000000">Here is the result of the debug=detect &amp; codec#0:</FONT>
 
-------=_NextPart_000_0006_01C71960.BE740DA0
-Content-Type: image/gif;
-	name="slushy.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000501c7198a$a748b610$27a5f0c9@brv>
+<FONT COLOR="#000000">=====================================================</FONT>
 
-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
-CAAAOw==
+<FONT COLOR="#000000">[17179640.512000] PCI: Setting latency timer of device 0000:00:1b.0 to</FONT>
+<FONT COLOR="#000000">64</FONT>
+<FONT COLOR="#000000">[17179640.544000] ALSA</FONT>
+<FONT COLOR="#000000">/mnt1/src/asianux/BUILD/alsa-driver-hg20061130/pci/hda/../..</FONT>
+<FONT COLOR="#000000">                       /alsa-kernel/pci/hda/hda_intel.c:696: codec_mask</FONT>
+<FONT COLOR="#000000">= 0x1</FONT>
+<FONT COLOR="#000000">[17179640.740000] ALSA</FONT>
+<FONT COLOR="#000000">/mnt1/src/asianux/BUILD/alsa-driver-hg20061130/pci/hda/hda_codec.c:1743:</FONT>
 
-------=_NextPart_000_0006_01C71960.BE740DA0--
+<FONT COLOR="#000000">                       hda_codec: model 'laptop-eapd' is selected</FONT>
+
+<FONT COLOR="#000000">========================================================================</FONT>
+<FONT COLOR="#000000">output of codec#0</FONT>
+<FONT COLOR="#000000">Codec: Analog Devices AD1986A</FONT>
+<FONT COLOR="#000000">Address: 0</FONT>
+<FONT COLOR="#000000">Vendor Id: 0x11d41986</FONT>
+<FONT COLOR="#000000">Subsystem Id: 0x144dc027</FONT>
+<FONT COLOR="#000000">Revision Id: 0x100500</FONT>
+<FONT COLOR="#000000">Default PCM:</FONT>
+<FONT COLOR="#000000">    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000</FONT>
+<FONT COLOR="#000000">    bits [0xe]: 16 20 24</FONT>
+<FONT COLOR="#000000">    formats [0x1]: PCM</FONT>
+<FONT COLOR="#000000">Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1</FONT>
+<FONT COLOR="#000000">Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital</FONT>
+<FONT COLOR="#000000">  PCM:</FONT>
+<FONT COLOR="#000000">    rates [0x60]: 44100 48000</FONT>
+<FONT COLOR="#000000">    bits [0x2]: 16</FONT>
+<FONT COLOR="#000000">    formats [0x5]: PCM AC3</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x01* 0x06</FONT>
+<FONT COLOR="#000000">Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Power: 0x0</FONT>
+<FONT COLOR="#000000">Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Power: 0x0</FONT>
+<FONT COLOR="#000000">Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Power: 0x0</FONT>
+<FONT COLOR="#000000">Node 0x06 [Audio Input] wcaps 0x100511: Stereo</FONT>
+<FONT COLOR="#000000">  PCM:</FONT>
+<FONT COLOR="#000000">    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000</FONT>
+<FONT COLOR="#000000">    bits [0x6]: 16 20</FONT>
+<FONT COLOR="#000000">    formats [0x1]: PCM</FONT>
+<FONT COLOR="#000000">  Power: 0x0</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x12</FONT>
+<FONT COLOR="#000000">Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 8</FONT>
+<FONT COLOR="#000000">     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18</FONT>
+<FONT COLOR="#000000">Node 0x08 [Audio Mixer] wcaps 0x200100: Mono</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x07</FONT>
+<FONT COLOR="#000000">Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-In vals:  [0x80] [0x80]</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x04 0x05</FONT>
+<FONT COLOR="#000000">Node 0x0a [Audio Selector] wcaps 0x300101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 3</FONT>
+<FONT COLOR="#000000">     0x07* 0x04 0x05</FONT>
+<FONT COLOR="#000000">Node 0x0b [Audio Selector] wcaps 0x300101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x07* 0x04</FONT>
+<FONT COLOR="#000000">Node 0x0c [Audio Selector] wcaps 0x300101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x04* 0x07</FONT>
+<FONT COLOR="#000000">Node 0x0d [Audio Selector] wcaps 0x300101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x05* 0x08</FONT>
+<FONT COLOR="#000000">Node 0x0e [Audio Selector] wcaps 0x300100: Mono</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x08* 0x11</FONT>
+<FONT COLOR="#000000">Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x00 0x00]</FONT>
+<FONT COLOR="#000000">  Connection: 8</FONT>
+<FONT COLOR="#000000">     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a</FONT>
+<FONT COLOR="#000000">Node 0x10 [Audio Selector] wcaps 0x300101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 3</FONT>
+<FONT COLOR="#000000">     0x20* 0x1c 0x1f</FONT>
+<FONT COLOR="#000000">Node 0x11 [Audio Selector] wcaps 0x300941: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x0f* 0x2b</FONT>
+<FONT COLOR="#000000">Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 8</FONT>
+<FONT COLOR="#000000">     0x11* 0x22 0x00 0x21 0x10 0x07 0x08 0x23</FONT>
+<FONT COLOR="#000000">Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x11</FONT>
+<FONT COLOR="#000000">Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x23</FONT>
+<FONT COLOR="#000000">Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x22</FONT>
+<FONT COLOR="#000000">Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x21</FONT>
+<FONT COLOR="#000000">Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x10</FONT>
+<FONT COLOR="#000000">Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x8f]</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x19* 0x24</FONT>
+<FONT COLOR="#000000">Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono</FONT>
+<FONT COLOR="#000000">Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Pincap 0x081f: OUT HP Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x02214021: [Jack] HP Out at Ext Front</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Green</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0xc0: OUT HP</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0a</FONT>
+<FONT COLOR="#000000">Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Pincap 0x081001f: OUT HP EAPD Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x01014011: [Jack] Line Out at Ext Rear</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Green</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0b</FONT>
+<FONT COLOR="#000000">Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Pincap 0x0837: IN OUT Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x41013012: [N/A] Line Out at Ext Rear</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Blue</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0c</FONT>
+<FONT COLOR="#000000">Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80 0x80]</FONT>
+<FONT COLOR="#000000">  Pincap 0x081737: IN OUT Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x01019015: [Jack] Line Out at Ext Rear</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Pink</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0d</FONT>
+<FONT COLOR="#000000">Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out</FONT>
+<FONT COLOR="#000000">  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1</FONT>
+<FONT COLOR="#000000">  Amp-Out vals:  [0x80]</FONT>
+<FONT COLOR="#000000">  Pincap 0x0810: OUT</FONT>
+<FONT COLOR="#000000">  Pin Default 0x511710f0: [N/A] Speaker at Int Rear</FONT>
+<FONT COLOR="#000000">    Conn = Analog, Color = Black</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0e</FONT>
+<FONT COLOR="#000000">Node 0x1f [Pin Complex] wcaps 0x400081: Stereo</FONT>
+<FONT COLOR="#000000">  Pincap 0x081727: IN Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x02a190f0: [Jack] Mic at Ext Front</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Pink</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x24: IN</FONT>
+<FONT COLOR="#000000">Node 0x20 [Pin Complex] wcaps 0x400081: Stereo</FONT>
+<FONT COLOR="#000000">  Pincap 0x081727: IN Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x418130f0: [N/A] Line In at Ext Rear</FONT>
+<FONT COLOR="#000000">    Conn = 1/8, Color = Blue</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
+<FONT COLOR="#000000">Node 0x21 [Pin Complex] wcaps 0x400081: Stereo</FONT>
+<FONT COLOR="#000000">  Pincap 0x0827: IN Detect</FONT>
+<FONT COLOR="#000000">  Pin Default 0x5997e0f0: [N/A] Aux at Int ATAPI</FONT>
+<FONT COLOR="#000000">    Conn = Analog, Color = White</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
+<FONT COLOR="#000000">Node 0x22 [Pin Complex] wcaps 0x400001: Stereo</FONT>
+<FONT COLOR="#000000">  Pincap 0x0820: IN</FONT>
+<FONT COLOR="#000000">  Pin Default 0x593310f0: [N/A] CD at Int ATAPI</FONT>
+<FONT COLOR="#000000">    Conn = ATAPI, Color = Black</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
+<FONT COLOR="#000000">Node 0x23 [Pin Complex] wcaps 0x400000: Mono</FONT>
+<FONT COLOR="#000000">  Pincap 0x0820: IN</FONT>
+<FONT COLOR="#000000">  Pin Default 0x59b770f0: [N/A] Telephony at Int ATAPI</FONT>
+<FONT COLOR="#000000">    Conn = Analog, Color = Yellow</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
+<FONT COLOR="#000000">Node 0x24 [Pin Complex] wcaps 0x400000: Mono</FONT>
+<FONT COLOR="#000000">  Pincap 0x0820: IN</FONT>
+<FONT COLOR="#000000">  Pin Default 0x51f710f0: [N/A] Other at Int Rear</FONT>
+<FONT COLOR="#000000">    Conn = Analog, Color = Black</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
+<FONT COLOR="#000000">Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital</FONT>
+<FONT COLOR="#000000">  Pincap 0x0810: OUT</FONT>
+<FONT COLOR="#000000">  Pin Default 0x4145f0f0: [N/A] SPDIF Out at Ext Rear</FONT>
+<FONT COLOR="#000000">    Conn = Optical, Color = Other</FONT>
+<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x02</FONT>
+<FONT COLOR="#000000">Node 0x26 [Power Widget] wcaps 0x500500: Mono</FONT>
+<FONT COLOR="#000000">  Power: 0x0</FONT>
+<FONT COLOR="#000000">  Connection: 8</FONT>
+<FONT COLOR="#000000">     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18</FONT>
+<FONT COLOR="#000000">Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x1f 0x1d</FONT>
+<FONT COLOR="#000000">Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x1f 0x20</FONT>
+<FONT COLOR="#000000">Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 2</FONT>
+<FONT COLOR="#000000">     0x1d 0x20</FONT>
+<FONT COLOR="#000000">Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo</FONT>
+<FONT COLOR="#000000">  Connection: 3</FONT>
+<FONT COLOR="#000000">     0x1f 0x1d 0x20</FONT>
+<FONT COLOR="#000000">Node 0x2b [Audio Mixer] wcaps 0x200100: Mono</FONT>
+<FONT COLOR="#000000">  Connection: 1</FONT>
+<FONT COLOR="#000000">     0x0f</FONT>
+
+<FONT COLOR="#000000">====================================================== </FONT>
+
+<FONT COLOR="#000000">________________________________</FONT>
+
+<FONT COLOR="#000000">From: Tobin Davis [mailto:<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>] </FONT>
+<FONT COLOR="#000000">Sent: Tuesday, December 05, 2006 7:26 AM</FONT>
+<FONT COLOR="#000000">To: Allyn, Mark A</FONT>
+<FONT COLOR="#000000">Cc: <A HREF="mailto:alsa-devel@lists.sourceforge.net">alsa-devel@lists.sourceforge.net</A></FONT>
+<FONT COLOR="#000000">Subject: Re: [Alsa-devel] Samsung Audio Problem (update)</FONT>
 
 
+<FONT COLOR="#000000">Could you send a couple of things to the mailing list?  Specifically,</FONT>
+<FONT COLOR="#000000">recompile the driver with &quot;--with-debug=detect&quot;, reinstall it, and send</FONT>
+<FONT COLOR="#000000">the output from dmesg after installing the driver.  Also, send the</FONT>
+<FONT COLOR="#000000">output from 'cat /proc/asound/card0/codec*'.</FONT>
 
---===============0377350519==
+<FONT COLOR="#000000">I have a laptop (Asus Z62F) with the exact same codec,   and I had to do</FONT>
+<FONT COLOR="#000000">some fiddling with the alsamixer controls before I could use either the</FONT>
+<FONT COLOR="#000000">internal mic or the external mic.  You might also check that.  The mic</FONT>
+<FONT COLOR="#000000">gain is listed as an output for some reason (it's been marked as &quot;fixme&quot;</FONT>
+<FONT COLOR="#000000">in the code for quite some time).</FONT>
+
+<FONT COLOR="#000000">Tobin</FONT>
+
+<FONT COLOR="#000000">On Mon, 2006-12-04 at 13:43 -0800, Allyn, Mark A wrote: </FONT>
+
+<FONT COLOR="#000000">	Hello:</FONT>
+<FONT COLOR="#000000">	 </FONT>
+<FONT COLOR="#000000">	With thanks to Tobin Davis, I was able to resolve part of my</FONT>
+<FONT COLOR="#000000">problem.</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	With using the latest snapshot of the alsa driver as well as</FONT>
+<FONT COLOR="#000000">adding</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	options snd-hda-intel model=laptop-eapd</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	to the /etc/modprobe.conf file, I was able to get rid of the</FONT>
+<FONT COLOR="#000000">high</FONT>
+<FONT COLOR="#000000">	pitched</FONT>
+<FONT COLOR="#000000">	squeal and have proper audio playback on the internal speakers.</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	I am still unable to record. For your benefit, I do have some</FONT>
+<FONT COLOR="#000000">more</FONT>
+<FONT COLOR="#000000">	Information on the audio device. From the lspci -qn, I got:</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	Class: 0403</FONT>
+<FONT COLOR="#000000">	8086:2668	rev03</FONT>
+<FONT COLOR="#000000">	Subsystem: 144D:C027</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	Has anyone got audio recording working on this codec and</FONT>
+<FONT COLOR="#000000">subsystem?</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	Thank you</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	Mark Allyn</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000">------------------------------------------------------------------------</FONT>
+<FONT COLOR="#000000">-</FONT>
+<FONT COLOR="#000000">	Take Surveys. Earn Cash. Influence the Future of IT</FONT>
+<FONT COLOR="#000000">	Join SourceForge.net's Techsay panel and you'll get the chance</FONT>
+<FONT COLOR="#000000">to share your</FONT>
+<FONT COLOR="#000000">	opinions on IT &amp; business topics through brief surveys - and</FONT>
+<FONT COLOR="#000000">earn cash</FONT>
+<FONT COLOR="#000000">	</FONT>
+<FONT COLOR="#000000"><A HREF="http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE">http://www.techsay.com/default.php?page=join.php&amp;p=sourceforge&amp;CID=DEVDE</A></FONT>
+<FONT COLOR="#000000">V</FONT>
+<FONT COLOR="#000000">	_______________________________________________</FONT>
+<FONT COLOR="#000000">	Alsa-devel mailing list</FONT>
+<FONT COLOR="#000000">	<A HREF="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</A></FONT>
+<FONT COLOR="#000000">	<A HREF="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</A></FONT>
+<FONT COLOR="#000000">	</FONT>
+
+</PRE>
+</BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+
+--=-6v7mf+It8IcW/uWAoiUJ--
+
+--=-+f1+t9ZW7QcrpkKP4u8H
+Content-Disposition: attachment; filename=SamsungQ1.patch
+Content-Type: text/x-patch; name=SamsungQ1.patch; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+diff -r b201c63fc4b3 pci/hda/patch_analog.c
+--- a/pci/hda/patch_analog.c	Mon Dec 04 18:03:53 2006 +0100
++++ b/pci/hda/patch_analog.c	Wed Dec 06 15:24:25 2006 -0800
+@@ -786,12 +786,23 @@ static struct hda_verb ad1986a_eapd_init
+ 	{}
+ };
+ 
++/* Ultra initialization */
++static struct hda_verb ad1986a_ultra_init[] = {
++	/* eapd initialization */
++	{0x1b, AC_VERB_SET_EAPD_BTLENABLE, 0x00},
++	/* CLFE -> Mic in */
++	{ 0x1d, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },
++	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0xb080},
++	{ } /* end */
++};
++
+ /* models */
+ enum {
+ 	AD1986A_6STACK,
+ 	AD1986A_3STACK,
+ 	AD1986A_LAPTOP,
+ 	AD1986A_LAPTOP_EAPD,
++	AD1986A_ULTRA,
+ 	AD1986A_MODELS
+ };
+ 
+@@ -800,6 +811,7 @@ static const char *ad1986a_models[AD1986
+ 	[AD1986A_3STACK]	= "3stack",
+ 	[AD1986A_LAPTOP]	= "laptop",
+ 	[AD1986A_LAPTOP_EAPD]	= "laptop-eapd",
++	[AD1986A_ULTRA]		= "ultra",
+ };
+ 
+ static struct snd_pci_quirk ad1986a_cfg_tbl[] = {
+@@ -821,6 +833,7 @@ static struct snd_pci_quirk ad1986a_cfg_
+ 	SND_PCI_QUIRK(0x144d, 0xc023, "Samsung X60", AD1986A_LAPTOP_EAPD),
+ 	SND_PCI_QUIRK(0x144d, 0xc024, "Samsung R65", AD1986A_LAPTOP_EAPD),
+ 	SND_PCI_QUIRK(0x144d, 0xc026, "Samsung X11", AD1986A_LAPTOP_EAPD),
++	SND_PCI_QUIRK(0x144d, 0xc027, "Samsung Q1", AD1986A_ULTRA),
+ 	SND_PCI_QUIRK(0x17aa, 0x1017, "Lenovo A60", AD1986A_3STACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo N100", AD1986A_LAPTOP_EAPD),
+ 	SND_PCI_QUIRK(0x17c0, 0x2017, "Samsung M50", AD1986A_LAPTOP),
+@@ -886,6 +899,15 @@ static int patch_ad1986a(struct hda_code
+ 		spec->multiout.dac_nids = ad1986a_laptop_dac_nids;
+ 		spec->multiout.dig_out_nid = 0;
+ 		spec->input_mux = &ad1986a_laptop_eapd_capture_source;
++		break;
++	case AD1986A_ULTRA:
++		spec->mixers[0] = ad1986a_laptop_eapd_mixers;
++		spec->num_init_verbs = 2;
++		spec->init_verbs[1] = ad1986a_ultra_init;
++		spec->multiout.max_channels = 2;
++		spec->multiout.num_dacs = 1;
++		spec->multiout.dac_nids = ad1986a_laptop_dac_nids;
++		spec->multiout.dig_out_nid = 0;
+ 		break;
+ 	}
+ 
+
+--=-+f1+t9ZW7QcrpkKP4u8H
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -523,7 +791,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0377350519==
+--=-+f1+t9ZW7QcrpkKP4u8H
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -534,4 +802,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0377350519==--
+--=-+f1+t9ZW7QcrpkKP4u8H--
