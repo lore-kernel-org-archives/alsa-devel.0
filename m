@@ -1,12 +1,12 @@
-From: "Sonja Saunders" <Laurahubbub@abm.es>
-Subject: Sonja check this.
-Date: Wed, 6 Dec 2006 16:08:23 +0000 (UTC)
-Message-ID: <01c71950$1d404da0$6c822ecf@Laurahubbub>
+From: "Shanna Abrams" <whimmingopinion's@acci.asn.au>
+Subject: Shanna check this.
+Date: Wed, 6 Dec 2006 18:47:42 +0000 (UTC)
+Message-ID: <01c71966$695a1b60$6c822ecf@whimmingopinion's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Wed, 6 Dec 2006 16:03:48 -0060
+Date: Wed, 6 Dec 2006 18:43:24 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 We told you yesterday that this one was going to move!  Now 
