@@ -1,13 +1,12 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ac97 maintenance
-Date: Wed, 06 Dec 2006 19:18:48 +0000
-Message-ID: <45771798.1090906@superbug.co.uk>
-References: <4576B0FB.6060402@sound4.biz> <1165432130.23056.13.camel@Rainsong>
+From: "Ofelia Hunter" <picayunemoods@abcdata.com.pl>
+Subject: Ofelia check this.
+Date: Wed, 6 Dec 2006 19:24:23 +0000 (UTC)
+Message-ID: <01c7196b$e784e5b0$6c822ecf@picayunemoods>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1165432130.23056.13.camel@Rainsong>
+Date: Wed, 6 Dec 2006 19:22:43 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,20 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James C Georgas <jgeorgas@rogers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James C Georgas wrote:
-> Who is maintaining the ac97 stuff these days?
-> 
+We told you yesterday that this one was going to move!  Now 
+we see solid volume and nice gains.  But this is just the
+beginning!  The news hasn't even hit the street yet.  We
+think you have one last day to get in before CNPM takes off!
 
-What sort of question is that?
-If you have a problem, raise a bug report.
-There are quite a few developers that can fix bugs in that bit of code.
+Great product, great sector, tightly held, with great
+results expected any day.  Cana Petroleum is going to make
+you a winner!
+
+Symbol: CNPM
+Current Price: Around  $0.79 
+Projected Price:       $5.40
+
+Watch it on Wednesday, December 6th!
+
+Major acquisition?  We are not allowed to give that 
+information out yet.  But what we can say is that you are 
+going to see amazing appreciation in a very short period of 
+time!  This is your opportunity.  Make it with CNPM!  
+Last time when we sent this stock everybody earned. Top brockers earned $100k+. Hurry up!
 
 
-James
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
