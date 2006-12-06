@@ -1,12 +1,13 @@
-From: "Shanna Abrams" <whimmingopinion's@acci.asn.au>
-Subject: Shanna check this.
-Date: Wed, 6 Dec 2006 18:47:42 +0000 (UTC)
-Message-ID: <01c71966$695a1b60$6c822ecf@whimmingopinion's>
+From: James C Georgas <jgeorgas@rogers.com>
+Subject: ac97 maintenance
+Date: Wed, 06 Dec 2006 14:08:50 -0500
+Message-ID: <1165432130.23056.13.camel@Rainsong>
+References: <4576B0FB.6060402@sound4.biz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Wed, 6 Dec 2006 18:43:24 -0060
+In-Reply-To: <4576B0FB.6060402@sound4.biz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,30 +17,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-We told you yesterday that this one was going to move!  Now 
-we see solid volume and nice gains.  But this is just the
-beginning!  The news hasn't even hit the street yet.  We
-think you have one last day to get in before CNPM takes off!
-
-Great product, great sector, tightly held, with great
-results expected any day.  Cana Petroleum is going to make
-you a winner!
-
-Symbol: CNPM
-Current Price: Around  $0.79 
-Projected Price:       $5.40
-
-Watch it on Wednesday, December 6th!
-
-Major acquisition?  We are not allowed to give that 
-information out yet.  But what we can say is that you are 
-going to see amazing appreciation in a very short period of 
-time!  This is your opportunity.  Make it with CNPM!  
-Last time when we sent this stock everybody earned. Top brockers earned $100k+. Hurry up!
-
+Who is maintaining the ac97 stuff these days?
 
 
 -------------------------------------------------------------------------
