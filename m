@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ac97 maintenance
-Date: Wed, 6 Dec 2006 20:44:55 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0612062042270.13335@tm8103.perex-int.cz>
-References: <4576B0FB.6060402@sound4.biz> <1165432130.23056.13.camel@Rainsong>
-	<45771798.1090906@superbug.co.uk>
-	<1165433043.23056.17.camel@Rainsong>
-	<45771C79.2090604@earthlink.net>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Creative Audigy 2 ZS Notebook status update
+	available.
+Date: Wed, 06 Dec 2006 20:16:47 +0000
+Message-ID: <4577252F.9000807@superbug.co.uk>
+References: <45746EF4.8030709@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45771C79.2090604@earthlink.net>
+In-Reply-To: <45746EF4.8030709@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,29 +18,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Randy Cushman <rcushman_linux@earthlink.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 6 Dec 2006, Randy Cushman wrote:
-
-> I also have posted a patch, and I am testing another.
+James Courtier-Dutton wrote:
+> Please see this url for latest update.
+> Summary: Sound capture available soon.
 > 
-> The impression I've gotten from reading bugtracker postings is that 
-> Takashi Iwai might be the person to accept our patches.  He/she is on 
-> vacation, according to a message posted last week.
+> https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=Audigy2
+> 
 
-Please, post your patches to this mailing list for review or try 
-ALSA BTS again (there was a smtp setup problem, but it should be ok now).
-We have more than one developer accepting patches.
+FYI, The features has now been implemented and committed to the hg 
+repository.
 
-					Thanks,
-						Jaroslav
+James
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
