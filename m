@@ -1,12 +1,12 @@
-From: "Derrick Ochoa" <yearnversification@absolutely-free-money.com>
-Subject: Derrick check this.
-Date: Thu, 7 Dec 2006 06:02:11 +0000 (UTC)
-Message-ID: <01c719c5$5bc901a0$6c822ecf@yearnversification>
+From: "Ferdinand Wagner" <Scripturesdell@abtran.com>
+Subject: Ferdinand check this.
+Date: Thu, 7 Dec 2006 07:34:17 +0000 (UTC)
+Message-ID: <01c719d3$6546c880$6c822ecf@Scripturesdell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 7 Dec 2006 06:03:04 +0360
+Date: Thu, 7 Dec 2006 07:43:33 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 These days it's like the dot com revolution round two.  The 
