@@ -1,12 +1,15 @@
-From: "Geoffrey Smallwood" <Riemannwristband's@abhh.dk>
-Subject: Geoffrey check this.
-Date: Thu, 7 Dec 2006 13:24:03 +0000 (UTC)
-Message-ID: <01c71a02$bb7e93c0$6c822ecf@Riemannwristband's>
+From: "Abe Bower" <sinecurefêtes@aakcpa.com>
+Subject: Abe check this.
+Date: Thu, 7 Dec 2006 14:48:30 +0000 (UTC)
+Message-ID: <26733.7037636482$1165502910@news.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 7 Dec 2006 13:22:24 -0060
+Received: from 67.28.113.136 (HELO mx1.biz.mail.yahoo.com)
+	by alsa-project.org with esmtp (LMA?I@IE3 5.79-) id >'/0AB-)JCF(8-,M
+	for alsa-devel@alsa-project.org; Thu, 7 Dec 2006 14:48:10 -0060
+Date: Thu, 7 Dec 2006 14:48:10 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +19,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 These days it's like the dot com revolution round two.  The 
