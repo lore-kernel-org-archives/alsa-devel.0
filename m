@@ -1,11 +1,12 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: alsa driver and udev.
-Date: Thu, 07 Dec 2006 11:11:01 +0000
-Message-ID: <4577F6C5.2050206@superbug.co.uk>
+From: "Derek Adair" <copier'sblacks@abisse.com>
+Subject: Derek check this.
+Date: Thu, 7 Dec 2006 11:32:19 +0000 (UTC)
+Message-ID: <01c719f3$357c3bb0$6c822ecf@copier'sblacks>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Thu, 7 Dec 2006 11:31:16 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,21 +19,37 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+These days it's like the dot com revolution round two.  The 
+only difference is, this time there will be no crash.  
+Everyone is wiser and the internet has already proven that 
+it is THE place to do business.
 
-How much work would it be to get alsa driver to work nicely with udev, 
-so that a specific udev config could be used to decide which sound card 
-is card 0 etc.
-How about a global config interface whereby userland processes could 
-modify the sound card order and possibly provide other general sound 
-card related services to userspace. In this way, even if a sound card 
-booted up as card 0, we could swap it with card 1 without having to 
-unload it.
-This might require the device naming in /dev/snd to change so that the 
-card number was not included in the device name. Maybe use an extra 
-subdirectory for each card, much like the /proc filesystem uses.
+Acquisitions are happening at a record pace.  Google 
+picking up Youtube. News corp picking up Myspace, the list 
+goes on.  
 
-James
+In all of these acquisitions those that are already holding 
+an interest in these smaller companies are making a fortune 
+in the process.  Word on the street is that our next pick 
+is about to be acquired by a big player!
+
+Premier Holdings Group 
+
+Symbol: PMHD
+Current Price:   0.37
+Target price:    1.35
+
+PMHD is a high tech company involved in a wide range of 
+internet related businesses from broadband to online 
+commerce.  This is one hot item!
+
+Remember, we get you the inside scoop BEFORE it hits the 
+street.  With the acquisition set to be announced shortly 
+the time to act is now.  Once the word is out it will be 
+too late to get in, as we expect this one to go up quickly. 
+
+Go PMHD!
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
