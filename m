@@ -1,12 +1,12 @@
-From: "Derek Adair" <copier'sblacks@abisse.com>
-Subject: Derek check this.
-Date: Thu, 7 Dec 2006 11:32:19 +0000 (UTC)
-Message-ID: <01c719f3$357c3bb0$6c822ecf@copier'sblacks>
+From: "Geoffrey Smallwood" <Riemannwristband's@abhh.dk>
+Subject: Geoffrey check this.
+Date: Thu, 7 Dec 2006 13:24:03 +0000 (UTC)
+Message-ID: <01c71a02$bb7e93c0$6c822ecf@Riemannwristband's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 7 Dec 2006 11:31:16 -0060
+Date: Thu, 7 Dec 2006 13:22:24 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 These days it's like the dot com revolution round two.  The 
