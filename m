@@ -1,16 +1,14 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Intel HDA on Mac Pro
-Date: Thu, 07 Dec 2006 06:51:40 -0800
-Message-ID: <1165503100.7530.19.camel@razman>
-References: <4574866D.5070506@sourcegear.com>
-	<1165265511.32312.86.camel@razman>	<45748CF5.8040800@sourcegear.com>
-	<1165275957.32312.103.camel@razman>	<4574BB17.1020807@sourcegear.com>
-	<1165278602.32312.110.camel@razman> <4574EF72.8020207@sourcegear.com>
-	<457828D7.4020908@teamprise.com>
+From: "Community" <qtknxmt@btc-net.bg>
+Subject: Wall Street Alert!
+Date: Thu, 7 Dec 2006 16:24:32 -0200
+Message-ID: <E7CFD559B815E1D.E7066647F2@btc-net.bg>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0909109818=="
+Content-Type: multipart/mixed; boundary="===============0537087044=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <457828D7.4020908@teamprise.com>
+Received: from 87-126-78-174.btc-net.bg (87-126-78-174.btc-net.bg
+	[87.126.78.174])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A95E82D4
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2006 15:24:33 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,103 +18,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Shaw Terwilliger <sterwill@teamprise.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============0537087044==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0002_01C71A1C.2D97FB90"
 
---===============0909109818==
-Content-Type: multipart/alternative; boundary="=-drm6KAgpCJo0dfB6f8de"
+------=_NextPart_000_0002_01C71A1C.2D97FB90
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-
---=-drm6KAgpCJo0dfB6f8de
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Sorry, I got a bit backlogged.
-
-I just downloaded the codec spec for the 885, and will start going
-through it today.  I should have something for you today or tomorrow at
-the latest.  Since 1.0.14 is now imminent, I need to get cracking on
-several fronts and I want to get support for your system and others in
-before 1.0.14 final.
-
-Tobin
-
-On Thu, 2006-12-07 at 08:44 -0600, Shaw Terwilliger wrote:
-
-> Shaw Terwilliger wrote:
-> >> This is actually good info.  Interesting that sound is coming out from
-> >> the Surround channels.  The low volume could mean that EAPD still needs
-> >> to be set.
-> >>
-> >> I'll look more into this tomorrow.  Hopefully I can get a patch for you
-> >> to test.
-> > 
-> > Thanks for all your help.  I'm happy to test any patches you come up with.
-> 
-> Have you had a chance too cook up any patches for the Mac Pro HDA
-> hardware?  I fooled around with different models yesterday, and the
-> "auto" model detects very few output channels (PCM, Front, Line-in), but
-> correctly assigns the front channel.  It's still incredibly quiet.
-> 
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
-
---=-drm6KAgpCJo0dfB6f8de
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2912" name=3D"GENERATOR">
 </HEAD>
 <BODY>
-Sorry, I got a bit backlogged.<BR>
-<BR>
-I just downloaded the codec spec for the 885, and will start going through it today.&nbsp; I should have something for you today or tomorrow at the latest.&nbsp; Since 1.0.14 is now imminent, I need to get cracking on several fronts and I want to get support for your system and others in before 1.0.14 final.<BR>
-<BR>
-Tobin<BR>
-<BR>
-On Thu, 2006-12-07 at 08:44 -0600, Shaw Terwilliger wrote:
-<BLOCKQUOTE TYPE=CITE>
-<PRE>
-<FONT COLOR="#000000">Shaw Terwilliger wrote:</FONT>
-<FONT COLOR="#000000">&gt;&gt; This is actually good info.  Interesting that sound is coming out from</FONT>
-<FONT COLOR="#000000">&gt;&gt; the Surround channels.  The low volume could mean that EAPD still needs</FONT>
-<FONT COLOR="#000000">&gt;&gt; to be set.</FONT>
-<FONT COLOR="#000000">&gt;&gt;</FONT>
-<FONT COLOR="#000000">&gt;&gt; I'll look more into this tomorrow.  Hopefully I can get a patch for you</FONT>
-<FONT COLOR="#000000">&gt;&gt; to test.</FONT>
-<FONT COLOR="#000000">&gt; </FONT>
-<FONT COLOR="#000000">&gt; Thanks for all your help.  I'm happy to test any patches you come up with.</FONT>
-
-<FONT COLOR="#000000">Have you had a chance too cook up any patches for the Mac Pro HDA</FONT>
-<FONT COLOR="#000000">hardware?  I fooled around with different models yesterday, and the</FONT>
-<FONT COLOR="#000000">&quot;auto&quot; model detects very few output channels (PCM, Front, Line-in), but</FONT>
-<FONT COLOR="#000000">correctly assigns the front channel.  It's still incredibly quiet.</FONT>
-
-</PRE>
-</BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
+<DIV align=3Dleft><FONT face=3DArial size=3D3><b>VSUS Announces New MyOneScreen Application & New Market strategy. Price & Volume Going Through the Roof All Week!</b></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>VSUS technologies Inc.</b> (<b>VSUS</b>) has developed a new application that allows you to surf the web, use email, shop online, and use office documents and spreadsheets, all from one secure application called MyOneScreen. This application is free to download and the campaign is now launching to the world market of internet users.</FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>Company:</b> VSUS Technologies Inc.</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>Sym:</b> VSUS</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>Price:</b> $0.03</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>Target:</b> $0.07</FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D3><u><b>Note: Price Up 33% This Week. Volume Up 600% This Week!</b></u></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><b>VSUS</b> has also signed agreements with two of the largest Blog marketing companies on the net to incorporate their advertising solutions via Blogs into the software. Blog advertising, although in its infancy is fast becoming one of the worlds most effective means to reach the market. Companies like <b>Intel</b>, <b>Banana Republic</b>, and <b>Coca Cola</b> are now focusing large portions of their advertising dollar into Blog Advertising. </FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>This company is in the right place at the right time and investors know it! Go read the recent news, look at the amazing new application and its capabilities, <b><i>BUT most of all grab VSUS first thing Thursday morning, before this thing climbs any higher.</i></b></FONT></DIV>
 </BODY>
 </HTML>
 
---=-drm6KAgpCJo0dfB6f8de--
+------=_NextPart_000_0002_01C71A1C.2D97FB90--
 
 
 
---===============0909109818==
+--===============0537087044==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -127,7 +63,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0909109818==
+--===============0537087044==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -138,4 +74,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0909109818==--
+--===============0537087044==--
