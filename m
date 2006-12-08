@@ -1,11 +1,12 @@
-From: "Wesley Paulson" <gypsumstateside@aasd.k12.wi.us>
-Subject: Greetings Wesley
-Date: Fri, 8 Dec 2006 15:03:36 -0120
-Message-ID: <01c71ada$096b2d00$6c822ecf@gypsumstateside>
+From: "Bobbie Hays" <Hyperiongoitre@abualbokhary.info>
+Subject: Greetings Bobbie
+Date: Fri, 8 Dec 2006 18:11:53 +0000 (UTC)
+Message-ID: <01c71af4$33339770$6c822ecf@Hyperiongoitre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Fri, 8 Dec 2006 18:10:53 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
