@@ -1,12 +1,12 @@
-From: "Angelo Sierra" <distaste'stunneled@aanzai.co.jp>
-Subject: Greetings Angelo
-Date: Fri, 8 Dec 2006 23:15:59 +0000 (UTC)
-Message-ID: <01c71b1e$c667aac0$6c822ecf@distaste'stunneled>
+From: "Blake Gallo" <droughtmutually@abba.demon.co.uk>
+Subject: Greetings Blake
+Date: Fri, 8 Dec 2006 23:16:03 +0000 (UTC)
+Message-ID: <01c71b1e$c9d75610$6c822ecf@droughtmutually>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Fri, 8 Dec 2006 23:15:39 +0480
+Date: Fri, 8 Dec 2006 23:15:45 +0480
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
