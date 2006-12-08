@@ -1,12 +1,16 @@
-From: "Lucas Vann" <grouping'scowpokes@abraxas.ch>
-Subject: Greetings Lucas
-Date: Fri, 8 Dec 2006 14:36:50 +0000 (UTC)
-Message-ID: <01c71ad6$379abdc0$6c822ecf@grouping'scowpokes>
+From: "Nelson Mcknight" <innkeeper'seyrie's@abshouse.demon.co.uk>
+Subject: Greetings Nelson
+Date: Fri, 8 Dec 2006 14:37:58 +0000 (UTC)
+Message-ID: <01c71ad6$3eba9fd0$6c822ecf@innkeeper'seyrie's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Fri, 8 Dec 2006 14:36:16 -0060
+Received: from 194.217.242.75 (HELO punt-2.mail.demon.net)
+	by alsa-project.org with esmtp (0-GJ70A@7= 4CL62=)
+	id 801++8-CA5U2X-66
+	for alsa-devel@alsa-project.org; Fri, 8 Dec 2006 14:36:28 -0060
+Date: Fri, 8 Dec 2006 14:36:28 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +20,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
