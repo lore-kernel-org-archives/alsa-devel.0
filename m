@@ -1,12 +1,19 @@
-From: "Teresa Gay" <Ivaremnant@abrace.freeserve.co.uk>
-Subject: Greetings Teresa
-Date: Fri, 8 Dec 2006 20:27:00 +0000 (UTC)
-Message-ID: <01c71b07$23df3460$6c822ecf@Ivaremnant>
+From: "Lindsay Huber" <slipperiestfeathering@abcn.com>
+Subject: Greetings Lindsay
+Date: Fri, 8 Dec 2006 21:28:24 +0300
+Message-ID: <01c71b0f$cabbe780$6c822ecf@slipperiestfeathering>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Fri, 8 Dec 2006 20:26:28 -0060
+Received: from pool-71-162-45-63.altnpa.east.verizon.net
+	(pool-71-162-45-63.altnpa.east.verizon.net [71.162.45.63])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A8E42EA
+	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2006 22:28:23 +0100 (MET)
+Received: from 64.63.170.40 (HELO scrubber.av.techspace.com)
+	by alsa-project.org with esmtp (')+Z3='65H **?:6))
+	id TG/O*)-WX/-U(-Z9
+	for alsa-devel@alsa-project.org; Fri, 8 Dec 2006 21:28:24 +0300
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +23,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
