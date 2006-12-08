@@ -1,14 +1,11 @@
-From: "Darius Lee" <wembyrecords.com@lagst.com>
-Subject: Avoid enhancement pills
-Date: Fri, 08 Dec 2006 13:37:35 -0800
-Message-ID: <000001c71b11$01af2d00$0100007f@localhost>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1GsdFp-0006sO-5l delayed 10 hours
+Date: Fri, 08 Dec 2006 13:48:17 -0800
+Message-ID: <E1GsnZp-0003mj-SI@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from localhost (c-67-170-31-91.hsd1.wa.comcast.net [67.170.31.91])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E526E2D9
-	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2006 22:37:43 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,20 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Over a several millions men have been helped with the potent ingredients 
-in Pe.nis Growth Patch - men have experienced bigger size, deeper penetration
-more action, and super-satisfying results for themselves and 
-their partners.
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-Don't be left behind! Take advantage of price specials going on now.
+The message identifier is:     1GsdFp-0006sO-5l
+The subject of the message is: that have wrought, And comfort thee, And be no hallowed things and Zeeb
+The date of the message is:    Fri, 08 Dec 2006 12:47:56 +0200
 
-Click here and visit our site!
-http://www.pikpois.com/?189&ckem
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
