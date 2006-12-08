@@ -1,11 +1,12 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1GsdFp-0006sO-5l delayed 10 hours
-Date: Fri, 08 Dec 2006 13:48:17 -0800
-Message-ID: <E1GsnZp-0003mj-SI@externalmx-1.sourceforge.net>
+From: "Angelo Sierra" <distaste'stunneled@aanzai.co.jp>
+Subject: Greetings Angelo
+Date: Fri, 8 Dec 2006 23:15:59 +0000 (UTC)
+Message-ID: <01c71b1e$c667aac0$6c822ecf@distaste'stunneled>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Fri, 8 Dec 2006 23:15:39 +0480
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
+INVESTORS ALERT! Friday, Dec 8, DTGP
 
-The message identifier is:     1GsdFp-0006sO-5l
-The subject of the message is: that have wrought, And comfort thee, And be no hallowed things and Zeeb
-The date of the message is:    Fri, 08 Dec 2006 12:47:56 +0200
+Company: Doll Technology Group (OTCBB:DTGP)
+Symbol: DTGP
+Current Price: $0.016 (Trading at a Discount!)
+3-day Target: $0.07 
 
-The address to which the message has not yet been delivered is:
+Friday, Dec 8, will bring big trading for DTGP, which will mean it goes up!
+Ladies and gentlemen, this one is incredible. 
+This company is currently preparing to introduce their stock DTGP to brokers
+across the country.
+Look at their recent news and see what they are doing, and have been doing
+in the past few Month.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+About DTGP:
+Doll Technology Group (OTCBB:DTGP)  diversified company formed to develop and commercialize products and technologies that address Aircraft Safety, Water Conservation, Fire Protection, Rust and Corrosion, and Construction, among others.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+CALL YOUR BROKER NOW!
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
