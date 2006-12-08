@@ -1,14 +1,14 @@
-From: Oliver Schinagl <oliver@schinagl.nl>
-Subject: emu10k1 mute problems.
-Date: Fri, 08 Dec 2006 20:16:08 +0100
-Message-ID: <4579B9F8.4020109@schinagl.nl>
-References: <000e01c7165d$ceeebaf0$dedde354@dwnze>
-	<20061203183433.GA14091@inferno.domain.actdsltmp>
+From: Shaw Terwilliger <sterwill@sourcegear.com>
+Subject: Re: Intel HDA on Mac Pro
+Date: Fri, 08 Dec 2006 13:39:12 -0600
+Message-ID: <4579BF60.8000601@sourcegear.com>
+References: <4574866D.5070506@sourcegear.com>	<1165265511.32312.86.camel@razman>	<45748CF5.8040800@sourcegear.com>	<1165275957.32312.103.camel@razman>	<4574BB17.1020807@sourcegear.com>	<1165278602.32312.110.camel@razman>
+	<4574EF72.8020207@sourcegear.com>	<457828D7.4020908@teamprise.com>
+	<1165535200.7530.63.camel@razman>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1851396471=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20061203183433.GA14091@inferno.domain.actdsltmp>
+In-Reply-To: <1165535200.7530.63.camel@razman>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,61 +18,135 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============1851396471==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig6B5D78B192CECC1F21BC4BE1"
 
-I am wondering if there's a bugzilla or some place to drop a bugreport 
-for my SBLive! (emu10k1)?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6B5D78B192CECC1F21BC4BE1
+Content-Type: multipart/mixed; boundary="------------010900010707000500060908"
 
-I have in my system 2 soundcards installed, an SBLive! emu10k1 (
-00:0e.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 32, IRQ 19
-        I/O ports at ef20 [size=32]
-        Capabilities: [dc] Power Management version 1
-)
-and an Onboard VIA audio thinger (
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 810d
-        Flags: medium devsel, IRQ 20
-        I/O ports at 1000 [size=256]
-        Capabilities: [c0] Power Management version 2
+This is a multi-part message in MIME format.
+--------------010900010707000500060908
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-)
+Tobin Davis wrote:
+> To test it, start with either the alsa-driver-hg20061130.tar.bz2 or
+> download the recent 1.0.14rc1 and follow these instructions:
+> tar -jxvf alsa-driver-<version>.tar.bz2   # <version> =3D=3D hg20061130=
+ or
+> 1.0.14rc1
+> cd alsa-driver-<version>/alsa-kernel
+> patch -p1 <macpro.patch.1
+> cd ..
+> ./configure --with-cards=3Dhda-intel --with-debug=3Ddetect ; make ; mak=
+e install
+> dmesg -c
+> modprobe -r snd-hda-intel
+> modprobe snd-hda-intel model=3Dmacpro
+> dmesg >dmesg.out
 
-on a gentoo 2.6.19-r1 kernel
+Patch applies cleanly and builds with 1.0.14rc1, and macpro model
+selection works.  The dmesg dump is attached (though it's pretty terse).
 
-Now they both are working but there's one thing that seems to be going 
-wrong. Since it only happens on the SBLive (the via onboard works as it 
-should) it must be a bug in the emu10k1 driver.
+> Send me a copy of dmesg.out along with any differences that you see.  I=
 
-I use the following code to mute the left resp. right channels.
+> may need to tweak which pins get enabled.
 
-    snd_mixer_selem_set_playback_switch(elem, SND_MIXER_SCHN_FRONT_LEFT, 0);
-    snd_mixer_selem_set_playback_switch(elem, 
-SND_MIXER_SCHN_FRONT_RIGHT, 0);
+Great news: I have the correct volume!  Here are some mixer oddities:
 
-However, when muting the left channel, both channels get muted. When 
-muting the the right channel, none get muted. It's not just my app that 
-shows this behavious, gkrellm-volume plugin for instance does the same 
-thing (wrong).
+- The "Surround" mixer channels actually control what comes out of the
+line-out jack on the back of the Mac Pro (where I have my speakers
+plugged in).  This was the case before.
+
+- The "Front Mic" mixer channels actually control the line-in jack on
+the back of the Mac Pro (where I have my radio's line-out plugged in).
+
+- No combination of mixer channel volumes and "Headphone" switch setting
+seems to control the headphone jack on the front of the Mac Pro (can't
+get any sound from it).  Not a big deal for me, but might be for others.
+
+- The "PC Speaker" mixer channel doesn't control the internal speaker.
+I don't know if this is actually possible in OS X (don't have it installe=
+d).
+
+Also, I don't have an optical cable to test the digital in/out.  Have
+not tested the other analog channels (don't have a mic, etc.).
+
+Thanks for your work fixing up the driver for the 885.
+
+--=20
+Shaw Terwilliger <sterwill@teamprise.com>
+Teamprise LLC
+http://teamprise.com/
 
 
-Since there aren't really much mixers that do balance properly, there 
-isn't much other volume controls I can test this with. I do however 
-notice in alsamixer, that below the bar, it says [MM] or [OO] on the 
-SBLive!, but with the Via, I get all possibilities done, including [MO] 
-or [OM].
 
-Thanks,
+--=20
+Shaw Terwilliger <sterwill@sourcegear.com>
+SourceGear LLC
 
-Oliver
+--------------010900010707000500060908
+Content-Type: text/plain;
+ name="model-macpro.dmesg.out"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="model-macpro.dmesg.out"
+
+WzM1MjMzNC45NjYzNTldIEFDUEk6IFBDSSBJbnRlcnJ1cHQgMDAwMDowMDoxYi4wW0FdIC0+
+IEdTSSAyMyAobGV2ZWwsIGxvdykgLT4gSVJRIDIyNQpbMzUyMzM0Ljk2NzI4OV0gUENJOiBT
+ZXR0aW5nIGxhdGVuY3kgdGltZXIgb2YgZGV2aWNlIDAwMDA6MDA6MWIuMCB0byA2NApbMzUy
+MzM1LjAwMDA5NV0gQUxTQSAvZGF0YS9kb3dubG9hZHMvYWxzYS1kcml2ZXItMS4wLjE0cmMx
+L3BjaS9oZGEvLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzo2OTY6IGNv
+ZGVjX21hc2sgPSAweDEKWzM1MjMzNS4xNzc5MTddIEFMU0EgL2RhdGEvZG93bmxvYWRzL2Fs
+c2EtZHJpdmVyLTEuMC4xNHJjMS9wY2kvaGRhL2hkYV9jb2RlYy5jOjE3NDM6IGhkYV9jb2Rl
+YzogbW9kZWwgJ21hY3BybycgaXMgc2VsZWN0ZWQK
+--------------010900010707000500060908--
+
+--------------enig6B5D78B192CECC1F21BC4BE1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFeb9nPEbgvbl6u4ERArFRAJwJFZ7Gvrq0D0CurS7aXz/tY6hKdQCeJ813
+ajgh2FYw8wCT4Nh8VmzJHuw=
+=cOCk
+-----END PGP SIGNATURE-----
+
+--------------enig6B5D78B192CECC1F21BC4BE1--
+
+
+--===============1851396471==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1851396471==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1851396471==--
