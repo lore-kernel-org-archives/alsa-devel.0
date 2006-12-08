@@ -1,19 +1,14 @@
-From: "Lindsay Huber" <slipperiestfeathering@abcn.com>
-Subject: Greetings Lindsay
-Date: Fri, 8 Dec 2006 21:28:24 +0300
-Message-ID: <01c71b0f$cabbe780$6c822ecf@slipperiestfeathering>
+From: "Darius Lee" <wembyrecords.com@lagst.com>
+Subject: Avoid enhancement pills
+Date: Fri, 08 Dec 2006 13:37:35 -0800
+Message-ID: <000001c71b11$01af2d00$0100007f@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pool-71-162-45-63.altnpa.east.verizon.net
-	(pool-71-162-45-63.altnpa.east.verizon.net [71.162.45.63])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A8E42EA
-	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2006 22:28:23 +0100 (MET)
-Received: from 64.63.170.40 (HELO scrubber.av.techspace.com)
-	by alsa-project.org with esmtp (')+Z3='65H **?:6))
-	id TG/O*)-WX/-U(-Z9
-	for alsa-devel@alsa-project.org; Fri, 8 Dec 2006 21:28:24 +0300
+Received: from localhost (c-67-170-31-91.hsd1.wa.comcast.net [67.170.31.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E526E2D9
+	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2006 22:37:43 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,25 +21,16 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
-INVESTORS ALERT! Friday, Dec 8, DTGP
+Over a several millions men have been helped with the potent ingredients 
+in Pe.nis Growth Patch - men have experienced bigger size, deeper penetration
+more action, and super-satisfying results for themselves and 
+their partners.
 
-Company: Doll Technology Group (OTCBB:DTGP)
-Symbol: DTGP
-Current Price: $0.016 (Trading at a Discount!)
-3-day Target: $0.07 
+Don't be left behind! Take advantage of price specials going on now.
 
-Friday, Dec 8, will bring big trading for DTGP, which will mean it goes up!
-Ladies and gentlemen, this one is incredible. 
-This company is currently preparing to introduce their stock DTGP to brokers
-across the country.
-Look at their recent news and see what they are doing, and have been doing
-in the past few Month.
+Click here and visit our site!
+http://www.pikpois.com/?189&ckem
 
-About DTGP:
-Doll Technology Group (OTCBB:DTGP)  diversified company formed to develop and commercialize products and technologies that address Aircraft Safety, Water Conservation, Fire Protection, Rust and Corrosion, and Construction, among others.
-
-CALL YOUR BROKER NOW!
 
 
 -------------------------------------------------------------------------
