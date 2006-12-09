@@ -1,10 +1,10 @@
-From: "Gilbert" <ztimit@dewis.net>
-Subject: They found that chromium picolinate could damage the
-	genetic material of hamster cells.
-Date: Fri, 8 Dec 2006 19:15:21 -0600
-Message-ID: <000e01c71b30$a382ffc0$728e6047@lpo>
+From: "Hampton" <babaun@ural.eng.sun.com>
+Subject: Muscle compression, joint mobilization,
+	and acupressure are also used during the treatment.
+Date: Fri, 8 Dec 2006 19:22:23 -0600
+Message-ID: <000e01c71b30$d8c15ec0$76586047@moh>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1613636204=="
+Content-Type: multipart/mixed; boundary="===============1648714492=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,40 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1613636204==
+--===============1648714492==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000A_01C71AFE.58D81500"
+	boundary="----=_NextPart_000_000A_01C71AFE.8E167400"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000A_01C71AFE.58D81500
+------=_NextPart_000_000A_01C71AFE.8E167400
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000B_01C71AFE.58DC33B0"
+	boundary="----=_NextPart_001_000B_01C71AFE.8E1A92B0"
 
 
-------=_NextPart_001_000B_01C71AFE.58DC33B0
+------=_NextPart_001_000B_01C71AFE.8E1A92B0
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-Hey Jack - Say "hi" for me at the conference.
-This guy, who teaches public speaking, apparently needs to wear a jacket =
-and tie to fit in, even in a university setting. People who try Thai =
-massage sometimes say it is like doing yoga without any work, and say =
-that it's both relaxing and energizing.
-Furthermore, it is not good for agriculture.
-This piece extends it to marketing. Some feel more greasy, go rancid =
-faster, or are more likely to irritate skin or cause allergic reactions.
-What we learn from doing segmentation is that what is best for one =
-audience does not always work for another. It seems that some others =
-have noticed the same thing and are none too happy.
-------=_NextPart_001_000B_01C71AFE.58DC33B0
+Whether or not people develop symptoms appears to be linked to the =
+ability of a certain type of beneficial bacteria, called lactic acid =
+bacteria, to break down lactose.
+That's another reason to welcome participation. Regardless of the =
+legalities, treating ideas as possessions insults their vast combustive =
+power.
+Whether or not people develop symptoms appears to be linked to the =
+ability of a certain type of beneficial bacteria, called lactic acid =
+bacteria, to break down lactose.
+In the Yungas, the program is clearly failing. He suggests that =
+potential game developers and managers face the reality of the industry.
+Ideas aren't worth jack unless other people can put them to use. In the =
+Yungas, the program is clearly failing.
+------=_NextPart_001_000B_01C71AFE.8E1A92B0
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -57,43 +59,45 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"conceivable" hspace=3D0=20
-src=3D"cid:000901c71b30$a36e6650$728e6047@lpo" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"among" hspace=3D0=20
+src=3D"cid:000901c71b30$d8acc550$76586047@moh" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Hey Jack - Say "hi" for me at the=20
-conference.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This guy, who teaches public speaking, =
-apparently=20
-needs to wear a jacket and tie to fit in, even in a university setting. =
-People who=20
-try Thai massage sometimes say it is like doing yoga without any work, =
-and say that=20
-it's both relaxing and energizing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Furthermore, it is not good for=20
-agriculture.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This piece extends it to marketing. =
-Some feel more=20
-greasy, go rancid faster, or are more likely to irritate skin or cause =
-allergic=20
-reactions.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What we learn from doing segmentation =
-is that what=20
-is best for one audience does not always work for another. It seems that =
-some others=20
-have noticed the same thing and are none too =
-happy.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Whether or not people develop symptoms =
+appears to=20
+be linked to the ability of a certain type of beneficial bacteria, =
+called lactic=20
+acid bacteria, to break down lactose.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>That's another reason to welcome =
+participation.=20
+Regardless of the legalities, treating ideas as possessions insults =
+their vast=20
+combustive power.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Whether or not people develop symptoms =
+appears to=20
+be linked to the ability of a certain type of beneficial bacteria, =
+called lactic=20
+acid bacteria, to break down lactose.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In the Yungas, the program is clearly =
+failing. He=20
+suggests that potential game developers and managers face the reality of =
+the=20
+industry.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ideas aren't worth jack unless other =
+people can put=20
+them to use. In the Yungas, the program is clearly=20
+failing.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000B_01C71AFE.58DC33B0--
+------=_NextPart_001_000B_01C71AFE.8E1A92B0--
 
-------=_NextPart_000_000A_01C71AFE.58D81500
+------=_NextPart_000_000A_01C71AFE.8E167400
 Content-Type: image/gif;
-	name="shellfish.gif"
+	name="saver.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000901c71b30$a36e6650$728e6047@lpo>
+Content-ID: <000901c71b30$d8acc550$76586047@moh>
 
 R0lGODdh9wFGAYQAAP/////M//9m//9mAP8z//8zM/8A//8AAMz/zMxmmcxmM8wzzJmZAJlmzJlm
 AJkAM2b/M2aZZmYz/2YzZmYA/zMzmTMA/zMAZgDMmQAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -345,12 +349,12 @@ fu23d56GeA9oBREogZCAA82UP6InfG9QeQEnSCtXYh1YgvUXTZElgGxHfrp0cgSYckL4BS9IaJhW
 UVBIg1igTPDnCDHASIsUD6GnBCzIfR7Igxh4f6V3cyjWdwQ3SSqIEy/oZ1WoeleIhVkYCYBkRKlE
 FyNnQI0XWSKIAwUhAAA7
 
-------=_NextPart_000_000A_01C71AFE.58D81500--
+------=_NextPart_000_000A_01C71AFE.8E167400--
 
 
 
 
---===============1613636204==
+--===============1648714492==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -361,7 +365,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1613636204==
+--===============1648714492==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -372,4 +376,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1613636204==--
+--===============1648714492==--
