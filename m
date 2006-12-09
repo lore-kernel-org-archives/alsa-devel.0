@@ -1,11 +1,15 @@
-From: James C Georgas <jgeorgas@rogers.com>
-Subject: Remove AC97 POP control for STAC9708/11
-Date: Sat, 09 Dec 2006 02:47:18 -0500
-Message-ID: <1165650438.29397.26.camel@Rainsong>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: emu10k1 mute problems.
+Date: Sat, 9 Dec 2006 09:05:59 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0612090904250.13335@tm8103.perex-int.cz>
+References: <000e01c7165d$ceeebaf0$dedde354@dwnze>
+	<20061203183433.GA14091@inferno.domain.actdsltmp>
+	<4579B9F8.4020109@schinagl.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <4579B9F8.4020109@schinagl.nl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,43 +19,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Oliver Schinagl <oliver@schinagl.nl>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Summary: Remove AC97 POP control for STAC9708/11
+On Fri, 8 Dec 2006, Oliver Schinagl wrote:
 
-	The STAC9708/11 AC97 codecs implement the PCM Out Path & Mute bit in
-the General Purpose register (0x20:F), even though they don't implement
-the actual function in the mixer.
+> Hi,
+> 
+> I am wondering if there's a bugzilla or some place to drop a bugreport 
+> for my SBLive! (emu10k1)?
+> 
+> I have in my system 2 soundcards installed, an SBLive! emu10k1 (
+> 00:0e.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a)
+>         Subsystem: Creative Labs SBLive! Player 5.1
+>         Flags: bus master, medium devsel, latency 32, IRQ 19
+>         I/O ports at ef20 [size=32]
+>         Capabilities: [dc] Power Management version 1
+> )
+> and an Onboard VIA audio thinger (
+> 00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
+> VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+>         Subsystem: ASUSTeK Computer Inc. Unknown device 810d
+>         Flags: medium devsel, IRQ 20
+>         I/O ports at 1000 [size=256]
+>         Capabilities: [c0] Power Management version 2
+> 
+> )
+> 
+> on a gentoo 2.6.19-r1 kernel
+> 
+> Now they both are working but there's one thing that seems to be going 
+> wrong. Since it only happens on the SBLive (the via onboard works as it 
+> should) it must be a bug in the emu10k1 driver.
+> 
+> I use the following code to mute the left resp. right channels.
+> 
+>     snd_mixer_selem_set_playback_switch(elem, SND_MIXER_SCHN_FRONT_LEFT, 0);
+>     snd_mixer_selem_set_playback_switch(elem, 
+> SND_MIXER_SCHN_FRONT_RIGHT, 0);
 
-	Since the alsa tests for the function by toggling the bit and reading
-it back to see if it changed, it mistakenly creates a useless control.
+Wrong code. You have to use snd_mixer_selem_set_playback_switch_all() if
+snd_mixer_selem_has_playback_switch_joined() flag is set. Perhaps, single 
+channel operations should return an error in this case to show the broken
+part to application developers.
 
-	This patch explicitly removes the control when the codec is an
-STAC9708/11.
+						Jaroslav
 
-	I put the check in patch_sigmatel_stac9708_specific(), because I have
-an SBLive with this chip on it. I don't know if the STAC9758 or other
-codecs also behave this way. If they do, then this check could maybe go
-in patch_sigmatel_stac97xx_specific(), or some other more general
-function.
-
-Signed-off-by: James C Georgas <jgeorgas@rogers.com>
-
---- a/pci/ac97/ac97_patch.c     Thu Dec  7 15:04:27 2006 +0100
-+++ b/pci/ac97/ac97_patch.c     Sat Dec  9 02:43:56 2006 -0500
-@@ -940,6 +940,9 @@ static int patch_sigmatel_stac9708_speci
- static int patch_sigmatel_stac9708_specific(struct snd_ac97 *ac97)
- {
-        int err;
-+
-+       // the register bit is writable, but the function is not implemented:
-+       snd_ac97_remove_ctl(ac97, "PCM Out Path & Mute", NULL);
-
-        snd_ac97_rename_vol_ctl(ac97, "Headphone Playback", "Sigmatel Surround Playback");
-        if ((err = patch_build_controls(ac97, &snd_ac97_stac9708_bias_control, 1)) < 0)
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
