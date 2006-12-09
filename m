@@ -1,19 +1,15 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Loud POP from sound system during module init w/
-	2.6.19
-Date: Sat, 9 Dec 2006 15:11:50 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0612091511111.8055__24910.0186316811$1165673669$gmane$org@yvahk01.tjqt.qr>
-References: <2a6e8c0d0612081053v4fa0f2b0uea82fac75976b767@mail.gmail.com>
-	<Pine.LNX.4.61.0612091020450.8055@yvahk01.tjqt.qr>
-	<2a6e8c0d0612090517j5afe2161p591203c70ddfc890@mail.gmail.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: alsa-lib bloat.
+Date: Sat, 09 Dec 2006 14:38:35 +0000
+Message-ID: <1165675115.19641.25.camel@localhost.localdomain>
+References: <45795C6D.9030100@superbug.co.uk>
+	<Pine.LNX.4.61.0612090908570.13335@tm8103.perex-int.cz>
+	<457A995E.6080708@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from tmailer.gwdg.de (tmailer.gwdg.de [134.76.10.23])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14063286
-	for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2006 15:13:25 +0100 (MET)
-In-Reply-To: <2a6e8c0d0612090517j5afe2161p591203c70ddfc890@mail.gmail.com>
+In-Reply-To: <457A995E.6080708@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,25 +19,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "Ian E. Morgan" <penguin.wrangler@gmail.com>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, perex@suse.cz
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
+Fwiw, I've done some alsa-lib builds (no debug) for ARM with the
+following results :-
 
-On Dec 9 2006 08:17, Ian E. Morgan wrote:
->
-> Previous kernel was 2.6.18.3, which did not exhibit the problem. I was
-> aware of udev setting the mixer at module load time, but I disabled
-> that and the problem still exists.
+Default config
 
-Another reason might be that the sound driver sets the initial volume 
-(even before udev can act) to 100%. That's probably Not So Good.
-I'd suggest to take a diff between 2.6.18.3's sound tree and the 2.6.19 
-one, and see if the driver for your card changed.
+-rwxr-xr-x 1 liam liam 948879 Dec  7 16:40 libasound.so.2.0.0
 
 
-	-`J'
--- 
+--disable-aload --disable-rawmidi --disable-pcm --disable-hwdep
+--disable-seq --disable-instr --disable-alisp --with-pcm-plugins=hw
+
+-rwxr-xr-x 1 liam liam 256320 Dec  9 12:39 libasound.so.2.0.0
+
+
+--disable-mixer --disable-aload --disable-rawmidi --disable-pcm 
+--disable-hwdep --disable-seq --disable-instr --disable-alisp
+--with-pcm-plugins=hw
+
+-rwxr-xr-x 1 liam liam 190884 Dec  9 13:08 libasound.so.2.0.0
+
+This final configurations objects can be broken down as follows:-
+
+645 Dec  9 13:59 ./src/compat/.libs/empty.o
+2384 Dec  9 13:59 ./src/control/.libs/cards.o
+5008 Dec  9 13:59 ./src/control/.libs/control_ext.o
+9448 Dec  9 13:59 ./src/control/.libs/control_hw.o
+57864 Dec  9 13:59 ./src/control/.libs/control.o
+10712 Dec  9 13:59 ./src/control/.libs/control_shm.o
+655 Dec  9 13:59 ./src/control/.libs/control_symbols.o
+19456 Dec  9 13:59 ./src/control/.libs/hcontrol.o
+13144 Dec  9 13:59 ./src/control/.libs/setup.o
+3864 Dec  9 13:59 ./src/.libs/async.o
+19468 Dec  9 13:59 ./src/.libs/confmisc.o
+49540 Dec  9 13:59 ./src/.libs/conf.o
+2864 Dec  9 13:59 ./src/.libs/dlmisc.o
+3000 Dec  9 13:59 ./src/.libs/error.o
+4324 Dec  9 13:59 ./src/.libs/input.o
+3608 Dec  9 13:59 ./src/.libs/names.o
+4536 Dec  9 13:59 ./src/.libs/output.o
+1668 Dec  9 13:59 ./src/.libs/shmarea.o
+2768 Dec  9 13:59 ./src/.libs/socket.o
+1436 Dec  9 13:59 ./src/.libs/userfile.o
+
+It looks like some further size reduction can probably be achieved by
+disabling or reducing features in the conf code for embedded devices as
+most only have a single sound card with only one stereo pcm for playback
+and capture. 
+
+Liam
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
