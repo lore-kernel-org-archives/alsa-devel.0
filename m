@@ -1,15 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 mute problems.
-Date: Sat, 9 Dec 2006 09:05:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0612090904250.13335@tm8103.perex-int.cz>
-References: <000e01c7165d$ceeebaf0$dedde354@dwnze>
-	<20061203183433.GA14091@inferno.domain.actdsltmp>
-	<4579B9F8.4020109@schinagl.nl>
+Subject: Re: alsa-lib bloat.
+Date: Sat, 9 Dec 2006 09:25:44 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0612090908570.13335@tm8103.perex-int.cz>
+References: <45795C6D.9030100@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4579B9F8.4020109@schinagl.nl>
+In-Reply-To: <45795C6D.9030100@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,50 +17,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Oliver Schinagl <oliver@schinagl.nl>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Dec 2006, Oliver Schinagl wrote:
+On Fri, 8 Dec 2006, James Courtier-Dutton wrote:
 
 > Hi,
 > 
-> I am wondering if there's a bugzilla or some place to drop a bugreport 
-> for my SBLive! (emu10k1)?
-> 
-> I have in my system 2 soundcards installed, an SBLive! emu10k1 (
-> 00:0e.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a)
->         Subsystem: Creative Labs SBLive! Player 5.1
->         Flags: bus master, medium devsel, latency 32, IRQ 19
->         I/O ports at ef20 [size=32]
->         Capabilities: [dc] Power Management version 1
-> )
-> and an Onboard VIA audio thinger (
-> 00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
-> VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
->         Subsystem: ASUSTeK Computer Inc. Unknown device 810d
->         Flags: medium devsel, IRQ 20
->         I/O ports at 1000 [size=256]
->         Capabilities: [c0] Power Management version 2
-> 
-> )
-> 
-> on a gentoo 2.6.19-r1 kernel
-> 
-> Now they both are working but there's one thing that seems to be going 
-> wrong. Since it only happens on the SBLive (the via onboard works as it 
-> should) it must be a bug in the emu10k1 driver.
-> 
-> I use the following code to mute the left resp. right channels.
-> 
->     snd_mixer_selem_set_playback_switch(elem, SND_MIXER_SCHN_FRONT_LEFT, 0);
->     snd_mixer_selem_set_playback_switch(elem, 
-> SND_MIXER_SCHN_FRONT_RIGHT, 0);
+> On my desktop system, I have this:
+> /usr/lib/libasound.so.2.0.0
+> size: 2785380 bytes.
 
-Wrong code. You have to use snd_mixer_selem_set_playback_switch_all() if
-snd_mixer_selem_has_playback_switch_joined() flag is set. Perhaps, single 
-channel operations should return an error in this case to show the broken
-part to application developers.
+Have you tried to build minimal alsa library?
+
+  --disable-aload         disable reading /dev/aload*
+  --disable-mixer     Disable the mixer component
+  --disable-pcm       Disable the PCM component
+  --disable-rawmidi   Disable the raw MIDI component
+  --disable-hwdep     Disable the hwdep component
+  --disable-seq       Disable the sequencer component
+  --disable-instr     Disable the instrument component
+  --disable-alisp     Disable the alisp component
+
+  --with-pcm-plugins=<list>  Build PCM plugins
+
+Note that only hw plugin is important for pcm if applications will do all 
+conversions itself.
+
+Just quick test with:
+
+./configure --disable-aload --disable-mixer --disable-rawmidi 
+--disable-hwdep --disable-seq --disable-instr --disable-alisp 
+--with-pcm-plugins=hw
+
+strip -g --remove-section=.comment --remove-section=.note libasound.so
+
+-rwxr-xr-x  1 perex users 366562 2006-12-09 09:22 libasound.so.2.0.0
+
+It does not look so bad, doesn't?
+
+With mixer stuff:
+
+-rwxr-xr-x   1 perex users 420024 2006-12-09 09:25 libasound.so.2.0.0
+
+> libasound is really too big for what is does.
+> I was talking to some embedded platform developers recently, and they 
+> really don't like it at all.
+
+The best thing is to discuss what else can be shrinked (removed from 
+build). If embedded platform developers stay quiet, we won't care.
+
+For example, all dynamic configuration code can be removed, too.
 
 						Jaroslav
 
