@@ -1,12 +1,12 @@
-From: "Roseann Combs" <enjoinled@abcycle.com>
-Subject: Combs advice
-Date: Sat, 9 Dec 2006 21:25:39 +0000 (UTC)
-Message-ID: <01c71bd8$a126a9e0$6c822ecf@enjoinled>
+From: "Joan Lawrence" <protection'sEurydice's@abacus.com.sg>
+Subject: Lawrence advice
+Date: Sun, 10 Dec 2006 03:41:50 +0000 (UTC)
+Message-ID: <01c71c0d$1c10e3d0$6c822ecf@protection'sEurydice's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Sat, 9 Dec 2006 21:26:03 +0180
+Date: Sun, 10 Dec 2006 03:41:43 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Looking to put some spring in your step?  Ready for your big break?
