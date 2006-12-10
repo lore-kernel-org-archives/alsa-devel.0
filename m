@@ -1,14 +1,10 @@
-From: "weakly" <whuhbz@andrebti.com>
-Subject: loaf forgot
-Date: Sun, 10 Dec 2006 17:51:09 +0100
-Message-ID: <000601c71c7c$c23e8c70$aa3278d9@zgepgu>
+From: "idealistic" <xux@stadtplan-center.de>
+Subject: jittery naught
+Date: Sun, 10 Dec 2006 18:01:34 +0100
+Message-ID: <000601c71c7d$3121b1d0$3bc678d9@aloip>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1321421946=="
+Content-Type: multipart/mixed; boundary="===============1587135403=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from cc1079524-a.ws1.gr.home.nl (cc1079524-a.ws1.gr.home.nl
-	[217.120.73.156])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C6E582CB
-	for <alsa-devel@alsa-project.org>; Sun, 10 Dec 2006 18:00:54 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,85 +14,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1321421946==
+--===============1587135403==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0002_01C71C85.23F9CCB0"
+	boundary="----=_NextPart_000_0002_01C71C85.92E09B90"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0002_01C71C85.23F9CCB0
+------=_NextPart_000_0002_01C71C85.92E09B90
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0003_01C71C85.23FC16A0"
+	boundary="----=_NextPart_001_0003_01C71C85.92E1FB20"
 
 
-------=_NextPart_001_0003_01C71C85.23FC16A0
+------=_NextPart_001_0003_01C71C85.92E1FB20
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-So let's break it down. One problem might be that computers only see the =
-text on a web page and that human surfers see a combination of pictures =
-and text. It also helps you to contact these link partners and to manage =
-them in an easy to use program.
-Could visitors of the other web site be interested in your site?
-It's likely that the new spider announces a major Google update. The =
-reason for this might be that the old index contains too many spam =
-pages. Its challenge is to combine them into something that's =
-irresistible. In the news: Yahoo acquires an email search developer and =
-enters a partnership with Adobe, Microsoft announces its own desktop =
-search tool and more.
-The new spider might be able to understand more content formats, =
-including compressed HTML.
-Your newsletter is something to be proud of as well.
-I'm honored to have been a part of Google for such a historic period. =
-This means that every IMG tag should have the WIDTH and HEIGHT =
-attributes specified. 's initial public offering is imminent, the =
-Internet search company has asked federal regulators to give final =
-approval to the paperwork required for its stock sale. Want to be =
-mentioned in this newsletter? I stayed for a year and eight months and =
-have had a fun, fascinating, and extremely educational time.
-is working to develop new search engine technology that would allow =
-Internet searchers to ask a question in plain language and get an answer =
-rather than hundreds of Web sites in return.
-If your web pages are displayed and rendered as quickly as possible, =
-people will have more time to read the actual content of your web pages =
-and eventually they'll buy something on your page.
-And that's only the price for an average keyword. Links from related =
-sites will increase your search engine rankings and you'll get targeted =
-visitors from these sites.
-Much to my surprise in the morning my mail box was completely full! =
-Google's search results pages show only a sample of the links that point =
-to a page, so this list is in no way indicative of the link structure =
-utilized by Google to formulate a page's PageRank.
-Beginning in the fourth quarter, Overture will open in Brazil, Canada, =
-China, Hong Kong, and Taiwan.
-We want to design every Axandra product so that it perfectly suits your =
-needs.
-Thanks guys great work, makes all my linking so easy. If your HTML code =
-contains errors, search engines might not be able to find everything on =
-the page. It also helps you to contact these link partners and to manage =
-them in an easy to use program. It's joining a host of others that have =
-miles to go. Does this mean better search engine results?
-The benefits of your product should be the first words on your site.
-com is a new search engine for home based businesses. Whenever a book =
-contains content that matches your search terms, we'll show links to =
-that book in your search results.
-Don't teach the other webmaster about search engine optimization. We =
-wouldn't recommend starting a business without it.
-Tell the other webmaster where he can find his link and make sure that =
-the URL is correct.
-Some of them hire human clickers or use automated programs that click =
-the paid listings for them. The new spider might be able to understand =
-more content formats, including compressed HTML. We'll have to see what =
-this means in detail. Its challenge is to combine them into something =
-that's irresistible.
-------=_NextPart_001_0003_01C71C85.23FC16A0
+In the news: Google and Overture will be sued, interviews with both =
+Steve Ballmer and Bill Gates and an article suggests that Google might =
+be broken. Recommended for all websites who want to be successful. You =
+must convince your web site visitors with good sales copy.
+It could have displayed all possible news outlets and let the Chinese =
+government make its own choices.
+Focus on web surfers, not on search engines. Executives from the =
+publishing group have had several meetings with Google and are trialling =
+the concept, which would see Reed receive a small payment for each user =
+directed to one of its websites. High link popularity is important for =
+high rankings on search engines. I eagerly devour your newsletters and =
+try to utilise one piece of advice from each.
+and Adobe Systems Inc.
+In addition, human web surfers are turned away by that kind of pages.
+No matter how great your product is: if your web site is not fast =
+enough, web surfers won't see it. Make sure that your order pages are =
+easy to understand. If you want to participate in the beta test, click =
+here. Facts of the week: Are you paying too much for pay per click =
+advertising? Today, it's important to have good rankings in Google, =
+Yahoo and other major search engines.
+, campus next week for an event called 'Search Champs.
+There is the chance that this whole thing will boil over and people will =
+start to feel it's all hype.
+This beta service might be a first indicator that Amazon will be =
+switching to its own search technology. Google Desktop Search also =
+requires a newer MS Windows operating system.
+While most computer users worry about the ones that can damage their =
+files or harm their computers, other types of Trojan horses can =
+sometimes have far more insidious, long-term consequences. Nowadays, =
+webmasters get many link exchange email messages  so it's more difficult =
+to get noticed.
+All major search engines rank web sites based on the number of links =
+that point to them.
+Rumor has it that Google also tries to fight artificial link =
+manipulation with this update.
+The outcome of the unusual 'Dutch auction' will be closely watched. =
+Imagine how high the economic value of that knowledge would be. This =
+week, we're taking a look at Google's desktop search program. Search =
+engine crawler programs obey the HTML standard. This week, we're trying =
+to find out why some web site visitors don't convert into sales.
+The new design is coming soon, but you can start using it today.
+See who links to your competitors and then use ARELIS to help you get =
+those sites linking to you! Google Desktop Search also requires a newer =
+MS Windows operating system.
+Web site promotion software. If you see a good web site with good =
+content that has a low PageRank you should trade links with that site if =
+that web site is useful for your visitors.
+Google shares began trading on Aug.
+The Emeryville, Calif. ' He continued that the search engine companies =
+have invested billions in new technology, and that this should pay off =
+in improvements over the next couple of years. It's important to get =
+links from related web sites. The simplicity, power and automation has =
+placed us under our chosen keywords.
+------=_NextPart_001_0003_01C71C85.92E1FB20
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -105,122 +98,115 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1437" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"confused" hspace=3D0=20
-src=3D"cid:000101c71c7c$c2331ac0$aa3278d9@zgepgu" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"chariot" hspace=3D0=20
+src=3D"cid:000101c71c7d$311ad400$3bc678d9@aloip" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So let's break it down. One problem =
-might be that=20
-computers only see the text on a web page and that human surfers see a =
-combination=20
-of pictures and text. It also helps you to contact these link partners =
-and to manage=20
-them in an easy to use program.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Could visitors of the other web site be =
-interested=20
-in your site?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's likely that the new spider =
-announces a major=20
-Google update. The reason for this might be that the old index contains =
-too many=20
-spam pages. Its challenge is to combine them into something that's =
-irresistible. In=20
-the news: Yahoo acquires an email search developer and enters a =
-partnership with=20
-Adobe, Microsoft announces its own desktop search tool and =
-more.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The new spider might be able to =
-understand more=20
-content formats, including compressed HTML.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Your newsletter is something to be =
-proud of as=20
-well.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I'm honored to have been a part of =
-Google for such=20
-a historic period. This means that every IMG tag should have the WIDTH =
-and HEIGHT=20
-attributes specified. 's initial public offering is imminent, the =
-Internet search=20
-company has asked federal regulators to give final approval to the =
-paperwork=20
-required for its stock sale. Want to be mentioned in this newsletter? I =
-stayed for a=20
-year and eight months and have had a fun, fascinating, and extremely =
-educational=20
-time.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>is working to develop new search engine =
-technology=20
-that would allow Internet searchers to ask a question in plain language =
-and get an=20
-answer rather than hundreds of Web sites in return.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If your web pages are displayed and =
-rendered as=20
-quickly as possible, people will have more time to read the actual =
-content of your=20
-web pages and eventually they'll buy something on your =
-page.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>And that's only the price for an =
-average keyword.=20
-Links from related sites will increase your search engine rankings and =
-you'll get=20
-targeted visitors from these sites.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Much to my surprise in the morning my =
-mail box was=20
-completely full! Google's search results pages show only a sample of the =
-links that=20
-point to a page, so this list is in no way indicative of the link =
-structure utilized=20
-by Google to formulate a page's PageRank.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Beginning in the fourth quarter, =
-Overture will open=20
-in Brazil, Canada, China, Hong Kong, and Taiwan.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>We want to design every Axandra product =
-so that it=20
-perfectly suits your needs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks guys great work, makes all my =
-linking so=20
-easy. If your HTML code contains errors, search engines might not be =
-able to find=20
-everything on the page. It also helps you to contact these link partners =
-and to=20
-manage them in an easy to use program. It's joining a host of others =
-that have miles=20
-to go. Does this mean better search engine results?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The benefits of your product should be =
-the first=20
-words on your site.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>com is a new search engine for home =
-based=20
-businesses. Whenever a book contains content that matches your search =
-terms, we'll=20
-show links to that book in your search results.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Don't teach the other webmaster about =
-search engine=20
-optimization. We wouldn't recommend starting a business without =
-it.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Tell the other webmaster where he can =
-find his link=20
-and make sure that the URL is correct.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some of them hire human clickers or use =
-automated=20
-programs that click the paid listings for them. The new spider might be =
-able to=20
-understand more content formats, including compressed HTML. We'll have =
-to see what=20
-this means in detail. Its challenge is to combine them into something =
-that's=20
-irresistible.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>In the news: Google and Overture will =
+be sued,=20
+interviews with both Steve Ballmer and Bill Gates and an article =
+suggests that=20
+Google might be broken. Recommended for all websites who want to be =
+successful. You=20
+must convince your web site visitors with good sales copy.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It could have displayed all possible =
+news outlets=20
+and let the Chinese government make its own choices.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Focus on web surfers, not on search =
+engines.=20
+Executives from the publishing group have had several meetings with =
+Google and are=20
+trialling the concept, which would see Reed receive a small payment for =
+each user=20
+directed to one of its websites. High link popularity is important for =
+high rankings=20
+on search engines. I eagerly devour your newsletters and try to utilise =
+one piece of=20
+advice from each.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>and Adobe Systems Inc.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In addition, human web surfers are =
+turned away by=20
+that kind of pages.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>No matter how great your product is: if =
+your web=20
+site is not fast enough, web surfers won't see it. Make sure that your =
+order pages=20
+are easy to understand. If you want to participate in the beta test, =
+click here.=20
+Facts of the week: Are you paying too much for pay per click =
+advertising? Today,=20
+it's important to have good rankings in Google, Yahoo and other major =
+search=20
+engines.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>, campus next week for an event called =
+'Search=20
+Champs.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There is the chance that this whole =
+thing will boil=20
+over and people will start to feel it's all hype.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This beta service might be a first =
+indicator that=20
+Amazon will be switching to its own search technology. Google Desktop =
+Search also=20
+requires a newer MS Windows operating system.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>While most computer users worry about =
+the ones that=20
+can damage their files or harm their computers, other types of Trojan =
+horses can=20
+sometimes have far more insidious, long-term consequences. Nowadays, =
+webmasters get=20
+many link exchange email messages  so it's more difficult to get=20
+noticed.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>All major search engines rank web sites =
+based on=20
+the number of links that point to them.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Rumor has it that Google also tries to =
+fight=20
+artificial link manipulation with this update.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The outcome of the unusual 'Dutch =
+auction' will be=20
+closely watched. Imagine how high the economic value of that knowledge =
+would be.=20
+This week, we're taking a look at Google's desktop search program. =
+Search engine=20
+crawler programs obey the HTML standard. This week, we're trying to find =
+out why=20
+some web site visitors don't convert into sales.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The new design is coming soon, but you =
+can start=20
+using it today.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>See who links to your competitors and =
+then use=20
+ARELIS to help you get those sites linking to you! Google Desktop Search =
+also=20
+requires a newer MS Windows operating system.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Web site promotion software. If you see =
+a good web=20
+site with good content that has a low PageRank you should trade links =
+with that site=20
+if that web site is useful for your visitors.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Google shares began trading on =
+Aug.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The Emeryville, Calif. ' He continued =
+that the=20
+search engine companies have invested billions in new technology, and =
+that this=20
+should pay off in improvements over the next couple of years. It's =
+important to get=20
+links from related web sites. The simplicity, power and automation has =
+placed us=20
+under our chosen keywords.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0003_01C71C85.23FC16A0--
+------=_NextPart_001_0003_01C71C85.92E1FB20--
 
-------=_NextPart_000_0002_01C71C85.23F9CCB0
+------=_NextPart_000_0002_01C71C85.92E09B90
 Content-Type: image/gif;
-	name="outdo.gif"
+	name="synopses.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000101c71c7c$c2331ac0$aa3278d9@zgepgu>
+Content-ID: <000101c71c7d$311ad400$3bc678d9@aloip>
 
 R0lGODdhOAL7AIQAAP////+ZzP9mM8z/zMz/ZszMZsyZzMyZZsxmM5lm/5kz/5kAAGb/Zmb/M2bM
 mWbMM2aZzGYzZmYA/zOZADNm/zMzMwD/ZgD/MwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -388,11 +374,11 @@ S1eap9uwKIu66IvAqElmEwqA6Basow/RJH/uQNa1oiI0IpBGwgOYZIIWKVCCkaBWgcmhmoT6RcyV
 YhJ4HQRIKYU+UecyJuabyqjrcGeX1g29HGJRnKhGlOcJKA2txOhbyk1n/oE6suNe7uf8Jd2dLsKe
 1kJbgmORBkAiSICtssBwEuXAsUC5zRqNKCoSRKeuIFwIAAA7
 
-------=_NextPart_000_0002_01C71C85.23F9CCB0--
+------=_NextPart_000_0002_01C71C85.92E09B90--
 
 
 
---===============1321421946==
+--===============1587135403==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -403,7 +389,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1321421946==
+--===============1587135403==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -414,4 +400,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1321421946==--
+--===============1587135403==--
