@@ -1,11 +1,14 @@
-From: "Lenny Stout" <schoolteacher'sDumas@accapital.com>
-Subject: Stout advice
-Date: Mon, 11 Dec 2006 19:45:31 +0300
-Message-ID: <01c71d5c$ea96b310$6c822ecf@schoolteacher'sDumas>
+From: "Jude Garcia" <iowaroofer.com@xcelmarketing.com>
+Subject: Avoid enhancement pills
+Date: Mon, 11 Dec 2006 21:59:41 +0100
+Message-ID: <000001c71d67$47fdc980$0100007f@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from localhost (p54BBF9BA.dip.t-dialin.net [84.187.249.186])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B334531D
+	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2006 22:00:00 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,34 +18,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Looking to put some spring in your step?  Ready for your big break?
-Look no further.
+Over a several millions men have been helped with the potent ingredients 
+in Pen~is Growth Patch - men have experienced bigger size, deeper penetration
+more action, and super-satisfying results for themselves and 
+their partners.
 
-Wild Brush Energy
-Symbol: WBRS
+Don't be left behind! Take advantage of price specials going on now.
 
-Current Price:  Around   $0.05
-Short Term Target:         $0.12
-Long Term Target:         $0.40
-
-The energy sector is THE place to be, with some energy companies seeing 
-appreciation of 400% or more this year alone!  WBRS is involved in some 
-of the most exciting gas plays in North America.  It's a proven winner in a 
-red hot market.
-
-But that's just the beginning.  Rumor has it that there may soon be a 
-merger between WBRS and another major energy player with close ties to 
-the company.  In fact this major player's stock was up 50% Friday on 
-strong volume as insiders took positions.
-
-We believe that WBRS is looking at the same rapid appreciation.  Once 
-the merger is announced there will be a scramble to get in.  Play it smart.  
-Take a position BEFORE the announcement and ride this one all the way 
-to the bank!
-Tell to everyone about this message.Post it on the forum.
+Click here and visit our site!
+http://www.tukribot.net/?189&qikq
 
 
 -------------------------------------------------------------------------
