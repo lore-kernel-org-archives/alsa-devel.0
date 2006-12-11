@@ -1,14 +1,11 @@
-From: "Sally Y. Rosa" <sbmqn@llanfair40.fsnet.co.uk>
-Subject: Does it actually resist burning and combustion?
-Date: Mon, 11 Dec 2006 17:08:34 +0100
-Message-ID: <001001c71d3f$ef178670$3fd00c59@qlfi>
+From: "Frederik G. Sheppard" <ank@webyards.de>
+Subject: I love how Williams' composes - some of his works
+	remind me of an original score for a Hollywood movie.
+Date: Mon, 11 Dec 2006 17:13:48 +0100
+Message-ID: <001001c71d40$27a5fad0$aa3c0c59@vme>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1865655503=="
+Content-Type: multipart/mixed; boundary="===============1259650870=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from manz-590cc2ec.pool.einsundeins.de
-	(manz-590cc2ec.pool.einsundeins.de [89.12.194.236])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 797A432D
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2006 17:17:48 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,33 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1865655503==
+--===============1259650870==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C71D48.50CAD770"
+	boundary="----=_NextPart_000_000C_01C71D48.8956DAD0"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000C_01C71D48.50CAD770
+------=_NextPart_000_000C_01C71D48.8956DAD0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C71D48.50CF1D30"
+	boundary="----=_NextPart_001_000D_01C71D48.895BBCD0"
 
 
-------=_NextPart_001_000D_01C71D48.50CF1D30
+------=_NextPart_001_000D_01C71D48.895BBCD0
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-I like the arm and leg warmers with built in illuminite for the =
-commuter. Does anyone have any funny jokes?
-First, you will need a rack for holding your panniers. Case Study =
-FAQWondering what a case study is?
-------=_NextPart_001_000D_01C71D48.50CF1D30
+Electro-acupuncture seemed to work the best for reducing vomiting. In a =
+few cases, I may leave spammy comments but remove anyURLs they contain.
+You might see the results in better mood control, improved concentration =
+and energy levels, as well as in your general sense of well-being. You =
+can always throw this in your commuter bag or camel back if you are a =
+mountain biker.
+------=_NextPart_001_000D_01C71D48.895BBCD0
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -53,29 +52,33 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"herb" hspace=3D0=20
-src=3D"cid:000b01c71d3f$ef0229b0$3fd00c59@qlfi" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"bloodless" hspace=3D0=20
+src=3D"cid:000b01c71d40$278d90d0$aa3c0c59@vme" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I like the arm and leg warmers with =
-built in=20
-illuminite for the commuter. Does anyone have any funny =
-jokes?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>First, you will need a rack for holding =
-your=20
-panniers. Case Study FAQWondering what a case study =
-is?</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Electro-acupuncture seemed to work the =
+best for=20
+reducing vomiting. In a few cases, I may leave spammy comments but =
+remove anyURLs=20
+they contain.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You might see the results in better =
+mood control,=20
+improved concentration and energy levels, as well as in your general =
+sense of=20
+well-being. You can always throw this in your commuter bag or camel back =
+if you are=20
+a mountain biker.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000D_01C71D48.50CF1D30--
+------=_NextPart_001_000D_01C71D48.895BBCD0--
 
-------=_NextPart_000_000C_01C71D48.50CAD770
+------=_NextPart_000_000C_01C71D48.8956DAD0
 Content-Type: image/gif;
-	name="heartbroken.gif"
+	name="explanatory.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000b01c71d3f$ef0229b0$3fd00c59@qlfi>
+Content-ID: <000b01c71d40$278d90d0$aa3c0c59@vme>
 
 R0lGODdhcwL+AIQAAAAAAABmzACZAACZZgDM/zPMADP/AGZmZmaZzGbMM5kAzJlm/5nMmZn/M8wA
 zMwA/8xm/8yZAMzMmf8zZv+ZAP/MzP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -296,11 +299,11 @@ LDyb6J+xTZtxE4YagegX3U6wshLszBPuG9RF6oiM6J5rKaY6nyPXOgs9shyoTLbbaMncaPkvmrwu
 JJkIPsi0oaDcrLQlJG266Qycw1aMldFY4MksNhLS4Oe2J0bltRInJ1Fht90usU4JFzGvgZBRc1N6
 Mxo53hjT3X77nTY5B4QAADs=
 
-------=_NextPart_000_000C_01C71D48.50CAD770--
+------=_NextPart_000_000C_01C71D48.8956DAD0--
 
 
 
---===============1865655503==
+--===============1259650870==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -311,7 +314,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1865655503==
+--===============1259650870==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -322,4 +325,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1865655503==--
+--===============1259650870==--
