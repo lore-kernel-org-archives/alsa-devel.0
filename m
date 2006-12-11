@@ -1,11 +1,18 @@
-From: "Frederik G. Sheppard" <ank@webyards.de>
-Subject: I love how Williams' composes - some of his works
-	remind me of an original score for a Hollywood movie.
-Date: Mon, 11 Dec 2006 17:13:48 +0100
-Message-ID: <001001c71d40$27a5fad0$aa3c0c59@vme>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Intel HDA on Mac Pro
+Date: Mon, 11 Dec 2006 08:33:53 -0800
+Message-ID: <1165854833.7530.205.camel@razman>
+References: <4574866D.5070506@sourcegear.com>
+	<1165265511.32312.86.camel@razman>	<45748CF5.8040800@sourcegear.com>
+	<1165275957.32312.103.camel@razman>	<4574BB17.1020807@sourcegear.com>
+	<1165278602.32312.110.camel@razman> <4574EF72.8020207@sourcegear.com>
+	<457828D7.4020908@teamprise.com> <1165535200.7530.63.camel@razman>
+	<4579BF60.8000601@sourcegear.com> <1165767364.7530.148.camel@razman>
+	<457D6E99.2000207@sourcegear.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1259650870=="
+Content-Type: multipart/mixed; boundary="=-KSMlK4WqNEuDUiXUBa/3"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <457D6E99.2000207@sourcegear.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,295 +22,311 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Shaw Terwilliger <sterwill@sourcegear.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============1259650870==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C71D48.8956DAD0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000C_01C71D48.8956DAD0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C71D48.895BBCD0"
+--=-KSMlK4WqNEuDUiXUBa/3
+Content-Type: multipart/alternative; boundary="=-CbieeQI6rccxV74z5Uy2"
 
 
-------=_NextPart_001_000D_01C71D48.895BBCD0
-Content-Type: text/plain;
-	charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
+--=-CbieeQI6rccxV74z5Uy2
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+Ok, based on that information, I think I have a working patch.  Give
+this a try.  
 
-Electro-acupuncture seemed to work the best for reducing vomiting. In a =
-few cases, I may leave spammy comments but remove anyURLs they contain.
-You might see the results in better mood control, improved concentration =
-and energy levels, as well as in your general sense of well-being. You =
-can always throw this in your commuter bag or camel back if you are a =
-mountain biker.
-------=_NextPart_001_000D_01C71D48.895BBCD0
-Content-Type: text/html;
-	charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
+I'll let the next guy work on the S/PDIF if there is an issue with it.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
-<STYLE></STYLE>
+Tobin
+
+On Mon, 2006-12-11 at 08:43 -0600, Shaw Terwilliger wrote:
+
+> Tobin Davis wrote:
+> > modprobe -r snd-hda-intel
+> > dmesg -c >/dev/null
+> > modprobe snd-hda-intel model=auto
+> > dmesg >dmesg.out  # send me this output
+> > 
+> > This should (hopefully) detect which port the headphones are on.  It
+> > won't enable sound, but it is useful for detecting pins from the bios
+> > settings.
+> 
+> File is attached.
+> 
+> > Also, when you said sound was coming from the surround channels, do you
+> > know if the front output was coming from that?  To test this, reload the
+> > driver with "model=macpro" and type:
+> > speaker-test -c 6 -t wav -Dplug:surround51
+> 
+> I get:
+> 
+> Unable to set nperiods 4 for playback: Invalid argument
+> Setting of hwparams failed: Invalid argument
+> 
+> If I change "-c 6" to "-c 8", I can run with the rest of the args (also
+> works with 4).  The "rear right" channel in the speaker test comes from
+> the actual front right speaker (and "rear left" from the actual front
+> left).  Speakers are plugged in the to Mac's rear line-out.  And it's
+> the "Surround" mixer strip (alsamixer) that controls these volumes.
+> 
+> 
+> plain text document attachment (hda-model-auto.dmesg.txt)
+> 
+> [593939.343584] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 23 (level, low) -> IRQ 225
+> [593939.344458] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+> [593939.378547] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696: codec_mask = 0x1
+> [593939.556328] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:1743: hda_codec: model 'auto' is selected
+> [593939.604812] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2175: autoconfig: line_outs=1 (0x15/0x0/0x0/0x0/0x0)
+> [593939.604817] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2179:    speaker_outs=1 (0x1a/0x0/0x0/0x0/0x0)
+> [593939.604821] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2183:    hp_outs=1 (0x18/0x0/0x0/0x0/0x0)
+> [593939.604824] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2191:    inputs: mic=0x0, fmic=0x0, line=0x19, fline=0x0, cd=0x0, aux=0x0
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-CbieeQI6rccxV74z5Uy2
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
 </HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"bloodless" hspace=3D0=20
-src=3D"cid:000b01c71d40$278d90d0$aa3c0c59@vme" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Electro-acupuncture seemed to work the =
-best for=20
-reducing vomiting. In a few cases, I may leave spammy comments but =
-remove anyURLs=20
-they contain.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You might see the results in better =
-mood control,=20
-improved concentration and energy levels, as well as in your general =
-sense of=20
-well-being. You can always throw this in your commuter bag or camel back =
-if you are=20
-a mountain biker.</FONT></DIV></BODY></HTML>
+<BODY>
+Ok, based on that information, I think I have a working patch.&nbsp; Give this a try.&nbsp; <BR>
+<BR>
+I'll let the next guy work on the S/PDIF if there is an issue with it.<BR>
+<BR>
+Tobin<BR>
+<BR>
+On Mon, 2006-12-11 at 08:43 -0600, Shaw Terwilliger wrote:
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Tobin Davis wrote:</FONT>
+<FONT COLOR="#000000">&gt; modprobe -r snd-hda-intel</FONT>
+<FONT COLOR="#000000">&gt; dmesg -c &gt;/dev/null</FONT>
+<FONT COLOR="#000000">&gt; modprobe snd-hda-intel model=auto</FONT>
+<FONT COLOR="#000000">&gt; dmesg &gt;dmesg.out  # send me this output</FONT>
+<FONT COLOR="#000000">&gt; </FONT>
+<FONT COLOR="#000000">&gt; This should (hopefully) detect which port the headphones are on.  It</FONT>
+<FONT COLOR="#000000">&gt; won't enable sound, but it is useful for detecting pins from the bios</FONT>
+<FONT COLOR="#000000">&gt; settings.</FONT>
 
-------=_NextPart_001_000D_01C71D48.895BBCD0--
+<FONT COLOR="#000000">File is attached.</FONT>
 
-------=_NextPart_000_000C_01C71D48.8956DAD0
-Content-Type: image/gif;
-	name="explanatory.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000b01c71d40$278d90d0$aa3c0c59@vme>
+<FONT COLOR="#000000">&gt; Also, when you said sound was coming from the surround channels, do you</FONT>
+<FONT COLOR="#000000">&gt; know if the front output was coming from that?  To test this, reload the</FONT>
+<FONT COLOR="#000000">&gt; driver with &quot;model=macpro&quot; and type:</FONT>
+<FONT COLOR="#000000">&gt; speaker-test -c 6 -t wav -Dplug:surround51</FONT>
 
-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
-Mxo53hjT3X77nTY5B4QAADs=
+<FONT COLOR="#000000">I get:</FONT>
 
-------=_NextPart_000_000C_01C71D48.8956DAD0--
+<FONT COLOR="#000000">Unable to set nperiods 4 for playback: Invalid argument</FONT>
+<FONT COLOR="#000000">Setting of hwparams failed: Invalid argument</FONT>
 
+<FONT COLOR="#000000">If I change &quot;-c 6&quot; to &quot;-c 8&quot;, I can run with the rest of the args (also</FONT>
+<FONT COLOR="#000000">works with 4).  The &quot;rear right&quot; channel in the speaker test comes from</FONT>
+<FONT COLOR="#000000">the actual front right speaker (and &quot;rear left&quot; from the actual front</FONT>
+<FONT COLOR="#000000">left).  Speakers are plugged in the to Mac's rear line-out.  And it's</FONT>
+<FONT COLOR="#000000">the &quot;Surround&quot; mixer strip (alsamixer) that controls these volumes.</FONT>
 
+</PRE>
+    <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="1">
+<TR>
+<TD>
+<FONT SIZE="2">plain text document attachment (hda-model-auto.dmesg.txt)</FONT>
+</TD>
+</TR>
+</TABLE>
+<PRE>
+<FONT COLOR="#000000">[593939.343584] ACPI: PCI Interrupt 0000:00:1b.0[A] -&gt; GSI 23 (level, low) -&gt; IRQ 225</FONT>
+<FONT COLOR="#000000">[593939.344458] PCI: Setting latency timer of device 0000:00:1b.0 to 64</FONT>
+<FONT COLOR="#000000">[593939.378547] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696: codec_mask = 0x1</FONT>
+<FONT COLOR="#000000">[593939.556328] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:1743: hda_codec: model 'auto' is selected</FONT>
+<FONT COLOR="#000000">[593939.604812] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2175: autoconfig: line_outs=1 (0x15/0x0/0x0/0x0/0x0)</FONT>
+<FONT COLOR="#000000">[593939.604817] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2179:    speaker_outs=1 (0x1a/0x0/0x0/0x0/0x0)</FONT>
+<FONT COLOR="#000000">[593939.604821] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2183:    hp_outs=1 (0x18/0x0/0x0/0x0/0x0)</FONT>
+<FONT COLOR="#000000">[593939.604824] ALSA /data/downloads/alsa-driver-1.0.14rc1/pci/hda/hda_codec.c:2191:&nbsp;&nbsp;&nbsp; inputs: mic=0x0, fmic=0x0, line=0x19, fline=0x0, cd=0x0, aux=</FONT>0x0
+</PRE>
+</BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
 
---===============1259650870==
+--=-CbieeQI6rccxV74z5Uy2--
+
+--=-KSMlK4WqNEuDUiXUBa/3
+Content-Disposition: attachment; filename=macpro.patch.2
+Content-Type: text/x-patch; name=macpro.patch.2; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+diff -r 1ede4dc9b6ea pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Sun Dec 10 00:00:38 2006 +0000
++++ b/pci/hda/patch_realtek.c	Mon Dec 11 08:29:20 2006 -0800
+@@ -112,6 +112,7 @@ enum {
+ 	ALC882_6ST_DIG,
+ 	ALC882_ARIMA,
+ 	ALC882_AUTO,
++	ALC885_MACPRO,
+ 	ALC882_MODEL_LAST,
+ };
+ 
+@@ -4507,6 +4508,103 @@ static struct hda_verb alc882_eapd_verbs
+ 	{ } 
+ };
+ 
++/* Mac Pro test */
++static struct snd_kcontrol_new alc882_macpro_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0d, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x18, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x01, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x01, HDA_INPUT),
++	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x02, HDA_INPUT),
++	{ } /* end */
++};
++
++static struct hda_verb alc882_macpro_init_verbs[] = {
++	/* Front mixer: unmute input/output amp left and right (volume = 0) */
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	/* Front Pin: output 0 (0x0c) */
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* Mic (rear) pin: input vref at 80% */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Front Mic pin: input vref at 80% */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Speaker:  output */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1a, AC_VERB_SET_CONNECT_SEL, 0x04},
++	/* Headphone output (output 0 - 0x0c) */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x18, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	/* FIXME: use matrix-type input source selection */
++	/* Mixer elements: 0x18, 19, 1a, 1b, 1c, 1d, 14, 15, 16, 17, 0b */
++	/* Input mixer1: unmute Mic, F-Mic, Line, CD inputs */
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* Input mixer2 */
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* Input mixer3 */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* ADC1: mute amp left and right */
++	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x07, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* ADC2: mute amp left and right */
++	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x08, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* ADC3: mute amp left and right */
++	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x09, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	{ }
++};
++static void alc882_gpio_mute(struct hda_codec *codec, int pin, int muted)
++{
++	unsigned int gpiostate, gpiomask, gpiodir;
++
++	gpiostate = snd_hda_codec_read(codec, codec->afg, 0,
++				       AC_VERB_GET_GPIO_DATA, 0);
++
++	if (!muted)
++		gpiostate |= (1 << pin);
++	else
++		gpiostate &= ~(1 << pin);
++
++	gpiomask = snd_hda_codec_read(codec, codec->afg, 0,
++				      AC_VERB_GET_GPIO_MASK, 0);
++	gpiomask |= (1 << pin);
++
++	gpiodir = snd_hda_codec_read(codec, codec->afg, 0,
++				     AC_VERB_GET_GPIO_DIRECTION, 0);
++	gpiodir |= (1 << pin);
++
++
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_MASK, gpiomask);
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DIRECTION, gpiodir);
++
++	msleep(1);
++
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DATA, gpiostate);
++}
++
+ /*
+  * generic initialization of ADC, input mixers and output mixers
+  */
+@@ -4633,6 +4731,7 @@ static const char *alc882_models[ALC882_
+ 	[ALC882_3ST_DIG]	= "3stack-dig",
+ 	[ALC882_6ST_DIG]	= "6stack-dig",
+ 	[ALC882_ARIMA]		= "arima",
++	[ALC885_MACPRO]		= "macpro",
+ 	[ALC882_AUTO]		= "auto",
+ };
+ 
+@@ -4675,6 +4774,17 @@ static struct alc_config_preset alc882_p
+ 		.dac_nids = alc882_dac_nids,
+ 		.num_channel_mode = ARRAY_SIZE(alc882_sixstack_modes),
+ 		.channel_mode = alc882_sixstack_modes,
++		.input_mux = &alc882_capture_source,
++	},
++	[ALC885_MACPRO] = {
++		.mixers = { alc882_macpro_mixer },
++		.init_verbs = { alc882_macpro_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc882_dac_nids),
++		.dac_nids = alc882_dac_nids,
++		.dig_out_nid = ALC882_DIGOUT_NID,
++		.dig_in_nid = ALC882_DIGIN_NID,
++		.num_channel_mode = ARRAY_SIZE(alc882_ch_modes),
++		.channel_mode = alc882_ch_modes,
+ 		.input_mux = &alc882_capture_source,
+ 	},
+ };
+@@ -4803,6 +4913,11 @@ static int patch_alc882(struct hda_codec
+ 
+ 	if (board_config != ALC882_AUTO)
+ 		setup_preset(spec, &alc882_presets[board_config]);
++
++	if (board_config == ALC885_MACPRO) {
++		alc882_gpio_mute(codec, 0, 0);
++		alc882_gpio_mute(codec, 1, 0);
++	}
+ 
+ 	spec->stream_name_analog = "ALC882 Analog";
+ 	spec->stream_analog_playback = &alc882_pcm_analog_playback;
+
+--=-KSMlK4WqNEuDUiXUBa/3
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -314,7 +337,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1259650870==
+--=-KSMlK4WqNEuDUiXUBa/3
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -325,4 +348,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1259650870==--
+--=-KSMlK4WqNEuDUiXUBa/3--
