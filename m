@@ -1,14 +1,10 @@
-From: "Wagner" <zllap@locargo.hu>
-Subject: incoherent eldest
-Date: Mon, 11 Dec 2006 15:36:13 +0100
-Message-ID: <001d01c71d32$ff97b090$8eef7dd9@qssfd>
+From: "Odom" <ytx@vacuous.scathe.net>
+Subject: Europe asleep
+Date: Mon, 11 Dec 2006 15:39:06 +0100
+Message-ID: <001d01c71d33$14f90470$77d27dd9@ctkry>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1899196301=="
+Content-Type: multipart/mixed; boundary="===============1705181695=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 165.Red-217-125-177.dynamicIP.rima-tde.net
-	(165.Red-217-125-177.dynamicIP.rima-tde.net [217.125.177.165])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CE11C31F
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2006 15:45:28 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,51 +14,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1899196301==
+--===============1705181695==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0019_01C71D3B.6152F0D0"
+	boundary="----=_NextPart_000_0019_01C71D3B.76B30C30"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0019_01C71D3B.6152F0D0
+------=_NextPart_000_0019_01C71D3B.76B30C30
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001A_01C71D3B.61553AC0"
+	boundary="----=_NextPart_001_001A_01C71D3B.76B5A440"
 
 
-------=_NextPart_001_001A_01C71D3B.61553AC0
+------=_NextPart_001_001A_01C71D3B.76B5A440
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-The value of the expression endIndex - beginIndexis the same value =
-provided by the length method.
-The following three panels include settings for the Source =
-Editor:Editor.
-One of the frameworks that makes it easier to use AJAX is the =
-DOJOopen-source JavaScript toolkit. With development tools and maybe =
-computer games, developers are the customers! That's my proof of =
-concept. Yahoo Maps JavaScript AJAX APIRecall that, for this sample =
-portlet, you use the Yahoo M
-Good tools help you to do great work.
-Refactoring tools usually focus on individual changes. Later, you'll =
-learn a fast way to create a GUI simply by dragging components onto a =
-workspace and letting the IDE write all the code for you. But if all you =
-want to do is access bundles of values, the price is too high.
-and Swing Hacks by Josh Marinacci and Chris Adamson. and Swing Hacks by =
-Josh Marinacci and Chris Adamson.
-mashups;import javax.
-Rather than invoking multiple remote EJBbeans, the remote client would =
-use a session bean to avoidfine-grained remote access of enterprise =
-beans. When creating a custom AJAX JavaServer Faces component, =
-developers must weigh a variety of options. This level of key provides =
-more coarse grained access which is more developer friendly.
-------=_NextPart_001_001A_01C71D3B.61553AC0
+Run the installer according to the directions on the page fromwhere you =
+downloaded it.
+Working on a toolkit team, or anywhere in Sun, we're writing code for =
+others to use, so we have to think about creating the right API.
+Effects on Deployment TimeThe first issue is how annotations affect =
+deployment time. Start with the JSP pages. We've added a property called =
+swing. Token based restrictions provides easy access to your service to =
+JavaScript clients and it is the most flexible of the approaches for =
+restricting access to your services.
+In tests, Sun's Java Enterprise Performance team has found that the two =
+operations take about the same amount of time.
+The compatibility API provides the "right" behavior to developers who =
+want it. Works with MIME-typed messagesjavax. The answer depends on =
+thebyte-oriented character set encoding used.
+The Java programming language provides a set of user interface =
+components from which you can build GUI forms. Currently, the only =
+option that is not vendor specific is to delegate to the base renderer =
+using standard JavaServer Faces technology method calls.
+Did that inform or influence you as a developer?
+Remote Compared With Local InterfacesMost of you probably already know =
+that there's a significant performance difference between using remote =
+as opposed to local interfaces. Most importantly, we're not doing this =
+in isolation. Many web services specifications address such requirements =
+and establish a common vocabulary for them.
+------=_NextPart_001_001A_01C71D3B.76B5A440
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -71,60 +69,66 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"sadistically" hspace=3D0=20
-src=3D"cid:001801c71d32$ff8c3ee0$8eef7dd9@qssfd" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"obliged" hspace=3D0=20
+src=3D"cid:001801c71d33$14ec0c20$77d27dd9@ctkry" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The value of the expression endIndex - =
-beginIndexis=20
-the same value provided by the length method.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The following three panels include =
-settings for the=20
-Source Editor:Editor.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>One of the frameworks that makes it =
-easier to use=20
-AJAX is the DOJOopen-source JavaScript toolkit. With development tools =
-and maybe=20
-computer games, developers are the customers! That's my proof of =
-concept. Yahoo Maps=20
-JavaScript AJAX APIRecall that, for this sample portlet, you use the =
-Yahoo=20
-M</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Good tools help you to do great =
-work.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Refactoring tools usually focus on =
-individual=20
-changes. Later, you'll learn a fast way to create a GUI simply by =
-dragging=20
-components onto a workspace and letting the IDE write all the code for =
-you. But if=20
-all you want to do is access bundles of values, the price is too =
-high.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and Swing Hacks by Josh Marinacci and =
-Chris=20
-Adamson. and Swing Hacks by Josh Marinacci and Chris =
-Adamson.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>mashups;import javax.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Rather than invoking multiple remote =
-EJBbeans, the=20
-remote client would use a session bean to avoidfine-grained remote =
-access of=20
-enterprise beans. When creating a custom AJAX JavaServer Faces =
-component, developers=20
-must weigh a variety of options. This level of key provides more coarse =
-grained=20
-access which is more developer friendly.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Run the installer according to the =
+directions on=20
+the page fromwhere you downloaded it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Working on a toolkit team, or anywhere =
+in Sun,=20
+we're writing code for others to use, so we have to think about creating =
+the right=20
+API.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Effects on Deployment TimeThe first =
+issue is how=20
+annotations affect deployment time. Start with the JSP pages. We've =
+added a property=20
+called swing. Token based restrictions provides easy access to your =
+service to=20
+JavaScript clients and it is the most flexible of the approaches for =
+restricting=20
+access to your services.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In tests, Sun's Java Enterprise =
+Performance team=20
+has found that the two operations take about the same amount of =
+time.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The compatibility API provides the =
+"right" behavior=20
+to developers who want it. Works with MIME-typed messagesjavax. The =
+answer depends=20
+on thebyte-oriented character set encoding used.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The Java programming language provides =
+a set of=20
+user interface components from which you can build GUI forms. Currently, =
+the only=20
+option that is not vendor specific is to delegate to the base renderer =
+using=20
+standard JavaServer Faces technology method calls.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Did that inform or influence you as =
+a=20
+developer?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Remote Compared With Local =
+InterfacesMost of you=20
+probably already know that there's a significant performance difference =
+between=20
+using remote as opposed to local interfaces. Most importantly, we're not =
+doing this=20
+in isolation. Many web services specifications address such requirements =
+and=20
+establish a common vocabulary for them.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001A_01C71D3B.61553AC0--
+------=_NextPart_001_001A_01C71D3B.76B5A440--
 
-------=_NextPart_000_0019_01C71D3B.6152F0D0
+------=_NextPart_000_0019_01C71D3B.76B30C30
 Content-Type: image/gif;
-	name="fervor.gif"
+	name="high-class.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001801c71d32$ff8c3ee0$8eef7dd9@qssfd>
+Content-ID: <001801c71d33$14ec0c20$77d27dd9@ctkry>
 
 R0lGODdhRALkAOMAAAAAAAAAAAAzMwBmZgBmmTP/M5kAM5nMZsxmmczM/8z/zP8AAP/M/wAAAAAA
 AAAAACwAAAAARALkAAAE/nAMI6u9UmmZRvdJuCRLtZznUBZsW2BwHB8XLcu0LR3ooF8IXyV4K8YI
@@ -337,11 +341,11 @@ EqJ8hF16VenWrV2tEnmWVWvw5FW+ihkrVk3Zb2bNNmEHD15bdNY+ZPEQzhpVbNvHG7BWntYBEBVC
 wBBQK/z2Q5VeG/hu/7v6E+NBpPiQ3gMLUNwQYHiI4LfdbO7V4p4H/7VQVYD7NSgBCAQSo1F6GbY3
 goRVAUiSKwK0Mp5r9B0mm2WQJHZXBAA7
 
-------=_NextPart_000_0019_01C71D3B.6152F0D0--
+------=_NextPart_000_0019_01C71D3B.76B30C30--
 
 
 
---===============1899196301==
+--===============1705181695==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -352,7 +356,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1899196301==
+--===============1705181695==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -363,4 +367,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1899196301==--
+--===============1705181695==--
