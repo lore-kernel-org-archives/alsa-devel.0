@@ -1,12 +1,12 @@
-From: "Issac Chacon" <esteemedinclusively@acc.kumagaku.ac.jp>
-Subject: Chacon advice
-Date: Mon, 11 Dec 2006 05:48:14 +0000 (UTC)
-Message-ID: <01c71ce7$eee9eec0$6c822ecf@esteemedinclusively>
+From: "Tommy Berg" <deterrentsnipper's@acahl.freeserve.co.uk>
+Subject: Berg advice
+Date: Mon, 11 Dec 2006 08:30:03 +0000 (UTC)
+Message-ID: <01c71cfe$70fa9610$6c822ecf@deterrentsnipper's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 11 Dec 2006 05:48:07 -0060
+Date: Mon, 11 Dec 2006 08:29:14 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
