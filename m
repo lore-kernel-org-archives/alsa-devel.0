@@ -1,19 +1,12 @@
-From: "Art Myles" <gracelessness'scryogenics@abs-cbni.com>
+From: "Mandy Larsen" <Cochisewatersides@able-web-design.com>
 Subject: It ready
-Date: Tue, 12 Dec 2006 23:20:45 +0000 (UTC)
-Message-ID: <01c71e44$1feb1d20$6c822ecf@gracelessness'scryogenics>
+Date: Tue, 12 Dec 2006 23:43:55 +0000 (UTC)
+Message-ID: <01c71e47$60f579c0$6c822ecf@Cochisewatersides>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from dslb-084-059-043-024.pools.arcor-ip.net
-	(dslb-084-059-043-024.pools.arcor-ip.net [84.59.43.24])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF393251
-	for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2006 00:20:26 +0100 (MET)
-Received: from 67.98.228.19 (HELO notessvr.abs-cbni.com)
-	by alsa-project.org with esmtp (4.A+2)JK 4DV0N)) id 3J7P-.-1X/)(7-+1
-	for alsa-devel@alsa-project.org; Tue, 12 Dec 2006 23:20:34 -0060
-Date: Tue, 12 Dec 2006 23:20:34 -0060
+Date: Tue, 12 Dec 2006 23:43:52 +0480
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 News Alert!
