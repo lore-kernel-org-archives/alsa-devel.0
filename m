@@ -1,16 +1,11 @@
-From: "Reginald Maxwell" <efrhcs@ukorg.huntingdon.com>
-Subject: One theory is that mechanical stress on the joint
-	stimulates the release of natural chemicals in abnormally
-	high levels.
-Date: Wed, 13 Dec 2006 11:23:55 +0100
-Message-ID: <000c01c71ea0$f5e47820$c9562c7e@hzliz>
+From: "Peg Noble" <lywkd@zadovjaci.cz>
+Subject: Other causes of back pain include arthritis,
+	fractures and infections.
+Date: Wed, 13 Dec 2006 11:32:02 +0100
+Message-ID: <000c01c71ea2$42029830$59d27cba@qkhxhw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1929382258=="
+Content-Type: multipart/mixed; boundary="===============0110689342=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from adsl196-3-155-217-196.adsl196-13.iam.net.ma
-	(adsl196-3-155-217-196.adsl196-13.iam.net.ma [196.217.155.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B3D3D13A
-	for <alsa-devel@alsa-project.org>; Wed, 27 Dec 2006 14:13:08 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,64 +15,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1929382258==
+--===============0110689342==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0008_01C71EA9.579901A0"
+	boundary="----=_NextPart_000_0008_01C71EAA.A3B37830"
 
-------=_NextPart_000_0008_01C71EA9.579901A0
+------=_NextPart_000_0008_01C71EAA.A3B37830
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0009_01C71EA9.579CF940"
+	boundary="----=_NextPart_001_0009_01C71EAA.A3B85A30"
 
-------=_NextPart_001_0009_01C71EA9.579CF940
+------=_NextPart_001_0009_01C71EAA.A3B85A30
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-The spine is supported by specialised back muscles, and an array of =
-ligaments, nerves and tendons. What causes Ankylosing Spondylitis?
-Alzheimer's disease has a gradual onset.
-It was found that autism rates continued to rise after the triple =
-vaccine was withdrawn in 1993, whereas rates would have been expected to =
-fall if the jab was a major cause.
-The condition often affects joints which have been injured, or which =
-have been over-used. For immediate effect, such as after a DVT or a =
-pulmonary embolism, an intravenous dose is given  to ensure it is more =
-rapidly delivered to the blood stream.
-"It is extremely rare for people with Asperger syndrome to commit =
-violent crimes. Alle stukjes moeten haarscherp passen om een volledig en =
-passend datawarehouse te kunnen ontwikkelen. Scientists are also working =
-on new therapies, involving injection of drugs directly into the eye.
-Aan het selecteren van alle benodigde tools zal veel aandacht besteed =
-worden.
-Patients will be generally be given heparin for several days followed by =
-3 to 6 months of warfarin. This inflammation makes the joints painful, =
-stiff, and swollen, and in severe cases can significantly restrict =
-movement.
-Some medicines will also make it worse, including some contraceptive =
-pills and steroids. Treatments work by either unblocking blocked pores, =
-reducing the amount of grease or sebum made by the skin, reducing the =
-inflammation or fighting the bacterium that infects the lesions.
-They may also become floppy and may choke or gag. Visit FSCO's website: =
-www.
-Arsenic can kill humans quickly if consumed in large amounts, although =
-small, long-term exposure can lead to a much slower death or other =
-illness. Warfarin should be avoided in pregnancy because it crosses the =
-placenta to the baby, though use of heparin in pregnancy is safe.
-You should continue any routine medicines unless specifically advised =
-not to. The resultant, and usually very swift, effects are muscle =
-contractions and swelling, often closing the throat, making it difficult =
-to breathe.
-This is a highly complex and delicate structure which is made up of 33 =
-small bones called vertebrae.
-Osteoarthritis is caused by the breakdown of protective tissue called =
-cartilage in the joints. It is not contagious and is nothing to do with =
-not being clean. Identifying which triggers apply is important if asthma =
-attacks are to be prevented.
-------=_NextPart_001_0009_01C71EA9.579CF940
+Further information can be obtained from the UK National Ankylosing =
+Spondylitis Association. Warfarin should be avoided in pregnancy because =
+it crosses the placenta to the baby, though use of heparin in pregnancy =
+is safe.
+This can be because the baby stops breathing, or because the windpipe or =
+airways have become blocked.
+Medication such as antidepressants or anxiety-reducing drugs can treat =
+symptoms like depression and insomnia and therapy can help with coming =
+to terms with the trauma.
+It is difficult to detect as it is generally odourless and flavourless, =
+meaning people have little idea when it is around. It most commonly =
+affects the joints of the fingers, knees, hips, and spine.
+Many cancers are alcohol-related, particularly those of the mouth, =
+oesophagus, liver, stomach, colon, rectum, and perhaps breast cancer in =
+women. There is no specific treatment for Binswanger's disease. They =
+also have a limited capacity to understand other people's feelings.
+Additional exercises may also be needed for the shoulders and the hips =
+which are the most frequently affected joints other than the spine.
+For most cases, there is a complex interaction of many genetic, =
+environmental and life-style risk factors, with age and genetics playing =
+the largest part. The most common way to treat anaemia caused by iron =
+deficiency is to prescribe an iron supplement.
+Most people are aware of the immediate effects of consuming large =
+quantities of alcohol - although, as the body builds a tolerance to =
+these, the effects often become less obvious. You will then drift off to =
+sleep and wake up at the end of the procedure.
+They may also become floppy and may choke or gag. Forty million people =
+in West Bengal and Bangladesh are thought to be at risk from =
+arsenic-contaminated water supplies, although studies are continuing =
+into what effect the poisoning is having.
+Compulsive behaviour includes repeated hand washing, following rigid =
+patterns of behaviour, such as putting on clothes in the same order =
+every day or avoiding cracks in the pavement. Further information on all =
+aspects of anaesthesia can be found on the Royal College of =
+Anaesthetists' website.
+Asthma is a chronic, inflammatory lung disease characterised by =
+recurrent breathing problems. There are certain warning signs of an =
+impending attack.
+What will my anaesthetist need to know at the pre-operative visit?
+However, such is the speed with which anaphylactic shock takes hold, =
+even immediate treatment with adrenaline is not guaranteed to save the =
+victim's life. The two most common forms are osteoarthritis and =
+rheumatoid arthritis. Anaemia results when the balance of this mechanism =
+is disturbed.
+------=_NextPart_001_0009_01C71EAA.A3B85A30
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -86,93 +85,101 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"combined" hspace=3D0=20
-src=3D"cid:000701c71ea0$f5d0a200$c9562c7e@hzliz" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"related" hspace=3D0=20
+src=3D"cid:000701c71ea2$41ea2e30$59d27cba@qkhxhw" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The spine is supported by specialised =
-back muscles,=20
-and an array of ligaments, nerves and tendons. What causes Ankylosing=20
-Spondylitis?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Alzheimer's disease has a gradual=20
-onset.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It was found that autism rates =
-continued to rise=20
-after the triple vaccine was withdrawn in 1993, whereas rates would have =
-been=20
-expected to fall if the jab was a major cause.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The condition often affects joints =
-which have been=20
-injured, or which have been over-used. For immediate effect, such as =
-after a DVT or=20
-a pulmonary embolism, an intravenous dose is given  to ensure it is more =
-rapidly=20
-delivered to the blood stream.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"It is extremely rare for people with =
-Asperger=20
-syndrome to commit violent crimes. Alle stukjes moeten haarscherp passen =
-om een=20
-volledig en passend datawarehouse te kunnen ontwikkelen. Scientists are =
-also working=20
-on new therapies, involving injection of drugs directly into the =
-eye.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Aan het selecteren van alle benodigde =
-tools zal=20
-veel aandacht besteed worden.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Patients will be generally be given =
-heparin for=20
-several days followed by 3 to 6 months of warfarin. This inflammation =
-makes the=20
-joints painful, stiff, and swollen, and in severe cases can =
-significantly restrict=20
-movement.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some medicines will also make it worse, =
-including=20
-some contraceptive pills and steroids. Treatments work by either =
-unblocking blocked=20
-pores, reducing the amount of grease or sebum made by the skin, reducing =
-the=20
-inflammation or fighting the bacterium that infects the =
-lesions.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Further information can be obtained =
+from the UK=20
+National Ankylosing Spondylitis Association. Warfarin should be avoided =
+in pregnancy=20
+because it crosses the placenta to the baby, though use of heparin in =
+pregnancy is=20
+safe.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This can be because the baby stops =
+breathing, or=20
+because the windpipe or airways have become blocked.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Medication such as antidepressants =
+or=20
+anxiety-reducing drugs can treat symptoms like depression and insomnia =
+and therapy=20
+can help with coming to terms with the trauma.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It is difficult to detect as it is =
+generally=20
+odourless and flavourless, meaning people have little idea when it is =
+around. It=20
+most commonly affects the joints of the fingers, knees, hips, and=20
+spine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Many cancers are alcohol-related, =
+particularly=20
+those of the mouth, oesophagus, liver, stomach, colon, rectum, and =
+perhaps breast=20
+cancer in women. There is no specific treatment for Binswanger's =
+disease. They also=20
+have a limited capacity to understand other people's =
+feelings.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Additional exercises may also be needed =
+for the=20
+shoulders and the hips which are the most frequently affected joints =
+other than the=20
+spine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>For most cases, there is a complex =
+interaction of=20
+many genetic, environmental and life-style risk factors, with age and =
+genetics=20
+playing the largest part. The most common way to treat anaemia caused by =
+iron=20
+deficiency is to prescribe an iron supplement.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Most people are aware of the immediate =
+effects of=20
+consuming large quantities of alcohol - although, as the body builds a =
+tolerance to=20
+these, the effects often become less obvious. You will then drift off to =
+sleep and=20
+wake up at the end of the procedure.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>They may also become floppy and may =
 choke or gag.=20
-Visit FSCO's website: www.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Arsenic can kill humans quickly if =
-consumed in=20
-large amounts, although small, long-term exposure can lead to a much =
-slower death or=20
-other illness. Warfarin should be avoided in pregnancy because it =
-crosses the=20
-placenta to the baby, though use of heparin in pregnancy is =
-safe.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You should continue any routine =
-medicines unless=20
-specifically advised not to. The resultant, and usually very swift, =
-effects are=20
-muscle contractions and swelling, often closing the throat, making it =
-difficult to=20
-breathe.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This is a highly complex and delicate =
-structure=20
-which is made up of 33 small bones called vertebrae.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Osteoarthritis is caused by the =
-breakdown of=20
-protective tissue called cartilage in the joints. It is not contagious =
-and is=20
-nothing to do with not being clean. Identifying which triggers apply is =
-important if=20
-asthma attacks are to be prevented.</FONT></DIV></BODY></HTML>
+Forty million people in West Bengal and Bangladesh are thought to be at =
+risk from=20
+arsenic-contaminated water supplies, although studies are continuing =
+into what=20
+effect the poisoning is having.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Compulsive behaviour includes repeated =
+hand=20
+washing, following rigid patterns of behaviour, such as putting on =
+clothes in the=20
+same order every day or avoiding cracks in the pavement. Further =
+information on all=20
+aspects of anaesthesia can be found on the Royal College of =
+Anaesthetists'=20
+website.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Asthma is a chronic, inflammatory lung =
+disease=20
+characterised by recurrent breathing problems. There are certain warning =
+signs of an=20
+impending attack.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What will my anaesthetist need to know =
+at the=20
+pre-operative visit?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>However, such is the speed with which =
+anaphylactic=20
+shock takes hold, even immediate treatment with adrenaline is not =
+guaranteed to save=20
+the victim's life. The two most common forms are osteoarthritis and =
+rheumatoid=20
+arthritis. Anaemia results when the balance of this mechanism is=20
+disturbed.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0009_01C71EA9.579CF940--
+------=_NextPart_001_0009_01C71EAA.A3B85A30--
 
-------=_NextPart_000_0008_01C71EA9.579901A0
+------=_NextPart_000_0008_01C71EAA.A3B37830
 Content-Type: image/gif;
-	name="irrelevance.gif"
+	name="stodgy.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000701c71ea0$f5d0a200$c9562c7e@hzliz>
+Content-ID: <000701c71ea2$41ea2e30$59d27cba@qkhxhw>
 
 R0lGODdhQwERAvMAACQKIPrj4eHo99714DKjHA9jBVAfX3oZPjObSptEWwAAAAAAAAAAAAAAAAAA
 AAAAACwAAAAAQwERAgAE/3DISau9OOvNu/9gKI5kaZ5oqq5s675wLM90bctBru987//AoHBILBqJ
@@ -433,11 +440,11 @@ PiZkRqZkTqZE/qVlXiZmZqZmbiZndqZSUiZohqZojiZpcs5hnuZHJCRqrmaZeaZrviZsalxpziZt
 1mYNlsWX2aZu7iZv9uZLxCZwBqdwDqeO+KZxHqdxEme6sSZzNqdzPid0Rif9ICd1VidCKid28kYE
 AAA7
 
-------=_NextPart_000_0008_01C71EA9.579901A0--
+------=_NextPart_000_0008_01C71EAA.A3B37830--
 
 
 
---===============1929382258==
+--===============0110689342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -448,7 +455,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1929382258==
+--===============0110689342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -459,4 +466,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1929382258==--
+--===============0110689342==--
