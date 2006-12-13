@@ -1,12 +1,11 @@
-From: "Kelli Gray" <whale'sDeanna@aadh.dk>
-Subject: Gray FINANCIAL REPORT
-Date: Thu, 14 Dec 2006 00:52:08 +0000 (UTC)
-Message-ID: <01c71f19$ef165490$6c822ecf@whale'sDeanna>
+From: "Tina Frank" <boneyestSquanto@accessms.com>
+Subject: Frank FINANCIAL REPORT
+Date: Thu, 14 Dec 2006 02:19:59 +0300
+Message-ID: <01c71f26$5a7ba760$6c822ecf@boneyestSquanto>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 14 Dec 2006 00:51:04 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +40,7 @@ tension is building.  As the drilling gets closer to completion insiders are
 accumulating ahead of that major discovery announcement.	
 	
 Wild Brush Energy are very stable working company. 	
-Charts are proving this word.	
+Charts are proving this words.	
 And now it will get to new level. 	
 We expect big price increase next several days.	
 Price will start to rise Thursday, December 14 2006.	
