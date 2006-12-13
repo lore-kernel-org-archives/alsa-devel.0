@@ -1,10 +1,10 @@
-From: "Peg Noble" <lywkd@zadovjaci.cz>
-Subject: Other causes of back pain include arthritis,
-	fractures and infections.
-Date: Wed, 13 Dec 2006 11:32:02 +0100
-Message-ID: <000c01c71ea2$42029830$59d27cba@qkhxhw>
+From: "Frank Wang" <uit@quebelle.com>
+Subject: In severe cases the condition can cause serious joint
+	damage and disability.
+Date: Wed, 13 Dec 2006 11:35:34 +0100
+Message-ID: <000c01c71ea2$a90c4f80$4bb87a8d@hriyyv>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0110689342=="
+Content-Type: multipart/mixed; boundary="===============0882978443=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,68 +15,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0110689342==
+--===============0882978443==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0008_01C71EAA.A3B37830"
+	boundary="----=_NextPart_000_0008_01C71EAB.0ABBF700"
 
-------=_NextPart_000_0008_01C71EAA.A3B37830
+------=_NextPart_000_0008_01C71EAB.0ABBF700
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0009_01C71EAA.A3B85A30"
+	boundary="----=_NextPart_001_0009_01C71EAB.0AC12720"
 
-------=_NextPart_001_0009_01C71EAA.A3B85A30
+------=_NextPart_001_0009_01C71EAB.0AC12720
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-Further information can be obtained from the UK National Ankylosing =
-Spondylitis Association. Warfarin should be avoided in pregnancy because =
-it crosses the placenta to the baby, though use of heparin in pregnancy =
-is safe.
-This can be because the baby stops breathing, or because the windpipe or =
-airways have become blocked.
-Medication such as antidepressants or anxiety-reducing drugs can treat =
-symptoms like depression and insomnia and therapy can help with coming =
-to terms with the trauma.
-It is difficult to detect as it is generally odourless and flavourless, =
-meaning people have little idea when it is around. It most commonly =
-affects the joints of the fingers, knees, hips, and spine.
-Many cancers are alcohol-related, particularly those of the mouth, =
-oesophagus, liver, stomach, colon, rectum, and perhaps breast cancer in =
-women. There is no specific treatment for Binswanger's disease. They =
-also have a limited capacity to understand other people's feelings.
-Additional exercises may also be needed for the shoulders and the hips =
-which are the most frequently affected joints other than the spine.
-For most cases, there is a complex interaction of many genetic, =
-environmental and life-style risk factors, with age and genetics playing =
-the largest part. The most common way to treat anaemia caused by iron =
-deficiency is to prescribe an iron supplement.
-Most people are aware of the immediate effects of consuming large =
-quantities of alcohol - although, as the body builds a tolerance to =
-these, the effects often become less obvious. You will then drift off to =
-sleep and wake up at the end of the procedure.
-They may also become floppy and may choke or gag. Forty million people =
-in West Bengal and Bangladesh are thought to be at risk from =
-arsenic-contaminated water supplies, although studies are continuing =
-into what effect the poisoning is having.
-Compulsive behaviour includes repeated hand washing, following rigid =
-patterns of behaviour, such as putting on clothes in the same order =
-every day or avoiding cracks in the pavement. Further information on all =
-aspects of anaesthesia can be found on the Royal College of =
-Anaesthetists' website.
-Asthma is a chronic, inflammatory lung disease characterised by =
-recurrent breathing problems. There are certain warning signs of an =
-impending attack.
-What will my anaesthetist need to know at the pre-operative visit?
-However, such is the speed with which anaphylactic shock takes hold, =
-even immediate treatment with adrenaline is not guaranteed to save the =
-victim's life. The two most common forms are osteoarthritis and =
-rheumatoid arthritis. Anaemia results when the balance of this mechanism =
-is disturbed.
-------=_NextPart_001_0009_01C71EAA.A3B85A30
+The aim is to clear the spots and prevent scarring. How is anaemia =
+treated?
+In some people, it can also affect other parts of the body, including =
+the blood, the lungs, and the heart.
+Who administers and controls general anaesthetics?
+Usually it is a mild condition, most commonly during young adulthood, =
+and will resolve by itself. High profile sufferers include the former =
+England cricket captain Michael Atherton.
+It is not known whether a baby dies because breathing has stopped, or =
+whether breathing has ceased because the baby is dead. It is important =
+to stop smoking at least six to eight weeks before surgery. There are =
+nine different types of H5.
+What treatment is available?
+Blood coagulation is triggered by blood cells called platelets which, =
+through a series of chemical reactions,  produce a substance called =
+thrombin. The problem can be down to a lack of iron in the diet.
+The second type is intestinal anthrax, caused by the consumption of =
+contaminated meat. Because it is carried by birds, there is no way of =
+preventing its spread.
+"It's also something to do with the way we're living in modern housing - =
+little ventilation, damp housing, more carpets and more dust make asthma =
+more common. Experts believe that it is best to stay as active as you =
+possibly can.
+A data warehouse is a subject-oriented, integrated, time-variant, =
+non-volatile collection of data in support of management's =
+decision-making process. There are three types of anthrax, depending on =
+where the infectious spore has arrived on the patient.
+Other infants may become stiff or have a staring spell. They then become =
+inflamed and clogged.
+Modern anaesthesia is very safe.
+Experts say proper poultry controls - such as preventing wild birds =
+getting in to poultry houses - which are present in the UK, should =
+prevent that happening. The diagnosis is extremely subjective, relying =
+heavily on interpretation of behaviour patterns rather than any physical =
+test. Operations to cure the condition are most successful in children =
+under eight weeks old.
+------=_NextPart_001_0009_01C71EAB.0AC12720
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -89,97 +81,80 @@ charset=3Diso-8859-2">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"related" hspace=3D0=20
-src=3D"cid:000701c71ea2$41ea2e30$59d27cba@qkhxhw" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"facile" hspace=3D0=20
+src=3D"cid:000701c71ea2$a8f25ee0$4bb87a8d@hriyyv" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Further information can be obtained =
-from the UK=20
-National Ankylosing Spondylitis Association. Warfarin should be avoided =
-in pregnancy=20
-because it crosses the placenta to the baby, though use of heparin in =
-pregnancy is=20
+<DIV><FONT face=3DArial size=3D2>The aim is to clear the spots and =
+prevent scarring.=20
+How is anaemia treated?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In some people, it can also affect =
+other parts of=20
+the body, including the blood, the lungs, and the heart.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Who administers and controls general=20
+anaesthetics?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Usually it is a mild condition, most =
+commonly=20
+during young adulthood, and will resolve by itself. High profile =
+sufferers include=20
+the former England cricket captain Michael Atherton.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It is not known whether a baby dies =
+because=20
+breathing has stopped, or whether breathing has ceased because the baby =
+is dead. It=20
+is important to stop smoking at least six to eight weeks before surgery. =
+There are=20
+nine different types of H5.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What treatment is =
+available?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Blood coagulation is triggered by blood =
+cells=20
+called platelets which, through a series of chemical reactions,  produce =
+a substance=20
+called thrombin. The problem can be down to a lack of iron in the =
+diet.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The second type is intestinal anthrax, =
+caused by=20
+the consumption of contaminated meat. Because it is carried by birds, =
+there is no=20
+way of preventing its spread.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"It's also something to do with the way =
+we're=20
+living in modern housing - little ventilation, damp housing, more =
+carpets and more=20
+dust make asthma more common. Experts believe that it is best to stay as =
+active as=20
+you possibly can.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A data warehouse is a subject-oriented, =
+integrated,=20
+time-variant, non-volatile collection of data in support of =
+management's=20
+decision-making process. There are three types of anthrax, depending on =
+where the=20
+infectious spore has arrived on the patient.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Other infants may become stiff or have =
+a staring=20
+spell. They then become inflamed and clogged.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Modern anaesthesia is very =
 safe.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This can be because the baby stops =
-breathing, or=20
-because the windpipe or airways have become blocked.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Medication such as antidepressants =
-or=20
-anxiety-reducing drugs can treat symptoms like depression and insomnia =
-and therapy=20
-can help with coming to terms with the trauma.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It is difficult to detect as it is =
-generally=20
-odourless and flavourless, meaning people have little idea when it is =
-around. It=20
-most commonly affects the joints of the fingers, knees, hips, and=20
-spine.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Many cancers are alcohol-related, =
-particularly=20
-those of the mouth, oesophagus, liver, stomach, colon, rectum, and =
-perhaps breast=20
-cancer in women. There is no specific treatment for Binswanger's =
-disease. They also=20
-have a limited capacity to understand other people's =
-feelings.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Additional exercises may also be needed =
-for the=20
-shoulders and the hips which are the most frequently affected joints =
-other than the=20
-spine.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For most cases, there is a complex =
-interaction of=20
-many genetic, environmental and life-style risk factors, with age and =
-genetics=20
-playing the largest part. The most common way to treat anaemia caused by =
-iron=20
-deficiency is to prescribe an iron supplement.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Most people are aware of the immediate =
-effects of=20
-consuming large quantities of alcohol - although, as the body builds a =
-tolerance to=20
-these, the effects often become less obvious. You will then drift off to =
-sleep and=20
-wake up at the end of the procedure.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>They may also become floppy and may =
-choke or gag.=20
-Forty million people in West Bengal and Bangladesh are thought to be at =
-risk from=20
-arsenic-contaminated water supplies, although studies are continuing =
-into what=20
-effect the poisoning is having.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Compulsive behaviour includes repeated =
-hand=20
-washing, following rigid patterns of behaviour, such as putting on =
-clothes in the=20
-same order every day or avoiding cracks in the pavement. Further =
-information on all=20
-aspects of anaesthesia can be found on the Royal College of =
-Anaesthetists'=20
-website.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Asthma is a chronic, inflammatory lung =
-disease=20
-characterised by recurrent breathing problems. There are certain warning =
-signs of an=20
-impending attack.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What will my anaesthetist need to know =
-at the=20
-pre-operative visit?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>However, such is the speed with which =
-anaphylactic=20
-shock takes hold, even immediate treatment with adrenaline is not =
-guaranteed to save=20
-the victim's life. The two most common forms are osteoarthritis and =
-rheumatoid=20
-arthritis. Anaemia results when the balance of this mechanism is=20
-disturbed.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Experts say proper poultry controls - =
+such as=20
+preventing wild birds getting in to poultry houses - which are present =
+in the UK,=20
+should prevent that happening. The diagnosis is extremely subjective, =
+relying=20
+heavily on interpretation of behaviour patterns rather than any physical =
+test.=20
+Operations to cure the condition are most successful in children under =
+eight weeks=20
+old.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0009_01C71EAA.A3B85A30--
+------=_NextPart_001_0009_01C71EAB.0AC12720--
 
-------=_NextPart_000_0008_01C71EAA.A3B37830
+------=_NextPart_000_0008_01C71EAB.0ABBF700
 Content-Type: image/gif;
-	name="stodgy.gif"
+	name="'nother.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000701c71ea2$41ea2e30$59d27cba@qkhxhw>
+Content-ID: <000701c71ea2$a8f25ee0$4bb87a8d@hriyyv>
 
 R0lGODdhQwERAvMAACQKIPrj4eHo99714DKjHA9jBVAfX3oZPjObSptEWwAAAAAAAAAAAAAAAAAA
 AAAAACwAAAAAQwERAgAE/3DISau9OOvNu/9gKI5kaZ5oqq5s675wLM90bctBru987//AoHBILBqJ
@@ -440,11 +415,11 @@ PiZkRqZkTqZE/qVlXiZmZqZmbiZndqZSUiZohqZojiZpcs5hnuZHJCRqrmaZeaZrviZsalxpziZt
 1mYNlsWX2aZu7iZv9uZLxCZwBqdwDqeO+KZxHqdxEme6sSZzNqdzPid0Rif9ICd1VidCKid28kYE
 AAA7
 
-------=_NextPart_000_0008_01C71EAA.A3B37830--
+------=_NextPart_000_0008_01C71EAB.0ABBF700--
 
 
 
---===============0110689342==
+--===============0882978443==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -455,7 +430,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0110689342==
+--===============0882978443==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -466,4 +441,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0110689342==--
+--===============0882978443==--
