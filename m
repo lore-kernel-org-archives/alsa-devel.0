@@ -1,10 +1,11 @@
-From: "Nance" <bjw@windshieldexperts.com>
-Subject: Tom MorganVice PresidentPencom Systems IncorporatedHot
-	Jobs!
-Date: Thu, 14 Dec 2006 00:04:26 +0100
-Message-ID: <000801c71f0b$91317f70$4363a854@dulup>
+From: "Kimball" <wnmtc@laguarida.com.ar>
+Subject: For many years,
+	the successful combination of these three entities has beenthe key
+	to corporate profitability.
+Date: Thu, 14 Dec 2006 00:01:13 +0100
+Message-ID: <000801c71f0b$b81d0780$c1daa854@ztlzs>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0543783286=="
+Content-Type: multipart/mixed; boundary="===============1855684780=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,40 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0543783286==
+--===============1855684780==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0004_01C71F13.F2EC2370"
+	boundary="----=_NextPart_000_0004_01C71F14.19D7AB80"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0004_01C71F13.F2EC2370
+------=_NextPart_000_0004_01C71F14.19D7AB80
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0005_01C71F13.F2EE9470"
+	boundary="----=_NextPart_001_0005_01C71F14.19DA1C80"
 
 
-------=_NextPart_001_0005_01C71F13.F2EE9470
+------=_NextPart_001_0005_01C71F14.19DA1C80
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Familiarity with the software development lifecycle. Specificknowledge =
-of Fixed Income, regulatory compliance rules and ruleconstruction =
-techniques. In this role, you will support theeffort to establish a =
-large historical data repository on SybaseIQ.
-Specificknowledge of Fixed Income, regulatory compliance rules and =
-ruleconstruction techniques. Your skills and qualifications are =
-evaluated and if your background meets the job requirements of one or =
-more of our client companies, we will contact you within a day or two.
-Experience supporting trading systems and withUNIX and middleware =
-systems. Wall Street firms, technological advancements, and technology =
-professionals.
-------=_NextPart_001_0005_01C71F13.F2EE9470
+This individual will developExcel VBA Add-In to provide real-time market =
+data for clientsinExcel spreadsheets. Proven ability to multi-taskand =
+successfully execute complex application rollouts. Experience building =
+customworksheet functions and calculation tree.
+Without it, it is difficult to perform with the Bulls. in Computer =
+Science or related field.
+Experience building customworksheet functions and calculation tree. =
+Advanced SQL programming experience.
+------=_NextPart_001_0005_01C71F14.19DA1C80
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -62,35 +60,30 @@ charset=3Diso-8859-1">
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000301c71f0b$91254a70$4363a854@dulup" align=3Dbaseline=20
+src=3D"cid:000301c71f0b$b810d280$c1daa854@ztlzs" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Familiarity with the software =
-development=20
-lifecycle. Specificknowledge of Fixed Income, regulatory compliance =
-rules and=20
-ruleconstruction techniques. In this role, you will support theeffort to =
-establish a=20
-large historical data repository on SybaseIQ.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Specificknowledge of Fixed Income, =
-regulatory=20
-compliance rules and ruleconstruction techniques. Your skills and =
-qualifications are=20
-evaluated and if your background meets the job requirements of one or =
-more of our=20
-client companies, we will contact you within a day or two.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Experience supporting trading systems =
-and withUNIX=20
-and middleware systems. Wall Street firms, technological advancements, =
-and=20
-technology professionals.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>This individual will developExcel VBA =
+Add-In to=20
+provide real-time market data for clientsinExcel spreadsheets. Proven =
+ability to=20
+multi-taskand successfully execute complex application rollouts. =
+Experience building=20
+customworksheet functions and calculation tree.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Without it, it is difficult to perform =
+with the=20
+Bulls. in Computer Science or related field.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Experience building customworksheet =
+functions and=20
+calculation tree. Advanced SQL programming =
+experience.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0005_01C71F13.F2EE9470--
+------=_NextPart_001_0005_01C71F14.19DA1C80--
 
-------=_NextPart_000_0004_01C71F13.F2EC2370
+------=_NextPart_000_0004_01C71F14.19D7AB80
 Content-Type: image/gif;
-	name="robotics.gif"
+	name="fend.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000301c71f0b$91254a70$4363a854@dulup>
+Content-ID: <000301c71f0b$b810d280$c1daa854@ztlzs>
 
 R0lGODdhnAHKAYQAAP////+Zmcz/AMxmZpnMmZmZAJkAmWaZAGZmM2YzAGYAZmYAADPMADMzzDMz
 mTMzZjMAzDMAmQCZmQBmAAAzzAAzZgAzMwAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -440,11 +433,11 @@ sv1beB2bXWEKMK1eXsGXpZFYprUX+knbw0WC0o3AmQXXOwFXU32SEhEXGckJs3zQnDXX8flT14nG
 uYVGQb0ZoP2X9Nmg56EWhXmXhTkZv2GfQkUZeD2gvzWKHD2UKKyXs2EgYEGb6w2W7c1BDzndYp0g
 m+1XPEWfu01O4cTa+Gwd18HgnkkLzqRELMWEVE0dHYQAADs=
 
-------=_NextPart_000_0004_01C71F13.F2EC2370--
+------=_NextPart_000_0004_01C71F14.19D7AB80--
 
 
 
---===============0543783286==
+--===============1855684780==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -455,7 +448,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0543783286==
+--===============1855684780==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -466,4 +459,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0543783286==--
+--===============1855684780==--
