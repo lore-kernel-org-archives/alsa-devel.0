@@ -1,12 +1,12 @@
-From: "Clay Ricks" <stripperlengthiest@access-us-inc.com>
+From: "Gus Fernandez" <belongingsradicals@abs.msk.ru>
 Subject: Re: Report
-Date: Thu, 14 Dec 2006 22:18:53 +0000 (UTC)
-Message-ID: <01c71fcd$cf8a69e0$6c822ecf@stripperlengthiest>
+Date: Thu, 14 Dec 2006 22:45:48 +0000 (UTC)
+Message-ID: <01c71fd1$92a34cf0$6c822ecf@belongingsradicals>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 14 Dec 2006 22:18:41 -0060
+Date: Thu, 14 Dec 2006 22:45:37 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
