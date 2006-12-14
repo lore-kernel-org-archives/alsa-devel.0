@@ -1,16 +1,12 @@
-From: "Jewel Woodruff" <HanHimalaya@aardu.easn.sun.com>
-Subject: Woodruff FINANCIAL REPORT
-Date: Thu, 14 Dec 2006 00:21:40 +0000 (UTC)
-Message-ID: <01c71f15$a5ec9cb0$6c822ecf@HanHimalaya>
+From: "Kelli Gray" <whale'sDeanna@aadh.dk>
+Subject: Gray FINANCIAL REPORT
+Date: Thu, 14 Dec 2006 00:52:08 +0000 (UTC)
+Message-ID: <01c71f19$ef165490$6c822ecf@whale'sDeanna>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 217.140.40.14 (HELO btmx4.sun.com)
-	by alsa-project.org with esmtp (O6UC)25T*2 QAC4/T)
-	id D1Q4@0-+736A<-51
-	for alsa-devel@alsa-project.org; Thu, 14 Dec 2006 00:20:24 +0480
-Date: Thu, 14 Dec 2006 00:20:24 +0480
+Date: Thu, 14 Dec 2006 00:51:04 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Stable Company!	
