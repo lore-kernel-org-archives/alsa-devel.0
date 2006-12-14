@@ -1,12 +1,11 @@
-From: "Drew Stafford" <Marinimpinge@acclaimtechnical.com>
-Subject: Stafford FINANCIAL REPORT
-Date: Thu, 14 Dec 2006 13:28:03 +0000 (UTC)
-Message-ID: <01c71f83$aa2bea10$6c822ecf@Marinimpinge>
+From: "r10 kindsofpeople" <r10kindsofpeople@hotmail.com>
+Subject: stopping sequencer output queue gracefully
+Date: Thu, 14 Dec 2006 08:12:29 -0600
+Message-ID: <BAY21-F222A395293750A95AC6FE3CDD50@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 14 Dec 2006 13:27:55 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,39 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Stable Company!	
-	
-Fueled by the possibility of an upcoming merger, Wild Brush 	
-Energy (WBRS) is gearing up for an explosion.  Tension is 	
-building and soon the scramble to take a position will push 	
-this one off the charts.	
-	
-Wild Brush Energy	
-Symbol: WBRS	
-Current Price: $0.052	
-Short Term Target: $0.32	
-Long Term Target: $0.80	
-	
-WBRS is engaged in some of the most lucrative gas regions in North 	
-America.  Major discoveries are happening all the time and WBRS is in 	
-the thick of it.	
-	
-With the array of drilling projects Wild Brush has going on at the moment 	
-tension is building.  As the drilling gets closer to completion insiders are 	
-accumulating ahead of that major discovery announcement.	
-	
-Wild Brush Energy are very stable working company. 	
-Charts are proving this words.	
-And now it will get to new level. 	
-We expect big price increase next several days.	
-Price will start to rise Thursday, December 14 2006.	
-Today at 12.00 will be huge volume and small price grow.	
-And WBRS going to be very HOT.	
-We hope you already get this one and will make money with us.	
+Is there example code around that shows how to stop MIDI playback 
+gracefully?
 
+At present, I'm doing a snd_seq_drop_output() and a snd_seq_stop_queue(), 
+and getting some interesting behavior when I try to restart.
+
+I'm also wondering if Alsa does anything to track or handle the stuck notes 
+that result, or if my client needs to be responsible for tracking these and 
+turning them off before stopping the queue.
+
+John
+
+_________________________________________________________________
+Talk now to your Hotmail contacts with Windows Live Messenger. 
+http://clk.atdmt.com/MSN/go/msnnkwme0020000001msn/direct/01/?href=http://get.live.com/messenger/overview
 
 
 -------------------------------------------------------------------------
