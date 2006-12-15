@@ -1,15 +1,11 @@
-From: "Earl Davidson" <ingratiatesdeliveries@aardu.easn.sun.com>
+From: "Charlotte Nielsen" <Mapplethorpeillicitly@absolute-s.ru>
 Subject: Re: Report
-Date: Fri, 15 Dec 2006 12:00:59 -0120
-Message-ID: <01c72040$af93c000$6c822ecf@ingratiatesdeliveries>
+Date: Fri, 15 Dec 2006 13:16:36 +0300
+Message-ID: <01c7204b$3f699ab0$6c822ecf@Mapplethorpeillicitly>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 150.143.103.74 (HELO btmx1.sun.com)
-	by alsa-project.org with esmtp (>:A/9*S:6K,, ,>:)B)
-	id AD85RC-0U6R00-0F
-	for alsa-devel@alsa-project.org; Fri, 15 Dec 2006 12:00:59 -0120
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,7 +15,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Stable Company!	
