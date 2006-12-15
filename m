@@ -1,14 +1,10 @@
-From: "Sal L. Williams" <hblzg@hydradesigns.com>
-Subject: IM-NY events are invite-only.
-Date: Sat, 16 Dec 2006 07:58:03 +0900
-Message-ID: <001c01c7209c$d1a818b0$328ba9ca@rcw>
+From: "Gideon P. Camacho" <nin@alfombraswall.com.ar>
+Subject: A valid email address does not start with 'www.
+Date: Sat, 16 Dec 2006 07:59:40 +0900
+Message-ID: <001c01c7209d$02594e70$7e92a9ca@bguzvi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0191787392=="
+Content-Type: multipart/mixed; boundary="===============0264609980=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pc-202-169-156-24.cable.kumin.ne.jp
-	(pc-202-169-156-24.cable.kumin.ne.jp [202.169.156.24])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 65C572C1
-	for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2006 00:00:19 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,61 +14,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0191787392==
+--===============0264609980==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0018_01C720E8.417B0030"
+	boundary="----=_NextPart_000_0018_01C720E8.722CD230"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0018_01C720E8.417B0030
+------=_NextPart_000_0018_01C720E8.722CD230
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0019_01C720E8.41803050"
+	boundary="----=_NextPart_001_0019_01C720E8.7231DB40"
 
 
-------=_NextPart_001_0019_01C720E8.41803050
+------=_NextPart_001_0019_01C720E8.7231DB40
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
+Looking For hilton hotels romeFind hilton hotels rome and more at Lycos =
+Search. Looking For cheap accommodations in romeFind cheap =
+accommodations in rome and more at Lycos Search.
+See why many have left corporate positions and are able to produce =
+results that rival CEO level incomes.
+Peter's Square                        After a delay due to weather =
+problems, the huge Christmas tree in St. Access to a high speed internet =
+connection.
+Former Skype president Alex Kazim will return to his pre-acquisition =
+role at eBay, working on major strategic projects and reporting to =
+President and CEO Meg Whitman. Tutors are paid a stipend based on how =
+many hours they are available for tutoring and can tutor from any =
+internet enabled Windows based PC.
+Though IM-NY just began offering event sponsorship opportunities, Niland =
+said the non-profit group has no revenue-stream goals, and no plans to =
+charge membership dues.
+To compensate for meager water pressure, the fountain was built below =
+ground level.
 When the steps first opened, Romans hoping to earn extra scudi as =
 artists' models flocked to the steps dressed as the Madonna and Julius =
-Caesar. Looking For hilton hotels romeFind hilton hotels rome and more =
-at Lycos Search.
-A valid email address cannot contain any spaces.
-com - Part of the Beyond. Niland also runs several affiliate network =
-sites in addition to hosting a weekly online radio show covering online =
-marketing topics, called GoodKarma.
-Start this business part time while still working. A valid email address =
-cannot contain a ','.
+Caesar. Leveraged compensation plan that is absolutely powerful.
 We have matched millions of job seekers with wonderful opportunities and =
 have a very high satisfaction rate.
-The startup allows users to make free phone calls to reach people online =
-via their blogs or other social network.
-See why many have left corporate positions and are able to produce =
-results that rival CEO level incomes. Tutors are paid a stipend based on =
-how many hours they are available for tutoring and can tutor from any =
-internet enabled Windows based PC.
-Looking For hotel napoleon romeFind hotel napoleon rome and more at =
-Lycos Search.
-To view the Jazz Up Your Sales Mgmt.
-The statuem marks the spot where the disgruntled populace tore him limb =
-from limb shortly after electing him first consul.
-In the midst of the countless, scattered stones of the Roman Forum and =
-the Palatine stands a small, truncated column. Interactive promotions =
-agency ePrize has named co-VPs of strategy.
-To view the Jazz Up Your Sales Mgmt.
-A valid email address cannot contain a '. We need your product design =
-experience. The tomb was found beneath the floor of the basilica of. =
-Around the bottom of the drum, the key biblical passage of the basilica =
-is inscribed: "You are Peter, and upon this rock I will build my church; =
-I will give you the keys to heaven.
-------=_NextPart_001_0019_01C720E8.41803050
+IM-NY events are invite-only.
+The emperor now resides in climate-controlled comfort in the courtyard =
+of the Palazzo Nuovo, and the statue you see now is a weatherproof copy.
+According to Niland, the nascent club is in talks with a larger =
+corporation to use its meeting places. The African wars brought new =
+additions to the decoration of Rome, notably the Obelisk of Axum.
+Virtual office capabilities from any location.
+Across the way, in the courtyard of the Palazzo dei Conservatori, lie =
+the gargantuan foot, head, arm, and kneecap of the statue of Constantine =
+that once graced the Basilica of Maxentius. Camogli also has an =
+interesting old town, shops and seafood. Its Duomo, with its beautiful. =
+Achieve freedom and abundance for yourself and those you care about.
+------=_NextPart_001_0019_01C720E8.7231DB40
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -81,79 +80,86 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"persona" hspace=3D0=20
-src=3D"cid:001701c7209c$d18e2810$328ba9ca@rcw" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"sober" hspace=3D0=20
+src=3D"cid:001701c7209d$02402120$7e92a9ca@bguzvi" align=3Dbaseline=20
 border=3D0></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Looking For hilton hotels romeFind =
+hilton hotels=20
+rome and more at Lycos Search. Looking For cheap accommodations in =
+romeFind cheap=20
+accommodations in rome and more at Lycos Search.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>See why many have left corporate =
+positions and are=20
+able to produce results that rival CEO level incomes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Peter's Square                        =
+After a delay=20
+due to weather problems, the huge Christmas tree in St. Access to a high =
+speed=20
+internet connection.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Former Skype president Alex Kazim will =
+return to=20
+his pre-acquisition role at eBay, working on major strategic projects =
+and reporting=20
+to President and CEO Meg Whitman. Tutors are paid a stipend based on how =
+many hours=20
+they are available for tutoring and can tutor from any internet enabled =
+Windows=20
+based PC.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Though IM-NY just began offering event =
+sponsorship=20
+opportunities, Niland said the non-profit group has no revenue-stream =
+goals, and no=20
+plans to charge membership dues.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>To compensate for meager water =
+pressure, the=20
+fountain was built below ground level.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>When the steps first opened, Romans =
 hoping to earn=20
 extra scudi as artists' models flocked to the steps dressed as the =
 Madonna and=20
-Julius Caesar. Looking For hilton hotels romeFind hilton hotels rome and =
-more at=20
-Lycos Search.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A valid email address cannot contain =
-any=20
-spaces.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>com - Part of the Beyond. Niland also =
-runs several=20
-affiliate network sites in addition to hosting a weekly online radio =
-show covering=20
-online marketing topics, called GoodKarma.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Start this business part time while =
-still working.=20
-A valid email address cannot contain a ','.</FONT></DIV>
+Julius Caesar. Leveraged compensation plan that is absolutely =
+powerful.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>We have matched millions of job seekers =
 with=20
 wonderful opportunities and have a very high satisfaction =
 rate.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The startup allows users to make free =
-phone calls=20
-to reach people online via their blogs or other social =
-network.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>See why many have left corporate =
-positions and are=20
-able to produce results that rival CEO level incomes. Tutors are paid a =
-stipend=20
-based on how many hours they are available for tutoring and can tutor =
-from any=20
-internet enabled Windows based PC.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Looking For hotel napoleon romeFind =
-hotel napoleon=20
-rome and more at Lycos Search.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To view the Jazz Up Your Sales =
-Mgmt.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The statuem marks the spot where the =
-disgruntled=20
-populace tore him limb from limb shortly after electing him first=20
-consul.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In the midst of the countless, =
-scattered stones of=20
-the Roman Forum and the Palatine stands a small, truncated column. =
-Interactive=20
-promotions agency ePrize has named co-VPs of strategy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To view the Jazz Up Your Sales =
-Mgmt.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A valid email address cannot contain a =
-'. We need=20
-your product design experience. The tomb was found beneath the floor of =
-the basilica=20
-of. Around the bottom of the drum, the key biblical passage of the =
-basilica is=20
-inscribed: "You are Peter, and upon this rock I will build my church; I =
-will give=20
-you the keys to heaven.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>IM-NY events are =
+invite-only.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The emperor now resides in =
+climate-controlled=20
+comfort in the courtyard of the Palazzo Nuovo, and the statue you see =
+now is a=20
+weatherproof copy.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>According to Niland, the nascent club =
+is in talks=20
+with a larger corporation to use its meeting places. The African wars =
+brought new=20
+additions to the decoration of Rome, notably the Obelisk of =
+Axum.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Virtual office capabilities from any=20
+location.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Across the way, in the courtyard of the =
+Palazzo dei=20
+Conservatori, lie the gargantuan foot, head, arm, and kneecap of the =
+statue of=20
+Constantine that once graced the Basilica of Maxentius. Camogli also has =
+an=20
+interesting old town, shops and seafood. Its Duomo, with its beautiful. =
+Achieve=20
+freedom and abundance for yourself and those you care=20
+about.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0019_01C720E8.41803050--
+------=_NextPart_001_0019_01C720E8.7231DB40--
 
-------=_NextPart_000_0018_01C720E8.417B0030
+------=_NextPart_000_0018_01C720E8.722CD230
 Content-Type: image/gif;
-	name="mower.gif"
+	name="astronomer.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001701c7209c$d18e2810$328ba9ca@rcw>
+Content-ID: <001701c7209d$02402120$7e92a9ca@bguzvi>
 
 R0lGODdhCAG7AKUAAAAAAAAAMwAzmQCZMwCZZgDMmQDM/zMAmTMAzDMzZjMzmTNm/zOZMzOZZjPM
 MzPMZjPMzDPM/zP/M2YAM2YzZmYz/2aZzGbMM2bMZmbMzGb/Zmb/zGb//5kzZpkz/5n/M5n/Zpn/
@@ -417,11 +423,11 @@ Q/5bW1gLfBQWOxUewv2fmEUbAC4WAQbXC04cGiIlWGHW413mWA4SHtSjHvVZUWc2mBVaZ00WGscY
 5DJyYTM2qOoBJXiun4SeYL6VklHGZgMtJf/0XikSVntOG2+C0/9507UVHUblV5olXZmxjqrRopsV
 mH/mzu3E2jN4nRAEAQA7
 
-------=_NextPart_000_0018_01C720E8.417B0030--
+------=_NextPart_000_0018_01C720E8.722CD230--
 
 
 
---===============0191787392==
+--===============0264609980==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -432,7 +438,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0191787392==
+--===============0264609980==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -443,4 +449,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0191787392==--
+--===============0264609980==--
