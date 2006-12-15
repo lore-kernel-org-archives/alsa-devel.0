@@ -1,12 +1,14 @@
-From: "Gus Fernandez" <belongingsradicals@abs.msk.ru>
-Subject: Re: Report
-Date: Thu, 14 Dec 2006 22:45:48 +0000 (UTC)
-Message-ID: <01c71fd1$92a34cf0$6c822ecf@belongingsradicals>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALC880 driver
+Date: Fri, 15 Dec 2006 10:39:47 +1030 (CST)
+Message-ID: <200612150009.kBF09lEZ028693@turbo.physics.adelaide.edu.au>
+References: <45811EA6.6040103@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 14 Dec 2006 22:45:37 -0060
+In-Reply-To: <45811EA6.6040103@gmail.com> from "Trifon Trifonov" at Dec 14,
+	2006 10:51:34 AM
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,38 +18,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: Trifon Trifonov <triffon@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, PeiSen Hou <pshou@realtek.com.tw>, Kailang Yang <kailang@realtek.com.tw>, alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Stable Company!	
-	
-Fueled by the possibility of an upcoming merger, Wild Brush 	
-Energy (WBRS) is gearing up for an explosion.  Tension is 	
-building and soon the scramble to take a position will push 	
-this one off the charts.	
-	
-Wild Brush Energy	
-Symbol: WBRS	
-Current Price: $0.048	
-Short Term Target: $0.10	
-Long Term Target: $0.80	
-	
-WBRS is engaged in some of the most lucrative gas regions in North 	
-America.  Major discoveries are happening all the time and WBRS is in 	
-the thick of it.	
-	
-With the array of drilling projects Wild Brush has going on at the moment 	
-tension is building.  As the drilling gets closer to completion insiders are 	
-accumulating ahead of that major discovery announcement.	
-	
-Wild Brush Energy are very stable working company. 	
-Charts are proving this words.	
-And now it will get to new level. 	
-We expect big price increase next several days.	
-Price will start to rise Firday, December 15 2006.	
-We hope you already get this one and will make money with us.	
+Hi Trifon
 
+[ Alsa-devel list added to CC ]
 
+> I have a Realtek IntelHDA audio card using the ALC880 codec. I am 
+> runing Ubuntu Linux with kernel version 2.6.17-10.
+> When I first installed Ubuntu, it correctly recognised my card, but I 
+> could hear audio only through the right speaker. I looked in my kern.log 
+> and found a message that it is recognised as ALC880, but the vendor is 
+> unknown. I inspected the file patch_realtek.c for possible board config 
+> types and experimented with all of them. Some were not working at all, 
+> some were working again with only right speaker, some were working with 
+> both speakers, but microphone input is not working. Finally, I found 
+> that the W810 config is right for me -- everything is working stereo and 
+> also the input. I have no problems with the card, just wanted to share 
+> the knowledge so maybe you can add automatic detection for my type of 
+> card to work on the W810 config.
+> Please, write to me what kind of additional information do you need 
+> for that.
+
+Could you please provide the following information:
+
+ 1) The make and model of your laptop
+
+ 2) The output of the following commands:
+
+      lspci
+      lspci -nv
+
+    Depending on your system's configuration you may have to include the
+    full path when running lspci - for example, "/sbin/lspci".
+
+Thanks
+  jonathan
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
