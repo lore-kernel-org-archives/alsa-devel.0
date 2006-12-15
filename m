@@ -1,15 +1,15 @@
-From: "Ollie Kiser" <turboprop'sreprehended@acci.gr>
+From: "Earl Davidson" <ingratiatesdeliveries@aardu.easn.sun.com>
 Subject: Re: Report
-Date: Fri, 15 Dec 2006 10:54:33 +0000 (UTC)
-Message-ID: <01c72037$59a7d590$6c822ecf@turboprop'sreprehended>
+Date: Fri, 15 Dec 2006 12:00:59 -0120
+Message-ID: <01c72040$af93c000$6c822ecf@ingratiatesdeliveries>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 62.1.10.11 (HELO dias.acci.gr)
-	by alsa-project.org with esmtp (-')F0*<K7 ;9.+5) id 4Z+(,X-5>H622-=X
-	for alsa-devel@alsa-project.org; Fri, 15 Dec 2006 10:54:10 -0060
-Date: Fri, 15 Dec 2006 10:54:10 -0060
+Received: from 150.143.103.74 (HELO btmx1.sun.com)
+	by alsa-project.org with esmtp (>:A/9*S:6K,, ,>:)B)
+	id AD85RC-0U6R00-0F
+	for alsa-devel@alsa-project.org; Fri, 15 Dec 2006 12:00:59 -0120
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
