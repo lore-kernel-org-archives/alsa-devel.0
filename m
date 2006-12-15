@@ -1,23 +1,16 @@
-From: Celeste Holder <genaglnza@reliantsigns.com>
-Subject: Windows Vista Ultimate ready to download
-Date: Fri, 15 Dec 2006 15:15:28 -0600
-Message-ID: <530202524962.412142369888@reliantsigns.com>
-Reply-To: Celeste Holder <genaglnza@reliantsigns.com>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: [PATCH] hda: add sigmatel 9205 eapd support
+Date: Fri, 15 Dec 2006 16:08:59 -0600
+Message-ID: <20061215220859.GA31145@gate.crashing.org>
+Reply-To: mporter@embeddedalley.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ALyon-254-1-124-55.w90-15.abo.wanadoo.fr
-	(ALyon-254-1-124-55.w90-15.abo.wanadoo.fr [90.15.219.55])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C49D32F3
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 22:13:33 +0100 (MET)
-Received: from mail.reliantsigns.com (mail.reliantsigns.com [65.109.115.93])
-	by ALyon-254-1-124-55.w90-15.abo.wanadoo.fr (8.12.11/8.12.11) with
-	ESMTP id HYBKYznf2H31EE
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 15:15:28 -0600
-Received: from [110.227.7.6]
-	by mail.reliantsigns.com (qmail-ldap-1.03) with SMTP
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 15:15:28 -0600
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2C542E7
+	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 23:09:01 +0100 (MET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,20 +20,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Dear customers and friends of DS Team,
-Please let us represent our new special offer you can't afford to miss. The most comprehensive edition of Windows Vista, Vista Ultimate Upgrade (DVD-ROM) is the first operating system that combines all of the advanced infrastructure features of a business-focused operating system, all of the management and efficiency features of a mobility-focused operating system, and all of the digital entertainment features of a consumer-focused operating system. For the person who wants one operating system that is great for working from home, working on the road, and for entertainment, Vista Ultimate is a no-compromise operating system that lets you have it all. Windows Vista Ultimate contains a number of new features, the most notable of which are: Windows Vista Ultimate combines all the features of a business-focused operating system, all the efficiency features of a mobility-focused operating sys
- tem, and all of the digital entertainment features of a consumer-focused operating system;
-  Remotely connect to business networks; Windows BitLocker Drive Encryption provides improved levels of protection against theft for your important business data whether you are at home, on the road, or in the office; Delivers all of the entertainment features available in Vista Home Premium; includes everything you need to enjoy the latest in digital photography, music, movies, analog TV, or even HDTV; Upgrade from your current edition of Microsoft Windows XP or Windows 2000 (including Windows XP Professional, Windows XP Home, Windows XP Media Center, Windows XP Tablet PC, Windows XP Professional x64, Windows 2000)
-Windows Vista Ultimate Upgrade (DVD-ROM)
-Retail Price $399.00
-Our Price $79.95
-You save $319.05
-http://lostruineddestination.org
-Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
+Adds support for handling EAPD on 9205 codecs
 
+Signed-off-by: Matt Porter <mporter@embeddedalley.com>
+
+diff -r cdbbd773cd9e pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Wed Dec 13 11:21:55 2006 +0000
++++ b/pci/hda/patch_sigmatel.c	Wed Dec 13 15:19:46 2006 -0500
+@@ -1859,6 +1859,18 @@ static int patch_stac9205(struct hda_cod
+ 
+ 	spec->multiout.dac_nids = spec->dac_nids;
+ 
++	/* Configure GPIO0 as EAPD output */
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DIRECTION, 0x00000001);
++	/* Configure GPIO0 as CMOS */
++	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0x00000000);
++	/* Assert GPIO0 high */
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DATA, 0x00000001);
++	/* Enable GPIO0 */
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_MASK, 0x00000001);
++
+ 	err = stac92xx_parse_auto_config(codec, 0x1f, 0x20);
+ 	if (err < 0) {
+ 		stac92xx_free(codec);
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
