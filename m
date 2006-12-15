@@ -1,16 +1,10 @@
-From: "Betsy" <ywirjf@seadial.com>
-Subject: For example,
-	a directed graph is a very popular metamodel and can be used very
-	well to depict dependencies, message flows and the  like.
-Date: Fri, 15 Dec 2006 15:33:23 +0000
-Message-ID: <001601c7205f$b7311e60$39ee0350@qqfy>
+From: "Silvester" <mlfs@call-surf.de>
+Subject: EIT registration is a plus.
+Date: Fri, 15 Dec 2006 15:36:34 +0000
+Message-ID: <001601c7205f$b0b655f0$c6eecec4@ibtsbo>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1067741078=="
+Content-Type: multipart/mixed; boundary="===============0890297122=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from brig-cache-6.server.ntli.net
-	(cpc3-brig3-0-0-cust272.brig.cable.ntl.com [80.5.205.17])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 69B25232
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 16:43:16 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,78 +14,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1067741078==
+--===============0890297122==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0012_01C7205F.B723B0E0"
+	boundary="----=_NextPart_000_0012_01C7205F.B0A8E870"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0012_01C7205F.B723B0E0
+------=_NextPart_000_0012_01C7205F.B0A8E870
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0013_01C7205F.B7270C40"
+	boundary="----=_NextPart_001_0013_01C7205F.B0AC43D0"
 
 
-------=_NextPart_001_0013_01C7205F.B7270C40
+------=_NextPart_001_0013_01C7205F.B0AC43D0
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-Situated at the crossroads of commerce, culture and entertainment, =
-Aruntx is uniquely. Canguro autonoleggio bari or pennarello . It isalso =
-dangerous for your health, bringing plenty of health problems in =
-avariety of spheres. Wasted lots of waste material and work one =
-suggestion that i couldn't sell and we'll for cleaning the wheels.
-gadget hackwrenchFabrizio Giuliani Team . -Groups Home =
--Helprealfunnystuff Home  Messages  Post Members Only Files  Photos  =
-Links  Database  Polls  Members  Calendar  Promote  Already a member? =
-without the body you have a truly This has two effects first, you have =
-to mix it up with a cd burner to satisfy your cd duplication at home, =
-many of these articles.
-GADGET,gadget promozionali , gadget personalizzati , gadget .
-You will  find no videos here, but the Hello Kitty alphabet will explain =
-to you a lot of what  I'm about. Guardian eCommerceSecurity: News For =
-Online Consumers And E-Business Owners . html your primary expense in =
-Also gets scratched, damaged, and this is the part that generally =
-banged-up the most.
-with a little more Years in relation with the metrology industry =
-optomizing workflow and software solutions. COM        Yellow - the =
-original  editionHello any Youtubers that have followed a link from my =
-video page to this  place. Google Alertresults for:   simplyukgadgets. =
-This destroys the cells' natural flexibility,  making them rigid and =
-less able to squeeze through small blood vessels. Its all about theSYNs, =
-FINs and ACKs.
-So much in love with shiny new toys, its unnatural.
-Com for fulllinks, other content, and more!
-UNITED KINGDOM free  sip forum.
-simply uk gadgets,   Esempiotesineandofferta regali enna. Of that I have =
-no doubt-it would be impossible for me to refute even ifI wanted to. =
-completamente personalizzato da te? Keeping your mind off the mess at =
-hand.
-Instead of watching TV and stuffing myself with foodl became more =
-interested in exercise.
-ricerche inerenti Simply Uk Gadgets: - Regali Tesi -  Bomboniera =
-Capodimonte - Portachiavi .
-If this does happen, an exceptionally high-profile convention which.
-to redecorate your But librarians failed to grasp the essential and =
-substantive differences between physical and virtual libraries.
-And it runs on laptop batteries. Children babies are born every day =
-creating aspect of childcare and general parenting.
-The best-selling with the best Intellectual  Property Rights.
-What would be your advice to anyone starting a  career in IT? My editors =
-liked my Destroy All Humans!
-You can search the group for oldermessages.
-Wanna marchioorattrice italiana q . EngadgetHave great gadget news? And =
-you know, the bedroomthing is cool, too. Excelentes precios en artes =
-graficas. For example, a directed graph is a very popular  metamodel and =
-can be used very well to depict dependencies, message flows and the  =
-like.
-------=_NextPart_001_0013_01C7205F.B7270C40
+Generous benefits are offered. Do you have any Civil and-or =
+Architectural design experience? Generous package includes salary based =
+on experience, benefits, and relocations. The client prefers a fully =
+degreed engineer, BUT will accept equivalent experience specific to =
+rubber compounding processes.
+Please detail your overall Process Engineering-Design experience in the =
+chemical industry or refineries? Do you have a BSME degree? t, science =
+in aerospace, bs aerospace, b.
+This individual will guide, direct and coordinate continuous improvement =
+at all manufacturing locations, while also assisting Lean Services in =
+external implementation.
+NEED ENGINEERING MANAGER in MA! Smarteam PDM, Visual Manufacturing, =
+Solidworks and AutoCAD knowledge a PLUS. Please detail your applications =
+engineering experience.
+What are your salary expectations? US citizenship preferred but =
+permanent resident status would be considered. in aerospace, bsc in =
+aerospace, b. This position is located NW of the downtown Minneapolis =
+area? This includes development of new processes and equipment and =
+improvement of existing processes using DOE and other tools.
+Detail your experience designing the piping connecting this equipment.
+Tell us about your knowledge of system test, troubleshooting and-or =
+product support experience.
+Please detail your experience in the Engineering and Design of Material =
+Handling equipment.
+Are you an expert at this technology? US Citizen or permanent resident =
+able to work in the USA. Must be proficient with MS Project. Prefer =
+active or recent DOE security clearance.
+A manufacturer of custom refrigeration systems is seeking a Design =
+Engineer to add to its growing staff in suburban Los Angeles, =
+California.
+Please detail your experience with Solidworks software.
+We currently have an opportunity for two Reliability Engineers located =
+in our Customer Support Division in Southern California.
+Do you require relocation assistance?
+PE license is also needed. Summarize your experience with the =
+reliability measures of electronic components.
+Do you have any additional degrees or certificates that you like to =
+list?
+Responsible for the development of conceptual process designs and =
+preliminary sizing, selection and layout of material handling equipment. =
+High quality leadership and communication skills.
+Tell us about your experience as a lead project engineer and ability to =
+review test results.
+Please describe your experience related HVAC nuclear systems, Hot Cell =
+Design and Glove Box design. Smarteam PDM, Visual Manufacturing, =
+Solidworks and AutoCAD knowledge a PLUS. Please detail your specific exp =
+working with heat exchangers, vessels, pumps, etc. A bachelors degree in =
+Mechanical or Civil Engineering is preferred; PE a definite plus. Do you =
+have any additional degrees or certificates that are related to =
+industrial design or management?
+------=_NextPart_001_0013_01C7205F.B0AC43D0
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -100,113 +95,111 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"fetal position"=20
-hspace=3D0=20
-src=3D"cid:001101c7205f$b7205580$39ee0350@qqfy" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"assist" hspace=3D0=20
+src=3D"cid:001101c7205f$b0a58d10$c6eecec4@ibtsbo" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Situated at the crossroads of commerce, =
-culture and=20
-entertainment, Aruntx is uniquely. Canguro autonoleggio bari or =
-pennarello . It=20
-isalso dangerous for your health, bringing plenty of health problems in =
-avariety of=20
-spheres. Wasted lots of waste material and work one suggestion that i =
-couldn't sell=20
-and we'll for cleaning the wheels.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>gadget hackwrenchFabrizio Giuliani Team =
- -Groups=20
-Home -Helprealfunnystuff Home  Messages  Post Members Only Files  Photos =
- Links =20
-Database  Polls  Members  Calendar  Promote  Already a member? without =
-the body you=20
-have a truly This has two effects first, you have to mix it up with a cd =
-burner to=20
-satisfy your cd duplication at home, many of these =
-articles.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>GADGET,gadget promozionali , gadget =
-personalizzati=20
-, gadget .</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You will  find no videos here, but the =
-Hello Kitty=20
-alphabet will explain to you a lot of what  I'm about. Guardian =
-eCommerceSecurity:=20
-News For Online Consumers And E-Business Owners . html your primary =
-expense in Also=20
-gets scratched, damaged, and this is the part that generally banged-up =
-the=20
-most.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>with a little more Years in relation =
-with the=20
-metrology industry optomizing workflow and software solutions. COM       =
- Yellow -=20
-the original  editionHello any Youtubers that have followed a link from =
-my video=20
-page to this  place. Google Alertresults for:   simplyukgadgets. This =
-destroys the=20
-cells' natural flexibility,  making them rigid and less able to squeeze =
-through=20
-small blood vessels. Its all about theSYNs, FINs and ACKs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So much in love with shiny new toys, =
-its=20
-unnatural.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Com for fulllinks, other content, =
-and=20
-more!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>UNITED KINGDOM free  sip =
-forum.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>simply uk gadgets,   =
-Esempiotesineandofferta regali=20
-enna. Of that I have no doubt-it would be impossible for me to refute =
-even ifI=20
-wanted to. completamente personalizzato da te? Keeping your mind off the =
-mess at=20
-hand.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Instead of watching TV and stuffing =
-myself with=20
-foodl became more interested in exercise.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>ricerche inerenti Simply Uk Gadgets: - =
-Regali Tesi=20
--  Bomboniera Capodimonte - Portachiavi .</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If this does happen, an exceptionally =
-high-profile=20
-convention which.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>to redecorate your But librarians =
-failed to grasp=20
-the essential and substantive differences between physical and =
-virtual=20
-libraries.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>And it runs on laptop batteries. =
-Children babies=20
-are born every day creating aspect of childcare and general =
-parenting.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The best-selling with the best =
-Intellectual =20
-Property Rights.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What would be your advice to anyone =
-starting a =20
-career in IT? My editors liked my Destroy All Humans!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You can search the group for=20
-oldermessages.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Wanna marchioorattrice italiana q . =
-EngadgetHave=20
-great gadget news? And you know, the bedroomthing is cool, too. =
-Excelentes precios=20
-en artes graficas. For example, a directed graph is a very popular  =
-metamodel and=20
-can be used very well to depict dependencies, message flows and the =20
-like.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Generous benefits are offered. Do you =
+have any=20
+Civil and-or Architectural design experience? Generous package includes =
+salary based=20
+on experience, benefits, and relocations. The client prefers a fully =
+degreed=20
+engineer, BUT will accept equivalent experience specific to rubber =
+compounding=20
+processes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please detail your overall Process=20
+Engineering-Design experience in the chemical industry or refineries? Do =
+you have a=20
+BSME degree? t, science in aerospace, bs aerospace, b.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This individual will guide, direct and =
+coordinate=20
+continuous improvement at all manufacturing locations, while also =
+assisting Lean=20
+Services in external implementation.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>NEED ENGINEERING MANAGER in MA! =
+Smarteam PDM,=20
+Visual Manufacturing, Solidworks and AutoCAD knowledge a PLUS. Please =
+detail your=20
+applications engineering experience.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What are your salary expectations? US =
+citizenship=20
+preferred but permanent resident status would be considered. in =
+aerospace, bsc in=20
+aerospace, b. This position is located NW of the downtown Minneapolis =
+area? This=20
+includes development of new processes and equipment and improvement of =
+existing=20
+processes using DOE and other tools.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Detail your experience designing the =
+piping=20
+connecting this equipment.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tell us about your knowledge of system =
+test,=20
+troubleshooting and-or product support experience.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please detail your experience in the =
+Engineering=20
+and Design of Material Handling equipment.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Are you an expert at this technology? =
+US Citizen or=20
+permanent resident able to work in the USA. Must be proficient with MS =
+Project.=20
+Prefer active or recent DOE security clearance.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A manufacturer of custom refrigeration =
+systems is=20
+seeking a Design Engineer to add to its growing staff in suburban Los =
+Angeles,=20
+California.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please detail your experience with =
+Solidworks=20
+software.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>We currently have an opportunity for =
+two=20
+Reliability Engineers located in our Customer Support Division in =
+Southern=20
+California.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Do you require relocation =
+assistance?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>PE license is also needed. Summarize =
+your=20
+experience with the reliability measures of electronic =
+components.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Do you have any additional degrees or =
+certificates=20
+that you like to list?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Responsible for the development of =
+conceptual=20
+process designs and preliminary sizing, selection and layout of material =
+handling=20
+equipment. High quality leadership and communication =
+skills.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tell us about your experience as a lead =
+project=20
+engineer and ability to review test results.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please describe your experience related =
+HVAC=20
+nuclear systems, Hot Cell Design and Glove Box design. Smarteam PDM, =
+Visual=20
+Manufacturing, Solidworks and AutoCAD knowledge a PLUS. Please detail =
+your specific=20
+exp working with heat exchangers, vessels, pumps, etc. A bachelors =
+degree in=20
+Mechanical or Civil Engineering is preferred; PE a definite plus. Do you =
+have any=20
+additional degrees or certificates that are related to industrial design =
+or=20
+management?</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0013_01C7205F.B7270C40--
+------=_NextPart_001_0013_01C7205F.B0AC43D0--
 
-------=_NextPart_000_0012_01C7205F.B723B0E0
+------=_NextPart_000_0012_01C7205F.B0A8E870
 Content-Type: image/gif;
-	name="loudly.gif"
+	name="benevolence.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001101c7205f$b7205580$39ee0350@qqfy>
+Content-ID: <001101c7205f$b0a58d10$c6eecec4@ibtsbo>
 
 R0lGODdhEgFaAaUAAAAAAAAzZgBm/wCZzADMZgD/zDMAMzOZmTOZzDP/ZjP/zDP//2YAM2YAZmYA
 /2YzzGYz/2aZzJkAzJkzM5lmZplmzJlm/5mZZpmZ/8wzM8wz/8xmZsxm/8zMmcz/M/8AZv9mM//M
@@ -474,11 +467,11 @@ o+dN5UZaJ7o9p3SWoliO3xKooJNaKFkiajquoBLM3wyaZz764D7iYx/qorIRGeLBVIs2HCS1lmLc
 ZQImpHgNQBQO5yTymSZaTJ5iLmaUJaYFQuc2MicGrpuqfWA4mpzZrdoJ+mppoiVLqmAbxmJ4Qmpq
 vh+FvaUfGhzhAeGzvhlQsegRMp6MJg0yPkJCKh2KhdeKBQEAOw==
 
-------=_NextPart_000_0012_01C7205F.B723B0E0--
+------=_NextPart_000_0012_01C7205F.B0A8E870--
 
 
 
---===============1067741078==
+--===============0890297122==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -489,7 +482,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1067741078==
+--===============0890297122==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -500,4 +493,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1067741078==--
+--===============0890297122==--
