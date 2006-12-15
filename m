@@ -1,11 +1,16 @@
-From: "Lucy" <vanfv@perfectconnection.nl>
-Subject: Please include all senors, scanners, press machines,
-	and actuators.
-Date: Fri, 15 Dec 2006 15:32:37 +0000
-Message-ID: <001601c7205e$91724bf0$d286cec4@vkyikd>
+From: "Betsy" <ywirjf@seadial.com>
+Subject: For example,
+	a directed graph is a very popular metamodel and can be used very
+	well to depict dependencies, message flows and the  like.
+Date: Fri, 15 Dec 2006 15:33:23 +0000
+Message-ID: <001601c7205f$b7311e60$39ee0350@qqfy>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1042490327=="
+Content-Type: multipart/mixed; boundary="===============1067741078=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from brig-cache-6.server.ntli.net
+	(cpc3-brig3-0-0-cust272.brig.cable.ntl.com [80.5.205.17])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 69B25232
+	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2006 16:43:16 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,83 +20,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1042490327==
+--===============1067741078==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0012_01C7205E.9169C070"
+	boundary="----=_NextPart_000_0012_01C7205F.B723B0E0"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0012_01C7205E.9169C070
+------=_NextPart_000_0012_01C7205F.B723B0E0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0013_01C7205E.916BE350"
+	boundary="----=_NextPart_001_0013_01C7205F.B7270C40"
 
 
-------=_NextPart_001_0013_01C7205E.916BE350
+------=_NextPart_001_0013_01C7205F.B7270C40
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-Are you willing to work in California? A good candidate will have =
-mechanical engineering management experience including feasibility, =
-architecture, design, qualification, and release of designs to =
-manufacturing. Specific experience with GE turbines is preferred. =
-Describe your experience with engineering, planning, directing and =
-coordinating unit outage support, and troubleshooting operational, =
-maintenance, and electrical maintenance problems.
-How many years and what companies? Why are you interested in a position =
-located in the Ft. Manufacturing company is seeking a Thermal Fluids =
-Engineer for a permanent position in Orlando, FL.
-You will work closely with purchasing counterparts in other groups, as =
-well as Project technical counterparts, to bid, evaluate and award =
-equipment P.
-Please include all senors, scanners, press machines, and actuators. =
-detail your experience leading, instructing, and mentoring other =
-engineers, and designers. This position will have appreciable latitude =
-for unreviewed action.
-Aerospace experience only. Candidate must also have BSEE or BSME, with a =
-post-graduate degree in these disciplines preferred. Are you available =
-and willing to travel to multiple locations including overseas to =
-perform your duties? Briefly summarize your knowledge of plastics and =
-electronics. Candidate will perform engineering design calculations and =
-analysis for Heat transfer between heat tracings and process, Stress =
-analysis of piping systems, and Pressure vessel design calculations.
-, please detail each.
-What degrees do  you have?
-North Americas largest natural gas fuel provider is seeking a SR.
-How many related years of experience do you have? DOE experience is a =
-plus. Excellent salary and comprehensive benefits package offered. =
-Detail your experience designing the piping connecting this equipment.
-Some travel is required.
-Also responsible for regulatory documentation requirements to support =
-OSHA mandated process safety management initiatives.
-Do you have any military experience working on rotary equipment =
-including compressors, generators, and gill thrusters?
-PE license is also needed.
-Coordinates technical communication between company, customer and =
-supplier teams for that subcircuit. Do you have at least a BS in ME or =
-higher?
-How many related years of experience do you have?
-Proven success in delivering new, creative products within a defined =
-schedule and budget. What is your experience with OSHA construction =
-regulations and standards?
-A good candidate will have mechanical engineering management experience =
-including feasibility, architecture, design, qualification, and release =
-of designs to manufacturing.
-Relocation available for the right candidate. The client prefers a fully =
-degreed engineer, BUT will accept equivalent experience specific to =
-rubber compounding processes. Requires a BS degree in Mechanical, =
-Electrical or related engineering discipline and eight years of =
-progressive engineer experience in coal fired power generation =
-operations and maintenance. Relocation assistance will be considered for =
-eligible candidates. What is your experience with OSHA construction =
-regulations and standards?
-------=_NextPart_001_0013_01C7205E.916BE350
+Situated at the crossroads of commerce, culture and entertainment, =
+Aruntx is uniquely. Canguro autonoleggio bari or pennarello . It isalso =
+dangerous for your health, bringing plenty of health problems in =
+avariety of spheres. Wasted lots of waste material and work one =
+suggestion that i couldn't sell and we'll for cleaning the wheels.
+gadget hackwrenchFabrizio Giuliani Team . -Groups Home =
+-Helprealfunnystuff Home  Messages  Post Members Only Files  Photos  =
+Links  Database  Polls  Members  Calendar  Promote  Already a member? =
+without the body you have a truly This has two effects first, you have =
+to mix it up with a cd burner to satisfy your cd duplication at home, =
+many of these articles.
+GADGET,gadget promozionali , gadget personalizzati , gadget .
+You will  find no videos here, but the Hello Kitty alphabet will explain =
+to you a lot of what  I'm about. Guardian eCommerceSecurity: News For =
+Online Consumers And E-Business Owners . html your primary expense in =
+Also gets scratched, damaged, and this is the part that generally =
+banged-up the most.
+with a little more Years in relation with the metrology industry =
+optomizing workflow and software solutions. COM        Yellow - the =
+original  editionHello any Youtubers that have followed a link from my =
+video page to this  place. Google Alertresults for:   simplyukgadgets. =
+This destroys the cells' natural flexibility,  making them rigid and =
+less able to squeeze through small blood vessels. Its all about theSYNs, =
+FINs and ACKs.
+So much in love with shiny new toys, its unnatural.
+Com for fulllinks, other content, and more!
+UNITED KINGDOM free  sip forum.
+simply uk gadgets,   Esempiotesineandofferta regali enna. Of that I have =
+no doubt-it would be impossible for me to refute even ifI wanted to. =
+completamente personalizzato da te? Keeping your mind off the mess at =
+hand.
+Instead of watching TV and stuffing myself with foodl became more =
+interested in exercise.
+ricerche inerenti Simply Uk Gadgets: - Regali Tesi -  Bomboniera =
+Capodimonte - Portachiavi .
+If this does happen, an exceptionally high-profile convention which.
+to redecorate your But librarians failed to grasp the essential and =
+substantive differences between physical and virtual libraries.
+And it runs on laptop batteries. Children babies are born every day =
+creating aspect of childcare and general parenting.
+The best-selling with the best Intellectual  Property Rights.
+What would be your advice to anyone starting a  career in IT? My editors =
+liked my Destroy All Humans!
+You can search the group for oldermessages.
+Wanna marchioorattrice italiana q . EngadgetHave great gadget news? And =
+you know, the bedroomthing is cool, too. Excelentes precios en artes =
+graficas. For example, a directed graph is a very popular  metamodel and =
+can be used very well to depict dependencies, message flows and the  =
+like.
+------=_NextPart_001_0013_01C7205F.B7270C40
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -100,117 +100,113 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"shortness" hspace=3D0=20
-src=3D"cid:001101c7205e$91679d90$d286cec4@vkyikd" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"fetal position"=20
+hspace=3D0=20
+src=3D"cid:001101c7205f$b7205580$39ee0350@qqfy" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Are you willing to work in California? =
-A good=20
-candidate will have mechanical engineering management experience =
-including=20
-feasibility, architecture, design, qualification, and release of designs =
-to=20
-manufacturing. Specific experience with GE turbines is preferred. =
-Describe your=20
-experience with engineering, planning, directing and coordinating unit =
-outage=20
-support, and troubleshooting operational, maintenance, and electrical =
-maintenance=20
-problems.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>How many years and what companies? Why =
-are you=20
-interested in a position located in the Ft. Manufacturing company is =
-seeking a=20
-Thermal Fluids Engineer for a permanent position in Orlando, =
-FL.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You will work closely with purchasing =
-counterparts=20
-in other groups, as well as Project technical counterparts, to bid, =
-evaluate and=20
-award equipment P.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please include all senors, scanners, =
-press=20
-machines, and actuators. detail your experience leading, instructing, =
-and mentoring=20
-other engineers, and designers. This position will have appreciable =
-latitude for=20
-unreviewed action.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Aerospace experience only. Candidate =
-must also have=20
-BSEE or BSME, with a post-graduate degree in these disciplines =
-preferred. Are you=20
-available and willing to travel to multiple locations including overseas =
-to perform=20
-your duties? Briefly summarize your knowledge of plastics and =
-electronics. Candidate=20
-will perform engineering design calculations and analysis for Heat =
-transfer between=20
-heat tracings and process, Stress analysis of piping systems, and =
-Pressure vessel=20
-design calculations.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>, please detail each.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What degrees do  you have?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>North Americas largest natural gas fuel =
-provider is=20
-seeking a SR.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>How many related years of experience do =
-you have?=20
-DOE experience is a plus. Excellent salary and comprehensive benefits =
-package=20
-offered. Detail your experience designing the piping connecting this=20
-equipment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some travel is required.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Also responsible for regulatory =
-documentation=20
-requirements to support OSHA mandated process safety management=20
-initiatives.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Do you have any military experience =
-working on=20
-rotary equipment including compressors, generators, and gill =
-thrusters?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>PE license is also needed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Coordinates technical communication =
-between=20
-company, customer and supplier teams for that subcircuit. Do you have at =
-least a BS=20
-in ME or higher?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>How many related years of experience do =
-you=20
-have?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Proven success in delivering new, =
-creative products=20
-within a defined schedule and budget. What is your experience with OSHA =
-construction=20
-regulations and standards?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A good candidate will have mechanical =
-engineering=20
-management experience including feasibility, architecture, design, =
-qualification,=20
-and release of designs to manufacturing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Relocation available for the right =
-candidate. The=20
-client prefers a fully degreed engineer, BUT will accept equivalent =
-experience=20
-specific to rubber compounding processes. Requires a BS degree in =
-Mechanical,=20
-Electrical or related engineering discipline and eight years of =
-progressive engineer=20
-experience in coal fired power generation operations and maintenance. =
-Relocation=20
-assistance will be considered for eligible candidates. What is your =
-experience with=20
-OSHA construction regulations and standards?</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Situated at the crossroads of commerce, =
+culture and=20
+entertainment, Aruntx is uniquely. Canguro autonoleggio bari or =
+pennarello . It=20
+isalso dangerous for your health, bringing plenty of health problems in =
+avariety of=20
+spheres. Wasted lots of waste material and work one suggestion that i =
+couldn't sell=20
+and we'll for cleaning the wheels.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>gadget hackwrenchFabrizio Giuliani Team =
+ -Groups=20
+Home -Helprealfunnystuff Home  Messages  Post Members Only Files  Photos =
+ Links =20
+Database  Polls  Members  Calendar  Promote  Already a member? without =
+the body you=20
+have a truly This has two effects first, you have to mix it up with a cd =
+burner to=20
+satisfy your cd duplication at home, many of these =
+articles.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>GADGET,gadget promozionali , gadget =
+personalizzati=20
+, gadget .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You will  find no videos here, but the =
+Hello Kitty=20
+alphabet will explain to you a lot of what  I'm about. Guardian =
+eCommerceSecurity:=20
+News For Online Consumers And E-Business Owners . html your primary =
+expense in Also=20
+gets scratched, damaged, and this is the part that generally banged-up =
+the=20
+most.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>with a little more Years in relation =
+with the=20
+metrology industry optomizing workflow and software solutions. COM       =
+ Yellow -=20
+the original  editionHello any Youtubers that have followed a link from =
+my video=20
+page to this  place. Google Alertresults for:   simplyukgadgets. This =
+destroys the=20
+cells' natural flexibility,  making them rigid and less able to squeeze =
+through=20
+small blood vessels. Its all about theSYNs, FINs and ACKs.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>So much in love with shiny new toys, =
+its=20
+unnatural.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Com for fulllinks, other content, =
+and=20
+more!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>UNITED KINGDOM free  sip =
+forum.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>simply uk gadgets,   =
+Esempiotesineandofferta regali=20
+enna. Of that I have no doubt-it would be impossible for me to refute =
+even ifI=20
+wanted to. completamente personalizzato da te? Keeping your mind off the =
+mess at=20
+hand.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Instead of watching TV and stuffing =
+myself with=20
+foodl became more interested in exercise.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>ricerche inerenti Simply Uk Gadgets: - =
+Regali Tesi=20
+-  Bomboniera Capodimonte - Portachiavi .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>If this does happen, an exceptionally =
+high-profile=20
+convention which.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>to redecorate your But librarians =
+failed to grasp=20
+the essential and substantive differences between physical and =
+virtual=20
+libraries.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>And it runs on laptop batteries. =
+Children babies=20
+are born every day creating aspect of childcare and general =
+parenting.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The best-selling with the best =
+Intellectual =20
+Property Rights.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What would be your advice to anyone =
+starting a =20
+career in IT? My editors liked my Destroy All Humans!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You can search the group for=20
+oldermessages.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Wanna marchioorattrice italiana q . =
+EngadgetHave=20
+great gadget news? And you know, the bedroomthing is cool, too. =
+Excelentes precios=20
+en artes graficas. For example, a directed graph is a very popular  =
+metamodel and=20
+can be used very well to depict dependencies, message flows and the =20
+like.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0013_01C7205E.916BE350--
+------=_NextPart_001_0013_01C7205F.B7270C40--
 
-------=_NextPart_000_0012_01C7205E.9169C070
+------=_NextPart_000_0012_01C7205F.B723B0E0
 Content-Type: image/gif;
-	name="par.gif"
+	name="loudly.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001101c7205e$91679d90$d286cec4@vkyikd>
+Content-ID: <001101c7205f$b7205580$39ee0350@qqfy>
 
 R0lGODdhEgFaAaUAAAAAAAAzZgBm/wCZzADMZgD/zDMAMzOZmTOZzDP/ZjP/zDP//2YAM2YAZmYA
 /2YzzGYz/2aZzJkAzJkzM5lmZplmzJlm/5mZZpmZ/8wzM8wz/8xmZsxm/8zMmcz/M/8AZv9mM//M
@@ -478,11 +474,11 @@ o+dN5UZaJ7o9p3SWoliO3xKooJNaKFkiajquoBLM3wyaZz764D7iYx/qorIRGeLBVIs2HCS1lmLc
 ZQImpHgNQBQO5yTymSZaTJ5iLmaUJaYFQuc2MicGrpuqfWA4mpzZrdoJ+mppoiVLqmAbxmJ4Qmpq
 vh+FvaUfGhzhAeGzvhlQsegRMp6MJg0yPkJCKh2KhdeKBQEAOw==
 
-------=_NextPart_000_0012_01C7205E.9169C070--
+------=_NextPart_000_0012_01C7205F.B723B0E0--
 
 
 
---===============1042490327==
+--===============1067741078==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -493,7 +489,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1042490327==
+--===============1067741078==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -504,4 +500,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1042490327==--
+--===============1067741078==--
