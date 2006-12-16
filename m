@@ -1,14 +1,12 @@
-From: "Solly Atkins" <megeh@buntline.freeserve.co.uk>
-Subject: The breadboard has several inherent problems.
-Date: Sat, 16 Dec 2006 23:00:58 +0900
-Message-ID: <001601c7211a$ca81a9b0$aeba28db@hjrjo>
+From: "Brian Dunbar" <lvdy@audiolounge.dk>
+Subject: When    you export generated code into legacy code,
+	the generated code must provide an appropriate call interface to
+	the legacy code.
+Date: Sat, 16 Dec 2006 23:00:57 +0900
+Message-ID: <001601c7211a$dc961c80$1dd228db@ylpq>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1209513782=="
+Content-Type: multipart/mixed; boundary="===============0814588476=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from softbank219040088128.bbtec.net (softbank219040088128.bbtec.net
-	[219.40.88.128])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2520C2DE
-	for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2006 15:02:13 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,36 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1209513782==
+--===============0814588476==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0012_01C72166.3A65A830"
+	boundary="----=_NextPart_000_0012_01C72166.4C72C800"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0012_01C72166.3A65A830
+------=_NextPart_000_0012_01C72166.4C72C800
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0013_01C72166.3A669290"
+	boundary="----=_NextPart_001_0013_01C72166.4C758720"
 
 
-------=_NextPart_001_0013_01C72166.3A669290
+------=_NextPart_001_0013_01C72166.4C758720
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-The very large derivatives that occur at the point of discontinuity can =
-cause problems with linearization.
-Addition works similarly.
-The top two pixels should be red and blue, the bottom two, yellow and =
-gray.
+Rack and pinion mechanism modeled in SimMechanics.
 Image TypesAn image type is a particular method of associating matrix =
 values with pixel colors.
-------=_NextPart_001_0013_01C72166.3A669290
+For more information about operating points used in linearized models, =
+see the Operating Points section of the Simulink Control Design online =
+documentation.
+Nokia sent me a link to a flash message with lots of phones doing stuff =
+and thanks for "my continued support for Nokia".
+------=_NextPart_001_0013_01C72166.4C758720
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -56,31 +55,35 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"fishbowl" hspace=3D0=20
-src=3D"cid:001101c7211a$ca7d15d0$aeba28db@hjrjo" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"euphemism" hspace=3D0=20
+src=3D"cid:001101c7211a$dc8860e0$1dd228db@ylpq" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The very large derivatives that occur =
-at the point=20
-of discontinuity can cause problems with linearization.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Addition works similarly.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The top two pixels should be red and =
-blue, the=20
-bottom two, yellow and gray.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Rack and pinion mechanism modeled in=20
+SimMechanics.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Image TypesAn image type is a =
 particular method of=20
-associating matrix values with pixel colors.</FONT></DIV></BODY></HTML>
+associating matrix values with pixel colors.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>For more information about operating =
+points used in=20
+linearized models, see the Operating Points section of the Simulink =
+Control Design=20
+online documentation.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Nokia sent me a link to a flash message =
+with lots=20
+of phones doing stuff and thanks for "my continued support for=20
+Nokia".</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0013_01C72166.3A669290--
+------=_NextPart_001_0013_01C72166.4C758720--
 
-------=_NextPart_000_0012_01C72166.3A65A830
+------=_NextPart_000_0012_01C72166.4C72C800
 Content-Type: image/gif;
-	name="liaison.gif"
+	name="trade-off.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001101c7211a$ca7d15d0$aeba28db@hjrjo>
+Content-ID: <001101c7211a$dc8860e0$1dd228db@ylpq>
 
 R0lGODdhkgFaAYQAAAAAAAAzZgBmzADM/zMAZjNmMzOZMzPMZjPMmTP/M2YzM2aZmWbM/5kA/5lm
 /5nMM5n//8wAzMz///8zzP8z//9m//+ZzP/M/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
@@ -409,11 +412,11 @@ eRsknvyK90TC5WWEeVTfITMWRDgGMWe49OHiRIkRwQVucIOrIfa0p70lHFCTWXgc3bw4O2YuLpSj
 1FsM8jDLWTKxirWESo8fiye/0HlwkEg0VQn5iCndMfOWbNylHnqpjLORsYAyLBs8ZXgQTKLRNOns
 5AJ92MVdUi93mNtaHaw1oP8k8Vj8AaE33/dBEIYAADs=
 
-------=_NextPart_000_0012_01C72166.3A65A830--
+------=_NextPart_000_0012_01C72166.4C72C800--
 
 
 
---===============1209513782==
+--===============0814588476==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -424,7 +427,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1209513782==
+--===============0814588476==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -435,4 +438,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1209513782==--
+--===============0814588476==--
