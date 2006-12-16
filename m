@@ -1,22 +1,12 @@
-From: "Avery" <frankadco@dansturges.com>
-Subject: Windows Vista Ultimate ready to download
-Date: Sat, 16 Dec 2006 15:50:22 -0600
-Message-ID: <7686472661.20061216155022@nnmkaomtqsfy>
-Reply-To: Avery Grubbs <frankadco@dansturges.com>
+From: "Rafael Baca" <undemocraticincrustation's@abdiecasting.com>
+Subject: Rafael
+Date: Sat, 16 Dec 2006 23:42:29 +0000 (UTC)
+Message-ID: <01c7216b$c3abec30$6c822ecf@undemocraticincrustation's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from cpe-69-203-65-165.nyc.res.rr.com
-	(cpe-69-203-65-165.nyc.res.rr.com [69.203.65.165])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0B7532EA
-	for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2006 22:50:34 +0100 (MET)
-Received: from mx1.biz.mail.yahoo.com
-	by cpe-69-203-65-165.nyc.res.rr.com (8.9.3/8.9.3) with ESMTP id
-	YvQxOLFCRDNv
-	for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2006 15:50:22 -0600
-Received: from [205.189.242.56] by mx1.biz.mail.yahoo.com via HTTP
-	for <alsa-devel@alsa-project.org>; Sat, 16 Dec 2006 15:50:22 -0600
+Date: Sat, 16 Dec 2006 23:41:53 +0360
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,19 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear customers and friends of DS Team,
-Please let us represent our new special offer you can't afford to miss. The most comprehensive edition of Windows Vista, Vista Ultimate Upgrade (DVD-ROM) is the first operating system that combines all of the advanced infrastructure features of a business-focused operating system, all of the management and efficiency features of a mobility-focused operating system, and all of the digital entertainment features of a consumer-focused operating system. For the person who wants one operating system that is great for working from home, working on the road, and for entertainment, Vista Ultimate is a no-compromise operating system that lets you have it all. Windows Vista Ultimate contains a number of new features, the most notable of which are: Windows Vista Ultimate combines all the features of a business-focused operating system, all the efficiency features of a mobility-focused operating sys
- tem, and all of the digital entertainment features of a consumer-focused operating system;
-  Remotely connect to business networks; Windows BitLocker Drive Encryption provides improved levels of protection against theft for your important business data whether you are at home, on the road, or in the office; Delivers all of the entertainment features available in Vista Home Premium; includes everything you need to enjoy the latest in digital photography, music, movies, analog TV, or even HDTV; Upgrade from your current edition of Microsoft Windows XP or Windows 2000 (including Windows XP Professional, Windows XP Home, Windows XP Media Center, Windows XP Tablet PC, Windows XP Professional x64, Windows 2000)
-Windows Vista Ultimate Upgrade (DVD-ROM)
-Retail Price $399.00
-Our Price $79.95
-You save $319.05
-http://vantoverandover.org
-Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
+The hottest pick this year!	
+	
+It just doesn't get any better than this.  Booming sector, tightly held, with 	
+an incredible PR blitz starting up.  Not only that, but the company is set to 	
+release some smashing news.	
+	
+Physicians Adult Daycare, Inc.	
+	
+Symbol: PHYA	
+Current Price:                         $1.90 (+18% Friday!)	
+Short-Term Projected Price:  $4.25	
+Long-Term Target Price:       $10.20	
+	
+As the population ages, the economic value in the US market for adult 	
+daycare is projected to grow nearly 600%.  Globally the potential market 	
+is a staggering $45 billion.	
+	
+PHYA is already hitting it big in the sector.  With solid acquisitions, 	
+expert management, and a red hot sector, PHYA is looking at record 	
+earnings.	
+	
+Check your favorite news source.  Check your Level 2 market data.  You 	
+will see that this one is set for an explosion.	
+	
+With the huge publicity that is on the way THIS is where you want to be.  	
+Make sure you get in early on December, 18th.  Win big with PHYA!	
+
+
 
 
 -------------------------------------------------------------------------
