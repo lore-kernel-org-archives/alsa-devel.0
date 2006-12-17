@@ -1,15 +1,12 @@
-From: "according to" <qaqv@pettenon.it>
-Subject: For a long time it seemed like a demented rebellion
-	that few understood and even fewer knew how to combat.
-Date: Sun, 17 Dec 2006 14:14:21 +0100
-Message-ID: <000e01c721de$76bcced0$ae258652@mwsn>
+From: "resale" <jtzbe@alphatrust.gr>
+Subject: " This article picks up a San Francisco concert of
+	Peru Negro and then goes the historical and cultural
+	background that makes Afro-Peruvian music so distinctive.
+Date: Sun, 17 Dec 2006 14:20:18 +0100
+Message-ID: <000e01c721de$bfb1b7e0$63d98652@fmbdnf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0403033449=="
+Content-Type: multipart/mixed; boundary="===============1411383536=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from cust-02-5286fd19.adsl.scarlet.nl
-	(cust-02-5286fd19.adsl.scarlet.nl [82.134.253.25])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3C25A2C0
-	for <alsa-devel@alsa-project.org>; Sun, 17 Dec 2006 14:23:00 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,39 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0403033449==
+--===============1411383536==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000A_01C721E6.D87772D0"
+	boundary="----=_NextPart_000_000A_01C721E7.216CF820"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000A_01C721E6.D87772D0
+------=_NextPart_000_000A_01C721E7.216CF820
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000B_01C721E6.D879E3D0"
+	boundary="----=_NextPart_001_000B_01C721E7.216F4210"
 
 
-------=_NextPart_001_000B_01C721E6.D879E3D0
+------=_NextPart_001_000B_01C721E7.216F4210
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-The training packages, are skill sets that characters purchase at a =
-discount that represents the organized method of training.
-and Rab Capital Plc sold shares. I have found no shortage of =
-inspiration, quite the opposite, I have too many things I want to do =
-with the setting. The main races for the player characters come from all =
-three linages, the Nagazi are from the dragons, and make a fine =
-civilized reptilian race, the sort of good apples of their kind. =
-Servants look like bloody fetuses which crawl around on all-fours.
-My fear inducing encounters have yet to see them run though, which fills =
-me with sadness and grudging admiration.
-------=_NextPart_001_000B_01C721E6.D879E3D0
+The one regret I have here is that it did not go into more detail about =
+how to incorporate more of the core rulebook monsters, or those from =
+Monsters: A Field Guide into the setting.
+This "natural" product is not good at all. We'll also do that for the =
+second round that's coming up in a couple weeks. I am sure that some =
+Peruvians will be surprised that he made it through his full term in the =
+presidency. These are people who are a little more awake than the rest =
+of us.
+Hope things are good, Michael.
+------=_NextPart_001_000B_01C721E7.216F4210
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -60,41 +56,37 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1437" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"unconscious" hspace=3D0=20
-src=3D"cid:000901c721de$76b099d0$ae258652@mwsn" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"estuary" hspace=3D0=20
+src=3D"cid:000901c721de$bfa64630$63d98652@fmbdnf" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The training packages, are skill sets =
-that=20
-characters purchase at a discount that represents the organized method =
+<DIV><FONT face=3DArial size=3D2>The one regret I have here is that it =
+did not go=20
+into more detail about how to incorporate more of the core rulebook =
+monsters, or=20
+those from Monsters: A Field Guide into the setting.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This "natural" product is not good at =
+all. We'll=20
+also do that for the second round that's coming up in a couple weeks. I =
+am sure that=20
+some Peruvians will be surprised that he made it through his full term =
+in the=20
+presidency. These are people who are a little more awake than the rest =
 of=20
-training.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>and Rab Capital Plc sold shares. I have =
-found no=20
-shortage of inspiration, quite the opposite, I have too many things I =
-want to do=20
-with the setting. The main races for the player characters come from all =
-three=20
-linages, the Nagazi are from the dragons, and make a fine civilized =
-reptilian race,=20
-the sort of good apples of their kind. Servants look like bloody fetuses =
-which crawl=20
-around on all-fours.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My fear inducing encounters have yet to =
-see them=20
-run though, which fills me with sadness and grudging=20
-admiration.</FONT></DIV></BODY></HTML>
+us.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Hope things are good,=20
+Michael.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000B_01C721E6.D879E3D0--
+------=_NextPart_001_000B_01C721E7.216F4210--
 
-------=_NextPart_000_000A_01C721E6.D87772D0
+------=_NextPart_000_000A_01C721E7.216CF820
 Content-Type: image/gif;
-	name="fanatical.gif"
+	name="referendum.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000901c721de$76b099d0$ae258652@mwsn>
+Content-ID: <000901c721de$bfa64630$63d98652@fmbdnf>
 
 R0lGODdhRQFIAaUAAP//////M/9mZv9mM/9mAP8zzP8AM8z/AMzMmczMZsxmzMxmM8xmAMwzzJn/
 zJn/AJmZmZmZZplmzJlmM5kzmZkzZpkAAGb/M2b/AGbMzGaZzGYAADP/ADPMZjPMMzPMADOZmTOZ
@@ -480,11 +472,11 @@ fN1iCt7XDDbaWL3P630KXG3NcAiOM25lE/5GdwbQTHtjRWOymoa8fIbC6Zhhrx3OXh5qq9SfbAXZ
 6LxOtZVdIr5OhMbdlV3Z3O1Kx/5OAh6DEViEUb1Zmy3emzRTB+5oTDbGWc1iex3nFBABxx3aNR3l
 LwbhoWTrn0CCIAAAOw==
 
-------=_NextPart_000_000A_01C721E6.D87772D0--
+------=_NextPart_000_000A_01C721E7.216CF820--
 
 
 
---===============0403033449==
+--===============1411383536==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -495,7 +487,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0403033449==
+--===============1411383536==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -506,4 +498,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0403033449==--
+--===============1411383536==--
