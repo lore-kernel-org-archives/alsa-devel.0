@@ -1,8 +1,7 @@
-From: "Matthias Urlichs" <matthias@urlichs.de>
-Subject: BROKEN: Support for non-standard rates in USB audio
-	driver
-Date: Sun, 17 Dec 2006 06:53:48 +0000 (UTC)
-Message-ID: <em2phs$kff$1@sea.gmane.org>
+From: "Rene Hunt" <nurinary@bulgarian-online-school.com>
+Subject: Will People be all over this ST0CK?
+Date: Sun, 17 Dec 2006 12:48:43 +0200
+Message-ID: <001001c721d9$af732fd0$06d0bb0c@nizarqreu86ang>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,58 +15,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I had to revert this change:
+Special Situation Report
+Investors, Microcap Profile for You
+The Bottom Line: SmallCaps Can Soar
+----------------------------------------------------
 
-commit a79eee8d3d8a80c37d235e1181d67c3705c7bbfe
-Author: Luke Ross <luke@lukeross.name>
-Date:   Tue Aug 29 10:46:32 2006 +0200
+Can You Afford To Ignore Small Caps?
 
-    [ALSA] Support for non-standard rates in USB audio driver
+Apparel Manufacturing Associates, Inc. 
 
-    There's at least one USB audio chipset out there which supports only one
-    non-standard rate (ID 0e6a:0310 supports 46875Hz). There's a few other
-    patches for this card which are unsatisfactory because they attempt to
-    map this rate to 44.1k leading to sound distortion.
-    The patch below uses SNDRV_PCM_RATE_KNOT to properly support the
-    non-standard rates where they are available.
+timing couldnt be better to build a position
 
-    Signed-off-by: Luke Ross <luke@lukeross.name>
-    Signed-off-by: Takashi Iwai <tiwai@suse.de>
-    Signed-off-by: Jaroslav Kysela <perex@suse.cz>
+Symbol OTC : APPM
+Current Price : $0.06
 
-:100644 100644 087f9b6... 664dd4c... M  sound/usb/usbaudio.c
+Are You  a Savvy Investor?
 
+Huge news expected out on APPM, get in before the wire, 
+We're taking it all the way to $1.00
 
-... because it caused this crash in snd_interval_list:
+MicroCaps can Equal Macro Gains
 
- EIP:    0060:[<f0a30916>]    Not tainted VLI
- EFLAGS: 00010202   (2.6.18-1.33 #10)
-  [<f0a326a4>] snd_pcm_hw_rule_list+0x22/0x29 [snd_pcm]
-  [<f0a2e8d2>] snd_pcm_hw_refine+0x260/0x3b5 [snd_pcm]
-  [<f0a2ee0d>] snd_pcm_hw_refine_user+0x42/0x6e [snd_pcm]
-  [<f0a2efca>] snd_pcm_common_ioctl1+0x191/0xf90 [snd_pcm]
-  [<f0a30137>] snd_pcm_capture_ioctl1+0x36e/0x385 [snd_pcm]
-  [<f0a30175>] snd_pcm_capture_ioctl+0x27/0x34 [snd_pcm]
-  [<b0165236>] do_ioctl+0x22/0x67
-  [<b01654d3>] vfs_ioctl+0x258/0x26b
-  [<b016552d>] sys_ioctl+0x47/0x62
-  [<b0102aad>] sysenter_past_esp+0x56/0x8d
+Watch it like a hawk and get in before the rush
 
-Since I know next to nothing about this code: any ideas where to dig
-deeper are appreciated.
+Put This SmallCap on Your Watch Sheet
 
--- 
-Matthias Urlichs   |   {M:U} IT Design @ m-u-it.de   |  smurf@smurf.noris.de
-Disclaimer: The quote was selected randomly. Really. | http://smurf.noris.de
- - -
-clairvoyant, n.:
-	A person, commonly a woman, who has the power of seeing that
-	which is invisible to her patron -- namely, that he is a blockhead.
-		-- Ambrose Bierce, "The Devil's Dictionary"
+About the Company
+We are a multifaceted management/development company 
+concentrating on the world of Fashion and Music.
+Our affiliates and partners offer 4 decades of experience
+and recognized success in their respective fields.
+With offices in New York City, Miami and Zurich, we are
+in touch with the pulse of the "fashion forward".
 
+----------------------------------------------------
+Low-Profile Company With High Profit Potential
+you better read this, or you'll kick yourself
+get in early and build a good position
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
