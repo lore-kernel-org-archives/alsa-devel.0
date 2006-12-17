@@ -1,11 +1,13 @@
-From: "Rene Hunt" <nurinary@bulgarian-online-school.com>
-Subject: Will People be all over this ST0CK?
-Date: Sun, 17 Dec 2006 12:48:43 +0200
-Message-ID: <001001c721d9$af732fd0$06d0bb0c@nizarqreu86ang>
+From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
+Subject: ive got 2 working implementations of the loopback
+	snd-aloop device
+Date: Sun, 17 Dec 2006 13:39:45 +0100
+Message-ID: <20061217123945.GM15973@mathematik.uni-freiburg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,49 +17,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Special Situation Report
-Investors, Microcap Profile for You
-The Bottom Line: SmallCaps Can Soar
-----------------------------------------------------
-
-Can You Afford To Ignore Small Caps?
-
-Apparel Manufacturing Associates, Inc. 
-
-timing couldnt be better to build a position
-
-Symbol OTC : APPM
-Current Price : $0.06
-
-Are You  a Savvy Investor?
-
-Huge news expected out on APPM, get in before the wire, 
-We're taking it all the way to $1.00
-
-MicroCaps can Equal Macro Gains
-
-Watch it like a hawk and get in before the rush
-
-Put This SmallCap on Your Watch Sheet
-
-About the Company
-We are a multifaceted management/development company 
-concentrating on the world of Fashion and Music.
-Our affiliates and partners offer 4 decades of experience
-and recognized success in their respective fields.
-With offices in New York City, Miami and Zurich, we are
-in touch with the pulse of the "fashion forward".
-
-----------------------------------------------------
-Low-Profile Company With High Profit Potential
-you better read this, or you'll kick yourself
-get in early and build a good position
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+YWJvdXQ6CnVzZXJzcGFjZS0+a2VybmVsLT51c2Vyc3BhY2UKd2l0aG91dCB3YXN0aW5nIHRvbyBt
+dWNoIGluIGtlcm5lbC4gbm8gZG1peGluLCBubyBtaXhpbiBhdCBhbGwgYW5kIG5vCmZvcm1hdCBj
+aGFuZ2luZyBpcyBkb25lIGluIGtlcm5lbC4gaXRzIG9ubHkgYSBsb29wYmFjayBkZXZpY2UuCmZv
+ciB0aGlzIHRvIHdvcmssIGl0IGZvcmNlcyB0aGUgb3RoZXIgc2lkZSB0byB1c2UgdGhlIHNhbWUg
+cmF0ZSwgZm9ybWF0CmFuZCBudW1iZXIgb2YgY2hhbm5lbHMuCgpyZWFzb246CmFvc3MgZG9lc250
+IGFsd2F5cyB3b3JrIGZvciBtZS4gYW5kIGltaG8gaXMgbm90IHRoZSByaWdodCB3YXkuCkxEX1BS
+RUxPQUQnaW5nIGlzIGp1c3QgcGxhaW4gYnJhaW5kYW1hZ2VkLCBpdCBjb3VzZXMgbW9yZSB0cm91
+YmxlIHRoYW4gaXQKc29sdmVzLiB0ZWxsaW5nIHZlbmRvcnMgdG8gdXNlIGFsc2EgYWxzbyBkb2Vz
+bnQgaGVscC4KbWUgd2FudHMgbWl4aW5nIHZlcnkgYmFkLiBtZSB3YW50cyBuZXR3b3JrIHRyYW5z
+cGFyZW5jeSBmb3IgYWxsIGFwcHMuCgppdmUganVzdCBoYWNrZWQgdGhpcyB0d28gaW1wbGVtZW50
+YXRpb25zLCBqdXN0IHRvIGZpbmQgb3V0LCBpZiB0aGVzZSB0d28KbWV0aG9kcyB3b3VsZCB3b3Jr
+OgoKMS4gcmluZ2J1ZmZlci1jb3B5Ogp0aGUgZmlyc3QgbWV0aG9kIHdhcyB2ZXJ5IGVhc3kgdG8g
+aW1wbGVtZW50IGFuZCB3b3JrcyBwZXJmZWN0bHksIHdpdGhvdXQKZnJhY2tpbmcgdG9vIG11Y2gg
+d2l0aCBhbHNhIGludGVybmFscy4gaXQgYWxsb3dzIGRpZmZlcmVudCBidWZmZXIgYW5kCnBlcmlv
+ZCBzaXplcyBvbiBib3RoIHNpZGVzLiBidXQgaXQgY29uc3VtZXMgbW9yZSBjcHUgY3ljbGVzIGZv
+ciB0aGUKbWVtY3B5LiB0aGUgY2FwdHVyZSB0aW1lciBjaGVja3MgaWYgcGxheWJhY2sgaXMgdmFs
+aWQgYW5kIHJ1bm5pbmcsIHRoZW4KY29waWVzIGZyb20gdGhlIHBsYXliYWNrcyBjdXJyZW50IHBv
+c2l0aW9uIHRvIGl0cyBvd24gYnVmZmVycyBjdXJyZW50CnBvc2l0aW9uLgoKMi4gb3ZlcndyaXRp
+bmcgZG1hX2FyZWEgd2l0aCBvdGhlciBzaWRlcyBkbWFfYXJlYToKdGhlIHNlY29uZCBtZXRob2Qg
+aXMgYSBsaXR0bGUgaGFyZGVyIHRvIGltcGxlbWVudCBhbmQgaXQgaXMgc3RpbGwgbm90CmZpbm5p
+c2hlZCwgYnV0IGFsc28gd29ya3MgcGVyZmVjdGx5LiBub3QgZmlubmlzaGVkIGJlY2F1c2UgYWZ0
+ZXIgInN0ZWFsaW5nIgp0aGUgb3RoZXJzIGRtYSBhcmVhLCBpdCBjYW50IHNpbXBseSBmcmVlIGJv
+dGggZG1hIGJ1ZmZlcnM6CmFmdGVyIGxldHRpbmcgYWxzYSBkbyBhbGwgdGhlIGhhcmQgd29yayBv
+ZiBhbGxvY2F0aW5nIGFuZCBzZXR0aW5nIHVwIGRtYSwKaXQgc2ltcGx5IG92ZXJ3cml0ZXMgdGhl
+IGRtYV9hcmVhIHdpdGggdGhlIGRtYV9hcmVhIG9mIHRoZSBvdGhlciBzaWRlLgpmb3IgdGhpcyB0
+byB3b3JrLCBpdCBhbHNvIGZvcmNlcyB0aGUgb3RoZXIgc2lkZSB0byB1c2UgdGhlIHNhbWUgYnVm
+ZmVyCmFuZCBwZXJpb2Qgc2l6ZXMuIGl0IGlzIHZlcnkgZWZmaWNpZW50LCBjb3VzZSBpdCBkb2Vz
+bnQgbmVlZCB0byBjb3B5CmJ1ZmZlcnMuIG9uIGVhY2ggU05EUlZfUENNX1RSSUdHRVJfU1RBUlQg
+aXQgc3luY2hyb25pemVzIHRoZSBidWZmZXIKcG9zaXRpb24sIHRvIHJlZHVjZSBsYXRlbmN5LgoK
+ZmVhdHVyZXM6CmN1cnJlbnRseSBpdCBjYW4gaGF2ZSB1cCB0byA4IHNpbXVsdGFuZW91cyBwbGF5
+YmFjayBhbmQgY2FwdHVyZSBzdHJlYW1zCihpIGhvcGUgdGhpcyBpcyBlbm91Z2ggdG8gdGVsbCB5
+b3Ugd2hhdCBpIG1lYW4sIGFsc28gc2VlIG15IGFzb3VuZHJjKToKCmVjYXNvdW5kIC1COm5vbnJ0
+IC1mOjE2LDIsNDgwMDAgLWk6YWxzYWh3LDAsMSwwICYKZWNhc291bmQgLUI6bm9ucnQgLWY6MTYs
+Miw0ODAwMCAtaTphbHNhaHcsMCwxLDEgJgplY2Fzb3VuZCAtQjpub25ydCAtZjoxNiwyLDQ4MDAw
+IC1pOmFsc2FodywwLDEsMiAmCi4uLgoKb3IsIGlmIGVjYXNvdW5kIGlzIG5vdCB0byB5b3VyIGF2
+YWlsIGJ1dCB3YW50IHRvIHRlc3QgaXQ6CmFyZWNvcmQgLUQgaHc6MCwxIC10IHJhdyAtYyAyIC1y
+IDQ4MDAwIC1mIFMxNl9MRSB8IGFwbGF5IC10IHJhdyAtYyAyIC1yIDQ4MDAwIC1mIFMxNl9MRSAt
+Cgpub3cgb3BlbiB1cCB0byA4IG9zcyBhcHBsaWNhdGlvbnMgX3dpdGhvdXRfIGFvc3MsIHNpdCBi
+YWNrIGFuZCByZWxheC4KCnRvZG86CnRoZSBzZWNvbmQgbWV0aG9kIG5lZWRzIGEgYmV0dGVyIHdh
+eSBvZiBkb2luZyB0aGUgam9iLiBpdCBuZWVkcyB0byBhbGxvY2F0ZQpkbWEgYW5kIGRvIHRoZSB2
+b29kb28gc3R1ZmYgYW5kIHRoZW4gc2V0IGJvdGggc2lkZXMgdG8gaXQuIHRoaXMgd2F5LCBhZnRl
+cgpjbG9zaW5nIGJvdGggc2lkZXMsIGl0IGNhbiBmcmVlIHVwIGFnYWluLCB0aHVzIGVsaW1pbmF0
+aW5nIHRoZSBtZW1vcnkgbGVhay4KCml0cyBjdXJyZW50bHkgb25seSBhIGhhbGYgZHVwbGV4IGxv
+b3BiYWNrIGJ1dCBmdWxsZHVwbGV4IGRldmljZSwgY291c2UKdGhlIG1pc3NpbmcgcGFydCBpcyBk
+dW1teSBjb2RlLiBpdCB3b3VsZCBiZSBubyB0cm91YmxlIGF0IGFsbCB0byBpbXBsZW1lbnQKdGhp
+cy4KCmFmdGVyIHNvcnRpbmcgb3V0IHByb2JsZW1zIGltIGdvaW5nIHRvIHdyaXRlIGFuIHVzZXJz
+cGFjZSBhcHAgdGhhdCB3aWxsCmRvIHdoYXQgZWNhc291bmQgYWJvdmUgZG9lcywgYnV0IHRyYW5z
+cGFyZW50IHRvIHRoZSB1c2VyLiBtYXliZSBzb21lb25lCndhbnRzIHRvIGhlbHAuCgpjbGVhbmlu
+ZyB1cC4KCnByb2JsZW1zOgppIGhhdmUgSFo9MTAwMDoKMioyKjQ0MTAwLzEwMDAgPSAxNzYuNCwg
+bm90IDE3Ngo0ODAwMCB3b3JrcyBwZXJmZWN0IHRoby4gSFo9MTAwIHdvbnQgc2hvdyB0aGVzZSBw
+cm9ibGVtcyAoZGlmZmVyZW50IHN0b3J5CndoZW4gdXNpbmcgMTEwMjUsIGZvciBleGFtcGxlKS4g
+aSB0cmllZCBicmVzZW5oYW0gdG8gY2hhbmdlIHBjbV9qaWZmaWVzCmNvbnN0YW50bHksIGJ1dCBp
+dCBhY3R1YWxseSBnYXZlIG1lIG1vcmUgcHJvYmxlbXMgdGhhbiBpdCBzb2x2ZWQuCm1heWJlIHVz
+aW5nIHJ0Yy9ocGV0IHdpdGggZmFsbGJhY2sgdG8gamlmZmllIHdvdWxkIGJlIGEgYmV0dGVyIGlk
+ZWEuCgpmaWxlczoKaHR0cDovL3d3dy5tYXRoZW1hdGlrLnVuaS1mcmVpYnVyZy5kZS9JQU0vaG9t
+ZXBhZ2VzL2FpbmFuL2Fsb29wLWtlcm5lbC1yaW5nYnVmZmVyLWNvcHkuYwpodHRwOi8vd3d3Lm1h
+dGhlbWF0aWsudW5pLWZyZWlidXJnLmRlL0lBTS9ob21lcGFnZXMvYWluYW4vYWxvb3Ata2VybmVs
+LWVmZmljaWVudF9idXRfY29tcGxleC5jCmh0dHA6Ly93d3cubWF0aGVtYXRpay51bmktZnJlaWJ1
+cmcuZGUvSUFNL2hvbWVwYWdlcy9haW5hbi9hbHNhLWRyaXZlci0xLjAuMTMtYWxvb3AtYWluYW4t
+cmluZ2J1ZmZlci1jb3B5LmRpZmYKaHR0cDovL3d3dy5tYXRoZW1hdGlrLnVuaS1mcmVpYnVyZy5k
+ZS9JQU0vaG9tZXBhZ2VzL2FpbmFuL2Fsc2EtZHJpdmVyLTEuMC4xMy1hbG9vcC1haW5hbi1lZmZp
+Y2llbnRfYnV0X2NvbXBsZXguZGlmZgoKbGFzdCBidXQgbm90IGxlYXN0Ogpob29yYXkhCgphaG1l
+dAoKLS0KYWRtaW4gZGVyIGFidGVpbHVuZyBmw7xyIGFuZ2V3YW5kdGUgbWF0aGVtYXRpaywgdGVs
+LiAwNzYxLTIwMy01NjI2CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNo
+LiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hz
+YXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25z
+IG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJu
+IGNhc2gKaHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9
+c291cmNlZm9yZ2UmQ0lEPURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
+by9hbHNhLWRldmVsCg==
