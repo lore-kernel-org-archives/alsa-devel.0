@@ -1,16 +1,14 @@
-From: Matthias Urlichs <smurf@smurf.noris.de>
+From: Luke Ross <luke@lukeross.name>
 Subject: Re: BROKEN: Support for non-standard rates in USB
 	audio driver
-Date: Mon, 18 Dec 2006 12:18:20 +0100
-Message-ID: <20061218111820.GD15369@kiste.smurf.noris.de>
+Date: Mon, 18 Dec 2006 06:31:09 -0500
+Message-ID: <20061218113109.GE22837@lukeross.name>
 References: <em2phs$kff$1@sea.gmane.org>
-	<1166435481.26964.280955101@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1166435481.26964.280955101@webmail.messagingengine.com>
+In-Reply-To: <em2phs$kff$1@sea.gmane.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,55 +18,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Matthias Urlichs <matthias@urlichs.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Matthias,
 
-Clemens Ladisch:
-> >     [ALSA] Support for non-standard rates in USB audio driver
-> > 
-> > ... because it caused this crash in snd_interval_list:
-> > 
-> >  EIP:    0060:[<f0a30916>]    Not tainted VLI
-> >  EFLAGS: 00010202   (2.6.18-1.33 #10)
-> >   [<f0a326a4>] snd_pcm_hw_rule_list+0x22/0x29 [snd_pcm]
+On Sun, Dec 17, 2006 at 06:53:48AM +0000, Matthias Urlichs wrote:
 > 
-> What USB device are you using?
+>     [ALSA] Support for non-standard rates in USB audio driver
 > 
-Something cute, round, and apparently unlabeled,
-except for the stylized "G" on it.  ;-)
+> ... because it caused this crash in snd_interval_list:
+> 
+>  EFLAGS: 00010202   (2.6.18-1.33 #10)
+>   [<f0a326a4>] snd_pcm_hw_rule_list+0x22/0x29 [snd_pcm]
+>   [<f0a2e8d2>] snd_pcm_hw_refine+0x260/0x3b5 [snd_pcm]
 
-$ pwd
-/sys/devices/pci0000:00/0000:00:13.2/usb6/6-2/6-2.4
-$ grep . *
-bcdDevice:0100
-bConfigurationValue:1
-bDeviceClass:00
-bDeviceProtocol:00
-bDeviceSubClass:00
-bmAttributes:80
-bMaxPacketSize0:8
-bMaxPower:500mA
-bNumConfigurations:1
-bNumInterfaces: 3
-devnum:17
-idProduct:0420
-idVendor:077d
-manufacturer:Griffin Technology
-maxchild:0
-product:iMic USB audio adapter
-serial:042067
-speed:12
-version: 1.00
-$ 
+Are you running on a 64-bit machine?
 
--- 
-Matthias Urlichs   |   {M:U} IT Design @ m-u-it.de   |  smurf@smurf.noris.de
-Disclaimer: The quote was selected randomly. Really. | http://smurf.noris.de
- - -
-Reality is the leading cause of stress among those in touch with it.
+I wrote the patch on i386, but since it got committed have tried it on 
+an x86_64 kernel and found that it causes this problem on opening the 
+sound device. I've been trying to work out why[1], but haven't been to 
+figure out whether it's because the code is 64-bit unsafe (I can;t see 
+antyhing obvious) or because of some other reason..
+
+Regards,
+
+Luke
+
+[1] http://article.gmane.org/gmane.linux.alsa.devel/40456
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
