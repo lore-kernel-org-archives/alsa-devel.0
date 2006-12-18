@@ -1,14 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: (no subject)
-Date: Mon, 18 Dec 2006 10:53:33 +0100
-Message-ID: <1166435613.27096.280955357@webmail.messagingengine.com>
-References: <JADEDP$7B7661E86B7825A8ECA7FB5E915275AF@libero.it>
+From: "Consuelo Moody" <tomahawk'sburgeoning@abccoke.com>
+Subject: Consuelo
+Date: Mon, 18 Dec 2006 11:12:00 +0000 (UTC)
+Message-ID: <01c72295$514e5cb0$6c822ecf@tomahawk'sburgeoning>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <JADEDP$7B7661E86B7825A8ECA7FB5E915275AF@libero.it>
+Date: Mon, 18 Dec 2006 11:11:51 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,21 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: tardo2002@libero.it, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-tardo2002@libero.it wrote:
-> My problem is: when I am listening to some audio file, sound stream is
-> disturbed by a strong noise component. This noise component, in my
-> opinion, is strange becouse it follow rhythm of sound stream and there is
-> both when PCM volume is 0 (but turned on) even PCM volume is high!
+The hottest pick this year!	
+	
+It just doesn't get any better than this.  Booming sector, tightly held, with 	
+an incredible PR blitz starting up.  Not only that, but the company is set to 	
+release some smashing news.	
+	
+Physicians Adult Daycare, Inc.	
+	
+Symbol: PHYA	
+Current Price:                         $1.90 (+18% Friday!)	
+Short-Term Projected Price:  $4.25	
+Long-Term Target Price:       $10.20	
+	
+As the population ages, the economic value in the US market for adult 	
+daycare is projected to grow nearly 600%.  Globally the potential market 	
+is a staggering $45 billion.	
+	
+PHYA is already hitting it big in the sector.  With solid acquisitions, 	
+expert management, and a red hot sector, PHYA is looking at record 	
+earnings.	
+	
+Check your favorite news source.  Check your Level 2 market data.  You 	
+will see that this one is set for an explosion.	
+	
+With the huge publicity that is on the way THIS is where you want to be.  	
+Make sure you get in early on December, 18th.  Win big with PHYA!	
 
-What codec does your motherboard use? (see /proc/asound/cards)
-What is the output of "amixer contents"?
 
-
-Regards,
-Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
