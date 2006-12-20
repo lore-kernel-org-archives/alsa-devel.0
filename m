@@ -1,11 +1,7 @@
-From: TonTon <tonton@bdefracte.org>
-Subject: Re:
-	=?utf-8?q?snd=5Fhda=5Fintel_and_Asus_F3Jv_problem_on?=
-	=?utf-8?q?_2=2E6=2E19?=
-Date: Wed, 20 Dec 2006 19:26:55 +0000 (UTC)
-Message-ID: <loom.20061220T200527-691@post.gmane.org>
-References: <200612012211.03655.tonton@bdefracte.org>
-	<s5hhcvsfc5n.wl%tiwai@suse.de>
+From: "Eldon Fernandez" <tackingmartyrs@abc.net.au>
+Subject: Fernandez
+Date: Wed, 20 Dec 2006 20:05:18 +0420
+Message-ID: <01c72472$2c31c780$6c822ecf@tackingmartyrs>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,54 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
-> 
-> At Fri, 1 Dec 2006 22:11:03 +0100,
-> TonTon wrote:
->> ...
-> Thanks for your report.  It's fixed on HG repo.
+ This could be your big break!	
+	
+This tightly held issue is in a booming sector and has just 	
+begun a PR blitz that is starting to have everyone talking 	
+about it and rushing to get in.  When interest like this is 	
+generated there is only one way to go and that's UP!	
+	
+Physicians Adult Daycare, Inc.	
+	
+Symbol: PHYA	
+Current Price:                $2.23	
+Short-Term Projected Price:   $4.25	
+Long-Term Target Price:       $10.20	
+	
+As the population ages, the economic value in the US market 	
+for adult daycare is projected to grow nearly 600%.  	
+Globally the potential market is a staggering $45 billion.	
+	
+PHYA is right there to take flight in this red hot sector.  	
+Check the recent news:	
+	
+12/12 - Physicians Adult Daycare, Inc. Enters Into 	
+Negotiations to Acquire 36 Adult Daycare Centers	
+	
+12/14 - Physicians Adult Daycare, Inc. Announces Good News 	
+for "Baby-Boomers	
+	
+And just yesterday:	
+	
+12-19 - Physicians Adult Daycare, Inc. Enters Negotiations 	
+With Las Vegas Hotels to Accommodate Employees With Adult 	
+Daycare Needs	
+	
+With such big negotiations going on we are looking forward 	
+to some incredible announcements.  	
+	
+The time is now.  We called it last week at $1.50  Now at 	
+$2.23 there is still plenty of room to run!	
+	
+Don't let this one pass you buy.  Do yourself a favor and 	
+get in on this big break.  More exciting news to come!	
+	
 
-Thanks for he correction.
-> 
-> > So the module crash on load on my laptop.
-> > A simple fix can be to test if pointer is NULL, but I 'm not sure what it 
-> > implies. The fix makes the module work (with sound), but I can't test with a 
-> > mic (I guess it is related)
-> 
-> I guess it's a Conexant codec?  If yes, Tobin is working on this stuff
-> recently.
-
-In fact it is a Realtek ALC660 reported in /proc/asound/card0/codec#0.
-With lastest hg it gives :
-hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
-ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2175: autoconfig:
-line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2179:   
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2183:    hp_outs=1
-(0x1b/0x0/0x0/0x0/0x0)
-ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2191:    inputs:
-mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x1c, aux=0x0
-hda_codec: num_steps = 0 for NID=0x8
-
-Alsamiser doesn't start :
-alsamixer: function snd_mixer_load failed: Invalid argument
-hda_codec: num_steps = 0 for NID=0x15
-
-Then I tried to force it in alc861_cfg_tbl adding SND_PCI_QUIRK(0x1043, 0x1339,
-"ASUS", ALC660_3ST), in patch_realtek.c), but it doesn't work.
-dmesg :
-hda_codec: num_steps = 0 for NID=0x15
-hda_codec: num_steps = 0 for NID=0x15
-hda_codec: num_steps = 0 for NID=0x15
-hda_codec: num_steps = 0 for NID=0x8
-
-Hope this help, I'm still trying on my, but I haven't enough knowledge on alsa.
-
-TonTon
 
 
 -------------------------------------------------------------------------
