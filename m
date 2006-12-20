@@ -1,7 +1,7 @@
-From: "Socorro Burns" <cottonnightlife's@aal-tour.ru>
-Subject: Burns
-Date: Wed, 20 Dec 2006 05:32:58 -0420
-Message-ID: <01c723f8$4ea3aec0$6c822ecf@cottonnightlife's>
+From: "Charlotte Cox" <outwornreindeers@abu.ac.jp>
+Subject: Cox
+Date: Wed, 20 Dec 2006 10:15:16 -0330
+Message-ID: <01c7241f$bef2fc90$6c822ecf@outwornreindeers>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
