@@ -1,7 +1,7 @@
-From: "Eldon Fernandez" <tackingmartyrs@abc.net.au>
-Subject: Fernandez
-Date: Wed, 20 Dec 2006 20:05:18 +0420
-Message-ID: <01c72472$2c31c780$6c822ecf@tackingmartyrs>
+From: Immanuel Litzroth <immanuel@bluebottle.com>
+Subject: USB midi
+Date: Wed, 20 Dec 2006 21:44:16 +0100
+Message-ID: <200612202044.kBKKiPxF032069@mi1.bluebottle.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,52 +15,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- This could be your big break!	
-	
-This tightly held issue is in a booming sector and has just 	
-begun a PR blitz that is starting to have everyone talking 	
-about it and rushing to get in.  When interest like this is 	
-generated there is only one way to go and that's UP!	
-	
-Physicians Adult Daycare, Inc.	
-	
-Symbol: PHYA	
-Current Price:                $2.23	
-Short-Term Projected Price:   $4.25	
-Long-Term Target Price:       $10.20	
-	
-As the population ages, the economic value in the US market 	
-for adult daycare is projected to grow nearly 600%.  	
-Globally the potential market is a staggering $45 billion.	
-	
-PHYA is right there to take flight in this red hot sector.  	
-Check the recent news:	
-	
-12/12 - Physicians Adult Daycare, Inc. Enters Into 	
-Negotiations to Acquire 36 Adult Daycare Centers	
-	
-12/14 - Physicians Adult Daycare, Inc. Announces Good News 	
-for "Baby-Boomers	
-	
-And just yesterday:	
-	
-12-19 - Physicians Adult Daycare, Inc. Enters Negotiations 	
-With Las Vegas Hotels to Accommodate Employees With Adult 	
-Daycare Needs	
-	
-With such big negotiations going on we are looking forward 	
-to some incredible announcements.  	
-	
-The time is now.  We called it last week at $1.50  Now at 	
-$2.23 there is still plenty of room to run!	
-	
-Don't let this one pass you buy.  Do yourself a favor and 	
-get in on this big break.  More exciting news to come!	
-	
+I have recently (today) bought a Tascam US-144 USB Audio/Midi
+interface. I can't get it working under linux and indeed it is the 122
+that is supported :-)
+My questions:
+1) Is there a way to get it working?
+2) Can I help anyone retrieve the relevant data to get it working? 
+Is it just a question of getting the right firmware?
+3) Should I trade it in for an edirol device?
+Thanks in advance
+Immanuel
+P.S.
+The data for the usb device is:
+T:  Bus=05 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=480 MxCh= 0
+D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=0644 ProdID=800f Rev= 1.00
+S:  Manufacturer=Tascam
+S:  Product=US-144
+S:  SerialNumber=no serial number
+C:* #Ifs= 2 Cfg#= 1 Atr=80 MxPwr=480mA
+I:  If#= 0 Alt= 0 #EPs= 0 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#= 0 Alt= 1 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=02(O) Atr=05(Isoc) MxPS= 156 Ivl=125us
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=500us
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=05(Isoc) MxPS=  64 Ivl=1ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
+----------------------------------------------------------------------
+Click to compare rates on life insurance, save big, Shop here:
+http://tags.bluebottle.com/fc/KCuXzzVOal4IJMK0KZmyvCvWL5sco6/
 
 
 -------------------------------------------------------------------------
