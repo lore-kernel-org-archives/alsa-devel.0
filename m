@@ -1,10 +1,10 @@
-From: "Thomas F. Nancy" <knuhh@kp-architects.co.jp>
-Subject: comGreat tips on receiving free merchandise and money
-	from top online rewards programs.
-Date: Fri, 22 Dec 2006 01:10:01 +0200
-Message-ID: <000601c72556$37d52840$4d88ce85@jfoyhw>
+From: "Cisneros M. Dickon" <uuqhx@ceven-aventure.com>
+Subject: Let us examine the prices and then take a look at the
+	factors that affect the price of audio books.
+Date: Fri, 22 Dec 2006 01:10:38 +0200
+Message-ID: <000601c72556$84f56b80$34b67cc9@eavf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1171071948=="
+Content-Type: multipart/mixed; boundary="===============0921116072=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,68 +15,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1171071948==
+--===============0921116072==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0002_01C72566.FB587A00"
+	boundary="----=_NextPart_000_0002_01C72567.4879F5C0"
 
-------=_NextPart_000_0002_01C72566.FB587A00
+------=_NextPart_000_0002_01C72567.4879F5C0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0003_01C72566.FB59D990"
+	boundary="----=_NextPart_001_0003_01C72567.487B0730"
 
-------=_NextPart_001_0003_01C72566.FB59D990
+------=_NextPart_001_0003_01C72567.487B0730
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-comGreat tips on receiving free merchandise and money from top online =
-rewards programs.
-- Dick WolfThe multitude of books is making us ignorant.
-It was a place I went to very happily.
-- Kathie Lee GiffordUnlike many of my contemporaries, I never write =
-books for my fellow professors to read. To obtain both, they're willing =
-to give you freebies. Did you know you can build your own library =
-without breaking the bank?
-php"Seven "Really" Truly Unique Ways to Sell More BooksSeven tips on how =
-to really truly sell more of your books.
-Not only does book ownership provide you with hours, and hours of escape =
-and enrichment, a well-stocked library is a great heirloom for future =
-generations. Great book offers are out there, you just need to know =
-where to look to get free books online. The books that probably had the =
-biggest effect on me were Hound of the Baskervilles and also Mutiny on =
-the Bounty. Landranger 172   barbie desk top computer,b-book desktop.
-It doesn't take a lot of work or time to begin getting freebies online.
+php"Learn About New Books Before Anyone Else DoesLooking for a new =
+interesting book?
+In addition, there are literally hundreds of sites that offer other =
+freebies in return for filling out simple forms.
 Not only does book ownership provide you with hours, and hours of escape =
 and enrichment, a well-stocked library is a great heirloom for future =
 generations.
-To obtain both, they're willing to give you freebies. php"Are Audio =
-Books Expensive - Discussion About the Price of Audio BooksAre audio =
-books expensive?
-The books that probably had the biggest effect on me were Hound of the =
-Baskervilles and also Mutiny on the Bounty.
-comGreat tips on receiving free merchandise and money from top online =
-rewards programs.
-The rewards are many and even include ways for you to get free books =
-online! - VoltaireI have learned to do more with less, so you don't see =
-the big books anymore.
-You can cut the costs of building a personal library by completing =
-offers and receiving free books online. You can cut the costs of =
-building a personal library by completing offers and receiving free =
+- VoltaireI have learned to do more with less, so you don't see the big =
+books anymore. Not only does book ownership provide you with hours, and =
+hours of escape and enrichment, a well-stocked library is a great =
+heirloom for future generations. In addition, there are literally =
+hundreds of sites that offer other freebies in return for filling out =
+simple forms.
+It was a place I went to very happily.
+A courtesy copy is requested upon publication. The rewards are many and =
+even include ways for you to get free books online! The rewards are many =
+and even include ways for you to get free books online! Great book =
+offers are out there, you just need to know where to look to get free =
 books online.
-Landranger 172   barbie desk top computer,b-book desktop.
-- Peter BenchleyI was an only child growing up in New York and reading =
-was my escape. I was reading various historical books and I read Maggie =
-Siggin's Louis Riel biography and it seemed like a good, dramatic story =
-that would translate well into comic-strip form. You can cut the costs =
-of building a personal library by completing offers and receiving free =
-books online. You can get all kinds of freebies on the Internet by =
-completing offers, answering questions and even playing games. - Peter =
-BenchleyI was an only child growing up in New York and reading was my =
-escape.
-------=_NextPart_001_0003_01C72566.FB59D990
+php"Learn About New Books Before Anyone Else DoesLooking for a new =
+interesting book?
+A few of my favorite resources are listed below.
+php"Seven "Really" Truly Unique Ways to Sell More BooksSeven tips on how =
+to really truly sell more of your books. How many of us have enough time =
+to do everything that needs to be done?
+Want it before all your friends have it, so you can set the trend =
+instead of following it?
+There are plenty of advertisers and manufacturing companies that want =
+your opinions and your business.
+In addition, there are literally hundreds of sites that offer other =
+freebies in return for filling out simple forms. - VoltaireI have =
+learned to do more with less, so you don't see the big books anymore.
+AdlerGood friends, good books and a sleepy conscience: this is the ideal =
+life. To obtain both, they're willing to give you freebies.
+Great book offers are out there, you just need to know where to look to =
+get free books online.
+AdlerGood friends, good books and a sleepy conscience: this is the ideal =
+life. - Peter BenchleyI was an only child growing up in New York and =
+reading was my escape. The rewards are many and even include ways for =
+you to get free books online! - Chester BrownMy books are elegiac in the =
+sense that they're odes to a nation that even I sometimes think may not =
+exist anymore except in my memory and my imagination. AdlerGood friends, =
+good books and a sleepy conscience: this is the ideal life.
+------=_NextPart_001_0003_01C72567.487B0730
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -85,101 +84,97 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"conical" hspace=3D0=20
-src=3D"cid:000101c72556$37ce4a70$4d88ce85@jfoyhw" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"subterranean" hspace=3D0=20
+src=3D"cid:000101c72556$84f01450$34b67cc9@eavf" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>comGreat tips on receiving free =
-merchandise and=20
-money from top online rewards programs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>- Dick WolfThe multitude of books is =
-making us=20
-ignorant.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It was a place I went to very =
-happily.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>- Kathie Lee GiffordUnlike many of =
-my=20
-contemporaries, I never write books for my fellow professors to read. To =
-obtain=20
-both, they're willing to give you freebies. Did you know you can build =
-your own=20
-library without breaking the bank?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>php"Seven "Really" Truly Unique Ways to =
-Sell More=20
-BooksSeven tips on how to really truly sell more of your =
-books.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Not only does book ownership provide =
-you with=20
-hours, and hours of escape and enrichment, a well-stocked library is a =
-great=20
-heirloom for future generations. Great book offers are out there, you =
-just need to=20
-know where to look to get free books online. The books that probably had =
-the biggest=20
-effect on me were Hound of the Baskervilles and also Mutiny on the =
-Bounty.=20
-Landranger 172   barbie desk top computer,b-book desktop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It doesn't take a lot of work or time =
-to begin=20
-getting freebies online.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>php"Learn About New Books Before Anyone =
+Else=20
+DoesLooking for a new interesting book?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In addition, there are literally =
+hundreds of sites=20
+that offer other freebies in return for filling out simple =
+forms.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Not only does book ownership provide =
 you with=20
 hours, and hours of escape and enrichment, a well-stocked library is a =
 great=20
 heirloom for future generations.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To obtain both, they're willing to give =
-you=20
-freebies. php"Are Audio Books Expensive - Discussion About the Price of =
-Audio=20
-BooksAre audio books expensive?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The books that probably had the biggest =
-effect on=20
-me were Hound of the Baskervilles and also Mutiny on the =
-Bounty.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>comGreat tips on receiving free =
-merchandise and=20
-money from top online rewards programs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The rewards are many and even include =
-ways for you=20
-to get free books online! - VoltaireI have learned to do more with less, =
-so you=20
-don't see the big books anymore.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You can cut the costs of building a =
-personal=20
-library by completing offers and receiving free books online. You can =
-cut the costs=20
-of building a personal library by completing offers and receiving free =
-books=20
+<DIV><FONT face=3DArial size=3D2>- VoltaireI have learned to do more =
+with less, so=20
+you don't see the big books anymore. Not only does book ownership =
+provide you with=20
+hours, and hours of escape and enrichment, a well-stocked library is a =
+great=20
+heirloom for future generations. In addition, there are literally =
+hundreds of sites=20
+that offer other freebies in return for filling out simple =
+forms.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It was a place I went to very =
+happily.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A courtesy copy is requested upon =
+publication. The=20
+rewards are many and even include ways for you to get free books online! =
+The rewards=20
+are many and even include ways for you to get free books online! Great =
+book offers=20
+are out there, you just need to know where to look to get free books=20
 online.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Landranger 172   barbie desk top =
-computer,b-book=20
-desktop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>- Peter BenchleyI was an only child =
-growing up in=20
-New York and reading was my escape. I was reading various historical =
-books and I=20
-read Maggie Siggin's Louis Riel biography and it seemed like a good, =
-dramatic story=20
-that would translate well into comic-strip form. You can cut the costs =
-of building a=20
-personal library by completing offers and receiving free books online. =
-You can get=20
-all kinds of freebies on the Internet by completing offers, answering =
-questions and=20
-even playing games. - Peter BenchleyI was an only child growing up in =
-New York and=20
-reading was my escape.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>php"Learn About New Books Before Anyone =
+Else=20
+DoesLooking for a new interesting book?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A few of my favorite resources are =
+listed=20
+below.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>php"Seven "Really" Truly Unique Ways to =
+Sell More=20
+BooksSeven tips on how to really truly sell more of your books. How many =
+of us have=20
+enough time to do everything that needs to be done?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Want it before all your friends have =
+it, so you can=20
+set the trend instead of following it?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There are plenty of advertisers and =
+manufacturing=20
+companies that want your opinions and your business.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In addition, there are literally =
+hundreds of sites=20
+that offer other freebies in return for filling out simple forms. - =
+VoltaireI have=20
+learned to do more with less, so you don't see the big books =
+anymore.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>AdlerGood friends, good books and a =
+sleepy=20
+conscience: this is the ideal life. To obtain both, they're willing to =
+give you=20
+freebies.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Great book offers are out there, you =
+just need to=20
+know where to look to get free books online.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>AdlerGood friends, good books and a =
+sleepy=20
+conscience: this is the ideal life. - Peter BenchleyI was an only child =
+growing up=20
+in New York and reading was my escape. The rewards are many and even =
+include ways=20
+for you to get free books online! - Chester BrownMy books are elegiac in =
+the sense=20
+that they're odes to a nation that even I sometimes think may not exist =
+anymore=20
+except in my memory and my imagination. AdlerGood friends, good books =
+and a sleepy=20
+conscience: this is the ideal life.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0003_01C72566.FB59D990--
+------=_NextPart_001_0003_01C72567.487B0730--
 
-------=_NextPart_000_0002_01C72566.FB587A00
+------=_NextPart_000_0002_01C72567.4879F5C0
 Content-Type: image/gif;
-	name="hotel.gif"
+	name="preoccupied.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000101c72556$37ce4a70$4d88ce85@jfoyhw>
+Content-ID: <000101c72556$84f01450$34b67cc9@eavf>
 
 R0lGODdhdQIuAfIAAPfY/dPk19HS2fj78gM4apaPui11vKZNfywAAAAAdQIuAQAD/wi63P4wykmr
 vTjr/YT/YCiOZGmeaKqubOu+cCzPdG3feK7vfO//wKBwSCwaj8ikcslsOp/QqHR6Cliv2Kx2y+16
@@ -369,12 +364,12 @@ D7xtPb7920IR3Mid3BDF2szd3M793NAd3dJ9TcZd3dZ93djNUvik3Asx3d793eCNRMMNJtxd3uZP
 fd7ond7qvd7s3d7uvXzRk91XMd70Pd7hfd/4nd/67UHy3d/+/d8AriB6sN8EXuAGfuD4HeDGVN8M
 3uCuouAj5OASPuEUrkXvfeE3jT4JAAA7
 
-------=_NextPart_000_0002_01C72566.FB587A00--
+------=_NextPart_000_0002_01C72567.4879F5C0--
 
 
 
 
---===============1171071948==
+--===============0921116072==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -385,7 +380,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1171071948==
+--===============0921116072==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -396,4 +391,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1171071948==--
+--===============0921116072==--
