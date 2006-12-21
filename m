@@ -1,18 +1,16 @@
-From: TonTon <tonton@bdefracte.org>
-Subject: Re:
- =?iso-8859-1?q?snd=5Fhda=5Fintel_and_Asus_F3Jv_probl?=
- =?iso-8859-1?q?em_on_2=2E6=2E19?=
-Date: Thu, 21 Dec 2006 23:00:06 +0100
-Message-ID: <200612212300.06635.tonton@bdefracte.org>
-References: <200612012211.03655.tonton@bdefracte.org>
-	<loom.20061220T200527-691@post.gmane.org>
-	<s5hbqlxryek.wl%tiwai@suse.de>
+From: John Daiker <daikerjohn@gmail.com>
+Subject: [PATCH] sound/usb/usbaudio.c: remove unneeded casting
+Date: Thu, 21 Dec 2006 14:31:34 -0800
+Message-ID: <458B0B46.7050802@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hbqlxryek.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 034E5272
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2006 23:31:37 +0100 (MET)
+Received: by nz-out-0506.google.com with SMTP id l8so486461nzf
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2006 14:31:37 -0800 (PST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,77 +20,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de, alsa-devel@alsa-project.org, kernel-janitors@lists.osdl.org
 List-Id: alsa-devel@alsa-project.org
 
-Le jeudi 21 d=E9cembre 2006 17:45, Takashi Iwai a =E9crit=A0:
-> At Wed, 20 Dec 2006 19:26:55 +0000 (UTC),
->
-> TonTon wrote:
-> > Takashi Iwai <tiwai <at> suse.de> writes:
-> > > At Fri, 1 Dec 2006 22:11:03 +0100,
-> > >
-> > > TonTon wrote:
-> > >> ...
-> > >
-> > > Thanks for your report.  It's fixed on HG repo.
-> >
-> > Thanks for he correction.
-> >
-> > > > So the module crash on load on my laptop.
-> > > > A simple fix can be to test if pointer is NULL, but I 'm not sure
-> > > > what it implies. The fix makes the module work (with sound), but I
-> > > > can't test with a mic (I guess it is related)
-> > >
-> > > I guess it's a Conexant codec?  If yes, Tobin is working on this stuff
-> > > recently.
-> >
-> > In fact it is a Realtek ALC660 reported in /proc/asound/card0/codec#0.
->
-> OK then it's a totally different one.
->
-> > With lastest hg it gives :
-> > hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
-> > ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2175:
-> > autoconfig: line_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
-> > ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2179:
-> > speaker_outs=3D0 (0x0/0x0/0x0/0x0/0x0)
-> > ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2183:   =
+From: John Daiker <daikerjohn@gmail.com>
 
-> > hp_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
-> > ALSA /home/tonton/src/alsa/alsa-driver/pci/hda/hda_codec.c:2191:   =
+Went rummaging through usbaudio.c and found some castings that aren't 
+needed as far as I can see.  Part of the KernelJanitors TODO list.
 
-> > inputs: mic=3D0x18, fmic=3D0x19, line=3D0x0, fline=3D0x0, cd=3D0x1c, au=
-x=3D0x0
-> > hda_codec: num_steps =3D 0 for NID=3D0x8
-> >
-> > Alsamiser doesn't start :
-> > alsamixer: function snd_mixer_load failed: Invalid argument
-> > hda_codec: num_steps =3D 0 for NID=3D0x15
-> >
-> > Then I tried to force it in alc861_cfg_tbl adding SND_PCI_QUIRK(0x1043,
-> > 0x1339, "ASUS", ALC660_3ST), in patch_realtek.c), but it doesn't work.
-> > dmesg :
-> > hda_codec: num_steps =3D 0 for NID=3D0x15
-> > hda_codec: num_steps =3D 0 for NID=3D0x15
-> > hda_codec: num_steps =3D 0 for NID=3D0x15
-> > hda_codec: num_steps =3D 0 for NID=3D0x8
->
-> Did you try other values?  You don't have to change the code but
-> simply pass model=3Dxxx module option at loading.  I guess asus-laptop
-> would match with your hardware.
-> See ALSA-Configuration.txt for the available option values.
->
-In fact I tried all values, and no one works. I will try other versions to =
+Signed-off-by: John Daiker <daikerjohn@gmail.com>
 
-find why I get no sound at all (default config with alsa kernel 2.6.19 =
+--- linux-2.6.orig/sound/usb/usbaudio.c    2006-12-21 13:19:19.000000000 
+-0800
++++ linux-2.6/sound/usb/usbaudio.c    2006-12-21 13:23:06.000000000 -0800
+@@ -253,7 +253,7 @@
+                     struct urb *urb)
+ {
+     unsigned char *cp = urb->transfer_buffer;
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     urb->dev = ctx->subs->dev; /* we need to set this at each time */
+     urb->iso_frame_desc[0].length = 3;
+@@ -275,7 +275,7 @@
+                        struct urb *urb)
+ {
+     unsigned char *cp = urb->transfer_buffer;
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     urb->dev = ctx->subs->dev; /* we need to set this at each time */
+     urb->iso_frame_desc[0].length = 4;
+@@ -313,7 +313,7 @@
+                    struct urb *urb)
+ {
+     int i, offs;
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     offs = 0;
+     urb->dev = ctx->subs->dev; /* we need to set this at each time */
+@@ -402,7 +402,7 @@
+                      struct snd_pcm_runtime *runtime,
+                      struct urb *urb)
+ {
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     urb->dev = ctx->subs->dev; /* we need to set this at each time */
+     urb->iso_frame_desc[0].length = 3;
+@@ -420,7 +420,7 @@
+                     struct snd_pcm_runtime *runtime,
+                     struct urb *urb)
+ {
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     urb->dev = ctx->subs->dev; /* we need to set this at each time */
+     urb->iso_frame_desc[0].length = 4;
+@@ -537,7 +537,7 @@
+     unsigned int counts;
+     unsigned long flags;
+     int period_elapsed = 0;
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+ 
+     stride = runtime->frame_bits >> 3;
+ 
+@@ -655,7 +655,7 @@
+  */
+ static void snd_complete_urb(struct urb *urb)
+ {
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+     struct snd_usb_substream *subs = ctx->subs;
+     struct snd_pcm_substream *substream = ctx->subs->pcm_substream;
+     int err = 0;
+@@ -678,7 +678,7 @@
+  */
+ static void snd_complete_sync_urb(struct urb *urb)
+ {
+-    struct snd_urb_ctx *ctx = (struct snd_urb_ctx *)urb->context;
++    struct snd_urb_ctx *ctx = urb->context;
+     struct snd_usb_substream *subs = ctx->subs;
+     struct snd_pcm_substream *substream = ctx->subs->pcm_substream;
+     int err = 0;
+@@ -1408,7 +1408,7 @@
+ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+                  struct snd_pcm_hw_params *hw_params)
+ {
+-    struct snd_usb_substream *subs = (struct snd_usb_substream 
+*)substream->runtime->private_data;
++    struct snd_usb_substream *subs = substream->runtime->private_data;
+     struct audioformat *fmt;
+     unsigned int channels, rate, format;
+     int ret, changed;
+@@ -1464,7 +1464,7 @@
+  */
+ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ {
+-    struct snd_usb_substream *subs = (struct snd_usb_substream 
+*)substream->runtime->private_data;
++    struct snd_usb_substream *subs = substream->runtime->private_data;
+ 
+     subs->cur_audiofmt = NULL;
+     subs->cur_rate = 0;
 
-version was working, but only with one control in mixer)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
