@@ -1,15 +1,17 @@
-From: David Cullen <david.cullen@teligy.com>
-Subject: Re: Call to mmap in ALSA lib 1.0.13 fails in
- src/pcm/pcm_mmap.c line 367
-Date: Thu, 21 Dec 2006 14:53:50 -0500
-Message-ID: <458AE64E.4010405@teligy.com>
-References: <45880176.3070300@teligy.com>	<s5hirg64f8b.wl%tiwai@suse.de>	<45898126.3060808@teligy.com>	<s5hejqu4dq8.wl%tiwai@suse.de>	<458AB128.20403@teligy.com>	<s5hd56dryl9.wl%tiwai@suse.de>	<458ABDCD.2060306@teligy.com>	<s5h8xh1rxlj.wl%tiwai@suse.de>	<458AC97B.5040402@teligy.com>
-	<s5h4prpruxb.wl%tiwai@suse.de>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: sound/isa/cmi8330.c: dead ENABLE_SB_MIXER code
+Date: Thu, 21 Dec 2006 21:22:05 +0100
+Message-ID: <200612212122.06376.linux@rainbow-software.org>
+References: <20061204160434.GF30290@stusta.de> <s5hac1kfbpo.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h4prpruxb.wl%tiwai@suse.de>
+Received: from mailhub3.nextra.sk (smtp3.nextra.sk [195.168.1.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33E9A23A
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2006 21:22:15 +0100 (MET)
+In-Reply-To: <s5hac1kfbpo.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,81 +22,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, George Talusan <gstalusan@uwaterloo.ca>, linux-kernel@vger.kernel.org, perex@suse.cz, Adrian Bunk <bunk@stusta.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 21 Dec 2006 12:50:51 -0500,
-> David Cullen wrote:
->> 
->> Takashi Iwai wrote:
->> > At Thu, 21 Dec 2006 12:01:01 -0500,
->> > David Cullen wrote:
->> >> 
->> >> Dear Mr. Iwai,
->> >> 
->> >> Takashi Iwai wrote:
->> >> > As mentioned in the previous mail, it should be like
->> >> > 
->> >> > pcm.!default {
->> >> > 	type plug
->> >> > 	slave.pcm {
->> >> > 		type hw
->> >> > 		card 0
->> >> > 	}
->> >> > }
->> >> 
->> >> I put only those lines in my asound.conf file and I still got this
->> >> output:
->> >> 
->> >> /etc # speaker-test
->> >> 
->> >> speaker-test 1.0.13
->> >> 
->> >> Playback device is default
->> >> Stream parameters are 48000Hz, S16_BE, 1 channels
->> >> Using 16 octaves of pink noise
->> >> ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
->> >> find an usable access for 'default'
->> >> Sample format not available for playback: Invalid argument
->> >> Setting of hwparams failed: Invalid argument
->> > 
->> > Does aplay work?
->> > 
->> > Takashi
->> 
->> This is what happens when I try aplay:
->> 
->> /usr/share/sounds/alsa # aplay Noise.wav
->> Playing WAVE 'Noise.wav' : Signed 16 bit Little Endian, Rate 48000
->> Hz, Mono
->> ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
->> find an usable access for 'default'
->> aplay: set_params:929: Channels count non available
-> 
-> Hm, this looks like you don't use plug layer?
-> Make sure that you have no ~/.asoundrc file.  Then try
-> 
-> 	% aplay -Dplughw foo.wav
-> 
-> "plughw" is a standard PCM name defined in /usr/share/cards/alsa.conf,
-> so it should work even without /etc/asound.conf.
-> 
-> 
+On Tuesday 19 December 2006 10:59, you wrote:
+> At Mon, 4 Dec 2006 17:04:34 +0100,
+>
+> Adrian Bunk wrote:
+> > In sound/isa/cmi8330.c, the ENABLE_SB_MIXER code is currently never
+> > used.
+> >
+> > What's the story behind this?
+> > Should ENABLE_SB_MIXER be enabled?
+> > Or the code be removed?
+>
+> CMI8330 has a dual interface for SB and Adlib modes.  The mixer can
+> also behave differently according to the mode.  The current code has
+> mixer elements corresponding to both modes.
+
+CMI8330 (and also CMI8329) appears like SB16 and WSS
+
+> However, these mixer elements _seem_ to interactive with each other,
+> and cannot be controlled individually.  That's why ENABLE_SB_MIXER is
+> disabled.  I cannot check this issue any longer since the test board
+> got broken long time ago...
+
+The mixer is a bit weird - and probably different between CMI8329 and CMI8330. 
+At least on my CMI8329A, the master volume does not work. And there are also 
+some problems with PCM volume - I can decrease it in alsamixer but not 
+increase - but it works both ways in XMMS...
+I have also some boards with integrated CMI8330 - so I might test it 
+sometimes.
+
+> I don't think we would get many gain by changing this old code.
+> (and the relevant part isn't so big.)
+> Let's keep as it is.
+>
+>
 > Takashi
-> 
-
-I verified that there are no .asoundrc files in the filesystem.
-However, this is the result of the aplay test:
-
-/usr/share/sounds/alsa # aplay -Dplughw Noise.wav
-ALSA lib pcm_hw.c:1358:(_snd_pcm_hw_open) Invalid value for card
-aplay: main:556: audio open error: No such device
+> -
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
 
 -- 
-Thank you,
-David Cullen
-Teligy
+Ondrej Zary
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
