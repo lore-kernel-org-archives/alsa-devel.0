@@ -1,13 +1,14 @@
-From: Tobin Davis <tdavis@dsl-only.net>
+From: Nicolas Di Pietro <potens@swing.be>
 Subject: Re: Asus P5W DH Deluxe 's intel-hda unknown in codec
-Date: Fri, 22 Dec 2006 20:35:57 -0800
-Message-ID: <1166848557.10168.11.camel@localhost>
+Date: Sat, 23 Dec 2006 06:48:45 +0100
+Message-ID: <1166852925.11797.66.camel@localhost>
 References: <1166846854.11797.49.camel@localhost>
+	<1166848557.10168.11.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1166846854.11797.49.camel@localhost>
+In-Reply-To: <1166848557.10168.11.camel@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,38 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Nicolas Di Pietro <potens@swing.be>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-12-23 at 05:07 +0100, Nicolas Di Pietro wrote:
-> Hi,
-> I'm experimenting some problems with the hda-intel module because my
-> soundcard isn't recognized by the module (in fact, the module find that
-> it's a hda-intel but it doesn't know the codec to use and try guessing
-> by the bios). I've tried to use other codecs but it just ignore it ie:
-> modprobe snd-hda-intel model=6stck-dig
-> give me :
-> hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
-
-Did you try "model=6stack-dig"? (I noticed a typo in your modprobe
-line).
-
-If that doesn't work (check dmesg output), then you can add a single
-line in alsa-driver-1.0.14rc1/alsa-kernel/pci/hda/patch_realtek.c to add
-your system.  Look for "alc882_cfg_tbl", and add: 
-
-SND_PCI_QUIRK(0x1043, 0x81d8, "Asus P5WD", ALC882_6ST_DIG),
-
-Give that a try and see if it helps.
-
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
-
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+TGUgdmVuZHJlZGkgMjIgZMOpY2VtYnJlIDIwMDYgw6AgMjA6MzUgLTA4MDAsIFRvYmluIERhdmlz
+IGEgw6ljcml0IDoKPiBPbiBTYXQsIDIwMDYtMTItMjMgYXQgMDU6MDcgKzAxMDAsIE5pY29sYXMg
+RGkgUGlldHJvIHdyb3RlOgo+ID4gSGksCj4gPiBJJ20gZXhwZXJpbWVudGluZyBzb21lIHByb2Js
+ZW1zIHdpdGggdGhlIGhkYS1pbnRlbCBtb2R1bGUgYmVjYXVzZSBteQo+ID4gc291bmRjYXJkIGlz
+bid0IHJlY29nbml6ZWQgYnkgdGhlIG1vZHVsZSAoaW4gZmFjdCwgdGhlIG1vZHVsZSBmaW5kIHRo
+YXQKPiA+IGl0J3MgYSBoZGEtaW50ZWwgYnV0IGl0IGRvZXNuJ3Qga25vdyB0aGUgY29kZWMgdG8g
+dXNlIGFuZCB0cnkgZ3Vlc3NpbmcKPiA+IGJ5IHRoZSBiaW9zKS4gSSd2ZSB0cmllZCB0byB1c2Ug
+b3RoZXIgY29kZWNzIGJ1dCBpdCBqdXN0IGlnbm9yZSBpdCBpZToKPiA+IG1vZHByb2JlIHNuZC1o
+ZGEtaW50ZWwgbW9kZWw9NnN0Y2stZGlnCj4gPiBnaXZlIG1lIDoKPiA+IGhkYV9jb2RlYzogVW5r
+bm93biBtb2RlbCBmb3IgQUxDODgyLCB0cnlpbmcgYXV0by1wcm9iZSBmcm9tIEJJT1MuLi4KPiAK
+PiBEaWQgeW91IHRyeSAibW9kZWw9NnN0YWNrLWRpZyI/IChJIG5vdGljZWQgYSB0eXBvIGluIHlv
+dXIgbW9kcHJvYmUKPiBsaW5lKS4KCkkgdHJpZWQgbW9kZWw9NnN0Y2stZGlnLCBJJ20gc29ycnkg
+KGl0J3MgYSB0eXBvIGluIHRoZSBoZGFfY29kZWMudHh0CndoaWNoIGNvbWVzIHdpdGggdGhlIGtl
+cm5lbCkKd2l0aCA2c3RhY2stZGlnLCB0aGUgbW9kdWxlIGFjY2VwdCB0aGUgb3B0aW9uIGJ1dCBJ
+IGdldCAoaXQgc2VlbXMpIHRoZQpzYW1lIGNvbnRyb2xzIGFzIGJpb3MtdHJpZWQsIHNvIG5vdCBh
+bnkgbWFzdGVyIGNvbnRyb2wgKG1heWJlIHRoZXJlIGlzCm5vIHN1Y2ggY29udHJvbCBvbiB0aGlz
+IGJvYXJkLCBJIGRvbid0IGtub3csIGJ1dCBJIHRoaW5rIGl0IHNob3VsZCBiZSkKSSd2ZSB0cmll
+ZCA2c3RhY2stZGlnLCAzc3RhY2stZGlnLCBhbmQgYXJpbWEgYnV0IGl0J3MgNnN0YWNrLWRpZyAo
+b3IKYmlvcykgdGhhdCBmaXQgdGhlIGJlc3QuClNob3VsZCBJIHRyeSB3aXRoIG1vZGVsIHRoYXQg
+YXJlbid0IEFMQzg4MiA/IChJJ3ZlIHRyaWVkIG9uZSwgYnV0IGl0J3MKbm90IGFjY2VwdGVkLCBJ
+IGRvbid0IGtub3cgaWYgSSBzaG91bGQgdHJ5IGFsbCBvZiB0aGVtKQoKPiBJZiB0aGF0IGRvZXNu
+J3Qgd29yayAoY2hlY2sgZG1lc2cgb3V0cHV0KSwgdGhlbiB5b3UgY2FuIGFkZCBhIHNpbmdsZQo+
+IGxpbmUgaW4gYWxzYS1kcml2ZXItMS4wLjE0cmMxL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hf
+cmVhbHRlay5jIHRvIGFkZAo+IHlvdXIgc3lzdGVtLiAgTG9vayBmb3IgImFsYzg4Ml9jZmdfdGJs
+IiwgYW5kIGFkZDogCj4gCj4gU05EX1BDSV9RVUlSSygweDEwNDMsIDB4ODFkOCwgIkFzdXMgUDVX
+RCIsIEFMQzg4Ml82U1RfRElHKSwKCkl0IHdhcyBub3QgbmVlZGVkIChiZWNhdXNlIG9mIHRoZSB0
+eXBvKSBidXQgbWF5YmUgSSBzaG91bGQgcG9zdCBpdApzb21ld2hlcmUgaW4gdGhlIGJ1ZyB0cmFj
+a2luZyB0byBhZGQgdGhlIGlkIHRvIHRoZSB0aGlzIGZpbGUgPyAoSSB3YXMKc3VycHJpc2VkIHRo
+ZXJlIHdhc24ndCBhbnkgbWFpbCBvciBidWcgYWJvdXQgdGhpcyBNQikKCj4gR2l2ZSB0aGF0IGEg
+dHJ5IGFuZCBzZWUgaWYgaXQgaGVscHMuCj4gCk5vdCByZWFsbHkgKHRoZSBtb2RlbCBkb2Vzbid0
+IGZpdCksIGJ1dCBtYW55IHRoYW5rcyBmb3IgeW91ciBzbyBmYXN0IGFuc3dlci4KCk5pY29sYXMK
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhl
+IEZ1dHVyZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlv
+dSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5l
+c3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gKaHR0cDovL3d3
+dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lE
+PURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
