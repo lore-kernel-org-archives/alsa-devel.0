@@ -1,14 +1,14 @@
-From: Nicolas Di Pietro <potens@swing.be>
+From: Tobin Davis <tdavis@dsl-only.net>
 Subject: Re: Asus P5W DH Deluxe 's intel-hda unknown in codec
-Date: Sat, 23 Dec 2006 06:48:45 +0100
-Message-ID: <1166852925.11797.66.camel@localhost>
+Date: Fri, 22 Dec 2006 22:29:42 -0800
+Message-ID: <1166855382.12749.14.camel@localhost>
 References: <1166846854.11797.49.camel@localhost>
 	<1166848557.10168.11.camel@localhost>
+	<1166852925.11797.66.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1551213094=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1166848557.10168.11.camel@localhost>
+In-Reply-To: <1166852925.11797.66.camel@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,46 +18,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-TGUgdmVuZHJlZGkgMjIgZMOpY2VtYnJlIDIwMDYgw6AgMjA6MzUgLTA4MDAsIFRvYmluIERhdmlz
-IGEgw6ljcml0IDoKPiBPbiBTYXQsIDIwMDYtMTItMjMgYXQgMDU6MDcgKzAxMDAsIE5pY29sYXMg
-RGkgUGlldHJvIHdyb3RlOgo+ID4gSGksCj4gPiBJJ20gZXhwZXJpbWVudGluZyBzb21lIHByb2Js
-ZW1zIHdpdGggdGhlIGhkYS1pbnRlbCBtb2R1bGUgYmVjYXVzZSBteQo+ID4gc291bmRjYXJkIGlz
-bid0IHJlY29nbml6ZWQgYnkgdGhlIG1vZHVsZSAoaW4gZmFjdCwgdGhlIG1vZHVsZSBmaW5kIHRo
-YXQKPiA+IGl0J3MgYSBoZGEtaW50ZWwgYnV0IGl0IGRvZXNuJ3Qga25vdyB0aGUgY29kZWMgdG8g
-dXNlIGFuZCB0cnkgZ3Vlc3NpbmcKPiA+IGJ5IHRoZSBiaW9zKS4gSSd2ZSB0cmllZCB0byB1c2Ug
-b3RoZXIgY29kZWNzIGJ1dCBpdCBqdXN0IGlnbm9yZSBpdCBpZToKPiA+IG1vZHByb2JlIHNuZC1o
-ZGEtaW50ZWwgbW9kZWw9NnN0Y2stZGlnCj4gPiBnaXZlIG1lIDoKPiA+IGhkYV9jb2RlYzogVW5r
-bm93biBtb2RlbCBmb3IgQUxDODgyLCB0cnlpbmcgYXV0by1wcm9iZSBmcm9tIEJJT1MuLi4KPiAK
-PiBEaWQgeW91IHRyeSAibW9kZWw9NnN0YWNrLWRpZyI/IChJIG5vdGljZWQgYSB0eXBvIGluIHlv
-dXIgbW9kcHJvYmUKPiBsaW5lKS4KCkkgdHJpZWQgbW9kZWw9NnN0Y2stZGlnLCBJJ20gc29ycnkg
-KGl0J3MgYSB0eXBvIGluIHRoZSBoZGFfY29kZWMudHh0CndoaWNoIGNvbWVzIHdpdGggdGhlIGtl
-cm5lbCkKd2l0aCA2c3RhY2stZGlnLCB0aGUgbW9kdWxlIGFjY2VwdCB0aGUgb3B0aW9uIGJ1dCBJ
-IGdldCAoaXQgc2VlbXMpIHRoZQpzYW1lIGNvbnRyb2xzIGFzIGJpb3MtdHJpZWQsIHNvIG5vdCBh
-bnkgbWFzdGVyIGNvbnRyb2wgKG1heWJlIHRoZXJlIGlzCm5vIHN1Y2ggY29udHJvbCBvbiB0aGlz
-IGJvYXJkLCBJIGRvbid0IGtub3csIGJ1dCBJIHRoaW5rIGl0IHNob3VsZCBiZSkKSSd2ZSB0cmll
-ZCA2c3RhY2stZGlnLCAzc3RhY2stZGlnLCBhbmQgYXJpbWEgYnV0IGl0J3MgNnN0YWNrLWRpZyAo
-b3IKYmlvcykgdGhhdCBmaXQgdGhlIGJlc3QuClNob3VsZCBJIHRyeSB3aXRoIG1vZGVsIHRoYXQg
-YXJlbid0IEFMQzg4MiA/IChJJ3ZlIHRyaWVkIG9uZSwgYnV0IGl0J3MKbm90IGFjY2VwdGVkLCBJ
-IGRvbid0IGtub3cgaWYgSSBzaG91bGQgdHJ5IGFsbCBvZiB0aGVtKQoKPiBJZiB0aGF0IGRvZXNu
-J3Qgd29yayAoY2hlY2sgZG1lc2cgb3V0cHV0KSwgdGhlbiB5b3UgY2FuIGFkZCBhIHNpbmdsZQo+
-IGxpbmUgaW4gYWxzYS1kcml2ZXItMS4wLjE0cmMxL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hf
-cmVhbHRlay5jIHRvIGFkZAo+IHlvdXIgc3lzdGVtLiAgTG9vayBmb3IgImFsYzg4Ml9jZmdfdGJs
-IiwgYW5kIGFkZDogCj4gCj4gU05EX1BDSV9RVUlSSygweDEwNDMsIDB4ODFkOCwgIkFzdXMgUDVX
-RCIsIEFMQzg4Ml82U1RfRElHKSwKCkl0IHdhcyBub3QgbmVlZGVkIChiZWNhdXNlIG9mIHRoZSB0
-eXBvKSBidXQgbWF5YmUgSSBzaG91bGQgcG9zdCBpdApzb21ld2hlcmUgaW4gdGhlIGJ1ZyB0cmFj
-a2luZyB0byBhZGQgdGhlIGlkIHRvIHRoZSB0aGlzIGZpbGUgPyAoSSB3YXMKc3VycHJpc2VkIHRo
-ZXJlIHdhc24ndCBhbnkgbWFpbCBvciBidWcgYWJvdXQgdGhpcyBNQikKCj4gR2l2ZSB0aGF0IGEg
-dHJ5IGFuZCBzZWUgaWYgaXQgaGVscHMuCj4gCk5vdCByZWFsbHkgKHRoZSBtb2RlbCBkb2Vzbid0
-IGZpdCksIGJ1dCBtYW55IHRoYW5rcyBmb3IgeW91ciBzbyBmYXN0IGFuc3dlci4KCk5pY29sYXMK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhl
-IEZ1dHVyZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlv
-dSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5l
-c3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gKaHR0cDovL3d3
-dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lE
-PURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
-dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============1551213094==
+Content-Type: multipart/alternative; boundary="=-QFEHohsKXCZ4PMpVhRJ3"
+
+
+--=-QFEHohsKXCZ4PMpVhRJ3
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+> I tried model=6stck-dig, I'm sorry (it's a typo in the hda_codec.txt
+> which comes with the kernel)
+
+I've fixed it and will get it upstream in another email, thanks.
+
+
+> with 6stack-dig, the module accept the option but I get (it seems) the
+> same controls as bios-tried, so not any master control (maybe there is
+> no such control on this board, I don't know, but I think it should be)
+> I've tried 6stack-dig, 3stack-dig, and arima but it's 6stack-dig (or
+> bios) that fit the best.
+
+I'll add that to the code for now. 
+
+> Should I try with model that aren't ALC882 ? (I've tried one, but it's
+> not accepted, I don't know if I should try all of them)
+> 
+
+No, because it wouldn't work.  When snd-hda-intel loads, it looks at the
+codecs on the bus (there can be 16), and determines the vendor and
+model.  It then looks at the tables to see if that vendor/model is
+listed (each of the patch_*.c files has their own table at the end of
+the file).  If a correct entry is found, the table tells the driver
+which patch to use, and each patch has different configuration
+definitions.
+The patch looks at it's own table to match your pci subsystem ID so that
+it can load the correct settings for your motherboard.  If your
+subsystem ID isn't listed, then the driver will revert to "auto" mode.
+
+Hope that explanation helps.
+
+As to a Master Volume, I can look into adding it if you'd be willing to
+give it a test run.  I'll need one piece of output from your system,
+though.  Type "cat /proc/asound/version /proc/asound/card0/codec*
+>Asus-p5W-codec.out" and send it to me.
+
+I won't be able to get to it until next week at the earliest, but maybe
+we can get it working.
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-QFEHohsKXCZ4PMpVhRJ3
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
+</HEAD>
+<BODY>
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">I tried model=6stck-dig, I'm sorry (it's a typo in the hda_codec.txt</FONT>
+<FONT COLOR="#000000">which comes with the kernel)</FONT>
+</PRE>
+</BLOCKQUOTE>
+I've fixed it and will get it upstream in another email, thanks.<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">with 6stack-dig, the module accept the option but I get (it seems) the</FONT>
+<FONT COLOR="#000000">same controls as bios-tried, so not any master control (maybe there is</FONT>
+<FONT COLOR="#000000">no such control on this board, I don't know, but I think it should be)</FONT>
+<FONT COLOR="#000000">I've tried 6stack-dig, 3stack-dig, and arima but it's 6stack-dig (or</FONT>
+<FONT COLOR="#000000">bios) that fit the best.</FONT>
+</PRE>
+</BLOCKQUOTE>
+I'll add that to the code for now. 
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Should I try with model that aren't ALC882 ? (I've tried one, but it's</FONT>
+<FONT COLOR="#000000">not accepted, I don't know if I should try all of them)</FONT>
+
+</PRE>
+</BLOCKQUOTE>
+No, because it wouldn't work.&nbsp; When snd-hda-intel loads, it looks at the codecs on the bus (there can be 16), and determines the vendor and model.&nbsp; It then looks at the tables to see if that vendor/model is listed (each of the patch_*.c files has their own table at the end of the file).&nbsp; If a correct entry is found, the table tells the driver which patch to use, and each patch has different configuration definitions.<BR>
+The patch looks at it's own table to match your pci subsystem ID so that it can load the correct settings for your motherboard.&nbsp; If your subsystem ID isn't listed, then the driver will revert to &quot;auto&quot; mode.<BR>
+<BR>
+Hope that explanation helps.<BR>
+<BR>
+As to a Master Volume, I can look into adding it if you'd be willing to give it a test run.&nbsp; I'll need one piece of output from your system, though.&nbsp; Type &quot;cat /proc/asound/version /proc/asound/card0/codec* &gt;Asus-p5W-codec.out&quot; and send it to me.<BR>
+<BR>
+I won't be able to get to it until next week at the earliest, but maybe we can get it working.<BR>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+
+--=-QFEHohsKXCZ4PMpVhRJ3--
+
+
+
+--===============1551213094==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1551213094==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1551213094==--
