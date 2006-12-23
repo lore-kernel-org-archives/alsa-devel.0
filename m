@@ -1,9 +1,9 @@
-From: Stephens B.Stanislas <geccdi@smp-record.com>
-Subject: interview housewares
-Date: Sun, 24 Dec 2006 00:36:16 +0100
-Message-ID: <458DBD70.8000106@smp-record.com>
+From: Andrews S.Joan <svvks@netra.lib.state.hi.us>
+Subject: pudding maudlin
+Date: Sun, 24 Dec 2006 00:36:33 +0100
+Message-ID: <458DBD81.3040105@netra.lib.state.hi.us>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1539089926=="
+Content-Type: multipart/mixed; boundary="===============1486803926=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1539089926==
+--===============1486803926==
 Content-Type: multipart/related;
-	boundary="------------050306060207010302030308"
+	boundary="------------040905070803040904090305"
 
---------------050306060207010302030308
+--------------040905070803040904090305
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,37 +31,34 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="embitter" src="cid:part1.08070704.07090604@smp-record.com"
- height="522" width="460"><br>
-According to biologist Arnold van Vliet of Wageningen University, this
-unseasonable flowering is being caused by extremely high autumn
-temperatures.<br>
-It is conceivable that there are men who wish to see the whole world
-circumcised in their image.<br>
-But the guidance notes are not legally binding and ultimately it is a
-matter of discretion for the individual officer.<br>
-Javier Solana, the foreign policy chief of the EU, and anti-terrorist
-co-ordinator Gijs de Vries were both criticised for evading questions
-about their knowledge of CIA rendition.<br>
-Rather quite the opposite. Postal Service, a check sent to their last
-known address is returned to the IRS. Even though the large crowd had to
-wait a long time and then march through side streets to get to the heart
-of Wall Street, they did not back down. Sales taxes paid on motor
-vehicles and boats may be added to the table amount, but only up to the
-amount paid at the general sales tax rate. I think it's wrong when he's
-killing Australians, when all of the evidence is certainly there that he
-is the prime minister of Australia. You tell me my Zionist friends, do
-these psychotic, violent white Christians cry everytime a Jew dies.<br>
+<img alt="stairway"
+ src="cid:part1.08000309.08000005@netra.lib.state.hi.us" height="522"
+ width="460"><br>
+A report on the third day of resumed 6-party talks on N Korea's nuclear
+development.<br>
+We just had the anniversary again and then we had his birthday and now
+it's Christmas, it just never ends.<br>
+UK Indymedia - Left Wing Zionists to the Rescue?<br>
+in tasmania state government freaking out over federal court rulings
+enforcing regional forestry agreements.<br>
+You can count on us to be there for you. It is "not for resistance," he
+added, "but to be used against other Palestinian parties. Evidence on
+the impact of circumcision upon a man's sex life is mixed. I am still
+wondering how to get financially compensated for the 25 hours I put into
+this program weekly- any ideas are appreciated. how can i report someone
+who hasnt paid taxes scents 1991, At 1:56 PM,Jossie said. "Emmanuel had
+no solicitor and has a speech impediment that prevented him from
+adequately expressing himself.<br>
 </body>
 </html>
 
---------------050306060207010302030308
+--------------040905070803040904090305
 Content-Type: image/gif;
- name="atonement.gif"
+ name="gathering.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.08070704.07090604@smp-record.com>
+Content-ID: <part1.08000309.08000005@netra.lib.state.hi.us>
 Content-Disposition: inline;
- filename="atonement.gif"
+ filename="gathering.gif"
 
 R0lGODdh3QEdAvMAAPXo5A4HHCEWBgwSDYGxepBNY2FVer+x9/GSYU/O3mew6QAAAAAAAAAAAAAA
 AAAAACwAAAAA3QEcAgAE/1DISau9OOt9g/9gKI5kaZ5oqq7s4L5wLM90bd94ru987//AoHBILBqP
@@ -358,11 +355,11 @@ naHuuq+f14YHu7Dr26832OOt3rBX3IUkO7M3+zLEDzQUu7RP+8c5u7X3nTBnu7bD3rULe+gWhO6N
 vMaREsLP3b0PXHK1nUU0vLaT3MJXvMVbe8FLWr2xAMKJwyhJ/L4ifNE9wcWXvMmfPLE3mEaUDsov
 A8i/vOO1vMzPPM1G13zFw7wsZLyDkZ7Nd57OA8HMYwPOE1DPFz3F1fe9MN3gGT3T3wREBI/2/bzU
 Tz3VV73VDw8zPERxDT3BqSQ90JiiUF0EAAA7
---------------050306060207010302030308--
+--------------040905070803040904090305--
 
 
 
---===============1539089926==
+--===============1486803926==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -373,7 +370,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1539089926==
+--===============1486803926==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -384,4 +381,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1539089926==--
+--===============1486803926==--
