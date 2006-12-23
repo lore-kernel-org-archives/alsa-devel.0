@@ -1,9 +1,9 @@
 From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Fix typo and add entry to documentation.
-Date: Fri, 22 Dec 2006 22:33:00 -0800
-Message-ID: <1166855580.12749.19.camel@localhost>
+Subject: Add Asus P5W DH to alc882_cfg_tbl
+Date: Fri, 22 Dec 2006 22:45:18 -0800
+Message-ID: <1166856318.12749.24.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-b1gLdm7qY0Fu1AQdohMH"
+Content-Type: multipart/mixed; boundary="=-Ze01ZwRxl1gT5nPmkfXm"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,21 +18,21 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-b1gLdm7qY0Fu1AQdohMH
-Content-Type: multipart/alternative; boundary="=-dUYEwjO9LovdLewQcVkx"
+--=-Ze01ZwRxl1gT5nPmkfXm
+Content-Type: multipart/alternative; boundary="=-H+2mBAq3tTFBGKe6Hw0n"
 
 
---=-dUYEwjO9LovdLewQcVkx
+--=-H+2mBAq3tTFBGKe6Hw0n
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-This patch adds the macpro and fixes a typo in the ALC882 section of
-ALSA-Configuration.txt. 
-
-Signed off by:  Tobin Davis <tdavis@dsl-only.net>
+This patch adds the Asus P5W DH to the ALC882 config table as a
+6stack-dig system.
 
 
---=-dUYEwjO9LovdLewQcVkx
+Signed off by Tobin Davis <tdavis@dsl-only.net>
+
+--=-H+2mBAq3tTFBGKe6Hw0n
 Content-Type: text/html; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
@@ -43,36 +43,33 @@ Content-Transfer-Encoding: 7bit
   <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
 </HEAD>
 <BODY>
-This patch adds the macpro and fixes a typo in the ALC882 section of ALSA-Configuration.txt. <BR>
+This patch adds the Asus P5W DH to the ALC882 config table as a 6stack-dig system.<BR>
 <BR>
-Signed off by:&nbsp; Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;<BR>
 <BR>
+Signed off by Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
 </BODY>
 </HTML>
 
---=-dUYEwjO9LovdLewQcVkx--
+--=-H+2mBAq3tTFBGKe6Hw0n--
 
---=-b1gLdm7qY0Fu1AQdohMH
-Content-Disposition: attachment; filename=Doc.patch
-Content-Type: text/x-patch; name=Doc.patch; charset=UTF-8
+--=-Ze01ZwRxl1gT5nPmkfXm
+Content-Disposition: attachment; filename=Asus-P5W.patch
+Content-Type: text/x-patch; name=Asus-P5W.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-diff -r 511f2a148410 Documentation/ALSA-Configuration.txt
---- a/Documentation/ALSA-Configuration.txt	Thu Dec 21 19:17:29 2006 +0100
-+++ b/Documentation/ALSA-Configuration.txt	Fri Dec 22 22:01:27 2006 -0800
-@@ -814,8 +814,9 @@ Prior to version 0.9.0rc4 options had a 
+diff -r 9998aa91f5da pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Fri Dec 22 12:44:25 2006 +0100
++++ b/pci/hda/patch_realtek.c	Fri Dec 22 22:44:46 2006 -0800
+@@ -4738,6 +4738,7 @@ static struct snd_pci_quirk alc882_cfg_t
+ 	SND_PCI_QUIRK(0x105b, 0x6668, "Foxconn", ALC882_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC882_6ST_DIG),
+ 	SND_PCI_QUIRK(0x161f, 0x2054, "Arima W820", ALC882_ARIMA),
++	SND_PCI_QUIRK(0x1043, 0x81d8, "Asus P5WD", ALC882_6ST_DIG),
+ 	{}
+ };
  
- 	ALC882/885
- 	  3stack-dig	3-jack with SPDIF I/O
--	  6stck-dig	6-jack digital with SPDIF I/O
-+	  6stack-dig	6-jack digital with SPDIF I/O
- 	  arima		Arima W820Di1
-+	  macpro	MacPro support
- 	  auto		auto-config reading BIOS (default)
- 
- 	ALC883/888
 
---=-b1gLdm7qY0Fu1AQdohMH
+--=-Ze01ZwRxl1gT5nPmkfXm
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,7 +80,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-b1gLdm7qY0Fu1AQdohMH
+--=-Ze01ZwRxl1gT5nPmkfXm
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,4 +91,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-b1gLdm7qY0Fu1AQdohMH--
+--=-Ze01ZwRxl1gT5nPmkfXm--
