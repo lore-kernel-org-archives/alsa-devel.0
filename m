@@ -1,15 +1,13 @@
-From: "Hutchins Margery" <eqlb@jooks.nl>
-Subject: Read how to empower yourself in 3 minutes a day with
-	life-enhancing information.
-Date: Sun, 24 Dec 2006 16:17:36 +0100
-Message-ID: <001a01c7276e$d6f1dfd0$4d5238d1@nrpg>
+From: "King Osmond" <jdus@jaco.k12.ms.us>
+Subject: As a result,
+	the normal dopamine-triggered firing from such neurons, in essence,
+	launches two different types of neuronal ammunition,
+	causing "cosignaling.
+Date: Sun, 24 Dec 2006 16:11:15 +0100
+Message-ID: <001a01c7276e$d9f9a190$bea24959@rmojuo>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2065788816=="
+Content-Type: multipart/mixed; boundary="===============1286172086=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from p54B34006.dip0.t-ipconnect.de (p54B34006.dip0.t-ipconnect.de
-	[84.179.64.6])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 67A122B5
-	for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2006 16:18:59 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,47 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2065788816==
+--===============1286172086==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0016_01C72777.38A49490"
+	boundary="----=_NextPart_000_0016_01C72777.3BABBA10"
 
-------=_NextPart_000_0016_01C72777.38A49490
+------=_NextPart_000_0016_01C72777.3BABBA10
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0017_01C72777.38A90160"
+	boundary="----=_NextPart_001_0017_01C72777.3BB04DF0"
 
-------=_NextPart_001_0017_01C72777.38A90160
+------=_NextPart_001_0017_01C72777.3BB04DF0
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-"It's not a straightforward picture," he said. This advertising is =
-directed at both doctors, and directly to the public. An educated person =
-would recommend that you improve your lifestyle by adopting healthy food =
-and exercise habits, which would eliminate the depression without the =
-need for any herbs or drugs. That's what's causing depression, but what =
-do we do in this country to treat depression? David Wheadon, Senior Vice =
-President of Regulatory Affairs and Product Professional Services for =
-GlaxoSmithKline, Dr.
-John's Wort instead of antidepressant prescription drugs. You've got a =
-whole nation of kids graduating from high school and many of them can't =
-even read.
-Vitamin and mineral deficiencies can often lead to disease, and you do =
-not have to be embarrassed about taking vitamin and mineral supplements. =
-Infant jitteriness, irritability, feeding problems, respiratory =
-distress, and stiffened muscle tone are among the symptoms associated =
-with antidepressant exposure shortly before birth in the studies. Check =
-out pioneering health scientist Bruce Lipton and vibrational healing =
-devices like the Violet Ray Crystal Resonator. Drug companies make more =
-money than banks, more money than oil companies, more money than Ford or =
-GM, more money than anybody.
-We need to recognize the disease-promoting problems with processed and =
-manufactured foods, everything from carbonated soft drinks to packaged =
-instant rice products.
-------=_NextPart_001_0017_01C72777.38A90160
+So the answers for these diseases are really right in front of us every =
+single day. " Incentives belong in car dealerships, not in doctors' =
+offices. They will then use that information to come up with =
+recommendations for psychologists and other pediatric healthcare =
+practitioners trying to make the best decisions for their young =
+patients. You have a special place in my prayers for your gift of this =
+newsletter. Leape cited Mclntyre and Popper who said the "infallibility =
+model" of medicine leads to intellectual dishonesty with a need to cover =
+up mistakes rather than admit them.
+As a result, niacin is not intensively advertised like the other drugs. =
+By 1994 it was glamorous to be an antigovernment physician who decried =
+the stupidities and corruption of state and federal authorities.
+Leape cited Mclntyre and Popper who said the "infallibility model" of =
+medicine leads to intellectual dishonesty with a need to cover up =
+mistakes rather than admit them. In addition, since niacin is a widely =
+available "generic" agent, no pharmaceutical company stands to generate =
+the huge profits that the other lipid-lowering agents have enjoyed. No =
+such bankroll exists for nutritional supplements. It was fashionable to =
+declare as lies most government public health declarations.
+Eating molasses is part of a food strategy that's just as good as =
+antidepressant drugs.
+------=_NextPart_001_0017_01C72777.3BB04DF0
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -68,60 +64,58 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"conciliation" hspace=3D0=20
-src=3D"cid:001501c7276e$d6dbbfc0$4d5238d1@nrpg" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"citizens band"=20
+hspace=3D0=20
+src=3D"cid:001501c7276e$d9e2be30$bea24959@rmojuo" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"It's not a straightforward picture," =
-he said. This=20
-advertising is directed at both doctors, and directly to the public. An =
-educated=20
-person would recommend that you improve your lifestyle by adopting =
-healthy food and=20
-exercise habits, which would eliminate the depression without the need =
-for any herbs=20
-or drugs. That's what's causing depression, but what do we do in this =
-country to=20
-treat depression? David Wheadon, Senior Vice President of Regulatory =
-Affairs and=20
-Product Professional Services for GlaxoSmithKline, Dr.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>John's Wort instead of antidepressant =
-prescription=20
-drugs. You've got a whole nation of kids graduating from high school and =
-many of=20
-them can't even read.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Vitamin and mineral deficiencies can =
-often lead to=20
-disease, and you do not have to be embarrassed about taking vitamin and =
-mineral=20
-supplements. Infant jitteriness, irritability, feeding problems, =
-respiratory=20
-distress, and stiffened muscle tone are among the symptoms associated =
-with=20
-antidepressant exposure shortly before birth in the studies. Check out =
-pioneering=20
-health scientist Bruce Lipton and vibrational healing devices like the =
-Violet Ray=20
-Crystal Resonator. Drug companies make more money than banks, more money =
-than oil=20
-companies, more money than Ford or GM, more money than =
-anybody.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>We need to recognize the =
-disease-promoting problems=20
-with processed and manufactured foods, everything from carbonated soft =
-drinks to=20
-packaged instant rice products.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>So the answers for these diseases are =
+really right=20
+in front of us every single day. " Incentives belong in car dealerships, =
+not in=20
+doctors' offices. They will then use that information to come up with=20
+recommendations for psychologists and other pediatric healthcare =
+practitioners=20
+trying to make the best decisions for their young patients. You have a =
+special place=20
+in my prayers for your gift of this newsletter. Leape cited Mclntyre and =
+Popper who=20
+said the "infallibility model" of medicine leads to intellectual =
+dishonesty with a=20
+need to cover up mistakes rather than admit them.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>As a result, niacin is not intensively =
+advertised=20
+like the other drugs. By 1994 it was glamorous to be an antigovernment =
+physician who=20
+decried the stupidities and corruption of state and federal=20
+authorities.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Leape cited Mclntyre and Popper who =
+said the=20
+"infallibility model" of medicine leads to intellectual dishonesty with =
+a need to=20
+cover up mistakes rather than admit them. In addition, since niacin is a =
+widely=20
+available "generic" agent, no pharmaceutical company stands to generate =
+the huge=20
+profits that the other lipid-lowering agents have enjoyed. No such =
+bankroll exists=20
+for nutritional supplements. It was fashionable to declare as lies most =
+government=20
+public health declarations.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Eating molasses is part of a food =
+strategy that's=20
+just as good as antidepressant drugs.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0017_01C72777.38A90160--
+------=_NextPart_001_0017_01C72777.3BB04DF0--
 
-------=_NextPart_000_0016_01C72777.38A49490
+------=_NextPart_000_0016_01C72777.3BABBA10
 Content-Type: image/gif;
-	name="tour.gif"
+	name="cling.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001501c7276e$d6dbbfc0$4d5238d1@nrpg>
+Content-ID: <001501c7276e$d9e2be30$bea24959@rmojuo>
 
 R0lGODdhogG3AfMAAPz+8PH76XzZQEYVUfPr/hRMTwSCvVgHFcl+GrWjgwAAAAAAAAAAAAAAAAAA
 AAAAACwAAAAAoQG3AQAE/xDISau9OOvNu/9gKI5aYJ5oqq5s675wLM90bd94ru987//AoDBAKhqP
@@ -313,11 +307,11 @@ JctvAi/wfLhvBJcI/v5uA29wqllwCKeyqj7rBK9wC79wlYjwVnNwDu9wJ5PQoPZwER9xEi9xEz/x
 fdA1FF/xfsBwFz8zDZfpF5/xzwZrJGMIFv/rGN9xHtcqGv9xIA9yIUeIHC9yIz9yDx/ym3auru5x
 J3/y14oAADs=
 
-------=_NextPart_000_0016_01C72777.38A49490--
+------=_NextPart_000_0016_01C72777.3BABBA10--
 
 
 
---===============2065788816==
+--===============1286172086==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -328,7 +322,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2065788816==
+--===============1286172086==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -339,4 +333,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2065788816==--
+--===============1286172086==--
