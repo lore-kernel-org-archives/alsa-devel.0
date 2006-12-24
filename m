@@ -1,11 +1,15 @@
-From: "Connie Carrillo" <Montserrat'sElsa's@aacu.org>
-Subject: Connie
-Date: Sat, 23 Dec 2006 09:20:28 -0120
-Message-ID: <01c72673$95d8dae0$6c822ecf@Montserrat'sElsa's>
+From: "Hutchins Margery" <eqlb@jooks.nl>
+Subject: Read how to empower yourself in 3 minutes a day with
+	life-enhancing information.
+Date: Sun, 24 Dec 2006 16:17:36 +0100
+Message-ID: <001a01c7276e$d6f1dfd0$4d5238d1@nrpg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2065788816=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from p54B34006.dip0.t-ipconnect.de (p54B34006.dip0.t-ipconnect.de
+	[84.179.64.6])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 67A122B5
+	for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2006 16:18:59 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,49 +19,324 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2005 was the year of the oil company with many of these	
-companies posting record profits.  2006 has been the year	 
-of alternative fuels with companies involved in this sector	 
-blowing off the charts.  This trend shows no signs of	
-abating.	 
-Our next feature is right in the thick of the high-growth	 
-alternative energy sector and they are doing incredible	 
-things.	
-	
-AlgoDyne Ethanol Energy	 
-	
-Symbol:  ADYN	 	
-	
-Current Price:            $1.30	
-Short Term Target:        $3.50	
-Long Term Projected:      $10.00	
-	
-It doesn't take a genius to know why alternative energy is	 	 
-such a high-growth area right now.  Smart traders know how	 	 
-to watch global trends and seize the moment.	
-	 
-AlgoDyne is where it's at.  AlgoDyne has developed a	  
-turnkey solution in their proprietary micro-algae based	 
-process which can produce direct electricity, eco-friendly	 	 
-fuels, and valuable bi-products.	
-	
-The company has just hit its sweet spot in the development	 
-phase and is set to release some astounding results.  These	  
-revelations are being backed up by a far-reaching PR	  
-campaign.	 
-	
-It is essential to get in early in order to enjoy the	 	 
-biggest gains.  Come Tuesday, December 26th this one will	 
-be rapidly going up to meet our target price!	 	
-	 
-Do not delay!  Win with ADYN!	 	
+--===============2065788816==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_0016_01C72777.38A49490"
 
+------=_NextPart_000_0016_01C72777.38A49490
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0017_01C72777.38A90160"
+
+------=_NextPart_001_0017_01C72777.38A90160
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+
+"It's not a straightforward picture," he said. This advertising is =
+directed at both doctors, and directly to the public. An educated person =
+would recommend that you improve your lifestyle by adopting healthy food =
+and exercise habits, which would eliminate the depression without the =
+need for any herbs or drugs. That's what's causing depression, but what =
+do we do in this country to treat depression? David Wheadon, Senior Vice =
+President of Regulatory Affairs and Product Professional Services for =
+GlaxoSmithKline, Dr.
+John's Wort instead of antidepressant prescription drugs. You've got a =
+whole nation of kids graduating from high school and many of them can't =
+even read.
+Vitamin and mineral deficiencies can often lead to disease, and you do =
+not have to be embarrassed about taking vitamin and mineral supplements. =
+Infant jitteriness, irritability, feeding problems, respiratory =
+distress, and stiffened muscle tone are among the symptoms associated =
+with antidepressant exposure shortly before birth in the studies. Check =
+out pioneering health scientist Bruce Lipton and vibrational healing =
+devices like the Violet Ray Crystal Resonator. Drug companies make more =
+money than banks, more money than oil companies, more money than Ford or =
+GM, more money than anybody.
+We need to recognize the disease-promoting problems with processed and =
+manufactured foods, everything from carbonated soft drinks to packaged =
+instant rice products.
+------=_NextPart_001_0017_01C72777.38A90160
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"conciliation" hspace=3D0=20
+src=3D"cid:001501c7276e$d6dbbfc0$4d5238d1@nrpg" align=3Dbaseline=20
+border=3D0></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"It's not a straightforward picture," =
+he said. This=20
+advertising is directed at both doctors, and directly to the public. An =
+educated=20
+person would recommend that you improve your lifestyle by adopting =
+healthy food and=20
+exercise habits, which would eliminate the depression without the need =
+for any herbs=20
+or drugs. That's what's causing depression, but what do we do in this =
+country to=20
+treat depression? David Wheadon, Senior Vice President of Regulatory =
+Affairs and=20
+Product Professional Services for GlaxoSmithKline, Dr.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>John's Wort instead of antidepressant =
+prescription=20
+drugs. You've got a whole nation of kids graduating from high school and =
+many of=20
+them can't even read.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Vitamin and mineral deficiencies can =
+often lead to=20
+disease, and you do not have to be embarrassed about taking vitamin and =
+mineral=20
+supplements. Infant jitteriness, irritability, feeding problems, =
+respiratory=20
+distress, and stiffened muscle tone are among the symptoms associated =
+with=20
+antidepressant exposure shortly before birth in the studies. Check out =
+pioneering=20
+health scientist Bruce Lipton and vibrational healing devices like the =
+Violet Ray=20
+Crystal Resonator. Drug companies make more money than banks, more money =
+than oil=20
+companies, more money than Ford or GM, more money than =
+anybody.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>We need to recognize the =
+disease-promoting problems=20
+with processed and manufactured foods, everything from carbonated soft =
+drinks to=20
+packaged instant rice products.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_0017_01C72777.38A90160--
+
+------=_NextPart_000_0016_01C72777.38A49490
+Content-Type: image/gif;
+	name="tour.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <001501c7276e$d6dbbfc0$4d5238d1@nrpg>
+
+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
+J3/y14oAADs=
+
+------=_NextPart_000_0016_01C72777.38A49490--
+
+
+
+--===============2065788816==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============2065788816==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============2065788816==--
