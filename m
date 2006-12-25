@@ -1,10 +1,9 @@
-From: "Evelina" <vfllm@diabetesport.org>
-Subject: Snook Season closed May, June, July, and August,
-	and reopens Sept.
-Date: Mon, 25 Dec 2006 19:12:04 +0100
-Message-ID: <000701c72851$6d716b00$986851aa@cgvsum>
+From: "Bart" <srgsdm@unicorns.com>
+Subject: It combines the power of .
+Date: Mon, 25 Dec 2006 19:22:17 +0100
+Message-ID: <000701c72851$b0bbfb00$bdd1d780@xvts>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0760240086=="
+Content-Type: multipart/mixed; boundary="===============1723875797=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,77 +14,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0760240086==
+--===============1723875797==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0003_01C72859.CF32C5C0"
+	boundary="----=_NextPart_000_0003_01C7285A.127CB980"
 
-------=_NextPart_000_0003_01C72859.CF32C5C0
+------=_NextPart_000_0003_01C7285A.127CB980
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0004_01C72859.CF338910"
+	boundary="----=_NextPart_001_0004_01C7285A.127DA3E0"
 
-------=_NextPart_001_0004_01C72859.CF338910
+------=_NextPart_001_0004_01C7285A.127DA3E0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-The Pope spoke of the "many grave crises and conflicts" in the Middle =
-East and voiced "hope that the way will be opened to a just and lasting =
-peace".
-My lesson came courtesy of Constance Reitzler, director of La Belle =
-Ecole - "the beautiful school" - which aims to give Parisians and =
-foreigners alike that special polish. exe that downloads the required =
-components during setup. These brutes can provide one with a good fight =
-on light tackle gear.
-It says he came to give his professional advice on whether President =
-Castro should undergo further surgery.
-But regardless of how well designed . "We call on Israeli and =
-Palestinian officials to take new steps to put an end to the killing and =
-lead our two peoples to a new period," he said. Though I've been =
-primarily fly fishing for them, we've also had success with throwing =
-live bait.
-We are, after all, a nation renowned in France for 'le binge-drinking'. =
-Look for intriguing names such as Summerland Key, Big Torch and Little =
-Torch Keys, Cudjoe Key, Sugarloaf Key or Big Coppitt Key.
-It has been reported that those hanged included a taxi driver convicted =
-of four murders.
-If they had known, they would have held onto the real estate here for =
-themselves. The ruling People's Democratic Party expelled the =
-vice-president from its ranks on Friday and called for him to be =
-dismissed from his government post.
-Outdoors  - beaches, camping and parks. We've been finding plenty of =
-them on both coasts of the Keys. This installment of CLR Inside Out =
-talks about strong names, strong name signatures, and how to use them.
-Some nice Black and Red Grouper hit the table at Murray Marine on =
-Saturday. Here, you can snorkel or dive  over the Looe Key coral reef, =
-ride a bicycle  through Key Deer country, or take a fishing  adventure =
-in the back country or troll the deep blue waters beyond the reef.
-Until recently I would have said it probably was. The Georgian prime =
-minister said he had been forced to accept the deal as Gazprom had =
-threatened to cut off supplies otherwise.
-The current maximum is about 15 days a month, depending on the type of =
-fishing gear used and the exact fishing ground.
-We all had a good time and I enjoyed having each and everyone of you all =
-aboard our skiffs, and hope to see you all come back fishing. All are an =
-easy drive to Key West.
-NET Framework version 3. In the worst-affected districts of Aceh and =
-North Sumatra, whole villages have been inundated, with residents left =
-stranded on higher ground.
-It was from a very swish public relations firm - Edelman - and it was an =
-offer of help.
-Peter Deaton Send this page to a friend"fly fishing report"by Capt.
-They will hold midnight Masses and carol services in every unit for =
-those who wish to attend provided they are off duty. White House =
-spokesman Tony Snow  told reporters on Wednesday that such a deployment =
-was "something that's being explored". All these things I learned that =
-morning.
-Ethiopia's prime minister has said his country is "at war" with the =
-Islamists, and the Red Cross has urged all parties to protect civilians =
-from harm.
-------=_NextPart_001_0004_01C72859.CF338910
+And on human conduct they tend to stress setting personal examples =
+rather than getting the state to enforce religious rules.
+A long time ago in Microsoft Systems Journal Paul DiLascia demonstrated =
+a neat trick to display context-sensitive tooltips floating over =
+pictures. But what I have learned about Mormons and what seems to be =
+happening in America, leads me to wonder whether their time has come. =
+While we have worked to make .
+This official Microsoft study guide is designed to help you make the =
+most of your study time.
+You can't get any better than hooking into a nice Cobia before you even =
+drop anchor on your spot. He said he would take legal action "to =
+challenge this illegality". It teaches the "arts de vivre", that =
+uniquely French concept which encompasses everything from how to =
+appreciate your wine and food, to whether to eat your sorbet or =
+ice-cream with a spoon or a fork.
+Cod will be further protected by a cut in the days boats spend at sea. =
+The BBC's Natalia Antelava says exiled opposition groups are already =
+lobbying to return to the country, adding that inside the country signs =
+of a power struggle are emerging.
+Though the army is deployed in most districts of Assam affected by =
+separatist violence, the security of the state capital, Guwahati, has so =
+far been handled by the Assam police.
+Look for the reef bite to stay on as long as the sky is overcast and the =
+water stays cool. The group also called for boycott of Indian Republic =
+Day celebrations on 26 January.
+Israel has repeatedly said it will not deal with the Hamas-led =
+Palestinian government, which refuses to recognise the legitimacy of the =
+Jewish state. For more information, see the page Breaking Changes in . =
+Key Largo HotelsOnline Booking Key Largo Diving Capital of the World!
+The separatist group had been fighting Delhi's rule in the tea and =
+oil-rich state for the past 27 years. When you distribute the .
+Michel Sabbah, the Latin Patriarch of Jerusalem, made the appeal in his =
+sermon at midnight Mass in Bethlehem. Trout Season is finally open, so =
+make sure you enjoy a day in the backcountry for those delicious trout, =
+and have a great lunch or dinner.
+All these things I learned that morning.
+The dispute led to some of the worst factional fighting between =
+Palestinians in years, prompting fears that the violence was descending =
+into all-out civil war. A spokesman told the French news agency AFP that =
+the president was unhappy with the arrests.
+Larry Cohen Fishing E-Books Download Now! He singled out those forced to =
+fight as child soldiers, to beg and those "who suffer deprivation and =
+hunger" and "children who are unloved".
+The core classes of the .
+Talks in Geneva in October between the two sides ended in deadlock, and =
+correspondents say that the fighting looks set to continue.
+Even though it is the start of the Autumn Season, it is Summer here in =
+the Keys and feels like it. In some cases, when some additional =
+infrastruc Offshore has been slow and most charter boats have been =
+fishing the reef instead.
+Marine  - marinas you may want to use when boating in this area of the =
+Florida Keys.
+------=_NextPart_001_0004_01C7285A.127DA3E0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -94,113 +92,113 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"Pharaoh" hspace=3D0=20
-src=3D"cid:000201c72851$6d6d9a70$986851aa@cgvsum" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"weakness" hspace=3D0=20
+src=3D"cid:000201c72851$b0b76720$bdd1d780@xvts" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The Pope spoke of the "many grave =
-crises and=20
-conflicts" in the Middle East and voiced "hope that the way will be =
-opened to a just=20
-and lasting peace".</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My lesson came courtesy of Constance =
-Reitzler,=20
-director of La Belle Ecole - "the beautiful school" - which aims to give =
-Parisians=20
-and foreigners alike that special polish. exe that downloads the =
-required components=20
-during setup. These brutes can provide one with a good fight on light =
-tackle=20
-gear.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It says he came to give his =
-professional advice on=20
-whether President Castro should undergo further surgery.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But regardless of how well designed . =
-"We call on=20
-Israeli and Palestinian officials to take new steps to put an end to the =
-killing and=20
-lead our two peoples to a new period," he said. Though I've been =
-primarily fly=20
-fishing for them, we've also had success with throwing live =
-bait.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>We are, after all, a nation renowned in =
-France for=20
-'le binge-drinking'. Look for intriguing names such as Summerland Key, =
-Big Torch and=20
-Little Torch Keys, Cudjoe Key, Sugarloaf Key or Big Coppitt =
-Key.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It has been reported that those hanged =
-included a=20
-taxi driver convicted of four murders.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If they had known, they would have held =
-onto the=20
-real estate here for themselves. The ruling People's Democratic Party =
-expelled the=20
-vice-president from its ranks on Friday and called for him to be =
-dismissed from his=20
-government post.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Outdoors  - beaches, camping and parks. =
-We've been=20
-finding plenty of them on both coasts of the Keys. This installment of =
-CLR Inside=20
-Out talks about strong names, strong name signatures, and how to use=20
-them.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some nice Black and Red Grouper hit the =
-table at=20
-Murray Marine on Saturday. Here, you can snorkel or dive  over the Looe =
-Key coral=20
-reef, ride a bicycle  through Key Deer country, or take a fishing  =
-adventure in the=20
-back country or troll the deep blue waters beyond the reef.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Until recently I would have said it =
-probably was.=20
-The Georgian prime minister said he had been forced to accept the deal =
-as Gazprom=20
-had threatened to cut off supplies otherwise.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The current maximum is about 15 days a =
-month,=20
-depending on the type of fishing gear used and the exact fishing=20
-ground.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>We all had a good time and I enjoyed =
-having each=20
-and everyone of you all aboard our skiffs, and hope to see you all come =
-back=20
-fishing. All are an easy drive to Key West.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>NET Framework version 3. In the =
-worst-affected=20
-districts of Aceh and North Sumatra, whole villages have been inundated, =
-with=20
-residents left stranded on higher ground.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It was from a very swish public =
-relations firm -=20
-Edelman - and it was an offer of help.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Peter Deaton Send this page to a =
-friend"fly fishing=20
-report"by Capt.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>They will hold midnight Masses and =
-carol services=20
-in every unit for those who wish to attend provided they are off duty. =
-White House=20
-spokesman Tony Snow  told reporters on Wednesday that such a deployment =
-was=20
-"something that's being explored". All these things I learned that=20
+<DIV><FONT face=3DArial size=3D2>And on human conduct they tend to =
+stress setting=20
+personal examples rather than getting the state to enforce religious=20
+rules.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A long time ago in Microsoft Systems =
+Journal Paul=20
+DiLascia demonstrated a neat trick to display context-sensitive tooltips =
+floating=20
+over pictures. But what I have learned about Mormons and what seems to =
+be happening=20
+in America, leads me to wonder whether their time has come. While we =
+have worked to=20
+make .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This official Microsoft study guide is =
+designed to=20
+help you make the most of your study time.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You can't get any better than hooking =
+into a nice=20
+Cobia before you even drop anchor on your spot. He said he would take =
+legal action=20
+"to challenge this illegality". It teaches the "arts de vivre", that =
+uniquely French=20
+concept which encompasses everything from how to appreciate your wine =
+and food, to=20
+whether to eat your sorbet or ice-cream with a spoon or a =
+fork.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Cod will be further protected by a cut =
+in the days=20
+boats spend at sea. The BBC's Natalia Antelava says exiled opposition =
+groups are=20
+already lobbying to return to the country, adding that inside the =
+country signs of a=20
+power struggle are emerging.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Though the army is deployed in most =
+districts of=20
+Assam affected by separatist violence, the security of the state =
+capital, Guwahati,=20
+has so far been handled by the Assam police.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Look for the reef bite to stay on as =
+long as the=20
+sky is overcast and the water stays cool. The group also called for =
+boycott of=20
+Indian Republic Day celebrations on 26 January.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Israel has repeatedly said it will not =
+deal with=20
+the Hamas-led Palestinian government, which refuses to recognise the =
+legitimacy of=20
+the Jewish state. For more information, see the page Breaking Changes in =
+ Key Largo=20
+HotelsOnline Booking Key Largo Diving Capital of the World!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The separatist group had been fighting =
+Delhi's rule=20
+in the tea and oil-rich state for the past 27 years. When you distribute =
+the=20
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Michel Sabbah, the Latin Patriarch of =
+Jerusalem,=20
+made the appeal in his sermon at midnight Mass in Bethlehem. Trout =
+Season is finally=20
+open, so make sure you enjoy a day in the backcountry for those =
+delicious trout, and=20
+have a great lunch or dinner.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>All these things I learned that=20
 morning.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ethiopia's prime minister has said his =
-country is=20
-"at war" with the Islamists, and the Red Cross has urged all parties to =
-protect=20
-civilians from harm.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>The dispute led to some of the worst =
+factional=20
+fighting between Palestinians in years, prompting fears that the =
+violence was=20
+descending into all-out civil war. A spokesman told the French news =
+agency AFP that=20
+the president was unhappy with the arrests.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Larry Cohen Fishing E-Books Download =
+Now! He=20
+singled out those forced to fight as child soldiers, to beg and those =
+"who suffer=20
+deprivation and hunger" and "children who are unloved".</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The core classes of the .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Talks in Geneva in October between the =
+two sides=20
+ended in deadlock, and correspondents say that the fighting looks set =
+to=20
+continue.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Even though it is the start of the =
+Autumn Season,=20
+it is Summer here in the Keys and feels like it. In some cases, when =
+some additional=20
+infrastruc Offshore has been slow and most charter boats have been =
+fishing the reef=20
+instead.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Marine  - marinas you may want to use =
+when boating=20
+in this area of the Florida Keys.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0004_01C72859.CF338910--
+------=_NextPart_001_0004_01C7285A.127DA3E0--
 
-------=_NextPart_000_0003_01C72859.CF32C5C0
+------=_NextPart_000_0003_01C7285A.127CB980
 Content-Type: image/gif;
-	name="karat.gif"
+	name="venerable.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000201c72851$6d6d9a70$986851aa@cgvsum>
+Content-ID: <000201c72851$b0b76720$bdd1d780@xvts>
 
 R0lGODdhcAGIAfMAACAhFCMRDgsfHBYPFMxnO49ANa60yuTPoN+rztqc377Eg4jn9QAAAAAAAAAA
 AAAAACwAAAAAcAGIAQAE/zDISau9OOvNu/9gKI4VYJ5oqppk675wLM90bd94ru987//AoHBILBqP
@@ -371,11 +369,11 @@ VnT9023NVlNxg3R9V3iNVwYlV3rdE1holHU1hh11hnrt14HRlzxoBH8dWIIt2ELd1lnFJoN1Q26x
 Vod92KOR0zeEWIqtWIvF0CiV14Ba2FKQV2ZREY3dBFvhWJItWZM9WZRN2UIJWTq8WIi5DJcVtk9g
 FS1R2VOIAAA7
 
-------=_NextPart_000_0003_01C72859.CF32C5C0--
+------=_NextPart_000_0003_01C7285A.127CB980--
 
 
 
---===============0760240086==
+--===============1723875797==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -386,7 +384,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0760240086==
+--===============1723875797==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -397,4 +395,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0760240086==--
+--===============1723875797==--
