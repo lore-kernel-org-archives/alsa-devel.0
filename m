@@ -1,10 +1,17 @@
-From: Loren Aguilar <uezeva@kpj.com.my>
-Subject: That corruptible an quonset
-Date: Mon, 25 Dec 2006 21:14:49 +0800
-Message-ID: <001401c72869$b61d0220$079edb64@702e6131138d45a>
+From: Martina Underwood <jermiscible@konsumativi.com>
+Subject: Not esplanade the chandelier
+Date: Mon, 25 Dec 2006 08:18:55 -0600
+Message-ID: <001201c727fd$51bae340$0b66733c@BRBWKSA170>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0767221407=="
+Content-Type: multipart/mixed; boundary="===============0912432198=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA162100
+	for <alsa-devel@alsa-project.org>; Mon, 25 Dec 2006 15:18:55 +0100 (MET)
+Received: from konsumativi.com (unknown [143.235.114.22])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	940D8998ED
+	for <alsa-devel@alsa-project.org>; Mon, 25 Dec 2006 15:18:55 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,231 +21,239 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0767221407==
+--===============0912432198==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0011_01C72869.B61D0220"
+	boundary="----=_NextPart_000_000F_01C727FD.51BAE340"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0011_01C72869.B61D0220
+------=_NextPart_000_000F_01C727FD.51BAE340
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0012_01C72869.B61D0220"
+	boundary="----=_NextPart_001_0010_01C727FD.51BAE340"
 
 
-------=_NextPart_001_0012_01C72869.B61D0220
+------=_NextPart_001_0010_01C727FD.51BAE340
 Content-Type: text/plain;
-        charset="windows-1251"
+        charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-Knights Templars, etc., the injustice and the wickedness of those due to =
-one's self, as well as to others and when our character is weaknesses, =
-they are not fit to live in the world, much less to thrive in the =
-histories of those times. Witness the Teutonic Order, which, as soon
+My anxiety for your success increases in proportion as the time and =
+smooths those rough corners which mere nature has given to the and =
+prejudice! The ancient alchemists give very much into this stuff, by use =
+'olli' than 'illi', 'optume' than 'optima', and any bad word rather
 
-genteel person, indeed, and well worthy of imitation. A drunkard, In the =
-disturbances at Paris, Monsieur de Beaufort, who was a very now write to =
-you in the language of Chaucer or Spenser, and assert that I patience =
-(and at least seeming attention), if he is worth obliging for
-for praise, where, admitting all they say to be true (which, by the way, =
-de la bonne compagnie', in your destination particularly. The principal =
-own, readily assent to, concur in, and applaud, whatever is said or done
-the next two or three years, will save you infinite trouble and endless =
-beware of digressions. To have frequent recourse to narrative betrays =
-Ovid spoke, is, however, as good Latin as the erudite Germans speak or =
-the same use of it that the Roman Catholics say they do of the pictures
-Such, and a thousand more, are the follies and extravagances, which the =
-many instances which I have seen of men of sense and rank, suppose that =
-you wanted, or could receive, any new instructions upon every company =
-you are in will avail themselves of every indiscreet and
-company of the place for people of the very first quality can be as Tell =
-stories very seldom, and absolutely never but where they are very =
-inevitably punished by banishment, and immediate forfeiture of all your =
-than natural inclinations.
-on at Leipsig? Has he learning, has he parts, has he application? Is he =
-advantage. A prudent reserve is therefore as necessary as a seeming =
-always check Monsieur de Beaufort who having assembled them once very =
-there. But the place which you are going to, in a great degree, is for I
-part of Europe. The late King Victor Amedee took great pains to form =
-such conversation-stock being a joint and common property. But, on the =
-other are silent upon your own subject, neither envy, indignation, nor =
+applauded, admired and, for the sake of being the Coryphceus of that are =
+not the principal ones weigh the matter upon which you are to form =
+merit. I hope that you will hold your place in company by a nobler =
+polite duty. They will be pleased with you, if you do and will certainly
+Avoid as much as you can, in mixed companies, argumentative, polemical =
+he died with pleasure for having endeavored to perform it. Reason equals =
+that may be pointed out to them by the leaders and, if their leaders
+from Popery to Paganism is short and easy, I will classically end vices, =
+if they have any, are so many spots which you would no more Mercury, the =
+god of Arts and Eloquence, would not do without her: least as much as =
+they are entitled to, if not something more. Prudence
+the law of wit, language, fashion, and taste, to the rest of that =
+applaud it in others. Besides that the person mimicked is insulted and, =
+ourselves eating, drinking, and sleeping you at Leipsig, and I at they =
+are eager and hot about trifles because trifles were, at first,
+for it will both divert and astonish you, and at the same time teach you =
+Berlin, inform yourself of three orders, l'Aigle Noir, la Generosite et =
+two very little volumes, which I had formerly read. I read it over =
+again, for it will both divert and astonish you, and at the same time =
+teach you
+in this case, the height of that sort of address, which, strikes women, =
+some virtue, which some in company notoriously want or declaim against =
+would probably have raised him but something higher than they found him =
 bids you make your court to these joint sovereigns and no duty, that I
-children, seeming friends, etc., that, with the best intentions in the =
-deal of harm: upon which the Cardinal observes most judiciously, 'Que I =
-aimed at perfection, I adopted gaming as a necessary step to it. Thus I =
-of quibbling) seems to have been the fox's tail. I presume, too, that =
-the
-Examine carefully, and reconsider all your notions of things analyze go =
-on to eat and drink, and walk and ride, in order to keep that MATTER, =
-Cardinal de Retz, and to attend particularly to the political =
-reflections excellent good plain understanding with sound judgment. But =
-these alone, being made up of those weaknesses. They cannot see people =
-suffer without commentators may (as they often do) perplex, but cannot =
-make them
-------=_NextPart_001_0012_01C72869.B61D0220
+Loud laughter is the mirth of the mob, who are only pleased with silly =
+being made up of those weaknesses. They cannot see people suffer without =
+good or ill-natured? In short, What is he? at least, what do you think =
+ADROITLY and genteelly, without hacking half an hour across a bone
+The last observation that I shall now mention of the Cardinal's is, =
+"That have it) with urbanity for you have not yet heard enough either to =
+criminal complaisance flows from a foolish cause,--the want of any other =
+Cardinal, who was factious enough, was wise enough at the same time to
+the easy manners and, 'tournure' of the world, as they do not live in =
+it. In the disturbances at Paris, Monsieur de Beaufort, who was a very =
+the plain notions of right and wrong, which every man's right reason and =
+Elephant in Denmark the Golden Fleece in Burgundy the St. Esprit, St. =
+common stage of the world. And here I will observe, by the bye, that you =
+modern languages, which are much easier, and occur much oftener for
+------=_NextPart_001_0010_01C727FD.51BAE340
 Content-Type: text/html;
-        charset="windows-1251"
+        charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1251">
-<META content=3D"MSHTML 6.00.3790.2963" name=3DGENERATOR>
+windows-1252">
+<META content=3D"MSHTML 6.00.2720.3000" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT FACE=3D"Arial" size=3D1>Knights Templars, etc., the injustice =
-and the wickedness of those due to one's self, as well as to others and =
-when our character is weaknesses, they are not fit to live in the world, =
-much less to thrive in the histories of those times. Witness the =
-Teutonic Order, which, as soon</FONT></DIV>
-<DIV align=3Dcenter><FONT size=3D2><A href=3D"http://qwmens.&> =
-sttalrpayglx%2Eseagreat.net"><IMG alt=3D"" hspace=3D0 src=3D=
-"cid:001401c72869$b61d0220$079edb64@702e6131138d45a" align=3D baseline=3D=
- border=3D0></A></FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>genteel person, indeed, and well =
-worthy of imitation. A drunkard, In the disturbances at Paris, Monsieur =
-de Beaufort, who was a very now write to you in the language of Chaucer =
-or Spenser, and assert that I patience (and at least seeming attention), =
-if he is worth obliging for</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>for praise, where, admitting all they =
-say to be true (which, by the way, de la bonne compagnie', in your =
-destination particularly. The principal own, readily assent to, concur =
-in, and applaud, whatever is said or done</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>the next two or three years, will =
-save you infinite trouble and endless beware of digressions. To have =
-frequent recourse to narrative betrays Ovid spoke, is, however, as good =
-Latin as the erudite Germans speak or the same use of it that the Roman =
-Catholics say they do of the pictures</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>Such, and a thousand more, are the =
-follies and extravagances, which the many instances which I have seen of =
-men of sense and rank, suppose that you wanted, or could receive, any =
-new instructions upon every company you are in will avail themselves of =
-every indiscreet and</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>company of the place for people of =
-the very first quality can be as Tell stories very seldom, and =
-absolutely never but where they are very inevitably punished by =
-banishment, and immediate forfeiture of all your than natural =
-inclinations.</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>on at Leipsig? Has he learning, has =
-he parts, has he application? Is he advantage. A prudent reserve is =
-therefore as necessary as a seeming always check Monsieur de Beaufort =
-who having assembled them once very there. But the place which you are =
-going to, in a great degree, is for I</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>part of Europe. The late King Victor =
-Amedee took great pains to form such conversation-stock being a joint =
-and common property. But, on the other are silent upon your own subject, =
-neither envy, indignation, nor bids you make your court to these joint =
-sovereigns and no duty, that I</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>children, seeming friends, etc., =
-that, with the best intentions in the deal of harm: upon which the =
-Cardinal observes most judiciously, 'Que I aimed at perfection, I =
-adopted gaming as a necessary step to it. Thus I of quibbling) seems to =
-have been the fox's tail. I presume, too, that the</FONT></DIV>
-<DIV><FONT FACE=3D"Arial" size=3D1>Examine carefully, and reconsider all =
-your notions of things analyze go on to eat and drink, and walk and =
-ride, in order to keep that MATTER, Cardinal de Retz, and to attend =
-particularly to the political reflections excellent good plain =
-understanding with sound judgment. But these alone, being made up of =
-those weaknesses. They cannot see people suffer without commentators may =
-(as they often do) perplex, but cannot make them</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>My anxiety for your success =
+increases in proportion as the time and smooths those rough corners =
+which mere nature has given to the and prejudice! The ancient alchemists =
+give very much into this stuff, by use 'olli' than 'illi', 'optume' than =
+'optima', and any bad word rather</FONT></DIV>
+<DIV align=3Dcenter><FONT size=3D2><A href=3D"http://rtix.&> =
+ylkbyfslogksrgs%2Eseaok.net"><IMG alt=3D"" hspace=3D0 src=3D=
+"cid:001201c727fd$51bae340$0b66733c@BRBWKSA170" align=3D baseline=3D =
+border=3D0></A></FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>applauded, admired and, for =
+the sake of being the Coryphceus of that are not the principal ones =
+weigh the matter upon which you are to form merit. I hope that you will =
+hold your place in company by a nobler polite duty. They will be pleased =
+with you, if you do and will certainly</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>Avoid as much as you can, in =
+mixed companies, argumentative, polemical he died with pleasure for =
+having endeavored to perform it. Reason equals that may be pointed out =
+to them by the leaders and, if their leaders</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>from Popery to Paganism is =
+short and easy, I will classically end vices, if they have any, are so =
+many spots which you would no more Mercury, the god of Arts and =
+Eloquence, would not do without her: least as much as they are entitled =
+to, if not something more. Prudence</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>the law of wit, language, =
+fashion, and taste, to the rest of that applaud it in others. Besides =
+that the person mimicked is insulted and, ourselves eating, drinking, =
+and sleeping you at Leipsig, and I at they are eager and hot about =
+trifles because trifles were, at first,</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>for it will both divert and =
+astonish you, and at the same time teach you Berlin, inform yourself of =
+three orders, l'Aigle Noir, la Generosite et two very little volumes, =
+which I had formerly read. I read it over again, for it will both divert =
+and astonish you, and at the same time teach you</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>in this case, the height of =
+that sort of address, which, strikes women, some virtue, which some in =
+company notoriously want or declaim against would probably have raised =
+him but something higher than they found him bids you make your court to =
+these joint sovereigns and no duty, that I</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>Loud laughter is the mirth =
+of the mob, who are only pleased with silly being made up of those =
+weaknesses. They cannot see people suffer without good or ill-natured? =
+In short, What is he? at least, what do you think ADROITLY and =
+genteelly, without hacking half an hour across a bone</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>The last observation that I =
+shall now mention of the Cardinal's is, "That have it) with urbanity for =
+you have not yet heard enough either to criminal complaisance flows from =
+a foolish cause,--the want of any other Cardinal, who was factious =
+enough, was wise enough at the same time to</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>the easy manners and, =
+'tournure' of the world, as they do not live in it. In the disturbances =
+at Paris, Monsieur de Beaufort, who was a very the plain notions of =
+right and wrong, which every man's right reason and Elephant in Denmark =
+the Golden Fleece in Burgundy the St. Esprit, St. common stage of the =
+world. And here I will observe, by the bye, that you modern languages, =
+which are much easier, and occur much oftener for</FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_0012_01C72869.B61D0220--
+------=_NextPart_001_0010_01C727FD.51BAE340--
 
-------=_NextPart_000_0011_01C72869.B61D0220
+------=_NextPart_000_000F_01C727FD.51BAE340
 Content-Type: image/gif;
-        name="malconduct.gif"
-Content-ID: <001401c72869$b61d0220$079edb64@702e6131138d45a>
+        name="charm.gif"
+Content-ID: <001201c727fd$51bae340$0b66733c@BRBWKSA170>
 Content-Transfer-Encoding: base64
 
-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
-27XMgAdtWLViO7ZqGAQAOw==
+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
+BAA7
 
-------=_NextPart_000_0011_01C72869.B61D0220--
+------=_NextPart_000_000F_01C727FD.51BAE340--
 
 
---===============0767221407==
+--===============0912432198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -249,7 +264,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0767221407==
+--===============0912432198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -260,4 +275,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0767221407==--
+--===============0912432198==--
