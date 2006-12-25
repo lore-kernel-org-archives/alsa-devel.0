@@ -1,15 +1,13 @@
-From: "Jocelyn Young" <uqyachtsman@nexuscomputersolutions.com>
-Subject: As uptrend in utmost
-Date: Mon, 25 Dec 2006 20:52:42 -0300
-Message-ID: <001601c72866$9ee98db0$00b99094@casanova4dbxpc>
+From: Stelios Valavanis <stel@onshore.com>
+Subject: alsa card id for ati tvwonder ve
+Date: Mon, 25 Dec 2006 17:58:26 -0600
+Message-ID: <200612251758.26293.stel@onshore.com>
+Reply-To: stel@onshore.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from nexuscomputersolutions.com (pc-207-172-120-200.cm.vtr.net
-	[200.120.172.207])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2EE7B2C5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Dec 2006 00:52:47 +0100 (MET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,43 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-you have left dissipation too and have resumed at Leipsig that
-_____________________________________
+looks like this card can show up as an alsa audio device with the load_all=1 
+setting on but it doesn't push audio out the interface. regardless the card 
+info is as follows.
 
-* NHVP * NHVP * NHVP * NHVP *
+driver = snd-bt87x
+card = ATI TVWonderVE
+ID = 0x31002
 
-              BULL MARKET REPORT
-:NORTHEAST DEVELOPMENT COMPANY INC:.
+i'm not sure i got the id right. this is what dmesg reported.
 
-Small Cap Insight
+[17179584.764000] bt878_probe: card id=[0x31002], Unknown card.
+[17179585.360000] unknown card 0x878-0x1002:0x03, using default rate 32000
 
-Symbol OTC:     NHVP
-Current Price:     $0.11
-5 Day Expected: $0.65
-
-* NHVP * NHVP * NHVP * NHVP * NHVP * NHVP *
-
-Before we continue, there is a huge PR campaign under way
-for NHVP so get in before the move and this price is hitory
-
-SmallCap With High Potential?
-
-The Real Estate Sector has bottomed out and now is the time to
-get in, NORTHEAST DEVELOPMENT COMPANY INC has provided over 20
-time returns during the real estate boom and its ready to do it again.
-
-* NHVP * NHVP * NHVP * NHVP * NHVP *
-
-Look out for breaking news on NHVP with your broker! 
-Grab NHVP first thing tuesday morning!
-
-_____________________________________
-offending, or, by your manner of granting, to double the obligation
-and enjoy, in, quiet, the liberty which I have acquired by the
-commerce, and the police of every country. And you would do well to keep
+-- 
+_______________________________________
+stel valavanis  http://www.onshore.com/
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
