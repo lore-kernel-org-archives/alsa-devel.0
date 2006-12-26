@@ -1,12 +1,10 @@
-From: "Stan Gardner" <expressionlodestones@accessdc.com>
-Subject: Stan
-Date: Tue, 26 Dec 2006 13:13:10 +0000 (UTC)
-Message-ID: <01c728ef$90cf54b0$6c822ecf@expressionlodestones>
+From: "thomas" <thomas.luo@ieee.org>
+Subject: The alsa 1.0.14rc1 Can't work in my PC
+Date: Tue, 26 Dec 2006 23:57:04 +0800
+Message-ID: <003b01c72906$7fc02570$6507a8c0@228fd4981e4b4dc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1173464103=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 26 Dec 2006 13:12:59 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,49 +14,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-2005 was the year of the oil company with many of these	
-companies posting record profits.  2006 has been the year	 
-of alternative fuels with companies involved in this sector	 	
-blowing off the charts.  This trend shows no signs of	
-abating.	
-Our next feature is right in the thick of the high-growth	 	
-alternative energy sector and they are doing incredible	 	 
-things.	 
-	 	
-AlgoDyne Ethanol Energy	 
-	
-Symbol:  ADYN	 	
-	 	
-Current Price:            $1.30	 
-Short Term Target:        $3.50	 
-Long Term Projected:      $10.00	
-	
-It doesn't take a genius to know why alternative energy is	 	 
-such a high-growth area right now.  Smart traders know how	 	 
-to watch global trends and seize the moment.	
-	
-AlgoDyne is where it's at.  AlgoDyne has developed a	  
-turnkey solution in their proprietary micro-algae based	 
-process which can produce direct electricity, eco-friendly	 
-fuels, and valuable bi-products.	 	
-	 
-The company has just hit its sweet spot in the development	 
-phase and is set to release some astounding results.  These	 
-revelations are being backed up by a far-reaching PR	 	 
-campaign.	 	
-	
-It is essential to get in early in order to enjoy the	 
-biggest gains.  Come Tuesday, December 26th this one will	 
-be rapidly going up to meet our target price!	
-	
-Do not delay!  Win with ADYN!	 
+--===============1173464103==
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
+aGksYWxsLA0KIGkgaGF2ZSBjb21waWxlZCB0aGUgYWxzYSBkcml2ZXIgMS4wLjE0IHdpdGggdGhl
+IGxpbnV4IDIuNi4xOSBrZXJuZWwudGhlIGNvbXBpbGUgd29ya2luZyBpcyBmaW5lLGkgbWVldCBz
+b21lIHRyb3VibGUgaW4gdGhlIGFsc2EgY29uZmlnLiBpIGhhdmUgcnVuIHRoZSBhbHNhY29uZi4g
+YWxsIHRoaW5ncyBpcyBvaywNCmJ1dCBjYW4ndCBwbGF5IG11c2ljLiBpdCdzIHNhbWVzIHRoYXQg
+dGhlIGFsc2EgaXMgZGlmZmljdWx0IHRvIHVzaW5nLg0Kd2hvIGNhbiBoZWxwIG1lPw0KdGhhbmtz
+DQoNCltyb290QGxvY2FsaG9zdCBhc291bmRdIyBjYXQgY2FyZHMNCiAwIFtJODI4MDFEQklDSDQg
+ICBdOiBJQ0g0IC0gSW50ZWwgODI4MDFEQi1JQ0g0DQogICAgICAgICAgICAgICAgICAgICAgSW50
+ZWwgODI4MDFEQi1JQ0g0IHdpdGggQUxDMjAzIGF0IDB4ZDAxMDBjMDAsIGlycSAxMQ0KIDEgW01v
+ZGVtICAgICAgICAgIF06IElDSC1NT0RFTSAtIEludGVsIDgyODAxREItSUNINCBNb2RlbQ0KICAg
+ICAgICAgICAgICAgICAgICAgIEludGVsIDgyODAxREItSUNINCBNb2RlbSBhdCAweDFjMDAsIGly
+cSAxMQ0KDQovZXRjL2Fzb3VuZC5jb25mDQojIFNldCBkZWZhdWx0IHNvdW5kIGNhcmQNCnBjbS5z
+bmQtY2FyZC0wIHsNCiAgICAgdHlwZSBodw0KICAgICBjYXJkIDANCiAgICAgZGV2aWNlIDANCn0N
+Cg0KcGNtLnNuZF9jYXJkMSB7DQogICAgIHR5cGUgaHcNCiAgICAgY2FyZCAxDQogICAgIGRldmlj
+ZSAwDQp9DQoNCiMgQWxsb3cgbWl4aW5nIG9mIG11bHRpcGxlIG91dHB1dCBzdHJlYW1zIHRvIHRo
+aXMgZGV2aWNlDQpwY20ub3V0cHV0IHsNCiAgICAgdHlwZSBkbWl4DQogICAgIGlwY19rZXkgMTAy
+OQ0KICAgICBpcGNfcGVybSAwNzc3ICMgU291bmQgZm9yIGV2ZXJ5Ym9keSBpbiB5b3VyIGdyb3Vw
+IQ0KICAgICBzbGF2ZS5wY20gInNuZC1jYXJkLTAiDQoNCiAgICAgc2xhdmUgew0KICAgICAgICAg
+ICMgVGhpcyBzdHVmZiBwcm92aWRlcyBzb21lIGZpeGVzIGZvciBsYXRlbmN5IGlzc3Vlcy4NCiAg
+ICAgICAgICAjIGJ1ZmZlcl9zaXplIHNob3VsZCBiZSBzZXQgZm9yIHlvdXIgYXVkaW8gY2hpcHNl
+dC4NCiAgICAgICAgICBwZXJpb2RfdGltZSAwDQogICAgICAgICAgcGVyaW9kX3NpemUgMTAyNA0K
+ICAgICAgICAgIGJ1ZmZlcl9zaXplIDgxOTINCiAgICAgICAgICAjIGJ1ZmZlcl9zaXplIDQwOTYN
+CiAgICAgICAgICAjIGJ1ZmZlcl9zaXplIDIwNDgNCiAgICAgfQ0KDQogICAgIGJpbmRpbmdzIHsN
+CiAgICAgICAgICAwIDANCiAgICAgICAgICAxIDENCiAgICAgfQ0KfQ0KDQpwY20uaW5wdXQgew0K
+ICAgICB0eXBlIGRzbm9vcA0KICAgICBpcGNfa2V5IDIwNDgNCiAgICAgc2xhdmUucGNtICJzbmRf
+Y2FyZDAiDQoNCiMjIFBvc3NpYmxlIGFydHNkIGZ1bGwgZHVwbGV4IGZpeDoNCiMgICAgIHNsYXZl
+IHsNCiMgICAgICAgICAgcGVyaW9kX3RpbWUgMA0KIyAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDI0
+DQojICAgICAgICAgIGJ1ZmZlcl9zaXplIDgxOTINCiMgICAgIH0NCg0KICAgICBiaW5kaW5ncyB7
+DQogICAgICAgICAgMCAwDQogICAgICAgICAgMSAxDQogICAgIH0NCn0NCiMgQWxsb3cgcmVhZGlu
+ZyBmcm9tIHRoZSBkZWZhdWx0IGRldmljZS4NCiMgQWxzbyBrbm93biBhcyByZWNvcmQgb3IgY2Fw
+dHVyZS4NCnBjbS5pbnB1dDEgew0KICAgICB0eXBlIGRzbm9vcA0KICAgICBpcGNfa2V5IDIwNDkN
+CiAgICAgc2xhdmUucGNtICJzbmRfY2FyZDEiDQoNCiMjIFBvc3NpYmxlIGFydHNkIGZ1bGwgZHVw
+bGV4IGZpeDoNCiAgICAgc2xhdmUgew0KICAgICAgICAgIHBlcmlvZF90aW1lIDANCiAgICAgICAg
+ICBwZXJpb2Rfc2l6ZSAxMDI0DQogICAgICAgICAgYnVmZmVyX3NpemUgODE5Mg0KICAgICAgICAg
+ICMgYnVmZmVyX3NpemUgNDA5Ng0KICAgICAgICAgICMgYnVmZmVyX3NpemUgMjA0OA0KICAgICB9
+DQoNCiAgICAgYmluZGluZ3Mgew0KICAgICAgICAgIDAgMA0KICAgICAgICAgIDEgMQ0KICAgICB9
+DQp9DQojIFRoaXMgaXMgd2hhdCB3ZSB3YW50IGFzIG91ciBkZWZhdWx0IGRldmljZQ0KIyBhIGZ1
+bGx5IGR1cGxleCAocmVhZC93cml0ZSkgYXVkaW8gZGV2aWNlLg0KcGNtLmR1cGxleCB7DQogICAg
+IHR5cGUgYXN5bQ0KICAgICBwbGF5YmFjay5wY20gIm91dHB1dCINCiAgICAgY2FwdHVyZS5wY20g
+ImlucHV0Ig0KIyAgICAgY2FwdHVyZS5wY20gImlucHV0MSINCn0NCg0KIyMjIyMjIyMjIyMjIyMj
+IyMjIw0KIyBDT05WRVJTSU9OIFBMVUcgIw0KIyMjIyMjIyMjIyMjIyMjIyMjIw0KIyBTZXR0aW5n
+IHRoZSBkZWZhdWx0IHBjbSBkZXZpY2UgYWxsb3dzIHRoZSBjb252ZXJzaW9uDQojIHJhdGUgdG8g
+YmUgc2VsZWN0ZWQgb24gdGhlIGZseS4NCiMgZHVwbGV4IG1vZGUgYWxsb3dzIGFueSBhbHNhIGVu
+YWJsZWQgYXBwIHRvIHJlYWQvd3JpdGUNCiMgdG8gdGhlIGRtaXggcGx1ZyAoRml4ZXMgYSBwcm9i
+bGVtIHdpdGggd2luZSkuDQpwY20uIWRlZmF1bHQgew0KICAgICB0eXBlIHBsdWcNCiAgICAgc2xh
+dmUucGNtICJkdXBsZXgiDQp9DQojIyMjIyMjIw0KIyBBT1NTICMNCiMjIyMjIyMjDQojIE9TUyBk
+c3AwIGRldmljZSAoT1NTIG5lZWRzIG9ubHkgb3V0cHV0IHN1cHBvcnQsIGR1cGxleCB3aWxsIGJy
+ZWFrIHNvbWUgc3R1ZmYpDQpwY20uZHNwMCB7DQogICAgIHR5cGUgcGx1Zw0KICAgICBzbGF2ZS5w
+Y20gIm91dHB1dCINCn0NCg0KIw0KcGNtLmRzcDEgew0KICAgICB0eXBlIHBsdWcNCiAgICAgc2xh
+dmUucGNtICJvdXRwdXQxIg0KfQ0KLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8v
+Ly8vLy8vLy8vDQoNCmFwbGF5DQpBTFNBIGxpYiBwY21fZG1peC5jOjg2ODooc25kX3BjbV9kbWl4
+X29wZW4pIHVuYWJsZSB0byBvcGVuIHNsYXZlDQphcGxheTogbWFpbjo1NDU6IGF1ZGlvIG9wZW4g
+ZXJyb3I6IE5vIHN1Y2ggZGV2aWNlDQoNCltyb290QGxvY2FsaG9zdCB+XSMgYXBsYXkgLWwNCmFw
+bGF5OiBkZXZpY2VfbGlzdDoyMDQ6IG5vIHNvdW5kY2FyZHMgZm91bmQuLi4NCg0KDQog
+
+
+
+--===============1173464103==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1173464103==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1173464103==--
