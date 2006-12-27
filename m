@@ -1,9 +1,9 @@
-From: "Christopher Benjamin" <fsdx@oudenaller1.myweb.nl>
-Subject: He's resigned from his post, And his freedom is toast.
-Date: Wed, 27 Dec 2006 13:56:30 -0300
-Message-ID: <000d01c729d8$c47b2cf0$a73a7425@bgijm>
+From: "Edith Wagner" <zwto@funkyshop.ru>
+Subject: Now Dub's spokesman, poor Scotty is not.
+Date: Wed, 27 Dec 2006 13:55:04 -0300
+Message-ID: <000d01c729d8$f99b2e80$93706c64@aao>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0456306230=="
+Content-Type: multipart/mixed; boundary="===============1905817356=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,53 +14,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0456306230==
+--===============1905817356==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0009_01C729BF.9F21BFF0"
+	boundary="----=_NextPart_000_0009_01C729BF.D43D7BC0"
 
-------=_NextPart_000_0009_01C729BF.9F21BFF0
+------=_NextPart_000_0009_01C729BF.D43D7BC0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000A_01C729BF.9F24CD30"
+	boundary="----=_NextPart_001_000A_01C729BF.D4419A70"
 
-------=_NextPart_001_000A_01C729BF.9F24CD30
+------=_NextPart_001_000A_01C729BF.D4419A70
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-It's just April Fools.
-Steve Bates' Modern Major Something. His sanity needs some perusal. =
-You'd expect out of prideThey wouldn't  take Dubya's sideAs he blithely =
-takes over their turf. War Against The GeneralsBy Madeleine Begun =
-KaneSome Gen'rals say Rummy must go. The one that inspired me to write  =
-It's Surely Snowing In Hell? The latest  Carnival of Satire is here.
-Watch those right-wing pundits shouting on the TV tube,Claiming that =
-Cheney didn't do nothing wrong.
-My food and drink humor is here. It's a plan even Fristy won't buy.
-Not a porn star in Paris.
-Andy and Josh deserves some limericks, too, don't you think?
-When they want to skirt the issues,  They just launch a hate campaign. =
-There Once Was A Fellow Named CardBy Madeleine Begun KaneThere once was =
-a fellow named Card,Who worked for George Dubya quite hard. Upward polls =
-are Bolten's aim. Dubya Ain't Known For DecorumBy Madeleine Begun =
-KaneDubya ain't known for decorum. And for more serious commentary, =
-there's Pam Spaulding;Taylor Marsh;Attytood;more Taylor Marsh.
-All profits go to docsWho don't have borders. Bush Once Had A Press Guy =
-Named ScottBy Madeleine Begun KaneBush once had a press guy named =
-Scott,Who always looked sweaty and hot.
-Digby's unique theory on that infamous Washington Post editorial.
+Though Bush defies them every day,Compliantly, they  Bush obey.
+For  my most recent blog postings and audio files,  click here. =
+Congressional SerfsBy Madeleine Begun KaneWhen Bush treats the Congress =
+like serfsThey respond like they're powerless smurfs. My political =
+limericks are collected here. Don Davis's Pentagon Source Reveals =
+Administration's Plans To Invade Sy Hersh. He'll never dump his fav'rite =
+Don,Cause Don can't wait to nuke Iran. You suffer pain and great =
+despair,But George and Rummy just don't care.
+Or much worse, that they're Democrat bro's.
+Supreme Court humor is here. Has the Bugman been sniffing his chems?
+Ode To Russ FeingoldBy Madeleine Begun KaneRuss Feingold is a "traitor.
+Upward polls are Bolten's aim.
+And that brings me to my latest limericks:A General GripeBy Madeleine =
+Begun KaneSome Gen'rals are filling our ears,With Rummy critiques and =
+Bronx cheers. Folks know we're near bankruptcy. Has the Bugman been =
+sniffing his chems? At long last we are rid of that pest. And speaking =
+of  war mongering, I wrote "You Go To War With What You Have" some time =
+ago in response to thischallenge, but I never posted it.
+My previous Dick Cheney shooting accident humor is here, and my Richard =
+Cheney humor is collected here. And count on this: On Bush's watchAll =
+changes will be packed with flaws.
 His sanity needs some perusal.
-My other political limericks are here. Bush is just as dismal.
-Don Davis's True Lies: The Top Ten Questions  Needed In A CIA  Lie =
-Detector TestIf you'd like to listen to the audio podcast version of =
-this post, just click here. Who needs to know if Dick Cheney was soused?
-Jonathan Singer interviews former Navy Secretary  James Webb. But =
-Barbara Bush has found a cause with far more tax appeal:A generous =
-"donation" to  herself, spouse George, and Neil.
-------=_NextPart_001_000A_01C729BF.9F24CD30
+I guess Karl has Frist's balls in a twist.
+" Ode To The Decider-In-ChiefBy Madeleine Begun KaneThe =
+Decider-In-Chief's an angry man,Lambasting folks who Rumsfeld pan. He'll =
+claim it's a quail shoot,But that's just a front.
+A State-Run Firm Based In Dubai By Madeleine Begun KaneA state-run firm =
+based in Dubai,Is well known for its terrorist tie. My previous White =
+House Shakeup verse is here.
+He'll  embarrass at most any forum. Hubby Mark and I were visiting my =
+parents in North Carolina and vacationing in South Beach.
+------=_NextPart_001_000A_01C729BF.D4419A70
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -69,78 +71,80 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1437" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"comical" hspace=3D0=20
-src=3D"cid:000801c729d8$c46beab0$a73a7425@bgijm" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"cleaver" hspace=3D0=20
+src=3D"cid:000801c729d8$f9869510$93706c64@aao" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's just April Fools.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Steve Bates' Modern Major Something. =
-His sanity=20
-needs some perusal. You'd expect out of prideThey wouldn't  take Dubya's =
-sideAs he=20
-blithely takes over their turf. War Against The GeneralsBy Madeleine =
-Begun KaneSome=20
-Gen'rals say Rummy must go. The one that inspired me to write  It's =
-Surely Snowing=20
-In Hell? The latest  Carnival of Satire is here.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Watch those right-wing pundits shouting =
-on the TV=20
-tube,Claiming that Cheney didn't do nothing wrong.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My food and drink humor is here. It's a =
-plan even=20
-Fristy won't buy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Not a porn star in Paris.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Andy and Josh deserves some limericks, =
-too, don't=20
-you think?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>When they want to skirt the issues,  =
-They just=20
-launch a hate campaign. There Once Was A Fellow Named CardBy Madeleine =
-Begun=20
-KaneThere once was a fellow named Card,Who worked for George Dubya quite =
-hard.=20
-Upward polls are Bolten's aim. Dubya Ain't Known For DecorumBy Madeleine =
-Begun=20
-KaneDubya ain't known for decorum. And for more serious commentary, =
-there's Pam=20
-Spaulding;Taylor Marsh;Attytood;more Taylor Marsh.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>All profits go to docsWho don't have =
-borders. Bush=20
-Once Had A Press Guy Named ScottBy Madeleine Begun KaneBush once had a =
-press guy=20
-named Scott,Who always looked sweaty and hot.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Digby's unique theory on that infamous =
-Washington=20
-Post editorial.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Though Bush defies them every =
+day,Compliantly, they=20
+ Bush obey.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>For  my most recent blog postings and =
+audio files, =20
+click here. Congressional SerfsBy Madeleine Begun KaneWhen Bush treats =
+the Congress=20
+like serfsThey respond like they're powerless smurfs. My political =
+limericks are=20
+collected here. Don Davis's Pentagon Source Reveals Administration's =
+Plans To Invade=20
+Sy Hersh. He'll never dump his fav'rite Don,Cause Don can't wait to nuke =
+Iran. You=20
+suffer pain and great despair,But George and Rummy just don't =
+care.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Or much worse, that they're Democrat=20
+bro's.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Supreme Court humor is here. Has the =
+Bugman been=20
+sniffing his chems?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ode To Russ FeingoldBy Madeleine Begun =
+KaneRuss=20
+Feingold is a "traitor.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Upward polls are Bolten's =
+aim.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>And that brings me to my latest =
+limericks:A General=20
+GripeBy Madeleine Begun KaneSome Gen'rals are filling our ears,With =
+Rummy critiques=20
+and Bronx cheers. Folks know we're near bankruptcy. Has the Bugman been =
+sniffing his=20
+chems? At long last we are rid of that pest. And speaking of  war =
+mongering, I wrote=20
+"You Go To War With What You Have" some time ago in response to =
+thischallenge, but I=20
+never posted it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My previous Dick Cheney shooting =
+accident humor is=20
+here, and my Richard Cheney humor is collected here. And count on this: =
+On Bush's=20
+watchAll changes will be packed with flaws.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>His sanity needs some =
 perusal.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My other political limericks are here. =
-Bush is just=20
-as dismal.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Don Davis's True Lies: The Top Ten =
-Questions =20
-Needed In A CIA  Lie Detector TestIf you'd like to listen to the audio =
-podcast=20
-version of this post, just click here. Who needs to know if Dick Cheney =
-was=20
-soused?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Jonathan Singer interviews former Navy =
-Secretary =20
-James Webb. But Barbara Bush has found a cause with far more tax =
-appeal:A generous=20
-"donation" to  herself, spouse George, and =
-Neil.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>I guess Karl has Frist's balls in a=20
+twist.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>" Ode To The Decider-In-ChiefBy =
+Madeleine Begun=20
+KaneThe Decider-In-Chief's an angry man,Lambasting folks who Rumsfeld =
+pan. He'll=20
+claim it's a quail shoot,But that's just a front.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A State-Run Firm Based In Dubai By =
+Madeleine Begun=20
+KaneA state-run firm based in Dubai,Is well known for its terrorist tie. =
+My previous=20
+White House Shakeup verse is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>He'll  embarrass at most any forum. =
+Hubby Mark and=20
+I were visiting my parents in North Carolina and vacationing in South=20
+Beach.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000A_01C729BF.9F24CD30--
+------=_NextPart_001_000A_01C729BF.D4419A70--
 
-------=_NextPart_000_0009_01C729BF.9F21BFF0
+------=_NextPart_000_0009_01C729BF.D43D7BC0
 Content-Type: image/gif;
-	name="uteri.gif"
+	name="concentration.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000801c729d8$c46beab0$a73a7425@bgijm>
+Content-ID: <000801c729d8$f9869510$93706c64@aao>
 
 R0lGODdhKgMpAfMAABQUEgoCEr5NzuWE4pCwjXuMrUijY3zNt4xp4QAAAAAAAAAAAAAAAAAAAAAA
 AAAAACwAAAAAKQMpAQAE/zDISau9OOvNu/9gKI5kaZ4boK5s675wLM90bd94ru987//AoHBILBqP
@@ -423,11 +427,11 @@ MzRHszRbch5PszVTEjNnc8Rcc+Foszd/MzivMDc/RDiX88OMMzqnszqfjDm3s8isMzzH8zS7Mz1n
 jDzfs/jUsz6DizXvsz//M0AHtCDT8iw3rUAfNEIndBOvsUILND5/ckNn80NPNEVXtEVf9MbQDkZv
 NDxrNEd/tAlHAAA7
 
-------=_NextPart_000_0009_01C729BF.9F21BFF0--
+------=_NextPart_000_0009_01C729BF.D43D7BC0--
 
 
 
---===============0456306230==
+--===============1905817356==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -438,7 +442,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0456306230==
+--===============1905817356==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -449,4 +453,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0456306230==--
+--===============1905817356==--
