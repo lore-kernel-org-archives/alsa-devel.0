@@ -1,15 +1,12 @@
-From: "Loyd Sizemore" <prompttribe@aaekz.com>
-Subject: Loyd:Merry Christmas
-Date: Wed, 27 Dec 2006 17:45:53 +0000 (UTC)
-Message-ID: <01c729de$c6a1a7b0$6c822ecf@prompttribe>
+From: "Mariano Cruz" <hoofsbooed@accessloans.com>
+Subject: Mariano:Merry Christmas
+Date: Wed, 27 Dec 2006 18:39:53 +0000 (UTC)
+Message-ID: <01c729e6$58770340$6c822ecf@hoofsbooed>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 62.149.128.154 (HELO mx.aaekz.com)
-	by alsa-project.org with esmtp (C377J4Z-W 55,',') id P837@4-?0(=BX-V(
-	for alsa-devel@alsa-project.org; Wed, 27 Dec 2006 17:45:19 -0060
-Date: Wed, 27 Dec 2006 17:45:19 -0060
+Date: Wed, 27 Dec 2006 18:39:30 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,38 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 Red Hot Opportunity!	 
-	
-	
-BUSINESS WIRE (12/20/2006)--AlgoDyne Ethanol Energy Inc. is 	 
-pleased to announce that it has been contacted by a consortium of Asian 	 	
-investors who have shown a strong interest in the Company's proprietary 	
-mico-algae-based (phytoplankton) process.	 
 	 
+	 
+BUSINESS WIRE (12/20/2006)--AlgoDyne Ethanol Energy Inc. is 	 
+pleased to announce that it has been contacted by a consortium of Asian 	
+investors who have shown a strong interest in the Company's proprietary 	 
+mico-algae-based (phytoplankton) process.	
+	
 Asian investors?  What's going to happen when this deal closes?  BOOM!	
-	 	
-BUSINESS WIRE (12/26/2006)--AlgoDyne Ethanol Energy Inc. is 	
-pleased to announce that it is currently negotiating partnerships in the 	 	
-Direct-Alcohol-Fuel-Cell (DAFC) field to provide a cutting-edge system.  	 
+		
+BUSINESS WIRE (12/26/2006)--AlgoDyne Ethanol Energy Inc. is 	 
+pleased to announce that it is currently negotiating partnerships in the 	
+Direct-Alcohol-Fuel-Cell (DAFC) field to provide a cutting-edge system.  	
 AlgoDyne's dedicated team of scientists have achieved significant 	 
 efficiency compared to existing DAFC designs and anticipate completing 	 
 a prototype very soon.	
 	 
-Exciting results and negotiations?  Straight UP!!!	
+Exciting results and negotiations?  Straight UP!!!	 
+	
+Company:  ADYN	 
 	 
-Company:  ADYN	
+Current Price:	
+Short Term Target:       $3.50	 	
+Long Term Projected    $10.00	
 	
-Current Price:	 
-Short Term Target:       $3.50	
-Long Term Projected    $10.00	 
-	
-This is an amazing opportunity.  This company is like a slingshot, pulled 	
+This is an amazing opportunity.  This company is like a slingshot, pulled 	 
 back and ready for launch.  The exciting patents are there, the investors 	
-are there, deals are on the table!  Do yourself a favor and take a position 	 
-BEFORE the deals close.  This is the only way to enjoy the BIG returns!	 
+are there, deals are on the table!  Do yourself a favor and take a position 	
+BEFORE the deals close.  This is the only way to enjoy the BIG returns!	
 
 
 -------------------------------------------------------------------------
