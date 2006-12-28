@@ -1,12 +1,12 @@
-From: "Erica Farr" <akstcgetahomeloanmnsdgs@getahomeloan.com>
-Subject: update
-Date: Thu, 28 Dec 2006 01:52:26 +0000 (UTC)
-Message-ID: <438678230.57230603784587@thebat.net>
+From: "Pat Harrison" <akstcebsbmnsdgs@ebsb.com>
+Subject: stuff
+Date: Thu, 28 Dec 2006 02:09:43 +0000 (UTC)
+Message-ID: <01c72a25$38f1dd80$6c822ecf@akstcebsbmnsdgs>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 28 Dec 2006 01:52:25 -0060
+Date: Thu, 28 Dec 2006 02:09:36 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -37,7 +37,7 @@ Happy Holidays!
 
 I hope it was a helper news. I'll email or fax you later next week.
 
-Erica Farr.
+Pat Harrison.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
