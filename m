@@ -1,10 +1,14 @@
-From: "Ivey R. Monica" <ykqd@thelbane.com>
-Subject: spotlight
-Date: Fri, 29 Dec 2006 00:00:50 +0100
-Message-ID: <001701c72ad5$5e9915c0$c4dd2072@aqpevt>
+From: "Tatum Y. Cyrus" <nvd@nicholasplant.com>
+Subject: slovenly
+Date: Thu, 28 Dec 2006 15:06:02 -0800
+Message-ID: <001701c72ad5$d6030030$4f4b5eca@kmhz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1587005852=="
+Content-Type: multipart/mixed; boundary="===============1885414272=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from cpe-76-171-107-171.socal.res.rr.com
+	(cpe-76-171-107-171.socal.res.rr.com [76.171.107.171])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7CBCE28C
+	for <alsa-devel@alsa-project.org>; Fri, 29 Dec 2006 00:13:55 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,35 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1587005852==
+--===============1885414272==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0013_01C72ADD.C051E500"
+	boundary="----=_NextPart_000_0013_01C72A92.C7D4C3B0"
 
-------=_NextPart_000_0013_01C72ADD.C051E500
+------=_NextPart_000_0013_01C72A92.C7D4C3B0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0014_01C72ADD.C054CB30"
+	boundary="----=_NextPart_001_0014_01C72A92.C7D782D0"
 
-------=_NextPart_001_0014_01C72ADD.C054CB30
+------=_NextPart_001_0014_01C72A92.C7D782D0
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-BTW, I've already discovered that I need the power adapter for charging =
-the thing. I still insist on a live tree, but we did not have one =
-shipped from Maine this year.
-BTW, I've already discovered that I need the power adapter for charging =
-the thing. he goes straight off the rails into crazy-land. "Mind you, =
-Epperson said, it's not the kids who are upset.
-com and put it up in my office. And that you are entitled to do all =
-that, thanks to the very freedoms, you seek to suffocate. He and his =
-parents were in fine form while we were there.
-The tapdancing gay penguin with the big blue eyes is out to stop you =
-from eating fish.
-------=_NextPart_001_0014_01C72ADD.C054CB30
+Benefits of VolunteeringVolunteering to distribute warm clothing to =
+homeless people or wash dishes in a soup kitchen are great ways to =
+spread seasonal spirit. Still, one good thing could potentially come out =
+of this.
+shall i reprise them ? Nice to have you back, even if it's just for a =
+bit. That is the best way to do it.
+If you don't, drop me a line at adulted. Does it make you happy or =
+miserable? I am also paying for it, so I want my money's worth.
+warmest wishes, Magdelena Anonymous :   I think you've hit on a very =
+valid point.
+------=_NextPart_001_0014_01C72A92.C7D782D0
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -51,39 +54,39 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"henceforth" hspace=3D0=20
-src=3D"cid:001201c72ad5$5e8a96d0$c4dd2072@aqpevt" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"fig." hspace=3D0=20
+src=3D"cid:001201c72ad5$d5f54490$4f4b5eca@kmhz" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>BTW, I've already discovered that I =
-need the power=20
-adapter for charging the thing. I still insist on a live tree, but we =
-did not have=20
-one shipped from Maine this year.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>BTW, I've already discovered that I =
-need the power=20
-adapter for charging the thing. he goes straight off the rails into =
-crazy-land.=20
-"Mind you, Epperson said, it's not the kids who are upset.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>com and put it up in my office. And =
-that you are=20
-entitled to do all that, thanks to the very freedoms, you seek to =
-suffocate. He and=20
-his parents were in fine form while we were there.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The tapdancing gay penguin with the big =
-blue eyes=20
-is out to stop you from eating fish.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Benefits of VolunteeringVolunteering to =
+distribute=20
+warm clothing to homeless people or wash dishes in a soup kitchen are =
+great ways to=20
+spread seasonal spirit. Still, one good thing could potentially come out =
+of=20
+this.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>shall i reprise them ? Nice to have you =
+back, even=20
+if it's just for a bit. That is the best way to do it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>If you don't, drop me a line at =
+adulted. Does it=20
+make you happy or miserable? I am also paying for it, so I want my =
+money's=20
+worth.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>warmest wishes, Magdelena Anonymous :   =
+I think=20
+you've hit on a very valid point.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0014_01C72ADD.C054CB30--
+------=_NextPart_001_0014_01C72A92.C7D782D0--
 
-------=_NextPart_000_0013_01C72ADD.C051E500
+------=_NextPart_000_0013_01C72A92.C7D4C3B0
 Content-Type: image/gif;
-	name="credit limit.gif"
+	name="irreproachable.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001201c72ad5$5e8a96d0$c4dd2072@aqpevt>
+Content-ID: <001201c72ad5$d5f54490$4f4b5eca@kmhz>
 
 R0lGODdhTAIMAfcAAMPi5E3nCRzJuxUMn+ONu7ksmsb/AgHQmh4MHlnVaNuYS7/lM8kC/IQYCST7
 lt+0wnp6wn17khianjfzc5/ODOqO8h5X9BrcDCMACLrgvH1bNz/Zs9LxTXAoQOTID/GznuPR9djr
@@ -331,11 +334,11 @@ yRAc7c8rfmOWS3yZwxZO1MPm7zUTMeAUNnZRd7teo3J95kZPeSDLOfYCJ53EtTTnqPkOvWyjXzI1
 Sg5dM7nZ7LgL3LW3i2fHl0rw304d5mU7rG0Tjvi6r511GNfu3Vef7r3b2o59b7uWp3Vv46re6adB
 d8EN3/uO6vbp0DKUezrtYJQPjfMLHt9TA7/HwrsqustnWUAAADs=
 
-------=_NextPart_000_0013_01C72ADD.C051E500--
+------=_NextPart_000_0013_01C72A92.C7D4C3B0--
 
 
 
---===============1587005852==
+--===============1885414272==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -346,7 +349,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1587005852==
+--===============1885414272==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -357,4 +360,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1587005852==--
+--===============1885414272==--
