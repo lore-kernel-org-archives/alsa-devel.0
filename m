@@ -1,12 +1,11 @@
-From: "Ajay Jain" <ajay050@gmail.com>
-Subject: Sound Driver Querry
-Date: Thu, 28 Dec 2006 12:40:40 +0530
-Message-ID: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>
+From: Simon Wood <simon@mungewell.org>
+Subject: snd-usb-audio: adding support for X-Box Wireless
+	Communicator
+Date: Thu, 28 Dec 2006 00:35:15 -0700
+Message-ID: <20061228003515.4d13b77f.simon@mungewell.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0837803784=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,37 +15,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============0837803784==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Thu__28_Dec_2006_00_35_15_-0700_GbBlox9SUvGaBuvZ"
 
-I have already placed this question on the arm-linux-kernel mailing
-list, but I was redirected here.
+--Signature=_Thu__28_Dec_2006_00_35_15_-0700_GbBlox9SUvGaBuvZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We have two different ARM based proprietary boards, one with a
-"WM8751" audio codec and the other with a "WM9712" codec. The first
-one supports only the "AIL" (specifically I2S) format, whereas the
-second one supports both "AC97". We have an existing "OSS" audio
-driver for the second one, based on the "AC97" and we use the
-"AC97_codec.c" for the same. Now we also want to support the first
-one, but since it does not have an AC97 support, I was looking for an
-"AIL-I2S" support in the oss directory of the kernel. I do not seem to
-find any mention of AIL/I2S/WM8751.
+Hi all,
+I'm trying to get Alsa to recognise this device, which is actually a USB so=
+und chip (UAC3640) coupled with a CSR BlueCore2 wireless link to the headse=
+t. I believe (although might be misguided) that this should 'just work' onc=
+e Alsa recognises the USB ID's.
 
-1. Is this chip/format supported in OSS?
-2. Is this chip/format supported in the new ALSA?
-3. Can somebody tell me about an OSS mailing list for developers. I
-was on their website, but it does not have any such mention.
+I've added it's details to usbquirks.h, but Alsa still does not find it (no=
+thing listed by arecord --list-devices). Where else do/might I need to chan=
+ge?
 
-Does it effectively mean that I will have to shift to the new ALSA (Is
-this chip/format supported ??) ?
+The other 'interesting' point is that the deviceClass is '120', rather than=
+ the more usual '1' (audio device). Again I believe that this is just Micro=
+soft dicking around....
 
-Thanks.
-~
+The device has been modified with a USB cable soldered on, there are detail=
+s (and a lsusb -vvv) at http://www.qbik.ch/usb/devices/showdev.php?id=3D395=
+2.
+
+I am doing all this on (X)ubuntu 6.06. Thanks for any comments.
+Simon.
+
+
+The stuff I added to usbquirks.h reads:
+---
+{
+        /*
+         * SDW hack for X-Box Communicator
+         */
+        USB_DEVICE(0x045e, 0x0283),
+        .driver_info =3D (unsigned long) & (const snd_usb_audio_quirk_t) {
+                .vendor_name =3D "Microsoft Corp.",
+                .product_name =3D "",
+                .ifnum =3D QUIRK_ANY_INTERFACE,
+                .type =3D QUIRK_COMPOSITE,
+                .data =3D (const snd_usb_audio_quirk_t[]) {
+                        {
+                                .ifnum =3D 0,
+                                .type =3D QUIRK_AUDIO_STANDARD_INTERFACE
+                        },
+                        {
+                                .ifnum =3D 1,
+                                .type =3D QUIRK_AUDIO_STANDARD_INTERFACE
+                        },
+                        {
+                                .ifnum =3D -1
+                        }
+                }
+        }
+},
+---
+
+--Signature=_Thu__28_Dec_2006_00_35_15_-0700_GbBlox9SUvGaBuvZ
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQFFk3O6wKmfLVdeh4MRAlC2AKCI2YpzQ14k86ipfQUwkX5CUxvTTgCfS0Dw
+q0Q/KdjPKGGDcahJ5A0Cl9k=
+=nBGT
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__28_Dec_2006_00_35_15_-0700_GbBlox9SUvGaBuvZ--
+
+
+--===============0837803784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0837803784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0837803784==--
