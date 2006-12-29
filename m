@@ -1,9 +1,8 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: Sound Driver Querry
-Date: Fri, 29 Dec 2006 13:01:09 +0000
-Message-ID: <1167397269.11374.59.camel@localhost.localdomain>
-References: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>
-	<1167393462.11374.25.camel@localhost.localdomain>
+Date: Fri, 29 Dec 2006 13:11:24 +0000
+Message-ID: <459513FC.1000008@superbug.co.uk>
+References: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>	<1167393462.11374.25.camel@localhost.localdomain>
 	<b92b327b0612290416u49fa792axd5737a79bed3498e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,31 +22,35 @@ To: Ajay Jain <ajay050@gmail.com>
 Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-12-29 at 17:46 +0530, Ajay Jain wrote:
-> > What arm cpu are you using ?
+Ajay Jain wrote:
+>> What arm cpu are you using ?
 > 
 > We are using an ARM926-EJS. The interface between the code chip and
 > the cpu, is by our own proprietary I2C controller. Is it possible for
 > us to integrate this?
 
-Yes, providing you create a Linux i2c driver for you controller. 
+I2C interfaces (for codec control, not audio samples) are very simple, 
+so supporting that should be quite easy.
+It depends what is connected to the I2C interface. If it is just the 
+codec, then you can write some simple ALSA specific code. If it also 
+links to other I2C devices on the same bus, then you should implement 
+support for it via the Linux Kernel I2C bus.
 
 > BTW, the patch you just mentioned, is that not in the main line
 > 2.6.latest? We are using a 2.6.14, so is it possible to backport it?
 > 
-
-It is, although I would recommend upgrading your kernel version as
-2.6.14 is quite old.
-
-> > OSS audio is deprecated in the Linux 2.6 kernel.
+>> OSS audio is deprecated in the Linux 2.6 kernel.
 > Ok, but we have a working & robust AC97 WM9712 driver for the same. It
 > would be much more convenient for us if we have something similar in
 > OSS. So is this guy (the WM8751), supported in any form in the OSS?
+> 
 
-Sorry, afaik no.
+Do you have the I2S interface already working?
+The WM9751 might default to some sensible register values, so purely 
+sending audio samples to the I2S interface might be enough to get your 
+sound out.
 
-Liam
-
+James
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
