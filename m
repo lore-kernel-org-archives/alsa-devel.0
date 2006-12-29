@@ -1,11 +1,21 @@
-From: Frank Mandarino <fmandarino@endrelia.com>
-Subject: [PATCH] ASoC at91 - Fix NULL pointer dereference in
-	at91_i2s_shutdown
-Date: Fri, 29 Dec 2006 13:52:27 -0500
-Message-ID: <459563EB.1050304@endrelia.com>
+From: "Octavio Nelson" <hostmaster@000domains.com>
+Subject: ROLEX at unbelievable prices
+Date: Fri, 29 Dec 2006 20:13:38 +0000 (UTC)
+Message-ID: <331113648.38386432621731@thebat.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010309090302050109060805"
+Content-Type: multipart/mixed; boundary="===============0652265619=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8455B141
+	for <alsa-devel@alsa-project.org>; Fri, 29 Dec 2006 21:12:42 +0100 (MET)
+Received: from fra-5prjhusg6jw (unknown [82.60.137.136])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	02C9999812
+	for <alsa-devel@alsa-project.org>; Fri, 29 Dec 2006 21:12:43 +0100 (MET)
+Received: from 64.85.73.29 (HELO mx13.registerapi.com)
+	by alsa-project.org with esmtp (*176ZS+3 5V80/) id Q)92/?-9F0.@'-=I
+	for alsa-devel@alsa-project.org; Fri, 29 Dec 2006 20:12:45 -0060
+Date: Fri, 29 Dec 2006 20:12:45 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,72 +25,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010309090302050109060805
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+--===============0652265619==
+Content-Type: multipart/alternative;
+  boundary="----------348DAF0534F0C70"
 
-This patch fixes a NULL pointer exception which occurs when a
-substream is opened and immediately closed.
+------------348DAF0534F0C70
+Content-Type: text/plain; charset=windows-1250
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
--- 
-Frank Mandarino                                fmandarino(a)endrelia.com
-Endrelia Technologies Inc.
-Toronto, Ontario, Canada
+  VIP
+    REPLICA WATCHES!
+  We offer a free gift box with every VIP watch ordered.
+You can use it as a lovely gift for your friends or relatives or keep your =
+gorgeous watch there.
+No matter what you do with your watch, you will enjoy it. 
+  
+-  Replicated to the smallest detail
+-  98% A+ Accuracy
+-  Includes all Proper Markings
+-  Wide selection and fast worldwide shipping
+-  Authentic Weight
+-  True-to-original self winding and quartz mechanisms
+-  Guaranteed worldwide Christmas delivery
+  Check out our gift boxes that will make the present even more glamorous.
 
---------------010309090302050109060805
-Content-Type: text/plain;
- name="asoc-at91-i2s-nullptr.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="asoc-at91-i2s-nullptr.patch"
+------------348DAF0534F0C70
+Content-Type: text/html; charset=windows-1250
+Content-Transfer-Encoding: quoted-printable
 
-# HG changeset patch
-# User fam@procyon
-# Date 1167417628 18000
-# Node ID db7345e709ceb94df2cce3ea8ea7d32cc83d789e
-# Parent  4eae1a19406e9e14c38efdef7fb1bd603200485d
-ASoC at91 - Fix NULL pointer dereference in at91_i2s_shutdown
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Save 90% on watches! visit replica store</TITLE>
+</HEAD>
+<BODY>
 
-at91_i2s_shutdown() depends on the snd_soc_cpu_dai dma_data field
-being NULL if the substream's DMA parameters were not set up.
+<div align=3D"center">
+  <p align=3D"left"><font><b><a href=3D"http://f0fe0ee0.royalartwork.com?us=
+er=3Dmidir"><i><font color=3D"#FF0000">VIP</font>
+    REPLICA WATCHES!</i></a></b></font></p>
+  <p align=3D"left"><font>We offer a free gift box with every VIP watch ord=
+ered.
+You can use it as a lovely gift for your friends or relatives or keep your =
+gorgeous watch there.
+No matter what you do with your watch, you will enjoy it. </font></p>
+  <p align=3D"left">
+-  Replicated to the smallest detail<br>
+-  98% A+ Accuracy<br>
+-  Includes all Proper Markings<br>
+-  Wide selection and fast worldwide shipping<br>
+-  Authentic Weight<br>
+-  True-to-original self winding and quartz mechanisms<br>
+-  Guaranteed worldwide Christmas delivery<br>
+</p>
+  <p align=3D"left"><a href=3D"http://f0fe0ee0.royalartwork.com?user=3Dmidi=
+r"><font><i><b>Check out our gift boxes that will make the present even mor=
+e glamorous.</b></i></font></a><br>
+</p>
+</div>
 
-However, if a substream was started, then shutdown before the DMA
-parameters were setup, the dma_data field would still contain the
-value that was set for a previous substream, which pointed to an
-invalid at91_pcm_dma_params structure.
+</BODY></HTML>
+------------348DAF0534F0C70--
 
-The fix is to initialize the dma_data field to NULL when the
-substream is started.
 
-Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
-diff -r 4eae1a19406e -r db7345e709ce soc/at91/at91-i2s.c
---- a/soc/at91/at91-i2s.c	Thu Dec 28 13:56:48 2006 +0100
-+++ b/soc/at91/at91-i2s.c	Fri Dec 29 13:40:28 2006 -0500
-@@ -295,6 +295,13 @@ static int at91_i2s_startup(struct snd_p
- 	}
- 	ssc_p->dir_mask |= dir_mask;
- 	spin_unlock_irq(&ssc_p->lock);
-+
-+	/*
-+	 * dma_data is not set until hw_params() is called and
-+	 * shutdown() depends on this value being NULL if hw_params()
-+	 * was not called.
-+	 */
-+	rtd->cpu_dai->dma_data = NULL;
- 
- 	return 0;
- }
-
---------------010309090302050109060805
+--===============0652265619==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,7 +102,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---------------010309090302050109060805
+--===============0652265619==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -102,4 +113,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---------------010309090302050109060805--
+--===============0652265619==--
