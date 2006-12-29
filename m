@@ -1,10 +1,9 @@
-From: Andre Coetzee <andre_4you@yahoo.co.uk>
-Subject: USB MIDI Support for Roland EXR Series
-Date: Fri, 29 Dec 2006 15:56:56 +0000 (GMT)
-Message-ID: <20061229155656.22507.qmail@web27909.mail.ukl.yahoo.com>
+From: Bjoern Fay <mail@bfay.de>
+Subject: Edirol UA-101 support
+Date: Fri, 29 Dec 2006 19:01:36 +0100
+Message-ID: <1167415296.3715.48.camel@main.chaos>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-XiwSVS0Uj2PkIEzGUA9m"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,159 +17,364 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-I recently acquired a Roland EXR 5s usb midi keyboard.
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I'm keen to use the ALSA usb midi driver on my 2.6
-kernel Gentoo Linux system using current ALSA modules.
+Hello,
 
-For some time now I have seen that support for the EXR
-is shaded gray on ALSA's supported hardware list. Not
-sure what this means, but I'm guessing there is
-partial support?
+it's my first try in Kernel development. With copy, paste and modify I
+have written a quirk for the Edirol UA-101 from the quirk for the
+UA-1000. So far I can use the UA-101, but neither I can access it
+through XMMS and the ALSA-plugin, nor do I have a mixer for it. Perhaps
+that's just some little change elsewhere, but I don't have the time and
+knowledge to do further research. For me it is enough to access the
+UA-101 through jackd, which works: 12 capture channels (I don't know
+what the last 2 are) and 10 playback channels. And MIDI also works.
 
-I can see the device with lsusb -v:
+I worked with the 2.6.18 Kernel under Debian etch and modified the three
+files: usbaudio.c usbaudio.h usbquirks.h
 
-Bus 001 Device 002: ID 0582:0060 Roland Corp. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass          255 Vendor Specific Class
-  bDeviceSubClass         0 
-  bDeviceProtocol       255 
-  bMaxPacketSize0         8
-  idVendor           0x0582 Roland Corp.
-  idProduct          0x0060 
-  bcdDevice            1.00
-  iManufacturer           1 Roland
-  iProduct                2 EXR
-  iSerial                 0 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          149
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0 
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               1
+Why there are "!" in the last diffs (at the end) I don't know.
 
-I have the snd-usb-audio module loaded:
-lsmod | grep usb
-snd_usb_audio          48384  0 
-snd_usb_lib            10432  1 snd_usb_audio
-snd_pcm                47332  3
-snd_usb_audio,snd_pcm_oss,snd_cmipci
-snd_hwdep               5956  2
-snd_usb_audio,snd_opl3_lib
-snd_rawmidi            14272  3
-snd_usb_lib,snd_seq_midi,snd_mpu401_uart
-snd                    31368  14
-snd_usb_audio,snd_usb_lib,snd_pcm_oss,snd_mixer_oss,snd_seq_oss,snd_seq,snd_cmipci,snd_pcm,snd_opl3_lib,snd_timer,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-usb_storage            55936  0 
-usbhid                 31936  0 
-usbcore                80548  9
-snd_usb_audio,snd_usb_lib,sl811_hcd,ohci_hcd,uhci_hcd,usb_storage,usbhid,ehci_hcd
+I attach the files to the mail, if that it possible and also copy &
+paste it at the end.
 
-But ALSA doesn't seem to recognize the device:
+If there are any questions or things I should do like sending the files
+to someone or so, just say so. As I said I have no experience in writing
+kernel driver or anything like this.
 
-cat /proc/asound/cards 
- 0 [CMI8738        ]: CMI8738 - C-Media PCI CMI8738
-                      C-Media PCI CMI8738 (model 37)
-at 0x9800, irq 10
+I hope the code will be inserted or at least leads to support of the
+UA-101 under Linux.
 
-amidi -l
-Dir Device    Name
-IO  hw:0,0    MPU-401 MIDI 0-0
+Thanks and kind regards
+Bjoern
 
-(hw:0,0 is the onboard gameport MPU401)
+PS: I'm not in the mailinglist.
 
 
-I saw a comment in the kernel's usbquirks.h:
+*** /usr/src/linux-source-2.6.18/sound/usb/usbaudio.c	2006-09-20
+05:42:06.000000000 +0200
+--- usbaudio.c	2006-12-28 22:35:26.000000000 +0100
+***************
+*** 3007,3012 ****
+--- 3007,3065 ----
+  	return 0;
+  }
+  
++ /*
++  * Create a stream for an Edirol UA-101 interface.
++  * Copy, paste and modify from Edirol UA-1000
++  */
++ static int create_ua101_quirk(struct snd_usb_audio *chip,
++ 			       struct usb_interface *iface,
++ 			       const struct snd_usb_audio_quirk *quirk)
++ {
++ 	static const struct audioformat ua101_format = {
++ 		.format = SNDRV_PCM_FORMAT_S32_LE,
++ 		.fmt_type = USB_FORMAT_TYPE_I,
++ 		.altsetting = 1,
++ 		.altset_idx = 1,
++ 		.attributes = 0,
++ 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++ 	};
++ 	struct usb_host_interface *alts;
++ 	struct usb_interface_descriptor *altsd;
++ 	struct audioformat *fp;
++ 	int stream, err;
++ 
++ 	if (iface->num_altsetting != 2)
++ 		return -ENXIO;
++ 	alts = &iface->altsetting[1];
++ 	altsd = get_iface_desc(alts);
++ 	if (alts->extralen != 18 || alts->extra[1] != USB_DT_CS_INTERFACE ||
++ 	    altsd->bNumEndpoints != 1)
++ 		return -ENXIO;
++ 
++ 	fp = kmalloc(sizeof(*fp), GFP_KERNEL);
++ 	if (!fp)
++ 		return -ENOMEM;
++ 	memcpy(fp, &ua101_format, sizeof(*fp));
++ 
++ 	fp->channels = alts->extra[11];
++ 	fp->iface = altsd->bInterfaceNumber;
++ 	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
++ 	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
++ 	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++ 	fp->rate_max = fp->rate_min = combine_triple(&alts->extra[15]);
++ 
++ 	stream = (fp->endpoint & USB_DIR_IN)
++ 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++ 	err = add_audio_endpoint(chip, stream, fp);
++ 	if (err < 0) {
++ 		kfree(fp);
++ 		return err;
++ 	}
++ 	/* FIXME: playback must be synchronized to capture */
++ 	usb_set_interface(chip->dev, fp->iface, 0);
++ 	return 0;
++ }
++ 
+  static int snd_usb_create_quirk(struct snd_usb_audio *chip,
+  				struct usb_interface *iface,
+  				const struct snd_usb_audio_quirk *quirk);
+***************
+*** 3188,3193 ****
+--- 3241,3247 ----
+  		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
+  		[QUIRK_AUDIO_EDIROL_UA700_UA25] = create_ua700_ua25_quirk,
+  		[QUIRK_AUDIO_EDIROL_UA1000] = create_ua1000_quirk,
++ 		[QUIRK_AUDIO_EDIROL_UA101] = create_ua101_quirk,
+  	};
+  
+  	if (quirk->type < QUIRK_TYPE_COUNT) {
 
-   /* TODO: add Roland EXR support */
 
-But if support is incomplete, I'd like to learn how
-can I help to accelerate this process? (I'm not a
-programmer, but I have access to the hardware and am
-willing to do some testing on my system).
 
-When replying, please CC me, as I am not subscribed to
-the list.
 
-Season's greetings and thanks for a great sound
-system.
 
-Andre
+*** /usr/src/linux-source-2.6.18/sound/usb/usbaudio.h	2006-09-20
+05:42:06.000000000 +0200
+--- usbaudio.h	2006-12-28 17:01:50.000000000 +0100
+***************
+*** 159,164 ****
+--- 159,165 ----
+  	QUIRK_AUDIO_FIXED_ENDPOINT,
+  	QUIRK_AUDIO_EDIROL_UA700_UA25,
+  	QUIRK_AUDIO_EDIROL_UA1000,
++ 	QUIRK_AUDIO_EDIROL_UA101,
+  
+  	QUIRK_TYPE_COUNT
+  };
 
-Send instant messages to your online friends http://uk.messenger.yahoo.com 
+
+
+
+*** /usr/src/linux-source-2.6.18/sound/usb/usbquirks.h	2006-09-20
+05:42:06.000000000 +0200
+--- usbquirks.h	2006-12-28 22:32:56.000000000 +0100
+***************
+*** 1093,1099 ****
+  		}
+  	}
+  },
+! 	/* TODO: add Edirol UA-101 support */
+  {
+  	/* has ID 0x0081 when not in "Advanced Driver" mode */
+  	USB_DEVICE(0x0582, 0x0080),
+--- 1093,1129 ----
+  		}
+  	}
+  },
+! /* Roland UA-101 in High-Speed Mode only */
+! {
+! 	USB_DEVICE(0x0582, 0x007d),
+! 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+! 		.vendor_name = "Roland",
+! 		.product_name = "UA-101",
+! 		.ifnum = QUIRK_ANY_INTERFACE,
+! 		.type = QUIRK_COMPOSITE,
+! 		.data = (const struct snd_usb_audio_quirk[]) {
+! 			{
+! 				.ifnum = 0,
+! 				.type = QUIRK_AUDIO_EDIROL_UA101
+! 			},
+! 			{
+! 				.ifnum = 1,
+! 				.type = QUIRK_AUDIO_EDIROL_UA101
+! 			},
+! 			{
+! 				.ifnum = 2,
+! 				.type = QUIRK_MIDI_FIXED_ENDPOINT,
+! 				.data = & (const struct snd_usb_midi_endpoint_info) {
+! 					.out_cables = 0x0001,
+! 					.in_cables  = 0x0001
+! 				}
+! 			},
+! 			{
+! 				.ifnum = -1
+! 			}
+! 		}
+! 	}
+! },
+  {
+  	/* has ID 0x0081 when not in "Advanced Driver" mode */
+  	USB_DEVICE(0x0582, 0x0080),
+
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Disposition: attachment; filename=usbaudio.c.diff
+Content-Type: text/x-patch; name=usbaudio.c.diff; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+*** /usr/src/linux-source-2.6.18/sound/usb/usbaudio.c	2006-09-20 05:42:06.000000000 +0200
+--- usbaudio.c	2006-12-28 22:35:26.000000000 +0100
+***************
+*** 3007,3012 ****
+--- 3007,3065 ----
+  	return 0;
+  }
+  
++ /*
++  * Create a stream for an Edirol UA-101 interface.
++  * Copy, paste and modify from Edirol UA-1000
++  */
++ static int create_ua101_quirk(struct snd_usb_audio *chip,
++ 			       struct usb_interface *iface,
++ 			       const struct snd_usb_audio_quirk *quirk)
++ {
++ 	static const struct audioformat ua101_format = {
++ 		.format = SNDRV_PCM_FORMAT_S32_LE,
++ 		.fmt_type = USB_FORMAT_TYPE_I,
++ 		.altsetting = 1,
++ 		.altset_idx = 1,
++ 		.attributes = 0,
++ 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++ 	};
++ 	struct usb_host_interface *alts;
++ 	struct usb_interface_descriptor *altsd;
++ 	struct audioformat *fp;
++ 	int stream, err;
++ 
++ 	if (iface->num_altsetting != 2)
++ 		return -ENXIO;
++ 	alts = &iface->altsetting[1];
++ 	altsd = get_iface_desc(alts);
++ 	if (alts->extralen != 18 || alts->extra[1] != USB_DT_CS_INTERFACE ||
++ 	    altsd->bNumEndpoints != 1)
++ 		return -ENXIO;
++ 
++ 	fp = kmalloc(sizeof(*fp), GFP_KERNEL);
++ 	if (!fp)
++ 		return -ENOMEM;
++ 	memcpy(fp, &ua101_format, sizeof(*fp));
++ 
++ 	fp->channels = alts->extra[11];
++ 	fp->iface = altsd->bInterfaceNumber;
++ 	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
++ 	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
++ 	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++ 	fp->rate_max = fp->rate_min = combine_triple(&alts->extra[15]);
++ 
++ 	stream = (fp->endpoint & USB_DIR_IN)
++ 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++ 	err = add_audio_endpoint(chip, stream, fp);
++ 	if (err < 0) {
++ 		kfree(fp);
++ 		return err;
++ 	}
++ 	/* FIXME: playback must be synchronized to capture */
++ 	usb_set_interface(chip->dev, fp->iface, 0);
++ 	return 0;
++ }
++ 
+  static int snd_usb_create_quirk(struct snd_usb_audio *chip,
+  				struct usb_interface *iface,
+  				const struct snd_usb_audio_quirk *quirk);
+***************
+*** 3188,3193 ****
+--- 3241,3247 ----
+  		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
+  		[QUIRK_AUDIO_EDIROL_UA700_UA25] = create_ua700_ua25_quirk,
+  		[QUIRK_AUDIO_EDIROL_UA1000] = create_ua1000_quirk,
++ 		[QUIRK_AUDIO_EDIROL_UA101] = create_ua101_quirk,
+  	};
+  
+  	if (quirk->type < QUIRK_TYPE_COUNT) {
+
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Disposition: attachment; filename=usbaudio.h.diff
+Content-Type: text/x-patch; name=usbaudio.h.diff; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+*** /usr/src/linux-source-2.6.18/sound/usb/usbaudio.h	2006-09-20 05:42:06.000000000 +0200
+--- usbaudio.h	2006-12-28 17:01:50.000000000 +0100
+***************
+*** 159,164 ****
+--- 159,165 ----
+  	QUIRK_AUDIO_FIXED_ENDPOINT,
+  	QUIRK_AUDIO_EDIROL_UA700_UA25,
+  	QUIRK_AUDIO_EDIROL_UA1000,
++ 	QUIRK_AUDIO_EDIROL_UA101,
+  
+  	QUIRK_TYPE_COUNT
+  };
+
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Disposition: attachment; filename=usbquirks.h.diff
+Content-Type: text/x-patch; name=usbquirks.h.diff; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+*** /usr/src/linux-source-2.6.18/sound/usb/usbquirks.h	2006-09-20 05:42:06.000000000 +0200
+--- usbquirks.h	2006-12-28 22:32:56.000000000 +0100
+***************
+*** 1093,1099 ****
+  		}
+  	}
+  },
+! 	/* TODO: add Edirol UA-101 support */
+  {
+  	/* has ID 0x0081 when not in "Advanced Driver" mode */
+  	USB_DEVICE(0x0582, 0x0080),
+--- 1093,1129 ----
+  		}
+  	}
+  },
+! /* Roland UA-101 in High-Speed Mode only */
+! {
+! 	USB_DEVICE(0x0582, 0x007d),
+! 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+! 		.vendor_name = "Roland",
+! 		.product_name = "UA-101",
+! 		.ifnum = QUIRK_ANY_INTERFACE,
+! 		.type = QUIRK_COMPOSITE,
+! 		.data = (const struct snd_usb_audio_quirk[]) {
+! 			{
+! 				.ifnum = 0,
+! 				.type = QUIRK_AUDIO_EDIROL_UA101
+! 			},
+! 			{
+! 				.ifnum = 1,
+! 				.type = QUIRK_AUDIO_EDIROL_UA101
+! 			},
+! 			{
+! 				.ifnum = 2,
+! 				.type = QUIRK_MIDI_FIXED_ENDPOINT,
+! 				.data = & (const struct snd_usb_midi_endpoint_info) {
+! 					.out_cables = 0x0001,
+! 					.in_cables  = 0x0001
+! 				}
+! 			},
+! 			{
+! 				.ifnum = -1
+! 			}
+! 		}
+! 	}
+! },
+  {
+  	/* has ID 0x0081 when not in "Advanced Driver" mode */
+  	USB_DEVICE(0x0582, 0x0080),
+
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--=-XiwSVS0Uj2PkIEzGUA9m
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-XiwSVS0Uj2PkIEzGUA9m--
