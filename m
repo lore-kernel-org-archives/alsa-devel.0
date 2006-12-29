@@ -1,15 +1,12 @@
-From: "Seth Forshee" <seth.forshee@gmail.com>
-Subject: Re: [PATCH] fix typo/compilation error on soc-dapm and
-	at91-i2s
-Date: Fri, 29 Dec 2006 08:21:33 -0600
-Message-ID: <d35cec70612290621r7e02ccb7x559090e4a658440b@mail.gmail.com>
-References: <200612281832.23268.rss@barracuda.es>
+From: "Cliff Gentry" <Olympiasqualms@abcvacuum.com>
+Subject: Happy NW Cliff
+Date: Fri, 29 Dec 2006 14:43:20 +0000 (UTC)
+Message-ID: <01c72b57$a517fbb0$6c822ecf@Olympiasqualms>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200612281832.23268.rss@barracuda.es>
-Content-Disposition: inline
+Date: Fri, 29 Dec 2006 14:43:03 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,34 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?ISO-8859-1?Q?Ra=FAl_S=E1nchez_Siles?= <rss@barracuda.es>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 12/28/06, Ra=FAl S=E1nchez Siles <rss@barracuda.es> wrote:
->   Hello all:
->
->   I'm trying to use asoc for an at91 custom board and I had some problem
-> compiling the kernel with the v1.0.14rc1 alsa patch. The problem were in =
-the
-> debug sections in two files.
->
->   I attach a patch to correct this problems. I'm new sending patches to a=
-lsa,
-> so if you think I did something wrong just let me know and I'll do my bes=
-t.
->
+	 An Alternative Energy Company ready to Blast off!!!
+	
+Company:  AlgoDyne Ethonol Energy Inc.  (ADYN)
+	
+Current Price:               $1.3
+Short Term Target:       $3.50
+Long Term Projected    $10.00
+	
+	Alternative energy is a Red Hot sector right now and ADYN is a pioneer!  
+Check the news and you will see that at this very moment they are in 
+negotiations with major Asian investors.  They are also in negotiations for 
+partnerships for development of their amazing technology.
+	
+	Get in now while most investors are taking time off for the holidays!  
+After the new year this one will be of the charts!
+	
 
-I think that the line you modified in soc-dapm.c can be removed
-completely, since the loop is list_for_each_entry() and not
-list_for_each().  The assignment to p in the loop is redundant.
-
-Cheers,
-Seth
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
