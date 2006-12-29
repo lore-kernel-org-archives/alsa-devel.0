@@ -1,15 +1,14 @@
-From: "Ajay Jain" <ajay050@gmail.com>
-Subject: Re: Sound Driver Querry
-Date: Fri, 29 Dec 2006 17:46:10 +0530
-Message-ID: <b92b327b0612290416u49fa792axd5737a79bed3498e@mail.gmail.com>
-References: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>
-	<1167393462.11374.25.camel@localhost.localdomain>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] fix typo/compilation error on soc-dapm	and
+	at91-i2s
+Date: Fri, 29 Dec 2006 12:55:24 +0000
+Message-ID: <1167396924.11374.52.camel@localhost.localdomain>
+References: <200612281832.23268.rss@barracuda.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1167393462.11374.25.camel@localhost.localdomain>
-Content-Disposition: inline
+In-Reply-To: <200612281832.23268.rss@barracuda.es>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,25 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@lists.sf.net
+To: =?ISO-8859-1?Q?Ra=FAl_S=E1nchez?= Siles <rss@barracuda.es>
+Cc: alsa-devel@lists.sourceforge.net, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-> What arm cpu are you using ?
-
-We are using an ARM926-EJS. The interface between the code chip and
-the cpu, is by our own proprietary I2C controller. Is it possible for
-us to integrate this?
-BTW, the patch you just mentioned, is that not in the main line
-2.6.latest? We are using a 2.6.14, so is it possible to backport it?
-
-> OSS audio is deprecated in the Linux 2.6 kernel.
-Ok, but we have a working & robust AC97 WM9712 driver for the same. It
-would be much more convenient for us if we have something similar in
-OSS. So is this guy (the WM8751), supported in any form in the OSS?
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+T24gVGh1LCAyMDA2LTEyLTI4IGF0IDE4OjMyICswMTAwLCBSYcO6bCBTw6FuY2hleiBTaWxlcyB3
+cm90ZToKPiAgIEhlbGxvIGFsbDoKPiAKPiAgIEknbSB0cnlpbmcgdG8gdXNlIGFzb2MgZm9yIGFu
+IGF0OTEgY3VzdG9tIGJvYXJkIGFuZCBJIGhhZCBzb21lIHByb2JsZW0gCj4gY29tcGlsaW5nIHRo
+ZSBrZXJuZWwgd2l0aCB0aGUgdjEuMC4xNHJjMSBhbHNhIHBhdGNoLiBUaGUgcHJvYmxlbSB3ZXJl
+IGluIHRoZSAKPiBkZWJ1ZyBzZWN0aW9ucyBpbiB0d28gZmlsZXMuCj4gCj4gICBJIGF0dGFjaCBh
+IHBhdGNoIHRvIGNvcnJlY3QgdGhpcyBwcm9ibGVtcy4gSSdtIG5ldyBzZW5kaW5nIHBhdGNoZXMg
+dG8gYWxzYSwgCj4gc28gaWYgeW91IHRoaW5rIEkgZGlkIHNvbWV0aGluZyB3cm9uZyBqdXN0IGxl
+dCBtZSBrbm93IGFuZCBJJ2xsIGRvIG15IGJlc3QuCj4gCgpUaGFua3MsIHRoaXMgbG9va3MgZmlu
+ZS4gQXBwbGllZCB0byBteSB0cmVlLiAKCkZ3aXcsIEZyYW5rIHNlbnQgbWUgYW4gQVQ5MSBidWcg
+Zml4IGxhc3Qgd2VlaywgYWx0aG91Z2ggZHVlIHRvIG90aGVyCndvcmssIEkndmUgbm90IGhhZCBh
+IGNoYW5jZSB0byBhcHBseSBvciBzdWJtaXQgeWV0LgoKRnJhbmssIGFueSBjaGFuY2UgeW91IGNh
+biBzdWJtaXQuIEl0J3MgaW4gbXkgcGF0Y2ggaW5ib3ggYXQgdGhlIG9mZmljZQphbmQgSSB3b24n
+dCBiZSBiYWNrIHVudGlsIHRoZSAzcmQuCgpUaGFua3MKCkxpYW0KCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpUYWtlIFN1cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKSm9p
+biBTb3VyY2VGb3JnZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFu
+Y2UgdG8gc2hhcmUgeW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdo
+IGJyaWVmIHN1cnZleXMgLSBhbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVm
+YXVsdC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
