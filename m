@@ -1,13 +1,15 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+From: "Ajay Jain" <ajay050@gmail.com>
 Subject: Re: Sound Driver Querry
-Date: Fri, 29 Dec 2006 11:57:42 +0000
-Message-ID: <1167393462.11374.25.camel@localhost.localdomain>
+Date: Fri, 29 Dec 2006 17:46:10 +0530
+Message-ID: <b92b327b0612290416u49fa792axd5737a79bed3498e@mail.gmail.com>
 References: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>
+	<1167393462.11374.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <b92b327b0612272310r142092e5nc7ca9b4d50c7460e@mail.gmail.com>
+In-Reply-To: <1167393462.11374.25.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,61 +19,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Ajay Jain <ajay050@gmail.com>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-12-28 at 12:40 +0530, Ajay Jain wrote:
+> What arm cpu are you using ?
 
-> 
-> We have two different ARM based proprietary boards, one with a
-> "WM8751" audio codec and the other with a "WM9712" codec. 
+We are using an ARM926-EJS. The interface between the code chip and
+the cpu, is by our own proprietary I2C controller. Is it possible for
+us to integrate this?
+BTW, the patch you just mentioned, is that not in the main line
+2.6.latest? We are using a 2.6.14, so is it possible to backport it?
 
-What arm cpu are you using ?
-
-> The first
-> one supports only the "AIL" (specifically I2S) format, whereas the
-> second one supports both "AC97". We have an existing "OSS" audio
-> driver for the second one, based on the "AC97" and we use the
-> "AC97_codec.c" for the same. Now we also want to support the first
-> one, but since it does not have an AC97 support, I was looking for an
-> "AIL-I2S" support in the oss directory of the kernel. I do not seem to
-> find any mention of AIL/I2S/WM8751.
-> 
-
-You may be interested in the ASoC code here:-
-
-http://opensource.wolfsonmicro.com/~lg/asoc/
-
-ASoC basically abstracts out SoC cpu digital audio interfaces and has
-architecture independent codec drivers. It also has very aggressive
-dynamic audio power management.
-
-Currently, we have platform support for pxa2xx, AT91xxx and S3C24xx
-(alpha atm). Work is in progress for i.MX21/31.
-
-> 1. Is this chip/format supported in OSS?
-> 2. Is this chip/format supported in the new ALSA?
-
-The WM8751 is currently not supported in ASoC, although it would take
-about 2 days effort to add it.
-
-> 3. Can somebody tell me about an OSS mailing list for developers. I
-> was on their website, but it does not have any such mention.
-> 
-
-OSS audio is deprecated in the Linux 2.6 kernel.
-
-> Does it effectively mean that I will have to shift to the new ALSA (Is
-> this chip/format supported ??) ?
-> 
-
-Yes.
-
-
-Liam
-
-
+> OSS audio is deprecated in the Linux 2.6 kernel.
+Ok, but we have a working & robust AC97 WM9712 driver for the same. It
+would be much more convenient for us if we have something similar in
+OSS. So is this guy (the WM8751), supported in any form in the OSS?
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
