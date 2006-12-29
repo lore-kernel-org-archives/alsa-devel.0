@@ -1,16 +1,17 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+From: Frank Mandarino <fmandarino@endrelia.com>
 Subject: Re: [PATCH] fix typo/compilation error on	soc-dapm	and
-	at91-i2s
-Date: Fri, 29 Dec 2006 13:31:26 +0000
-Message-ID: <1167399086.11374.61.camel@localhost.localdomain>
-References: <200612281832.23268.rss@barracuda.es>
-	<1167396924.11374.52.camel@localhost.localdomain>
+ at91-i2s
+Date: Fri, 29 Dec 2006 08:42:13 -0500
+Message-ID: <45951B35.4010301@endrelia.com>
+References: <200612281832.23268.rss@barracuda.es>	
+	<1167396924.11374.52.camel@localhost.localdomain>	
 	<45951542.4060908@endrelia.com>
+	<1167399086.11374.61.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45951542.4060908@endrelia.com>
+In-Reply-To: <1167399086.11374.61.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,25 +21,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Frank Mandarino <fmandarino@endrelia.com>
-Cc: alsa-devel@lists.sourceforge.net, =?ISO-8859-1?Q?Ra=FAl_S=E1nchez?= Siles <rss@barracuda.es>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@lists.sourceforge.net, =?UTF-8?B?UmHDumwgU8OhbmNoZXogU2lsZXM=?= <rss@barracuda.es>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDA2LTEyLTI5IGF0IDA4OjE2IC0wNTAwLCBGcmFuayBNYW5kYXJpbm8gd3JvdGU6
-Cj4gTGlhbSBHaXJkd29vZCB3cm90ZToKCj4gPiBGcmFuaywgYW55IGNoYW5jZSB5b3UgY2FuIHN1
-Ym1pdC4gSXQncyBpbiBteSBwYXRjaCBpbmJveCBhdCB0aGUgb2ZmaWNlCj4gPiBhbmQgSSB3b24n
-dCBiZSBiYWNrIHVudGlsIHRoZSAzcmQuCj4gPiAKPiA+IFRoYW5rcwo+ID4gCj4gPiBMaWFtCj4g
-Cj4gSSBhbSBvdXQgb2YgdGhlIG9mZmljZSB1bnRpbCB0aGUgMm5kLCBidXQgSSBzaG91bGQgYmUg
-YWJsZSB0byBzdWJtaXQgCj4gZnJvbSBob21lLgo+IAo+IEFyZSB5b3UgcmVmZXJyaW5nIHRvIHRo
-ZSBwYXRjaCBJIHNlbnQgeW91IGxhc3Qgd2Vlaywgb3IgUmHDumwncyBwYXRjaCwgb3IgCj4gYm90
-aD8KClNvcnJ5LCBJIHdhcyBtZWFuaW5nIHlvdXIgcGF0Y2ggZnJvbSBsYXN0IHdlZWsuCgpDaGVl
-cnMKCkxpYW0KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZs
-dWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFu
-ZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElU
-ICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gK
-aHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNl
-Zm9yZ2UmQ0lEPURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+TGlhbSBHaXJkd29vZCB3cm90ZToKPiBPbiBGcmksIDIwMDYtMTItMjkgYXQgMDg6MTYgLTA1MDAs
+IEZyYW5rIE1hbmRhcmlubyB3cm90ZToKPj4gTGlhbSBHaXJkd29vZCB3cm90ZToKPiAKPj4+IEZy
+YW5rLCBhbnkgY2hhbmNlIHlvdSBjYW4gc3VibWl0LiBJdCdzIGluIG15IHBhdGNoIGluYm94IGF0
+IHRoZSBvZmZpY2UKPj4+IGFuZCBJIHdvbid0IGJlIGJhY2sgdW50aWwgdGhlIDNyZC4KPj4+Cj4+
+PiBUaGFua3MKPj4+Cj4+PiBMaWFtCj4+IEkgYW0gb3V0IG9mIHRoZSBvZmZpY2UgdW50aWwgdGhl
+IDJuZCwgYnV0IEkgc2hvdWxkIGJlIGFibGUgdG8gc3VibWl0IAo+PiBmcm9tIGhvbWUuCj4+Cj4+
+IEFyZSB5b3UgcmVmZXJyaW5nIHRvIHRoZSBwYXRjaCBJIHNlbnQgeW91IGxhc3Qgd2Vlaywgb3Ig
+UmHDumwncyBwYXRjaCwgb3IgCj4+IGJvdGg/Cj4gCj4gU29ycnksIEkgd2FzIG1lYW5pbmcgeW91
+ciBwYXRjaCBmcm9tIGxhc3Qgd2Vlay4KPiAKPiBDaGVlcnMKPiAKPiBMaWFtCgpObyBwcm9ibGVt
+LiAgSSdsbCB0cnkgdG8gZ2V0IGl0IGRvbmUgdG9kYXkuCgpSZWdhcmRzLAouLi9mYW0KLS0gCkZy
+YW5rIE1hbmRhcmlubyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZm1hbmRhcmlubyhh
+KWVuZHJlbGlhLmNvbQpFbmRyZWxpYSBUZWNobm9sb2dpZXMgSW5jLgpUb3JvbnRvLCBPbnRhcmlv
+LCBDYW5hZGEKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGFrZSBTdXJ2ZXlzLiBFYXJuIENhc2guIEluZmx1
+ZW5jZSB0aGUgRnV0dXJlIG9mIElUCkpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNheSBwYW5l
+bCBhbmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKb3BpbmlvbnMgb24gSVQg
+JiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzIC0gYW5kIGVhcm4gY2FzaApo
+dHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9am9pbi5waHAmcD1zb3VyY2Vm
+b3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
