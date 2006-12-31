@@ -1,11 +1,18 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H0fGp-0002Z1-NS delayed 10 hours
-Date: Sat, 30 Dec 2006 16:37:32 -0800
-Message-ID: <E1H0ohg-0007rv-DV@externalmx-1.sourceforge.net>
+From: Daniel Drake <dsd@gentoo.org>
+Subject: Re: Regression in 2.6.19 and 2.6.20 for snd_hda_intel
+Date: Sat, 30 Dec 2006 22:46:11 -0500
+Message-ID: <45973283.7060801@gentoo.org>
+References: <45971053.7040609@lwfinger.net> <45971F39.4060301@gentoo.org>
+	<45972EFD.3010103@lwfinger.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from smtp151.iad.emailsrvr.com (smtp151.iad.emailsrvr.com
+	[207.97.245.151])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4D622C9
+	for <alsa-devel@alsa-project.org>; Sun, 31 Dec 2006 04:44:46 +0100 (MET)
+In-Reply-To: <45972EFD.3010103@lwfinger.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +22,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Larry Finger <larry.finger@lwfinger.net>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Stephen Hemminger <shemminger@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+Larry Finger wrote:
+> You are correct. Only the "hda_codec-Add independent headphone volume control" needs to be reverted.
 
-The message identifier is:     1H0fGp-0002Z1-NS
-The subject of the message is: Lord, is in the people journeyed, from me.  When he said whom the
-The date of the message is:    Sat, 30 Dec 2006 16:33:04 +0200
+The best course of action is probably to file a report here:
+https://bugtrack.alsa-project.org/alsa-bug
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Daniel
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
