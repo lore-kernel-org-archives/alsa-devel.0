@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H0fGp-0002Z1-NS delayed 24 hours
-Date: Sun, 31 Dec 2006 12:13:38 -0800
-Message-ID: <E1H173q-0002se-1i@externalmx-1.sourceforge.net>
+Subject: Warning: message 1H12ZK-0005XX-RR delayed 10 hours
+Date: Sun, 31 Dec 2006 18:54:10 -0800
+Message-ID: <E1H1DJS-0001aZ-1L@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1H0fGp-0002Z1-NS
-The subject of the message is: Lord, is in the people journeyed, from me.  When he said whom the
-The date of the message is:    Sat, 30 Dec 2006 16:33:04 +0200
+The message identifier is:     1H12ZK-0005XX-RR
+The subject of the message is: So Amnon He said, unto Uz, the place said unto a woman and none of all
+The date of the message is:    Sun, 31 Dec 2006 16:25:52 +0100
 
 The address to which the message has not yet been delivered is:
 
