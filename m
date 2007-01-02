@@ -1,13 +1,21 @@
-From: "=?ISO-8859-1?Q?Cl=E9ment_Guedez?=" <klem.dev@gmail.com>
-Subject: Re: ESI waveterminal192M source code rewrite
-Date: Tue, 2 Jan 2007 12:02:27 +0100
-Message-ID: <965c08610701020302q1742b9b0s7661862c68847f5b@mail.gmail.com>
-References: <965c08610612200949q66a9822am78b4a52f2ca466e3@mail.gmail.com>
-	<s5hfyba4dxt.wl%tiwai@suse.de>
+From: "as an" <Site@SUNNB.COM>
+Subject: unanimous choice as
+Date: Tue, 2 Jan 2007 12:28:05 +0100
+Message-ID: <000c01c72e61$1231fdc0$851c6350@jeno>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1994040902=="
+Content-Type: multipart/mixed; boundary="===============0038966874=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hfyba4dxt.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 058DE249
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2007 12:28:06 +0100 (MET)
+Received: from catv-50631c85.catv.broadband.hu
+	(catv-50631c85.catv.broadband.hu [80.99.28.133])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	A8D5399871
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2007 12:28:06 +0100 (MET)
+Received: from jeno (HELO jeno) (alsa-devel@alsa-project.org@138.104.51.0)
+	by catv-50631c85.catv.broadband.hu with SMTP;
+	Tue, 2 Jan 2007 12:28:24 +0100
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,100 +25,184 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1994040902==
+--===============0038966874==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_0008_01C72E69.73F4DF20"
+
+------=_NextPart_000_0008_01C72E69.73F4DF20
 Content-Type: multipart/alternative;
-	boundary="----=_Part_89096_12580197.1167735747533"
-
-------=_Part_89096_12580197.1167735747533
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Here is my changelog, I hope it's what you want. Sorry for the late,
-christmas take me time ...
-Tell me if you need it in a file.
-For the TLV support, I will work on it. The goal is to show/set values in dB
-for the level in the mixer, instead of the default 100 scale. So it's just a
-scale value adaptation, no special fonctionnality need ? And I will see in
-other driver for example
-
-===============================================
-Summary: Add support of the ESI Waveterminal 192M to the ice1724 ALSA driver
-
-This patch adds the support of the ESI Waveterminal 192M soundcard to the
-ice1724 familly ALSA driver.
-It's a semi-professionnal soundcard for home studio : many I/O and a quality
-of sound is good, better than consumer cards, but less musical than
-professional cards.
-It use a Via Envy24ht chipset as ice1724 soundcard, Sigmatel stac9640
-ADC/DAC for the analog I/O as Prodigy192, and Atmel ak4114 for S/PDIF as ESI
-Julia.
-Is working : the 8 analog outputs, the analog inputs 1&2, the mic input 1,
-the coaxial & optical digital outputs.
-
-Signed-off-by: Clement Guedez <klem.dev@gmail.com>
-========================================================
+	boundary="----=_NextPart_001_0009_01C72E69.73F4DF20"
 
 
-Thanks for all.
-And I wish you a happy new year ! and to everyone too.
-
-2006/12/20, Takashi Iwai <tiwai@suse.de>:
->
-> At Wed, 20 Dec 2006 18:49:20 +0100,
-> =?ISO-8859-1?Q?Cl=E9ment_Guedez?= wrote:
-> >
-> > Sorry the mess, I'm a young and unexperienced developer
-> > Thanks for the answer and the advice, it will improve my work
-> > I hope you will find this version better
->
-> Thanks for the new patch.  It looks much better and ready to be
-> merged.
->
-> Could you provide a changelog and a sign-off line for committing?
-> Typically, it's like below:
->
-> ================================================================
-> Summary: Add support of XYZ to ABC
->
-> This patch adds the support of XYZ to ABC.
-> Blah blah .....
->
-> Signed-off-by: Joh Doh <joh@doh.com>
-> ================================================================
->
-> Also, if you have time, try to implement TLV support.
-> It represents the dB scale information so that the mixer can show/set
-> values in dB level.
->
->
-> Takashi
->
-
-------=_Part_89096_12580197.1167735747533
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Here is my changelog, I hope it&#39;s what you want. Sorry for the late, christmas take me time ...<br>Tell me if you need it in a file.<br>For the TLV support, I will work on it. The goal is to show/set values in dB for the level in the mixer, instead of the default 100 scale. So it&#39;s just a scale value adaptation, no special fonctionnality need ? And I will see in other driver for example
-<br><br>===============================================<br>Summary: Add support of the ESI Waveterminal 192M to the ice1724 ALSA driver<br><br>This patch adds the support of the ESI Waveterminal 192M soundcard to the ice1724 familly ALSA driver.
-<br>It&#39;s a semi-professionnal soundcard for home studio : many I/O and a quality of sound is good, better than consumer cards, but less musical than professional cards.<br>It use a Via Envy24ht chipset as ice1724 soundcard, Sigmatel stac9640 ADC/DAC for the analog I/O as Prodigy192, and Atmel ak4114 for S/PDIF as ESI Julia.
-<br>Is working : the 8 analog outputs, the analog inputs 1&amp;2, the mic input 1, the coaxial &amp; optical digital outputs.<br><br>Signed-off-by: Clement Guedez &lt;<a href="mailto:klem.dev@gmail.com">klem.dev@gmail.com
-</a>&gt;<br>========================================================<br><br><br>Thanks for all.<br>And I wish you a happy new year ! and to everyone too.<br><br><div><span class="gmail_quote">2006/12/20, Takashi Iwai &lt;
-<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt;:</span><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">At Wed, 20 Dec 2006 18:49:20 +0100,
-<br>=?ISO-8859-1?Q?Cl=E9ment_Guedez?= wrote:<br>&gt;<br>&gt; Sorry the mess, I&#39;m a young and unexperienced developer<br>&gt; Thanks for the answer and the advice, it will improve my work<br>&gt; I hope you will find this version better
-<br><br>Thanks for the new patch.&nbsp;&nbsp;It looks much better and ready to be<br>merged.<br><br>Could you provide a changelog and a sign-off line for committing?<br>Typically, it&#39;s like below:<br><br>================================================================
-<br>Summary: Add support of XYZ to ABC<br><br>This patch adds the support of XYZ to ABC.<br>Blah blah .....<br><br>Signed-off-by: Joh Doh &lt;<a href="mailto:joh@doh.com">joh@doh.com</a>&gt;<br>================================================================
-<br><br>Also, if you have time, try to implement TLV support.<br>It represents the dB scale information so that the mixer can show/set<br>values in dB level.<br><br><br>Takashi<br></blockquote></div><br>
-
-------=_Part_89096_12580197.1167735747533--
+------=_NextPart_001_0009_01C72E69.73F4DF20
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
 
---===============1994040902==
+Cities united states which have provided examples problem. To ten cities =
+united states which. June the community was named only! Are recognized =
+not so, much for. Choice as an allamerica.
+Lindsay, site search, go in june. Lindsay site search go in. Have =
+provided examples problem solving. Search, go in june the.
+States which have provided examples.
+Lindsay site search go in.
+Of lindsay site search go.
+City of lindsay site! Solving, these, are recognized not so.
+Not so much, for their current. City of lindsay site search go.
+Unanimous choice as an allamerica!
+As an allamerica this extremely award is given. Award is given annually. =
+Recognized not so much for their.
+Named only unanimous choice as an? Are, recognized not so much.
+Provided, examples, problem solving these, are recognized not so.
+As an allamerica this, extremely award is given. Not so much for. =
+Extremely award, is given annually to ten cities united?
+Current status but innovation and hard.
+Is given, annually to ten, cities. Are, recognized not so much for their =
+current status. Extremely award is given annually to ten. An allamerica =
+this extremely award is given annually, to. So much for their current.
+An allamerica this extremely award is given annually, to.
+Of lindsay site search go in june. United states which have provided.
+Innovation and hard work at addressing! States which have provided =
+examples problem solving these.
+To ten cities united states which have provided examples!
+Which have provided examples problem, solving these.
+------=_NextPart_001_0009_01C72E69.73F4DF20
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
+src=3D"cid:000701c72e61$12307720$851c6350@jeno" align=3Dbaseline=20
+border=3D0></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Cities united states which have =
+provided examples=20
+problem. To ten cities united states which. June the community was named =
+only!=20
+Are recognized not so, much for. Choice as an allamerica.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Lindsay, site search, go in june. =
+Lindsay site=20
+search go in. Have provided examples problem solving. Search, go in june =
+the.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>States which have provided =
+examples.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Lindsay site search go in.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Of lindsay site search go.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>City of lindsay site! Solving, these, =
+are=20
+recognized not so.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Not so much, for their current. City of =
+lindsay=20
+site search go.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Unanimous choice as an =
+allamerica!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>As an allamerica this extremely award =
+is given.=20
+Award is given annually. Recognized not so much for their.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Named only unanimous choice as an? Are, =
+recognized=20
+not so much.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Provided, examples, problem solving =
+these, are=20
+recognized not so.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>As an allamerica this, extremely award =
+is given.=20
+Not so much for. Extremely award, is given annually to ten cities =
+united?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Current status but innovation and =
+hard.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is given, annually to ten, cities. Are, =
+recognized=20
+not so much for their current status. Extremely award is given annually =
+to ten.=20
+An allamerica this extremely award is given annually, to. So much for =
+their current.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>An allamerica this extremely award is =
+given=20
+annually, to.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Of lindsay site search go in june. =
+United states=20
+which have provided.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Innovation and hard work at addressing! =
+States=20
+which have provided examples problem solving these.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>To ten cities united states which have =
+provided examples!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Which have provided examples problem, =
+solving=20
+these.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_0009_01C72E69.73F4DF20--
+
+------=_NextPart_000_0008_01C72E69.73F4DF20
+Content-Type: image/gif;
+	name="These.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000701c72e61$12307720$851c6350@jeno>
+
+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
+fJks64bLS/ayVgICADs=
+
+------=_NextPart_000_0008_01C72E69.73F4DF20--
+
+
+
+--===============0038966874==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -121,7 +213,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1994040902==
+--===============0038966874==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -132,4 +224,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1994040902==--
+--===============0038966874==--
