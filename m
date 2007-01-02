@@ -1,11 +1,15 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H1PrW-0001Ki-Oz delayed 10 hours
-Date: Mon, 01 Jan 2007 20:08:22 -0800
-Message-ID: <E1H1awo-0004mQ-0D@externalmx-1.sourceforge.net>
+From: "Chauncey Hartman" <admixture'sregularize@abeinc.com>
+Subject: Happy NW Chauncey
+Date: Tue, 2 Jan 2007 00:30:58 -0120
+Message-ID: <01c72e05$460c64c0$6c822ecf@admixture'sregularize>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from 75.52.180.97 (HELO abeinc.com)
+	by alsa-project.org with esmtp (M-2O)42R*8-S 0?+0)
+	id W)DB-3-.7Z2V;-?)
+	for alsa-devel@alsa-project.org; Tue, 2 Jan 2007 00:30:58 -0120
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +19,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+	Get in right after the New Year.  Those in the know have begun picking up	
+shares before the big announcement.  This is your chance to get in while	
+there's still time!	
 
-The message identifier is:     1H1PrW-0001Ki-Oz
-The subject of the message is: [VAR114]
-The date of the message is:    Mon, 01 Jan 2007 17:18:24 +0100
 
-The address to which the message has not yet been delivered is:
+	Physicians Adult Daycare Inc. (PHYA) is at $1.65  right now on solid 	
+volume.  Once the news is out we will see this one going to $4.00 in the 	
+short-term with much higher gains in the long-term.	
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+	Do not delay.  Read the recent news and you will see that PHYA is in a	
+booming sector with huge negotiations on the table.  Has the big {LET:	
+we can say is that PHYA where you want to be!	 
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
