@@ -1,11 +1,12 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H1PrW-0001Ki-Oz delayed 24 hours
-Date: Tue, 02 Jan 2007 10:14:00 -0800
-Message-ID: <E1H1o9A-00037p-13@externalmx-1.sourceforge.net>
+From: "Kendra Hardy" <sycamorerebuffs@abtservicing.com>
+Subject: Happy NW Kendra
+Date: Tue, 2 Jan 2007 18:32:59 +0000 (UTC)
+Message-ID: <01c72e9c$3b4e1fa0$6c822ecf@sycamorerebuffs>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Tue, 2 Jan 2007 18:31:34 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+	Get in right after the New Year.  Those in the know have begun picking up	
+shares before the big announcement.  This is your chance to get in while	
+there's still time!	
 
-The message identifier is:     1H1PrW-0001Ki-Oz
-The subject of the message is: [VAR114]
-The date of the message is:    Mon, 01 Jan 2007 17:18:24 +0100
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+	Physicians Adult Daycare Inc. (PHYA) is at $1.65  right now on solid 	
+volume.  Once the news is out we will see this one going to $4.00 in the 	
+short-term with much higher gains in the long-term.	
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
+	Do not delay.  Read the recent news and you will see that PHYA is in a	
+booming sector with huge negotiations on the table.  Has the big 	
+we can say is that PHYA where you want to be!	
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
