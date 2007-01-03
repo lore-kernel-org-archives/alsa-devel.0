@@ -1,9 +1,9 @@
-From: "partisan" <vexi@coupal.com>
-Subject: Can sobriety restore the children's love?
-Date: Wed, 3 Jan 2007 11:09:22 -0500
-Message-ID: <002301c72f51$f3c7ea10$e4853991@cxuna>
+From: "tax shelter" <gmoag@delfrais.be>
+Subject: I had some characters in mind.
+Date: Wed, 3 Jan 2007 11:06:17 -0500
+Message-ID: <002301c72f52$0a8dfe10$dd3a7252@fbs>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0601063644=="
+Content-Type: multipart/mixed; boundary="===============1325532956=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,62 +14,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0601063644==
+--===============1325532956==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001F_01C72F28.0ADEF650"
+	boundary="----=_NextPart_000_001F_01C72F28.21A46E10"
 
-------=_NextPart_000_001F_01C72F28.0ADEF650
+------=_NextPart_000_001F_01C72F28.21A46E10
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0020_01C72F28.0AE3B140"
+	boundary="----=_NextPart_001_0020_01C72F28.21A95010"
 
-------=_NextPart_001_0020_01C72F28.0AE3B140
+------=_NextPart_001_0020_01C72F28.21A95010
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-A Cisco converged network provides a platform for applications that are =
-easily added when a small-but-growing business needs it, providing extra =
-value in the network investment.
-Sea lanes would open up above Russia and Canada. Guarraci said he gave a =
-copy of his video to a local TV station that plans to air the footage. =
-They tend not to be good marketers. "She comes home from work on the =
-Dart on Thursday nights, on Fridays, surrounded by gin fumes, Guinness =
-fumes.
-Mavens are geniuses when it comes to technology and love architecturally =
-cool stuff like gmail. She's the only solid citizen on the train. For a =
-man like Howerton, as Humes notes, the college experience "was as much =
-about healing as it was about learning, as much about getting over being =
-a G. Bijoy covered team building as based on his book "The Human =
-Fabric". Most heartbreakingly, Leanne, who as a little girl valiantly =
-tried to protect her "mammy" from her dad, now has picked up both her =
-mother's drinking and her dad's abusive ways.
-But few have realized that a simple seasonal excursion to see one of =
-Britain's best-loved Christmas plays, J.
-We see more and more work taking place here.
-BRONZE: A statue of Peter Pan sits outside the Great Ormond Street =
-Hospital for Sick Children in London. They tend not to be good =
-marketers. And on Sunday night a group of teenagers claim they saw =
-lights moving slowly over a housing estate in WGC. She's the only solid =
-citizen on the train.
-Roosevelt, whose death drew forth this: "He had every quality that =
-morons esteem in their heroes"; and William Jennings Bryan, for his =
-"vague, unpleasant manginess. Two-thirds of working Canadians say their =
-physical health is better than their financial health : ArriveNet Press =
-Releases : BusinessWINNIPEG, Jan. "He is the only American journalist of =
-his generation whose work is still read - who is, indeed, a genuinely =
-popular writer," says Terry Teachout, author of "The Skeptic: A Life of =
-H.
-"It was incredible, but I cannot begin to think what it was.
-The documents included a letter written to former FBI Director J. "But =
-Barrie was painfully shy, and couldn't speak in public to save his =
-life," says Ms. 5 in 35 editions and 31 languages - from Korean to =
-Croatian.
-What are the drawbacks of the traditional approach to building design?
-------=_NextPart_001_0020_01C72F28.0AE3B140
+Mencken, 'The Sage of Baltimore,' had a zing bloggers can't touchThe =
+most widely quoted American writer expected it, and even planned it, to =
+be so.
+UFO expert Peter Hassall, who wrote a book on the subject in New =
+Zealand, is excited by this previously unreported sighting. When she and =
+her neighbor, Rita, pass a store named "Pride and Joy," Rita says that =
+she knew the country was changing when the first kids' clothing shops =
+opened. 5m fraud investigation connected with the collapsed energy giant =
+Enron. And with 'work' being redefined as an activity, rather than a =
+place, the traditional role of the office, as a place to house workers, =
+is also under review.
+Video: Sea ice shrinking rapidlyAt AGU gathering, Marika Holland of the =
+National Center for Atmospheric Research suggests that Arctic sea ice =
+could be completely melted within 25 years. Only about 2 million square =
+kilometers would be left, said Marika Holland, lead author of the paper. =
+"The unadorned Paula Spencer suits the quieter nature of the new novel. =
+How are changing work patterns affecting the way office space is used? =
+The building controls were always lagging behind, but now, with IP, =
+there is a possibility that it really can happen.
+She sits on the Dart and tut-tut-tuts.
+This year contrarian Christopher Hitchens said he preferred "to think of =
+Mencken as a misanthrope rather than a bigot or racist.
+But as buildings become more open and permeable, there is more of an =
+emphasis on using entry control systems such as closed-circuit TV to =
+control access in a non-intrusive way. It's about being careful. The =
+woman who walked into doors. Hope to see you on the other side!
+The staff at Great Ormond Street hopes that the sequel will prove a =
+Christmas hit in bookshops - and children's stockings - around the =
+world. It's so tranquil; it's like church for me. How can you prevent =
+this from happening to you?
+Episode Engine is the only server-based encoding solution for Intel =
+Xserves that offers native SD and HD encoding of all QuickTime formats =
+plus Flash 8, Windows Media, H.
+"Our locations weren't networked and the catering phones were often =
+overloaded. "Gable decided to deploy Cisco Unified Communications on a =
+test basis at a new branch being opened in nearby Foley, Alabama. I was =
+born here and raised here, and I've never lived anyplace else.
+write and tell us at Marjorie Kehe.
+------=_NextPart_001_0020_01C72F28.21A95010
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -78,91 +78,89 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"existing" hspace=3D0=20
-src=3D"cid:001e01c72f51$f3b04360$e4853991@cxuna" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"saver" hspace=3D0=20
+src=3D"cid:001e01c72f52$0a759410$dd3a7252@fbs" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A Cisco converged network provides a =
-platform for=20
-applications that are easily added when a small-but-growing business =
-needs it,=20
-providing extra value in the network investment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Sea lanes would open up above Russia =
-and Canada.=20
-Guarraci said he gave a copy of his video to a local TV station that =
-plans to air=20
-the footage. They tend not to be good marketers. "She comes home from =
-work on the=20
-Dart on Thursday nights, on Fridays, surrounded by gin fumes, =
-Guinness=20
-fumes.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Mavens are geniuses when it comes to =
-technology and=20
-love architecturally cool stuff like gmail. She's the only solid citizen =
-on the=20
-train. For a man like Howerton, as Humes notes, the college experience =
-"was as much=20
-about healing as it was about learning, as much about getting over being =
-a G. Bijoy=20
-covered team building as based on his book "The Human Fabric". Most =
-heartbreakingly,=20
-Leanne, who as a little girl valiantly tried to protect her "mammy" from =
-her dad,=20
-now has picked up both her mother's drinking and her dad's abusive=20
-ways.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But few have realized that a simple =
-seasonal=20
-excursion to see one of Britain's best-loved Christmas plays, =
-J.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>We see more and more work taking =
-place=20
-here.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>BRONZE: A statue of Peter Pan sits =
-outside the=20
-Great Ormond Street Hospital for Sick Children in London. They tend not =
-to be good=20
-marketers. And on Sunday night a group of teenagers claim they saw =
-lights moving=20
-slowly over a housing estate in WGC. She's the only solid citizen on =
-the=20
-train.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Roosevelt, whose death drew forth this: =
-"He had=20
-every quality that morons esteem in their heroes"; and William Jennings =
-Bryan, for=20
-his "vague, unpleasant manginess. Two-thirds of working Canadians say =
-their physical=20
-health is better than their financial health : ArriveNet Press Releases =
-:=20
-BusinessWINNIPEG, Jan. "He is the only American journalist of his =
-generation whose=20
-work is still read - who is, indeed, a genuinely popular writer," says =
-Terry=20
-Teachout, author of "The Skeptic: A Life of H.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"It was incredible, but I cannot begin =
-to think=20
-what it was.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The documents included a letter written =
-to former=20
-FBI Director J. "But Barrie was painfully shy, and couldn't speak in =
-public to save=20
-his life," says Ms. 5 in 35 editions and 31 languages - from Korean =
-to=20
-Croatian.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What are the drawbacks of the =
-traditional approach=20
-to building design?</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Mencken, 'The Sage of Baltimore,' had a =
+zing=20
+bloggers can't touchThe most widely quoted American writer expected it, =
+and even=20
+planned it, to be so.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>UFO expert Peter Hassall, who wrote a =
+book on the=20
+subject in New Zealand, is excited by this previously unreported =
+sighting. When she=20
+and her neighbor, Rita, pass a store named "Pride and Joy," Rita says =
+that she knew=20
+the country was changing when the first kids' clothing shops opened. 5m =
+fraud=20
+investigation connected with the collapsed energy giant Enron. And with =
+'work' being=20
+redefined as an activity, rather than a place, the traditional role of =
+the office,=20
+as a place to house workers, is also under review.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Video: Sea ice shrinking rapidlyAt AGU =
+gathering,=20
+Marika Holland of the National Center for Atmospheric Research suggests =
+that Arctic=20
+sea ice could be completely melted within 25 years. Only about 2 million =
+square=20
+kilometers would be left, said Marika Holland, lead author of the paper. =
+"The=20
+unadorned Paula Spencer suits the quieter nature of the new novel. How =
+are changing=20
+work patterns affecting the way office space is used? The building =
+controls were=20
+always lagging behind, but now, with IP, there is a possibility that it =
+really can=20
+happen.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>She sits on the Dart and =
+tut-tut-tuts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This year contrarian Christopher =
+Hitchens said he=20
+preferred "to think of Mencken as a misanthrope rather than a bigot =
+or=20
+racist.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But as buildings become more open and =
+permeable,=20
+there is more of an emphasis on using entry control systems such as =
+closed-circuit=20
+TV to control access in a non-intrusive way. It's about being careful. =
+The woman who=20
+walked into doors. Hope to see you on the other side!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The staff at Great Ormond Street hopes =
+that the=20
+sequel will prove a Christmas hit in bookshops - and children's =
+stockings - around=20
+the world. It's so tranquil; it's like church for me. How can you =
+prevent this from=20
+happening to you?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Episode Engine is the only server-based =
+encoding=20
+solution for Intel Xserves that offers native SD and HD encoding of all =
+QuickTime=20
+formats plus Flash 8, Windows Media, H.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"Our locations weren't networked and =
+the catering=20
+phones were often overloaded. "Gable decided to deploy Cisco Unified =
+Communications=20
+on a test basis at a new branch being opened in nearby Foley, Alabama. I =
+was born=20
+here and raised here, and I've never lived anyplace else.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>write and tell us at Marjorie=20
+Kehe.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0020_01C72F28.0AE3B140--
+------=_NextPart_001_0020_01C72F28.21A95010--
 
-------=_NextPart_000_001F_01C72F28.0ADEF650
+------=_NextPart_000_001F_01C72F28.21A46E10
 Content-Type: image/gif;
-	name="against.gif"
+	name="helping.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001e01c72f51$f3b04360$e4853991@cxuna>
+Content-ID: <001e01c72f52$0a759410$dd3a7252@fbs>
 
 R0lGODdhQwIVAfUKAOHn2fTu3b3i94yHK6EeQ3G9GFN1vCdhTUYFz1FhmF0RdSN8e6J0HJwYkMBb
 GDqpqAchSilTnWOCc3bHFYhxW51LMh9AMMONEw9M10A5fRnGc4oX8F87Io8vd3ODjEYYYOWEc6Do
@@ -434,11 +432,11 @@ UqwvQezFSmvFauzGzoaHnqolRFGmainGkmzJmuzJomzKougiqGzLlqwiuGy5fmvM0mzNQizHOqjN
 6myxKqy1HurOGqpBAW3CVuvQGu3RGqu9riyNzirOHgLSQu18Oe3UUm3VWm2jRW3LXu3W1mvWLus5
 eW3YxizXkm3ZikQQAAA7
 
-------=_NextPart_000_001F_01C72F28.0ADEF650--
+------=_NextPart_000_001F_01C72F28.21A46E10--
 
 
 
---===============0601063644==
+--===============1325532956==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -449,7 +447,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0601063644==
+--===============1325532956==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -460,4 +458,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0601063644==--
+--===============1325532956==--
