@@ -1,11 +1,12 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [RFC] Dual Interface Codecs
-Date: Wed, 03 Jan 2007 19:47:38 +0000
-Message-ID: <1167853658.26687.84.camel@localhost.localdomain>
+From: Riku Voipio <riku.voipio@iki.fi>
+Subject: async alsa applications and pcm plugin sound output
+Date: Wed, 3 Jan 2007 22:09:00 +0200
+Message-ID: <20070103200900.GA15841@kos.to>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,50 +16,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Seth Forshee <seth.forshee@gmail.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'd like to gather some opinion on the best way to expose dual interface
-codecs to alsa-lib and userspace in general.
+hi,
 
-Consider a codec with 2 digital audio interfaces :-
+It possible to use async callbacks[1] using snd_async_add_pcm_handler()
+to find out when it is possible to write to ALSA. It is also possible
+to write a alsa-lib I/O Plugin for sound output[2]. Such 
+plugins have been created atleast for alsa-bluetooth[3] and
+dsp gateway[4]. Unfortunatly it seems IO plugins don't support
+async playback. Using the pcm binary from alsa testsuite 
+and dsp gateway I/O plugin:
 
- 1. I2S interface to host CPU
- 2. PCM interface to BT codec or GSM modem.
+-snip-
+./pcm -Ddefault -m async
+Playback device is default
+Stream parameters are 44100Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Using transfer method: async
+Unable to register async handler
+-snip-
 
-Interface 1 is used for traditional playback and record. Interface 2 is
-used to send and receive PCM audio to a BT codec (for Tx/Rx) from/to an
-onboard Mic/Speaker.  e.g.
+It appears external IO plugins are not _allowed_ to
+deal with async stuff:
 
-               ____________       DAI 2        ______
-Mic --------> |   Codec    | <==============> |  BT  | --<
-Spk <---------|____________|                  |______|
-                    /\
-                    ||  DAI 1
-                    ||
-                ____\/____
-               |   CPU    |
-               |__________|
+-snip-
+static int snd_pcm_ioplug_async(snd_pcm_t *pcm ATTRIBUTE_UNUSED,
+                int sig ATTRIBUTE_UNUSED,
+                pid_t pid ATTRIBUTE_UNUSED)
+{
+    return -ENOSYS;
+}
+-snip-
 
+Does this mean that async callbacks should not be used if you
+want to be sure sound works everywhere? Is there a chance that
+plugin api will be changed to allow plugins implement async
+callbacks?
 
-This allows BT/GSM audio to work without the CPU DMAing any pcm data as
-audio is now sent directly via the audio codec (the CPU can then sleep).
+Cheers,
+Riku
 
-Currently, we have both interfaces exposed to userspace as PCM's. This
-allows for hw params to be configured for interface 2 (as they would for
-any other device). The only difference is that we never start the PCM
-and always keep it in the prepared state.
-
-There is the obvious problem that applications may try and start this
-pcm, so I'm wondering if we need a new class of pcm device that doesn't
-support a host buffer (e.g. bufferless) and cant be started ? or
-alternatively some other approach may be better.
-
-Cheers
-
-Liam 
-
+[1] http://alsa2.opensrc.org/HowTo_Asynchronous_Playback
+[2] http://alsa.cvs.sourceforge.net/alsa/alsa-lib/src/pcm/pcm_ioplug.c?revision=1.10&view=markup
+[3] http://bluetooth-alsa.sourceforge.net/
+[4] https://garage.maemo.org/projects/dsp-alsa/
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
