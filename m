@@ -1,7 +1,7 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H1PrW-0001Ki-Oz delayed 48 hours
-Date: Wed, 03 Jan 2007 11:09:10 -0800
-Message-ID: <E1H2BU6-0007AB-7s@externalmx-1.sourceforge.net>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [RFC] Dual Interface Codecs
+Date: Wed, 03 Jan 2007 19:47:38 +0000
+Message-ID: <1167853658.26687.84.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,33 +15,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Seth Forshee <seth.forshee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+I'd like to gather some opinion on the best way to expose dual interface
+codecs to alsa-lib and userspace in general.
 
-The message identifier is:     1H1PrW-0001Ki-Oz
-The subject of the message is: [VAR114]
-The date of the message is:    Mon, 01 Jan 2007 17:18:24 +0100
+Consider a codec with 2 digital audio interfaces :-
 
-The address to which the message has not yet been delivered is:
+ 1. I2S interface to host CPU
+ 2. PCM interface to BT codec or GSM modem.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Interface 1 is used for traditional playback and record. Interface 2 is
+used to send and receive PCM audio to a BT codec (for Tx/Rx) from/to an
+onboard Mic/Speaker.  e.g.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+               ____________       DAI 2        ______
+Mic --------> |   Codec    | <==============> |  BT  | --<
+Spk <---------|____________|                  |______|
+                    /\
+                    ||  DAI 1
+                    ||
+                ____\/____
+               |   CPU    |
+               |__________|
+
+
+This allows BT/GSM audio to work without the CPU DMAing any pcm data as
+audio is now sent directly via the audio codec (the CPU can then sleep).
+
+Currently, we have both interfaces exposed to userspace as PCM's. This
+allows for hw params to be configured for interface 2 (as they would for
+any other device). The only difference is that we never start the PCM
+and always keep it in the prepared state.
+
+There is the obvious problem that applications may try and start this
+pcm, so I'm wondering if we need a new class of pcm device that doesn't
+support a host buffer (e.g. bufferless) and cant be started ? or
+alternatively some other approach may be better.
+
+Cheers
+
+Liam 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
