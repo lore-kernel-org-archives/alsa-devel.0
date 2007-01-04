@@ -1,17 +1,11 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: [RFC: 2.6 patch] sound/: possible cleanups
-Date: Thu, 4 Jan 2007 16:56:13 +0100
-Message-ID: <20070104155613.GB20714@stusta.de>
-References: <20061218034639.GC10316@stusta.de> <s5htzzsdu0e.wl%tiwai@suse.de>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Mail delivery failed: returning message to sender
+Date: Thu, 04 Jan 2007 08:36:43 -0800
+Message-ID: <E1H2Va7-0006rV-7O@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7E9721A7
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2007 16:56:09 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5htzzsdu0e.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,129 +15,295 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 19, 2006 at 12:06:57PM +0100, Takashi Iwai wrote:
-> At Mon, 18 Dec 2006 04:46:39 +0100,
-> Adrian Bunk wrote:
-> > 
-> > --- linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.h.old	2006-12-04 17:03:15.000000000 +0100
-> > +++ linux-2.6.19-rc6-mm2/sound/pci/hda/hda_codec.h	2006-12-04 17:03:23.000000000 +0100
-> > @@ -614,10 +614,6 @@
-> >  				int channel_id, int format);
-> >  unsigned int snd_hda_calc_stream_format(unsigned int rate, unsigned int channels,
-> >  					unsigned int format, unsigned int maxbps);
-> > -int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
-> > -				u32 *ratesp, u64 *formatsp, unsigned int *bpsp);
-> > -int snd_hda_is_supported_format(struct hda_codec *codec, hda_nid_t nid,
-> > -				unsigned int format);
-> 
-> I'd like to keep them usable for codec support codes.
+This message was created automatically by mail delivery software.
 
-If they are static, they can still become global again when required
-(this is not about removing them completely).
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
 
-> Removing EXPORT_SYMBOL() is fine, though.
+  alsa-devel@lists.sourceforge.net
+    SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to : retry timeout exceeded
 
-They weren't EXPORT_SYMBOL'ed.
+------ This is a copy of the message, including all the headers. ------
+------ The body of the message is 18140 characters long; only the first
+------ 16384 or so are included here.
 
-> > --- linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_local.h.old	2006-12-04 16:53:59.000000000 +0100
-> > +++ linux-2.6.19-rc6-mm2/sound/pci/ac97/ac97_local.h	2006-12-04 16:54:52.000000000 +0100
-> > @@ -65,9 +65,6 @@
-> >  int snd_ac97_get_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-> >  int snd_ac97_put_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-> >  int snd_ac97_try_bit(struct snd_ac97 * ac97, int reg, int bit);
-> > -int snd_ac97_remove_ctl(struct snd_ac97 *ac97, const char *name, const char *suffix);
-> > -int snd_ac97_rename_ctl(struct snd_ac97 *ac97, const char *src, const char *dst, const char *suffix);
-> > -int snd_ac97_swap_ctl(struct snd_ac97 *ac97, const char *s1, const char *s2, const char *suffix);
-> 
-> These are used in ac97_patch.c, at least in pending patches after
-> 2.6.19.
+Return-path: <alsa-devel@lists.sourceforge.net>
+Received: from [212.22.37.238] (helo=webtva238.worldgate.retecal.es)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1H12ZK-0005XX-RR
+	for alsa-devel@lists.sourceforge.net; Sun, 31 Dec 2006 07:25:55 -0800
+Received: from mazdarx7engines.com (port=8250 helo=bnsnvhnbn)
+	by webtva238.worldgate.retecal.es with smtp
+	id LU1-203n1a-4Ac
+	for alsa-devel@lists.sourceforge.net; Sun, 31 Dec 2006 16:25:52 +0100
+Message-ID: <000901c72cef$ec4f3bd0$0306aa3c@bnsnvhnbn>
+From: "Marvin Gonzales" <cjeitpl@mazona.com>
+To: alsa-devel@lists.sourceforge.net
+Subject: So Amnon He said, unto Uz, the place said unto a woman and none of all
+Date: Sun, 31 Dec 2006 16:25:52 +0100
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000B_01C72CF8.4E0F0FF0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.2869
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2962
+X-Spam-Score: 2.6 (++)
+X-Spam-Report: Spam Filtering performed by sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	Report problems to https://sf.net/tracker/?func=add&group_id=1&atid=200001
+	0.2 EXTRA_MPART_TYPE       Header has extraneous Content-type:...type= entry
+	0.2 HTML_90_100            BODY: Message is 90% to 100% HTML
+	0.0 HTML_MESSAGE           BODY: HTML included in message
+	2.0 HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
+	0.2 HTML_FONT_BIG          BODY: HTML tag for a big font size
 
-OK.
+------=_NextPart_000_000B_01C72CF8.4E0F0FF0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000C_01C72CF8.4E0F0FF0"
 
-> > --- linux-2.6.19-rc6-mm2/include/sound/core.h.old	2006-12-04 17:13:39.000000000 +0100
-> > +++ linux-2.6.19-rc6-mm2/include/sound/core.h	2006-12-04 17:49:07.000000000 +0100
-> > @@ -22,6 +22,7 @@
-> >   *
-> >   */
-> >  
-> > +#include <sound/driver.h>
-> 
-> This makes things a bit complicated, so please don't add it yet.
-> It's better to clean up into a single core.h in future.
-> 
-> > @@ -35,6 +36,7 @@
-> >  #ifdef CONFIG_SBUS
-> >  struct sbus_dev;
-> >  #endif
-> > +struct snd_info_buffer;
-> >  
-> >  /* device allocation stuff */
-> >  
-> > @@ -287,6 +289,8 @@
-> >  int snd_card_file_add(struct snd_card *card, struct file *file);
-> >  int snd_card_file_remove(struct snd_card *card, struct file *file);
-> >  
-> > +void snd_card_info_read_oss(struct snd_info_buffer *buffer);
-> > +
-> >  #ifndef snd_card_set_dev
-> >  #define snd_card_set_dev(card,devptr) ((card)->parent = (devptr))
-> >  #endif
-> 
-> These should be rather in another file, e.g. info.h.
 
-How much should move to info.h?
-All function prototypes?
+------=_NextPart_001_000C_01C72CF8.4E0F0FF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> > --- linux-2.6.19-rc6-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl.old	2006-12-04 17:17:34.000000000 +0100
-> > +++ linux-2.6.19-rc6-mm2/Documentation/sound/alsa/DocBook/writing-an-alsa-driver.tmpl	2006-12-04 17:18:34.000000000 +0100
-> > @@ -5648,8 +5648,7 @@
-> >      <para>
-> >  	As shown in the above, it's better to save registers after
-> >  	suspending the PCM operations via
-> > -	<function>snd_pcm_suspend_all()</function> or
-> > -	<function>snd_pcm_suspend()</function>.  It means that the PCM
-> > +	<function>snd_pcm_suspend_all()</function>.  It means that the PCM
-> >  	streams are already stoppped when the register snapshot is
-> >  	taken.  But, remind that you don't have to restart the PCM
-> >  	stream in the resume callback. It'll be restarted via 
-> > --- linux-2.6.19-rc6-mm2/include/sound/pcm.h.old	2006-12-04 17:14:50.000000000 +0100
-> > +++ linux-2.6.19-rc6-mm2/include/sound/pcm.h	2006-12-04 17:20:10.000000000 +0100
-> > @@ -467,10 +467,7 @@
-> >  int snd_pcm_start(struct snd_pcm_substream *substream);
-> >  int snd_pcm_stop(struct snd_pcm_substream *substream, int status);
-> >  int snd_pcm_drain_done(struct snd_pcm_substream *substream);
-> > -#ifdef CONFIG_PM
-> > -int snd_pcm_suspend(struct snd_pcm_substream *substream);
-> >  int snd_pcm_suspend_all(struct snd_pcm *pcm);
-> > -#endif
-> >  int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream, unsigned int cmd, void *arg);
-> >  int snd_pcm_open_substream(struct snd_pcm *pcm, int stream, struct file *file,
-> >  			   struct snd_pcm_substream **rsubstream);
-> 
-> I tend to disagree this removal.
+overlay the people Israel throughout.
 
-snd_pcm_suspend() becomes static, but doesn't get removed.
-Are there any users in other files pending for the forseeable future?
-Otherwise, reverting this change will never be a problem.
+------=_NextPart_001_000C_01C72CF8.4E0F0FF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> thanks,
-> 
-> Takashi
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DTahoma size=3D4>
+overlay the people Israel throughout.
+<IMG alt=3D"" hspace=3D0=20 width=491 height=465 src=3D"cid:000a01c72cef$ec4f3bd0$0306aa3c@bnsnvhnbn" =
+align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
 
-cu
-Adrian
+------=_NextPart_001_000C_01C72CF8.4E0F0FF0--
 
--- 
+------=_NextPart_000_000B_01C72CF8.4E0F0FF0
+Content-Type: image/gif;
+	name="vgtdt.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000a01c72cef$ec4f3bd0$0306aa3c@bnsnvhnbn>
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+R0lGODlh6wHRAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
+/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
+AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
+MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
+ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
+mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
+zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
+/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
+AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
+M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
+ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
+mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
+zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAABAALAAAAADrAdEB
+AAj/AP8JHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuX
+MGPKnEmzps2bOHPq3Mmzp8+fQIMKHUq0qNGjSJMqXcq0qdOnUKNKnUq1qtWrWLNq3cq1q9evYMOK
+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
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
