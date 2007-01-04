@@ -1,15 +1,14 @@
-From: "Demetrius Ochoa" <architectsgeometric@abbey-group.co.uk>
-Subject: Demetrius wrote:
-Date: Fri, 5 Jan 2007 00:43:26 -0540
-Message-ID: <01c73062$83295200$6c822ecf@architectsgeometric>
+From: "Stefanie Mccullough" <carryall'sJeffersonian@absolutecomfort.ru>
+Subject: Stefanie wrote:
+Date: Fri, 5 Jan 2007 00:43:05 +0300
+Message-ID: <01c73062$76a19e20$6c822ecf@carryall'sJeffersonian>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 213.83.66.193 (HELO clustera.mailcontroller.co.uk)
-	by alsa-project.org with esmtp (+95-S4-5D+<: 0SP*)
-	id 3(;EX+-)7MOXK-:U
-	for alsa-devel@alsa-project.org; Fri, 5 Jan 2007 00:43:26 -0540
+Received: from 81.177.4.246 (HELO absolutecomfort.ru)
+	by alsa-project.org with esmtp (MD(3KF6.1 6D?(1G) id V'-8:W-LG20,0-U3
+	for alsa-devel@alsa-project.org; Fri, 5 Jan 2007 00:43:05 +0300
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,29 +21,29 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Get the New Year Rolling Right.
+Get the New Year Rolling Right!    
 
-Company: PHYA	 
-Current Price: $1.70	
+Company: PHYA	
+Current Price: $1.70	 
 Target Price: $4.00	
 
-	 Physicians Adult Daycare (PHYA) is set up for huge returns.	
-This news is hot off the press and going to have a huge impact over the coming days:	
-	 Physicians Adult Daycare, Inc. to Increase Revenue by 83%. 
+	Physicians Adult Daycare (PHYA) is set up for huge returns.	
+This news is hot off the press and going to have a huge impact over the coming days:	 
+	Physicians Adult Daycare, Inc. to Increase Revenue by 83%	
 
 
-	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	 
+	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	
 Daycare, Inc. announced today that an agreement to purchase an	
-additional adult daycare company has been executed! ! 
+additional adult daycare company has been executed. 
 
 
-	Go to your favorite financial news source to read the details.	
+	 Go to your favorite financial news source to read the details.	
 While there also read about the big negotiations going on with major Asian investors.	
 Further acquisitions are in the works and we are expecting a huge	
-revelation to come out of the company any day.  
+revelation to come out of the company any day. 
 
 	All of these fortuitous events are coming together and sending this one 
-straight up!  Don't miss it	
+straight up!  Don't miss it!
 
 
 
