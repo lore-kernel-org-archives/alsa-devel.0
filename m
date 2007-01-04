@@ -1,15 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] schedule obsolete OSS drivers for removal,
-	3rd round
-Date: Thu, 4 Jan 2007 19:53:53 +0100
-Message-ID: <20070104185353.GI20714@stusta.de>
+From: Paul Abrahams <abrahams@acm.org>
+Subject: Re: PROBLEM: Probable kernel bug in VT8233 drivers
+Date: Thu, 4 Jan 2007 14:21:34 -0500
+Message-ID: <200701041421.35153.abrahams@acm.org>
+References: <200701041332.46215.abrahams@acm.org>
+	<1167936731.4321.2.camel@localhost.localdomain>
+Reply-To: abrahams@acm.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2585E240
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2007 19:53:49 +0100 (MET)
+Received: from alnrmhc14.comcast.net (alnrmhc14.comcast.net [206.18.177.54])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78A09234
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2007 20:21:59 +0100 (MET)
+In-Reply-To: <1167936731.4321.2.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,83 +23,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: linuxppc-dev@ozlabs.org, benh@kernel.crashing.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, sailer@ife.ee.ethz.ch
+To: Peter Zubaj <pzubaj@gaya.sk>
+Cc: alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-This patch schedules obsolete OSS drivers (with ALSA drivers that support
-the same hardware) for removal.
+On Thursday 04 January 2007 1:52 pm, Peter Zubaj wrote:
 
-A rationale of the patch is in
-  http://lkml.org/lkml/2006/12/18/305
+> Try to modprobe driver manually and then use dmesg - it will tell you
+> what is wrong.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-Acked-By: Thomas Sailer <sailer@ife.ee.ethz.ch>
+modprobe snd_via82xx produces no output
 
----
+lsmod produces output containing the line
 
- Documentation/feature-removal-schedule.txt |    7 +++++++
- sound/oss/Kconfig                          |   16 +++++++++++++++-
- sound/oss/dmasound/Kconfig                 |    2 +-
- 3 files changed, 23 insertions(+), 2 deletions(-)
+  snd_via82xx            32920  0
 
---- linux-2.6.20-rc2-mm1/Documentation/feature-removal-schedule.txt.old	2007-01-04 19:02:33.000000000 +0100
-+++ linux-2.6.20-rc2-mm1/Documentation/feature-removal-schedule.txt	2007-01-04 19:04:46.000000000 +0100
-@@ -221,3 +221,10 @@
- Who:	Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
- 
- ---------------------------
-+
-+What:  drivers depending on OBSOLETE_OSS
-+When:  options in 2.6.22, code in 2.6.24
-+Why:   OSS drivers with ALSA replacements
-+Who:   Adrian Bunk <bunk@stusta.de>
-+
-+---------------------------
---- linux-2.6.20-rc2-mm1/sound/oss/Kconfig.old	2007-01-04 19:04:58.000000000 +0100
-+++ linux-2.6.20-rc2-mm1/sound/oss/Kconfig	2007-01-04 19:07:30.000000000 +0100
-@@ -5,6 +5,20 @@
- #
- # Prompt user for primary drivers.
- 
-+config OBSOLETE_OSS
-+	bool "Obsolete OSS drivers"
-+	depends on SOUND_PRIME
-+	help
-+	  This option enables support for obsolete OSS drivers that
-+	  are scheduled for removal in the near future since there
-+	  are ALSA drivers for the same hardware.
-+
-+	  Please contact Adrian Bunk <bunk@stusta.de> if you had to
-+	  say Y here because your soundcard is not properly supported
-+	  by ALSA.
-+
-+	  If unsure, say N.
-+
- config SOUND_BT878
- 	tristate "BT878 audio dma"
- 	depends on SOUND_PRIME && PCI
-@@ -33,7 +47,7 @@
- 
- config SOUND_ES1371
- 	tristate "Creative Ensoniq AudioPCI 97 (ES1371)"
--	depends on SOUND_PRIME && PCI
-+	depends on SOUND_PRIME && PCI && OBSOLETE_OSS
- 	help
- 	  Say Y or M if you have a PCI sound card utilizing the Ensoniq
- 	  ES1371 chipset, such as Ensoniq's AudioPCI97. To find out if
---- linux-2.6.20-rc2-mm1/sound/oss/dmasound/Kconfig.old	2007-01-04 19:07:04.000000000 +0100
-+++ linux-2.6.20-rc2-mm1/sound/oss/dmasound/Kconfig	2007-01-04 19:07:28.000000000 +0100
-@@ -14,7 +14,7 @@
- 
- config DMASOUND_PMAC
- 	tristate "PowerMac DMA sound support"
--	depends on PPC32 && PPC_PMAC && SOUND && I2C
-+	depends on PPC32 && PPC_PMAC && SOUND && I2C && OBSOLETE_OSS
-  	select DMASOUND
- 	help
- 	  If you want to use the internal audio of your PowerMac in Linux,
+dmesg contains the lines
 
+PCI quirk: region 4000-407f claimed by vt8235 PM
+PCI quirk: region 5000-500f claimed by vt8235 SMB
+
+and also the lines
+
+pnp: 00:02: ioport range 0x4000-0x407f could not be reserved
+pnp: 00:02: ioport range 0x5000-0x500f has been reserved
+
+> Also check /proc/asound/cards file if there is listed your card -
+> sometimes is modem first card.
+
+the output is
+
+0 [V8235          ]: VIA8233 - VIA 8235
+                      VIA 8235 with VIA1612A at 0xdc00, irq 217
+
+Paul
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
