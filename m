@@ -1,11 +1,15 @@
-From: "Jorge Longoria" <slumpingfinish@abargainauto.com>
-Subject: Jorge wrote:
-Date: Fri, 5 Jan 2007 10:02:33 -0120
-Message-ID: <01c730b0$9e946090$6c822ecf@slumpingfinish>
+From: Konstantin Kletschke <lists@ku-gbr.de>
+Subject: Re: Re :  ice1724/Audiotrak Prodigy 7.1 HiFi
+Date: Fri, 5 Jan 2007 11:13:13 +0100
+Message-ID: <20070105101313.GA4503@anita.doom>
+References: <20070102151108.GA10561@synertronixx3>
+	<1167850413l.15450l.0l@zerox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1167850413l.15450l.0l@zerox>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,37 +19,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Get the New Year Rolling Right	
+Am 2007-01-03 22:53 +0400 schrieb Elie Morisse:
 
-Company: PHYA	
-Current Price: $1.70	
-Target Price: $4.00	
+> This card is quite similar to the Hercules Fortissimo IV, take a look at this :
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556
+
+Indeed, this Fortissimo 4 looks almost identical. It looks so similair
+that its driver could work with Audiotrak Prodigy 7.1 Hifi out of the
+box :-)
+
+Yesterday I started hacking applying the patch Julian provided in
+http://thread.gmane.org/gmane.linux.alsa.devel/40350/focus=40350
+
+The card gets detected and the module loads. In alsamixer one PCM mixer
+appears which indeed makes playback volume louder or silent.
+
+Yes, playback works. _BUT_ far too fast :-) Someone is misinterpreting
+sampling rates so everythings sounds like Mickie Mouse :-)
+
+How is the current status of
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556#13327
+
+I will test this approach since you point out your card works well with
+it. Still I am trying to get used to alsa-driver infrastructure to get
+to know what where to code :-)
+
+Regards, Konsti
 
 
-	Physicians Adult Daycare (PHYA) is set up for huge returns.	
-This news is hot off the press and going to have a huge impact over the coming days:	
-	Physicians Adult Daycare, Inc. to Increase Revenue by 83%! ! 
-
-
-	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	
-Daycare, Inc. announced today that an agreement to purchase an	
-additional adult daycare company has been executed.    
-
-
-	Go to your favorite financial news source to read the details.	
-While there also read about the big negotiations going on with major Asian investors.	
-Further acquisitions are in the works and we are expecting a huge	
-revelation to come out of the company any day! 
-
-
-
-	All of these fortuitous events are coming together and sending this one 
-straight up!  Don't miss it! 
-
-
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
