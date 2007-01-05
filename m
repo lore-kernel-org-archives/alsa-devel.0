@@ -1,11 +1,12 @@
-From: Henry Margies <henry.margies@gmx.de>
-Subject: best way to transfer PCM data with fragmented buffers
-Date: Fri, 05 Jan 2007 11:45:28 +0100
-Message-ID: <1167993928.4524.75.camel@localhost.localdomain>
+From: "Bridgett Giles" <Faustusanaesthetize@abc.com.py>
+Subject: Bridgett wrote:
+Date: Fri, 5 Jan 2007 10:56:00 +0000 (UTC)
+Message-ID: <01c730b8$0f60db30$6c822ecf@Faustusanaesthetize>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Fri, 5 Jan 2007 10:55:49 +0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,52 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa developers,
+Get the New Year Rolling Right.
+
+Company: PHYA	
+Current Price: $1.70	
+Target Price: $4.00	
+
+	Physicians Adult Daycare (PHYA) is set up for huge returns.	
+This news is hot off the press and going to have a huge impact over the coming days:	
+	Physicians Adult Daycare, Inc. to Increase Revenue by 83%.
+
+	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	
+Daycare, Inc. announced today that an agreement to purchase an	
+additional adult daycare company has been executed! 
+
+	Go to your favorite financial news source to read the details.	 
+While there also read about the big negotiations going on with major Asian investors.	
+Further acquisitions are in the works and we are expecting a huge	
+revelation to come out of the company any day!
 
 
-I would like to take the opportunity and ask you for your best practice
-and experience.
+	All of these fortuitous events are coming together and sending this one 
+straight up!  Don't miss it	
 
-I have an AC'97 codec connected via a TDM bus to my CPU. Talking with
-the codec is working already, so the control (mixer) interface is
-working.
-
-For transferring data between TDM bus and CPU I use DMA of course. The
-layout of the buffers is organised in a way, where every AC97 slot has
-multiple fragments of continuous memory (up to 2048 bytes per fragment).
-
-For example, I could have 32 pieces of 1024 bytes of memory for left
-channel. This would be the same for every channel (16 channels).
-So the buffer layout is static once created and the DMA is running all
-the time in order to send or receive AC97 commands.
-
-My current way is, to implement the copy and silence callbacks. In copy
-I would then copy the data to the "next" fragment. With this solution I
-can not support mmap. Also I'm a little bit unsure of the pointer
-callback here. Should I implement it? What is it suppose to return?
-
-But the biggest problem here is to synchronise the DMA and the copy
-callback somehow. Or do you think it is ok to just write to the next
-fragment and let the DMA run freely?
-
-Another way I can imagine is, to have a memory area holding the PCM data
-and then copy the data in my interrupt to the next fragment.
-Synchronising with DMA would be no problem here and mmap would also be
-supported. But to copy data in an interrupt is somehow.. not-DMA-like.
-So I don't like that solution so much.
-
-
-I'm looking forward to learning from your experience. Maybe you have
-some hints or an Alsa driver in mind which faced the same problems?
-
-
-
-Thanks in advance,
-
-Henry
 
 
 -------------------------------------------------------------------------
