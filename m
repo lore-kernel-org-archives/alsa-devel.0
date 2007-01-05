@@ -1,14 +1,10 @@
-From: "Garner Ike" <dghmwk@beachpanels.com>
-Subject: densely weakly
-Date: Thu, 4 Jan 2007 19:36:25 -0500
-Message-ID: <002101c73062$31f0ee70$2f843835@jyr>
+From: "Ware Donald" <qykk@ra-grund.de>
+Subject: buffer chronic
+Date: Thu, 4 Jan 2007 19:33:11 -0500
+Message-ID: <002101c73062$4efe10b0$4be9a299@jsptg>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0607173573=="
+Content-Type: multipart/mixed; boundary="===============1149433328=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.prestigedelivery.com (mail.prestigedelivery.com
-	[68.21.240.82])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9BEAF25E
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2007 01:42:12 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,73 +14,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0607173573==
+--===============1149433328==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001D_01C73038.4909CF70"
+	boundary="----=_NextPart_000_001D_01C73038.661D0C30"
 
-------=_NextPart_000_001D_01C73038.4909CF70
+------=_NextPart_000_001D_01C73038.661D0C30
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001E_01C73038.490E1530"
+	boundary="----=_NextPart_001_001E_01C73038.661FCB50"
 
-------=_NextPart_001_001E_01C73038.490E1530
+------=_NextPart_001_001E_01C73038.661FCB50
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-All you need is a box, some fabric,.
-"We have two methods of forecasting the effect of the El Nino. Dr John =
-Bradfield, founder of the UK's first science park, is also knighted.
-Ikenna Ellis-Ezenekwe, which was made available to Daily Champion, =
-congratulated the nation's judiciary for that feat. Ivins Spiced Wafers =
-have been tasty harbingers of the fall season for over 97 years. During =
-his visit he wrote a daily "blog", which was published on Defra's =
-website.
-In his last entry, he reflected: "There is no doubt on a global level =
-we're not doing enough to tackle climate change.
-"There is always going to be a fair bit of nonsense around, and =
-particularly with the big interest in lifestyle. Some celebrity-backed =
-campaigns have done more harm than good, such as linking the MMR jab to =
-autism, says the charity Sense About Science.
-Google has doubled GMail storage to 2GB.
-There are some "common sense" actions we, as business owners, can take =
-to prevent a situation from arising which would lead to a claim against =
-our business.
-Some reports have suggested that some rhinos may have moved across the =
-borders to India, but a senior conservation official, Phanindra Kharel, =
-has ruled that out. A recent census carried out at a national park in =
-Bardiya suggested there were only 26 rhinos left.
-The Washington University team say that specific areas of the brain are =
-active when thinking about upcoming events. comEnter your search =
-termsSubmit search formNigeria: Obi - U. The Washington University team =
-say that specific areas of the brain are active when thinking about =
-upcoming events.
-He said the scheme was thought to be the most ambitious of its kind in =
-the world and hoped others would follow. The latest data was obtained =
-last July, when the probe made its most northern radar pass of Titan to =
-date. 4 inch LCD screen, 7.
-Professor John Toy, of Cancer Research UK, said: "The discovery of =
-another gene that increases breast cancer risk, albeit only for a small =
-number of women, is very important. Life insurance can be the most =
-economical way to provide the "cash" when it's needed the most. "This =
-study concluded that drinking alcohol in moderation is safe for men with =
-high blood pressure.
-"In areas like food, environment and medicine, this can have serious =
-results," he added. Blue Origin is one of several private companies =
-vying to open up space to the public. 1 Megapixels Optical 3x Zoom Large =
-2. This year's potential to be a record breaker is linked to a moderate =
-strength El Nino already established in the Pacific Ocean.
-If you have sufficient assets on hand, that's fine, but what if you =
-don't? Blue Origin is one of several private companies vying to open up =
-space to the public. Because the United States was not involved in that =
-one. It adds scientists' views on whether the claims are misleading.
-He said the scheme was thought to be the most ambitious of its kind in =
-the world and hoped others would follow.
-"The rover keeps updating its template of what the feature looks like.
-------=_NextPart_001_001E_01C73038.490E1530
+They can hear sounds such as "aah" and "ooh" quite plainly, but not =
+"ssss" or "shhh.
+An essential segment of that aspiration for excellence is the listings =
+of sales and promotion code offers provided on this page. =
+Family-friendly picks and ideal getaways for gals and pals?
+More Travel StoresAfter you're done reviewing the discount discount =
+shopping deals above, check out our TheCompanyStore. We will provide =
+discounts using Carnival Cruises coupons, promo code deals, special =
+offers and discount promotions. Strangely enough, the cochlea is laid =
+out like a coiled piano keyboard: Cells along the corridors are tuned to =
+particular frequencies entering the ear.
+She married Decio Rubano in 1953.
+They learned that he had traveled to Charlottesville from Roanoke and =
+that he was using crack, Worrell said. We disclaim any responsibility if =
+you do not receive the desired pricing from United.
+Raising four children by herself, she earned extra money being a track =
+and gym coach at Lakewood Junior High.
+Just kidding, ofcourse.
+There's more to software security quality than good patches, ofcourse. =
+com NowCheck that your promotion worked before you go ahead and finish =
+the checkout process.
+Tim brings a wealth of VRS experience with him and we value his =
+knowledge of the deaf and hard of hearing community. com Coupons, Fogdog =
+Sports Coupons, Register Coupons, Epson Printers Coupons and Grower =
+Flowers Coupons. We update this site throughout the day, every day, to =
+make our data base of promotions and savings as comprehensive as we can.
+The fact is that they becameInternet-connected data devices when they =
+added IRDA, Bluetooth, andother forms of data communications. com coupon =
+code or promotional code, you will have to enter it at the United =
+Vacations site to redeem it. Since surgeons don't need to probe as =
+deeply into the delicate cochlea, tissue trauma is reduced.
+Hogshire ruled the indictment should stand. As Senior Vice President of =
+Sales and Marketing, Rarus will establish the quality and value of =
+CSDVRS products and services for VRS users nationwide. Just kidding, =
+ofcourse.
+Save using a Avis Car Rentals promotional code, discount promo or =
+promotional close out. Feel free to send us all shopping deals, =
+promotional specials and discount specials we don't already have. More =
+Travel StoresYou might have visited for united airlines promotions and =
+coupon codes, but stay and browse our eLuxury. Please send in your =
+feedback, along with any coupon codes or cheap offers we don't already =
+have.
+We work hard to keep this site as complete as possible. Expiration of =
+online shopping offers and deals can happen without notice at any time. =
+- Schnitt -Woooooosh - Grafisches Interface, bunte Buttons, Gitternetz, =
+HOCHTECHNOLOGIE2. We're not responsible if you do not get the =
+anticipated discount pricing.
+Just kidding, ofcourse.
+A strong advocate for communication access, Rarus joined CSD in 1997 in =
+Austin, Texas where he focused on interpreting and captioning services.
+------=_NextPart_001_001E_01C73038.661FCB50
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -93,111 +90,107 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"dwelling" hspace=3D0=20
-src=3D"cid:001c01c73062$31db91b0$2f843835@jyr" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"deluge" hspace=3D0=20
+src=3D"cid:001c01c73062$4ef05510$4be9a299@jsptg" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>All you need is a box, some =
-fabric,.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"We have two methods of forecasting the =
-effect of=20
-the El Nino. Dr John Bradfield, founder of the UK's first science park, =
-is also=20
-knighted.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ikenna Ellis-Ezenekwe, which was made =
-available to=20
-Daily Champion, congratulated the nation's judiciary for that feat. =
-Ivins Spiced=20
-Wafers have been tasty harbingers of the fall season for over 97 years. =
-During his=20
-visit he wrote a daily "blog", which was published on Defra's =
-website.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In his last entry, he reflected: "There =
-is no doubt=20
-on a global level we're not doing enough to tackle climate =
-change.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"There is always going to be a fair bit =
-of nonsense=20
-around, and particularly with the big interest in lifestyle. Some =
-celebrity-backed=20
-campaigns have done more harm than good, such as linking the MMR jab to =
-autism, says=20
-the charity Sense About Science.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Google has doubled GMail storage to=20
-2GB.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>There are some "common sense" actions =
-we, as=20
-business owners, can take to prevent a situation from arising which =
-would lead to a=20
-claim against our business.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some reports have suggested that some =
-rhinos may=20
-have moved across the borders to India, but a senior conservation =
-official,=20
-Phanindra Kharel, has ruled that out. A recent census carried out at a =
-national park=20
-in Bardiya suggested there were only 26 rhinos left.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The Washington University team say that =
-specific=20
-areas of the brain are active when thinking about upcoming events. =
-comEnter your=20
-search termsSubmit search formNigeria: Obi - U. The Washington =
-University team say=20
-that specific areas of the brain are active when thinking about =
-upcoming=20
-events.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>He said the scheme was thought to be =
-the most=20
-ambitious of its kind in the world and hoped others would follow. The =
-latest data=20
-was obtained last July, when the probe made its most northern radar pass =
-of Titan to=20
-date. 4 inch LCD screen, 7.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Professor John Toy, of Cancer Research =
-UK, said:=20
-"The discovery of another gene that increases breast cancer risk, albeit =
-only for a=20
-small number of women, is very important. Life insurance can be the most =
-economical=20
-way to provide the "cash" when it's needed the most. "This study =
-concluded that=20
-drinking alcohol in moderation is safe for men with high blood=20
-pressure.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"In areas like food, environment and =
-medicine, this=20
-can have serious results," he added. Blue Origin is one of several =
-private companies=20
-vying to open up space to the public. 1 Megapixels Optical 3x Zoom Large =
-2. This=20
-year's potential to be a record breaker is linked to a moderate strength =
-El Nino=20
-already established in the Pacific Ocean.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If you have sufficient assets on hand, =
-that's fine,=20
-but what if you don't? Blue Origin is one of several private companies =
-vying to open=20
-up space to the public. Because the United States was not involved in =
-that one. It=20
-adds scientists' views on whether the claims are =
-misleading.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>He said the scheme was thought to be =
-the most=20
-ambitious of its kind in the world and hoped others would =
-follow.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"The rover keeps updating its template =
-of what the=20
-feature looks like.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>They can hear sounds such as "aah" and =
+"ooh" quite=20
+plainly, but not "ssss" or "shhh.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>An essential segment of that aspiration =
+for=20
+excellence is the listings of sales and promotion code offers provided =
+on this page.=20
+Family-friendly picks and ideal getaways for gals and pals?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>More Travel StoresAfter you're done =
+reviewing the=20
+discount discount shopping deals above, check out our TheCompanyStore. =
+We will=20
+provide discounts using Carnival Cruises coupons, promo code deals, =
+special offers=20
+and discount promotions. Strangely enough, the cochlea is laid out like =
+a coiled=20
+piano keyboard: Cells along the corridors are tuned to particular =
+frequencies=20
+entering the ear.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>She married Decio Rubano in =
+1953.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>They learned that he had traveled to=20
+Charlottesville from Roanoke and that he was using crack, Worrell said. =
+We disclaim=20
+any responsibility if you do not receive the desired pricing from=20
+United.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Raising four children by herself, she =
+earned extra=20
+money being a track and gym coach at Lakewood Junior High.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Just kidding, ofcourse.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There's more to software security =
+quality than good=20
+patches, ofcourse. com NowCheck that your promotion worked before you go =
+ahead and=20
+finish the checkout process.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tim brings a wealth of VRS experience =
+with him and=20
+we value his knowledge of the deaf and hard of hearing community. com =
+Coupons,=20
+Fogdog Sports Coupons, Register Coupons, Epson Printers Coupons and =
+Grower Flowers=20
+Coupons. We update this site throughout the day, every day, to make our =
+data base of=20
+promotions and savings as comprehensive as we can.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The fact is that they =
+becameInternet-connected data=20
+devices when they added IRDA, Bluetooth, andother forms of data =
+communications. com=20
+coupon code or promotional code, you will have to enter it at the United =
+Vacations=20
+site to redeem it. Since surgeons don't need to probe as deeply into the =
+delicate=20
+cochlea, tissue trauma is reduced.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Hogshire ruled the indictment should =
+stand. As=20
+Senior Vice President of Sales and Marketing, Rarus will establish the =
+quality and=20
+value of CSDVRS products and services for VRS users nationwide. Just =
+kidding,=20
+ofcourse.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Save using a Avis Car Rentals =
+promotional code,=20
+discount promo or promotional close out. Feel free to send us all =
+shopping deals,=20
+promotional specials and discount specials we don't already have. More =
+Travel=20
+StoresYou might have visited for united airlines promotions and coupon =
+codes, but=20
+stay and browse our eLuxury. Please send in your feedback, along with =
+any coupon=20
+codes or cheap offers we don't already have.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>We work hard to keep this site as =
+complete as=20
+possible. Expiration of online shopping offers and deals can happen =
+without notice=20
+at any time. - Schnitt -Woooooosh - Grafisches Interface, bunte Buttons, =
+Gitternetz,=20
+HOCHTECHNOLOGIE2. We're not responsible if you do not get the =
+anticipated discount=20
+pricing.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Just kidding, ofcourse.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A strong advocate for communication =
+access, Rarus=20
+joined CSD in 1997 in Austin, Texas where he focused on interpreting and =
+captioning=20
+services.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001E_01C73038.490E1530--
+------=_NextPart_001_001E_01C73038.661FCB50--
 
-------=_NextPart_000_001D_01C73038.4909CF70
+------=_NextPart_000_001D_01C73038.661D0C30
 Content-Type: image/gif;
-	name="zillion.gif"
+	name="inflict.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001c01c73062$31db91b0$2f843835@jyr>
+Content-ID: <001c01c73062$4ef05510$4be9a299@jsptg>
 
 R0lGODdhvAE8AfcAAArl8MsS434/7kk1oX9xKz9mKXNe2btLGeKgDpXoHTTyAiS+FQc9VPaHipgG
 +8NFYu24wcZ0DOBWre7slgsgiQ5FRyNNhHhDDALbEv6eWGCMECFShS4z3NwhyXIt6vs8L0NffMjX
@@ -494,11 +487,11 @@ IBfxXs90eHd6i2u3dzt1nV+1XT84Yw9WIQMpqz86rWuj6Irz6J66k2Z1kzV5WeVzsmv5eI/60W37
 SnO5EM8jlROjpO/6XOSwd5Mubt9YOjyLIRdW+lywN4WrsVirNrajNrEfx2kYOZOX+6HeuzIqukta
 uGfXbIiCdHYC9G0LPLMDevYuuwlbMMNn6diiNcXHMnkDrxzGuLmLY2Rnu9NGIu6O9VQEBAA7
 
-------=_NextPart_000_001D_01C73038.4909CF70--
+------=_NextPart_000_001D_01C73038.661D0C30--
 
 
 
---===============0607173573==
+--===============1149433328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -509,7 +502,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0607173573==
+--===============1149433328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -520,4 +513,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0607173573==--
+--===============1149433328==--
