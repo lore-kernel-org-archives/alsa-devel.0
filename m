@@ -1,17 +1,12 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] fix typo/compilation error	on	soc-dapm	and
-	at91-i2s
-Date: Fri, 05 Jan 2007 13:55:36 +0000
-Message-ID: <1168005336.14772.18.camel@localhost.localdomain>
-References: <200612281832.23268.rss@barracuda.es>
-	<1167396924.11374.52.camel@localhost.localdomain>
-	<1167401770.11374.67.camel@localhost.localdomain>
-	<enldi2$2k0$1@sea.gmane.org>
+From: "Elisa Mcmullen" <prongedSeljuk@ac.marywood.edu>
+Subject: Elisa wrote:
+Date: Fri, 5 Jan 2007 14:38:21 +0000 (UTC)
+Message-ID: <01c730d6$d9b08f70$6c822ecf@prongedSeljuk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <enldi2$2k0$1@sea.gmane.org>
+Date: Fri, 5 Jan 2007 14:36:13 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,37 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: rss@barracuda.es
-Cc: Seth Forshee <seth.forshee@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDA3LTAxLTA1IGF0IDEyOjQxICswMTAwLCBSYcO6bCBTw6FuY2hleiBTaWxlcyB3
-cm90ZToKPiBMaWFtIEdpcmR3b29kIHdyb3RlOgo+IAo+ID4gT24gRnJpLCAyMDA2LTEyLTI5IGF0
-IDEyOjU1ICswMDAwLCBMaWFtIEdpcmR3b29kIHdyb3RlOgo+ID4+IE9uIFRodSwgMjAwNi0xMi0y
-OCBhdCAxODozMiArMDEwMCwgUmHDumwgU8OhbmNoZXogU2lsZXMgd3JvdGU6Cj4gPj4gPiAgIEhl
-bGxvIGFsbDoKPiA+PiA+IAo+ID4+ID4gICBJJ20gdHJ5aW5nIHRvIHVzZSBhc29jIGZvciBhbiBh
-dDkxIGN1c3RvbSBib2FyZCBhbmQgSSBoYWQgc29tZQo+ID4+ID4gICBwcm9ibGVtCj4gPj4gPiBj
-b21waWxpbmcgdGhlIGtlcm5lbCB3aXRoIHRoZSB2MS4wLjE0cmMxIGFsc2EgcGF0Y2guIFRoZSBw
-cm9ibGVtIHdlcmUKPiA+PiA+IGluIHRoZSBkZWJ1ZyBzZWN0aW9ucyBpbiB0d28gZmlsZXMuCj4g
-Pj4gPiAKPiA+PiAKPiA+PiBUaGFua3MsIHRoaXMgbG9va3MgZmluZS4gQXBwbGllZCB0byBteSB0
-cmVlLgo+ID4gCj4gPiBJJ3ZlIG1hZGUgdGhlIGZvbGxvd2luZyBhdHRhY2hlZCBhbHRlcmF0aW9u
-IHRoZSB0aGUgREFQTSBkZWJ1ZyBzZWN0aW9uCj4gPiBhcyB0aGUgbGlzdF9lbnRyeSgpIGlzIG5v
-dCBuZWVkZWQuIENhbiB5b3UgcmUgc3VibWl0ID8KPiA+IAo+ID4gVGhhbmtzCj4gPiAKPiA+IExp
-YW0KPiAKPiAgIEFmdGVyIHNvbWUgbmV3YmllIGZpZ2h0cyB3aXRoIG1lcmN1cmlhbCBJIGdldCB0
-byBkbyBpdC4gRmluZCBpdCBhdHRhY2hlZC4KPiBQbGVhc2UsIGxldCBtZSBrbm93IGlmIHlvdSBu
-ZWVkIGFueXRoaW5nIGVsc2UuCj4gCgpUaGFua3MgLSBUaGUgREFQTSBsaXN0X2VudHJ5KCkgZml4
-IHRoYXQgSSBhdHRhY2hlZCBpbiBteSBsYXN0IG1lc3NhZ2UKd2FzIHN1Ym1pdHRlZCBieSBTZXRo
-IGluIGFuIGVhcmxpZXIgZW1haWwgdG8gbWUuCgpGd2l3LCBJJ3ZlIGFkZGVkIHlvdSB0byB0aGUg
-c2lnbiBvZmYgbGlzdC4gKEl0J3MgY29tbW9uIHByYWN0aWNlIHRvIHNpZ24KcGF0Y2hlcyBhcyB5
-b3VyIG93biB3b3JrIGJlZm9yZSBzdWJtaXR0aW5nIHRvIHRoZSBrZXJuZWwuKQoKU2lnbmVkLW9m
-Zi1ieTogU2V0aCBGb3JzaGVlIDxzZXRoLmZvcnNoZWVAZ21haWwuY29tPgpTaWduZWQtb2ZmLWJ5
-OiBSYcO6bCBTw6FuY2hleiBTaWxlcyA8cnNzQGJhcnJhY3VkYS5lcz4KCkxpYW0KCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBv
-ZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQg
-dGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNz
-IHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gKaHR0cDovL3d3dy50ZWNoc2F5
-LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lEPURFVkRFVgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+Get the New Year Rolling Right.
+
+Company: PHYA	
+Current Price: $1.70	
+Target Price: $4.00	
+
+	Physicians Adult Daycare (PHYA) is set up for huge returns.	
+This news is hot off the press and going to have a huge impact over the coming days:	
+	Physicians Adult Daycare, Inc. to Increase Revenue by 83%! 
+
+	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	 
+Daycare, Inc. announced today that an agreement to purchase an	
+additional adult daycare company has been executed.  
+
+
+	Go to your favorite financial news source to read the details.	
+While there also read about the big negotiations going on with major Asian investors.	
+Further acquisitions are in the works and we are expecting a huge	
+revelation to come out of the company any day!    
+
+
+	All of these fortuitous events are coming together and sending this one 
+straight up!  Don't miss it.  
+
+
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
