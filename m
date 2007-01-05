@@ -1,15 +1,15 @@
-From: Konstantin Kletschke <lists@ku-gbr.de>
-Subject: Re: Re :  ice1724/Audiotrak Prodigy 7.1 HiFi
-Date: Fri, 5 Jan 2007 18:23:56 +0100
-Message-ID: <20070105172356.GA28466@anita.doom>
-References: <20070102151108.GA10561@synertronixx3>
-	<1167850413l.15450l.0l@zerox> <20070105125211.GA19866@anita.doom>
+From: "Lorrie Mccoy" <Irishwomanscull's@abooktrader.com>
+Subject: Lorrie wrote:
+Date: Fri, 5 Jan 2007 17:59:00 +0000 (UTC)
+Message-ID: <01c730f3$26240730$6c822ecf@Irishwomanscull's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20070105125211.GA19866@anita.doom>
+Received: from 66.201.105.130 (HELO jatalweb.clnameserver.com)
+	by alsa-project.org with esmtp (-F2/VC,73) 136*) id K4P4Q.-S3,703-B6
+	for alsa-devel@alsa-project.org; Fri, 5 Jan 2007 17:58:47 -0060
+Date: Fri, 5 Jan 2007 17:58:47 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,31 +19,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Get the New Year Rolling Right	
 
-Okay, I read Bug 0001556 again and I read that
+Company: PHYA	
+Current Price: $1.70	
+Target Price: $4.00	
 
-ice->akm = kzalloc(sizeof(struct snd_akm4xxx), GFP_KERNEL);
-if (! ice->akm)
-return -ENOMEM;
-ice->akm_codecs = 1;
 
-is required for the quick Hack not to Oops, thats the case here also and
-putting it back let me load the module and inspect some stuff with
-alsamixer.
-But, as my first approach with the pontis.c modification, audio plays at
-double speed. 
+	Physicians Adult Daycare (PHYA) is set up for huge returns.	
+This news is hot off the press and going to have a huge impact over the coming days:	
+	Physicians Adult Daycare, Inc. to Increase Revenue by 83%	
 
-As I am a greenhorn writing alsa drivers, where start I search for a bug
-or what debug output is of interest now?
 
-Konsti
+	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	 
+Daycare, Inc. announced today that an agreement to purchase an	 
+additional adult daycare company has been executed! 
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+	Go to your favorite financial news source to read the details.	 
+While there also read about the big negotiations going on with major Asian investors.	
+Further acquisitions are in the works and we are expecting a huge	
+revelation to come out of the company any day.  
+
+
+
+	All of these fortuitous events are coming together and sending this one 
+straight up!  Don't miss it. 
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
