@@ -1,20 +1,21 @@
-From: "Cockiest R. Ell" <ssclift@gorillacartoons.com>
+From: "Contamination D. Megaphone" <istillplay@goboyntonbeach.com>
 Subject: International Legal RX
-Date: Fri, 05 Jan 2007 06:17:01 -0500
-Message-ID: <8826649157.20070105061701@gorillacartoons.com>
+Date: Fri, 05 Jan 2007 09:37:43 -0500
+Message-ID: <6082110514.20070105093743@goboyntonbeach.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1772738994=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7514264
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2007 07:14:56 +0100 (MET)
-Received: from -1209563448 (unknown [80.255.61.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0037234
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2007 10:35:37 +0100 (MET)
+Received: from -1213981224 (535319B4.cable.casema.nl [83.83.25.180])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	3623799847
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2007 07:14:53 +0100 (MET)
-Received: from gorillacartoons.com (-1209629856 [-1209629968])
-	by gileadretreat.com (Qmailv1) with ESMTP id 472CC4E97B
-	for <alsa-devel@alsa-project.org>; Fri, 05 Jan 2007 06:17:01 -0500
+	E53D799873
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2007 10:35:37 +0100 (MET)
+Received: from goboyntonbeach.com (-1213586776 [-1213702920])
+	by 535319B4.cable.casema.nl (Qmailv1) with ESMTP id 9DA80E955F
+	for <alsa-devel@alsa-project.org>; Fri, 05 Jan 2007 09:37:43 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,92 +28,27 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+The most powerful medicines for you!
 
---===============1772738994==
-Content-Type: multipart/alternative;
-	boundary="----------D1D7908D880FF75"
+Pheromone cologne for men - $35.99 - The human pheromones that attracts females has finally been recreated in the laboratory! Naturally found in minute amounts in the perspiration of men, these natural pheromones are an evolutionary remnant from a time when human females relied on scent to locate male mates. 
 
-This is a multi-part message in MIME format.
+Suprax - $3- a medication belonging to a class of antibiotics called Cephalosporins. The active ingredient in Suprax is Cefixime. 
 
-------------D1D7908D880FF75
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Prokzac - $3.31 - one of the world's most widely prescribed antidepressants; it has been prescribed for more than 40 million people worldwide. Chances are, someone you know is getting better because of it. 
 
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
+Amoxicillin - $1.43 - penicillin-like antibiotic used to treat certain infections caused by bacteria.
 
-View Full Products List
-http://
+Clarinex - $2.72 - non-drowsy 24-hour relief from allergy symptoms caused by seasonal allergens such as ragweed, grass, tree pollen and year-round allergens such as dust mites, animal dander, and mould spores. 
 
-------------D1D7908D880FF75
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
+and more!
 
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://narrowme.com/">View Full Products List</a></font></p>
-</body>
-</html>
+our site http://cceuro.com/
 
-------------D1D7908D880FF75--
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-
-
-
---===============1772738994==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1772738994==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1772738994==--
