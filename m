@@ -1,7 +1,7 @@
-From: "Rosemary Toney" <demisedpinion@ac-bordeaux.fr>
-Subject: Rosemary wrote:
-Date: Fri, 5 Jan 2007 03:35:57 +0000
-Message-ID: <01c7307a$9cb3a230$6c822ecf@demisedpinion>
+From: "Brad Bullard" <exception'sminnow's@abcheck.com>
+Subject: Brad wrote:
+Date: Fri, 5 Jan 2007 04:32:11 -0120
+Message-ID: <01c73082$77cd6660$6c822ecf@exception'sminnow's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,27 +18,26 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Get the New Year Rolling Right.  
+Get the New Year Rolling Right! ! 
 
 Company: PHYA	
-Current Price: $1.70	 
+Current Price: $1.70	
 Target Price: $4.00	
 
 
-	 Physicians Adult Daycare (PHYA) is set up for huge returns.	 
+	Physicians Adult Daycare (PHYA) is set up for huge returns.	
 This news is hot off the press and going to have a huge impact over the coming days:	
-	Physicians Adult Daycare, Inc. to Increase Revenue by 83%.    
+	 Physicians Adult Daycare, Inc. to Increase Revenue by 83%.    
 
-	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	 
+	HOUSTON, TX--(MARKET WIRE)--Jan 3, 2007 -- Physicians Adult	
 Daycare, Inc. announced today that an agreement to purchase an	
-additional adult daycare company has been executed	
-
-
+additional adult daycare company has been executed! 
 
 	Go to your favorite financial news source to read the details.	
 While there also read about the big negotiations going on with major Asian investors.	
 Further acquisitions are in the works and we are expecting a huge	
-revelation to come out of the company any day	
+revelation to come out of the company any day!
+
 
 
 	All of these fortuitous events are coming together and sending this one 
