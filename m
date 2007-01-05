@@ -1,15 +1,11 @@
-From: Konstantin Kletschke <lists@ku-gbr.de>
-Subject: Re: Re :  ice1724/Audiotrak Prodigy 7.1 HiFi
-Date: Fri, 5 Jan 2007 11:13:13 +0100
-Message-ID: <20070105101313.GA4503@anita.doom>
-References: <20070102151108.GA10561@synertronixx3>
-	<1167850413l.15450l.0l@zerox>
+From: Henry Margies <henry.margies@gmx.de>
+Subject: best way to transfer PCM data with fragmented buffers
+Date: Fri, 05 Jan 2007 11:45:28 +0100
+Message-ID: <1167993928.4524.75.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1167850413l.15450l.0l@zerox>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,40 +15,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am 2007-01-03 22:53 +0400 schrieb Elie Morisse:
-
-> This card is quite similar to the Hercules Fortissimo IV, take a look at this :
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556
-
-Indeed, this Fortissimo 4 looks almost identical. It looks so similair
-that its driver could work with Audiotrak Prodigy 7.1 Hifi out of the
-box :-)
-
-Yesterday I started hacking applying the patch Julian provided in
-http://thread.gmane.org/gmane.linux.alsa.devel/40350/focus=40350
-
-The card gets detected and the module loads. In alsamixer one PCM mixer
-appears which indeed makes playback volume louder or silent.
-
-Yes, playback works. _BUT_ far too fast :-) Someone is misinterpreting
-sampling rates so everythings sounds like Mickie Mouse :-)
-
-How is the current status of
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556#13327
-
-I will test this approach since you point out your card works well with
-it. Still I am trying to get used to alsa-driver infrastructure to get
-to know what where to code :-)
-
-Regards, Konsti
+Dear Alsa developers,
 
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+I would like to take the opportunity and ask you for your best practice
+and experience.
+
+I have an AC'97 codec connected via a TDM bus to my CPU. Talking with
+the codec is working already, so the control (mixer) interface is
+working.
+
+For transferring data between TDM bus and CPU I use DMA of course. The
+layout of the buffers is organised in a way, where every AC97 slot has
+multiple fragments of continuous memory (up to 2048 bytes per fragment).
+
+For example, I could have 32 pieces of 1024 bytes of memory for left
+channel. This would be the same for every channel (16 channels).
+So the buffer layout is static once created and the DMA is running all
+the time in order to send or receive AC97 commands.
+
+My current way is, to implement the copy and silence callbacks. In copy
+I would then copy the data to the "next" fragment. With this solution I
+can not support mmap. Also I'm a little bit unsure of the pointer
+callback here. Should I implement it? What is it suppose to return?
+
+But the biggest problem here is to synchronise the DMA and the copy
+callback somehow. Or do you think it is ok to just write to the next
+fragment and let the DMA run freely?
+
+Another way I can imagine is, to have a memory area holding the PCM data
+and then copy the data in my interrupt to the next fragment.
+Synchronising with DMA would be no problem here and mmap would also be
+supported. But to copy data in an interrupt is somehow.. not-DMA-like.
+So I don't like that solution so much.
+
+
+I'm looking forward to learning from your experience. Maybe you have
+some hints or an Alsa driver in mind which faced the same problems?
+
+
+
+Thanks in advance,
+
+Henry
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
