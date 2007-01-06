@@ -1,15 +1,11 @@
-From: "Nestor Sutton" <unfortunatelyshire@abraxas-uk.com>
-Subject: Hi
-Date: Sun, 7 Jan 2007 12:46:43 +0240
-Message-ID: <01c73259$e2aaf000$6c822ecf@unfortunatelyshire>
+From: "Rudolph Moseley" <lazinessforage's@abrys.pl>
+Subject: HELLO
+Date: Sat, 6 Jan 2007 13:53:17 -0120
+Message-ID: <01c7319a$044bce70$6c822ecf@lazinessforage's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 213.249.139.220 (HELO mail.abraxas-uk.com)
-	by alsa-project.org with esmtp (0*RP;.*(+088 *AS0)
-	id UU:Q88-WS'RK7-50
-	for alsa-devel@alsa-project.org; Sun, 7 Jan 2007 12:46:43 +0240
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,7 +15,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 After the Bell News to Send HXPN Flying!!!
