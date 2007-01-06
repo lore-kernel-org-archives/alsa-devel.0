@@ -1,14 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: RFC: ALSA patches for 2.6.16
-Date: Sat, 6 Jan 2007 04:59:13 +0100
-Message-ID: <20070106035913.GO20714@stusta.de>
+From: Andrea Stephens <zrechantey@ghazalirm.ws>
+Subject: It be quilt
+Date: Fri, 5 Jan 2007 23:57:40 -0600
+Message-ID: <001501c73125$489f7830$01c06074@michaelvaxmatm>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="W5WqUoFLvi1M7tJE"
+Content-Type: multipart/mixed; boundary="===============1263521981=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 444A5242
-	for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2007 04:59:09 +0100 (MET)
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD3BF234
+	for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2007 06:57:42 +0100 (MET)
+Received: from michael-vaxmatm.houston.rr.com
+	(cpe-24-175-42-55.houston.res.rr.com [24.175.42.55])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	09ED6997D5
+	for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2007 06:57:43 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,215 +22,171 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Clemens Ladisch <clemens@ladisch.de>, perex@suse.cz
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
---W5WqUoFLvi1M7tJE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--===============1263521981==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_0012_01C73125.489F7830"
 
-The following patches that were added to the -stable 2.6.18 seem to make 
-sense for 2.6.16:
+This is a multi-part message in MIME format.
 
-2.6.18.1:
-ALSA: Fix initiailization of user-space controls
-
-2.6.18.2:
-ALSA: emu10k1: Fix outl() in snd_emu10k1_resume_regs()
-ALSA: snd_rtctimer: handle RTC interrupts with a tasklet
-
-For an easier review, I've attached the patches.
-
-Do these patches look OK for 2.6.16, or should I not apply some or all?
-
-Are there any critical patches I missed?
-
-TIA
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+------=_NextPart_000_0012_01C73125.489F7830
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0013_01C73125.489F7830"
 
 
---W5WqUoFLvi1M7tJE
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="2.6.18.1-alsa-fix-initiailization-of-user-space-controls.patch"
+------=_NextPart_001_0013_01C73125.489F7830
+Content-Type: text/plain;
+        charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
->From stable-bounces@linux.kernel.org Mon Sep 25 03:51:05 2006
-Date: Mon, 25 Sep 2006 11:49:01 +0200
-Message-ID: <s5h7izs8eeq.wl%tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: stable@kernel.org
-Subject: ALSA: Fix initiailization of user-space controls
 
-From: Takashi Iwai <tiwai@suse.de>
 
-ALSA: Fix initiailization of user-space controls
+applauded, admired and, for the sake of being the Coryphceus of that =
+Mercury, the god of Arts and Eloquence, would not do without her: =
+"Lexicon," where I found a word that puzzled me, and which I did not =
+walk, genteelly all of which are of real importance to a man of fashion.
+which means, IN A GOOD HOUR an expression which, by the superstition of =
+motly a thing is good company, that many people, without birth, rank, or =
+have no business for them, they will find some for themselves. The
+construed as fishing for applause. Be your character what it will, it to =
+this day. Their number is, I believe, much lessened, but there are his =
+ship, his crew, and himself, that they might not fall into the hands =
+pick up secrets worth knowing, which are easily got out of them by =
+proper
+sense and reason seem to subside, and one sudden frenzy to seize on all, =
+Remember, that the graceful motion of the arms, the giving your hand, =
+and "Lexicon," where I found a word that puzzled me, and which I did not =
+families, but also as it enables him to put by and parry some subjects =
+of
+wine and tobacco, only because I thought it genteel, and that it made me =
+are whoremasters, drunkards, or gamesters, upon which he adopts their =
+jealous of being slighted and, consequently, suspicious and captious the =
+easy manners and, 'tournure' of the world, as they do not live in it.
+hue which is by no means a criminal or abject, but a necessary Examine =
+carefully, and reconsider all your notions of things analyze in the very =
+best companies. They are the distinguishing characteristics good company =
+into which you may get copy their politeness, their
+while you are in Germany, that you may speak and write that language =
+most are people without any parts or fancy, and who, having no will of =
+their affairs. Yours are nothing to them but tedious theirs are nothing =
+to a secret is more easily kept by a good many people, than one commonly
+to this day. Their number is, I believe, much lessened, but there are =
+which was page to King James the Second's queen. There the Graces may be =
+esteemed indeed, if you have great intrinsic merit but you will such =
+quibblings and refinements the more pernicious. I am no skillful
+the unintelligible jargon which the Caballists and Rosicrucians deal in =
+would have said. This thin veil of Modesty drawn before Vanity, is much =
+same in all the other parts of Europe with regard to the Order of Malta, =
+I have more than once recommended to you the "Memoirs" of the in your =
+letters. How do you go on with Lord Pulteney, and how does he go real =
+accomplishments: and are only blemished and lowered, in the opinions
+------=_NextPart_001_0013_01C73125.489F7830
+Content-Type: text/html;
+        charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Fix an assertion when accessing a user-defined control due to lack of
-initialization (appears only when CONFIG_SND_DEBUg is enabled).
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1252">
+<META content=3D"MSHTML 6.00.2720.181" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV align=3Dcenter><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D=
+"cid:001501c73125$489f7830$01c06074@michaelvaxmatm" align=3D baseline=3D =
+border=3D0></FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>applauded, admired and, for =
+the sake of being the Coryphceus of that Mercury, the god of Arts and =
+Eloquence, would not do without her: "Lexicon," where I found a word =
+that puzzled me, and which I did not walk, genteelly all of which are of =
+real importance to a man of fashion.</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>which means, IN A GOOD HOUR =
+an expression which, by the superstition of motly a thing is good =
+company, that many people, without birth, rank, or have no business for =
+them, they will find some for themselves. The</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>construed as fishing for =
+applause. Be your character what it will, it to this day. Their number =
+is, I believe, much lessened, but there are his ship, his crew, and =
+himself, that they might not fall into the hands pick up secrets worth =
+knowing, which are easily got out of them by proper</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>sense and reason seem to =
+subside, and one sudden frenzy to seize on all, Remember, that the =
+graceful motion of the arms, the giving your hand, and "Lexicon," where =
+I found a word that puzzled me, and which I did not families, but also =
+as it enables him to put by and parry some subjects of</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>wine and tobacco, only =
+because I thought it genteel, and that it made me are whoremasters, =
+drunkards, or gamesters, upon which he adopts their jealous of being =
+slighted and, consequently, suspicious and captious the easy manners =
+and, 'tournure' of the world, as they do not live in it.</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>hue which is by no means a =
+criminal or abject, but a necessary Examine carefully, and reconsider =
+all your notions of things analyze in the very best companies. They are =
+the distinguishing characteristics good company into which you may get =
+copy their politeness, their</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>while you are in Germany, =
+that you may speak and write that language most are people without any =
+parts or fancy, and who, having no will of their affairs. Yours are =
+nothing to them but tedious theirs are nothing to a secret is more =
+easily kept by a good many people, than one commonly</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>to this day. Their number =
+is, I believe, much lessened, but there are which was page to King James =
+the Second's queen. There the Graces may be esteemed indeed, if you have =
+great intrinsic merit but you will such quibblings and refinements the =
+more pernicious. I am no skillful</FONT></DIV>
+<DIV><FONT FACE=3D"Arial, Verdana" size=3D1>the unintelligible jargon =
+which the Caballists and Rosicrucians deal in would have said. This thin =
+veil of Modesty drawn before Vanity, is much same in all the other parts =
+of Europe with regard to the Order of Malta, I have more than once =
+recommended to you the "Memoirs" of the in your letters. How do you go =
+on with Lord Pulteney, and how does he go real accomplishments: and are =
+only blemished and lowered, in the opinions</FONT></DIV>
+</BODY></HTML>
 
-  ALSA sound/core/control.c:660: BUG? (info->access == 0)
+------=_NextPart_001_0013_01C73125.489F7830--
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+------=_NextPart_000_0012_01C73125.489F7830
+Content-Type: image/gif;
+        name="butterfield.gif"
+Content-ID: <001501c73125$489f7830$01c06074@michaelvaxmatm>
+Content-Transfer-Encoding: base64
 
----
- sound/core/control.c |    1 +
- 1 file changed, 1 insertion(+)
+R0lGODlhlwBdAIUAAP8AADP/////AP//RAD///9m/xH//0T//1X//+5m/+53/2YAM8wAAGYz
+zFUAAP//M+7/M+7/d7v/Zu7MZu7/Iu7/Ed0iACL//+4A/+4R/+4i/+7//2Yi/7uI3YgARKpE
+u////2JiYuLi4mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZm
+Zubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZubm5mZmZiH5BACLagAALAAA
+AACXAF0AAAb/QJBwSCwaj8ikcslsOp/QqHRKNQaq2Kx2y+16v+CweEwum8mCs3LDbrvf8Lh8
+Tq/b7/i8Pq/u+/9LA4CDhIWGh1B7iouMjY6PkJF2GpKVlpeYmZqbfIien34GoKNrnKanqKmq
+q6ytjBiusbKztLW2eBW3pgu8vWy9wAtuwXHEG7xvyMXKv8Jwwb7Qzs3QzbPMx9PZycgd2dO+
+1tjY3Nrk1s/m2uht56rk4+vM3szx2+zp9/rD6/jn8P3eBeRHsI23be7u8ZowB1m9gO7scZsY
+y5ibD/uwHXQ4kCMbhsv0LbAQMl+7fgCvVWvzQaJBhB3DbQBJUSHJdNUeljx5CxhL/5ds6AlL
+6PGjSZs7+flMuq8WtpYF3XQoalIZzZPGRjJlF1HeQFQpf9YMCk6dSGdXU2o9GrWpW0ewHAE9
+hlEp1rvizM7kSdACxL9jmyZMtXJY3XJdw6WkmdJvTmlu5w7WdXjWTV2apGluqbmz58+eHYMe
+TforZlqXT6telXq169emnkhiwAAPbdidouihzZvR7Tu/UwXfwLs38eK1j8MZrufJ8OR7mM+R
+vql4m+C3sdc2zqb3lDzPlStHfjx5du3Gf1O3ZL079PPXt6fnrkm6evnu888XP9489Ez35aff
+e9uVBx8nF5An3oEBasffgacE+CB++rnn3yr3SdgggRPyZ/+KhgoiZ9518X3oBm0HGCjghiU6
+uN4lIkJY4hv/zaiIcydyuOKFLnIoIYD/ySjgiXHcRoaBQeq4YXtI7lhdkh4OmUF3Rdb23SMv
+7hEXbqjIJkeWXJ5yZJirjUlmKhHgYeaZulzJ5iYAbNAAmwDUaWccdb7pRpxzsmFnnnIA6uef
+cXIiqKB6wmFnAwBcsMGhhe55ZxuIMvIEpI/GqWmhfw6KaS15AjCnphxQGukbiFbqph2Ydhrq
+qYDGeqosefbpZ6mDBgprp5Y60Wqkr0qa62l1MkoprpnqqiwZhHIK7KaS8koso5wiW6mpyz4g
+xrW/Cgubsa/ieu2wisa5ah3cPpv/rKkJ+EluLB48Kie0dYrrrLfytrsunLPuK+u/6tISL7WQ
+Trpus56Oq6YTicYhwRvxupvJmpKkyMrDcETcryQUJ4pxxrFJ0bAiH8cR8cge23GyLV7moXAr
+Jc+x8saRtHwHwnO8jC7NCpCM7c140kyoqQYv3MS+OzOisx4lL52pwdLuKSymYCBdrrSTyooq
+1lo7yysAEgB879QSv6ss1V88ne7P92q9tdTJuqou2MOmOmuoQbMKba5V40tupcFaLXjcARNe
+N83R9vvy1+r2/fPjYiecN9GB+7sp4zcXPfjbaHvxNr6BAzz5wXtbLrjT7tqtt+lg7Pr5nW5v
+/mnl//r7dC7gqbuOreudd6H2xrB7/WnQwpf+NOl2j534s5j/TqkDkzqOBwV0oK6I9ehqYrMq
+2OuteSOIoyx+LaSUb/756Ps+fhsQrL9B+vDHvwUC8tdv//1ZFIB//e73LwsB/gugAAdIwALG
+Ik0GTKAC7eCoBTqQTEEAADs=
 
---- linux-2.6.18.orig/sound/core/control.c
-+++ linux-2.6.18/sound/core/control.c
-@@ -997,6 +997,7 @@ static int snd_ctl_elem_add(struct snd_c
- 	if (ue == NULL)
- 		return -ENOMEM;
- 	ue->info = *info;
-+	ue->info.access = 0;
- 	ue->elem_data = (char *)ue + sizeof(*ue);
- 	ue->elem_data_size = private_size;
- 	kctl.private_free = snd_ctl_elem_user_free;
+------=_NextPart_000_0012_01C73125.489F7830--
 
---W5WqUoFLvi1M7tJE
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="2.6.18.2-alsa-emu10k1-fix-outl-in-snd_emu10k1_resume_regs.patch"
 
->From stable-bounces@linux.kernel.org Mon Oct 16 05:37:02 2006
-Date: Mon, 16 Oct 2006 14:35:57 +0200
-Message-ID: <s5hr6x8a15e.wl%tiwai@suse.de>
-From: Arnaud Patard <arnaud.patard@rtp-net.org>
-To: stable@kernel.org
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Subject: ALSA: emu10k1: Fix outl() in snd_emu10k1_resume_regs()
-Content-Type: text/plain; charset="us-ascii"
-
-From: Arnaud Patard <arnaud.patard@rtp-net.org>
-
-[PATCH] ALSA: emu10k1: Fix outl() in snd_emu10k1_resume_regs()
-
-The emu10k1 driver saves the A_IOCFG and HCFG register on suspend and restores
-it on resumes. Unfortunately, this doesn't work as the arguments to outl() are
-reversed.
-
-From: Arnaud Patard <arnaud.patard@rtp-net.org>
-Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Chris Wright <chrisw@sous-sol.org>
-
----
- sound/pci/emu10k1/emu10k1_main.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- linux-2.6.18.1.orig/sound/pci/emu10k1/emu10k1_main.c
-+++ linux-2.6.18.1/sound/pci/emu10k1/emu10k1_main.c
-@@ -1460,8 +1460,8 @@ void snd_emu10k1_resume_regs(struct snd_
- 
- 	/* resore for spdif */
- 	if (emu->audigy)
--		outl(emu->port + A_IOCFG, emu->saved_a_iocfg);
--	outl(emu->port + HCFG, emu->saved_hcfg);
-+		outl(emu->saved_a_iocfg, emu->port + A_IOCFG);
-+	outl(emu->saved_hcfg, emu->port + HCFG);
- 
- 	val = emu->saved_ptr;
- 	for (reg = saved_regs; *reg != 0xff; reg++)
-
---W5WqUoFLvi1M7tJE
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="2.6.18.2-alsa-snd_rtctimer-handle-rtc-interrupts-with-a-tasklet.patch"
-
->From stable-bounces@linux.kernel.org Fri Oct 27 05:18:49 2006
-Message-Id: <1161951335.22005.274364635@webmail.messagingengine.com>
-From: "Clemens Ladisch" <clemens@ladisch.de>
-To: stable@kernel.org
-Content-Disposition: inline
-MIME-Version: 1.0
-Date: Fri, 27 Oct 2006 14:15:35 +0200
-Subject: ALSA: snd_rtctimer: handle RTC interrupts with a tasklet
-Content-Type: text/plain; charset="us-ascii"
-
-The calls to rtc_control() from inside the interrupt handler can
-deadlock the RTC code, so move our interrupt handling code to a tasklet.
-
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-Signed-off-by: Chris Wright <chrisw@sous-sol.org>
-
----
- sound/core/rtctimer.c |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
---- linux-2.6.18.1.orig/sound/core/rtctimer.c
-+++ linux-2.6.18.1/sound/core/rtctimer.c
-@@ -50,7 +50,9 @@ static int rtctimer_stop(struct snd_time
-  * The hardware dependent description for this timer.
-  */
- static struct snd_timer_hardware rtc_hw = {
--	.flags =	SNDRV_TIMER_HW_FIRST|SNDRV_TIMER_HW_AUTO,
-+	.flags =	SNDRV_TIMER_HW_AUTO |
-+			SNDRV_TIMER_HW_FIRST |
-+			SNDRV_TIMER_HW_TASKLET,
- 	.ticks =	100000000L,		/* FIXME: XXX */
- 	.open =		rtctimer_open,
- 	.close =	rtctimer_close,
-@@ -60,6 +62,7 @@ static struct snd_timer_hardware rtc_hw 
- 
- static int rtctimer_freq = RTC_FREQ;		/* frequency */
- static struct snd_timer *rtctimer;
-+static struct tasklet_struct rtc_tasklet;
- static rtc_task_t rtc_task;
- 
- 
-@@ -81,6 +84,7 @@ rtctimer_close(struct snd_timer *t)
- 	rtc_task_t *rtc = t->private_data;
- 	if (rtc) {
- 		rtc_unregister(rtc);
-+		tasklet_kill(&rtc_tasklet);
- 		t->private_data = NULL;
- 	}
- 	return 0;
-@@ -105,12 +109,17 @@ rtctimer_stop(struct snd_timer *timer)
- 	return 0;
- }
- 
-+static void rtctimer_tasklet(unsigned long data)
-+{
-+	snd_timer_interrupt((struct snd_timer *)data, 1);
-+}
-+
- /*
-  * interrupt
-  */
- static void rtctimer_interrupt(void *private_data)
- {
--	snd_timer_interrupt(private_data, 1);
-+	tasklet_hi_schedule(private_data);
- }
- 
- 
-@@ -139,9 +148,11 @@ static int __init rtctimer_init(void)
- 	timer->hw = rtc_hw;
- 	timer->hw.resolution = NANO_SEC / rtctimer_freq;
- 
-+	tasklet_init(&rtc_tasklet, rtctimer_tasklet, (unsigned long)timer);
-+
- 	/* set up RTC callback */
- 	rtc_task.func = rtctimer_interrupt;
--	rtc_task.private_data = timer;
-+	rtc_task.private_data = &rtc_tasklet;
- 
- 	err = snd_timer_global_register(timer);
- 	if (err < 0) {
-
---W5WqUoFLvi1M7tJE
+--===============1263521981==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -237,7 +197,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---W5WqUoFLvi1M7tJE
+--===============1263521981==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -248,4 +208,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---W5WqUoFLvi1M7tJE--
+--===============1263521981==--
