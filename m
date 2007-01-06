@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H2vt5-0004QC-9a delayed 10 hours
-Date: Sat, 06 Jan 2007 06:04:15 -0800
-Message-ID: <E1H3C9f-0003Cv-54@externalmx-1.sourceforge.net>
+Subject: Warning: message 1H24Xf-0003rf-0a delayed 72 hours
+Date: Sat, 06 Jan 2007 06:13:28 -0800
+Message-ID: <E1H3CIa-0004cv-G6@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1H2vt5-0004QC-9a
-The subject of the message is: the entering in the air.  As I baptized into
-The date of the message is:    Fri, 05 Jan 2007 14:11:20 -0800
+The message identifier is:     1H24Xf-0003rf-0a
+The subject of the message is: receiveth him yet a Benjamite, who shall the bread, and
+The date of the message is:    Wed, 03 Jan 2007 00:02:18 -0300
 
 The address to which the message has not yet been delivered is:
 
