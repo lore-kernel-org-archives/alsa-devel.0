@@ -1,12 +1,11 @@
-From: "Flora Kyle" <competition'sfluoridate@acclaimtechnical.com>
-Subject: Hi
-Date: Sun, 7 Jan 2007 21:39:09 +0000 (UTC)
-Message-ID: <01c732a4$42c68400$6c822ecf@competition'sfluoridate>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H2vt5-0004QC-9a delayed 48 hours
+Date: Sun, 07 Jan 2007 14:34:34 -0800
+Message-ID: <E1H3gb4-0005rT-8a@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Sun, 7 Jan 2007 21:39:07 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,35 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-After the Bell News to Send HXPN Flying!!!
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-ENCINO, CA--(MARKET WIRE)--Jan 5, 2007 (4:05pm) -- Harris
-Exploration, Inc. (Other OTC:HXPN.PK - News) advises shareholders it
-has authorized a Letter of Intent with Minera Cristal of Ecuador, regarding
-the opportunity to acquire up to a 100% position in their Balsapamba
-property, located in the Bolivar Province, Ecuador, South America.
+The message identifier is:     1H2vt5-0004QC-9a
+The subject of the message is: the entering in the air.  As I baptized into
+The date of the message is:    Fri, 05 Jan 2007 14:11:20 -0800
 
-Harris Exploration
+The address to which the message has not yet been delivered is:
 
-Symbol: HXPN
-Current Price:     $1.50 (+20%)
-Short Term Target:  $5.00
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-With the price of precious medals continuing to skyrocket, mining
-companies had another year of record profits.  With limited supply and
-high demand, experts agree that the mining boom shows no signs of
-abating.
-
-Harris Exploration is in the right place at the right time and has just begun
-a major PR campaign to let everyone know about it!  After the bell news
-on Friday is going to take it higher immediately and will be followed up
-by some incredible announcements.  We give this one a STRONG BUY!
-
-Get in while there is still time!!!
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
