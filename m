@@ -1,14 +1,12 @@
-From: "Welsh Jozy" <ext@saale-radwanderweg.de>
-Subject: You're way too close to Rummy, Bush, and Rice.
-Date: Sun, 7 Jan 2007 17:34:27 -0500
-Message-ID: <001301c732ad$07ebe6a0$70c775d5@pntlgz>
+From: "Witt Salome" <vvqofb@glaskon.de>
+Subject: You can use ActiveSync software to move the maps you
+	need to the device or copy them directly with a flash-card
+	reader on to a Secure Digital data module.
+Date: Sun, 7 Jan 2007 17:36:39 -0500
+Message-ID: <001301c732ad$a25244a0$f048436b@egyybb>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1926244699=="
+Content-Type: multipart/mixed; boundary="===============2058321362=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from user-142g5dk.cable.mindspring.com
-	(user-142g5dk.cable.mindspring.com [72.40.21.180])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CE4CD230
-	for <alsa-devel@alsa-project.org>; Sun,  7 Jan 2007 23:41:54 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,44 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1926244699==
+--===============2058321362==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000F_01C73283.1F090D60"
+	boundary="----=_NextPart_000_000F_01C73283.B968B4A0"
 
-------=_NextPart_000_000F_01C73283.1F090D60
+------=_NextPart_000_000F_01C73283.B968B4A0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0010_01C73283.1F0C41B0"
+	boundary="----=_NextPart_001_0010_01C73283.B96D96A0"
 
-------=_NextPart_001_0010_01C73283.1F0C41B0
+------=_NextPart_001_0010_01C73283.B96D96A0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-comMMORPGGot-NextRazoricNewsCommand and Conquer 3: Tiberium Wars - Kane =
-Edition AnnouncedKane is "special. If you're lucky, it won't be any =
-worse than this:     1.
-Players will start off treating rabbits and guinea pigs, and as more =
-skills are acquired, learn to treat cats, dogs and horses.
-In our tests, we moved documents, music, and whole folders between our =
-PC and the device with no problem.
-Featuring totally enhanced HD graphics, refined gameplay and four player =
-online multiplayer. There are a lot of extra steps to accomplish any =
-task, and we think it could be simpler.
-New screenshots of Crackdown have been released below. In between the =
-shortcut keys is a four-way navigation button.
-Additional features and enhancements that take the virtual Major League =
-Baseball experience to the next level will be announced in advance of =
-the release of Major League Baseball 2K7 in late winter. Read editors' =
-review belowRead the Palm LifeDrive product brochure from PalmAverage =
-user rating from 173 usersAverage5.
-And show disdain for Dems who disagree. Exploiting danger, risks, and =
-fear.
-Central to the Traveler GPS 525 is Pharos's Ostia 7.
-------=_NextPart_001_0010_01C73283.1F0C41B0
+3-inch bump to the back when folded down. We recommend you invest in a =
+protective case or, at the very least, screen overlays to prevent =
+scratches.
+99Writea store reviewyes17.
+The latest "Shootout!
+My media humor is here, my  homeland security satire is here,    and my  =
+privacy humor is here. PDAs Reviews by CNET.
+Technorati Tags: WordPress Blogging,  Blog Publicity,  Blogging =
+LimerickShare and Enjoy:These icons link to social bookmarking sites =
+where readers can share and discover new web pages. Just switch to Drive =
+mode and connect the PDA to your PC via the USB cable.
+Je blog, donc je suis. My legal humor is here, and my  Supreme Court =
+humor is here.
+Some Notable Posts:"Whaddya mean, 'cook it'? Text and images are sharp =
+and crisp, and you can even customize the PDA with a number of color =
+themes.
+They have compiled all the materials that are available for this game =
+such as; videos, screensavers and renders of the characters in the game.
+------=_NextPart_001_0010_01C73283.B96D96A0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -64,57 +60,53 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"orbital" hspace=3D0=20
-src=3D"cid:000e01c732ad$07dbe110$70c775d5@pntlgz" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"comrade" hspace=3D0=20
+src=3D"cid:000e01c732ad$a239daa0$f048436b@egyybb" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>comMMORPGGot-NextRazoricNewsCommand and =
-Conquer 3:=20
-Tiberium Wars - Kane Edition AnnouncedKane is "special. If you're lucky, =
-it won't be=20
-any worse than this:     1.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Players will start off treating rabbits =
-and guinea=20
-pigs, and as more skills are acquired, learn to treat cats, dogs and=20
-horses.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In our tests, we moved documents, =
-music, and whole=20
-folders between our PC and the device with no problem.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Featuring totally enhanced HD graphics, =
-refined=20
-gameplay and four player online multiplayer. There are a lot of extra =
-steps to=20
-accomplish any task, and we think it could be simpler.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>New screenshots of Crackdown have been =
-released=20
-below. In between the shortcut keys is a four-way navigation =
-button.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Additional features and enhancements =
-that take the=20
-virtual Major League Baseball experience to the next level will be =
-announced in=20
-advance of the release of Major League Baseball 2K7 in late winter. Read =
-editors'=20
-review belowRead the Palm LifeDrive product brochure from PalmAverage =
-user rating=20
-from 173 usersAverage5.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>And show disdain for Dems who disagree. =
-Exploiting=20
-danger, risks, and fear.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Central to the Traveler GPS 525 is =
-Pharos's Ostia=20
-7.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>3-inch bump to the back when folded =
+down. We=20
+recommend you invest in a protective case or, at the very least, screen =
+overlays to=20
+prevent scratches.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>99Writea store =
+reviewyes17.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The latest "Shootout!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My media humor is here, my  homeland =
+security=20
+satire is here,    and my  privacy humor is here. PDAs Reviews by =
+CNET.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Technorati Tags: WordPress Blogging,  =
+Blog=20
+Publicity,  Blogging LimerickShare and Enjoy:These icons link to social =
+bookmarking=20
+sites where readers can share and discover new web pages. Just switch to =
+Drive mode=20
+and connect the PDA to your PC via the USB cable.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Je blog, donc je suis. My legal humor =
+is here, and=20
+my  Supreme Court humor is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Some Notable Posts:"Whaddya mean, 'cook =
+it'? Text=20
+and images are sharp and crisp, and you can even customize the PDA with =
+a number of=20
+color themes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>They have compiled all the materials =
+that are=20
+available for this game such as; videos, screensavers and renders of the =
+characters=20
+in the game.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0010_01C73283.1F0C41B0--
+------=_NextPart_001_0010_01C73283.B96D96A0--
 
-------=_NextPart_000_000F_01C73283.1F090D60
+------=_NextPart_000_000F_01C73283.B968B4A0
 Content-Type: image/gif;
-	name="acrimony.gif"
+	name="quay.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000e01c732ad$07dbe110$70c775d5@pntlgz>
+Content-ID: <000e01c732ad$a239daa0$f048436b@egyybb>
 
 R0lGODdhVgFLAfUkAN/R+PHD8T5SPUZADh4cNpBbHmF+U4U+EiCrdKd1WVUuqS1lWRlrUJV4SjtC
 qLQpFx46ZC19vkk4n7x/P55FrpC0Zo2QtliHfVUQen1rBX4nhE+jhgMQ3hs6B9Oho4c4c/FicKUd
@@ -399,11 +391,11 @@ P5d8fSYzc5a3erMly7E0k7PsWLMvK1c5H/I535ZSoYoCc7IjTx0zqXM9FxYt70g473IawzNm1k42
 io7oafNqfVFD4zId27Mpm3RjJjR4hTRkbhY+oxIkc3RNTzQ497RDL/EgfbIot5NP2zJIY1cQY9ZK
 87RmtTQ9Q/NQX/MZM/QWW6ZQNzU1E/VQ4EgQAAA7
 
-------=_NextPart_000_000F_01C73283.1F090D60--
+------=_NextPart_000_000F_01C73283.B968B4A0--
 
 
 
---===============1926244699==
+--===============2058321362==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -414,7 +406,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1926244699==
+--===============2058321362==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -425,4 +417,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1926244699==--
+--===============2058321362==--
