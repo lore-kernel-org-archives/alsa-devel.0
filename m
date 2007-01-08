@@ -1,9 +1,9 @@
-From: "populace" <myi@alfonsi.org>
-Subject: self-indulgence newcomer
-Date: Mon, 8 Jan 2007 19:53:27 +0100
-Message-ID: <001e01c73357$960ec470$8461d6e5@vxm>
+From: "property" <seuexa@oppert.net>
+Subject: pigeonhole lighten
+Date: Mon, 8 Jan 2007 20:01:11 +0100
+Message-ID: <001e01c73357$ce0f29a0$5440e826@twn>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0945196984=="
+Content-Type: multipart/mixed; boundary="===============0294972101=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,37 +14,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0945196984==
+--===============0294972101==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001A_01C7335F.F7C48670"
+	boundary="----=_NextPart_000_001A_01C73360.2FC3B320"
 
-------=_NextPart_000_001A_01C7335F.F7C48670
+------=_NextPart_000_001A_01C73360.2FC3B320
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001B_01C7335F.F7C82FF0"
+	boundary="----=_NextPart_001_001B_01C73360.2FC7AAC0"
 
-------=_NextPart_001_001B_01C7335F.F7C82FF0
+------=_NextPart_001_001B_01C73360.2FC7AAC0
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-Senate and around the country.
-Sending spam is almost the ideal home based business.
-I wasn't expecting anyone. Then shake your legs one at a time. William =
-Parsons is the author of 'Eating for Health, Happiness and Weight =
-Control' and 'Physicians' Anti-Supplement Stance - Conspiracy or =
-Ignorance?
-Then it was Alison's turn. You probably already have something that'll =
-work fine.
-Diana DeGette of Colorado and Tammy Baldwin of Wisconsin trumpeted its =
-"medical miracles. When will Googlers start looking as tired as the rest =
-of us feel?
-Pure crap as a matter of fact. I asked him what his wife was interested =
-in.
-------=_NextPart_001_001B_01C7335F.F7C82FF0
+Schedule your workouts.
+" With the salesmanship of a faith healer, Kerry dangled promises no =
+responsible scientist would countenance.
+So go one hour at a time. It's too late once your account has been =
+closed. Everyone doesn't show up just because you have a website online.
+In this sense, the term "stem" identifies these cells as the source or =
+origin of other, more specialized cells. Well if I can do it you can =
+too.
+"Some guy who wants to speak with my wife. Bayesian spam filters can =
+take one group of legitimate e-mail and another group of spam and =
+compare the values and data of each.
+Then go on to the next thing. By the way, that wallet I found?
+------=_NextPart_001_001B_01C73360.2FC7AAC0
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -53,43 +52,44 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"headmistress" hspace=3D0=20
-src=3D"cid:001901c73357$95fc74f0$8461d6e5@vxm" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"frostbitten" hspace=3D0=20
+src=3D"cid:001901c73357$cdfb5380$5440e826@twn" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Senate and around the =
-country.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Sending spam is almost the ideal home =
-based=20
-business.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I wasn't expecting anyone. Then shake =
-your legs one=20
-at a time. William Parsons is the author of 'Eating for Health, =
-Happiness and Weight=20
-Control' and 'Physicians' Anti-Supplement Stance - Conspiracy or=20
-Ignorance?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Then it was Alison's turn. You probably =
-already=20
-have something that'll work fine.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Diana DeGette of Colorado and Tammy =
-Baldwin of=20
-Wisconsin trumpeted its "medical miracles. When will Googlers start =
-looking as tired=20
-as the rest of us feel?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Pure crap as a matter of fact. I asked =
-him what his=20
-wife was interested in.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Schedule your workouts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>" With the salesmanship of a faith =
+healer, Kerry=20
+dangled promises no responsible scientist would =
+countenance.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>So go one hour at a time. It's too late =
+once your=20
+account has been closed. Everyone doesn't show up just because you have =
+a website=20
+online.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In this sense, the term "stem" =
+identifies these=20
+cells as the source or origin of other, more specialized cells. Well if =
+I can do it=20
+you can too.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"Some guy who wants to speak with my =
+wife. Bayesian=20
+spam filters can take one group of legitimate e-mail and another group =
+of spam and=20
+compare the values and data of each.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Then go on to the next thing. By the =
+way, that=20
+wallet I found?</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001B_01C7335F.F7C82FF0--
+------=_NextPart_001_001B_01C73360.2FC7AAC0--
 
-------=_NextPart_000_001A_01C7335F.F7C48670
+------=_NextPart_000_001A_01C73360.2FC3B320
 Content-Type: image/gif;
-	name="image.gif"
+	name="nonconformist.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001901c73357$95fc74f0$8461d6e5@vxm>
+Content-ID: <001901c73357$cdfb5380$5440e826@twn>
 
 R0lGODdhRwJNAfUCAPfQ5tjt2SNKtGiTDJjTxql7WFhreDaqykUTmauwdsUVwcEvT7SsGTUF7/+w
 OEe1jFA4WV2hNYJBusRGEMiPyEWpbBbwDTmk3xv5WIjKbADpxPUa/tCIkWsDfvRCcfj4hgcCvv7V
@@ -281,11 +281,11 @@ tqvzcG17zHB7w3YbodvxgH17OAZFBHGxgSM3eqN7sxXlu8maYbR2bqpHVBNXfeVGMSKVdHA7tUCV
 SMWbu/Nbv/ebv/vbv0uOqAN8PP+bwEE7NQocwWtDwBecwRu8O9fEwSNcwiecwivcwi8cwzM0XMN1
 aTU23MOnggE/XMRHnMS/K8FPHMVTXMVXnMVb3MVfHMZjXMZnnMZr3MZvHMdznDeCAAA7
 
-------=_NextPart_000_001A_01C7335F.F7C48670--
+------=_NextPart_000_001A_01C73360.2FC3B320--
 
 
 
---===============0945196984==
+--===============0294972101==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -296,7 +296,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0945196984==
+--===============0294972101==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -307,4 +307,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0945196984==--
+--===============0294972101==--
