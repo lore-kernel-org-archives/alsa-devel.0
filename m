@@ -1,19 +1,10 @@
 From: EGG Banking Plc <onlineservice@egg.com>
 Subject: EGG Banking Alert: Regarding your Net Access
 Date: Mon, 8 Jan 2007 04:58:45 -0800
-Message-ID: <1104223198.23206__41252.3729297847$1168261142$gmane$org@chase.com>
+Message-ID: <1104223198.23206__28597.236207179$1168261990$gmane$org@chase.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0985842059=="
+Content-Type: multipart/mixed; boundary="===============1821884622=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from moses.kastleconsulting.com (auth01.ns.kastleconsulting.com
-	[205.217.154.138])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6ABC9260
-	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2007 13:58:46 +0100 (MET)
-Received: from moses.kastleconsulting.com (moses.kastleconsulting.com
-	[127.0.0.1])
-	by moses.kastleconsulting.com (8.13.7/8.13.7) with ESMTP id
-	l08CwjXx019997
-	for <alsa-devel@alsa-project.org>; Mon, 8 Jan 2007 04:58:45 -0800
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,10 +14,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0985842059==
+--===============1821884622==
 Content-Type: text/html
 Content-Transfer-Encoding: quoted-printable
 
@@ -99,7 +90,7 @@ bank.
 
 
 
---===============0985842059==
+--===============1821884622==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -110,7 +101,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0985842059==
+--===============1821884622==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -121,4 +112,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0985842059==--
+--===============1821884622==--
