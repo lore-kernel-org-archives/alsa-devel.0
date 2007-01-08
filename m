@@ -1,10 +1,14 @@
-From: "property" <seuexa@oppert.net>
-Subject: pigeonhole lighten
-Date: Mon, 8 Jan 2007 20:01:11 +0100
-Message-ID: <001e01c73357$ce0f29a0$5440e826@twn>
+From: "vat" <vnvq@v-tax.be>
+Subject: foam rubber pedigree
+Date: Mon, 8 Jan 2007 11:00:07 -0800
+Message-ID: <001e01c73358$4fcca9e0$da1c1bdf@fnpl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0294972101=="
+Content-Type: multipart/mixed; boundary="===============1126249313=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from 71-80-172-114.dhcp.wsco.ca.charter.com
+	(71-80-172-114.dhcp.wsco.ca.charter.com [71.80.172.114])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B880A187
+	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2007 20:08:07 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,36 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0294972101==
+--===============1126249313==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001A_01C73360.2FC3B320"
+	boundary="----=_NextPart_000_001A_01C73315.419E6D60"
 
-------=_NextPart_000_001A_01C73360.2FC3B320
+------=_NextPart_000_001A_01C73315.419E6D60
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001B_01C73360.2FC7AAC0"
+	boundary="----=_NextPart_001_001B_01C73315.41A12C80"
 
-------=_NextPart_001_001B_01C73360.2FC7AAC0
+------=_NextPart_001_001B_01C73315.41A12C80
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-Schedule your workouts.
-" With the salesmanship of a faith healer, Kerry dangled promises no =
-responsible scientist would countenance.
-So go one hour at a time. It's too late once your account has been =
-closed. Everyone doesn't show up just because you have a website online.
-In this sense, the term "stem" identifies these cells as the source or =
-origin of other, more specialized cells. Well if I can do it you can =
-too.
-"Some guy who wants to speak with my wife. Bayesian spam filters can =
-take one group of legitimate e-mail and another group of spam and =
-compare the values and data of each.
-Then go on to the next thing. By the way, that wallet I found?
-------=_NextPart_001_001B_01C73360.2FC7AAC0
+I would like to think my ridiculous experience is unique, but =
+commenters, please pipe in.
+Maybe he had fed recently, or maybe it's part of the uncanny phenomenon =
+described below.
+But I expect Apple's social announcement is soon coming. Gives small biz =
+"one place to go" for supporting their customers, email campaigns, =
+project management, product information, contacts. I spoke to three =
+analysts about their predictions for the year, what they saw as =
+Microsoft's biggest challenges going forward, and the greatest threats =
+to its business.
+I called for information about the registrar. Can't keep the troll score =
+straight around here.
+" Pricing like that would be hard for smaller businesses to resist, for =
+example. Execution photos don't really turn me on.
+However, Windows Vista could break the pattern. The concept is fantastic.
+------=_NextPart_001_001B_01C73315.41A12C80
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -52,44 +59,48 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"frostbitten" hspace=3D0=20
-src=3D"cid:001901c73357$cdfb5380$5440e826@twn" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"yard sale" hspace=3D0=20
+src=3D"cid:001901c73358$4fbeee40$da1c1bdf@fnpl" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Schedule your workouts.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>" With the salesmanship of a faith =
-healer, Kerry=20
-dangled promises no responsible scientist would =
-countenance.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So go one hour at a time. It's too late =
-once your=20
-account has been closed. Everyone doesn't show up just because you have =
-a website=20
-online.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In this sense, the term "stem" =
-identifies these=20
-cells as the source or origin of other, more specialized cells. Well if =
-I can do it=20
-you can too.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"Some guy who wants to speak with my =
-wife. Bayesian=20
-spam filters can take one group of legitimate e-mail and another group =
-of spam and=20
-compare the values and data of each.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Then go on to the next thing. By the =
-way, that=20
-wallet I found?</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>I would like to think my ridiculous =
+experience is=20
+unique, but commenters, please pipe in.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Maybe he had fed recently, or maybe =
+it's part of=20
+the uncanny phenomenon described below.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But I expect Apple's social =
+announcement is soon=20
+coming. Gives small biz "one place to go" for supporting their =
+customers, email=20
+campaigns, project management, product information, contacts. I spoke to =
+three=20
+analysts about their predictions for the year, what they saw as =
+Microsoft's biggest=20
+challenges going forward, and the greatest threats to its =
+business.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I called for information about the =
+registrar. Can't=20
+keep the troll score straight around here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>" Pricing like that would be hard for =
+smaller=20
+businesses to resist, for example. Execution photos don't really turn =
+me=20
+on.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>However, Windows Vista could break the =
+pattern. The=20
+concept is fantastic.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001B_01C73360.2FC7AAC0--
+------=_NextPart_001_001B_01C73315.41A12C80--
 
-------=_NextPart_000_001A_01C73360.2FC3B320
+------=_NextPart_000_001A_01C73315.419E6D60
 Content-Type: image/gif;
-	name="nonconformist.gif"
+	name="peal.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001901c73357$cdfb5380$5440e826@twn>
+Content-ID: <001901c73358$4fbeee40$da1c1bdf@fnpl>
 
 R0lGODdhRwJNAfUCAPfQ5tjt2SNKtGiTDJjTxql7WFhreDaqykUTmauwdsUVwcEvT7SsGTUF7/+w
 OEe1jFA4WV2hNYJBusRGEMiPyEWpbBbwDTmk3xv5WIjKbADpxPUa/tCIkWsDfvRCcfj4hgcCvv7V
@@ -281,11 +292,11 @@ tqvzcG17zHB7w3YbodvxgH17OAZFBHGxgSM3eqN7sxXlu8maYbR2bqpHVBNXfeVGMSKVdHA7tUCV
 SMWbu/Nbv/ebv/vbv0uOqAN8PP+bwEE7NQocwWtDwBecwRu8O9fEwSNcwiecwivcwi8cwzM0XMN1
 aTU23MOnggE/XMRHnMS/K8FPHMVTXMVXnMVb3MVfHMZjXMZnnMZr3MZvHMdznDeCAAA7
 
-------=_NextPart_000_001A_01C73360.2FC3B320--
+------=_NextPart_000_001A_01C73315.419E6D60--
 
 
 
---===============0294972101==
+--===============1126249313==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -296,7 +307,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0294972101==
+--===============1126249313==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -307,4 +318,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0294972101==--
+--===============1126249313==--
