@@ -1,13 +1,15 @@
-From: Benoit Fouet <benoit.fouet@purplelabs.com>
-Subject: Re: question about implicit decl in pcm_direct.c
-Date: Mon, 08 Jan 2007 16:35:27 +0100
-Message-ID: <45A264BF.3@purplelabs.com>
-References: <45A25811.7040603@purplelabs.com> <s5hy7odv8qr.wl%tiwai@suse.de>
+From: David Cullen <david.cullen@teligy.com>
+Subject: Re: Call to mmap in ALSA lib 1.0.13 fails in
+ src/pcm/pcm_mmap.c line 367
+Date: Mon, 08 Jan 2007 10:37:40 -0500
+Message-ID: <45A26544.3000201@teligy.com>
+References: <45880176.3070300@teligy.com>	<s5hirg64f8b.wl%tiwai@suse.de>	<45898126.3060808@teligy.com>	<s5hejqu4dq8.wl%tiwai@suse.de>	<458989BD.7050005@teligy.com>
+	<s5hejqtryn9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hy7odv8qr.wl%tiwai@suse.de>
+In-Reply-To: <s5hejqtryn9.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,52 +20,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Jason Yates <jason.yates@teligy.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear Mr. Iwai,
+
 Takashi Iwai wrote:
-> At Mon, 08 Jan 2007 15:41:21 +0100,
-> Benoit Fouet wrote:
->   
->> when compiling, i got:
->>
->> pcm_direct.c:898: warning: implicit declaration of function
->> `snd_pcm_hw_params_set_format_first'
->> I don't know how to fix it properly, so i ask if someone knows :)
->>     
->
-> The patch below should fix.  Give it a try.
->   
-it fixes (at least the compilation warning ;) )
+> The implementation depends pretty much on the architecture.
+> (Also, dma_mmap() is no global function but specific only for ARM.)
+> Since the vm_region struct is different between ppc and arm (the page
+> pointer is missing in ppc version), it cannot be copied as it is.
+> 
+> A simple (but totally untested) version would be like below:
+> 
+> int dma_mmap_coherent(struct device *dev,
+> 		struct vm_area_struct *vma, void *cpu_addr,
+> 		dma_addr_t dma_addr, size_t size)
+> {
+> 	unsigned long pfn;
+> 
+> 	pfn = page_to_pfn(virt_to_page(bus_to_virt(dma_addr)));
+> 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> 	return remap_pfn_range(vma, vma->vm_start, pfn + vma->vm_pgoff,
+> 				vma->vm_end - vma->vm_start,
+> 				vma->vm_pgprot);
+> }
+> 
+> (This might not work for some ppc models, though...)
+> 
+> Then either add .mmap callback to each of snd_pcm_ops table in ca0106
+> that calls dma_mmap_coherent() above, or change snd_pcm_default_mmap
+> to call dma_mmap_coherent() directly instead of nopage method.
+> For the former way, take a look at sound/arm/aaci.c (and devdma.c) as
+> a reference.
+> 
 
->> there is also another warning about a comparison between int and
->> unsigned int that i "fixed" like in the attached patch.
->>     
-> Well, this is a kind of GCC bug (not 100% but partially).
-> I guess the latest version of gcc won't complain about it.
->
->   
-ok, i can't try latest gcc's version, though.
+I implemented the "former way".  However, when I put a breakpoint in
+__dma_alloc_coherent it does not get called when I run speaker-test.
+ It does get called during execution of "modprobe snd-ca0106".
 
-Thanks,
-Ben
+Also, when I try to look at the memory allocated by the problematic
+call to mmap in gdb, I get the following results:
 
-> Takashi
->
-> diff -r 8803655da809 src/pcm/pcm_direct.c
-> --- a/src/pcm/pcm_direct.c	Mon Jan 08 15:07:02 2007 +0100
-> +++ b/src/pcm/pcm_direct.c	Mon Jan 08 15:46:46 2007 +0100
-> @@ -895,7 +895,7 @@ int snd_pcm_direct_initialize_slave(snd_
->  		}
->  		if (ret < 0 && dmix->type != SND_PCM_TYPE_DMIX) {
->  			/* TODO: try to choose a good format */
-> -			ret = snd_pcm_hw_params_set_format_first(spcm, hw_params, &format);
-> +			ret = INTERNAL(snd_pcm_hw_params_set_format_first)(spcm, hw_params, &format);
->  		}
->  		if (ret < 0) {
->  			SNDERR("requested or auto-format is not available");
->   
+Breakpoint 1, snd_pcm_mmap (pcm=0x10031880) at pcm_mmap.c:383
+383                 ptr = mmap(NULL, size, PROT_READ|PROT_WRITE,
+MAP_FILE|MAP_SHARED, i->u.mmap.fd, i->u.mmap.offset);
+(gdb) n
+384                 if (ptr == MAP_FAILED) {
+(gdb) print (void *)ptr
+$1 = (void *) 0x3001e000
+(gdb) print ptr[0]
+Cannot access memory at address 0x3001e000
 
+So, while these changes eliminate the bugcheck, it does not appear
+to be the correct solution.
+
+-- 
+Thank you,
+David Cullen
+Teligy
+(864) 527-1263 Office
+(864) 415-7063 Cell
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
