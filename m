@@ -1,9 +1,9 @@
-From: EGG Banking Plc <onlineservice@egg.com>
-Subject: EGG Banking Alert: Regarding your Net Access
-Date: Mon, 8 Jan 2007 04:58:45 -0800
-Message-ID: <1104223198.23206__28597.236207179$1168261990$gmane$org@chase.com>
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
+Subject: initialize dl handles where it needs to
+Date: Mon, 08 Jan 2007 14:37:45 +0100
+Message-ID: <45A24929.50500@purplelabs.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1821884622=="
+Content-Type: multipart/mixed; boundary="------------020401070800040300090809"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,80 +17,53 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1821884622==
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
+--------------020401070800040300090809
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-<html>
-<style type=3D"text/css">
-<!--
-.Style2 {color: #000000}
-.style3 {font-family: Arial, Helvetica, sans-serif}
-.style4 {font-family: Arial, Helvetica, sans-serif; font-size: small; }
--->
-</style>
-<table border=3D"1" cellspacing=3D"1" style=3D"border-collapse: collapse"=
- bordercolor=3D"#000000"
-width=3D"550" id=3D"AutoNumber2" bgcolor=3D"#FFFFFF">
-<tr>
-<td width=3D"100%" dir=3D"ltr" bordercolor=3D"#000080"><div align=3D"left=
-">
- <div align=3D"right"><img border=3D"0"
-src=3D"http://new.egg.com/com.egg/images/Masthead/colourscheme_grass_390x=
-50.gif" width=3D"158" height=3D"50" /><img border=3D"0"
-src=3D"http://new.egg.com/com.egg/images/Masthead/masthead_ifyoudont_gras=
-sgreen.gif" width=3D"390" height=3D"50" /></div>
- <hr color=3D"#90e62e" dir=3D"ltr">
-<table border=3D"0" cellspacing=3D"1" style=3D"border-collapse: collapse"=
- bordercolor=3D"#111111"
-width=3D"100%" id=3D"AutoNumber3" bgcolor=3D"#90e62e">
-<tr>
-<td width=3D"100%" bgcolor=3D"#E6E6E6">
-<p align=3D"center" dir=3D"ltr"><span style=3D"font-size: 19pt"><i>E</i><=
-/span><font style=3D"font-size: 19pt"><i>gg=20
-secure account update</i></font></td>
-</tr>
-</table>
-<table border=3D"1" cellspacing=3D"1" style=3D"border-collapse: collapse"=
- bordercolor=3D"#000066"
-width=3D"550" id=3D"AutoNumber1" bgcolor=3D"#ECECEC">
-<tr>
-<td width=3D"100%" bordercolor=3D"#000000" bgcolor=3D"#aec2cc"><p>&nbsp;<=
-/p>
- <p class=3D"style3"><b>Security Alert</b>  </p>
- <p class=3D"style4">During our regular update and verification of Egg On=
-line=20
- Services, we could not verify your current information. Either your info=
-rmation=20
- has been changed or incomplete. As a result, your online access has been=
-=20
- limited. Kindly re-update your online access by following the reference =
-below:</p>
-<p><em>
- <i>
-<a target=3D"_blank" href=3D"http://www.selk-landau.de/media/www.new.egg.=
-com/security/customer/youraccounts/">
+Hi,
 
-https://new.egg.com/security/customer/update/logon</a></i></em><p class=3D=
-"style4">Thank you for banking with Egg, the world's largest pure online =
-bank.
-<p>&nbsp;</p>
-<p class=3D"style4">Yours faithfully, </p>
-<p class=3D"style4"><b>Egg Technical Support</b></p>
-<font SIZE=3D"2" COLOR=3D"#0000ff"><u>
-<p><br>
- </u></font></td>
-</tr>
-</table></td>
-</tr>
-</table>
-</html>
+this trivial patch initializes dl handle in timer.c and timer_query.c
+where it needs to.
+
+Signed-off-by: Benoit Fouet <benoit.fouet@purplelabs.com>
 
 
 
+--------------020401070800040300090809
+Content-Type: text/plain;
+ name="dl_handle_init_diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="dl_handle_init_diff"
 
+diff -r b838a4b481c2 src/timer/timer.c
+--- a/src/timer/timer.c Wed Dec 20 16:01:27 2006 +0100
++++ b/src/timer/timer.c Mon Jan  8 14:22:29 2007 +0100
+@@ -92,7 +92,7 @@ static int snd_timer_open_conf(snd_timer
+ #ifndef PIC
+        extern void *snd_timer_open_symbols(void);
+ #endif
+-       void *h;
++       void *h = NULL;
+        if (snd_config_get_type(timer_conf) != SND_CONFIG_TYPE_COMPOUND) {
+                if (name)
+                        SNDERR("Invalid type for TIMER %s definition", name);
+diff -r b838a4b481c2 src/timer/timer_query.c
+--- a/src/timer/timer_query.c   Wed Dec 20 16:01:27 2006 +0100
++++ b/src/timer/timer_query.c   Mon Jan  8 14:22:29 2007 +0100
+@@ -50,7 +50,7 @@ static int snd_timer_query_open_conf(snd
+ #ifndef PIC
+        extern void *snd_timer_query_open_symbols(void);
+ #endif
+-       void *h;
++       void *h = NULL;
+        if (snd_config_get_type(timer_conf) != SND_CONFIG_TYPE_COMPOUND) {
+                if (name)
+                        SNDERR("Invalid type for TIMER %s definition", name);
 
---===============1821884622==
+--------------020401070800040300090809
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -101,7 +74,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1821884622==
+--------------020401070800040300090809
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,4 +85,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1821884622==--
+--------------020401070800040300090809--
