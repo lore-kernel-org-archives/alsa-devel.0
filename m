@@ -1,12 +1,16 @@
-From: "Tara Felton" <obscuredsanctuary@abo.bundesregierung.de>
-Subject: Re: Stephanie
-Date: Mon, 8 Jan 2007 21:38:52 +0000 (UTC)
-Message-ID: <01c7336d$515eaf00$6c822ecf@obscuredsanctuary>
+From: "Judson Atkinson" <coffeepotfussiness's@ac-stalker.com>
+Subject: Re: Ed
+Date: Mon, 8 Jan 2007 21:44:29 +0000 (UTC)
+Message-ID: <01c7336d$b398b5d0$6c822ecf@coffeepotfussiness's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 8 Jan 2007 21:38:21 +0360
+Received: from 210.157.30.65 (HELO smtp.ac-stalker.com)
+	by alsa-project.org with esmtp (>1/,.9PEMF;4 63R/C)
+	id Y>W330-2J264X-M(
+	for alsa-devel@alsa-project.org; Mon, 8 Jan 2007 21:41:06 -0060
+Date: Mon, 8 Jan 2007 21:41:06 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,7 +20,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 HXPN already up 500% in the past week with insiders accumulating!!!
