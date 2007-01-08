@@ -1,12 +1,17 @@
-From: "Francesca Shipley" <Pegasuspromisingly@aandd.com.ua>
-Subject: Re: Vanessa
-Date: Mon, 8 Jan 2007 22:07:11 +0000 (UTC)
-Message-ID: <01c73371$4ac3b790$6c822ecf@Pegasuspromisingly>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: RFC: ALSA patches for 2.6.16
+Date: Mon, 8 Jan 2007 23:14:05 +0100
+Message-ID: <20070108221405.GH6167@stusta.de>
+References: <20070106035913.GO20714@stusta.de> <s5h64bhyekp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 8 Jan 2007 22:06:48 -0060
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6BA79196
+	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2007 23:14:00 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5h64bhyekp.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,40 +21,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, perex@suse.cz, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-HXPN already up 500% in the past week with insiders accumulating!!!
+On Mon, Jan 08, 2007 at 11:53:42AM +0100, Takashi Iwai wrote:
+> At Sat, 6 Jan 2007 04:59:13 +0100,
+> Adrian Bunk wrote:
+> > 
+> > The following patches that were added to the -stable 2.6.18 seem to make 
+> > sense for 2.6.16:
+> > 
+> > 2.6.18.1:
+> > ALSA: Fix initiailization of user-space controls
+> > 
+> > 2.6.18.2:
+> > ALSA: emu10k1: Fix outl() in snd_emu10k1_resume_regs()
+> > ALSA: snd_rtctimer: handle RTC interrupts with a tasklet
+> > 
+> > For an easier review, I've attached the patches.
+> > 
+> > Do these patches look OK for 2.6.16, or should I not apply some or all?
+> 
+> Yes, all these patches are fine.  Please apply.
 
-Huge events are driving HXPN way up.  This one is still trading at only a 
-fraction of its book value.  A massive PR campaign has kicked off with 
-some exciting news:
+Thanks, I've applied them.
 
-ENCINO, CA--(MARKET WIRE)--Jan 5, 2007 (4:05pm) -- Harris 
-Exploration, Inc. (Other OTC:HXPN.PK - News) advises shareholders it 
-has authorized a Letter of Intent with Minera Cristal of Ecuador, regarding 
-the opportunity to acquire up to a 100% position in their Balsapamba 
-property, located in the Bolivar Province, Ecuador, South America.
+> > Are there any critical patches I missed?
+> 
+> There are some fixes in SUSE SP1 kernel.  I'll check whether they are
+> included in the latest 2.6.16.x tree.
 
-Harris Exploration
+Thanks a lot!
 
-Symbol: HXPN
-Current Price:     $1.60 
-Short Term Target:  $5.00
+> thanks,
+> 
+> Takashi
 
-With the price of precious medals continuing to skyrocket, mining 
-companies had another year of record profits.  With limited supply and 
-high demand, experts agree that the mining boom shows no signs of 
-abating.
+cu
+Adrian
 
-Harris Exploration is in the right place at the right time and is letting 
-everyone know it with a major PR campaign!  Friday's announcement is 
-just the start.  More great news is on the way.  This is a company that can 
-quite literally strike gold and when that announcement hits the street 
-watch out!
+-- 
 
-Get in while there is still time!!!
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 -------------------------------------------------------------------------
