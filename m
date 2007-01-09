@@ -1,19 +1,12 @@
-From: "Spencer Cline" <exterminatebarefooted@abloy.cz>
-Subject: Re: Wilton
-Date: Tue, 9 Jan 2007 11:54:41 +0000 (UTC)
-Message-ID: <01c733e4$c338d430$6c822ecf@exterminatebarefooted>
+From: "Holly Morse" <certaintyHewitt's@abc-usa.org>
+Subject: Re: Jimmy
+Date: Tue, 9 Jan 2007 12:31:49 +0000 (UTC)
+Message-ID: <01c733e9$c2134db0$6c822ecf@certaintyHewitt's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pD9E9E79E.dip.t-dialin.net (pD9E9E79E.dip.t-dialin.net
-	[217.233.231.158])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDE7B22E
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2007 12:53:20 +0100 (MET)
-Received: from 212.158.158.20 (HELO mail.abloy.cz)
-	by alsa-project.org with esmtp (3.J;PW.,M -*5-1) id 34.MRG-.7<+D2-S>
-	for alsa-devel@alsa-project.org; Tue, 9 Jan 2007 11:53:22 -0060
-Date: Tue, 9 Jan 2007 11:53:22 -0060
+Date: Tue, 9 Jan 2007 12:29:07 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,10 +16,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-HXPN already up 500% in the past week with insiders accumulating.
+HXPN already up 500% in the past week with insiders accumulating!
 
 Huge events are driving HXPN way up.  This one is still trading at only a 
 fraction of its book value.  A massive PR campaign has kicked off with 
@@ -55,7 +48,7 @@ just the start.  More great news is on the way.  This is a company that can
 quite literally strike gold and when that announcement hits the street 
 watch out.
 
-Get in while there is still time!
+Get in while there is still time. 
 
 
 
