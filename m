@@ -1,12 +1,11 @@
-From: "Holly Morse" <certaintyHewitt's@abc-usa.org>
-Subject: Re: Jimmy
-Date: Tue, 9 Jan 2007 12:31:49 +0000 (UTC)
-Message-ID: <01c733e9$c2134db0$6c822ecf@certaintyHewitt's>
+From: "Enid Drummond" <rationMont's@absolute-s.ru>
+Subject: Re: Lynda
+Date: Tue, 9 Jan 2007 14:54:55 -0330
+Message-ID: <01c733fe$200114c0$6c822ecf@rationMont's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 9 Jan 2007 12:29:07 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,10 +15,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-HXPN already up 500% in the past week with insiders accumulating!
+HXPN already up 500% in the past week with insiders accumulating. 
 
 Huge events are driving HXPN way up.  This one is still trading at only a 
 fraction of its book value.  A massive PR campaign has kicked off with 
@@ -48,7 +47,7 @@ just the start.  More great news is on the way.  This is a company that can
 quite literally strike gold and when that announcement hits the street 
 watch out.
 
-Get in while there is still time. 
+Get in while there is still time.
 
 
 
