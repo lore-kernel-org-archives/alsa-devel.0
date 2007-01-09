@@ -1,14 +1,11 @@
-From: "James Courtier-Dutton" <james.dutton@gmail.com>
-Subject: Re: Opening another audio driver from a driver
-Date: Tue, 9 Jan 2007 16:20:44 +1100
-Message-ID: <ad2655cb0701082120v7e85f4bftd635145c358d9371@mail.gmail.com>
-References: <45A3132B.8070608@gmail.com>
+From: "Charley Egan" <disenchantmentbumps@abcaz.com>
+Subject: Re: Lucas
+Date: Tue, 9 Jan 2007 08:12:54 -0120
+Message-ID: <01c733c5$f6fe8e00$6c822ecf@disenchantmentbumps>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45A3132B.8070608@gmail.com>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,35 +15,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Himanshu Chauhan <hs.chauhan@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 09/01/07, Himanshu Chauhan <hs.chauhan@gmail.com> wrote:
-> Hello all,
->
-> I am working with the virtual device driver (dummy.c). Is it possible to
-> route the audio data
-> from the dummy driver to an actual hardware's device driver? For this,
-> do I need to open the
-> driver using syscalls? I don't want to make any changes on the other
-> driver. I didn't see
-> any exported functions in any of the actual drivers, so I cannot stack
-> my driver on that.
->
-> What should be done in this case?
->
-> Thanks
->
-> Regards
-> --Himanshu
->
+HXPN already up 500% in the past week with insiders accumulating.
 
-I don't think you can do that. I also don't see why you would want to do it.
-If you want to like the dummy one to the real one, why use the dummy
-one in the first place. Just use the real one.
+Huge events are driving HXPN way up.  This one is still trading at only a 
+fraction of its book value.  A massive PR campaign has kicked off with 
+some exciting news:
 
-James
+ENCINO, CA--(MARKET WIRE)--Jan 5, 2007 (4:05pm) -- Harris 
+Exploration, Inc. (Other OTC:HXPN.PK - News) advises shareholders it 
+has authorized a Letter of Intent with Minera Cristal of Ecuador, regarding 
+the opportunity to acquire up to a 100% position in their Balsapamba 
+property, located in the Bolivar Province, Ecuador, South America.
+
+Harris Exploration
+
+Sym bol: HXPN
+Cur rent Price:     $1.60
+Short Term Tar get:  $5.00
+
+With the price of precious medals continuing to skyrocket, mining 
+companies had another year of record profits.  With limited supply and 
+high demand, experts agree that the mining boom shows no signs of 
+abating.
+
+Harris Exploration is in the right place at the right time and is letting 
+everyone know it with a major PR campaign!  Friday's announcement is 
+just the start.  More great news is on the way.  This is a company that can 
+quite literally strike gold and when that announcement hits the street 
+watch out.
+
+Get in while there is still time!   
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
