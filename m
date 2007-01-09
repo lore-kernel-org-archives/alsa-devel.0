@@ -1,12 +1,12 @@
-From: "Wade Bryant" <racehorsemishandles@ababs.com>
-Subject: Re: Gilbert
-Date: Tue, 9 Jan 2007 00:58:44 +0000 (UTC)
-Message-ID: <01c73407$4e372240$6c822ecf@racehorsemishandles>
+From: Derek Pidhirnyj <dpidhirnyj@perth.oilfield.slb.com>
+Subject: Tascam US-122L support
+Date: Tue, 09 Jan 2007 10:15:32 +0900
+Message-ID: <45A2ECB4.4070609@perth.oilfield.slb.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 9 Jan 2007 16:00:38 +0480
+Content-return: prohibited
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,36 +19,140 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-HXPN already up 500% in the past week with insiders accumulating!    
+Hello alsa-dev,
 
-Huge events are driving HXPN way up.  This one is still trading at only a 
-fraction of its book value.  A massive PR campaign has kicked off with 
-some exciting news:
+I'd like to get the Tascam US-122L support under ALSA which is a USB 2.0 
+device.
+I've been discussing with Martin Langer who developed the firmware for 
+the US-122. He's
+looked at the usbsnoop logs and lsusb output for me and thinks that the 
+US-122L uses a different
+chip compared to the old usx2y boxes and that firmware is not loaded at 
+connection. Possibly the device
+fits better into the USB audio specification (snd-usb-audio driver) and 
+may only need
+an entry into usbquirks.h (and possibly usbaudio.c & usbaudio.h maybe ??)
 
-ENCINO, CA--(MARKET WIRE)--Jan 5, 2007 (4:05pm) -- Harris 
-Exploration, Inc. (Other OTC:HXPN.PK - News) advises shareholders it 
-has authorized a Letter of Intent with Minera Cristal of Ecuador, regarding 
-the opportunity to acquire up to a 100% position in their Balsapamba 
-property, located in the Bolivar Province, Ecuador, South America.
+As I'm very inexperienced I would really appreciate help in adding a 
+US-122L entry into the
+usbquirks.h file to test. I can provide the usbsnoop logs if needed but 
+for now here is the output of lsusb -vv:
 
-Harris Exploration
+Bus 002 Device 002: ID 0644:800e TEAC Corp.
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  idVendor           0x0644 TEAC Corp.
+  idProduct          0x800e
+  bcdDevice            1.00
+  iManufacturer           1 TASCAM
+  iProduct                2 US-122L
+  iSerial                 3 no serial number
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           72
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+    MaxPower              480mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0
+      bInterfaceProtocol      0
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0
+      bInterfaceProtocol      0
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           4
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0126  1x 294 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0126  1x 294 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0009  1x 9 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0010  1x 16 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+Device Qualifier (for other device speed):
+  bLength                10
+  bDescriptorType         6
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  bNumConfigurations      1
 
-Sym bol: HXPN
-Cur rent Price:     $1.60
-Short Term Tar get:  $5.00
 
-With the price of precious medals continuing to skyrocket, mining 
-companies had another year of record profits.  With limited supply and 
-high demand, experts agree that the mining boom shows no signs of 
-abating.
 
-Harris Exploration is in the right place at the right time and is letting 
-everyone know it with a major PR campaign!  Friday's announcement is 
-just the start.  More great news is on the way.  This is a company that can 
-quite literally strike gold and when that announcement hits the street 
-watch out!
-
-Get in while there is still time.    
 
 
 
