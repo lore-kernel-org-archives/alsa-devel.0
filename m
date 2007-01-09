@@ -1,10 +1,9 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H3NTK-0001mH-Cu delayed 48 hours
-Date: Mon, 08 Jan 2007 20:12:14 -0800
-Message-ID: <E1H48LO-0006QB-6a@externalmx-1.sourceforge.net>
+From: roberts5164@comcast.net
+Subject: Muffled sound using snd-usb-audio in fedora 5
+Date: Tue, 09 Jan 2007 04:58:24 +0000
+Message-ID: <010920070458.26241.45A320F0000B3D39000066812200737478CBC0CECA9C9B9D0A0D019D@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0007480612=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +17,62 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1H3NTK-0001mH-Cu
-The subject of the message is: things by the glory neither have consulted When they had, gotten are in
-The date of the message is:    Sun, 07 Jan 2007 03:09:30 +0100
+--===============0007480612==
+Content-Type: multipart/alternative;
+	boundary="NextPart_Webmail_9m3u9jl4l_26241_1168318704_0"
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+--NextPart_Webmail_9m3u9jl4l_26241_1168318704_0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Hello,
+Using this driver in fedora 5 the sound coming from a TI/BB pcm2706 is ve=
+ry muffled, but sounds great in windowsxp.  Is there something I can do? =
+ I would much rather use linux if possible.
+
+Thanks,
+Tom=20
+--NextPart_Webmail_9m3u9jl4l_26241_1168318704_0
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<html><body>
+<DIV><FONT size=3D1>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Using this driver in fedora 5 the sound =
+coming from a TI/BB pcm2706 is very muffled, but&nbsp;sounds great in win=
+dowsxp.&nbsp;&nbsp;Is there something I can do?&nbsp;&nbsp;I would much r=
+ather use linux if possible.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tom</FONT>&nbsp;</DIV></FONT></DIV></bod=
+y></html>
+
+--NextPart_Webmail_9m3u9jl4l_26241_1168318704_0--
+
+
+--===============0007480612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0007480612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0007480612==--
