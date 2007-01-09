@@ -1,7 +1,7 @@
-From: Himanshu Chauhan <hs.chauhan@gmail.com>
-Subject: Opening another audio driver from a driver
-Date: Tue, 09 Jan 2007 09:29:39 +0530
-Message-ID: <45A3132B.8070608@gmail.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H3NTK-0001mH-Cu delayed 48 hours
+Date: Mon, 08 Jan 2007 20:12:14 -0800
+Message-ID: <E1H48LO-0006QB-6a@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,23 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-I am working with the virtual device driver (dummy.c). Is it possible to
-route the audio data
-from the dummy driver to an actual hardware's device driver? For this,
-do I need to open the
-driver using syscalls? I don't want to make any changes on the other
-driver. I didn't see
-any exported functions in any of the actual drivers, so I cannot stack
-my driver on that.
+The message identifier is:     1H3NTK-0001mH-Cu
+The subject of the message is: things by the glory neither have consulted When they had, gotten are in
+The date of the message is:    Sun, 07 Jan 2007 03:09:30 +0100
 
-What should be done in this case?
+The address to which the message has not yet been delivered is:
 
-Thanks
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Regards
---Himanshu
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
