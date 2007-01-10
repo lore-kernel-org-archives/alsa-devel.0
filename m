@@ -1,14 +1,10 @@
-From: "Lewie Ivey" <wwg@langford1977.fsnet.co.uk>
-Subject: pant
-Date: Wed, 10 Jan 2007 12:32:43 +0100
-Message-ID: <001001c734ac$12ef2430$50aa81bf@qtt>
+From: "Ophelia Head" <wdsz@panaceaproductions.net>
+Subject: recital
+Date: Wed, 10 Jan 2007 12:40:00 +0100
+Message-ID: <001001c734ad$29a56440$6a443e86@iblh>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0038922262=="
+Content-Type: multipart/mixed; boundary="===============1641908525=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from tca83-3-82-245-228-181.fbx.proxad.net
-	(tca83-3-82-245-228-181.fbx.proxad.net [82.245.228.181])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D39D922F
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2007 12:37:22 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,46 +14,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0038922262==
+--===============1641908525==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C734B4.74AD71B0"
+	boundary="----=_NextPart_000_000C_01C734B5.8B5B2640"
 
-------=_NextPart_000_000C_01C734B4.74AD71B0
+------=_NextPart_000_000C_01C734B5.8B5B2640
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C734B4.74AEF850"
+	boundary="----=_NextPart_001_000D_01C734B5.8B5ECFC0"
 
-------=_NextPart_001_000D_01C734B4.74AEF850
+------=_NextPart_001_000D_01C734B5.8B5ECFC0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Whimsical veggie people too!
-His paintings are a part of numerous art collections worldwide. You can =
-get away without leaving your house. His paintings are primarily of his =
-home region, an area that is frequented by artists and authors, Sweden's =
-stunningly beautiful Osterlen coast. She has drawn pen and ink, is =
-proficient in watercolor, gouache, acrylic, oil and mixed techniques. =
-This year Michigan had many heavy snowfalls; by combing both you get =
-Stone Bridge Mountain.
-I reside and work professionally out of my studio in Langen-Hessen, =
-Germany. Contemporary Artists. Reproduced from Oil paintings by Matthew =
-Groves.
-Some of my favorite artists are Kahlo, Van Gogh, Seurat, O' Keefe as =
-well as many unknowns over at deviant art.
-Cast giftware and collectibles. Olga Deulofeu, "The Dragonfly Lady", or =
-the "Dot Lady" was born in Havana, Cuba on December 11, 1949. 1997 he =
-changed the name to Larz Eldbage of artistic ground.
-Portraits, both traditional and less formal of adults,children and =
-animals. Digital art in the way of techno-romanticism.
-The first one motivates a reflection about the nature of beauty while =
-the second considers the most diverse environments as places of the =
-expression of existential life.
-Subjects include Urban Scrawls, Architecture, and Abstracts.
-------=_NextPart_001_000D_01C734B4.74AEF850
+In 1998 I took a sabbatical from my studies.
+She has travelled widely across the United Kingdom, from Lands End to =
+the Shetland Islands. This ensures the picture will last for many =
+generations. Living in Portugal since 1974. Mixed with digital =
+procedures by hand. I get nourishment from the art I create.
+Halloween icons and Mother Goose characters. No two ever the same - =
+GUARANTEED! Colette Marchant, inspired colourist, offers us an intimate =
+and personal works wich take us on a voyage to the fantasy world.
+Just like fractal art, insomart extracts beauty from the abstract =
+concepts of nature.
+Come see us on the web today. I have only just begun to express my self =
+in such form and wanted to share my self with you. Completed for the =
+BPRC "Pink" project.
+Soon I started to experience an appreciation for context and structural =
+play when paints were laid down in a process of measured abandon. =
+Origional and computer enhanced images.
+He went to New York where he attained the contemporary views and =
+reflections in multimedia art.
+There is a texture to his work that stems from his experiments with the =
+use of ordinary house paint alongside acrylic paint and graphite pencil.
+------=_NextPart_001_000D_01C734B5.8B5ECFC0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -66,64 +60,57 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"fortune cookie"=20
-hspace=3D0=20
-src=3D"cid:000b01c734ac$12e78310$50aa81bf@qtt" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"diary" hspace=3D0=20
+src=3D"cid:000b01c734ad$299314c0$6a443e86@iblh" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Whimsical veggie people =
-too!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>His paintings are a part of numerous =
-art=20
-collections worldwide. You can get away without leaving your house. His =
-paintings=20
-are primarily of his home region, an area that is frequented by artists =
-and authors,=20
-Sweden's stunningly beautiful Osterlen coast. She has drawn pen and ink, =
-is=20
-proficient in watercolor, gouache, acrylic, oil and mixed techniques. =
-This year=20
-Michigan had many heavy snowfalls; by combing both you get Stone =
-Bridge=20
-Mountain.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I reside and work professionally out of =
-my studio=20
-in Langen-Hessen, Germany. Contemporary Artists. Reproduced from Oil =
-paintings by=20
-Matthew Groves.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Some of my favorite artists are Kahlo, =
-Van Gogh,=20
-Seurat, O' Keefe as well as many unknowns over at deviant =
-art.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Cast giftware and collectibles. Olga =
-Deulofeu, "The=20
-Dragonfly Lady", or the "Dot Lady" was born in Havana, Cuba on December =
-11, 1949.=20
-1997 he changed the name to Larz Eldbage of artistic =
-ground.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Portraits, both traditional and less =
-formal of=20
-adults,children and animals. Digital art in the way of=20
-techno-romanticism.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The first one motivates a reflection =
-about the=20
-nature of beauty while the second considers the most diverse =
-environments as places=20
-of the expression of existential life.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Subjects include Urban Scrawls, =
-Architecture, and=20
-Abstracts.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>In 1998 I took a sabbatical from my=20
+studies.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>She has travelled widely across the =
+United Kingdom,=20
+from Lands End to the Shetland Islands. This ensures the picture will =
+last for many=20
+generations. Living in Portugal since 1974. Mixed with digital =
+procedures by hand. I=20
+get nourishment from the art I create.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Halloween icons and Mother Goose =
+characters. No two=20
+ever the same - GUARANTEED! Colette Marchant, inspired colourist, offers =
+us an=20
+intimate and personal works wich take us on a voyage to the fantasy=20
+world.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Just like fractal art, insomart =
+extracts beauty=20
+from the abstract concepts of nature.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Come see us on the web today. I have =
+only just=20
+begun to express my self in such form and wanted to share my self with =
+you.=20
+Completed for the BPRC "Pink" project.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Soon I started to experience an =
+appreciation for=20
+context and structural play when paints were laid down in a process of =
+measured=20
+abandon. Origional and computer enhanced images.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>He went to New York where he attained =
+the=20
+contemporary views and reflections in multimedia art.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There is a texture to his work that =
+stems from his=20
+experiments with the use of ordinary house paint alongside acrylic paint =
+and=20
+graphite pencil.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000D_01C734B4.74AEF850--
+------=_NextPart_001_000D_01C734B5.8B5ECFC0--
 
-------=_NextPart_000_000C_01C734B4.74AD71B0
+------=_NextPart_000_000C_01C734B5.8B5B2640
 Content-Type: image/gif;
-	name="wharves.gif"
+	name="conscious.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000b01c734ac$12e78310$50aa81bf@qtt>
+Content-ID: <000b01c734ad$299314c0$6a443e86@iblh>
 
 R0lGODdhTgKJAfUmAO/b/s781NnV27mHGWehihRqM7ri2SrU5p5manl74Iouo842V67gh50i2zVF
 oLqZ9hW0cA8zFtrvCOl/WeRFDVzuwuiJt067GyFD6OlRk3jD1HLpP6CpRQDsz+kCbT4X+h//FHCh
@@ -369,11 +356,11 @@ SE7gonuMTfJy2dTEXeufOwhgnkHoyCbfydAwa+WHT7aGdLNMLsPn7sK+NdoLlrd1ERpxA79C0Jmh
 XXUCvXPJKR3QKWdyt7957ZhLMKVPf7HPir31s6c6afxo6rfHfkprOxHbBU7crJU1HFuVhxywtb2o
 kKFOW7TbWcXIpAvPn/XxSPc3sZX7+aS9XMoI0trtHK245O/8GshfPfJhCAIAOw==
 
-------=_NextPart_000_000C_01C734B4.74AD71B0--
+------=_NextPart_000_000C_01C734B5.8B5B2640--
 
 
 
---===============0038922262==
+--===============1641908525==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -384,7 +371,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0038922262==
+--===============1641908525==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -395,4 +382,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0038922262==--
+--===============1641908525==--
