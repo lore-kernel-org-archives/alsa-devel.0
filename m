@@ -1,10 +1,10 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H4HR4-00039m-7c delayed 10 hours
-Date: Tue, 09 Jan 2007 19:54:59 -0800
-Message-ID: <E1H4UYF-0005Fz-Nk@externalmx-1.sourceforge.net>
+From: "Dmitry Baikov" <dsbaikov@gmail.com>
+Subject: usbmidi reconnect -> kernel oops
+Date: Wed, 10 Jan 2007 07:48:12 +0300
+Message-ID: <70a871c80701092048v23fbf0d8yc40d434eab023506@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_101255_4657273.1168404492756"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +18,127 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+------=_Part_101255_4657273.1168404492756
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-The message identifier is:     1H4HR4-00039m-7c
-The subject of the message is: beforetime in pieces; the thee and I have set the herds, and
-The date of the message is:    Tue, 09 Jan 2007 11:54:43 -0300
+SGkhCkkgYW0gd29ya2luZyBvbiBhIGFsc2EtbWlkaSBkcml2ZXIgZm9yIGphY2tkIGFuZCBzdGVw
+cGVkIG9uIHRoZSBmb2xsb3dpbmcgYnVnOgpTb21ldGltZXMsIGlmIGEgcHJvZ3JhbSBpcyByZWFk
+aW5nIGZyb20gdXNiIG1pZGkgcG9ydCAocmF3bWlkaSkgYW5kIEkKZGlzY29ubmVjdCBhbmQgdGhl
+biByZWNvbm5lY3QgZGV2aWNlLCBrZXJuZWwgZHVtcHMgYW4gb29wcy4gQmVsb3cgaXMKdGhlIHRy
+YWNlLCBnb3QgYnkgTGFycyBMdXRtYW4gd2l0aCBrZXJuZWwgMi42LjE3IGFuZCBhbHNhLWxpYi0x
+LjAuMTIsCmJ1dCBJIGhhZCB0aGUgc2FtZSBvb3BzIHdpdGgga2VybmVsLTIuNi4xOSAoaW4ta2Vy
+bmVsIGFsc2EpIGFuZAphbHNhLWxpYi0xLjAuMTMsIHRob3VnaCBJIGhhdmUgb25seSB0YWludGVk
+IHRyYWNlICh3aXRoIG52aWRpYSBkcml2ZXIsCkkgc2VlbiBpdCB3aXRoIG52IGRyaXZlcgorIHNp
+bXBsZSB0ZXN0IHByb2dyYW0gYXMgd2VsbCwgYnV0IGxvc3QgdGhlIHRyYWNlIGFmdGVyIHJlYm9v
+dCwgYW5kCnRoZW4gY291bGQgbm90IHJlcHJvZHVjZSBpdCkuCgpUaGUgamFja21pZGkgZHJpdmVy
+IGRvZXMgdGhlIGZvbGxvd2luZzoKb25lIHRocmVhZCAoc2NhbikgcGVyaW9kaWNhbGx5IChldmVy
+eSAyIHNlY29uZHMpIHdhbGtzIGFsbApjYXJkcy9kZXZzL3N1YmRldnMgYW5kIG9wZW5zIG5ldyBw
+b3J0cyBpZiBhbnkuIFR3byBvdGhlciB0aHJlYWRzIHBvbGwKb3BlbmVkIHBvcnRzIGFuZCByZWFk
+L3dyaXRlIHRoZW0gKHBhc3NpbmcgcG9ydHMgd2l0aCBlcnJvcnMgYmFjayB0bwpzY2FuIHRocmVh
+ZCBmb3IgY2xvc2luZykuCgpJZiB0aGlzIHRyYWNlIGlzIGluc3VmZmljaWVudCwgSSBtYXkgdHJ5
+IHRvIHJlcHJvZHVjZSB0aGUgYnVnIHVzaW5nIGEKc2ltcGxlIHRlc3QgcHJvZ3JhbSAoSSBoYXZl
+IG9uZSBhbHJlYWR5LCBidXQgYXMgSSBzYWlkLCBkbyBub3QgaGF2ZQp1bnRhaW50ZWQgdHJhY2Up
+LgoKUmVnYXJkcywKRG1pdHJ5LgotLS0tLS0tLS0tLS0tLS0tLS0tLS0KCgdNZXNzYWdlIGZyb20g
+c3lzbG9nZEBsb2NhbGhvc3QgYXQgVHVlIEphbiAgOSAxNjozODowNSAyMDA3IC4uLgpsb2NhbGhv
+c3Qga2VybmVsOiBPb3BzOiAwMDAwIFsjMV0KCgdNZXNzYWdlIGZyb20gc3lzbG9nZEBsb2NhbGhv
+c3QgYXQgVHVlIEphbiAgOSAxNjozODowNSAyMDA3IC4uLgpsb2NhbGhvc3Qga2VybmVsOiBQUkVF
+TVBUCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RAbG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6
+MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5lbDogQ1BVOiAgICAwCgoHTWVzc2FnZSBmcm9tIHN5
+c2xvZ2RAbG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0
+IGtlcm5lbDogRUlQIGlzIGF0IHVzYl9idWZmZXJfZnJlZSsweDE2LzB4NDAgW3VzYmNvcmVdCgoH
+TWVzc2FnZSBmcm9tIHN5c2xvZ2RAbG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6MDUgMjAw
+NyAuLi4KbG9jYWxob3N0IGtlcm5lbDogZWF4OiBjOGNjYjgwMCAgIGVieDogMDAwMDAwMDIgICBl
+Y3g6IGRmNTFiMTgwICAgZWR4OgowMDAwMDA0MAoKB01lc3NhZ2UgZnJvbSBzeXNsb2dkQGxvY2Fs
+aG9zdCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4uCmxvY2FsaG9zdCBrZXJuZWw6IGVz
+aTogZDc0YWJlMDAgICBlZGk6IGQzMWY2OTIwICAgZWJwOiBkMDEyOWUwMCAgIGVzcDoKZDIxNzdl
+ZjAKCgdNZXNzYWdlIGZyb20gc3lzbG9nZEBsb2NhbGhvc3QgYXQgVHVlIEphbiAgOSAxNjozODow
+NSAyMDA3IC4uLgpsb2NhbGhvc3Qga2VybmVsOiBkczogMDA3YiAgIGVzOiAwMDdiICAgc3M6IDAw
+NjgKCgdNZXNzYWdlIGZyb20gc3lzbG9nZEBsb2NhbGhvc3QgYXQgVHVlIEphbiAgOSAxNjozODow
+NSAyMDA3IC4uLgpsb2NhbGhvc3Qga2VybmVsOiBQcm9jZXNzIGphY2tkIChwaWQ6IDExNzUzLCB0
+aHJlYWRpbmZvPWQyMTc2MDAwCnRhc2s9ZDA3MmFhOTApCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RA
+bG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5l
+bDogU3RhY2s6IDAxOGNiYTgwIDFmNTFiMTgwIGQ3NGFiZTAwIGUwZTBjYzRjIDFmNTFiMTgwCmQz
+MWY2OTUwIDAwMDAwMDAwIGUwZTBjY2UxCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RAbG9jYWxob3N0
+IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5lbDogICAgICAg
+IGQ4ODM3YjRjIGQ4ODM3YWEwIDAwMDAxZmZmIGUwZDI1NTM4IGQ3NWM2YzgwCmQwMTI5ZjQwIGUw
+Y2ViMTZhIDAwMDAwMDAwCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RAbG9jYWxob3N0IGF0IFR1ZSBK
+YW4gIDkgMTY6Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5lbDogICAgICAgIDAwMDAxMDAw
+IGUwY2ViMjBiIGQwMTI5ZTAwIDAwMDAwMDAwIGNmMGQ0NmUwCmQwMTI5ZTAwIGUwY2U2NmYwIGNm
+MGQ0NmUwCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RAbG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6
+Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5lbDogQ2FsbCBUcmFjZToKCgdNZXNzYWdlIGZy
+b20gc3lzbG9nZEBsb2NhbGhvc3QgYXQgVHVlIEphbiAgOSAxNjozODowNSAyMDA3IC4uLgpsb2Nh
+bGhvc3Qga2VybmVsOiAgPGUwZTBjYzRjPiBzbmRfdXNibWlkaV9vdXRfZW5kcG9pbnRfZGVsZXRl
+KzB4MmMvMHg1MApbc25kX3VzYl9saWJdICA8ZTBlMGNjZTE+IHNuZF91c2JtaWRpX2ZyZWUrMHgy
+MS8weDUwIFtzbmRfdXNiX2xpYl0KCgdNZXNzYWdlIGZyb20gc3lzbG9nZEBsb2NhbGhvc3QgYXQg
+VHVlIEphbiAgOSAxNjozODowNSAyMDA3IC4uLgpsb2NhbGhvc3Qga2VybmVsOiAgPGUwZDI1NTM4
+PiBzbmRfcmF3bWlkaV9mcmVlKzB4NjgvMHg4MCBbc25kX3Jhd21pZGldCjxlMGNlYjE2YT4gc25k
+X2RldmljZV9mcmVlKzB4NGEvMHhhMCBbc25kXQoKB01lc3NhZ2UgZnJvbSBzeXNsb2dkQGxvY2Fs
+aG9zdCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4uCmxvY2FsaG9zdCBrZXJuZWw6ICA8
+ZTBjZWIyMGI+IHNuZF9kZXZpY2VfZnJlZV9hbGwrMHg0Yi8weDYwIFtzbmRdCjxlMGNlNjZmMD4g
+c25kX2NhcmRfZG9fZnJlZSsweDMwLzB4MTAwIFtzbmRdCgoHTWVzc2FnZSBmcm9tIHN5c2xvZ2RA
+bG9jYWxob3N0IGF0IFR1ZSBKYW4gIDkgMTY6Mzg6MDUgMjAwNyAuLi4KbG9jYWxob3N0IGtlcm5l
+bDogIDxlMGNlNzA2MT4gc25kX2NhcmRfZmlsZV9yZW1vdmUrMHhhMS8weGQwIFtzbmRdCjxlMGQy
+Njk3Zj4gc25kX3Jhd21pZGlfcmVsZWFzZSsweDRmLzB4NzAgW3NuZF9yYXdtaWRpXQoKB01lc3Nh
+Z2UgZnJvbSBzeXNsb2dkQGxvY2FsaG9zdCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4u
+CmxvY2FsaG9zdCBrZXJuZWw6ICA8YzAxNjc1NWI+IF9fZnB1dCsweDhiLzB4MWEwICA8YzAxNjQ2
+Zjc+IGZpbHBfY2xvc2UKKzB4NDcvMHg4MAoKB01lc3NhZ2UgZnJvbSBzeXNsb2dkQGxvY2FsaG9z
+dCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4uCmxvY2FsaG9zdCBrZXJuZWw6ICA8YzAx
+MDJmNzc+IHN5c2VudGVyX3Bhc3RfZXNwKzB4NTQvMHg3NQoKB01lc3NhZ2UgZnJvbSBzeXNsb2dk
+QGxvY2FsaG9zdCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4uCmxvY2FsaG9zdCBrZXJu
+ZWw6IENvZGU6IDI0IDg5IGQ4IGZmIGQ2IGViIGNmIDhkIGI0IDI2IDAwIDAwIDAwIDAwIDhkIGJj
+CjI3IDAwIDAwIDAwIDAwIDgzIGVjIDBjIDg1IGMwIDg5IDVjIDI0IDA0IDg5IDc0IDI0IDA4IDc0
+IDIwIDhiIDU4IDMwIDg1CmRiIDc0IDE5IDw4Yj4gNDMgMjQgODUgYzAgNzQgMTIgOGIgNzAgMTAg
+ODUgZjYgNzQgMGIgOGIgNDQgMjQgMTAgODkgMDQKMjQKCgdNZXNzYWdlIGZyb20gc3lzbG9nZEBs
+b2NhbGhvc3QgYXQgVHVlIEphbiAgOSAxNjozODowNSAyMDA3IC4uLgpsb2NhbGhvc3Qga2VybmVs
+OiBFSVA6IFtwZzArNTQzMTUwNDIyLzEwNjkwMjgzNTJdIHVzYl9idWZmZXJfZnJlZQorMHgxNi8w
+eDQwIFt1c2Jjb3JlXSBTUzpFU1AgMDA2ODpkMjE3N2VmMAoKB01lc3NhZ2UgZnJvbSBzeXNsb2dk
+QGxvY2FsaG9zdCBhdCBUdWUgSmFuICA5IDE2OjM4OjA1IDIwMDcgLi4uCmxvY2FsaG9zdCBrZXJu
+ZWw6IEVJUDogWzxlMGE3YTE1Nj5dIHVzYl9idWZmZXJfZnJlZSsweDE2LzB4NDAgW3VzYmNvcmVd
+ClNTOkVTUCAwMDY4OmQyMTc3ZWYwCgoKLS0KTGFycyBMdXRobWFuIC0gcGxlYXNlIGVuY3J5cHQg
+YW55IGVtYWlsIHNlbnQgdG8gbWUgaWYgcG9zc2libGUKUEdQIGtleTogaHR0cDovL3BncC5taXQu
+ZWR1OjExMzcxL3Brcy9sb29rdXA/b3A9Z2V0JnNlYXJjaD0weDA0Qzc3RTJFCkZpbmdlcnByaW50
+OiBGQ0E3IEM3OTAgMTlCOSAzMjJEIEVCN0EgRTFCMyA0MzcxIDQ2NTAgMDRDNyA3RTJFCgoKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpUYWtlIFN1cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1
+cmUgb2YgSVQKSm9pbiBTb3VyY2VGb3JnZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwg
+Z2V0IHRoZSBjaGFuY2UgdG8gc2hhcmUgeW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRv
+cGljcyB0aHJvdWdoIGJyaWVmIHN1cnZleXMgLSBhbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVj
+aHNheS5jb20vZGVmYXVsdC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZE
+RVYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkphY2tp
+dC1kZXZlbCBtYWlsaW5nIGxpc3QKSmFja2l0LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9qYWNraXQtZGV2ZWwK
+------=_Part_101255_4657273.1168404492756
+Content-Type: text/plain; name=signature.asc; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: 0.0.1
+Content-Disposition: attachment; filename="signature.asc"
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC41IChHTlUv
+TGludXgpCgppRDhEQlFCRm83ZG9RM0ZHVUFUSGZpNFJBbWRCQUo0NVlwVHpQM3lOUWFEZU11VEFM
+ZWpqSlhNR0R3Q2ZUZDFhCjFqWTc5RkttZ0lEd093SG12UEErWFMwPQo9RGtkTQotLS0tLUVORCBQ
+R1AgU0lHTkFUVVJFLS0tLS0KCg==
+------=_Part_101255_4657273.1168404492756
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------=_Part_101255_4657273.1168404492756
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------=_Part_101255_4657273.1168404492756--
