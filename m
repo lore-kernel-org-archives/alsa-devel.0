@@ -1,14 +1,10 @@
-From: "Shirley" <pdovjs@hunston.com>
-Subject: pilgrim mononucleosis
-Date: Wed, 10 Jan 2007 15:18:36 +0100
-Message-ID: <000901c734c3$5a3d91c0$5f615f54@qnty>
+From: "Helms" <hqr@frigoserv.com.br>
+Subject: replete untouchable
+Date: Wed, 10 Jan 2007 15:38:11 +0100
+Message-ID: <000901c734c5$9ce69fb0$6bc63da5@qlntk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1428437196=="
+Content-Type: multipart/mixed; boundary="===============0322682800=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from p54B0D58E.dip.t-dialin.net (p54B0D58E.dip.t-dialin.net
-	[84.176.213.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6C103259
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2007 15:26:34 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,47 +14,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1428437196==
+--===============0322682800==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0005_01C734CB.BBFAA6C0"
+	boundary="----=_NextPart_000_0005_01C734CD.FE9D9A30"
 
-------=_NextPart_000_0005_01C734CB.BBFAA6C0
+------=_NextPart_000_0005_01C734CD.FE9D9A30
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0006_01C734CB.BBFC7B80"
+	boundary="----=_NextPart_001_0006_01C734CD.FEA0F590"
 
-------=_NextPart_001_0006_01C734CB.BBFC7B80
+------=_NextPart_001_0006_01C734CD.FEA0F590
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-It's a great entry point for novices, or for budget-minded fans. The two =
-are partners in Ortolan, an award-winning West Hollywood, California =
-restaurant where Eme is the head chef. Lost and Galactica received the =
-most nominations among science fiction and fantasy programming, which =
-otherwise fared poorly in the nominations, receiving nods mostly for =
-technical achievements.
-2 percent of the patients had a cardiovascular "event" or died.
-For more information on the new features see here.
-I found the element had broken and it was touching the heater housing, =
-which is a grounded element.
-Battlestar Galactica returned for its third season on SCI FI on Oct. =
-Both have exceeded their respective networks' expectations and have done =
-well so far because they're schedule at a time when fans of their genres =
-have few other options, the AP reported. Series two, which finished last =
-month, averaged 2. The newborns were reportedly delivered over the =
-weekend at B. During that time, 26. 2, as the new version is =
-incompatible with the old one.
-"Morgan Le Fay, who the hell is that? The debut in Australia of the CBS =
-drama "Jericho" within hours of its U.
-Although similar statewide measures have been adopted in Arkansas and =
-Louisiana, Bangor is the first city to adopt such an ordinance, which =
-goes into effect next week.
-com, where an extended "Day Six" teaser will debut on Oct.
-------=_NextPart_001_0006_01C734CB.BBFC7B80
+She also voices Huey and Riley on Adult Swim's "The Boondocks. Both have =
+exceeded their respective networks' expectations and have done well so =
+far because they're schedule at a time when fans of their genres have =
+few other options, the AP reported. When Jonathan and I were originally =
+coming up with the four-person team it was a bunch of writer reasons =
+that drove that.
+"We plan to further explore InfiniBand switching solutions to continue =
+to push cluster platforms beyond current capacities and capabilities.
+"Robin Hood, which also stars Keith Allen and Richard Armitage, has been =
+updated for the 21st Century.
+Asamoa-Baah has is a veteran of the organization and has held several =
+senior posts.
+Ratings for the first episode, starring Jonas Armstrong as Robin Hood, =
+averaged 8. zip" into the current directory. Depending on the type of =
+files being packaged, the size of the archive often gets compressed to a =
+fraction of the size of the original files. 7 rating among adults aged =
+18-49 and 13. He'll go from being the one who hunts people down to the =
+one who's being hunted. UK will take you to the boxset for Season 2, =
+Part 1.
+Research has identified "24" as the single-most illegally viewed TV =
+program on the Internet in the U. One key advantage of the Cisco =
+technology is that there is a consistent integrated networking approach =
+across its data centre switching and storage networking portfolios.
+Ryan says the wedding will probably be next June in the Loire Valley of =
+France.
+ComRelated discussion : Talk about this news story at The Vorta =
+LoungeThis news story has been read over 793 times.
+------=_NextPart_001_0006_01C734CD.FEA0F590
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -67,64 +67,67 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"nonsmoker" hspace=3D0=20
-src=3D"cid:000401c734c3$5a346a00$5f615f54@qnty" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"wool" hspace=3D0=20
+src=3D"cid:000401c734c5$9cd5d6d0$6bc63da5@qlntk" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's a great entry point for novices, =
-or for=20
-budget-minded fans. The two are partners in Ortolan, an award-winning =
-West=20
-Hollywood, California restaurant where Eme is the head chef. Lost and =
-Galactica=20
-received the most nominations among science fiction and fantasy =
-programming, which=20
-otherwise fared poorly in the nominations, receiving nods mostly for =
-technical=20
-achievements.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>2 percent of the patients had a =
-cardiovascular=20
-"event" or died.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For more information on the new =
-features see=20
-here.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I found the element had broken and it =
-was touching=20
-the heater housing, which is a grounded element.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Battlestar Galactica returned for its =
-third season=20
-on SCI FI on Oct. Both have exceeded their respective networks' =
-expectations and=20
-have done well so far because they're schedule at a time when fans of =
-their genres=20
-have few other options, the AP reported. Series two, which finished last =
-month,=20
-averaged 2. The newborns were reportedly delivered over the weekend at =
-B. During=20
-that time, 26. 2, as the new version is incompatible with the old =
-one.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"Morgan Le Fay, who the hell is that? =
-The debut in=20
-Australia of the CBS drama "Jericho" within hours of its U.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Although similar statewide measures =
-have been=20
-adopted in Arkansas and Louisiana, Bangor is the first city to adopt =
-such an=20
-ordinance, which goes into effect next week.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>com, where an extended "Day Six" teaser =
-will debut=20
-on Oct.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>She also voices Huey and Riley on Adult =
+Swim's "The=20
+Boondocks. Both have exceeded their respective networks' expectations =
+and have done=20
+well so far because they're schedule at a time when fans of their genres =
+have few=20
+other options, the AP reported. When Jonathan and I were originally =
+coming up with=20
+the four-person team it was a bunch of writer reasons that drove =
+that.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"We plan to further explore InfiniBand =
+switching=20
+solutions to continue to push cluster platforms beyond current =
+capacities and=20
+capabilities.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"Robin Hood, which also stars Keith =
+Allen and=20
+Richard Armitage, has been updated for the 21st Century.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Asamoa-Baah has is a veteran of the =
+organization=20
+and has held several senior posts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ratings for the first episode, starring =
+Jonas=20
+Armstrong as Robin Hood, averaged 8. zip" into the current directory. =
+Depending on=20
+the type of files being packaged, the size of the archive often gets =
+compressed to a=20
+fraction of the size of the original files. 7 rating among adults aged =
+18-49 and 13.=20
+He'll go from being the one who hunts people down to the one who's being =
+hunted. UK=20
+will take you to the boxset for Season 2, Part 1.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Research has identified "24" as the =
+single-most=20
+illegally viewed TV program on the Internet in the U. One key advantage =
+of the Cisco=20
+technology is that there is a consistent integrated networking approach =
+across its=20
+data centre switching and storage networking portfolios.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ryan says the wedding will probably be =
+next June in=20
+the Loire Valley of France.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>ComRelated discussion : Talk about this =
+news story=20
+at The Vorta LoungeThis news story has been read over 793=20
+times.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0006_01C734CB.BBFC7B80--
+------=_NextPart_001_0006_01C734CD.FEA0F590--
 
-------=_NextPart_000_0005_01C734CB.BBFAA6C0
+------=_NextPart_000_0005_01C734CD.FE9D9A30
 Content-Type: image/gif;
-	name="burden.gif"
+	name="Coke.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000401c734c3$5a346a00$5f615f54@qnty>
+Content-ID: <000401c734c5$9cd5d6d0$6bc63da5@qlntk>
 
 R0lGODdhpwHyAPUVABY7KjUtDiIXTYTvpMtH8njQUlbCn9k3S1Hc6KJKbWB34exXMu/DK7FuZkV6
 /oWJXuNhz8mq34nlkn21ZUFPebG+WcOZyLeqWOre78FQtO2ggpyAaoLBuxH1VJMXhFWCA1o8usoE
@@ -431,11 +434,11 @@ JtPOScXPRCZNNNQ0JFOvpNNVLUsv3UHbPaO4wqlR12NgWc9j16fWNtowyr7H4uRLtmsq311m3NtX
 bVJvcnFzbd7nb/TSc0xy6ll3cEPbdiXuq/dwYvrs3ny6+MBbV+demlX1TgGrRvATMYfD5vmzZmxO
 Fm5Yipjit+8OwICdBjqsaPBinYQdezEUQNIVniAAOw==
 
-------=_NextPart_000_0005_01C734CB.BBFAA6C0--
+------=_NextPart_000_0005_01C734CD.FE9D9A30--
 
 
 
---===============1428437196==
+--===============0322682800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -446,7 +449,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1428437196==
+--===============0322682800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -457,4 +460,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1428437196==--
+--===============0322682800==--
