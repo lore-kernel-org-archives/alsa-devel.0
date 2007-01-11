@@ -1,7 +1,7 @@
-From: Per Thomas Jahr <perja@extern.uio.no>
-Subject: Problems with AD1988A codec on Asus P5B-V (hda-intel)
-Date: Thu, 11 Jan 2007 22:23:57 +0100
-Message-ID: <1168550637.17988.4.camel@localhost.localdomain>
+From: "Tanya Burger" <Peloponnese'shazily@aacpl.net>
+Subject: U.S. Iraq costs = free gas for a year Video
+Date: Thu, 11 Jan 2007 21:45:26 +0000
+Message-ID: <01c735c9$cdd140d0$6c822ecf@Peloponnese'shazily>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,23 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+OPEN UP WITH A BIG BANG ON FRIDAY!
 
->From my new motherboard (Asus P5B-V) I can only hear sound from the left
-channel. I have created a bug for this issue here:
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2765
+Sy mbol: EPRT
+On: PinkSheets
+5-Days Target: $1.50
+Long Term Target: $7.50
 
-I would like to help out as much as possible, but I'm not sure where to
-start or what to try. 
+Take a look at the annoucement and reveiw the technology, but grab some EPRT
+before they drop the release to push this stock to the dollar marker.
 
-Anyone got some suggestions?
 
-Thanks
-Per Thomas Jahr
+ADD EPRT TO YOUR WATCHLIST NOW! WATCH IT TRADE ON FIRDAY 12 JAN!
 
 
 -------------------------------------------------------------------------
