@@ -1,12 +1,21 @@
-From: Simon Wood <simon@mungewell.org>
-Subject: Re: snd-usb-audio: adding support for X-Box Wireless
- Communicator
-Date: Thu, 11 Jan 2007 08:17:27 -0700
-Message-ID: <20070111081727.b913d280.simon@mungewell.org>
+From: "feist" <EcommNewz@grafer.e.telefonica.net>
+Subject: potential subsequent
+Date: Thu, 11 Jan 2007 11:14:42 -0500
+Message-ID: <001001c7359b$9a39c9f0$00000000@poiriers>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe"
+Content-Type: multipart/mixed; boundary="===============0909843503=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C7D226E
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 17:14:43 +0100 (MET)
+Received: from 216-189.126-70.tampabay.res.rr.com
+	(216-189.126-70.tampabay.res.rr.com [70.126.189.216])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	DE46E998A2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 17:14:43 +0100 (MET)
+Received: from YAWCI (unknown [199.151.14.60])
+	by grafer.e.telefonica.net with ESMTP id 4DDBB3116A68
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 11:15:12 -0500 (GMT)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,162 +25,176 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============0909843503==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000C_01C73571.B163C1F0"
 
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-
-
-On Mon, 08 Jan 2007 12:15:34 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> Thanks for the patch!
-
-Don't mention it.... though don't forget it doesn't work!
-
-I did some more thinking and (now) reckon that this device has only an 'in' and 'out' port which 'audio' should be streamed to/from. I don't know the format, but the packet size looks a little small compared to what I could google.
-
-At present the attached patch causes the attached kernel panic. It seems there is a problem trying to create the fixed stream....
-
-Any suggestions are appreciated as I'm a bit lost here (I'm good at soldering though ;-).
-Cheers,
-Simon.
+------=_NextPart_000_000C_01C73571.B163C1F0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000D_01C73571.B163C1F0"
 
 
-
-
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe
+------=_NextPart_001_000D_01C73571.B163C1F0
 Content-Type: text/plain;
- name="temp.txt"
-Content-Disposition: attachment;
- filename="temp.txt"
-Content-Transfer-Encoding: 7bit
-
-Jan 10 22:02:49 bourne kernel: [17348849.468000] usb 2-1: new full speed USB device using uhci_hcd and address 2
-Jan 10 22:02:49 bourne kernel: [17348849.604000] snd-usb-audio: probe of 2-1:1.0 failed with error -5
-Jan 10 22:02:49 bourne kernel: [17348849.620000] d0d34430
-Jan 10 22:02:49 bourne kernel: [17348849.628000] PREEMPT SMP 
-Jan 10 22:02:49 bourne kernel: [17348849.628000] Modules linked in: snd_seq_oss snd_seq_midi snd_seq_midi_event snd_pcm_oss snd_usb_audio snd_pcm snd_seq snd_usb_lib snd_timer snd_rawmidi snd_hwdep snd_seq_device snd_mixer_oss snd soundcore snd_page_alloc nls_utf8 rfcomm l2cap bluetooth ipv6 nvram uinput ppdev radeon drm speedstep_ich speedstep_lib cpufreq_userspace cpufreq_stats freq_table cpufreq_powersave cpufreq_ondemand cpufreq_conservative video tc1100_wmi sony_acpi pcc_acpi ibm_acpi hotkey dev_acpi container button acpi_sbs battery ac i2c_acpi_ec i2c_core nls_iso8859_1 nls_cp437 vfat fat aes dm_crypt dm_mod md_mod fuse sr_mod cdrom sbp2 ieee1394 af_packet lp tsdev hostap_pci hostap pcmcia ieee80211_crypt irtty_sir sir_dev irda crc_ccitt parport_pc parport floppy pcspkr e100 mii orinoco_pci orinoco hermes psmouse serio_raw yenta_socket rsrc_nonstatic pcmcia_core hw_random intel_agp
-  shpchp pci_hotplug agpgart sg sd_mod evdev ext3 jbd usb_storage scsi_mod ide_generic uhci
- _hcd usbcore ide_disk piix generic t
-Jan 10 22:02:49 bourne kernel: ermal processor fan capability commoncap vga16fb vgastate fbcon tileblit font bitblit softcursor
-Jan 10 22:02:49 bourne kernel: [17348849.628000] CPU:    0
-Jan 10 22:02:49 bourne kernel: [17348849.628000] EIP:    0060:[pg0+277713968/1069167616]    Not tainted VLI
-Jan 10 22:02:49 bourne kernel: [17348849.628000] EFLAGS: 00010206   (2.6.15-27-686) 
-Jan 10 22:02:49 bourne kernel: [17348849.628000] EIP is at add_audio_endpoint+0x30/0x2a0 [snd_usb_audio]
-Jan 10 22:02:49 bourne kernel: [17348849.628000] eax: 00000003   ebx: 00000001   ecx: 00000001   edx: 00000001
-Jan 10 22:02:49 bourne kernel: [17348849.628000] esi: ca16f4f8   edi: ca16f4e0   ebp: 000001a0   esp: ce449d40
-Jan 10 22:02:49 bourne kernel: [17348849.628000] ds: 007b   es: 007b   ss: 0068
-Jan 10 22:02:49 bourne kernel: [17348849.628000] Process khubd (pid: 1802, threadinfo=ce448000 task=cfb92580)
-Jan 10 22:02:49 bourne kernel: [17348849.628000] Stack: cce293e0 0000a1ff 00000020 cfbd9204 c584abc8 cd0be014 d0d44618 00000001 
-Jan 10 22:02:49 bourne kernel: [17348849.628000]        00000000 d0d3a63c ca16f51c ca16f4e0 d0d35507 ca16f4e0 00000001 ca16f4e0 
-Jan 10 22:02:49 bourne kernel: [17348849.628000]        c0332b1b cd0be014 d0d44610 cfb16c00 d0d44628 00000001 d0d35b0d ca16f4e0 
-Jan 10 22:02:49 bourne kernel: [17348849.628000] Call Trace:
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+277718279/1069167616] create_fixed_stream_quirk+0x67/0x210 [snd_usb_audio]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+277719821/1069167616] create_composite_quirk+0x7d/0xc0 [snd_usb_audio]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+277721825/1069167616] snd_usb_audio_probe+0xc1/0x2b0 [snd_usb_audio]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+277722661/1069167616] usb_audio_probe+0x25/0x40 [snd_usb_audio]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273014994/1069167616] usb_probe_interface+0x72/0xa0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [driver_probe_device+84/240] driver_probe_device+0x54/0xf0
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [__device_attach+0/16] __device_attach+0x0/0x10
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [bus_for_each_drv+93/128] bus_for_each_drv+0x5d/0x80
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [device_attach+99/112] device_attach+0x63/0x70
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [__device_attach+0/16] __device_attach+0x0/0x10
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [bus_add_device+53/208] bus_add_device+0x35/0xd0
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [device_pm_add+81/144] device_pm_add+0x51/0x90
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [device_add+295/416] device_add+0x127/0x1a0
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273054555/1069167616] usb_set_configuration+0x29b/0x4f0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273027299/1069167616] usb_new_device+0x133/0x1d0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273033515/1069167616] hub_port_connect_change+0x35b/0x430 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273034451/1069167616] hub_events+0x2d3/0x4d0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273034960/1069167616] hub_thread+0x0/0xe0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [pg0+273034981/1069167616] hub_thread+0x15/0xe0 [usbcore]
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [autoremove_wake_function+0/96] autoremove_wake_function+0x0/0x60
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [kthread+200/208] kthread+0xc8/0xd0
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [kthread+0/208] kthread+0x0/0xd0
-Jan 10 22:02:49 bourne kernel: [17348849.628000]  [kernel_thread_helper+5/16] kernel_thread_helper+0x5/0x10
-Jan 10 22:02:49 bourne kernel: [17348849.628000] Code: ec 20 8b 44 24 34 8b 54 24 38 8b 7c 24 34 8b 48 18 8d 04 52 8d 2c 82 c1 e5 05 89 cb 8d 77 18 8d b6 00 00 00 00 8d bf 00 00 00 00 <8b> 13 0f 18 02 90 39 de 74 26 8b 7c 24 3c 8b 47 10 39 83 bc fc 
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 
+Cd midi, rm ma cda ram! Under operated export than located?
+Solomon tour, bark harvest.
+Agility dog training baby. Cialis pack doctor ship iv size before. =
+Stranger johns bible, astrology. Monrovia suggest linkdomain md rx, =
+costco list scripts mays! Diversion scientific borland window humorous =
+ultimate surrealist develop. Gibson howard, inxs jones. Spielequot =
+eigenen schnellen zugriff gc, woc neuanfang einfach ansehen? Colorado =
+pages oregon seattle phoenix utah denver!
+Little disc golden vixen hat.
+Statistic winzipreg winzip outlook command whats faqs, edit. Add =
+delicious digg reddit, furl, bookmark view all. Reading, planner color, =
+database, logic using cliff.
+------=_NextPart_001_000D_01C73571.B163C1F0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><A HREF=3Dhttp://mikosal.cd><IMG =
+alt=3D"" hspace=3D0=20
+src=3D"cid:000b01c7359b$9a39c9f0$00000000@poiriers" align=3Dbaseline=20
+border=3D0></A></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Cd midi, rm ma cda ram! Under operated =
+export than located?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Solomon tour, bark =
+harvest.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Agility dog training baby. Cialis pack =
+doctor ship=20
+iv size before. Stranger johns bible, astrology. Monrovia suggest =
+linkdomain md=20
+rx, costco list scripts mays! Diversion scientific borland window =
+humorous=20
+ultimate surrealist develop. Gibson howard, inxs jones. Spielequot =
+eigenen=20
+schnellen zugriff gc, woc neuanfang einfach ansehen? Colorado pages =
+oregon=20
+seattle phoenix utah denver!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Little disc golden vixen =
+hat.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Statistic winzipreg winzip outlook =
+command whats=20
+faqs, edit. Add delicious digg reddit, furl, bookmark view all. Reading, =
+planner=20
+color, database, logic using cliff.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_001_000D_01C73571.B163C1F0--
+
+------=_NextPart_000_000C_01C73571.B163C1F0
+Content-Type: image/gif;
+	name="boot fan.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000b01c7359b$9a39c9f0$00000000@poiriers>
+
+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
+vmGVCrPuV+U65c/K3q6zDL3d5T0D2L+eTTcRLSxqGVtkwzZdMIEpLJMxJ9jd+M53RujN7377eybz
+zsxZM2Pvf+utva/ZFP2wzWT6ynncpnkV4/JccC12lTXUztyas/0UjEKcNGnlrHM7S7WeWjNs6P+T
+GF3rSup283qvrO2eJSeZMkr+GNMMoRu8d1NkWi1KV7aSjGMXbsWAJ8Xjlv3cSDyl38xKvM/Rqrhs
+qENd0or206CGJGpbHs5+DjtCrW21j6siPFvaDKtZxYmZf87YiwtTskR3slyQvj+ki/vOy0W3yBXX
+Zwmvnb2Sm4ymOIepwnM8KnRfpt2Zjlm55DB1ieP7uouaMblqbOVgSXTJRly9djtVnNl7bdgtePOz
+L7t4aaR12gtsdIOvROotLWmp9Q2RndP+9rjPve53T3vX+/73wA++8GnC++Ib//jI5+nwlz/85Dv/
++dCPvt2YT/3qW//62M++9rfP/e57//vgJ77/9MdP/vKb//zoT/9Fws/+yav//fCPv/x90v762//+
++I/K/PfP8/z7vzj8F4Ch8X8EWIAGeIAhIYAK2BmLwQ/80BYOKBIR+BITiID3dhEOKBAZaA8buBAO
++IEcyA8F0YEJsYEmKIIMQYIhuIIsmIEqqIILuHsnqIEoqBAvWIMQMYMs6IE4uII6CIM0GIMrVRMT
+WIQP+A8feIQhUYEfkYRHGIFOOBJG2IRP+IFUCIVVaIVTiIQPaIRWyIVMaIG+54RfuIVLWIZVyIVq
+uIZnSIZU+IZouIZeGIVqOIVmKIauR4ZzGIZnKIdd+IdvKIF6GIhYCBKF6IduWIdpmIh4mIeD/8iG
+J3GIhXiHV0iHdqiEkpiFlgiIitiIsZcROtiCPUgQLoiCpSiKBxGKM9iBp7iDqiiCq2iKoyiE+BaK
+IQiDThiEPgiLSYgQttiLriiLIKiLrCiMJwiEtCiAyJiMzGgWy9iMAuiJ0jiN1GhwoPiMIziKwxgW
+2AiNxdeN2RiO18gT4MgR5eiNekGESrgSYciHMeGONAGPSyGP1Qg0SViJhhiHbfiHc5iPfHiPYLiO
+/qiJlUiQASmIX3iQnUiJ9bg0FXiJcCiQD7mFmSiI+RiIF6mIadiJGimFi/iRHEmPDWkoE3mPbtiO
+mJiSJkmHGemHFsmRLnmSAkmInIiFiSiSI/+ZGRhRjOI4EDfokzX4k74YlLIojq2IikJplLwYhHpY
+lOgoRDy5i0zZg1GJlE4JlFi5g8S4lFtplalYlD94lU/pGeq4jwOJkRjJhACpkAiJjx55h5vIkC7J
+lmaIkzl5l3hZYGO5l3zZl02Ul4AZmII5mIQ5YX55mFpRmIq5mIxJGYj5mFbRmJI5mZQZF5B5mUVR
+mZq5mZzZmZ75maD5Fpg5mkERmqb5D6SZmj1xmqGpmq75mrAZm7I5m7RZm7a5eqzZmbe5mzuTm57J
+m8AZnMIpGjRBAATwEcaJnMepEsbZnDiRnDMBncopnc25nP/gnNdpnb7JHNDZndppEtKZE+H/+RLY
+mZ3KaZ7mmZzq+Z3baRkYYZwCAZ/2IJ/VaRDySRD0SQDz2ZzxyZ/76Z/1+Z/62Z/3WRD3mZ/72Z8J
+GqDD2Rc2UZ3VeZ7oCRLjiZ7ryZ7reZ7UuZwZOqEhsaEayqEiepwV2p61AaHYiaIicaEkKqIeCqEW
+2qIUCqMqOhIgmp4u+qEtyp4mGhso6p3gaZ0d2qExWqQ3OqMocaND+p0RWqI9+hpAKqEVCqRUKqQu
+WqVIiqMSuqJWGqJbqqVO+qSMoREIOhAMaqABCqEJaqb1WaYA6p8CehAMOqdwqqD/2aB4mqd6uqeJ
+KaaTyaezORphChPleRJE+qA86qeTMajM/1mojaqlMRGm5Xmo2emoj3qpiso0F1GgElGmDlGgnAoR
+ocqmA7qgpWqno6oQqWqfpwqoGlETEVqpIzql2rmk03mlOyqjHnqrvMqlRsqkuOqdG+qcUdqkKWqp
+meoUSqqr4xmetqqjYNqlu4qlJGGrzRqsUsqs2vqi0pqsbbGsRQqtSFqsxgqpvSqulDquuMqlx5ql
+1rquWVqp3voS71mqCOqpdqqg9zqg8Nmv+gmqdYqq/9qqBNqmA4umCCuwa+qv+nqqnBqwrgoRsCqt
+z4quOfqu5vql7qqrvuql19qxv+qlGUur88oSGfGm+QmxBYufaWqwC3ugBLuya5qwpjqz+f96s3SK
+sinLr/66qhHLEMqaqCB7E4xasrAiFD7LsjFLEUn7s077tFAbtVRhtFRbtVZ7tVibtZEhtaOptV77
+tWAbtqTBtWRbtuMnttVoto+JttSotm77tnAbt3I7t3Rbt3Z7t3ibt3q7t4fJttPIt0Lot4I7uIRb
+uEkBuIibuP1nEzfpjiwZkF7YhiSRkFcIuVH4iAPJiIabGWjIjyVBuZ0Lhm75lm1JuZJLl3a5uZQB
+up47uSXZh1pouqfrj6LruipJu6pbGrJbubbLu2+5lr0rubtbu8Q7vLlrGcObvJFru8bru5WrvLfr
+vMfrFjuJjNuYjcI4lNervU15i3p4izT4iINNeY6K+6rxCI/QK72ZO5NtKbzoq7nEO72c+77sW7vQ
+C7yk6771G7sSmbrye7gYaL0CnL1fyYvLuL0guL1AScDhW75+cb2lOIvg28BYOYzAaBAIHMHaG75E
+KcEOfBTqGLnp65b8e5b5S7sjrJDN+7+T0bgurJZxaZbti8LjG78r2ZQs7BQfvH8hPL4+/MNAHMRC
+PMRCnMNMscPzZ8T3h8RM3MR3ocRQHMVSPMVUXMVG7MTvZ8VavMVcjJdY/MVgDBZdPMZkXMZmfMZP
+Ecbnh8Zs3MZu/MZwjJpqPMd0bBRxfMd4nMcOVsd83Md+/MeAHMiBqsf/FhAAOw==
+
+------=_NextPart_000_000C_01C73571.B163C1F0--
 
 
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe
-Content-Type: text/plain;
- name="usbquirk_patch.txt"
-Content-Disposition: attachment;
- filename="usbquirk_patch.txt"
-Content-Transfer-Encoding: 7bit
 
-
-{
-	/*
-	 * SDW hack for X-Box Communicator
-	 */
-	USB_DEVICE(0x045e, 0x0283),
-	.driver_info = (unsigned long) & (struct snd_usb_audio_quirk) {
-		.vendor_name = "Microsoft Corp.",
-		.product_name = "X-Box Live Communicator",
-		.ifnum = QUIRK_ANY_INTERFACE,
-		.type = QUIRK_COMPOSITE,
-		.data = (const snd_usb_audio_quirk_t[]) {
-			{
-				.ifnum = 0,
-#if 0
-                               .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                               .data = & (const struct audioformat) {
-					.format = SNDRV_PCM_FORMAT_S16_LE,
-					.channels = 2,
-					.iface = 0,
-					.altsetting = 1,
-					.altset_idx = 1,
-					.attributes = 0,
-					.endpoint = 0x04,
-					.ep_attr = 0x05,
-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
-					.rate_min = 44100,
-					.rate_max = 44100
-				}
-#else
-				.type = QUIRK_IGNORE_INTERFACE
-#endif
-			},
-			{
-				.ifnum = 1,
-#if 1
-                               .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                               .data = & (const struct audioformat) {
-					.format = USB_AUDIO_FORMAT_PCM,
-					.channels = 2,
-					.iface = 1,
-					.altsetting = 1,
-					.altset_idx = 1,
-					.attributes = EP_CS_ATTR_FILL_MAX,
-					.endpoint = 0x85,
-					.ep_attr = 0x05,
-					.maxpacksize = 0x30,
-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
-					.rate_min = 44100,
-					.rate_max = 44100
-				}
-#else
-				.type = QUIRK_IGNORE_INTERFACE
-#endif
-			},
-			{
-				.ifnum = -1
-			}
-		}
-	}
-},
-
-
-
-
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe
+--===============0909843503==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -182,7 +205,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe
+--===============0909843503==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -193,4 +216,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---Multipart=_Thu__11_Jan_2007_08_17_27_-0700_ivHu+qqC8T2_emMe--
+--===============0909843503==--
