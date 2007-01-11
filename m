@@ -1,10 +1,14 @@
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Thu, 11 Jan 2007 15:42:16 +0100 (MET)
-Message-ID: <20070111144216.ECA7B26A@alsa.jcu.cz>
+From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
+Subject: Ideas for the softvol plugin
+Date: Thu, 11 Jan 2007 15:54:55 +0100
+Message-ID: <45A64FBF.5070503@ingomueller.net>
+References: <70a871c80701092048v23fbf0d8yc40d434eab023506@mail.gmail.com>
+	<70a871c80701101406y3f8293e9sd57b1d4c5ba9b166@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0928047838=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <70a871c80701101406y3f8293e9sd57b1d4c5ba9b166@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,185 +18,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
+Hi!
 
---===============0928047838==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="08D29269.1168526536/alsa.jcu.cz"
+I have some ideas about features that could be added to the softvol
+plugin, that I want to discuss with you.
 
-This is a MIME-encapsulated message.
+1) A mute/unmute function. I think this is the most easy job.
 
---08D29269.1168526536/alsa.jcu.cz
-Content-Description: Notification
-Content-Type: text/plain
+2) Ability to replace an existing control. I have no idea whether it is
+possible to realize this, but this would be very usefull (see below).
 
-This is the ALSA's E-mail Delivery System program at host alsa.jcu.cz.
+3) Multi channel capabilities. This is just a vague idea. The aim is to
+be able to control e.g. front, rear and center/lfe channels seperately
+from each other. Maybe like this:
 
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
+pcm.softvol {
+    type softvol
+    slave {
+        pcm "hw:0,1"
+    }
+    controls [
+        {
+            name "SoftFront"
+            affects [ 0 1 ]
+        }
+        {
+            name "SoftRear"
+            affects [ 2 3 ]
+        }
+        {
+            name "SoftCenterLfe"
+            affects [ 4 5 ]
+        }
+    ]
+}
 
-For further assistance, please send mail to <postmaster>
+All the three suggestions aim to solve one frequent problem (it occured
+with EVERY sound card I ever had (~5) and forums are full of them): The
+volume control elements don't control the volume like they are supposed
+to. E.g. I've seen so many people whose Master control only affects the
+volume of the front channels. With the above changes, one could just
+rebuild a software based volume control system without having to worry
+whether the hardware controls are supported or not.
 
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
+Right now, one can create a softvol device, create a control named
+"Softmaster" and make every application use this device. AFAIK, there's
+is no mute function. I don't need to explain why this would be usefull.
+What can't be done is name this control "Master" (unless this control
+doesn't exist yet). Many media applications have a function to control
+the volume, but most of them just control the master volume, so ones
+"Softmaster" would not be touched by them.
 
-			The ALSA's E-mail Delivery System program
+Well the multichannel capabilities are not that important. It's just an
+idea, like I said. With some cards, I was able to realize the same
+functionality with softvol in combination with the multi plugin, on
+other I wasn't. I just think that this would be the cleanest way to do it.
 
-<alsa-devel@lists.sourceforge.net> (expanded from
-    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550-SPAM: This message appears to be spam (8.9 points). 550-- 550-If
-    you believe this message was classified as spam in error, 550-please open a
-    Support Request at the URL below. 550-(Please include this message in any
-    Support Request). 550-- 550-- 550-Spam Filtering performed by
-    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
-    550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-1.0
-    FORGED_RCVD_HELO       Received: contains a forged HELO 550-0.1 HTML_30_40
-    BODY: Message is 30% to 40% HTML 550-0.0 HTML_MESSAGE           BODY: HTML
-    included in message 550-1.5 MPART_ALT_DIFF         BODY: HTML and text
-    parts are different 550-2.0 MIME_HTML_ONLY         BODY: Message only has
-    text/html MIME parts 550-1.8 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a
-    relay in bl.spamcop.net 550-[Blocked - see
-    <http://www.spamcop.net/bl.shtml?86.122.137.84>] 550-2.5 RCVD_IN_XBL
-    RBL: Received via a relay in Spamhaus XBL 550-[86.122.137.84 listed in
-    sbl-xbl.spamhaus.org] 550 0.0 MIME_HTML_ONLY_MULTI   Multipart message only
-    has text/html MIME parts (in reply to end of DATA command)
+Finally, I wanted to mention, that I am not a developper of any sort,
+but as I user, I am always trying to improve things (see my work on the
+alsa wiki). I hope some of you think about my suggestions anyway!
 
---08D29269.1168526536/alsa.jcu.cz
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 08D29269
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Thu, 11 Jan 2007 15:42:14 +0100 (MET)
-
-Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
-Original-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-	mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message
-	appears to
-	be spam (8.9 points). 550-- 550-If you believe this message was
-	classified
-	as spam in error, 550-please open a Support Request at the URL below.
-	550-(Please include this message in any Support Request). 550-- 550--
-	550-Spam Filtering performed by sourceforge.net. 550-See
-	http://spamassassin.org/tag/ for more details. 550-Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-1.0
-	FORGED_RCVD_HELO Received: contains a forged HELO 550-0.1 HTML_30_40
-	BODY: Message is 30% to 40% HTML 550-0.0 HTML_MESSAGE BODY: HTML
-	included in message 550-1.5 MPART_ALT_DIFF BODY: HTML and text
-	parts are different 550-2.0 MIME_HTML_ONLY BODY: Message only has
-	text/html MIME parts 550-1.8 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a
-	relay in bl.spamcop.net 550-[Blocked - see
-	<http://www.spamcop.net/bl.shtml?86.122.137.84>] 550-2.5 RCVD_IN_XBL
-	RBL: Received via a relay in Spamhaus XBL 550-[86.122.137.84 listed in
-	sbl-xbl.spamhaus.org] 550 0.0 MIME_HTML_ONLY_MULTI Multipart message
-	only
-	has text/html MIME parts (in reply to end of DATA command)
-
---08D29269.1168526536/alsa.jcu.cz
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-
-Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id 08D29269; Thu, 11 Jan 2007 15:42:14 +0100 (MET)
-Delivered-To: alsa-devel@alsa-project.org
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E62D9249
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 15:42:13 +0100 (MET)
-Received: from 86-122-137-6.rdsnet.ro (unknown [86.122.137.84])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	B809699818
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 15:42:14 +0100 (MET)
-Received: from mx01.schlund.de (mx01.schlund.de [212.227.15.150])
-	by 86-122-137-6.rdsnet.ro (Qmailv1) with ESMTP id 3LP0AL4246
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2007 16:39:70 +0200
-Received: from 212.227.109.200 ([ruettger.com]:10592 "EHLO ruettger.com"
-	smtp-auth: "wegcyhu" TLS-CIPHER: <none> TLS-PEER-CN1: <none>)
-	by mx01.schlund.de with ESMTP id Alh-M450-23 (ORCPT
-	<rfc822;wegcyhu@ruettger.com>); Thu, 11 Jan 2007 11:47:17 -0100
-Date: Thu, 11 Jan 2007 11:47:17 -0100
-From: "ted miroe" <wegcyhu@ruettger.com>
-X-Mailer: The Bat! (v2.12.00) Personal
-X-Priority: 3
-Message-ID: <83540166.2007011111471788706@ruettger.com>
-To: alsa-devel@alsa-project.org
-Subject: This email has your free bottle
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="----------6D5GX2UQA160G3PKSVRP"
-
-------------6D5GX2UQA160G3PKSVRP
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-
-<body>
-Hey,<br>
-<br>
-<div style="text-align: center;">
-<div style="text-align: left;">Special Holiday Season Offer !!<br>
-</div>
-<big><br>
-</big></div>
-We are giving away <big>Free-Bottles of Natural-Green-Supplements<br>
-<br>
-<small>Grab your Bottle at : &nbsp;<big><span style="color: rgb(0, 0, 102);">N A T U R E G . N E T<br>
-<br>
-<small><span style="color: rgb(0, 0, 0);">Regards<br>
-Health &amp; Nutrition Department</span></small><br>
-<small><span style="color: rgb(0, 0, 0);">-----------------<br>
-<br>
-</span></small><br>
-</span></big></small></big>
-Consumer Reports buys vehicles anonymously for its test navy through commonplace retail franchise and test drive them at a specifically shape knack in Connecticut. Among the test drive run are acceleration, treatment, slowing down, ride quality and visibility.
-
-In addition to trace test drive, test fix up also energy the vehicles in commonplace day-to-day situations.
-
-The CX-7, the means minute in punishment to the Rav4, lost last of the six. Its road test notch was 62 out of a promising 100 compared to the Rav4's 83.
-
-The statuss are published in the magazine's January issue.
-
-The magazine also includes appraisal of six off-road SUVs. Of those, the Nissan XTerra S earned the top status. Its road test notch of 59 was lower than that for any of the sporty SUVs, but it was just three points behind the Mazda CX-7.
-
-</body>
-</html>
-
-
-
-------------6D5GX2UQA160G3PKSVRP--
-
-
---08D29269.1168526536/alsa.jcu.cz--
-
-
---===============0928047838==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Greets, Ingo
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0928047838==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0928047838==--
