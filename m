@@ -1,14 +1,11 @@
-From: "Scott Harris" <sklavounos.com@zgas.net>
-Subject: We help you to save on the Med$!
-Date: Thu, 11 Jan 2007 10:23:01 -0800
-Message-ID: <000001c735ad$45cc9c00$0100007f@localhost>
+From: "Rick Woodring" <rwoodring@nsseng.com>
+Subject: Document update for ALS4000
+Date: Thu, 11 Jan 2007 14:55:02 -0500
+Message-ID: <8F1C2B75DFED1F4FA3ECEDF0B3553E3DFF331C@novaexch1.nssengineering.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0440495058=="
+Content-Type: multipart/mixed; boundary="===============0956198145=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from localhost (cpe-76-175-110-57.socal.res.rr.com [76.175.110.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id ADE6217E
-	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Jan 2007 19:23:09 +0100 (MET)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,294 +15,356 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0440495058==
-Content-Type: multipart/related;
-	boundary="----=_NextPart_000_0001_01C735AD.45CC9C00"
+--===============0956198145==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C735BA.625ADC35"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C735AD.45CC9C00
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000E_01C735AD.45CC9C00"
-
-
-------=_NextPart_001_000E_01C735AD.45CC9C00
+------_=_NextPart_001_01C735BA.625ADC35
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-View this e-mail as original HTML or 
-look at attached images and find our site.
+I tried to add a note to the ALS400 page at
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=3DAvanc=
+e
++Logic&card=3DALS4000.&chip=3Dals4000&module=3Dals4000 but whenever I try=
+ to
+submit my comment, and error message is displayed.  Because I do not
+know if the comment is being sent to anyone or not, I have included it
+in this message.  If my comment has not been received, could someone
+please post it so that others may be spared the trouble I took in
+digging up updated install documentation.
+
+ 
+
+Thanks
+
+-rick
+
+ 
+
+Rick Woodring
+
+RWoodring_@_mail_._com
+
+ 
+
+ 
+
+In order to get ALSA v1.0.13 working on a 2.6.16 kernel with a udev file
+system, 
+do NOT run the ./snddevices script.  The correct entries will be placed
+in /dev 
+automatically when the kernel modules are loaded and the hardware is
+detected.  
+Also, I had to create a udev rules file for alsa
+(/etc/udev/rules.d/15-alsa.rules)
+as described here (code copied below): 
+http://www.linuxfromscratch.org/blfs/view/svn/multimedia/alsa-utils.html
+ 
+     cat > /etc/udev/rules.d/15-alsa.rules << "EOF"
+     # Give the audio group ownership of sound devices
+     SUBSYSTEM=3D=3D"sound",       GROUP=3D"audio"
+     SUBSYSTEM=3D=3D"snd",         GROUP=3D"audio"
+ 
+     # ALSA Devices
+     # When a sound device is detected, restore the volume settings
+     KERNEL=3D=3D"controlC[0-9]*", ACTION=3D=3D"add", RUN+=3D"/usr/sbin/a=
+lsactl
+restore %n"
+     KERNEL=3D"hw[CD0-9]*",      NAME=3D"snd/%k"
+     KERNEL=3D"pcm[CD0-9cp]*",   NAME=3D"snd/%k"
+     KERNEL=3D"midiC[D0-9]*",    NAME=3D"snd/%k"
+     KERNEL=3D"timer",           NAME=3D"snd/%k"
+     KERNEL=3D"seq",             NAME=3D"snd/%k"
+     EOF
+ 
+     chmod 644 /etc/udev/rules.d/15-alsa.rules
+ 
+And lastly, instead of using the ~/.asoudrc file described in this
+document, I had to copy 
+the alsa.conf file from alsa-lib-XXXXX/src/conf/alsa.conf to my
+/usr/share/alsa/ folder.
+Without the /usr/share/alsa/alsa.conf file in place, I received the
+following errors when 
+trying to use alsamixer or alsactl
+ 
+     ALSA lib control.c:910:(snd_ctl_open_noupdate) Invalid CTL default
+     alsamixer: function snd_ctl_open failed for default: No such file
+or directory
+ 
+     ALSA lib control.c:910:(snd_ctl_open_noupdate) Invalid CTL hw:0
+     alsactl: set_controls:1179: snd_ctl_open error: No such file or
+directory
+
+ 
 
 
-------=_NextPart_001_000E_01C735AD.45CC9C00
+ 
+
+
+
+"This email contains proprietary and/or privileged material.  This email =
+and any files transmitted with it are proprietary and intended solely for t=
+he person or entity to whom they are addressed.  Any review, retransmission=
+, dissemination or other use of, or taking of any action in reliance upon t=
+his information by persons or entities other than the intended recipient is=
+ prohibited.  If you have received this email in error, please contact the =
+sender and delete the material from any computer."
+------_=_NextPart_001_01C735BA.625ADC35
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<html><head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-<style></style></head>
-<body><table border=3D0>
-<tr name=3D"ioj" align=3Dcenter><td><img src=3D"cid:photo002.jpg@51711198.22941618" border=3D0></td></tr>
-<tr align=3Dcenter><td><img src=3D"cid:photo074.gif@07608814.57478345" border=3D0></td></tr></tr></table>
-<textarea style=3D"visibility:hidden; display:none;">View this e-mail as original HTML or 
-look at attached images and find our site</textarea></body></html>
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:st1=3D"urn:schemas-microsoft-com:off=
+ice:smarttags" xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-------=_NextPart_001_000E_01C735AD.45CC9C00--
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType namespaceuri=3D"urn:schemas-microsoft-com:office:smarttag=
+s"
+ name=3D"PersonName"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	color:black;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-------=_NextPart_000_0001_01C735AD.45CC9C00
-Content-Type: image/gif;
-	name="pic30.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <photo074.gif@07608814.57478345>
+</head>
 
-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
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple><P>
 
-------=_NextPart_000_0001_01C735AD.45CC9C00
-Content-Type: image/jpeg;
-	name="img35.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <photo002.jpg@51711198.22941618>
+<div class=3DSection1>
 
-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
-lVF//9k=
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'>I tried to add a note to the ALS400 page at <a
+href=3D"http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=
+=3DAvance+Logic&amp;card=3DALS4000.&amp;chip=3Dals4000&amp;module=3Dals4000=
+">http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=3DAvanc=
+e+Logic&amp;card=3DALS4000.&amp;chip=3Dals4000&amp;module=3Dals4000</a>
+but whenever I try to submit my comment, and error message is displayed.&=
+nbsp;
+Because I do not know if the comment is being sent to anyone or not, I ha=
+ve
+included it in this message.&nbsp; If my comment has not been received, c=
+ould
+someone please post it so that others may be spared the trouble I took in
+digging up updated install documentation.<o:p></o:p></span></font></p>
 
-------=_NextPart_000_0001_01C735AD.45CC9C00--
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'>-rick<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><st1:PersonName w:st=3D"on"><font size=3D2 face=3DAr=
+ial><span
+ style=3D'font-size:10.0pt;font-family:Arial'>Rick Woodring</span></font>=
+</st1:PersonName><font
+size=3D2 face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'>=
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'>RWoodring_@_mail_._com<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-size=
+:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<pre><font size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'fon=
+t-size:10.0pt'>In order to get ALSA v1.0.13 working on a 2.6.16 kernel with=
+ a udev file system, <o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>do NOT run the ./snddevices script.&nbsp; The correct entries will be p=
+laced in /dev <o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>automatically when the kernel modules are loaded and the hardware is de=
+tected.&nbsp; <o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>Also, I had to create a udev rules file for alsa (/etc/udev/rules.d/15-=
+alsa.rules)<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>as described here (code copied below): <o:p></o:p></span></font></pre><=
+pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><a
+href=3D"http://www.linuxfromscratch.org/blfs/view/svn/multimedia/alsa-uti=
+ls.html">http://www.linuxfromscratch.org/blfs/view/svn/multimedia/alsa-util=
+s.html</a><o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; cat &gt; /etc/udev/rules.d/15-alsa.rules &lt;&=
+lt; &quot;EOF&quot;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; # Give the audio group ownership of sound devi=
+ces<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; SUBSYSTEM=3D=3D&quot;sound&quot;,&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp; GROUP=3D&quot;audio&quot;<o:p></o:p></span></font><=
+/pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; SUBSYSTEM=3D=3D&quot;snd&quot;,&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GROUP=3D&quot;audio&quot;<o:p></o:p></spa=
+n></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; # ALSA Devices<o:p></o:p></span></font></pre><=
+pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; # When a sound device is detected, restore the=
+ volume settings<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D=3D&quot;controlC[0-9]*&quot;, ACTION=
+=3D=3D&quot;add&quot;, RUN+=3D&quot;/usr/sbin/alsactl restore %n&quot;<o:p>=
+</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D&quot;hw[CD0-9]*&quot;,&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp; NAME=3D&quot;snd/%k&quot;<o:p></o:p></span></font></pre><p=
+re><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D&quot;pcm[CD0-9cp]*&quot;,&nbsp;&nbsp=
+; NAME=3D&quot;snd/%k&quot;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D&quot;midiC[D0-9]*&quot;,&nbsp;&nbsp;=
+&nbsp; NAME=3D&quot;snd/%k&quot;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D&quot;timer&quot;,&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NAME=3D&quot;snd/%k&quot;<o:p></o=
+:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; KERNEL=3D&quot;seq&quot;,&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NAME=3D&quot;snd/%k&quo=
+t;<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; EOF<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; chmod 644 /etc/udev/rules.d/15-alsa.rules<o:p>=
+</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>And lastly, instead of using the ~/.asoudrc file described in this docu=
+ment, I had to copy <o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>the alsa.conf file from alsa-lib-XXXXX/src/conf/alsa.conf to my /usr/sh=
+are/alsa/ folder.<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>Without the /usr/share/alsa/alsa.conf file in place, I received the fol=
+lowing errors when <o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>trying to use alsamixer or alsactl<o:p></o:p></span></font></pre><pre><=
+font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; ALSA lib control.c:910:(snd_ctl_open_noupdate)=
+ Invalid CTL default<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; alsamixer: function snd_ctl_open failed for de=
+fault: No such file or directory<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'><o:p>&nbsp;</o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; ALSA lib control.c:910:(snd_ctl_open_noupdate)=
+ Invalid CTL hw:0<o:p></o:p></span></font></pre><pre><font
+size=3D2 color=3Dblack face=3D"Courier New"><span style=3D'font-size:10.0=
+pt'>&nbsp;&nbsp;&nbsp;&nbsp; alsactl: set_controls:1179: snd_ctl_open error=
+: No such file or directory<o:p></o:p></span></font></pre>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span style=
+=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+ </P>
+<P>
+<HR style=3D"HEIGHT: 1px">
+<SPAN class=3D601015812-25082005><FONT face=3DArial size=3D2>"<EM>This em=
+ail 
+contains&nbsp;proprietary and/or privileged material.&nbsp; This email an=
+d any 
+files transmitted with it are&nbsp;proprietary and intended solely for th=
+e 
+person or entity to whom they are addressed.&nbsp; Any review, retransmis=
+sion, 
+dissemination or other use of, or taking of any action in reliance upon t=
+his 
+information by persons or entities other than the intended recipient is 
+prohibited.&nbsp; If you have received this email in error, please contac=
+t the 
+sender and delete the material from any computer</EM>."</FONT></SPAN></bo=
+dy>
+
+</html>
 
 
+------_=_NextPart_001_01C735BA.625ADC35--
 
---===============0440495058==
+
+--===============0956198145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -316,7 +375,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0440495058==
+--===============0956198145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -327,4 +386,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0440495058==--
+--===============0956198145==--
