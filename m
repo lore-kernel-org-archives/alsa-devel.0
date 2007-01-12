@@ -1,9 +1,9 @@
-From: "Louise French" <zrtk@pharmedia.de>
-Subject: chute
-Date: Fri, 12 Jan 2007 08:01:28 +0100
-Message-ID: <000e01c73618$af0d54f0$a380d8b7@wegn>
+From: "Peter Church" <lyg@starter.tie.cl>
+Subject: rebut
+Date: Fri, 12 Jan 2007 08:03:28 +0100
+Message-ID: <000e01c73618$b94dd7f0$8aa1ce7f@nxvufe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1295093144=="
+Content-Type: multipart/mixed; boundary="===============0297288873=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,81 +14,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1295093144==
+--===============0297288873==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000A_01C73621.10C9CDB0"
+	boundary="----=_NextPart_000_000A_01C73621.1B060AF0"
 
-------=_NextPart_000_000A_01C73621.10C9CDB0
+------=_NextPart_000_000A_01C73621.1B060AF0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000B_01C73621.10CBC980"
+	boundary="----=_NextPart_001_000B_01C73621.1B091830"
 
-------=_NextPart_001_000B_01C73621.10CBC980
+------=_NextPart_001_000B_01C73621.1B091830
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-To link to this page, copy the following code to your site:Read user =
-reviews. He asked a lot of questions to fully understand the reasons why =
-I needed the lengthy layaway plan. They may fall into your target =
-market, but visitors that leave your website do so because they likely =
-feel left out or become uninterested fast.
-My apartment was about two blocks from Carnegie Hall. What do you guys =
-think?
-Will Michel run out of things to say about copy writing?
-One way to get to know someone better is for them to talk about =
-charities they support.
-Market segmentation is something I have used for the last two months =
-offline, and will be carrying that online very soon. I absolutely =
-despise turnip and get nauseous at the mere sight of the thing.
-Barcode Producer - Free Software Downloads and Software Reviews - =
+"There's not a lot of literature on your condition," the doctor told me =
+while checking my vitals. Will Michel run out of things to say about =
+copy writing? I even use urgency tactics in my copy all the time.
+Don't just say "it's for a marketing test. If your site sells =
+everything, chances are that your audience will not perceive any greater =
+value in shopping from you than from anyone else.
+Did you know that you should never use a handheld electric massager on =
+your thoat?
+I spent the last two weeks redesigning my main site.
+We were annoyed with how complex bookmark management was, so we have a =
+single checkbox. " The rest of the world knows this song as simply the =
+"Home with the Armadillo" anthem, of PBS's Austin City Limits.
+I think this is the most appropriate way of facing them.
+Now I like you even better.
+The game doesn't use the A, B, C, or D buttons, and the only option the =
+Command menu needs is Exit. Which brings me back to Cesura and its =
+commitment to what they call "Business Certainty.
+Look at some of the questions people ask or the complaints they have. 1 =
+also features color labels and some small bug fixes.
+MailHere can also play a sound when e-mail is available and it shows how =
+many messages are available.
+For your protection, a verification email will be sent to you.
+During the Chicago 1968 Democratic Convention, Burroughs, the Beatnik =
+author of Naked Lunch, tried to teach Jeff Nightbyrd an unusual protest =
+tactic while they were both running from the police.
+1 also features color labels and some small bug fixes. pieces of text, =
+images, PDFs, etc. Here's how Battlecruiser achieves these goals: =
+Players issue commands to their ships, which then rotate and accelerate =
+to follow the specified courses.
+In all cases, the local application feels responsive even if the network =
+isn't. You guys should look into using Numly. Although I like the new =
+work that is coming in I got to admit.
+GlobalScapeGlobalScapeCuteFTP Mac 2 is an all new professional version =
+of our Mac FTP client.
+As the police approached, firing tear gas and swinging billy clubs, =
+Burroughs quietly told Nightbyrd to.
+BSD ConceptBSD ConceptHeredis is a powerful, complete and reliable tool =
+which even the novice genealogist will know how to handle.
+To turn prospects into buyers you need to choose your words wisely.
+In a moment, you will be redirected to the latest version of GameRanger. =
+What a great resource.
+Up and Down accelerate and decelerate the ship, Left and Right set the =
+desired direction, and the Fire button launches a torpedo.
+I attracted higher quality prospects who wanted me to help them. Apple =
+eMac HLDS update - Free Software Downloads and Software Reviews - =
 Download.
-Tags: copywriter, copywriting, deadline, internet marketing, pressure, =
-sales, scarcity, shopping, takeaway selling.
-While the "Battle of Michigan Avenue" raged all around Burroughs and =
-Nightbyrd, many innocent bystanders, reporters and doctors offering =
-medical help were severely beaten by the police. I appreciate the =
-feedback.
-Episode 17: Michael BarnesEpisode 16: Wayne Alan BrennerEpisode 15: =
-Richard Garriott Episode 14: Melicious, Texas Rollergirl Episode 13: =
-Caroline A. Show your partiality with this official Comedy Central =
-screensaver now.
-Blinkbid - Free Software Downloads and Software Reviews - Download.
-With Jeff Nightbyrd and all these old radicals, it's the.
-Please click here for iTunes 4.
-Please click here for EasyWMA 2. Because the greatest common denominator =
-between generalists is pricing. Funny that you mentioned Halbert.
-They have spam bots that do this. Users can copy files or folders from =
-the desktop or any folders to a specific destination by using the =
-contextual menu features. I have become an expert in mastering all these =
-things.
-All the information is displayed on one screen only.
-I was fortunate enough to get in on Writerly before Google bought them =
-and closed the beta test to new comers.
-But I did want that particular set of furniture.
-Expertise is in the eyes of the niche.
-A photographer specializing in weddings will get more bookings than a =
-regular photographer will. When there is no mail available there is a =
-little earth spinning on your desktop.
-It sends a small packet to your Internet provider every minute so it =
-does not disconnect you if your connection is idle.
-Like a magnet, if you will. I read in a great New Yorker article about =
-the candidatethat he's recently hired an adman who helped Jesse Ventura =
-to hisunlikely win 1998.
-However, my doctor says that the odds of this occuring again are the =
-same as getting stuck twice by lightning. That has so many implications =
-on how large you can build your business.
-But hey, I love designing websites as much as I do copywriting!
-This situation says a lot about how to write good copy.
-I wish training managers would recognize this and spend more time =
-instilling and branding these important virtues into the minds of their =
-sales teams. So, realizing the salesperson's tactics, I looked at my =
-watch, nodded, and decided to leave in order to "think about it.
-So if you like Achieve-IT!
-------=_NextPart_001_000B_01C73621.10CBC980
+Each time you use pressure in your copy, always back it up with a =
+logical explanation as to why you're doing so. From a UI perspective, =
+the delay between the player setting the course and the ship setting =
+into motion effectively masks potential network delays.
+In a mystical twist of fate, she is transformed into a woman with the =
+strength, speed, agility and ultra-keen senses of a cat.
+I apologize for not keeping everyone in the loop.
+Look at some of the questions people ask or the complaints they have. =
+Fortin, look at it as our way of saying 'thank you' for giving us a =
+second chance," Jim added.
+LimitationsTime-limited, nag screens Downloads7,186   RequirementsMac OS =
+X PublisherAlphaOmega Software  File size997.
+------=_NextPart_001_000B_01C73621.1B091830
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -97,131 +98,136 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1437" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"purse" hspace=3D0=20
-src=3D"cid:000901c73618$af0369e0$a380d8b7@wegn" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"regulation" hspace=3D0=20
+src=3D"cid:000901c73618$b93e95b0$8aa1ce7f@nxvufe" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To link to this page, copy the =
-following code to=20
-your site:Read user reviews. He asked a lot of questions to fully =
-understand the=20
-reasons why I needed the lengthy layaway plan. They may fall into your =
-target=20
-market, but visitors that leave your website do so because they likely =
-feel left out=20
-or become uninterested fast.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My apartment was about two blocks from =
-Carnegie=20
-Hall. What do you guys think?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Will Michel run out of things to say =
-about copy=20
-writing?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>One way to get to know someone better =
-is for them=20
-to talk about charities they support.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Market segmentation is something I have =
-used for=20
-the last two months offline, and will be carrying that online very soon. =
-I=20
-absolutely despise turnip and get nauseous at the mere sight of the=20
-thing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Barcode Producer - Free Software =
-Downloads and=20
-Software Reviews - Download.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Tags: copywriter, copywriting, =
-deadline, internet=20
-marketing, pressure, sales, scarcity, shopping, takeaway =
-selling.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>While the "Battle of Michigan Avenue" =
-raged all=20
-around Burroughs and Nightbyrd, many innocent bystanders, reporters and =
-doctors=20
-offering medical help were severely beaten by the police. I appreciate =
+<DIV><FONT face=3DArial size=3D2>"There's not a lot of literature on =
+your=20
+condition," the doctor told me while checking my vitals. Will Michel run =
+out of=20
+things to say about copy writing? I even use urgency tactics in my copy =
+all the=20
+time.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Don't just say "it's for a marketing =
+test. If your=20
+site sells everything, chances are that your audience will not perceive =
+any greater=20
+value in shopping from you than from anyone else.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Did you know that you should never use =
+a handheld=20
+electric massager on your thoat?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I spent the last two weeks redesigning =
+my main=20
+site.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>We were annoyed with how complex =
+bookmark=20
+management was, so we have a single checkbox. " The rest of the world =
+knows this=20
+song as simply the "Home with the Armadillo" anthem, of PBS's Austin =
+City=20
+Limits.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I think this is the most appropriate =
+way of facing=20
+them.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Now I like you even =
+better.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The game doesn't use the A, B, C, or D =
+buttons, and=20
+the only option the Command menu needs is Exit. Which brings me back to =
+Cesura and=20
+its commitment to what they call "Business Certainty.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Look at some of the questions people =
+ask or the=20
+complaints they have. 1 also features color labels and some small bug=20
+fixes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>MailHere can also play a sound when =
+e-mail is=20
+available and it shows how many messages are available.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>For your protection, a verification =
+email will be=20
+sent to you.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>During the Chicago 1968 Democratic =
+Convention,=20
+Burroughs, the Beatnik author of Naked Lunch, tried to teach Jeff =
+Nightbyrd an=20
+unusual protest tactic while they were both running from the =
+police.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>1 also features color labels and some =
+small bug=20
+fixes. pieces of text, images, PDFs, etc. Here's how Battlecruiser =
+achieves these=20
+goals: Players issue commands to their ships, which then rotate and =
+accelerate to=20
+follow the specified courses.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In all cases, the local application =
+feels=20
+responsive even if the network isn't. You guys should look into using =
+Numly.=20
+Although I like the new work that is coming in I got to =
+admit.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>GlobalScapeGlobalScapeCuteFTP Mac 2 is =
+an all new=20
+professional version of our Mac FTP client.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>As the police approached, firing tear =
+gas and=20
+swinging billy clubs, Burroughs quietly told Nightbyrd to.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>BSD ConceptBSD ConceptHeredis is a =
+powerful,=20
+complete and reliable tool which even the novice genealogist will know =
+how to=20
+handle.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>To turn prospects into buyers you need =
+to choose=20
+your words wisely.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In a moment, you will be redirected to =
+the latest=20
+version of GameRanger. What a great resource.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Up and Down accelerate and decelerate =
+the ship,=20
+Left and Right set the desired direction, and the Fire button launches =
+a=20
+torpedo.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I attracted higher quality prospects =
+who wanted me=20
+to help them. Apple eMac HLDS update - Free Software Downloads and =
+Software Reviews=20
+- Download.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Each time you use pressure in your =
+copy, always=20
+back it up with a logical explanation as to why you're doing so. From a =
+UI=20
+perspective, the delay between the player setting the course and the =
+ship setting=20
+into motion effectively masks potential network delays.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In a mystical twist of fate, she is =
+transformed=20
+into a woman with the strength, speed, agility and ultra-keen senses of =
+a=20
+cat.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I apologize for not keeping everyone in =
 the=20
-feedback.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Episode 17: Michael BarnesEpisode 16: =
-Wayne Alan=20
-BrennerEpisode 15: Richard Garriott Episode 14: Melicious, Texas =
-Rollergirl Episode=20
-13: Caroline A. Show your partiality with this official Comedy Central =
-screensaver=20
-now.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Blinkbid - Free Software Downloads and =
-Software=20
-Reviews - Download.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>With Jeff Nightbyrd and all these old =
-radicals,=20
-it's the.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please click here for iTunes =
-4.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please click here for EasyWMA 2. =
-Because the=20
-greatest common denominator between generalists is pricing. Funny that =
-you mentioned=20
-Halbert.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>They have spam bots that do this. Users =
-can copy=20
-files or folders from the desktop or any folders to a specific =
-destination by using=20
-the contextual menu features. I have become an expert in mastering all =
-these=20
-things.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>All the information is displayed on one =
-screen=20
-only.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I was fortunate enough to get in on =
-Writerly before=20
-Google bought them and closed the beta test to new comers.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But I did want that particular set =
-of=20
-furniture.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Expertise is in the eyes of the =
-niche.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A photographer specializing in weddings =
-will get=20
-more bookings than a regular photographer will. When there is no mail =
-available=20
-there is a little earth spinning on your desktop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It sends a small packet to your =
-Internet provider=20
-every minute so it does not disconnect you if your connection is =
-idle.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Like a magnet, if you will. I read in a =
-great New=20
-Yorker article about the candidatethat he's recently hired an adman who =
-helped Jesse=20
-Ventura to hisunlikely win 1998.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>However, my doctor says that the odds =
-of this=20
-occuring again are the same as getting stuck twice by lightning. That =
-has so many=20
-implications on how large you can build your business.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But hey, I love designing websites as =
-much as I do=20
-copywriting!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This situation says a lot about how to =
-write good=20
-copy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I wish training managers would =
-recognize this and=20
-spend more time instilling and branding these important virtues into the =
-minds of=20
-their sales teams. So, realizing the salesperson's tactics, I looked at =
-my watch,=20
-nodded, and decided to leave in order to "think about it.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So if you like=20
-Achieve-IT!</FONT></DIV></BODY></HTML>
+loop.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Look at some of the questions people =
+ask or the=20
+complaints they have. Fortin, look at it as our way of saying 'thank =
+you' for giving=20
+us a second chance," Jim added.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>LimitationsTime-limited, nag screens =
+Downloads7,186=20
+  RequirementsMac OS X PublisherAlphaOmega Software  File=20
+size997.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000B_01C73621.10CBC980--
+------=_NextPart_001_000B_01C73621.1B091830--
 
-------=_NextPart_000_000A_01C73621.10C9CDB0
+------=_NextPart_000_000A_01C73621.1B060AF0
 Content-Type: image/gif;
-	name="flighty.gif"
+	name="life jacket.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000901c73618$af0369e0$a380d8b7@wegn>
+Content-ID: <000901c73618$b93e95b0$8aa1ce7f@nxvufe>
 
 R0lGODdhUAF7AfMHANvo7P7k79X74cjH1nqKfwtjgpA+AwkCHiN5B0st/Xej9fYSVPjHFgLt2vUb
 /lP6DiwAAAAAUAF6AQAE/1DISSu4d+itg/9gKI5ktk1Yiglg5VIfMA4Ap17Bq++8bnLA4Gl3KxqP
@@ -581,11 +587,11 @@ FTKCZDHWAqqSqGn6EhBk8g7LKNAolc6rDtOLYsrlEo0uEegG7cS8VtINWefvlA2C1nGF1Ov4StPY
 uLCJ+oRCrIMDCYscL47KRLHqwMb3ommsSOijhLIzCpByis6nYNIF1uf1bC011nAI69FsUgvd7G5k
 ivFXPBUTNleS6UAkuZCOE+PJpkarcAIgAgAAOw==
 
-------=_NextPart_000_000A_01C73621.10C9CDB0--
+------=_NextPart_000_000A_01C73621.1B060AF0--
 
 
 
---===============1295093144==
+--===============0297288873==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -596,7 +602,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1295093144==
+--===============0297288873==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -607,4 +613,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1295093144==--
+--===============0297288873==--
