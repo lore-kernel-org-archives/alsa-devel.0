@@ -1,16 +1,12 @@
 From: Daniel Jacobowitz <drow@false.org>
-Subject: Re: Ganged volume
-Date: Fri, 12 Jan 2007 11:34:12 -0500
-Message-ID: <20070112163412.GA27450@nevyn.them.org>
-References: <20061014203737.GA22315@nevyn.them.org>
-	<20070102035118.GA30626@nevyn.them.org>
-	<s5hirfcgqrm.wl%tiwai@suse.de>
+Subject: vt1617a build ops
+Date: Fri, 12 Jan 2007 11:36:29 -0500
+Message-ID: <20070112163629.GA27902@nevyn.them.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hirfcgqrm.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,35 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 12, 2007 at 05:21:17PM +0100, Takashi Iwai wrote:
-> Thanks for the patch (and sorry for the delayed review).  The code
-> looks good now.
-> 
-> One remaining concern is how we can integrate this with the existing
-> ac97_quirk stuff.  For example, if a quirk tweaking the master
-> volume/switch is applied, this may conflict with the ganged volumes.
-> In other words, the ganged controls should be applied _after_ the
-> quirks.
-> 
-> Then I'm considering whether it might be rather easier to implement
-> the virtual master element from the beginning.  Basically, the virtual
-> master is required for almost all codec chips with the surround
-> support, not only for VT161x.  So, featuring this as default isn't bad
-> in the end.
-> 
-> Oh, also, TLV support is another thing to do.
-> This should be relatively easy, though.
+This patch connects the extra vt1616 controls for the vt1617a, which
+is necessary to control the rear speakers on e.g. a Shuttle SN25P.
 
-I agree on both points, but I don't think I can do it myself without
-breaking lots of other cards.  At this point, maybe someone else
-is interested in picking up this patch?
+Signed-off-by: Daniel Jacobowitz <drow@false.org>
 
-Oh, and in that case, I will post the minimal bits for VT1617A
-surround separately.
+diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
+index e813968..025a60e 100644
+--- a/sound/pci/ac97/ac97_patch.c
++++ b/sound/pci/ac97/ac97_patch.c
+@@ -2821,6 +2823,7 @@ int patch_vt1617a(struct snd_ac97 * ac97)
+ 	snd_ac97_write_cache(ac97, 0x5c, 0x20);
+ 	ac97->ext_id |= AC97_EI_SPDIF;	/* force the detection of spdif */
+ 	ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000;
++	ac97->build_ops = &patch_vt1616_ops;
+ 	return 0;
+ }
+ 
 
 -- 
 Daniel Jacobowitz
