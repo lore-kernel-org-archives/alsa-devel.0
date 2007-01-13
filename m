@@ -1,14 +1,10 @@
-From: "Glenn N. Arthur" <npizy@cookstongroup.com>
-Subject: rat
-Date: Sat, 13 Jan 2007 12:27:28 +0700
-Message-ID: <000f01c736d4$e49b5420$2b303c9d@rse>
+From: "Odom X. Minna" <lar@mccbc.com>
+Subject: outdo
+Date: Sat, 13 Jan 2007 12:38:37 +0700
+Message-ID: <000f01c736d5$dd6ed270$8ede24c8@gscxn>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0551091065=="
+Content-Type: multipart/mixed; boundary="===============1126316080=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 61-91-191-8.static.asianet.co.th
-	(ppp-124.120.96.25.revip2.asianet.co.th [124.120.96.25])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 01AEB285
-	for <alsa-devel@alsa-project.org>; Sat, 13 Jan 2007 06:34:20 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,34 +14,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0551091065==
+--===============1126316080==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C7370F.90EE9360"
+	boundary="----=_NextPart_000_000B_01C73710.89BD2FB0"
 
-------=_NextPart_000_000B_01C7370F.90EE9360
+------=_NextPart_000_000B_01C73710.89BD2FB0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C7370F.90F17990"
+	boundary="----=_NextPart_001_000C_01C73710.89C14E60"
 
-------=_NextPart_001_000C_01C7370F.90F17990
+------=_NextPart_001_000C_01C73710.89C14E60
 Content-Type: text/plain;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
-"Then he hastened to add: "I can't guarantee that it will succeed.
-"Bush vowed on Wednesday in a speech outlining an increase in U. "But =
-nothing will happen soon.
-Boots Pharmacy began testing this system last summer to try to limit =
-data entry error in pharmacies. "Then he hastened to add: "I can't =
-guarantee that it will succeed. This Madame Alexander collection is =
-expected to launch sometime this spring.
-Since 1979, when Islamic terrorism took off as a religious phenomenon, =
-U.
-It was a trick the Iranians have perfected for years.
-------=_NextPart_001_000C_01C7370F.90F17990
+Bush acknowledged the indisputable.
+"Bush vowed on Wednesday in a speech outlining an increase in U. You can =
+check multiple email accounts from different providers using the same =
+interface, use SPAM filters and any other feature that other email =
+programs have to offer.
+It was the second effort by the U. military has begun implementing this =
+policy by seizing Iranian officials in the Kurdish northern city of =
+Irbil. The program can limit recording to a selected window or a =
+rectangle area on the screen.
+Given the notoriety of doctors' handwriting, all prescriptions will have =
+a barcode, which will be scanned by pharmacists, instead of being read =
+for medication type and quantity!
+It takes the work of a great publicist to turn an actor into a celebrity.
+------=_NextPart_001_000C_01C73710.89C14E60
 Content-Type: text/html;
 	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
@@ -54,40 +53,46 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"stifle" hspace=3D0=20
-src=3D"cid:000a01c736d4$e48cd530$2b303c9d@rse" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"life-and-death"=20
+hspace=3D0=20
+src=3D"cid:000a01c736d5$dd5a3900$8ede24c8@gscxn" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"Then he hastened to add: "I can't =
-guarantee that=20
-it will succeed.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Bush acknowledged the =
+indisputable.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>"Bush vowed on Wednesday in a speech =
 outlining an=20
-increase in U. "But nothing will happen soon.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Boots Pharmacy began testing this =
-system last=20
-summer to try to limit data entry error in pharmacies. "Then he hastened =
-to add: "I=20
-can't guarantee that it will succeed. This Madame Alexander collection =
-is expected=20
-to launch sometime this spring.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Since 1979, when Islamic terrorism took =
-off as a=20
-religious phenomenon, U.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It was a trick the Iranians have =
-perfected for=20
-years.</FONT></DIV></BODY></HTML>
+increase in U. You can check multiple email accounts from different =
+providers using=20
+the same interface, use SPAM filters and any other feature that other =
+email programs=20
+have to offer.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It was the second effort by the U. =
+military has=20
+begun implementing this policy by seizing Iranian officials in the =
+Kurdish northern=20
+city of Irbil. The program can limit recording to a selected window or a =
+rectangle=20
+area on the screen.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Given the notoriety of doctors' =
+handwriting, all=20
+prescriptions will have a barcode, which will be scanned by pharmacists, =
+instead of=20
+being read for medication type and quantity!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It takes the work of a great publicist =
+to turn an=20
+actor into a celebrity.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000C_01C7370F.90F17990--
+------=_NextPart_001_000C_01C73710.89C14E60--
 
-------=_NextPart_000_000B_01C7370F.90EE9360
+------=_NextPart_000_000B_01C73710.89BD2FB0
 Content-Type: image/gif;
-	name="bony.gif"
+	name="planting.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000a01c736d4$e48cd530$2b303c9d@rse>
+Content-ID: <000a01c736d5$dd5a3900$8ede24c8@gscxn>
 
 R0lGODdhbQE8AfZIAMbty8/M8sLe4hU2pAhiI1F/DL50igbEpsBWwBJv0xN7ada7mvhQp0n339qD
 xjdjJ2yCvrj/VgApQ0Xb11EPYhkc5FkiuVmmNobx4WgjEmpJjibNdr5JDbgYtrjEZ/0EV0T1GYt7
@@ -288,11 +293,11 @@ u/ItsX8KrqXd5gpZQYDO6NUB5skO6eptl6a+75Mt3qbIrEWOM/D8w+M4iNm9Xs0CP9Ha3nPFrevF
 TN+a/XCdzJoAv40o7doCTpv1jeC/zdtwK5/SSa39XKbrI/LNLeawbkE0PtjQ/fGbnqCGvtVDJ9KI
 Lr0D3+E2r8QIj8yyJd3u/u/vKT/qRc8eHwgAOw==
 
-------=_NextPart_000_000B_01C7370F.90EE9360--
+------=_NextPart_000_000B_01C73710.89BD2FB0--
 
 
 
---===============0551091065==
+--===============1126316080==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -303,7 +308,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0551091065==
+--===============1126316080==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -314,4 +319,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0551091065==--
+--===============1126316080==--
