@@ -1,10 +1,10 @@
 From: "Verified Leads" <noreply@bulkgrowth.com>
 Subject: Tier 3 Leads, Guaranteed Deals
-Date: 15 Jan 2007 09:32:25 -0800
-Message-ID: <20070115093225.099A571C8DBFB4D0@bulkgrowth.com>
+Date: 15 Jan 2007 08:49:11 -0800
+Message-ID: <20070115084911.2837791462927DC7@bulkgrowth.com>
 Reply-To: Verified Leads <reply@bulkgrowth.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1652460535=="
+Content-Type: multipart/mixed; boundary="===============1995803960=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,7 +18,7 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1652460535==
+--===============1995803960==
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -93,7 +93,7 @@ oma size=3D2> </FONT>
 
 
 
---===============1652460535==
+--===============1995803960==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -104,7 +104,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1652460535==
+--===============1995803960==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -115,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1652460535==--
+--===============1995803960==--
