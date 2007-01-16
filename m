@@ -1,12 +1,11 @@
-From: "Reed Rosen" <celerityattested@aacc.org>
-Subject: As they often implement
-Date: Tue, 16 Jan 2007 06:29:32 +0000 (UTC)
-Message-ID: <01c73937$ae777f80$6c822ecf@celerityattested>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H6PUK-0006Ln-3P delayed 24 hours
+Date: Tue, 16 Jan 2007 04:30:17 -0800
+Message-ID: <E1H6nSD-000851-48@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 16 Jan 2007 06:29:31 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,28 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Harris Exploration Hits Gold!
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-Inside origin from the survey site say that Harris Exploration has made
-a big discovery.  Word is that results show a 12.5 gm/T
-rating on the property.  With onsite equipment afford to 
-process 100 tons a day it equates to yields of 1250 gm/day.
-At current market prices this would generate yearly earnings of over $10mil.
+The message identifier is:     1H6PUK-0006Ln-3P
+The subject of the message is: within my wrath of you.
+The date of the message is:    Mon, 15 Jan 2007 11:56:15 +0100
 
-Taking into consideration both the size and the high soil
-ratings this gives HXPN a book value of roughly $5.00 which
-we have pegged as our target price.
+The address to which the message has not yet been delivered is:
 
-Harris Exploration
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Symbol: HXPN
-Current Price:     $1.62
-Sho rt Term Tar get:  $5.00
-
-This press release will hit the street very soon and send this symbol
-to heaven.  We recommend our readers to get in now and divest at
-the tar get price.Recomme\ndation: think
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
