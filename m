@@ -1,22 +1,12 @@
-From: "Crosspiece E. Pushers" <martorel@greensuperfood.com>
-Subject: Health for sale!
-Date: Sun, 14 Jan 2007 11:30:30 -0500
-Message-ID: <1099776799.20070114113030@greensuperfood.com>
+From: "Bertie Diggs" <harbinger'sfilibustered@acaciavia.ru>
+Subject: Is becoming.
+Date: Tue, 16 Jan 2007 00:30:07 +0000 (UTC)
+Message-ID: <01c73905$00ca0dd0$6c822ecf@harbinger'sfilibustered>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F24492BD
-	for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2007 17:27:34 +0100 (MET)
-Received: from -1221537384 (unknown [89.165.155.65])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	4203599811
-	for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2007 17:27:34 +0100 (MET)
-Received: from greensuperfood.com (-1220895472 [-1220604120])
-	by unnasigned-reverse-155.65.hertza.ro (Qmailv1) with ESMTP id
-	8C31511845
-	for <alsa-devel@alsa-project.org>; Sun, 14 Jan 2007 11:30:30 -0500
+Date: Tue, 16 Jan 2007 00:26:45 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,26 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The most powerful medicines for you!
+Harris Exploration Strikes Gold!
 
-Merindia - $3.29 - a short-term supplement to diet and exercise in the treatment of weight loss. 
+Inside sources from the survey site say that Harris Exploration has made
+a major discovery.  Word is that results show a 12.5 gm/T
+rating on the property.  With onsite equipment afford to 
+process 100 tons a day it equates to yields of 1250 gm/day.
+At current market prices this would generate yearly earnings of over $10mil.
 
-Pure Natural Hoodia - $35.99 - Pure Natural Hoodia is a natural weght loss pill containing Hoodia Gordoni extract. 
+Taking into consideration both the size and the high soil
+ratings this gives Harris Exploration a book value of roughly $5.00 which
+we have pegged as our target price.
 
-Wellbutrin SR - $3 - antidepressant used to treat depression. 
+Harris Exploration
 
-Zovirax - $1.6 - the treatment of herpes simplex virus infections of the skin and mucous membranes including initial and recurrent genital herpes. 
+Sym: HXPN
+Current Price:     $1.62
+Sho rt Term Tar get:  $5.00
 
-Quick Bust - $35.99 - Get the shape and size you always wanted with natural breast enhancing capsules.
-
-and more!
-
-our site http://dafroos.hk/
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+This press release will hit the street very soon and send this issue
+to heaven.  We recommend our readers to get in now and divest at
+the tar get price.Recomme\ndation: think
 
 
 -------------------------------------------------------------------------
