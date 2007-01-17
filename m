@@ -1,7 +1,7 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: [PATCH] asihpi driver 3.05.07
-Date: Wed, 17 Jan 2007 13:06:05 +1300
-Message-ID: <200701171306.05598.linux@audioscience.com>
+From: terminator356@users.sourceforge.net
+Subject: A FIX FOR alsa-lib emu10k1.h (IT FIXES ld10k1)
+Date: Wed, 17 Jan 2007 00:12:07 -0500
+Message-ID: <200701170012.07474.terminator356@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,41 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+Hi, ld10k1 doesn't work, crashes. Lots of people saying it.
+In the alsa-kernel/include emu10k1.h, 
+	union {
+		snd_kcontrol_tlv_rw_t *c;
+		unsigned int *p;
+	} tlv;
+ was added to struct 'snd_emu10k1_fx8010_control_gpr'.
+But alsa-lib/include/sound/emu10k1.h was not changed.
+So I did this:
+        ...
+	unsigned int min;		/* minimum range */
+	unsigned int max;		/* maximum range */
+        unsigned int *p;    // <----- ADDED THIS  <----------------
+	unsigned int translation;	/* translation type (EMU10K1_GPR_TRANSLATION*) */
+} emu10k1_fx8010_control_gpr_t;
+ 
+ which is in alsa-lib/include/sound/emu10k1.h
 
-This patch includes changes between our release 30506 and 30507.
-There are two bugfixes.  The rest of the changes are mostly cosmetic.
-(Note I will be on vacation next week, so if you have any questions, be 
-quick ;)
+For me, it fixes ld10k1. *p acts as a placeholder because it is useless 
+ (at this point) to ld10k1. 
 
-The patch is here:
-http://audioscience.com/internet/download/beta/alsa-driver-hg3224_asihpi30507-1.patch
+----Can you tell me what those changes were for? What are *c and *p ? ---
 
-*ATTENTION* alsa requires updated firmware:
-http://audioscience.com/internet/download/beta/asidsp_firmware-3.05.07.tar.bz2
-
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
-
-Changelog:
-asihpi.c: Fix problem with capture hanging. Tweak verbose logging options.
-
-hpi6205.c: Fix bus master buffer allocation
-
-hpidspcd.c: Remove unused code
-
-hpifunc.c: Doxygen comments
-
-hpi.h: change some datastructures to improve compatibility with older driver, 
-versions.  *requires matching DSP firmware*. 
-
-other files: minor changes.
--- 
---
-Eliot Blennerhassett
-AudioScience Inc.
+      Thanks. Tim. 
+      terminator356  -> users -> sourceforge -> net
+      (Developer on ld10k1 project).
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
