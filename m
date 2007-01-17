@@ -1,9 +1,10 @@
-From: "Teddy" <pluvbi@sapropertygroup.com>
-Subject: As the US slowly wakes up to the idea that Katrina et.
-Date: Wed, 17 Jan 2007 08:05:24 +0100
-Message-ID: <000701c73a07$381f0e90$8628ae2f@sxnwjb>
+From: "Netty" <lbreh@saproperties.co.za>
+Subject: As a result,
+	firms have to react positively tomeet their clients needs.
+Date: Wed, 17 Jan 2007 08:08:36 +0100
+Message-ID: <000701c73a07$a70f2c40$68e0c3bf@btqyys>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1254237748=="
+Content-Type: multipart/mixed; boundary="===============1400630111=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,41 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1254237748==
+--===============1400630111==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0003_01C73A0F.99CEB610"
+	boundary="----=_NextPart_000_0003_01C73A10.08CE1600"
 
-------=_NextPart_000_0003_01C73A0F.99CEB610
+------=_NextPart_000_0003_01C73A10.08CE1600
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0004_01C73A0F.99D3E630"
+	boundary="----=_NextPart_001_0004_01C73A10.08CF7590"
 
-------=_NextPart_001_0004_01C73A0F.99D3E630
+------=_NextPart_001_0004_01C73A10.08CF7590
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-The new firm provides the expertise, scale and global =
-deliverycapabilities to improve the business support functions of =
-itsclients. Those companies will be IBM and Accenture. This provides =
-someevidence that China's rapid economic build-up has impacted =
-globaldemand for oil and with it oil prices.
-Those companies will be IBM and Accenture. watchBigBox Mart and find out =
-the future created by offshoring in theUS retail market.
-But I believe that this is wrong.
-I believe that the time has come with the changes wrought by theGershon =
-Review and the subsequent simplification to governmentdepartments to =
-have a complete rethink on both tax andbenefits.
-no vision for thefuture.
-Judging by someresearchI did yesterday, online networking is certainly =
-not very well. NAFTA,Hurricane Katrina, Boeing strike, etc.
-One other industry has a history of extensive outsourcing andthat's the =
-pharmaceutical market. Dawn makes a good point. Or did I read that =
-incorrectly?
-------=_NextPart_001_0004_01C73A0F.99D3E630
+It is only natural thatIndian suppliers are now sub-contracting to =
+China. No wonder Indian outsourcers are worried. It's a good job =
+Accenture HR Services has just won Unilever - ahuge deal.
+Why not do the same with all benefits? Netrevenues were USD15.
+Those reports cited people familiar with thematter.
+With EDS in a mess, Siemens withdrawing from the market and nowCSC =
+floundering; IBM and Accenture must be rubbing their hands withglee.
+In my industry,companies and individuals are inherently selfish.
+The company is expected to bring the operationsback in its fold in the =
+next 6 to 12 months. I've also got it on good authority that the =
+supplier market istaking this firm to their hearts.
+I believe that China will take over but itwill probably not be for at =
+least five years. This provides someevidence that China's rapid economic =
+build-up has impacted globaldemand for oil and with it oil prices. Now =
+provincial delegations increasingly are trekkingto Beijing, Shanghai, =
+and Guangzhou to trumpet their edge over thecoast.
+------=_NextPart_001_0004_01C73A10.08CF7590
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -57,53 +57,55 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"ambush" hspace=3D0=20
-src=3D"cid:000201c73a07$38051df0$8628ae2f@sxnwjb" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"trick or treat"=20
+hspace=3D0=20
+src=3D"cid:000201c73a07$a7084e70$68e0c3bf@btqyys" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The new firm provides the expertise, =
-scale and=20
-global deliverycapabilities to improve the business support functions of =
-itsclients.=20
-Those companies will be IBM and Accenture. This provides someevidence =
-that China's=20
+<DIV><FONT face=3DArial size=3D2>It is only natural thatIndian suppliers =
+are now=20
+sub-contracting to China. No wonder Indian outsourcers are worried. It's =
+a good job=20
+Accenture HR Services has just won Unilever - ahuge deal.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Why not do the same with all benefits? =
+Netrevenues=20
+were USD15.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Those reports cited people familiar =
+with=20
+thematter.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>With EDS in a mess, Siemens withdrawing =
+from the=20
+market and nowCSC floundering; IBM and Accenture must be rubbing their =
+hands=20
+withglee.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In my industry,companies and =
+individuals are=20
+inherently selfish.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The company is expected to bring the =
+operationsback=20
+in its fold in the next 6 to 12 months. I've also got it on good =
+authority that the=20
+supplier market istaking this firm to their hearts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I believe that China will take over but =
+itwill=20
+probably not be for at least five years. This provides someevidence that =
+China's=20
 rapid economic build-up has impacted globaldemand for oil and with it =
-oil=20
-prices.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Those companies will be IBM and =
-Accenture.=20
-watchBigBox Mart and find out the future created by offshoring in theUS =
-retail=20
-market.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But I believe that this is =
-wrong.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I believe that the time has come with =
-the changes=20
-wrought by theGershon Review and the subsequent simplification to=20
-governmentdepartments to have a complete rethink on both tax=20
-andbenefits.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>no vision for thefuture.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Judging by someresearchI did yesterday, =
-online=20
-networking is certainly not very well. NAFTA,Hurricane Katrina, Boeing =
-strike,=20
-etc.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>One other industry has a history of =
-extensive=20
-outsourcing andthat's the pharmaceutical market. Dawn makes a good =
-point. Or did I=20
-read that incorrectly?</FONT></DIV></BODY></HTML>
+oil prices.=20
+Now provincial delegations increasingly are trekkingto Beijing, =
+Shanghai, and=20
+Guangzhou to trumpet their edge over thecoast.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0004_01C73A0F.99D3E630--
+------=_NextPart_001_0004_01C73A10.08CF7590--
 
-------=_NextPart_000_0003_01C73A0F.99CEB610
+------=_NextPart_000_0003_01C73A10.08CE1600
 Content-Type: image/gif;
-	name="hitchhiker.gif"
+	name="spawn.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000201c73a07$38051df0$8628ae2f@sxnwjb>
+Content-ID: <000201c73a07$a7084e70$68e0c3bf@btqyys>
 
 R0lGODdh6QE5AfcAAIy4akX7JFV9hdcY8cDvlXXpst+jeDS/qV8Fn1vZQ5ll/ASq9ykAda/XjqCY
 fTUNZujtCWEhyQqAzqncqO12Del6uOGkuVZTkOTzKWEpNsgRJNFzRZt9xmknoxEUGR/9lNjeOJE1
@@ -389,11 +391,11 @@ MfvAMA1nc2flsjz3bTJ7cjmTMTDDMTS7cfa+suoWczzbq1biEySb7imHczJrcCBybzUvtNbeL2AV
 cUu59AQDMhCfs0Ezs6NoEza7s48tLUFacT5rtE4BNT+3bCCnc450bUH7MB1SsVQHNVNRNDG78Ejv
 NJcUNT5v8Cwv89OyUkAAADs=
 
-------=_NextPart_000_0003_01C73A0F.99CEB610--
+------=_NextPart_000_0003_01C73A10.08CE1600--
 
 
 
---===============1254237748==
+--===============1400630111==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -404,7 +406,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1254237748==
+--===============1400630111==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -415,4 +417,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1254237748==--
+--===============1400630111==--
