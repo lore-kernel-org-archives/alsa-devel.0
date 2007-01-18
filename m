@@ -1,14 +1,11 @@
-From: Rafal Maszkowski <rzm@icm.edu.pl>
-Subject: Re: HDA Intel on V3505
-Date: Thu, 18 Jan 2007 12:10:43 +0100
-Message-ID: <20070118111043.GA19869@delta.icm.edu.pl>
-References: <20070109231049.GW2271@delta.icm.edu.pl>
+From: "Philip Dodson" <counterrevolutionariesparries@aafp.org>
+Subject: fw: Read it Philip
+Date: Thu, 18 Jan 2007 13:05:43 +0000 (UTC)
+Message-ID: <01c73af8$3dc96e20$6c822ecf@counterrevolutionariesparries>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1453750212=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20070109231049.GW2271@delta.icm.edu.pl>
+Date: Thu, 18 Jan 2007 12:00:26 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,370 +15,235 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-I wonder how could I get help on issues described below. Sound works only
-partially, the modem is recognized but does not work. Should I try to describe
-the issues better or enter a report into some bugzilla?
+This is a multi-part message in MIME format.
 
-R.
+--===============1453750212==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_000A_01C73B11.6316A620"
 
-On Wed, Jan 10, 2007 at 12:10:49AM +0100, Rafal Maszkowski wrote:
-> I use Fujitsu-Siemens Amilo Pro V3505 with 
-> 
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-> 
-> It has two codecs:
-> 
-> Codec: Realtek ALC861
-> 
-> Codec: Motorola Si3054
-> Vendor Id: 0x10573055
-> 
-> (a half-modem really).
-> 
-> I started with kernel-2.6.18-1.2869.fc6 of Fedora 6 (alsa 1.0.12). I was able to play sound
-> but input, recording and modem were not working properly (modem was not visible at all).
-> 
-> With recent hg sources all this works as follows:
-> 
-> MODEM:
-> 
-> rzm@rzm-ab:~,0# cat /proc/asound/card0/codec#1
-> Codec: Motorola Si3054
-> Address: 1
-> Vendor Id: 0x10573055
-> Subsystem Id: 0x10573055
-> Revision Id: 0x100700
-> rzm@rzm-ab:~,0# modprobe snd-intel8x0m
-> rzm@rzm-ab:~,1# /root/V3505/dead-end/slmodem-2.9.11-20061021/modem/slmodemd -a -c POLAND -d 4 modem:0
-> SmartLink Soft Modem: version 2.9.11 Jan  6 2007 19:21:07
-> <478.906438> SmartLink Soft Modem: version 2.9.11 Jan  6 2007 19:21:07
-> <478.906494> modem:0: startup modem...
-> <478.906814> modem:0: update termios...
-> symbolic link `/dev/ttySL0' -> `/dev/pts/5' created.
-> modem `modem:0' created. TTY is `/dev/pts/5'
-> <478.908339> open file: /var/lib/slmodem/data.modem:0...
-> <478.965975> main: rt applyed: SCHED_FIFO, pri 99
-> Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
-> <519.422951> main: termios changed.
-> <519.422981> modem:0: update termios...
-> <535.201913> modem:0: run cmd: atdt0w202122
-> <535.201947> modem:0: modem dial: t0w202122...
-> <535.201961> modem:0: modem_dial_start...
-> <535.201974> call: create...
-> <535.201992> CallProgFP_Create >>
-> <535.202004> APPLY_FILTER = 0
-> <535.202018> Detection Thresholds: levle_fix=45,--> LEVEL_THRESHOLD=90
-> <535.202032> ============> 0
-> <535.202044> Cadence: Busy Tone loose detection is 0
-> <535.202059> TYPE BUSY
-> <535.202071> Filter index 0
-> <535.202082> Filter SubIndex 0
-> <535.202094> MAX_ON_TIME 30 Buffers     MIN_ON_TIME 5 Buffers
-> <535.202106> MAX_OFF_TIME 30 Buffers    MIN_OFF_TIME 5 Buffers
-> <535.202119> OFF_TIME_THAT_RESETS_CYCLE 90
-> <535.202131> BUFFER LENGTH 160 samples.
-> <535.202143> INTEGRATION_LENGTH 0[ms]
-> <535.202155> LEVEL 90
-> <535.202171> INTEGRATION_TIME = 0 Buffers.
-> <535.202185> Detection Thresholds: levle_fix=45,--> LEVEL_THRESHOLD=90
-> <535.202200> TYPE DIAL
-> <535.202211> Filter index 5
-> <535.202223> Filter SubIndex 0
-> <535.202234> MAX_ON_TIME 0 Buffers     MIN_ON_TIME 0 Buffers
-> <535.202246> MAX_OFF_TIME 0 Buffers    MIN_OFF_TIME 0 Buffers
-> <535.202259> OFF_TIME_THAT_RESETS_CYCLE 0
-> <535.202271> BUFFER LENGTH 666 samples.
-> <535.202283> INTEGRATION_LENGTH 800[ms]
-> <535.202294> LEVEL 90
-> <535.202308> INTEGRATION_TIME = 8 Buffers.
-> <535.202323> CALLPROG Create <<
-> <535.202335> CALLPROG Dialing t0w202122
-> <535.202348> Configuration->tone_DigitLength 100
-> <535.202360> Configuration->pulse_OffHookTime 33
-> <535.202372> Configuration->pulse_OnHookTime 67
-> <535.202384> Configuration->dialPauseTime 4
-> <535.202396> Configuration->flashTime 9
-> <535.202408> Configuration->toneOrPulseFlag 0
-> <535.202420> Configuration->dialModifierValidationFlag 1
-> <535.202432> Configuration->ABCD_PermittedFlag 0
-> <535.202444> Configuration->pulseAndToneInSameStringPermittedFlag 0
-> <535.202456> Configuration->callingToneFlag 0
-> <535.202468> Configuration->commaPauseDurLimit 30
-> <535.202480> Configuration->digitPattern 1
-> <535.202492> Configuration->tone_BetweenDigitsInterval 100
-> <535.202504> Configuration->pulse_BetweenDigitsInterval 800
-> <535.202516> DTMF_Gain1 = 13014
-> <535.202528> DTMF_Gain2 = 16384
-> <535.202541> AnalyzeDialString: Updated 17 May 1999 00:50
-> <535.202553> AnalyzeDialString: LAST_DIALABLE_SYMBOL is 8
-> <535.202565> Dial String Syntax is VALID
-> <535.202580> GetNoAnswerTimeOut. 60
-> <535.202593> WAIT DIAL TIMEOUT = 4
-> <535.202605> CALLPROG_Dial was exited.
-> <535.202616> call: create RC: 9600 <-> 8000...
-> <535.202633> modem:0: modem_start..
-> <535.202645> modem:0: modem set state: 1 --> 2...
-> <535.202659> modem:0: new state: DP_ESTAB
-> <535.202672> main: alsa_ioctl: cmd 8, arg 3...
-> <535.202685> modem:0: modem set hook: 0 --> 1...
-> <535.202697> main: alsa_ioctl: cmd 2, arg 1...
-> <535.203833> main: alsa_ioctl: cmd 11, arg 0...
-> <535.204067> main: alsa_ioctl: cmd 4, arg 2580...
-> <535.204084> main: alsa_ioctl: cmd 7, arg 30...
-> <535.204097> main: alsa_start...
-> error: cannot setup hw params for playback: Invalid argument
-> <535.205906> err: modem:0: modem start = -22: cannot start device.
-> <535.205922> modem:0: modem_stop..
-> <535.205934> modem:0: modem set hook: 1 --> 0...
-> <535.205947> main: alsa_ioctl: cmd 2, arg 0...
-> <535.207825> main: alsa_ioctl: cmd 8, arg 0...
-> <535.207846> call: delete...
-> <535.207860> Dialer was aborted.
-> <535.207871> CALLPROG_Delete is entered
-> <535.207883> cadence_delete with CADENCE_DIAL_OBJ is invoked
-> <535.207896> cadence_delete with CADENCE_OBJ is invoked
-> <535.207908> CALLPROG_Delete is exited
-> <535.207922> modem:0: modem set state: 2 --> 1...
-> <535.207936> modem:0: new state: MODEM_IDLE
-> <535.207948> modem:0: modem report result: 3 (NO CARRIER)
-> <535.207976> modem:0: modem report result: 4 (ERROR)
-> <544.892326> main: termios changed.
-> <544.892355> modem:0: update termios...
-> <544.892382> main: pty closed.
-> 
-> The above log shows an attempt to dial:
-> 
-> rzm@rzm-ab:~,0# cu -l /dev/ttySL0 -s 115200
-> Connected.
-> atdt0w202122
-> NO CARRIER
-> ERROR
-> ~.
-> Disconnected.
-> 
-> dmesg shows:
-> ALSA /usr/src/sound/hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1153: hda-intel: invalid format_val, rate=9600, ch=1, format=2
-> 
-> SOUND:
-> 
-> dmesg:
-> hda_codec: Unknown model for ALC861, trying auto-probe from BIOS...
-> ALSA /usr/src/sound/hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:556: hda_intel: azx_get_response timeout, switching to polling mode...
-> 
-> alsamixer:
-> +---------------------------------------------------[AlsaMixer v1.0.12 (Press Escape to quit)]----------------------------------------------------+
-> | Card: HDA Intel                                                                                                                                 |
-> | Chip: Realtek ALC861                                                                                                                            |
-> | View:  Playback  Capture [All]                                                                                                                  |
-> | Item: Capture [dB gain=-6.00, -6.00]                                                                                                            |
-> ...
-> |                                +--+               +--+               +--+                                                                       |
-> ...
-> |             +--+               +--+               +--+               +--+               +--+               Mic                +--+              |
-> |             |OO|               |MM|               |MM|                                  |MM|                                  |MM|              |
-> |             +--+               +--+               +--+              L    R              +--+                                  +--+              |
-> |                                                                     CAPTUR                                                                      |
-> |                                0<>0               0<>0               0<>0                                                                       |
-> |            Front             Front Mi             Mic             <Capture >          Caller I           Input So           Off-hook            |
-> ...
-> +-------------------------------------------------------------------------------------------------------------------------------------------------+
-> 
-> There is no PCM slider.
-> 
-> The other possible input source is Front Mic.
-> 
-> Playing works. Recording works - I have not checked yet what is really
-> recorded.
-> 
-> Listening to the sounds coming from the input: THe line input and built in
-> microphone are mixed. Volume of this mixture can be regulated with Front Mic or
-> Mic regulation. Each of them takes over the level, i.e. when one of them is set
-> to lower level setting the other set the sound level. When the second one is
-> left at high level moving the first even slightly sets the level (to this lower
-> value).
-> 
-> rzm@rzm-ab:~,0# cat /proc/asound/card0/codec#0
-> Codec: Realtek ALC861
-> Address: 0
-> Vendor Id: 0x10ec0861
-> Subsystem Id: 0x17c01205
-> Revision Id: 0x100300
-> Default PCM:
->     rates [0x140]: 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-> Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x00 0x00]
->   Power: 0x0
-> Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x80 0x80]
->   Power: 0x0
-> Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x80 0x80]
->   Power: 0x0
-> Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x80 0x80]
->   Power: 0x0
-> Node 0x07 [Audio Output] wcaps 0x605: Stereo Digital Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x00 0x00]
->   Power: 0x0
-> Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
->   Amp-In caps: ofs=0x02, nsteps=0x0d, stepsize=0x0b, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   PCM:
->     rates [0x140]: 48000 96000
->     bits [0x2]: 16
->     formats [0x1]: PCM
->   Power: 0x0
->   Connection: 6 
->      0x0d* 0x0c 0x0f 0x10 0x11 0x15
-> Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x081f: OUT HP Detect
->   Pin Default 0x01014110: [Jack] Line Out at Ext Rear
->     Conn = 1/8, Color = Green
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 1 
->      0x16
-> Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0837: IN OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x20: IN
->   Power: 0x0
->   Connection: 1 
->      0x19
-> Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x08337: IN OUT Detect
->   Pin Default 0x01a19c2e: [Jack] Mic at Ext Rear
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x24: IN
->   Power: 0x0
->   Connection: 1 
->      0x18
-> Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0817: OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 1 
->      0x19
-> Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0833f: IN OUT HP Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 1 
->      0x1a
-> Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0833f: IN OUT HP Detect
->   Pin Default 0x99a30120: [Fixed] Mic at Int ATAPI
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x24: IN
->   Power: 0x0
->   Connection: 1 
->      0x1b
-> Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0863: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x00:
-> Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Connection: 1 
->      0x07
-> Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x14 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x0d 0x10  
-> Node 0x15 [Audio Mixer] wcaps 0x20050f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x0c, nsteps=0x17, stepsize=0x0b, mute=1
->   Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x00 0x00]
->   Amp-Out caps: ofs=0x0c, nsteps=0x0c, stepsize=0x0b, mute=1
->   Amp-Out vals:  [0x0c 0x0c]
->   Power: 0x0
->   Connection: 3 
->      0x11 0x14 0x1c
-> Node 0x16 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x03 0x15  
-> Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x04 0x15  
-> Node 0x18 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x05 0x15  
-> Node 0x19 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x06 0x15  
-> Node 0x1a [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x00 0x00]
->   Connection: 4 
->      0x04 0x06 0x15 0x03
-> Node 0x1b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x00 0x00]
->   Connection: 4 
->      0x04 0x06 0x15 0x03
-> Node 0x1c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Connection: 2 
->      0x0c 0x0f  
-> Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x1f [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0817: OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 1 
->      0x18
-> Node 0x20 [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0817: OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 1 
->      0x17
-> Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
->   Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
->   Amp-Out vals:  [0x8f]
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000A_01C73B11.6316A620
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000B_01C73B11.6316A620"
+
+
+------=_NextPart_001_000B_01C73B11.6316A620
+Content-Type: text/plain;
+	charset="windows-1250"
+Content-Transfer-Encoding: 7bit
+
+ Hello.
+Thursday,Jan  18, will bring huge trading for this shares, which will mean it soar! 
+
+This company has secured the exclusive marketing and distribution rights in the United States, Territory of the People's Republic of China(CN), Canada(CA), Mexico(MX) and the Bahamas to Diamant(TM) film, a non-PVC food stretch film.
+
+Diamant(TM) film is the world's first plasticizer-free stretch film based on polystyrene and the first food wrap film that is environmentally friendly and recyclable. Diamant(TM) film has recently received the ECO logo certified by the Environmental Choice(TM) Program. The Environmental Choice(TM) Program is North America's leading benchmark of environmentally responsible products and services. Diamant(TM) film has successfully met the criteria for both the environmental and performance standards.
+
+Diamant Art is dedicated to producing environmentally friendly products aimed at minimizing pollution, maximizing the quality of life and preserving the environment. 
+
+
+This company are move simple. We'd hope you will get at least 70 % increase of your investments today.
+
+
+Good Luck. Yours Philip Prather.
+
+
+------=_NextPart_001_000B_01C73B11.6316A620
+Content-Type: text/html;
+	charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dwindows-1250">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+</head>
+<BODY bgColor=3D#ffffff>
+<DIV ALIGN=3D"CENTER"> <FONT FACE=3D"Arial"  SIZE=3D"3">Hello.</FONT></DIV>
+<BR>
+<BR>
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENT=
+ER">
+Thursday,Jan  18, will bring huge trading for this shares, which will mean =
+it <FONT FACE=3D"Arial" SIZE=3D"2">soar</FONT>! </FONT></DIV>
+
+<BR>
+<DIV ALIGN=3D"CENTER"><IMG alt=3D"" hspace=3D0 src=3D"cid:wvyfp.gif@AB48DAB=
+B.4F29CAB4" align=3Dbaseline border=3D0></DIV>
+<BR>
+<DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">Thi=
+s company has secured the exclusive marketing and distribution <FONT FACE=
+=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">rights</FONT> in the United States, =
+Territory <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of the</FONT> Pe=
+ople's Republic <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of</FONT> =
+China(CN), Canada(CA), Mexico(MX) and the <FONT FACE=3D"Arial" SIZE=3D"2" A=
+LIGN=3D"CENTER">Bahamas</FONT> to <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"=
+DARKRED">Diamant(TM)</FONT> film, a non-PVC food stretch film.</FONT></DIV>
+
+<BR>
+<DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"DAR=
+KRED">Diamant(TM)</FONT> <FONT FACE=3D"Comic Sans MS" SIZE=3D"2">film is th=
+e world's first plasticizer-free stretch film based on polystyrene and the =
+first food wrap film that is environmentally <FONT FACE=3D"Comic Sans MS" S=
+IZE=3D"2" COLOR=3D"BLACK">friendly</FONT> and <FONT FACE=3D"Comic Sans MS" =
+SIZE=3D"2" COLOR=3D"BLACK">recyclable</FONT>. <FONT FACE=3D"Comic Sans MS" =
+SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKRED">Diamant(TM)</FONT> film has <=
+FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"BLACK">recently</FONT> rece=
+ived the <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"DARKGREEN">ECO</F=
+ONT> logo certified by the <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D=
+"CENTER" COLOR=3D"DARKRED">Environmental Choice(TM)</FONT> Program. The <FO=
+NT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKRED">Env=
+ironmental Choice(TM)</FONT> Program is North America's leading benchmark o=
+f environmentally responsible <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=
+=3D"BLACK">products</FONT> and <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLO=
+R=3D"BLACK">services</FONT>. <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=
+=3D"CENTER" COLOR=3D"DARKRED">Diamant(TM)</FONT> film has successfully met =
+the criteria for both the environmental and performance standards.</FONT></=
+DIV>
+<BR>
+
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKBLUE" AL=
+IGN=3D"CENTER">Diamant Art is dedicated to producing environmentally friend=
+ly products aimed at minimizing pollution, maximizing the quality of life a=
+nd preserving the environment. </DIV>
+<BR>
+
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKBLUE" AL=
+IGN=3D"CENTER">
+This company are move <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"RED" ALIGN=
+=3D"CENTER">simple</FONT>. We'd hope you will get at least <FONT FACE=3D"Co=
+mic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKGREEN">70 %</FONT> in=
+crease of your investments today.
+<BR>
+
+<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"GREEN">Go=
+od Luck.</FONT></DIV>
+<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER"> Yours Philip Prat=
+her.</FONT>
+</FONT></BODY>
+</html>
+
+------=_NextPart_001_000B_01C73B11.6316A620--
+
+------=_NextPart_000_000A_01C73B11.6316A620
+Content-Type: image/gif;
+	name="wvyfp.gif"
+Content-ID: <wvyfp.gif@AB48DABB.4F29CAB4>
+Content-Transfer-Encoding: base64
+
+R0lGODlhBwFgANUAAP//////zMz/zMz/mczMzMzMmZn/mZn/ZpnMmZnMZpmZmZmZZmb/Zmb/M2bM
+ZmbMM2aZZmaZM2ZmZmZmMzP/MzP/ADPMMzPMADOZMzOZADNmMzNmADMzMzMzAADMAACZAABmAAAz
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAHAWAAAAb+QIBw
+SCwaj8ikcslsOp/QqHRKrVqv2Kx2y+16v+CweEwum8/otHrNbrvf8Lh8Tq/b7/i8fs/v+/+AgYKD
+hIWGh4iJiouMjY6PkJGSk5SVlpeYcgqZXQRIEhKbnGYEHCIiHJ5CBCEcok6qmaZHrCEho2anIrYS
+QgK2tqqlmwqbtiKruwCvYQKnrRPMYBy9HBoTQqYhBAhFDhsKIAK4Y8EEEhqrthoKIRvqIRDrwOms
+IBqtT7FQtcC3QgH2VSFQrFctfCFAQOgHAgMRAh8gCGg4JGCRUrRAbLjHj5unUI80gOgGIFY7Ufgg
+LAuhAULKlQtWxsMnsIgEgqd6SRAhLQn+AhCbCMhTuZLoEXnFQiiQF4/IzmdJQ9yEABQAVQ0R9v1E
+EO7VAqUIuingacTAhQsZPlRVgmADV3r4NNQ8lAHE3A0hxgHAKwTEP79CbAX+N1QIgmPIAOxCKBgE
+iCEdegEwwMAIX3iG9QJAkECeqo2OHW8APUSDaaYAOigVspH14yIIMqhsS3Kv39Ci3w2J8EE36SF+
+twEPTTXhAr/pFhHgOETUQQJxS7KUXm86q+TXhUAAzfKXu8DpJnZbHv6ChYvMqZekaNXxuvUOl0eA
+f7Gd3OnrsS3H9rBhWKrzrXePUKCxt15ymyG4XGhyCRieO93Ig2AiVNU2wQTjUUWcJ/L+RBhCAQBI
+8GGIwSiAT23abSOiZCJyaFeF4yDggGYp1iZihCMBsAAEECAgEo5AtoeiafgU0KF2OVZYhIa4kaQk
+kigKeZRGQjkWpFXCtQfiIo4NMcFqQ1QgZixdAiCYma85xtg/ywR3y5lm/vVYmUkANsSZGhGBwFdp
+pqlbnnemI9h3fenW2wK1VbhnMSBsmRARgEKqmxF0lkmnLWLRmchPC7WXwBIGVFAZAh84sJkHlRmA
+6gAe9CiEiewc1mNTRW2mEKds0epjU7gCIIBLVM2mkK3CEsXpr7deYOpkF1TGbAbLxrasEGaZGptR
+vQ6R7Z6GDUvst7aCEMFVnvgY0yH+GjqAwQVRgsrAOALoRUEFNAoRgUIC0ESTEBiII4QGo2WlRL/r
+WpBBBqL060m+Eu2rMAAPY5CBKhh8kMEFD1hwgJh6xTuEAAMYoJcBBhRB8jgNXKDZw0SIhIEn927g
+iUh2ibTBOCxXDMHB07JsiAASX1DBAVgI4MF5Rhj9gVoYCPCBQ75W0IAvB0NtmEACXCxmBRTotVx8
+9+zJUdbnCYCxrw04GzUF7zJwQL1VBECjAwcHaNgGGUhsYNYHP0010gJwHQADJX8MNyEGNPB2FggI
+fIQAhG8sZuEeCyF54VISEXLlerK7mcQZRBDBAyQvLscA82LuqwNCV6A6AAdQQAH+5gaYvvHr5Jwh
+gAUq6ykRFQwEHwDJgHAeBe+H507GzhkkrzwUEjv//PTULxJA9dj7cRIlCoACUvZt1DSWQTcpMT5B
+cx1Sii6nuAI+GgIQpAE1IXKgTj2onF/MKwTkj0oTzjtHT2iRE3107xRWSwYHTJGKZEhFAVz53/vK
+sBzEIGMX3bgUKnKiC8nESSohSMwqKMWmI+iCGijqFxGAYRMFEOCFxciGLlj4MWCwTxWnWGEJJxgG
+Bt6kfCaqmV3+JRxTgOIUqsCHTvCjAGowwxQfaSARTDHDV0BRhqWw3xCoeEMAcEAq7QKASDrwQi8i
+0YtK4dF2wsjDLuzEOaqo0JH+SNSNG9FRCHakIwS4+Iqd1DFLQ3gjQYz4EbLQMY8kWuAEJNApEW3J
+CHR75B2ZNJoNvKyNYvhKKOKyia8sZS2exNImkCKEUArAk1+RiilEcZxNGK+UYGoiWd74Kre0sjlg
+0pNsmIei2KDolsfRQFiM5BZMhgE69OAVwGi1GamspBftkMxh2NEOMErlhS/JlhGuhcte4Ao6RFmA
+MO+WFY8Y5mDoNMpmZKOnYW1rA+o0ZidaIoDDSNMx2AKBN51pT8Ow5EssgWAI+NNPbRahAOwUQgGG
+tVCVLFQjGsAAPBVaydEQpQCWlOQQEKpOXC20JTzqVzzluYX4vcqZJfkAqj7+5gBTOW0+8vGFBRCw
+uwfEUSkCaId+xJWEmK6CpzFdTkUnWhJLYoBHJCEAUY1AgINdVCPj0Qg6Qyc9klLhJ5vkKbVElQQD
+DMBXIlvCdUTEq2GBEzbeqlKxzloSoTRtM0vV1gamBVdjjUaiUDWMshBQgAIQoKpWnUJbElIqzTDA
+A7irAqk0IgolPWkIGjoquYSUgAygqLLdOE67ElDMISygszoaTQYsgDnABjYLEMBAAuY2oy4IoLXa
+ueRfmeqS0FwSAA7o2ivrOY5IQvKtSpDbaSdYT9j6CoCrHa5yl8vc5jr3udCNbhVe64BPraJH+3ht
+WIhwPekOYR9N3KJk0kf+hGKQVwmzVUMGosCkAOHDSpANjSh+clQEnJek9exXg8yoiitCMRQxlEAD
+WXHG+xahX0vDAF3FADoaPSB6TLWFLBd4CqaoBAKqwbAzvwgMfzX3XiCgYiFFQcudULh9qxQjNf4r
+grk4IEoiws1IDQPcK3xDvtopkDR2cpP15WSQPOHxIJXyRgRgeIjLbQcH4te9+zm5f6g4Iio8cR37
+9s/E3XPhT6n5XQl+ZUIX+W4rZoxelkCnFDdZzEEegh8oS7B/qXhzByZQCuzgR7lGPMK+xJgXPovi
+i6+gmXvYpwtPcLHFW8zSFUuyCQGfEY28KG8ZX1W+0uRFivz9l4f55WH+xvR3G3uW6DhaYl+RmPZ9
+7VCnKlK9jJewulavugfNECPlUOzCFbH4SUN4RKuxnFgEs4lIlc6lgAn8GCawqUs8xjEWY2XAut0i
+NjCIDYIFhONctIGraJ+93ACkhzwACEAypyPu5JSbCFShMlMG/L+JJDDcuFGTL57x13wAwG+bIYmJ
+F7gaBRzO2yLRAMCHgG+A4JPPtihmOASe188mx8j3Gi1z75XEENhIwvva8567FTY+VxxmSN7NSIws
+TL186VwUB0DKifAlFyLzvFmZgF1SDrQPqIKmyNSAasKCD3Hiy0cKAViniCAxA09Q1xD4Eph99UII
+EKPXzOT4PIjCaoP+hmPGV491TH7yKQIkNxzxPleyE7CUVoKdRw0pV7VLIo+0ImS/yITnlsJSLm4r
+VyjA4AAbYSOKes5FKC1ps3XuwaPvpqc/2GGOUsdFEaFiYFyuCvdD0hIagoams0KJxQs1j1Qi5FQB
+j1TqaERit7vTOQw6v1MHkBQpABx+hQj6tmiIsp0XhmUTES1CANRyeAFsoCVfWEAENmJJ734hFiFY
+/dVOTahl7IMbKbx8Bt89BOpTENrGt4OWoYAVCJzr1NkPv/jHT/5B1BN8AkjA3sM/DMP86Lv2fQgG
+ejLpKBi9Dw74wPr3EC/wx+GKTBEMOuJpCaIQQ8dpBPBiT4AOMyP+M2dAN/d3BA5gAbDFGwQRCnph
+XmVgXAAwADQlBAlgAenXUi2VXLhlAShoAQ8AW/1nB1AUTetjaCIgYNPxXn5BI4ImDh/IBBU3akvH
+BgjwAPq3JHUREZzGFGt3GCFkfVwwIxbQXQDAO90lhbwzALtzAd0lIxmTgtczAFuoF1soBA/QBsqw
+CbvyD6egZRwiYVHSJfYAAkZ4EbVhKa9REkzgNyvoBDICAFP1MXmTQIu1ER5EE/YwGBZXTfmWWt4S
+OselBayDgrGQN0MgiZLIh9aHgjGCghMoglHYiZ6oBuBWVPQVa++hHkVgNOfBCq6wEUnFIOMxePXw
+cxxSeL5AMwT+cxExUhsTMRoMolAaoRFQowAbsAAv9Gb4wRXUQWX44XeDN4x18zFHBTRWwzdMSI3p
+RzUBkjURADTwwogXEQHXQzZvkzEz8gACMIavxQbuJgTKMhEIYmQV41IG8jFH4yshph4TgRz5AGfS
+YT/k4Y7HIW9iNGW2oEW+8DSkYlm+4Bf+uI8O6Y8i0AGytIwFRzVQkzVQ8w3RUQu/5xgOkS9qwhy+
+Jxr7RQTq9zLTeDa+QgHmyDbBM1OnWIkYaZHc2DRj2AYfcAG4ZVk0ox3YBSgWcwRBeW+voQwPYZRG
++Shx8kFhcSYhlAwiZIhMIRnNByjJN0KG6A6Rx4frhVskcTD+k7heO2MqYBknRCEYHEZg//BFDrRN
+AHABU0MEsjMEcyk78fJVRkABcRmFSAMxDoEBgAkxbrA098Z7rvcYCxIafWGARUCYh9kXJYQKePIa
+aQGZZhkYacImOUQEp5AOO/EPZcmVQhCaw0GMAGAkfgiYZRmaYMmKfDOadTgoiAZlQvAMHYYEYlIE
+FKCTQsA7fJkEAkABcimcQjCXQzA1ermXaFCZ1yIQJIdkTFIECQA1rcGHdcgX1VmdFdOb6yUS1deV
+CIFwRYAPicYvXQkxrwFhEpVjCRABdYEifGN3EvOd6yRauqFC5omed5IYqnEw5tGXReCbRACTvTkO
+KJgEBzr+BA/QNWhDnEIwNQ0gAMp5BhBgc1EQFnu3FVJSIdCRJB4aIfqXf06SI3g3GpiCbh+wWh0K
+oiPqJHlTF3PXL/BUL/FSAHoRFnpRAMnlVo1zYTliFW5BLsL4oR+DBKyDl0LggQngAKQjBA6QWE5q
+AUh6jqTFACqoGTMyI6aDBvXXCd+ia4SnAYgyf19aKr2SLalWGNriGIwXINLSLfnkLasQgUygXWc6
+UT9hGgenbei0YNRyAdgHVlboecBpAdhHpSpIO59SO7XzCLRIHipBAFD4XfbYNOwBNN2QL/WQHR+j
+EVdRGxqle/5nBdzgC8VnK3KRHr6XN2R2jmAQAC2lNr7+go4qeJPTc360OJ4QJXM75J3bxQfjEAEv
+MzN1uAeTSlLMUxcHmDl/sB1YQTP7V35kEC872BxrFwjb4Z+Bikl0ugeNE6138FfH2ka/AkbM5XUO
+8HwOEKrRRQAAdaI++Tti9avkwDzyWgCgw67NdYbsEGqh0Us42jLwZYd50CAbtwRG1lvbaATueTB6
+4Z54M6rBRaijEHBJJBkiYXvQSRyloRCOMWrFKlZcsJVH0WdNsF0VY4QQdmCWBVyqBWEvtjIZMK5L
+8ABY6CsYQLOT4I6+4BLwQA0SAh0a4ABU8ZEHRy74ZFZGwCPuuCBMqCcqZxro9kKvRwSp5B4Kcg/T
+2BD+ErMz8QE3GImpADCdvtc0oCOJMxkFHZM39GoJbbEQRdschBYPWZd5sJZqeEt4fpFPOfiv8Bd/
+tgKYHIsAIpV1vvIfYuEPtkB1l2csIMBObSF22/RssaF+lDssAaCjEhMW3Ea4oCox21q5sYFO2zoJ
+DvCLjoEheMQT3JBlcwRZOLU+3bMaRdsvPxos5TpKP0q4+OQiClElPBd08IUsHskV+DBKFtceQZpX
+dEN7P3oUbkEAEQBxeEcSXLFGmIVZ2nK2GpW9dWOClwBiLiGAeNQKjIR7wlEAHwhQTdQK0IFoMgdy
+qpBy+xK/KgdPPNIS0osvABC/97JapztEDjAu6jL+RF/iCQd8v/PrgMOnCvaLBA2sci6BwMIhAZGB
+F9KLNxnwSNNJEsI6N82zk92qCA+DTBLZsbxwPaS2EeOATIuLRWgEsnqBD+PwRTPTZ0IXFqMBknrx
+Rflisqa2UUNaw4h2RRmraaMGxOLQUnp2M2K0w2IkDsfLXxxmsmIUOhIFxd+JMyHMCdUZxXLKdPwz
+ey0zLneChokBJ075D5PJHW+imW9sEHDCCqihGImxmTYTxboBJ3lCmkMwGudEEoAsdO1wQSd0J+6h
+Gju0mueZCfhpGCe7pGJFFKoRGCKUna9xGccLAedrJiJUyQSQYcegDr3wlJ7sD9VXUX9ch67SpZCa
+hS3aIsgbQZ5PuZlxUgDdJRDzCTFuAa6N4DNgkMCh5sSPB7JJ1CPXGwBH/MRUFnACuEqF7Akm4g+x
+ALGxkKtaUAALoKlHbBotTCSjRyMQ1rBdfAkJILnHFKwOmG9LAJIJoRIfTAv2FQEVDAzo0CDnpbPH
+N8EKvApnGyWppQpLmgD6LK09xSPb3IgIu2qM9EISmwY0IgAFHQlBAAA7
+------=_NextPart_000_000A_01C73B11.6316A620--
+
+
+--===============1453750212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1453750212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1453750212==--
