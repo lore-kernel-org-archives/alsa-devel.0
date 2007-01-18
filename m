@@ -1,9 +1,10 @@
-From: will74@tom.com
-Subject: supply of metal components
-Date: Thu, 18 Jan 2007 16:15:32 +0800
-Message-ID: <E1H7SQj-0003Us-1A@mail.sourceforge.net>
-Reply-To: will74@tom.com
-Content-Type: multipart/mixed; boundary="===============1950085084=="
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H74rC-0004Ch-B5 delayed 24 hours
+Date: Thu, 18 Jan 2007 00:55:52 -0800
+Message-ID: <E1H7T3o-0007pH-48@externalmx-1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,51 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1950085084==
-Content-Type: text/plain;charset="GB2312"
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-Dear Sir or Madam:
+The message identifier is:     1H74rC-0004Ch-B5
+The subject of the message is: And Jerusalem, And I will not perish at noon.
+The date of the message is:    Wed, 17 Jan 2007 12:34:31 +0530
 
-We are a leading supplier and manufacturer of metal stamped and casted components based in China.
+The address to which the message has not yet been delivered is:
 
-We offer your high quality Ferrous & Non Ferrous Castings & Stamping Components at a very competitive pricing. We have also strong capabilities in secondary operations such as Machining, polishing, and Plating etc. Our products are well received in various international markets specially in US & EU. 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-We hope you can try us by sending drawings, material specifications, quantity, preferably your sample, so that we could make an offer and reproduced samples for your approval.
-
-Looking forward to receiving your inquiry
-
-Best regards
-
-Jesing Ding/ Sales Manager
-Oriens Metal Manufacturing Co.Ltd.
-602#,2#lou Qinchunjiayuan,Xisanqi,Haidianqu, 100096,Beijing,China
-http://www.oriensmetal.com
-jesingd@vip.sina.com
-
- Tel : +86 10 82900582 82900521
- Fax : +86 10 82900521
-
-
---===============1950085084==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1950085084==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1950085084==--
