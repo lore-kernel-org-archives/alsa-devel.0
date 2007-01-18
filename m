@@ -1,11 +1,10 @@
-From: "Philip Dodson" <counterrevolutionariesparries@aafp.org>
-Subject: fw: Read it Philip
-Date: Thu, 18 Jan 2007 13:05:43 +0000 (UTC)
-Message-ID: <01c73af8$3dc96e20$6c822ecf@counterrevolutionariesparries>
+From: "Angela Hogan" <stricturespreserver@ab2.mopera.ne.jp>
+Subject: fwd: Read it Angela
+Date: Thu, 18 Jan 2007 13:05:19 -0120
+Message-ID: <01c73b01$4e402060$6c822ecf@stricturespreserver>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1453750212=="
+Content-Type: multipart/mixed; boundary="===============1571066721=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 18 Jan 2007 12:00:26 -0180
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,41 +19,41 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1453750212==
+--===============1571066721==
 Content-Type: multipart/related;
-	boundary="----=_NextPart_000_000A_01C73B11.6316A620"
+	boundary="----=_NextPart_000_000A_01C73B12.11C8F060"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000A_01C73B11.6316A620
+------=_NextPart_000_000A_01C73B12.11C8F060
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000B_01C73B11.6316A620"
+	boundary="----=_NextPart_001_000B_01C73B12.11C8F060"
 
 
-------=_NextPart_001_000B_01C73B11.6316A620
+------=_NextPart_001_000B_01C73B12.11C8F060
 Content-Type: text/plain;
-	charset="windows-1250"
+	charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 
- Hello.
-Thursday,Jan  18, will bring huge trading for this shares, which will mean it soar! 
+ Good Day.
+Thursday,January  18, will bring huge trading for this shares, which will mean it grow up! 
 
-This company has secured the exclusive marketing and distribution rights in the United States, Territory of the People's Republic of China(CN), Canada(CA), Mexico(MX) and the Bahamas to Diamant(TM) film, a non-PVC food stretch film.
+This company has secured the exclusive marketing and distribution rights in the USA, Territory of the People's Republic of China(CN), Canada(CA), Mexico(MX) and the Bahamas to Diamant(TM) film, a non-PVC food stretch film.
 
 Diamant(TM) film is the world's first plasticizer-free stretch film based on polystyrene and the first food wrap film that is environmentally friendly and recyclable. Diamant(TM) film has recently received the ECO logo certified by the Environmental Choice(TM) Program. The Environmental Choice(TM) Program is North America's leading benchmark of environmentally responsible products and services. Diamant(TM) film has successfully met the criteria for both the environmental and performance standards.
 
 Diamant Art is dedicated to producing environmentally friendly products aimed at minimizing pollution, maximizing the quality of life and preserving the environment. 
 
 
-This company are move simple. We'd hope you will get at least 70 % increase of your investments today.
+This company are move simple. We'd hope you will recive at least 70 % rise of your investments today.
 
 
-Good Luck. Yours Philip Prather.
+Good Luck. Yours Angela Dooley.
 
 
-------=_NextPart_001_000B_01C73B11.6316A620
+------=_NextPart_001_000B_01C73B12.11C8F060
 Content-Type: text/html;
-	charset="windows-1250"
+	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 <html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
@@ -62,30 +61,31 @@ osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
 xmlns=3D"http://www.w3.org/TR/REC-html40">
 
 <head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dwindows-1250">
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Diso-8859-2">
 <meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
 </head>
 <BODY bgColor=3D#ffffff>
-<DIV ALIGN=3D"CENTER"> <FONT FACE=3D"Arial"  SIZE=3D"3">Hello.</FONT></DIV>
+<DIV ALIGN=3D"CENTER"> <FONT FACE=3D"Arial"  SIZE=3D"3">Good Day.</FONT></D=
+IV>
 <BR>
 <BR>
 <DIV ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENT=
 ER">
-Thursday,Jan  18, will bring huge trading for this shares, which will mean =
-it <FONT FACE=3D"Arial" SIZE=3D"2">soar</FONT>! </FONT></DIV>
+Thursday,January  18, will bring huge trading for this shares, which will m=
+ean it <FONT FACE=3D"Arial" SIZE=3D"2">grow up</FONT>! </FONT></DIV>
 
 <BR>
-<DIV ALIGN=3D"CENTER"><IMG alt=3D"" hspace=3D0 src=3D"cid:wvyfp.gif@AB48DAB=
-B.4F29CAB4" align=3Dbaseline border=3D0></DIV>
+<DIV ALIGN=3D"CENTER"><IMG alt=3D"" hspace=3D0 src=3D"cid:fqoj.gif@721534F0=
+5348DA86" align=3Dbaseline border=3D0></DIV>
 <BR>
 <DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">Thi=
 s company has secured the exclusive marketing and distribution <FONT FACE=
-=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">rights</FONT> in the United States, =
-Territory <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of the</FONT> Pe=
-ople's Republic <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of</FONT> =
-China(CN), Canada(CA), Mexico(MX) and the <FONT FACE=3D"Arial" SIZE=3D"2" A=
-LIGN=3D"CENTER">Bahamas</FONT> to <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"=
-DARKRED">Diamant(TM)</FONT> film, a non-PVC food stretch film.</FONT></DIV>
+=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">rights</FONT> in the USA, Territory =
+<FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of the</FONT> People's Rep=
+ublic <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of</FONT> China(CN),=
+ Canada(CA), Mexico(MX) and the <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CE=
+NTER">Bahamas</FONT> to <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKRED">D=
+iamant(TM)</FONT> film, a non-PVC food stretch film.</FONT></DIV>
 
 <BR>
 <DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"DAR=
@@ -118,113 +118,113 @@ nd preserving the environment. </DIV>
 <DIV ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKBLUE" AL=
 IGN=3D"CENTER">
 This company are move <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"RED" ALIGN=
-=3D"CENTER">simple</FONT>. We'd hope you will get at least <FONT FACE=3D"Co=
-mic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKGREEN">70 %</FONT> in=
-crease of your investments today.
+=3D"CENTER">simple</FONT>. We'd hope you will recive at least <FONT FACE=3D=
+"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKGREEN">70 %</FONT>=
+ rise of your investments today.
 <BR>
 
 <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"GREEN">Go=
 od Luck.</FONT></DIV>
-<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER"> Yours Philip Prat=
-her.</FONT>
+<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER"> Yours Angela Dool=
+ey.</FONT>
 </FONT></BODY>
 </html>
 
-------=_NextPart_001_000B_01C73B11.6316A620--
+------=_NextPart_001_000B_01C73B12.11C8F060--
 
-------=_NextPart_000_000A_01C73B11.6316A620
+------=_NextPart_000_000A_01C73B12.11C8F060
 Content-Type: image/gif;
-	name="wvyfp.gif"
-Content-ID: <wvyfp.gif@AB48DABB.4F29CAB4>
+	name="fqoj.gif"
+Content-ID: <fqoj.gif@721534F0.5348DA86>
 Content-Transfer-Encoding: base64
 
-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
+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
-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
-------=_NextPart_000_000A_01C73B11.6316A620--
+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
+------=_NextPart_000_000A_01C73B12.11C8F060--
 
 
---===============1453750212==
+--===============1571066721==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -235,7 +235,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1453750212==
+--===============1571066721==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -246,4 +246,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1453750212==--
+--===============1571066721==--
