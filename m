@@ -1,17 +1,10 @@
-From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
-Subject: Re: [PATCH] make snd-aloop loopback device work
-Date: Wed, 17 Jan 2007 23:37:10 +0100
-Message-ID: <20070117223710.GC14995@mathematik.uni-freiburg.de>
-References: <20061220225811.GB705@mathematik.uni-freiburg.de>
-	<s5h7iwlrvdm.wl%tiwai@suse.de>
-	<20061228021057.GA8823@mathematik.uni-freiburg.de>
-	<s5hodoxzo5b.wl%tiwai@suse.de>
+From: "Brittany Kirk" <kirksrenegaded@abast.es>
+Subject: fwd: Read it Brittany
+Date: Thu, 18 Jan 2007 01:05:30 -0540
+Message-ID: <01c73a9c$bf8ff3e0$6c822ecf@kirksrenegaded>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="5vNYLRcllDrimb99"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0525203521=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hodoxzo5b.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,623 +14,216 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--===============0525203521==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_000A_01C73AE8.2F779BE0"
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000A_01C73AE8.2F779BE0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000B_01C73AE8.2F779BE0"
+
+
+------=_NextPart_001_000B_01C73AE8.2F779BE0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+ Hello.
+Thursday,January  18, will bring huge trading for this shares, which will mean it goes up! 
+
+Thet company has secured the exclusive marketing and distribution rights in the United States, Territory of the People's Republic of China(CN), Canada(CA), Mexico(MX) and the Bahamas to Diamant(TM) film, a non-PVC food stretch film.
+
+Diamant(TM) film is the world's first plasticizer-free stretch film based on polystyrene and the first food wrap film that is environmentally friendly and recyclable. Diamant(TM) film has recently received the ECO logo certified by the Environmental Choice(TM) Program. The Environmental Choice(TM) Program is North America's leading benchmark of environmentally responsible products and services. Diamant(TM) film has successfully met the criteria for both the environmental and performance standards.
+
+Diamant Art is dedicated to producing environmentally friendly products aimed at minimizing pollution, maximizing the quality of life and preserving the environment. 
+
+
+This company are moving simple. We'd hope you will recive at least 70 % increase of your investments today.
+
+
+Good Luck. Yours Brittany Powers.
+
+
+------=_NextPart_001_000B_01C73AE8.2F779BE0
+Content-Type: text/html;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-> OK, I'd like to commit your patch to HG tree.  The driver is more or
-> less experimental.  Do you have more newer version?
-yes, but its only a minor change. i hopefully will have some time soon so=
- that
-i can investigate more problems. but currently its ok with me.
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-> Anyway, please give a proper changelog and a sign-off to commit.
-i would include this text below in some form at least once somewhere, to =
-make
-the usage of the loopback device clear.
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Diso-8859-1">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+</head>
+<BODY bgColor=3D#ffffff>
+<DIV ALIGN=3D"CENTER"> <FONT FACE=3D"Arial"  SIZE=3D"3">Hello.</FONT></DIV>
+<BR>
+<BR>
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENT=
+ER">
+Thursday,January  18, will bring huge trading for this shares, which will m=
+ean it <FONT FACE=3D"Arial" SIZE=3D"2">goes up</FONT>! </FONT></DIV>
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary: make snd-aloop loopback device work
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-the snd-aloop device is a full-duplex loopback device, that can
-be used to connect 2 apps together, so that each apps output
-gets the input of the other app.
+<BR>
+<DIV ALIGN=3D"CENTER"><IMG alt=3D"" hspace=3D0 src=3D"cid:ravmx.gif@09D3712=
+C.F8B6E5BD" align=3Dbaseline border=3D0></DIV>
+<BR>
+<DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">The=
+t company has secured the exclusive marketing and distribution <FONT FACE=
+=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">rights</FONT> in the United States, =
+Territory <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of the</FONT> Pe=
+ople's Republic <FONT FACE=3D"Arial" SIZE=3D"2" ALIGN=3D"CENTER">of</FONT> =
+China(CN), Canada(CA), Mexico(MX) and the <FONT FACE=3D"Arial" SIZE=3D"2" A=
+LIGN=3D"CENTER">Bahamas</FONT> to <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"=
+DARKRED">Diamant(TM)</FONT> film, a non-PVC food stretch film.</FONT></DIV>
 
-the first app forces the second app to use its settings, so
-no rate, format or channel number conversion is done.
+<BR>
+<DIV  ALIGN=3D"CENTER"><FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"DAR=
+KRED">Diamant(TM)</FONT> <FONT FACE=3D"Comic Sans MS" SIZE=3D"2">film is th=
+e world's first plasticizer-free stretch film based on polystyrene and the =
+first food wrap film that is environmentally <FONT FACE=3D"Comic Sans MS" S=
+IZE=3D"2" COLOR=3D"BLACK">friendly</FONT> and <FONT FACE=3D"Comic Sans MS" =
+SIZE=3D"2" COLOR=3D"BLACK">recyclable</FONT>. <FONT FACE=3D"Comic Sans MS" =
+SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKRED">Diamant(TM)</FONT> film has <=
+FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"BLACK">recently</FONT> rece=
+ived the <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=3D"DARKGREEN">ECO</F=
+ONT> logo certified by the <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D=
+"CENTER" COLOR=3D"DARKRED">Environmental Choice(TM)</FONT> Program. The <FO=
+NT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKRED">Env=
+ironmental Choice(TM)</FONT> Program is North America's leading benchmark o=
+f environmentally responsible <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLOR=
+=3D"BLACK">products</FONT> and <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" COLO=
+R=3D"BLACK">services</FONT>. <FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=
+=3D"CENTER" COLOR=3D"DARKRED">Diamant(TM)</FONT> film has successfully met =
+the criteria for both the environmental and performance standards.</FONT></=
+DIV>
+<BR>
 
-examples (hw:0 is loopback, !default is real soundcard / dmix):
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKBLUE" AL=
+IGN=3D"CENTER">Diamant Art is dedicated to producing environmentally friend=
+ly products aimed at minimizing pollution, maximizing the quality of life a=
+nd preserving the environment. </DIV>
+<BR>
 
-capture output from other apps to hdd:
-aplay -D hw:0,0 play.wav
-arecord -D hw:0,1 record.wav
+<DIV ALIGN=3D"CENTER"><FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"DARKBLUE" AL=
+IGN=3D"CENTER">
+This company are moving <FONT FACE=3D"Arial" SIZE=3D"2" COLOR=3D"RED" ALIGN=
+=3D"CENTER">simple</FONT>. We'd hope you will recive at least <FONT FACE=3D=
+"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"DARKGREEN">70 %</FONT>=
+ increase of your investments today.
+<BR>
 
-the same:
-aplay -D hw:0,1 play.wav
-arecord -D hw:0,0 record.wav
+<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER" COLOR=3D"GREEN">Go=
+od Luck.</FONT></DIV>
+<FONT FACE=3D"Comic Sans MS" SIZE=3D"2" ALIGN=3D"CENTER"> Yours Brittany Po=
+wers.</FONT>
+</FONT></BODY>
+</html>
 
-or have more fun:
-ecasound -f:16,2,48000 -i:alsahw,0,1,0 &
-ecasound -f:16,2,48000 -i:alsahw,0,1,1 &
-ecasound -f:16,2,48000 -i:alsahw,0,1,2 &
-...
-now open up to 8 oss apps _without_ aoss, sit back and relax.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+------=_NextPart_001_000B_01C73AE8.2F779BE0--
 
-files:
-http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/alsa-driver-1.0=
-.13-aloop-ainan-patch.diff
-http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/aloop-kernel.c
+------=_NextPart_000_000A_01C73AE8.2F779BE0
+Content-Type: image/gif;
+	name="ravmx.gif"
+Content-ID: <ravmx.gif@09D3712C.F8B6E5BD>
+Content-Transfer-Encoding: base64
 
-ahmet
+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
+vM/83M/+PAVBAAA7
+------=_NextPart_000_000A_01C73AE8.2F779BE0--
 
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="alsa-driver-1.0.13-aloop-ainan-patch.diff"
-
---- alsa-driver-1.0.13.orig/drivers/aloop-kernel.c	2006-09-29 13:40:29.000000000 +0200
-+++ alsa-driver-1.0.13/drivers/aloop-kernel.c	2007-01-16 13:32:07.709561155 +0100
-@@ -30,19 +30,25 @@
- #include <sound/pcm.h>
- #include <sound/initval.h>
- 
-+/* comment in to trash your kernel logfiles */
-+/* #define SND_CARD_LOOPBACK_VERBOSE */
-+/* comment in for synchronization on start trigger
-+ * works well on alsa apps but bad on oss emulation */
-+/* #define SND_CARD_LOOPBACK_START_SYNC */
-+
- MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>");
- MODULE_DESCRIPTION("A loopback soundcard");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{ALSA,Loopback soundcard}}");
- 
--#define MAX_PCM_SUBSTREAMS	256
-+#define MAX_PCM_SUBSTREAMS	8
- 
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
- static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
- static int pcm_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
- static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
--//static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
-+/* static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2}; */
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for loopback soundcard.");
-@@ -53,31 +59,49 @@
- module_param_array(pcm_devs, int, NULL, 0444);
- MODULE_PARM_DESC(pcm_devs, "PCM devices # (0-4) for loopback driver.");
- module_param_array(pcm_substreams, int, NULL, 0444);
--MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-16) for loopback driver.");
--//module_param_array(midi_devs, int, NULL, 0444);
--//MODULE_PARM_DESC(midi_devs, "MIDI devices # (0-2) for loopback driver.");
-+MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-8) for loopback driver.");
-+/* module_param_array(midi_devs, int, NULL, 0444);
-+ * MODULE_PARM_DESC(midi_devs, "MIDI devices # (0-2) for loopback driver."); */
-+
-+typedef struct snd_card_loopback_cable {
-+	struct snd_pcm_substream *playback;
-+	struct snd_pcm_substream *capture;
-+	struct snd_dma_buffer *dma_buffer;
-+	struct snd_pcm_hardware hw;
-+	int playback_valid;
-+	int capture_valid;
-+	int playback_running;
-+	int capture_running;
-+	int playback_busy;
-+	int capture_busy;
-+} snd_card_loopback_cable_t;
- 
- typedef struct snd_card_loopback {
- 	struct snd_card *card;
-+	struct snd_card_loopback_cable cables[MAX_PCM_SUBSTREAMS][2];
- } snd_card_loopback_t;
- 
- typedef struct snd_card_loopback_pcm {
- 	snd_card_loopback_t *loopback;
- 	spinlock_t lock;
- 	struct timer_list timer;
-+	int stream;
-+	unsigned int pcm_1000_size;
-+	unsigned int pcm_1000_count;
- 	unsigned int pcm_size;
- 	unsigned int pcm_count;
- 	unsigned int pcm_bps;		/* bytes per second */
--	unsigned int pcm_jiffie;	/* bytes per one jiffie */
--	unsigned int pcm_irq_pos;	/* IRQ position */
--	unsigned int pcm_buf_pos;	/* position in buffer */
-+	unsigned int pcm_1000_jiffie;	/* 1000 * bytes per one jiffie */
-+	unsigned int pcm_1000_irq_pos;	/* IRQ position */
-+	unsigned int pcm_1000_buf_pos;	/* position in buffer */
-+	unsigned int pcm_period_pos;	/* period aligned pos in buffer */
- 	struct snd_pcm_substream *substream;
-+	struct snd_card_loopback_cable *cable;
- } snd_card_loopback_pcm_t;
- 
- static struct snd_card *snd_loopback_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
- 
--
--static void snd_card_loopback_pcm_timer_start(struct snd_pcm_substream *substream)
-+static void snd_card_loopback_timer_start(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-@@ -86,7 +110,7 @@
- 	add_timer(&dpcm->timer);
- }
- 
--static void snd_card_loopback_pcm_timer_stop(struct snd_pcm_substream *substream)
-+static void snd_card_loopback_timer_stop(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-@@ -97,10 +121,28 @@
- static int snd_card_loopback_playback_trigger(struct snd_pcm_substream *substream,
- 					   int cmd)
- {
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+#ifdef SND_CARD_LOOPBACK_START_SYNC
-+	snd_card_loopback_pcm_t *capture_dpcm;
-+#endif
- 	if (cmd == SNDRV_PCM_TRIGGER_START) {
--		snd_card_loopback_pcm_timer_start(substream);
-+#ifdef SND_CARD_LOOPBACK_START_SYNC
-+		if (dpcm->cable->capture_running) {
-+			capture_dpcm = dpcm->cable->capture->runtime->private_data;
-+			dpcm->pcm_1000_irq_pos = capture_dpcm->pcm_1000_irq_pos;
-+			dpcm->pcm_1000_buf_pos = capture_dpcm->pcm_1000_buf_pos;
-+			dpcm->pcm_period_pos = capture_dpcm->pcm_period_pos;
-+		}
-+#endif
-+		dpcm->cable->playback_running = 1;
-+		snd_card_loopback_timer_start(substream);
- 	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
--		snd_card_loopback_pcm_timer_stop(substream);
-+		dpcm->cable->playback_running = 0;
-+		snd_card_loopback_timer_stop(substream);
-+		snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-+				bytes_to_samples(runtime, runtime->dma_bytes));
-+
- 	} else {
- 		return -EINVAL;
- 	}
-@@ -110,20 +152,36 @@
- static int snd_card_loopback_capture_trigger(struct snd_pcm_substream *substream,
- 					  int cmd)
- {
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+#ifdef SND_CARD_LOOPBACK_START_SYNC
-+	snd_card_loopback_pcm_t *playback_dpcm;
-+#endif
- 	if (cmd == SNDRV_PCM_TRIGGER_START) {
--		snd_card_loopback_pcm_timer_start(substream);
-+#ifdef SND_CARD_LOOPBACK_START_SYNC
-+		if (dpcm->cable->playback_running) {
-+			playback_dpcm = dpcm->cable->playback->runtime->private_data;
-+			dpcm->pcm_1000_irq_pos = playback_dpcm->pcm_1000_irq_pos;
-+			dpcm->pcm_1000_buf_pos = playback_dpcm->pcm_1000_buf_pos;
-+			dpcm->pcm_period_pos = playback_dpcm->pcm_period_pos;
-+		}
-+#endif
-+		dpcm->cable->capture_running = 1;
-+		snd_card_loopback_timer_start(substream);
- 	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
--		snd_card_loopback_pcm_timer_stop(substream);
-+		dpcm->cable->capture_running = 0;
-+		snd_card_loopback_timer_stop(substream);
- 	} else {
- 		return -EINVAL;
- 	}
- 	return 0;
- }
- 
--static int snd_card_loopback_pcm_prepare(struct snd_pcm_substream *substream)
-+static int snd_card_loopback_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+	snd_card_loopback_cable_t *cable = dpcm->cable;
- 	unsigned int bps;
- 
- 	bps = runtime->rate * runtime->channels;
-@@ -132,55 +190,81 @@
- 	if (bps <= 0)
- 		return -EINVAL;
- 	dpcm->pcm_bps = bps;
--	dpcm->pcm_jiffie = bps / HZ;
--	dpcm->pcm_size = snd_pcm_lib_buffer_bytes(substream);
--	dpcm->pcm_count = snd_pcm_lib_period_bytes(substream);
--	dpcm->pcm_irq_pos = 0;
--	dpcm->pcm_buf_pos = 0;
--	return 0;
--}
--
--static int snd_card_loopback_playback_prepare(struct snd_pcm_substream *substream)
--{
--	return snd_card_loopback_pcm_prepare(substream);
--}
-+	dpcm->pcm_1000_jiffie = (1000 * bps) / HZ;
-+	dpcm->pcm_size = frames_to_bytes(runtime, runtime->buffer_size);
-+	dpcm->pcm_count = frames_to_bytes(runtime, runtime->period_size);
-+	dpcm->pcm_1000_size = 1000 * frames_to_bytes(runtime, runtime->buffer_size);
-+	dpcm->pcm_1000_count = 1000 * frames_to_bytes(runtime, runtime->period_size);
-+	dpcm->pcm_1000_irq_pos = 0;
-+	dpcm->pcm_1000_buf_pos = 0;
-+	dpcm->pcm_period_pos = 0;
-+
-+	cable->hw.formats = (1ULL << runtime->format);
-+	cable->hw.rate_min = runtime->rate;
-+	cable->hw.rate_max = runtime->rate;
-+	cable->hw.channels_min = runtime->channels;
-+	cable->hw.channels_max = runtime->channels;
-+	cable->hw.buffer_bytes_max = frames_to_bytes(runtime, runtime->buffer_size);
-+	cable->hw.period_bytes_min = frames_to_bytes(runtime, runtime->period_size);
-+	cable->hw.period_bytes_max = frames_to_bytes(runtime, runtime->period_size);
-+	cable->hw.periods_min = runtime->periods;
-+	cable->hw.periods_max = runtime->periods;
-+
-+	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-+		snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-+				bytes_to_samples(runtime, runtime->dma_bytes));
-+		cable->playback_valid = 1;
-+	} else {
-+		if (!cable->playback_running) {
-+			snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-+					bytes_to_samples(runtime, runtime->dma_bytes));
-+		}
-+		cable->capture_valid = 1;
-+	}
- 
--static int snd_card_loopback_capture_prepare(struct snd_pcm_substream *substream)
--{
--	return snd_card_loopback_pcm_prepare(substream);
-+#ifdef SND_CARD_LOOPBACK_VERBOSE
-+	printk(KERN_INFO "snd-aloop(c%dd%ds%d%c): frq=%d chs=%d fmt=%d buf=%d per=%d pers=%d\n",
-+			substream->pcm->card->number,
-+			substream->pcm->device,
-+			substream->stream,
-+			(SNDRV_PCM_STREAM_PLAYBACK == substream->stream ? 'p' : 'c'),
-+			runtime->rate,
-+			runtime->channels,
-+			snd_pcm_format_width(runtime->format),
-+			frames_to_bytes(runtime, runtime->buffer_size),
-+			frames_to_bytes(runtime, runtime->period_size),
-+			runtime->periods);
-+#endif
-+	return 0;
- }
- 
--static void snd_card_loopback_pcm_timer_function(unsigned long data)
-+static void snd_card_loopback_timer_function(unsigned long data)
- {
- 	snd_card_loopback_pcm_t *dpcm = (snd_card_loopback_pcm_t *)data;
- 	
- 	dpcm->timer.expires = 1 + jiffies;
- 	add_timer(&dpcm->timer);
- 	spin_lock_irq(&dpcm->lock);
--	dpcm->pcm_irq_pos += dpcm->pcm_jiffie;
--	dpcm->pcm_buf_pos += dpcm->pcm_jiffie;
--	dpcm->pcm_buf_pos %= dpcm->pcm_size;
--	if (dpcm->pcm_irq_pos >= dpcm->pcm_count) {
--		dpcm->pcm_irq_pos %= dpcm->pcm_count;
-+
-+	dpcm->pcm_1000_irq_pos += dpcm->pcm_1000_jiffie;
-+	dpcm->pcm_1000_buf_pos += dpcm->pcm_1000_jiffie;
-+	dpcm->pcm_1000_buf_pos %= dpcm->pcm_1000_size;
-+	if (dpcm->pcm_1000_irq_pos >= dpcm->pcm_1000_count) {
-+		dpcm->pcm_1000_irq_pos %= dpcm->pcm_1000_count;
-+		dpcm->pcm_period_pos += dpcm->pcm_count;
-+		dpcm->pcm_period_pos %= dpcm->pcm_size;
-+		spin_unlock_irq(&dpcm->lock);	
- 		snd_pcm_period_elapsed(dpcm->substream);
-+	} else {
-+		spin_unlock_irq(&dpcm->lock);
- 	}
--	spin_unlock_irq(&dpcm->lock);	
- }
- 
--static snd_pcm_uframes_t snd_card_loopback_playback_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t snd_card_loopback_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
--
--	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
--}
--
--static snd_pcm_uframes_t snd_card_loopback_capture_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
--
--	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
-+	return bytes_to_frames(runtime, dpcm->pcm_period_pos);
- }
- 
- static struct snd_pcm_hardware snd_card_loopback_info =
-@@ -188,16 +272,16 @@
- 	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 				 SNDRV_PCM_INFO_MMAP_VALID),
- 	.formats =		(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE),
--	.rates =		SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_192000,
--	.rate_min =		5500,
-+	.rates =		(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_192000),
-+	.rate_min =		8000,
- 	.rate_max =		192000,
- 	.channels_min =		1,
- 	.channels_max =		32,
--	.buffer_bytes_max =	1024 * 1024,
--	.period_bytes_min =	32,
--	.period_bytes_max =	128 * 1024,
-+	.buffer_bytes_max =	64 * 1024,
-+	.period_bytes_min =	64,
-+	.period_bytes_max =	64 * 1024,
- 	.periods_min =		1,
--	.periods_max =		16,
-+	.periods_max =		1024,
- 	.fifo_size =		0,
- };
- 
-@@ -210,53 +294,158 @@
- static int snd_card_loopback_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *hw_params)
- {
--	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+	struct snd_dma_buffer *dmab = NULL;
-+	if (NULL == dpcm->cable->dma_buffer) {
-+#ifdef SND_CARD_LOOPBACK_VERBOSE
-+		printk(KERN_INFO "snd-aloop: allocating dma buffer\n");
-+#endif
-+		dmab = kzalloc(sizeof(*dmab), GFP_KERNEL);
-+		if (NULL == dmab)
-+			return -ENOMEM;
-+		
-+		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_CONTINUOUS,
-+					snd_dma_continuous_data(GFP_KERNEL),
-+					params_buffer_bytes(hw_params),
-+					dmab) < 0) {
-+			kfree(dmab);
-+			return -ENOMEM;
-+		}
-+		dpcm->cable->dma_buffer = dmab;
-+	}
-+	snd_pcm_set_runtime_buffer(substream, dpcm->cable->dma_buffer);
-+	return 0;
- }
- 
- static int snd_card_loopback_hw_free(struct snd_pcm_substream *substream)
- {
--	return snd_pcm_lib_free_pages(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+	snd_card_loopback_cable_t *cable = dpcm->cable;
-+
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+
-+	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-+		if (cable->capture_busy)
-+			return 0;
-+	} else {
-+		if (cable->playback_busy)
-+			return 0;
-+	}
-+
-+	if (NULL == cable->dma_buffer)
-+		return 0;
-+
-+#ifdef SND_CARD_LOOPBACK_VERBOSE
-+	printk(KERN_INFO "snd-aloop: freeing dma buffer\n");
-+#endif
-+	snd_dma_free_pages(cable->dma_buffer);
-+	kfree(cable->dma_buffer);
-+	cable->dma_buffer = NULL;
-+	return 0;
- }
- 
--static int snd_card_loopback_pcm_open(struct snd_pcm_substream *substream)
-+static int snd_card_loopback_open(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int half;
- 	snd_card_loopback_pcm_t *dpcm;
-+	struct snd_card_loopback *loopback = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-+	if (0 == substream->pcm->device) {
-+		if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream)
-+			half = 1;
-+		else
-+			half = 0;
-+	} else {
-+		if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream)
-+			half = 0;
-+		else
-+			half = 1;
-+	}
-+	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-+		if (loopback->cables[substream->number][half].playback_busy)
-+			return -EBUSY;
-+	} else {
-+		if (loopback->cables[substream->number][half].capture_busy)
-+			return -EBUSY;
-+	}
- 	dpcm = kzalloc(sizeof(*dpcm), GFP_KERNEL);
- 	if (dpcm == NULL)
- 		return -ENOMEM;
- 	init_timer(&dpcm->timer);
--	dpcm->timer.data = (unsigned long) dpcm;
--	dpcm->timer.function = snd_card_loopback_pcm_timer_function;
- 	spin_lock_init(&dpcm->lock);
- 	dpcm->substream = substream;
-+	dpcm->loopback = loopback;
-+	dpcm->timer.data = (unsigned long)dpcm;
-+	dpcm->timer.function = snd_card_loopback_timer_function;
-+	dpcm->cable = &loopback->cables[substream->number][half];
-+	dpcm->stream = substream->stream;
- 	runtime->private_data = dpcm;
- 	runtime->private_free = snd_card_loopback_runtime_free;
- 	runtime->hw = snd_card_loopback_info;
-+
-+	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-+		dpcm->cable->playback = substream;
-+		dpcm->cable->playback_valid = 0;
-+		dpcm->cable->playback_running = 0;
-+		dpcm->cable->playback_busy = 1;
-+		if (dpcm->cable->capture_valid)
-+			runtime->hw = dpcm->cable->hw;
-+		else
-+			dpcm->cable->hw = snd_card_loopback_info;
-+	} else {
-+		dpcm->cable->capture = substream;
-+		dpcm->cable->capture_valid = 0;
-+		dpcm->cable->capture_running = 0;
-+		dpcm->cable->capture_busy = 1;
-+		if (dpcm->cable->playback_valid)
-+			runtime->hw = dpcm->cable->hw;
-+		else
-+			dpcm->cable->hw = snd_card_loopback_info;
-+	}
-+	return 0;
-+}
-+
-+static int snd_card_loopback_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-+	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-+		dpcm->cable->playback_valid = 0;
-+		dpcm->cable->playback_running = 0;
-+		dpcm->cable->playback_busy = 0;
-+		dpcm->cable->playback = NULL;
-+	} else {
-+		dpcm->cable->capture_valid = 0;
-+		dpcm->cable->capture_running = 0;
-+		dpcm->cable->capture_busy = 0;
-+		dpcm->cable->capture = NULL;
-+	}
- 	return 0;
- }
- 
- static struct snd_pcm_ops snd_card_loopback_playback_ops = {
--	.open =			snd_card_loopback_pcm_open,
--	.close =		NULL,
-+	.open =			snd_card_loopback_open,
-+	.close =		snd_card_loopback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
- 	.hw_params =		snd_card_loopback_hw_params,
- 	.hw_free =		snd_card_loopback_hw_free,
--	.prepare =		snd_card_loopback_playback_prepare,
-+	.prepare =		snd_card_loopback_prepare,
- 	.trigger =		snd_card_loopback_playback_trigger,
--	.pointer =		snd_card_loopback_playback_pointer,
-+	.pointer =		snd_card_loopback_pointer,
- };
- 
- static struct snd_pcm_ops snd_card_loopback_capture_ops = {
--	.open =			snd_card_loopback_pcm_open,
--	.close =		NULL,
-+	.open =			snd_card_loopback_open,
-+	.close =		snd_card_loopback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
- 	.hw_params =		snd_card_loopback_hw_params,
- 	.hw_free =		snd_card_loopback_hw_free,
--	.prepare =		snd_card_loopback_capture_prepare,
-+	.prepare =		snd_card_loopback_prepare,
- 	.trigger =		snd_card_loopback_capture_trigger,
--	.pointer =		snd_card_loopback_capture_pointer,
-+	.pointer =		snd_card_loopback_pointer,
- };
- 
- static int __init snd_card_loopback_pcm(snd_card_loopback_t *loopback, int device, int substreams)
-@@ -264,22 +453,24 @@
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
--		return err;
--	if (device == 0)
-+	if (0 == device) {
-+		if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
-+			return err;
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
--	else
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
-+	} else {
-+		if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
-+			return err;
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
-+	}
- 	pcm->private_data = loopback;
- 	pcm->info_flags = 0;
- 	strcpy(pcm->name, "Loopback PCM");
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
--					      snd_dma_continuous_data(GFP_KERNEL),
--					      0, 64*1024);
- 	return 0;
- }
- 
--static int __init snd_card_loopback_new_mixer(snd_card_loopback_t * loopback)
-+static int __init snd_card_loopback_new_mixer(snd_card_loopback_t *loopback)
- {
- 	struct snd_card *card = loopback->card;
- 
-@@ -292,7 +483,7 @@
- {
- 	struct snd_card *card;
- 	struct snd_card_loopback *loopback;
--	int err;
-+	int subdev, half, err;
- 
- 	if (!enable[dev])
- 		return -ENODEV;
-@@ -301,6 +492,21 @@
- 	if (card == NULL)
- 		return -ENOMEM;
- 	loopback = (struct snd_card_loopback *)card->private_data;
-+
-+	for (subdev = 0; subdev < pcm_substreams[dev]; subdev++) {
-+		for (half = 0; half < 2; half++) {
-+			loopback->cables[subdev][half].playback = NULL;
-+			loopback->cables[subdev][half].capture = NULL;
-+			loopback->cables[subdev][half].dma_buffer = NULL;
-+			loopback->cables[subdev][half].playback_valid = 0;
-+			loopback->cables[subdev][half].capture_valid = 0;
-+			loopback->cables[subdev][half].playback_running = 0;
-+			loopback->cables[subdev][half].capture_running = 0;
-+			loopback->cables[subdev][half].playback_busy = 0;
-+			loopback->cables[subdev][half].capture_busy = 0;
-+		}
-+	}
-+	
- 	loopback->card = card;
- 	if (pcm_substreams[dev] < 1)
- 		pcm_substreams[dev] = 1;
-
---5vNYLRcllDrimb99
+--===============0525203521==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -648,7 +234,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---5vNYLRcllDrimb99
+--===============0525203521==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -659,4 +245,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---5vNYLRcllDrimb99--
+--===============0525203521==--
