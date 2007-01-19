@@ -1,10 +1,8 @@
-From: Tim <terminator356@users.sourceforge.net>
-Subject: Re: A FIX FOR alsa-lib emu10k1.h (IT FIXES ld10k1)
-Date: Fri, 19 Jan 2007 01:17:38 +0000 (UTC)
-Message-ID: <loom.20070119T021318-968@post.gmane.org>
-References: <200701170012.07474.terminator356@users.sourceforge.net>
-	<s5hzm8hzv9d.wl%tiwai@suse.de> <s5hfya8zj72.wl%tiwai@suse.de>
-Mime-Version: 1.0
+From: Chase Douglas <cndougla@purdue.edu>
+Subject: Having issues with an I2S driver
+Date: Thu, 18 Jan 2007 20:40:04 -0500
+Message-ID: <AAFF1BF1-5C84-44DD-8545-64007D2242D4@purdue.edu>
+Mime-Version: 1.0 (Apple Message framework v752.3)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
@@ -20,46 +18,28 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 18 January 2007 6:08 am, you wrote:
-> At Wed, 17 Jan 2007 13:35:10 +0100,
-> > terminator356 -> users.sourceforge.net wrote:
-> > > Hi, ld10k1 doesn't work, crashes. Lots of people saying it.
-> > > In the alsa-kernel/include emu10k1.h,
-> > > 	union {
-Sorry that should be alsa-kernel/include/sound/emu10k1.h
+I'm trying to write an alsa driver for cirrus logic's ep93xx series  
+of chips. I based my driver off of the AC'97 driver for the same  
+chips. The AC'97 driver used a compact mode where the 16 bit samples  
+from alsa are pushed to AC'97 dma channel directly which is read by  
+the cirrus chip as two 16 bit samples in a 32 bit word.  
+Unfortunately, the I2S peripheral doesn't have a compact mode. When I  
+send 16 bit samples to it, I have to take the stream of 16 bit  
+samples and expand them to 32 bit words for every sample.
 
-> > Well, this is an ABI breakage by introducing the TLV support.
-What is ABI? "Always Broken Interface"? He he...
+I believe I have the playback copy function implemented correctly to  
+do this, but I have no clue how to change the other pcm functions to  
+support this. What sort of configuration changes need to be made so  
+that everything works correctly? I tried doubling the period_bytes  
+size when allocating dma buffers and returning the correct number of  
+frames in the pointer function by halving the number of transferred  
+bytes before doing the conversion. The result is a driver that seems  
+to play at the correct speed (before it was playing twice as fast),  
+but it cycles playing for about 1/4 second and then silence for 1/4  
+second. If anyone cares to see any code I would be happy to oblige.
 
-> The patch below changes the driver to accept the old ABI as default,
-> then switch to the new ABI if EMU10K1_PVERSION ioctl is called.
-> Could you give it a try?  If it works, I'll post a patch to ld10k1 to
-> switch to the new ABI.
-> Takashi
->
-> diff -r beb52b12c43f include/emu10k1.h
-> --- a/include/emu10k1.h	Tue Jan 16 17:49:21 2007 +0100
-> +++ b/include/emu10k1.h	Thu Jan 18 12:04:51 2007 +0100
-(Should be include/sound/emu10k1.h)
-
->
-> @@ -1449,6 +1449,7 @@ struct snd_emu10k1 {
->  	unsigned int tos_link: 1,		/* tos link detected */
->  		rear_ac97: 1,			/* rear channels are on AC'97 
-*/
->  		enable_ir: 1;
-> +	unsigned int support_tlv :1;
-
-This is what I get, what am I doing wrong?:
-[me@localhost sound]# patch -p1 emu10k1.h alsa-driver-tiwai-emu10k1-h-patch
-patching file emu10k1.h
-patch: **** malformed patch at line 5: unsigned int tos_link: 1,/* tos link 
-           detected */
-
-(That line is present in the emu10k1.h file).
-Thanks.
-
-
+Thanks a lot for your help,
+Chase Douglas
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
