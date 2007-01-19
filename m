@@ -1,17 +1,11 @@
-From: "mail1@respond.com" <mail1@respond.com>
-Subject: Martial arts equipment
-Date: Fri, 19 Jan 2007 02:43:22 -0600
-Message-ID: <20070119084329.38967999A4@mail.perex.cz>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H74rC-0004Ch-B5 delayed 48 hours
+Date: Fri, 19 Jan 2007 00:53:25 -0800
+Message-ID: <E1H7pUz-0003VR-R3@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0117001790=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E98D934C
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jan 2007 09:43:28 +0100 (MET)
-Received: from 192.168.1.179 (unknown [204.213.129.34])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	38967999A4
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jan 2007 09:43:29 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,68 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
---===============0117001790==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C6527E.AE8904D0"
+The message identifier is:     1H74rC-0004Ch-B5
+The subject of the message is: And Jerusalem, And I will not perish at noon.
+The date of the message is:    Wed, 17 Jan 2007 12:34:31 +0530
 
-This is a multi-part message in MIME format.
+The address to which the message has not yet been delivered is:
 
-------=_NextPart_000_0000_01C6527E.AE8904D0
-Content-Type: text/plain;
- charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-This is a text part of the message.
-It is shown for the users of old-style e-mail clients
-------=_NextPart_000_0000_01C6527E.AE8904D0
-Content-Type: text/html;
- charset="utf-8"
-
-<HTML>
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft DHTML Editing Control">
-<TITLE></TITLE>
-</HEAD>
-<BODY>
-<P>&nbsp;</P>
-<P>Dear Friends,</P>
-<P>E-Martial Arts is having its post holiday sale!&nbsp; <A 
-href="http://atmst.net/utr.php?e=QkaQRrtPtkHQkaQRfsgptEJDgsu&url=0e1a20712346bb22e0dad7c2ef16ebb3*2007119emartialtest1*http://www.emartialarts.net*2">Click here</A>          to see the 
-latest stock and discount prices on martial arts equipment including throwing 
-stars, swords, staffs, sais, and more!</P>
-<P>&nbsp;</P>
-<P>[OPT-IN MAILING 324]</P>
-<img src="http://atmst.net/o~2007119emartialtest1~0e1a20712346bb22e0dad7c2ef16ebb3~QkaQRrtPtkHQkaQRfsgptEJDgsu.gif" width=1 height=1>
-</BODY>
-</HTML>
-------=_NextPart_000_0000_01C6527E.AE8904D0--
-
-
---===============0117001790==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0117001790==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0117001790==--
