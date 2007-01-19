@@ -1,10 +1,11 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H74rC-0004Ch-B5 delayed 48 hours
-Date: Fri, 19 Jan 2007 00:53:25 -0800
-Message-ID: <E1H7pUz-0003VR-R3@externalmx-1.sourceforge.net>
+From: Felix Hammer <f.hammer@web.de>
+Subject: cmipci patch
+Date: Fri, 19 Jan 2007 11:22:05 +0100
+Message-ID: <200701191122.05134.f.hammer@web.de>
+Reply-To: f.hammer@web.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_NvJsFoplHBdG/GB"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +19,69 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+--Boundary-00=_NvJsFoplHBdG/GB
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-The message identifier is:     1H74rC-0004Ch-B5
-The subject of the message is: And Jerusalem, And I will not perish at noon.
-The date of the message is:    Wed, 17 Jan 2007 12:34:31 +0530
+hi
 
-The address to which the message has not yet been delivered is:
+according to this bug --> 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2491
+i attached the diff for commit.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+regards
+felix
+_______________________________________
+http://www.lehrsaiten.de
+http://sourceforge.net/projects/pokerth
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+--Boundary-00=_NvJsFoplHBdG/GB
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="cmipci.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="cmipci.diff"
+
+--- alsa-driver-hg20070119/alsa-kernel/pci/cmipci.c	2006-12-21 02:00:15.000000000 +0100
++++ cmipci.c	2007-01-19 10:46:37.000000000 +0100
+@@ -2779,6 +2779,13 @@
+ 	struct snd_opl3 *opl3;
+ 	int err;
+ 
++ 
++ 	if ( fm_port == 0 ) {
++ 		snd_cmipci_clear_bit(cm, CM_REG_MISC_CTRL, CM_FM_EN);
++ 		return 0;
++ 	}
++ 
++
+ 	/* first try FM regs in PCI port range */
+ 	iosynth = cm->iobase + CM_REG_FM_PCI;
+ 	err = snd_opl3_create(cm->card, iosynth, iosynth + 2,
+
+--Boundary-00=_NvJsFoplHBdG/GB
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--Boundary-00=_NvJsFoplHBdG/GB
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--Boundary-00=_NvJsFoplHBdG/GB--
