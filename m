@@ -1,12 +1,11 @@
-From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: what does struct snd_ac97_build_ops do? suspect i need
- a new one for the via1618 to get Surround to work
-Date: Fri, 19 Jan 2007 15:49:24 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5ADF3476@sea-exch-01.na.corp.dmxmusic.com>
+From: Tim <terminator356@users.sourceforge.net>
+Subject: Need help: My .asoundrc no longer works.
+Date: Sat, 20 Jan 2007 00:39:20 +0000 (UTC)
+Message-ID: <loom.20070120T001557-202@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0607187654=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,320 +18,271 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Thanks for the emu patch! Works ok now.
 
---===============0607187654==
-Content-class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C73C24.7353798F"
+Now I have a problem I reeeeeally need help with.
+I have an SBLive! (emu10k1) as card 0 and an 
+ M-audio Delta1010LT (ice1712) as card 1.
+With alsa-1.0.9 the following .asoundrc files worked OK.
 
-This is a multi-part message in MIME format.
+But now I've installed Mandriva2007 (alsa-1.0.12).
+What happens now is this: QJackCtl presents me with 
+ 16 inputs, as before, but only the lower eight emu10k1 
+ ones give me any audio. I get no audio by connecting 
+ any of the upper eight ice1712 inputs to ANY of the 
+ (twelve hw:1,0) outputs.
+If I reverse the order of the cards in .asoundrc - see below,
+ (ie lower eight inputs ice1712, upper eight emu10k1),
+ then STILL only the LOWER eight QJackCtl inputs work -
+ which are the ice1712 inputs !
 
-------_=_NextPart_001_01C73C24.7353798F
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+But if I interleave the inputs - see third .asoundrc below,
+ (ie one emu input, then one ice input, then one emu etc.),
+ strangely only the emu inputs work, not the ice inputs !
 
-Hello;
+Note the single use of a plug converter. This is the only way
+ I can make them work, converting the emu but not the ice gives 
+ 'no playback configs avail', and converting both emu and ice gives
+ ALSA: could not complete read of 0 frames: error = -32
+ cycle execution failure, exiting
+ DRIVER NT: could not run driver cycle.
 
-I have an MSI CN700T ITX motherboard with a VIA 8237 SouthBridge and a
-VIA 1618 codec.
+At first I though maybe a pcm multi problem. 
+I looked at changes to pcm_multi.c, not much change there, but I 'reverted'
+ a couple of things back to 1.0.9 state, but it didn't fix the problem.
 
-Using aplay and speakertest, 2 channel sound works well, but 6ch sound
-with the ever popular chan-id.wav* produces no output.
+Anyway, since the problem is always with the 'b' slave,
+ and since the 'b' slave always needs a converter, I'm wondering
+ if there's a problem with the 'plug' converter itself (or my plug sections).
 
-However, neither aplay nor speakertest *fail* when attempting to write
-to the other channels so they evidently exist, but may be muted.
-
-I went to the trouble of installing windows and the VIA Vinyl driver for
-same and after I used the via configuration app to set the mic and line
-inputs to be C/LFE and Rr outs, I received the expected output.
-
-Is 1618 6ch expected to work with ALSA 1.0.13?=20
-
-based on looking at ac97_codec.c: static const struct ac97_codec_id
-snd_ac97_codec_ids ,
- it seems to be stubbed out instead of fully implemented:
-
-{ 0x56494182, 0xffffffff, "VIA1618", NULL, NULL },
-
-
-My suspicion is that I need to create the following items (hx3rd from
-the vt1616 versions):
-
-static const struct snd_kcontrol_new snd_ac97_controls_vt1618
-
-static int patch_vt1618_specific(struct snd_ac97 * ac97)
-
-static struct snd_ac97_build_ops patch_vt1618_ops
-
-int patch_vt1618(struct snd_ac97 * ac97)
+Any help much appreciated! Thanks. 
+I hope this can be fixed - many hours I've just spent, getting
+ this new distro (fixed) up - only to reach this conclusion now!
+Cheers. Tim. 
 
 
-Am I correct in my assumptions? If so, what do these 2 arrays and 2
-functions actually do?
+----------------------------------------------------
+Original .asoundrc with emu10k1 ahead of ice1712:
+----------------------------------------------------
+pcm.ice1712 {
+              type hw
+              card 1
+            }
 
-Tnx!
+pcm_slave.sl3 {
+    pcm ice1712
+}
 
-johnu
+pcm.ice1712_convert {
+    type plug
+    slave sl3
+}
 
+pcm.multi_rec {
+            type multi;
+            slaves.a.pcm "hw:0,2";
+            slaves.a.channels 16;
+            slaves.b.pcm ice1712_convert;
+            slaves.b.channels 8;
+            
+            # Some SBLive! inputs.
+            # Customized emu10k1 driver gives me EIGHT seperate
+            #  MIDI SoundFont audio inputs, rather than just
+            #  combining them ALL on TWO FX lines !!!
+            # Ask me, if you're wondering about this.
+            # I may ask YOU later to include this feature in alsa !
+            bindings.0.slave a;
+            bindings.0.channel 10;
+            bindings.1.slave a;
+            bindings.1.channel 11;
+            bindings.2.slave a;
+            bindings.2.channel 12;
+            bindings.3.slave a;
+            bindings.3.channel 13;
+            
+            bindings.4.slave a;
+            bindings.4.channel 14;
+            bindings.5.slave a;
+            bindings.5.channel 15;
+            bindings.6.slave a;
+            bindings.6.channel 0;
+            bindings.7.slave a;
+            bindings.7.channel 1;
+            
+            #
+            # M-audio delta1010LT
+            #
+            bindings.8.slave b;
+            bindings.8.channel 0;
+            bindings.9.slave b;
+            bindings.9.channel 1;
+            bindings.10.slave b;
+            bindings.10.channel 2;
+            bindings.11.slave b;
+            bindings.11.channel 3;
+          
+            bindings.12.slave b;
+            bindings.12.channel 4;
+            bindings.13.slave b;
+            bindings.13.channel 5;
+            bindings.14.slave b;
+            bindings.14.channel 6;
+            bindings.15.slave b;
+            bindings.15.channel 7;
+          }
 
-* will that unknown woman become the alsa surround standard the same way
-that 'lena' is the image processing standard?* :-) -
-http://robotics.eecs.berkeley.edu/~mayi/imgproc/thdemo.html
-
-------_=_NextPart_001_01C73C24.7353798F
-Content-Type: text/html;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>what does struct snd_ac97_build_ops do? suspect i need a new one =
-for the via1618 to get Surround to work</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">Hello;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">I have =
-an MSI CN700T ITX motherboard with a VIA 8237 SouthBridge and a VIA 1618 =
-codec.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">Using aplay and speakertest,</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">2 channel sound works well, but 6ch</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> sound with the ever popular chan-id</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">.wav</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">*</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"></FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">produces no =
-output</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">.</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">However</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">, neither aplay nor =
-speakertest *</FONT></SPAN><SPAN LANG=3D"en-us"><B></B></SPAN><SPAN =
-LANG=3D"en-us"><B><FONT SIZE=3D2 =
-FACE=3D"Arial">fail</FONT></B></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">* when attempting to write =
-to the</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">other channels so they evidently exist, =
-but may be muted.</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">I went =
-to the trouble of installing windows and the VIA Vinyl driver for same =
-and after</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">I</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"></FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">used the via configuration =
-app to set the mic and line inputs to be</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> C/LFE and Rr outs,</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">received</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> the expected =
-output.</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Is 1618 =
-6ch expected to work with ALSA 1.0.13?</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> </SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">based on looking at ac97_</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">codec</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">.c</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">:</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">static const struct =
-ac97_codec_id snd_ac97_codec_ids</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"></FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">,</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">&nbsp;it seems to be stubbed =
-out</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial"> instead of fully =
-implemented:</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">{ 0x56494182, 0xffffffff, =
-&quot;VIA1618&quot;,</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">NULL</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">, NULL },</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">My suspicion is that</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">need to create the following items</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">(hx3rd from the vt1616 versions)</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">:</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">static const struct snd_kcontrol_new =
-snd_ac97_controls_vt16</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">18</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">static int patch_vt161</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">8</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">_specific(struct snd_ac97 * =
-ac97)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">static struct snd_ac97_build_ops =
-patch_vt161</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">8</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">_ops</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">int patch_vt161</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">8</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">(struct snd_ac97 * =
-ac97)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Am</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">I</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> correct in my assumptions? If so, what do these 2 =
-arrays</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">and 2 functions actually =
-do?</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Tnx!</FONT></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">johnu</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P DIR=3DLTR><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">*</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">will that</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">unknown</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">woman become the alsa surround standard the same way =
-that</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">&#8216;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">lena</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> is the image processing standard?*</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"></FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT FACE=3D"Wingdings" SIZE=3D2>J</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> -</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial"><A =
-HREF=3D"http://robotics.eecs.berkeley.edu/~mayi/imgproc/thdemo.html">http=
-://robotics.eecs.berkeley.edu/~mayi/imgproc/thdemo.html</A></FONT></SPAN>=
-<SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C73C24.7353798F--
+ctl.multi_rec {
+            type hw;
+            card 0;
+          }
 
 
 
---===============0607187654==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-----------------------------------------------
+.asoundrc with ice1712 ahead of emu10k1
+-----------------------------------------------
+pcm.emu10k1_multi_rec {
+              type hw
+              card 0
+              device 2
+            }
+
+pcm_slave.sl2 {
+    pcm emu10k1_multi_rec
+}
+
+pcm.emu10k1_convert_rec {
+    type plug
+    slave sl2
+}
+
+pcm.multi_rec {
+            type multi;
+            slaves.a.pcm "hw:1,0";
+            slaves.a.channels 8;
+            slaves.b.pcm emu10k1_convert_rec;
+            slaves.b.channels 16;
+            
+            #
+            # M-audio delta1010LT
+            #
+            bindings.0.slave a;
+            bindings.0.channel 0;
+            bindings.1.slave a;
+            bindings.1.channel 1;
+            bindings.2.slave a;
+            bindings.2.channel 2;
+            bindings.3.slave a;
+            bindings.3.channel 3;
+          
+            bindings.4.slave a;
+            bindings.4.channel 4;
+            bindings.5.slave a;
+            bindings.5.channel 5;
+            bindings.6.slave a;
+            bindings.6.channel 6;
+            bindings.7.slave a;
+            bindings.7.channel 7;
+            
+            # Eight SBLive! inputs. See comments in the other .asoundrc
+            bindings.8.slave b;
+            bindings.8.channel 10;
+            bindings.9.slave b;
+            bindings.9.channel 11;
+            bindings.10.slave b;
+            bindings.10.channel 12;
+            bindings.11.slave b;
+            bindings.11.channel 13;
+            
+            bindings.12.slave b;
+            bindings.12.channel 14;
+            bindings.13.slave b;
+            bindings.13.channel 15;
+            bindings.14.slave b;
+            bindings.14.channel 0;
+            bindings.15.slave b;
+            bindings.15.channel 1;
+          }
+
+ctl.multi_rec {
+            type hw;
+            card 0;
+          }
+
+
+
+------------------------------------------------------
+.asoundrc with emu10k1 interleaved with ice1712:
+------------------------------------------------------
+pcm.ice1712 {
+              type hw
+              card 1
+            }
+
+pcm_slave.sl3 {
+    pcm ice1712
+}
+
+pcm.ice1712_convert {
+    type plug
+    slave sl3
+}
+
+pcm.multi_rec {
+            type multi;
+            slaves.a.pcm "hw:0,2";
+            slaves.a.channels 16;
+            slaves.b.pcm ice1712_convert;
+            slaves.b.channels 8;
+            
+            # Interleaved SBLive! and Delta1010LT inputs.
+            #
+            bindings.0.slave a;
+            bindings.0.channel 10;
+            bindings.1.slave b;
+            bindings.1.channel 0;
+            bindings.2.slave a;
+            bindings.2.channel 11;
+            bindings.3.slave b;
+            bindings.3.channel 1;
+            
+            bindings.4.slave a;
+            bindings.4.channel 12;
+            bindings.5.slave b;
+            bindings.5.channel 2;
+            bindings.6.slave a;
+            bindings.6.channel 13;
+            bindings.7.slave b;
+            bindings.7.channel 3;
+            
+            bindings.8.slave a;
+            bindings.8.channel 14;
+            bindings.9.slave b;
+            bindings.9.channel 4;
+            bindings.10.slave a;
+            bindings.10.channel 15;
+            bindings.11.slave b;
+            bindings.11.channel 5;
+          
+            bindings.12.slave a;
+            bindings.12.channel 0;
+            bindings.13.slave b;
+            bindings.13.channel 6;
+            bindings.14.slave a;
+            bindings.14.channel 1;
+            bindings.15.slave b;
+            bindings.15.channel 7;
+          }
+
+ctl.multi_rec {
+            type hw;
+            card 0;
+          }
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0607187654==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0607187654==--
