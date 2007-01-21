@@ -1,10 +1,15 @@
-From: huashaong662@163.com
-Subject: =?GB2312?B?ssbO8bncwO0=?=
-Date: Sun, 21 Jan 2007 18:59:37 +0800
-Message-ID: <E1H8aQD-0005M6-Jl@mail.sourceforge.net>
-Reply-To: huashaong662@163.com
-Content-Type: multipart/mixed; boundary="===============1009147928=="
+From: "Sjouke Hoffman" <transcendant@geekmonkeys.com>
+Subject: Microsoft Office 2OO7 & Adobe Acrobat 8 for 79$ today
+	Jan 21 14:10:00 MSK 2007
+Date: Sun, 21 Jan 2007 12:38:27 +0100
+Message-ID: <000001c73d4e$c67a5d80$0100007f@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from localhost (p57A6E445.dip.t-dialin.net [87.166.228.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6154A19A
+	for <alsa-devel@alsa-project.org>; Sun, 21 Jan 2007 12:26:50 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,46 +19,124 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1009147928==
-Content-Type: text/plain;charset="GB2312"
+All programms on speclal from Liz's hotsoft for 2007.
 
-贵公司负责人(经理/财务)您好!
-    深圳粤丰华实业有限公司。在全国各地（广东、山东、浙江、北京等地）设有分公司，我司在深圳市实力雄厚，有着良好的社会关系，现因各地公司进项较多完成不了每月销售额度.为要冲减进项，每月有部分电脑增值税发票和普通国税、地税发票 (商品销售、其它服务业、广告、电脑运输、　建筑工程、等等)发票对外优惠代开或合作!还可以根据所做数量额度的大小来商讨优惠的点数。
-    公司成立多年一直坚持以“诚信”为中心作为公司的核心思想、牢固树立公司形象、真正做到“彼此合作一次、必成永久朋友”
-    本公司郑重承诺所用发票均可上网查询或到税务抵扣验证！
-    此信息长期有效，如须进一步洽商:
-    详情请电:13927477688 邮箱;huashaong662@163.com  
-联系人：刘美武
-地址：深圳市深南路83号长丰大厦2503室        
-    顺祝  
-商祺! 						
-深圳粤丰华实业有限公司
+Microsoft 0ffice 2OO7    79$
+Microsoft Vista Ultimate 79$
+Adobe Acrobat 8 PR0 	 79$
+Windows XP PR0 +SP2 	 49$
+Adobe Premiere 2.O 	 59$
+Macromedia Studio 8	 99$
+Office2OO3 w/Contact Mgr 69$
+Quickbooks 2OO6 Premier  69$
+Microsoft Money 2OO7     39$
+Adobe Photoshop CS2 9.O  69$
+Autodesk Autocad 2OO7 	 129$
+Corel Grafix Suite X3 	 59$
+Adobe Creative Suite CS2 149$
+Adobe Illustrator CS2	 59$
+Microsoft Office XP PR0  49$
+Macromedia Dreamweaver 8 49$
+McAfee Internet Sec. 7   29$
+Norton Antivirus Corp.   29$
 
+D0WNL0AD lnstantly
+http://rp.eroemchet.com/
 
+Mac Speclals:
+Adobe Acrobat PR0 7	 	69$
+Adobe After Effects	 	49$
+Adobe Creative Suite 2 Premium 149$
+Ableton Live 5.0.1		49$
+Adobe Photoshop CS		49$
 
---===============1009147928==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://rp.eroemchet.com/-software-for-mac-.php
+
+1 quart warm water 
+1/4 cup Crystal Louisiana Hot Sauce
+tightly sealed container in a cool place. When ready to use, 
+This softens the chicken and keeps it hot until served. Serves four.
+1/2 teas. Salt
+thickens to the consistency of dough. Mix in the almonds.
+1/4 cup Granulated sugar           
+Text - Cooking - Authentic Kentucky Fried Chicken Recipes.txt
+3 tablespoons salt
+1 cup fresh spinach, well rinsed and chopped
+melted butter from the pan. Bake uncovered for 25 min.
+1/2 teaspoon garlic powder
+Combine all ingredients and cook for 5-10 
+1/4 cup water
+2 1/2 c. all-purpose flour 
+2 cloves Garlic, peeled and minced
+Put the ice cream into four separate bowls.
+1/2 cup warm water
+		3 carrots
+In a jar combine all ingredients well and store in a dry place, covered, until ready to use.
+15 to 20 minutes or until done. 
+then coat the chicken with the dry flour mixture, then the
+1 stick Margarine
+coated. Drop the chicken, one piece at a time into the hot s
+Salad:
+1/4  Teaspoon      dried oregano
+Let it finish drying after grinding.
+McDonald's Sweet and Sour Sauce
+In a large, heavy pot slowly render the salt pork. Remove the cracklings 
+utes. Drain and place in a bowl with ice water and cool for
+1 medium onion, chopped
+3 cups powdered sugar
+======================================================
+Blend Milk and Quik for 10 seconds on high speed.
+2 eggs, separated and beaten
+for at least 2 hours before serving.  Serves 6 to 8.
+2 ts Dark soy sauce
+2/3 cup milk
+El Pollo Loco Chicken
+1 ts Baking soda
+the sides of the bowl and cover with a cloth dampened in warm water.
+2 teaspoons sesame oil 
+With knife, put a notch every 2". Cut with thread or knife.
+it combines. After the dough is created let it rest to rise for an 
+then cut in 1/4-inch slices 
+The mashed potatoes are served and made by mix. It comes in
+1 cup     shredded jack cheese
+epper, and salt. When the potatoes are done and have cooled
+1 egg
+6 cups Crisco Shortening
+2. Spread the coconut over the bottom of the inside of a large oven pan.
+6 sprigs of cilantro, stems removed
+Oil for frying
+2 cups  Buttermilk
+3 tablespoons flour
+"Pulse" in the ice cream until barely mixed.
+cream of tartar. Gradually mix in enough of the confectioner's sugar
+2 tablespoons basil, julienned 
+
+1/2 tsp. Garlic powder 
+1/2 carrot, julienned or shredded
+Sara Lee Poundcake
+Lum's Ollieburger
+e the flour, salt, pepper, garlic powder, paprika and MSG. W
+1 grated onion
+2 tablespoons whole milk
+1/8 teaspoon Garlic Powder
+with a wire whip until smooth. Add the blended ingredients to the 
+
+well. Allow them to sit overnight in the refrigerator. When
+stirring halfway through the cooking time. Melt completely, but be careful
+		1/2 cup butter
+Miracle Whip
+BESTEMOR'S AEBLESKIVER
+cream of chicken soup and seasoning. The mixture should be t
+For the filling, cream the butter and shortening. Slowly add the sugars
+1/4 teaspoon Msg
+3. Place bread cheese side down on griddle. Cook until cheese
+well coated. Press down on the ice cream to help the coconut stick. 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1009147928==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1009147928==--
