@@ -1,10 +1,12 @@
-From: "Henry \"Drew\" W. Abbot, Jr." <hwa5c@virginia.edu>
-Subject: yet another full duplex wannabe
-Date: Mon, 22 Jan 2007 16:12:26 -0500
-Message-ID: <45B528BA.9020101@virginia.edu>
+From: <jmsgrtn-alsa@yahoo.com>
+Subject: No sound with intel hda driver on a sony vaio vgx
+	xl100 system
+Date: Mon, 22 Jan 2007 22:22:01 +0100 (CET)
+Message-ID: <486159.63650.qm@web36806.mail.mud.yahoo.com>
+Reply-To: jmsgrtn-alsa@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,71 +20,244 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
-   I'm trying to achieve a full-duplex sound processing app with ALSA.  
-I've been messing around with various code examples for days now, and 
-I've started hitting some of (what seems to be) the same ol' 
-difficulties any newbie encounters when trying to tackle full duplex 
-with ALSA.  For now, the goal is simply to simultaneously capture from 
-plughw:0,0 and playback to plughw:0,0.  I've gotten a few "working" test 
-apps -- by "working", I mean I can hear stuff, but the sound is really 
-choppy -- that is, I'll hear captured sound for one period, then I'll 
-hear about one period of silence while readi blocks, then another period 
-of sound, then another period of silence, etc. (this can resemble the 
-sound of a helicopter) -- anyway, the net result is an ugly and 
-distorted capture.  The main two test apps I'm working with right now 
-are both based on the pcm.c example.  In one, I essentially turned the 
-write_loop into a readwrite_loop, and in the other, I use two threads 
-(via pthreads), one to capture and one to playback.  I've only messed 
-with the standard interleaved, blocking interface.  From the discussion 
-at 
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09937.html, 
-I assume a better approach would be to use snd_async_add_pcm_handler() 
-and/or mmapped access and snd_pcm_avail_update() on both capture and 
-playback PCMs.  However, should I be running the capture and playback in 
-separate threads or in the same thread?  In separate processes (i.e. 
-fork() vs. pthreads)?  Intuitively, separate threads seems like it could 
-help, but I should be calling writei pretty soon after calling readi 
-completes (right?), so it also seems like having them run in separate 
-threads would complicate things.  Right now, I've tried to "hack it," 
-such that whenever readi is blocking, sound will still be playing from 
-the last writei (is this conceptually accurate?), but to no avail.  
-Messing with the period and buffer sizes changes the "helicopter effect" 
-somewhat (i.e. for smaller periods, the sound has a tendency to blow up 
-/ be unstable -- I guess this is feedback), but basically it's the 
-same.  At first, I thought I was just way off, but after running the 
-latency.c example and getting the same "helicopter-like" results, I 
-gained back some confidence.  I even tried running 'ecasound -i 
-alsahw,0,0 -o alsahw,0,0' and it, too, yielded similar results.  I 
-didn't try messing with period or buffer sizes with ecasound, but I 
-tried many with latency.c and nothing seemed to produce smooth, 
-undistorted sound.  Surely, I don't have to apply low-latency patches or 
-something to simply run a full-duplex userland app, do I?  I know what 
-you guys want to say... I should just forget about all of it and use 
-JACK, and yes, I am already at the JACK website reading the 
-documentation, but I would like to get my own lower-level ALSA code 
-working, too.  In summary, my questions are:
-   1) Any ideas on why latency.c and ecasound aren't working smoothly?
-   2) Any advice on whether to use the standard ALSA interface, the 
-async, the mmap, etc. for a full duplex app?
-   3) Any advice on single-threaded vs. multi-threaded?
-   4) Should my capture and playback PCMs be configured the same way?  
-I.e. how about this for an app.. should I have a smaller period size for 
-capture, and capture each little bit at a time, and when the time comes 
-around to send another larger period for playback, I can send however 
-many smaller capture periods I have received at that time.
+Hi
 
-Thanks for your time, and sorry for such a long post.
+I can't have any sound on my sony VAIO vgx-xl100 system with the 1.0.14rc2
+build on a 2.6.18 kernel (debian)
+
+the output of lspci -nv is :
+
+00:1b.0 0403: 8086:27d8 (rev 01)
+	Subsystem: 104d:81f7
+	Flags: bus master, fast devsel, latency 0, IRQ 169
+	Memory at fdff8000 (64-bit, non-prefetchable) [size=3D16K]
+	Capabilities: <access denied>
+
+dmesg gives :
+
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_in=
+tel.c:696:
+codec_mask =3D 0x1
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:611:
+AUD_IN =3D 6
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:233:
+UNMUTE IN: NID=3D0x6 IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:233:
+UNMUTE IN: NID=3D0xe IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:233:
+UNMUTE IN: NID=3D0x7 IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:217:
+UNMUTE OUT: NID=3D0x7
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:648:
+[Capture Source] NID=3D0x6, #SRC=3D1
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:651:
+  [Line] IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:289:
+AUD_OUT found 2
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:233:
+UNMUTE IN: NID=3D0xa IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:217:
+UNMUTE OUT: NID=3D0xa
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:217:
+UNMUTE OUT: NID=3D0xa
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:251:
+CONNECT: NID=3D0x6 IDX=3D0x0
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:713:
+[Master Playback Switch] NID=3D0x2, DIR=3DOUT
+ALSA
+/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_ge=
+neric.c:733:
+[Master Playback Volume] NID=3D0x2, DIR=3DOUT
+
+and the contents of /proc/asound/card0/codec# is :
+
+Codec: SigmaTel CXD9872RD/K
+Address: 0
+Vendor Id: 0x83847661
+Subsystem Id: 0x104d0b00
+Revision Id: 0x104201
+Default PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: ofs=3D0x00, nsteps=3D0x0f, stepsize=3D0x05, mute=3D1
+Default Amp-Out caps: ofs=3D0x7f, nsteps=3D0x7f, stepsize=3D0x02, mute=3D1
+Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x3c 0x3c]
+  Power: 0x0
+Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0xff 0xff]
+  Power: 0x0
+Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x3c 0x3c]
+  Power: 0x0
+Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x07
+Node 0x07 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x00 0x00]
+  Connection: 1
+     0x0e
+Node 0x08 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x09
+Node 0x09 [Audio Selector] wcaps 0x300903: Stereo Amp-In
+  Amp-In caps: N/A
+  Amp-In vals:  [0x80 0x80]
+  Connection: 1
+     0x15
+Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173c: IN OUT HP Detect
+  Pin Default 0x02024110: [Jack] Line Out at Ext Front
+    Conn =3D 1/4, Color =3D Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x02
+Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0814: OUT Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn =3D 1/8, Color =3D Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x04
+Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0814: OUT Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn =3D 1/8, Color =3D Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x03
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x08173c: IN OUT HP Detect
+  Pin Default 0x02a19920: [Jack] Mic at Ext Front
+    Conn =3D 1/8, Color =3D Pink
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x02
+Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0824: IN Detect
+  Pin Default 0x01845121: [Jack] Line In at Ext Rear
+    Conn =3D RCA, Color =3D Red
+  Pin-ctls: 0x20: IN
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0814: OUT Detect
+  Pin Default 0x01045111: [Jack] Line Out at Ext Rear
+    Conn =3D RCA, Color =3D Red
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x05
+Node 0x10 [Audio Output] wcaps 0x40211: Stereo Digital
+  PCM:
+    rates [0x3e0]: 44100 48000 88200 96000 176400
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+Node 0x11 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01451112: [Jack] SPDIF Out at Ext Rear
+    Conn =3D Optical, Color =3D Black
+  Pin-ctls: 0x00:
+  Connection: 2
+     0x10* 0x09
+Node 0x12 [Audio Input] wcaps 0x140311: Stereo Digital
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Connection: 1
+     0x13
+Node 0x13 [Pin Complex] wcaps 0x440381: Stereo Digital
+  Pincap 0x0834: IN OUT Detect
+  Pin Default 0x01c51122: [Jack] SPDIF In at Ext Rear
+    Conn =3D Optical, Color =3D Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x18
+Node 0x14 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn =3D 1/8, Color =3D Black
+  Pin-ctls: 0x20: IN
+Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=3D0x00, nsteps=3D0x04, stepsize=3D0x27, mute=3D1
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 4
+     0x0a 0x0d* 0x14 0x02
+Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=3D0x03, nsteps=3D0x03, stepsize=3D0x17, mute=3D0
+  Amp-Out vals:  [0x00]
+Node 0x17 [Volume Knob Widget] wcaps 0x600000: Mono
+Node 0x18 [Audio Output] wcaps 0x40201: Stereo Digital
 
 
-Best,
-Drew
+
+---------------------------------
+Jean-Marc Segretain
+mailto:jmsegretain@yahoo.com =
 
 
 
+
+	=
+
+
+	=
+
+		=
+
+___________________________________________________________________________ =
+
+D=E9couvrez une nouvelle fa=E7on d'obtenir des r=E9ponses =E0 toutes vos qu=
+estions ! =
+
+Profitez des connaissances, des opinions et des exp=E9riences des internaut=
+es sur Yahoo! Questions/R=E9ponses =
+
+http://fr.answers.yahoo.com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
