@@ -1,10 +1,10 @@
-From: "Lead Alert" <noreply@action775.com>
-Subject: TopTier Leads that Close, Guaranteed!
-Date: 22 Jan 2007 11:50:04 -0800
-Message-ID: <20070122115004.B8AA431C6AE9FA5E@action775.com>
-Reply-To: Lead Alert <reply@action775.com>
+From: "Henry \"Drew\" W. Abbot, Jr." <hwa5c@virginia.edu>
+Subject: yet another full duplex wannabe
+Date: Mon, 22 Jan 2007 16:12:26 -0500
+Message-ID: <45B528BA.9020101@virginia.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1392928810=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,101 +18,71 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1392928810==
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Greetings,
+   I'm trying to achieve a full-duplex sound processing app with ALSA.  
+I've been messing around with various code examples for days now, and 
+I've started hitting some of (what seems to be) the same ol' 
+difficulties any newbie encounters when trying to tackle full duplex 
+with ALSA.  For now, the goal is simply to simultaneously capture from 
+plughw:0,0 and playback to plughw:0,0.  I've gotten a few "working" test 
+apps -- by "working", I mean I can hear stuff, but the sound is really 
+choppy -- that is, I'll hear captured sound for one period, then I'll 
+hear about one period of silence while readi blocks, then another period 
+of sound, then another period of silence, etc. (this can resemble the 
+sound of a helicopter) -- anyway, the net result is an ugly and 
+distorted capture.  The main two test apps I'm working with right now 
+are both based on the pcm.c example.  In one, I essentially turned the 
+write_loop into a readwrite_loop, and in the other, I use two threads 
+(via pthreads), one to capture and one to playback.  I've only messed 
+with the standard interleaved, blocking interface.  From the discussion 
+at 
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09937.html, 
+I assume a better approach would be to use snd_async_add_pcm_handler() 
+and/or mmapped access and snd_pcm_avail_update() on both capture and 
+playback PCMs.  However, should I be running the capture and playback in 
+separate threads or in the same thread?  In separate processes (i.e. 
+fork() vs. pthreads)?  Intuitively, separate threads seems like it could 
+help, but I should be calling writei pretty soon after calling readi 
+completes (right?), so it also seems like having them run in separate 
+threads would complicate things.  Right now, I've tried to "hack it," 
+such that whenever readi is blocking, sound will still be playing from 
+the last writei (is this conceptually accurate?), but to no avail.  
+Messing with the period and buffer sizes changes the "helicopter effect" 
+somewhat (i.e. for smaller periods, the sound has a tendency to blow up 
+/ be unstable -- I guess this is feedback), but basically it's the 
+same.  At first, I thought I was just way off, but after running the 
+latency.c example and getting the same "helicopter-like" results, I 
+gained back some confidence.  I even tried running 'ecasound -i 
+alsahw,0,0 -o alsahw,0,0' and it, too, yielded similar results.  I 
+didn't try messing with period or buffer sizes with ecasound, but I 
+tried many with latency.c and nothing seemed to produce smooth, 
+undistorted sound.  Surely, I don't have to apply low-latency patches or 
+something to simply run a full-duplex userland app, do I?  I know what 
+you guys want to say... I should just forget about all of it and use 
+JACK, and yes, I am already at the JACK website reading the 
+documentation, but I would like to get my own lower-level ALSA code 
+working, too.  In summary, my questions are:
+   1) Any ideas on why latency.c and ecasound aren't working smoothly?
+   2) Any advice on whether to use the standard ALSA interface, the 
+async, the mmap, etc. for a full duplex app?
+   3) Any advice on single-threaded vs. multi-threaded?
+   4) Should my capture and playback PCMs be configured the same way?  
+I.e. how about this for an app.. should I have a smaller period size for 
+capture, and capture each little bit at a time, and when the time comes 
+around to send another larger period for playback, I can send however 
+many smaller capture periods I have received at that time.
+
+Thanks for your time, and sorry for such a long post.
 
 
-<html>
-<head>
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows-12=
-52">
-</head>
-<body>
-<p><b><font size=3D"+2">Take your origination business to that next level in=
- 2007=20
-!</font></b> </p>
-<p><b><font size=3D"+2">We have got HOT prospects who are looking for a new =
-loan=20
-right now!</font></b> <br>
-&nbsp; </p>
-<p>If you're like most originators, 2006 was not your banner year. In fact m=
-any
-<br>
-have gone out of business! Due to the decrease in your volume, you find your=
-self
-<br>
-with less funds to increase marketing, so your origination volume continues =
-to=20
-go down. <br>
-You don't have to spend more if you're serious about being successful in the=
-=20
-mortgage <br>
-origination business. For just<b> $3.99-$7.99 per lead</b>, (depending on=20=
-
-location), we can <br>
-provide you&nbsp; with fresh consumer leads every day! </p>
-<p><b>Our Select Lead Program has no setup fees and no long-term commitment.=
-</b>
-</p>
-<p><b>Our consumers are waiting for someone to help them with a mortgage!</b=
->
-</p>
-<p>The LoanBright Select Leads program is a simple, affordable, easy to=20
-implement mortgage <br>
-lead program offering you a market representative mix of both Purchase and=
-=20
-Refinance leads. <br>
-There are no up-front costs. These are the same quality leads that LoanBrigh=
-t=20
-generates day-in <br>
-and day-out for hundreds of lenders, nationwide, with proven success! They a=
-re=20
-subject to the <br>
-same validation and scrubbing that much more expensive leads go through. <br=
->
-&nbsp; </p>
-<p>Please <B>
-<A href=3D"http://209.35.106.182/loanbright_Contact.htm">CLICK HERE</A></B> =
-for=20
-more info </p>
-<p>or call us toll free <b>1-800-211-4170</b> </p>
-<p>LoanBright | 27902 Meadow Drive | Suite 375 | Evergreen | CO | 80439 <br>=
-
-&nbsp; <br>
-&nbsp; </p>
-<p>to unsubscribe <FONT face=3D"Times New Roman" color=3D#000000><A href=3D"=
-http://209.35.106.182/unsubscribe.htm">click here</A></FONT><FONT face=3DTah=
-oma size=3D2> </FONT>
-</p>
-</body>
-</html>
+Best,
+Drew
 
 
 
---===============1392928810==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1392928810==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1392928810==--
