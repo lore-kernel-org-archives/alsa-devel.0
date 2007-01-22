@@ -1,10 +1,9 @@
 From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: Re: what does struct snd_ac97_build_ops do? suspect i
- need a new one for the via1618 to get Surround to work
-Date: Mon, 22 Jan 2007 08:50:31 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5ADF366B@sea-exch-01.na.corp.dmxmusic.com>
-References: <F8FB97052F1BEF409F7842E960E49B5ADF3476@sea-exch-01.na.corp.dmxmusic.com>
-	<s5hd557f98s.wl%tiwai@suse.de>
+Subject: Re: AC97_SINGLE() Howto?
+Date: Mon, 22 Jan 2007 08:58:26 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5ADF367C@sea-exch-01.na.corp.dmxmusic.com>
+References: <F8FB97052F1BEF409F7842E960E49B5ADF3493@sea-exch-01.na.corp.dmxmusic.com>
+	<s5hac0bf92y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -23,54 +22,56 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thankyou for your thoughtful response!
+Thankyou for your additional response!
 
 -----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de] 
->>
->> Is 1618 6ch expected to work with ALSA 1.0.13?
+>From: alsa-devel-bounces@lists.sourceforge.net
+[mailto:alsa-devel->bounces@lists.sourceforge.net] On Behalf Of Takashi
+Iwai
 >
->... only if the codec chip works without extra adjustment.
->(In other words: most likely it doesn't work as it is.)
-
-Ok, that's what I thought and I have proceeded accordingly.
-
->> based on looking at ac97_codec.c: static const struct ac97_codec_id
->>snd_ac97_codec_ids
->> ,
+>At Fri, 19 Jan 2007 18:35:41 -0800,
+>John Utz wrote:
 >> 
->>  it seems to be stubbed out instead of fully implemented:
+>> Hello Again;
 >> 
->> { 0x56494182, 0xffffffff, "VIA1618", NULL, NULL },
+>> I have a vt1618 register bit that I am trying to set so that I can
+>> get surround out of the mic in and line in.
 >> 
->> My suspicion is that I need to create the following items (hx3rd from
->> the vt1616 versions):
+>> From the chip docs, I want to set bit 3 of 0x76 to 1.
 >> 
->> static const struct snd_kcontrol_new snd_ac97_controls_vt1618
+>> Is the following macro usage correct?:
 >> 
->> static int patch_vt1618_specific(struct snd_ac97 * ac97)
->> 
->> static struct snd_ac97_build_ops patch_vt1618_ops
->> 
->> int patch_vt1618(struct snd_ac97 * ac97)
->> 
->> Am I correct in my assumptions? If so, what do these 2 arrays and 2
->> functions actually do?
+>> AC97_SINGLE("Switch Surround Back Channels", 0x76, 3, 1, 0)
 >
-> They set up codec-specific things and create codec-specific controls.
+> Yes, but this mixer name sounds unusual...
 
-Ok, that's what I thought, so that's what I will create based on the via
-docs.
+:-)
 
-> Honestly, I cannot tell any exact thing unless I get a datasheet of
-> this codec chip.  VT1616 and 1617 have totally different configs,
-> AFAIK...
+Is there actually a standard? If there is, I would be happy to use it!
 
-That's very understandable, I appreciate hearing your thoughts! As soon
-as I have something that is close to working (or I get stuck :-) ) I
-will touch base with the list again.
+Currently, it seems like there are many different ways that items are
+named.
+
+The name I choose was derived from the via docs that describe the
+register.
+
+But, as I said, I love standards and conventions and I will be happy to
+follow one with my code.....
 
 > Takashi
+
+------------------------------------------------------------------------
+-
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share
+your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
+V
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
