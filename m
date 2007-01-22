@@ -1,14 +1,11 @@
-From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: Re: AC97_SINGLE() Howto?
-Date: Mon, 22 Jan 2007 08:58:26 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5ADF367C@sea-exch-01.na.corp.dmxmusic.com>
-References: <F8FB97052F1BEF409F7842E960E49B5ADF3493@sea-exch-01.na.corp.dmxmusic.com>
-	<s5hac0bf92y.wl%tiwai@suse.de>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H8fX6-0007v9-IK delayed 24 hours
+Date: Mon, 22 Jan 2007 09:33:41 -0800
+Message-ID: <E1H9337-0007fB-A9@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,62 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thankyou for your additional response!
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
------Original Message-----
->From: alsa-devel-bounces@lists.sourceforge.net
-[mailto:alsa-devel->bounces@lists.sourceforge.net] On Behalf Of Takashi
-Iwai
->
->At Fri, 19 Jan 2007 18:35:41 -0800,
->John Utz wrote:
->> 
->> Hello Again;
->> 
->> I have a vt1618 register bit that I am trying to set so that I can
->> get surround out of the mic in and line in.
->> 
->> From the chip docs, I want to set bit 3 of 0x76 to 1.
->> 
->> Is the following macro usage correct?:
->> 
->> AC97_SINGLE("Switch Surround Back Channels", 0x76, 3, 1, 0)
->
-> Yes, but this mixer name sounds unusual...
+The message identifier is:     1H8fX6-0007v9-IK
+The subject of the message is: [VAR114]
+The date of the message is:    Sun, 21 Jan 2007 21:56:54 +0530
 
-:-)
+The address to which the message has not yet been delivered is:
 
-Is there actually a standard? If there is, I would be happy to use it!
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Currently, it seems like there are many different ways that items are
-named.
-
-The name I choose was derived from the via docs that describe the
-register.
-
-But, as I said, I love standards and conventions and I will be happy to
-follow one with my code.....
-
-> Takashi
-
-------------------------------------------------------------------------
--
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share
-your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDE
-V
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
