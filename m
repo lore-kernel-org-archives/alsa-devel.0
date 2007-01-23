@@ -1,10 +1,10 @@
-From: Chandler O.Bill <cjhyh@rotaractmdq.org.ar>
-Subject: Perhaps all is fair in politics,
-	but everything comes at a price.
-Date: Tue, 23 Jan 2007 12:24:09 +0530
-Message-ID: <45B5B111.7090306@rotaractmdq.org.ar>
+From: Mcneil S.Bella <egff@sndac.com>
+Subject: Ossanlu was again arrested on the street in
+	mid-October on unknown charges.
+Date: Tue, 23 Jan 2007 12:24:49 +0530
+Message-ID: <45B5B139.3040402@sndac.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2091597540=="
+Content-Type: multipart/mixed; boundary="===============0548128873=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,14 +15,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2091597540==
+--===============0548128873==
 Content-Type: multipart/related;
-	boundary="------------090808070605060003000704"
+	boundary="------------020700000304080306050408"
 
---------------090808070605060003000704
+--------------020700000304080306050408
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -32,50 +32,45 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="schlock" src="cid:part1.08020909.08010209@rotaractmdq.org.ar"
+<img alt="plate" src="cid:part1.08030609.01030506@sndac.com"
  height="401" width="511"><br>
-During the 27 years of the post-Islamic Revolution era, the idea of
-talking with an American official under any circumstances was considered
-taboo.<br>
-In the late eighties, when Hashemi Rafsanjani became Iran's president,
-he had absolute power and influence with his reconstruction and economic
-modification policies. The characteristics of the so-called "national
-Internet" has not yet been specified, but the main objective of the
-promised program will be a drastic cut-off from the global media.
-involving Iran's pursuit of nuclear technology has provoked a sense of
-patriotism in common Iranians, causing many to view Ahmadinejad's
-populist policies with favor. Unlike other oil firms in Yemen, the
-Canadian firm Nexen refused to pay the bonus, correctly calling it
-"corruption" and "hush money. "The rightful and legal demands of the
-starving workers should not be answered by beating them," said
-Mazandaran workers' representative Nasrollah Daryabeigi. The committee
-consists of personnel from the Intelligence and Security Ministry, the
-Islamic Culture and Guidance Ministry, and Islamic Republic of Iran
-Broadcasting.<br>
-It was not clear if this meant the restrictions were only temporary, but
-another ISP official said he expected them to stay in place. The company
-refused to renew the contracts and has since repeatedly postponed
-fulfilling its promises.<br>
+" In light of the regimes previous lack of prosecutions for physical
+attacks on journalists, the prosecution of al-Ahmar appears related to
+his politics and not his phone manners.<br>
+However, the international observers deemed an approximate vote count
+good enough. The confrontation between the radical Islamists and the
+United States is not surprising since their principles stand in stark
+contrast. Hojjatollah Roohi, who condemned the police attack and asked
+the workers to practice patience. In the minds of the fanatics, it was
+seen as a holy war, one in which the reborn Islamic movement drew
+inspiration from the Medieval era to overcome the will of the Soviet
+army. It is estimated that well over half of university students in Iran
+are female. Bin Laden and his followers supported the Taliban in
+exchange for the opportunity to transfer his headquarters back to
+Afghanistan.<br>
+"Eight months ago Motahhari, head manager of the company, had promised
+to pay our debts and we accepted the deal. , which takes them to Huwwara
+and then on toward the border with Jordan, Al Salah said.<br>
 Journalist Mervat Shafai, 32, described running through woodland after
 soldiers refused her and her group permission through the Atara
 checkpoint north of Ramallah, in the center of the West Bank.<br>
-After the election in 1997 and the ascension to power of the reformists,
-many policies involving the concept of freedom were changed, both
-socially and politically.<br>
-The targets of the accusations and arrests are not necessarily social or
-politically active figures.<br>
-This isn't a project piloted by the museum or its curators, it has been
-taken over by the ministry of culture.<br>
+The confrontation between the radical Islamists and the United States is
+not surprising since their principles stand in stark contrast.<br>
+Less than a month has passed from the anniversary of Hiroshima and
+Nagasaki.<br>
+It can also be considered among the first times that the Iranian
+government has overtly denied its people from accessing "technology" in
+favor of censorship.<br>
 </body>
 </html>
 
---------------090808070605060003000704
+--------------020700000304080306050408
 Content-Type: image/gif;
- name="distinguish.gif"
+ name="upheaval.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.08020909.08010209@rotaractmdq.org.ar>
+Content-ID: <part1.08030609.01030506@sndac.com>
 Content-Disposition: inline;
- filename="distinguish.gif"
+ filename="upheaval.gif"
 
 R0lGODdhAwKUAfcAAAtBrDZSgYTnKvM+SN9ZX+C/rn5D+ODZnXD2QkKSnFue3QfUMIhYF7JMVfss
 rloNbQmMsAJsip/dgOIgE357sVyChowL3qO9K/m5WKcTZRUd8cUfXk+/PNCiXOQh15V+WhwKZfuu
@@ -310,11 +305,11 @@ taoIRCpWEfIjqZ6PnVk1J1fDKlYyfrWEVv3Sq1jzWda1srWtbn0rXOMq17nSta52HWVa86rXvfK1
 rxs8K2ADK9jBEraLfj0sYhOr2MUy9rB3fSxkIyvZyVK2spa9LGYzq9m7Nraznv1s6AorWqZtdq2g
 3V5pq3fa1bK2tZ0dLWxjK9vZ0ra2tk2ba3Or293ytreJTS1wgyvc4RK3uMY9LnJj6NvlMre5SEwu
 dKMr3elSt7pjcS5282rd7XK3u979LnjDe9CAAAA7
---------------090808070605060003000704--
+--------------020700000304080306050408--
 
 
 
---===============2091597540==
+--===============0548128873==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -325,7 +320,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2091597540==
+--===============0548128873==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -336,4 +331,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2091597540==--
+--===============0548128873==--
