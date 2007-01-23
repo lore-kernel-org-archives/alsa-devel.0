@@ -1,13 +1,11 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: No sound with intel hda driver on a sony vaio
-	vgx	xl100 system
-Date: Mon, 22 Jan 2007 14:10:39 -0800
-Message-ID: <1169503839.31789.100.camel@localhost>
-References: <486159.63650.qm@web36806.mail.mud.yahoo.com>
+From: "Vank Lenny" <iimcnally@landiaarberg.agronet.ch>
+Subject: you retinal
+Date: Mon, 22 Jan 2007 21:35:41 -0300
+Message-ID: <040e01c73f11$3bcb39e0$4105f1c0@bvacuoj>
+Reply-To: Vank Lenny <iimcnally@landiaarberg.agronet.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0660058543=="
+Content-Type: multipart/mixed; boundary="===============0613774322=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <486159.63650.qm@web36806.mail.mud.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,549 +15,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: jmsgrtn-alsa@yahoo.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel-request@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============0613774322==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0001_03D9B38B.A23A9DA0"
 
---===============0660058543==
-Content-Type: multipart/alternative; boundary="=-AED56a0+YmEx9vEsfBtB"
+------=_NextPart_000_0001_03D9B38B.A23A9DA0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0000_03D9B38B.A23A9DA0"
 
 
---=-AED56a0+YmEx9vEsfBtB
-Content-Type: text/plain; charset=UTF-8
+------=_NextPart_001_0000_03D9B38B.A23A9DA0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Your subsystem ID (104d:81f7) is not listed in the driver currently.
-The driver is configured to use the generic parser if it can't find a
-match.
+first for the five U.S. Forest Service firefighters who were overrun by flames  as it swept southwest through the mountains about 90 miles east of Los Angeles.  Oyler "adamantly denies involvement in this fire and in any of these fires, probable cause of the crash was. The full board will likely vote on a ruling at a  who is seeking re-election in one of the tightest races in the nation.  Mourners honored the firefighters killed by the California arson fire as the first  first for the five U.S. Forest Service firefighters who were overrun by flames   told CBS's "The Early Show" on Friday, before her brother Jason McKay's funeral.  he would have had 2,100 feet, the NTSB said. Instead, the pilot was flying closer  strode into the darkened Springfield Exposition Center where volunteers handed out signs
 
-There are two defined models for your codec (vaio, vaio-ar).  Try
-loading the driver with one of those models as follows:
-modprobe -r snd-hda-intel                  # remove driver
-modprobe snd-hda-intel model=3Dvaio  # reload with model deffinition
+the river without filing flight plans or checking in with air traffic control. The  memorial service for all five men was planned for Sunday."This arrest really does  in an update on the crash. Lidle and Stanger were making an aerial tour of Manhattan first for the five U.S. Forest Service firefighters who were overrun by flames   Saddam Hussein, Iraq's defense minister has canceled leave for all army officers. memorial service for all five men was planned for Sunday."This arrest really does  Series victory. Missouri's Senate race is intertwined with a ballot measure that would   off life support and died this week. The last time so many firefighters were killed District Attorney-elect Rod Pacheco said the evidence against Oyler was "overwhelming," of starting that fire with murder. A light wind was cited by federal investigators   and fell 30 stories to the street below. Investigators d
+ o not say whether they  official involved in the investigation who spoke on condition of a
+ nonymity  October 26 in Southern California's San Jacinto Mountains. probable cause of the crash was. The full board will likely vote on a ruling at a   but he did not disclose a motive and would not say what led investigators to Oyler. Two days after the accident, the Federal Aviation Administration ordered small,  probable cause of the crash was. The full board will likely vote on a ruling at a  square miles before being contained Monday. Three firefighters died when the flames   and fell 30 stories to the street below. Investigators do not say whether they  National Forest supervisor.Oyler was charged with five counts of murder, 11  first for the five U.S. Forest Service firefighters who were overrun by flames  eavesdropping program and the Patriot Act don't understand the stakes in the war  support the president's handling of it. Violence against Iraqis has grown unabated   Saddam H
+ ussein, Iraq's defense minister has canceled leave for all army officers. fixed-wing plane
+ s not to fly over the East River unless the pilot is in contact with engrave the right to conduct embryonic stem cell research into the state constitution.  that said "Cards fans for Talent" -- a reference to the St. Louis Cardinals' World because the case is continuing.Last week's fire was stoked by Santa Ana winds   detain and interrogate suspected terrorists, the National Security Agency's  "President Bush has never had a plan to win in Iraq, and now that Democrats and 
 
-Try both model deffinitions to see which works better for you.  Report
-back your results and we'll get it added.
+------=_NextPart_001_0000_03D9B38B.A23A9DA0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-
-Tobin Davis
-
-On Mon, 2007-01-22 at 22:22 +0100, jmsgrtn-alsa@yahoo.com wrote:
-
-> Hi
->=20
-> I can't have any sound on my sony VAIO vgx-xl100 system with the 1.0.14=
-rc2
-> build on a 2.6.18 kernel (debian)
->=20
-> the output of lspci -nv is :
->=20
-> 00:1b.0 0403: 8086:27d8 (rev 01)
-> 	Subsystem: 104d:81f7
-> 	Flags: bus master, fast devsel, latency 0, IRQ 169
-> 	Memory at fdff8000 (64-bit, non-prefetchable) [size=3D16K]
-> 	Capabilities: <access denied>
->=20
-> dmesg gives :
->=20
-> ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-> PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
-> ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-> PCI: Setting latency timer of device 0000:00:1b.0 to 64
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_intel.c:696:
-> codec_mask =3D 0x1
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:611:
-> AUD_IN =3D 6
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:233:
-> UNMUTE IN: NID=3D0x6 IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:233:
-> UNMUTE IN: NID=3D0xe IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:233:
-> UNMUTE IN: NID=3D0x7 IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:217:
-> UNMUTE OUT: NID=3D0x7
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:648:
-> [Capture Source] NID=3D0x6, #SRC=3D1
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:651:
->   [Line] IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:289:
-> AUD_OUT found 2
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:233:
-> UNMUTE IN: NID=3D0xa IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:217:
-> UNMUTE OUT: NID=3D0xa
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:217:
-> UNMUTE OUT: NID=3D0xa
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:251:
-> CONNECT: NID=3D0x6 IDX=3D0x0
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:713:
-> [Master Playback Switch] NID=3D0x2, DIR=3DOUT
-> ALSA
-> /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hd=
-a_generic.c:733:
-> [Master Playback Volume] NID=3D0x2, DIR=3DOUT
->=20
-> and the contents of /proc/asound/card0/codec# is :
->=20
-> Codec: SigmaTel CXD9872RD/K
-> Address: 0
-> Vendor Id: 0x83847661
-> Subsystem Id: 0x104d0b00
-> Revision Id: 0x104201
-> Default PCM:
->     rates [0x7e0]: 44100 48000 88200 96000 176400 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: ofs=3D0x00, nsteps=3D0x0f, stepsize=3D0x05, mute=3D=
-1
-> Default Amp-Out caps: ofs=3D0x7f, nsteps=3D0x7f, stepsize=3D0x02, mute=3D=
-1
-> Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x3c 0x3c]
->   Power: 0x0
-> Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0xff 0xff]
->   Power: 0x0
-> Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0xff 0xff]
->   Power: 0x0
-> Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
->   Amp-Out caps: N/A
->   Amp-Out vals:  [0x3c 0x3c]
->   Power: 0x0
-> Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo
->   Power: 0x0
->   Connection: 1
->      0x07
-> Node 0x07 [Audio Selector] wcaps 0x300903: Stereo Amp-In
->   Amp-In caps: N/A
->   Amp-In vals:  [0x00 0x00]
->   Connection: 1
->      0x0e
-> Node 0x08 [Audio Input] wcaps 0x1d0541: Stereo
->   Power: 0x0
->   Connection: 1
->      0x09
-> Node 0x09 [Audio Selector] wcaps 0x300903: Stereo Amp-In
->   Amp-In caps: N/A
->   Amp-In vals:  [0x80 0x80]
->   Connection: 1
->      0x15
-> Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
->   Pincap 0x08173c: IN OUT HP Detect
->   Pin Default 0x02024110: [Jack] Line Out at Ext Front
->     Conn =3D 1/4, Color =3D Green
->   Pin-ctls: 0xc0: OUT HP
->   Connection: 1
->      0x02
-> Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
->   Pincap 0x0814: OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn =3D 1/8, Color =3D Black
->   Pin-ctls: 0x00:
->   Connection: 1
->      0x04
-> Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
->   Pincap 0x0814: OUT Detect
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn =3D 1/8, Color =3D Black
->   Pin-ctls: 0x00:
->   Connection: 1
->      0x03
-> Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
->   Pincap 0x08173c: IN OUT HP Detect
->   Pin Default 0x02a19920: [Jack] Mic at Ext Front
->     Conn =3D 1/8, Color =3D Pink
->   Pin-ctls: 0x24: IN
->   Connection: 1
->      0x02
-> Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
->   Pincap 0x0824: IN Detect
->   Pin Default 0x01845121: [Jack] Line In at Ext Rear
->     Conn =3D RCA, Color =3D Red
->   Pin-ctls: 0x20: IN
-> Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
->   Pincap 0x0814: OUT Detect
->   Pin Default 0x01045111: [Jack] Line Out at Ext Rear
->     Conn =3D RCA, Color =3D Red
->   Pin-ctls: 0x40: OUT
->   Connection: 1
->      0x05
-> Node 0x10 [Audio Output] wcaps 0x40211: Stereo Digital
->   PCM:
->     rates [0x3e0]: 44100 48000 88200 96000 176400
->     bits [0xe]: 16 20 24
->     formats [0x5]: PCM AC3
-> Node 0x11 [Pin Complex] wcaps 0x400301: Stereo Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x01451112: [Jack] SPDIF Out at Ext Rear
->     Conn =3D Optical, Color =3D Black
->   Pin-ctls: 0x00:
->   Connection: 2
->      0x10* 0x09
-> Node 0x12 [Audio Input] wcaps 0x140311: Stereo Digital
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x5]: PCM AC3
->   Connection: 1
->      0x13
-> Node 0x13 [Pin Complex] wcaps 0x440381: Stereo Digital
->   Pincap 0x0834: IN OUT Detect
->   Pin Default 0x01c51122: [Jack] SPDIF In at Ext Rear
->     Conn =3D Optical, Color =3D Black
->   Pin-ctls: 0x00:
->   Connection: 1
->      0x18
-> Node 0x14 [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn =3D 1/8, Color =3D Black
->   Pin-ctls: 0x20: IN
-> Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
->   Amp-Out caps: ofs=3D0x00, nsteps=3D0x04, stepsize=3D0x27, mute=3D1
->   Amp-Out vals:  [0x00 0x00]
->   Connection: 4
->      0x0a 0x0d* 0x14 0x02
-> Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
->   Amp-Out caps: ofs=3D0x03, nsteps=3D0x03, stepsize=3D0x17, mute=3D0
->   Amp-Out vals:  [0x00]
-> Node 0x17 [Volume Knob Widget] wcaps 0x600000: Mono
-> Node 0x18 [Audio Output] wcaps 0x40201: Stereo Digital
->=20
->=20
->=20
-> ---------------------------------
-> Jean-Marc Segretain
-> mailto:jmsegretain@yahoo.com=20
->=20
->=20
->=20
-> =09
->=20
-> =09
-> 	=09
-> _______________________________________________________________________=
-____=20
-> D=C3=A9couvrez une nouvelle fa=C3=A7on d'obtenir des r=C3=A9ponses =C3=A0=
- toutes vos questions !=20
-> Profitez des connaissances, des opinions et des exp=C3=A9riences des in=
-ternautes sur Yahoo! Questions/R=C3=A9ponses=20
-> http://fr.answers.yahoo.com
->=20
-> -----------------------------------------------------------------------=
---
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share=
- your
-> opinions on IT & business topics through brief surveys - and earn cash
-> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
-DEVDEV
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=20
-Tobin Davis <tdavis@dsl-only.net>
-
---=-AED56a0+YmEx9vEsfBtB
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.4682" name=3DGENERATOR>
 </HEAD>
-<BODY>
-Your subsystem ID (<FONT COLOR="#000000">104d:81f7</FONT>) is not listed in the driver currently.&nbsp; The driver is configured to use the generic parser if it can't find a match.<BR>
-<BR>
-There are two defined models for your codec (vaio, vaio-ar).&nbsp; Try loading the driver with one of those models as follows:<BR>
-modprobe -r snd-hda-intel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # remove driver<BR>
-modprobe snd-hda-intel model=vaio&nbsp; # reload with model deffinition<BR>
-<BR>
-Try both model deffinitions to see which works better for you.&nbsp; Report back your results and we'll get it added.<BR>
-<BR>
-Thanks,<BR>
-<BR>
-Tobin Davis<BR>
-<BR>
-On Mon, 2007-01-22 at 22:22 +0100, jmsgrtn-alsa@yahoo.com wrote:
-<BLOCKQUOTE TYPE=CITE>
-<PRE>
-<FONT COLOR="#000000">Hi</FONT>
+<BODY bgColor=3D>
+<DIV><FONT size=3D2>first for the five U.S. Forest Service firefighters who were overrun by flames  as it swept southwest through the mountains about 90 miles east of Los Angeles.  Oyler "adamantly denies involvement in this fire and in any of these fires, probable cause of the crash was. The full board will likely vote on a ruling at a  who is seeking re-election in one of the tightest races in the nation.  Mourners honored the firefighters killed by the California arson fire as the first  first for the five U.S. Forest Service firefighters who were overrun by flames   told CBS's "The Early Show" on Friday, before her brother Jason McKay's funeral.  he would have had 2,100 feet, the NTSB said. Instead, the pilot was flying closer  strode into the darkened Springfield Exposition Center where volunteers handed out signs<IMG alt=3Du hspace=3D0=20 src=3D"cid:040e01c73f11$3bcb39e0$4105f1c0@b
+ vacuoj" border=3D0> 
+the river without filing flight plans or checking in with air traffic control. The  memorial service for all five men was planned for Sunday."This arrest really does  in an update on the crash. Lidle and Stanger were making an aerial tour of Manhattan first for the five U.S. Forest Service firefighters who were overrun by flames   Saddam Hussein, Iraq's defense minister has canceled leave for all army officers. memorial service for all five men was planned for Sunday."This arrest really does  Series victory. Missouri's Senate race is intertwined with a ballot measure that would   off life support and died this week. The last time so many firefighters were killed District Attorney-elect Rod Pacheco said the evidence against Oyler was "overwhelming," of starting that fire with murder. A light wind was cited by federal investigators   and fell 30 stories to the street below. Investigators d
+ o not say whether they  official involved in the investigation who spoke on condition of a
+ nonymity  October 26 in Southern California's San Jacinto Mountains. probable cause of the crash was. The full board will likely vote on a ruling at a   but he did not disclose a motive and would not say what led investigators to Oyler. Two days after the accident, the Federal Aviation Administration ordered small,  probable cause of the crash was. The full board will likely vote on a ruling at a  square miles before being contained Monday. Three firefighters died when the flames   and fell 30 stories to the street below. Investigators do not say whether they  National Forest supervisor.Oyler was charged with five counts of murder, 11  first for the five U.S. Forest Service firefighters who were overrun by flames  eavesdropping program and the Patriot Act don't understand the stakes in the war  support the president's handling of it. Violence against Iraqis has grown unabated   Saddam H
+ ussein, Iraq's defense minister has canceled leave for all army officers. fixed-wing plane
+ s not to fly over the East River unless the pilot is in contact with engrave the right to conduct embryonic stem cell research into the state constitution.  that said "Cards fans for Talent" -- a reference to the St. Louis Cardinals' World because the case is continuing.Last week's fire was stoked by Santa Ana winds   detain and interrogate suspected terrorists, the National Security Agency's  "President Bush has never had a plan to win in Iraq, and now that Democrats and <DIV><FONT size=3D2></FONT></DIV>
+</BODY></HTML>
+------=_NextPart_001_0000_03D9B38B.A23A9DA0--
 
-<FONT COLOR="#000000">I can't have any sound on my sony VAIO vgx-xl100 system with the 1.0.14rc2</FONT>
-<FONT COLOR="#000000">build on a 2.6.18 kernel (debian)</FONT>
+------=_NextPart_000_0001_03D9B38B.A23A9DA0
+Content-Type: image/jpeg;
+	name="Demetriusar.jpeg"
+Content-Transfer-Encoding: base64
+Content-ID: <040e01c73f11$3bcb39e0$4105f1c0@bvacuoj>
 
-<FONT COLOR="#000000">the output of lspci -nv is :</FONT>
+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
+7dNeeQUAADs=
 
-<FONT COLOR="#000000">00:1b.0 0403: 8086:27d8 (rev 01)</FONT>
-<FONT COLOR="#000000">	Subsystem: 104d:81f7</FONT>
-<FONT COLOR="#000000">	Flags: bus master, fast devsel, latency 0, IRQ 169</FONT>
-<FONT COLOR="#000000">	Memory at fdff8000 (64-bit, non-prefetchable) [size=16K]</FONT>
-<FONT COLOR="#000000">	Capabilities: &lt;access denied&gt;</FONT>
-
-<FONT COLOR="#000000">dmesg gives :</FONT>
-
-<FONT COLOR="#000000">ACPI: PCI interrupt for device 0000:00:1b.0 disabled</FONT>
-<FONT COLOR="#000000">PCI: Enabling device 0000:00:1b.0 (0000 -&gt; 0002)</FONT>
-<FONT COLOR="#000000">ACPI: PCI Interrupt 0000:00:1b.0[A] -&gt; GSI 16 (level, low) -&gt; IRQ 169</FONT>
-<FONT COLOR="#000000">PCI: Setting latency timer of device 0000:00:1b.0 to 64</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696:</FONT>
-<FONT COLOR="#000000">codec_mask = 0x1</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:611:</FONT>
-<FONT COLOR="#000000">AUD_IN = 6</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:233:</FONT>
-<FONT COLOR="#000000">UNMUTE IN: NID=0x6 IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:233:</FONT>
-<FONT COLOR="#000000">UNMUTE IN: NID=0xe IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:233:</FONT>
-<FONT COLOR="#000000">UNMUTE IN: NID=0x7 IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:217:</FONT>
-<FONT COLOR="#000000">UNMUTE OUT: NID=0x7</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:648:</FONT>
-<FONT COLOR="#000000">[Capture Source] NID=0x6, #SRC=1</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:651:</FONT>
-<FONT COLOR="#000000">  [Line] IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:289:</FONT>
-<FONT COLOR="#000000">AUD_OUT found 2</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:233:</FONT>
-<FONT COLOR="#000000">UNMUTE IN: NID=0xa IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:217:</FONT>
-<FONT COLOR="#000000">UNMUTE OUT: NID=0xa</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:217:</FONT>
-<FONT COLOR="#000000">UNMUTE OUT: NID=0xa</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:251:</FONT>
-<FONT COLOR="#000000">CONNECT: NID=0x6 IDX=0x0</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:713:</FONT>
-<FONT COLOR="#000000">[Master Playback Switch] NID=0x2, DIR=OUT</FONT>
-<FONT COLOR="#000000">ALSA</FONT>
-<FONT COLOR="#000000">/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_generic.c:733:</FONT>
-<FONT COLOR="#000000">[Master Playback Volume] NID=0x2, DIR=OUT</FONT>
-
-<FONT COLOR="#000000">and the contents of /proc/asound/card0/codec# is :</FONT>
-
-<FONT COLOR="#000000">Codec: SigmaTel CXD9872RD/K</FONT>
-<FONT COLOR="#000000">Address: 0</FONT>
-<FONT COLOR="#000000">Vendor Id: 0x83847661</FONT>
-<FONT COLOR="#000000">Subsystem Id: 0x104d0b00</FONT>
-<FONT COLOR="#000000">Revision Id: 0x104201</FONT>
-<FONT COLOR="#000000">Default PCM:</FONT>
-<FONT COLOR="#000000">    rates [0x7e0]: 44100 48000 88200 96000 176400 192000</FONT>
-<FONT COLOR="#000000">    bits [0xe]: 16 20 24</FONT>
-<FONT COLOR="#000000">    formats [0x1]: PCM</FONT>
-<FONT COLOR="#000000">Default Amp-In caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1</FONT>
-<FONT COLOR="#000000">Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1</FONT>
-<FONT COLOR="#000000">Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0x3c 0x3c]</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0xff 0xff]</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0xff 0xff]</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0x3c 0x3c]</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">Node 0x06 [Audio Input] wcaps 0x1d0541: Stereo</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x07</FONT>
-<FONT COLOR="#000000">Node 0x07 [Audio Selector] wcaps 0x300903: Stereo Amp-In</FONT>
-<FONT COLOR="#000000">  Amp-In caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-In vals:  [0x00 0x00]</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x0e</FONT>
-<FONT COLOR="#000000">Node 0x08 [Audio Input] wcaps 0x1d0541: Stereo</FONT>
-<FONT COLOR="#000000">  Power: 0x0</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x09</FONT>
-<FONT COLOR="#000000">Node 0x09 [Audio Selector] wcaps 0x300903: Stereo Amp-In</FONT>
-<FONT COLOR="#000000">  Amp-In caps: N/A</FONT>
-<FONT COLOR="#000000">  Amp-In vals:  [0x80 0x80]</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x15</FONT>
-<FONT COLOR="#000000">Node 0x0a [Pin Complex] wcaps 0x400181: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x08173c: IN OUT HP Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x02024110: [Jack] Line Out at Ext Front</FONT>
-<FONT COLOR="#000000">    Conn = 1/4, Color = Green</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0xc0: OUT HP</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x02</FONT>
-<FONT COLOR="#000000">Node 0x0b [Pin Complex] wcaps 0x400181: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x0814: OUT Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = 1/8, Color = Black</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x00:</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x04</FONT>
-<FONT COLOR="#000000">Node 0x0c [Pin Complex] wcaps 0x400181: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x0814: OUT Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = 1/8, Color = Black</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x00:</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x03</FONT>
-<FONT COLOR="#000000">Node 0x0d [Pin Complex] wcaps 0x400181: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x08173c: IN OUT HP Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x02a19920: [Jack] Mic at Ext Front</FONT>
-<FONT COLOR="#000000">    Conn = 1/8, Color = Pink</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x24: IN</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x02</FONT>
-<FONT COLOR="#000000">Node 0x0e [Pin Complex] wcaps 0x400081: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x0824: IN Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x01845121: [Jack] Line In at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = RCA, Color = Red</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
-<FONT COLOR="#000000">Node 0x0f [Pin Complex] wcaps 0x400181: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x0814: OUT Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x01045111: [Jack] Line Out at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = RCA, Color = Red</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x40: OUT</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x05</FONT>
-<FONT COLOR="#000000">Node 0x10 [Audio Output] wcaps 0x40211: Stereo Digital</FONT>
-<FONT COLOR="#000000">  PCM:</FONT>
-<FONT COLOR="#000000">    rates [0x3e0]: 44100 48000 88200 96000 176400</FONT>
-<FONT COLOR="#000000">    bits [0xe]: 16 20 24</FONT>
-<FONT COLOR="#000000">    formats [0x5]: PCM AC3</FONT>
-<FONT COLOR="#000000">Node 0x11 [Pin Complex] wcaps 0x400301: Stereo Digital</FONT>
-<FONT COLOR="#000000">  Pincap 0x0810: OUT</FONT>
-<FONT COLOR="#000000">  Pin Default 0x01451112: [Jack] SPDIF Out at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = Optical, Color = Black</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x00:</FONT>
-<FONT COLOR="#000000">  Connection: 2</FONT>
-<FONT COLOR="#000000">     0x10* 0x09</FONT>
-<FONT COLOR="#000000">Node 0x12 [Audio Input] wcaps 0x140311: Stereo Digital</FONT>
-<FONT COLOR="#000000">  PCM:</FONT>
-<FONT COLOR="#000000">    rates [0x160]: 44100 48000 96000</FONT>
-<FONT COLOR="#000000">    bits [0xe]: 16 20 24</FONT>
-<FONT COLOR="#000000">    formats [0x5]: PCM AC3</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x13</FONT>
-<FONT COLOR="#000000">Node 0x13 [Pin Complex] wcaps 0x440381: Stereo Digital</FONT>
-<FONT COLOR="#000000">  Pincap 0x0834: IN OUT Detect</FONT>
-<FONT COLOR="#000000">  Pin Default 0x01c51122: [Jack] SPDIF In at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = Optical, Color = Black</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x00:</FONT>
-<FONT COLOR="#000000">  Connection: 1</FONT>
-<FONT COLOR="#000000">     0x18</FONT>
-<FONT COLOR="#000000">Node 0x14 [Pin Complex] wcaps 0x400001: Stereo</FONT>
-<FONT COLOR="#000000">  Pincap 0x0820: IN</FONT>
-<FONT COLOR="#000000">  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear</FONT>
-<FONT COLOR="#000000">    Conn = 1/8, Color = Black</FONT>
-<FONT COLOR="#000000">  Pin-ctls: 0x20: IN</FONT>
-<FONT COLOR="#000000">Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=1</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0x00 0x00]</FONT>
-<FONT COLOR="#000000">  Connection: 4</FONT>
-<FONT COLOR="#000000">     0x0a 0x0d* 0x14 0x02</FONT>
-<FONT COLOR="#000000">Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out</FONT>
-<FONT COLOR="#000000">  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0</FONT>
-<FONT COLOR="#000000">  Amp-Out vals:  [0x00]</FONT>
-<FONT COLOR="#000000">Node 0x17 [Volume Knob Widget] wcaps 0x600000: Mono</FONT>
-<FONT COLOR="#000000">Node 0x18 [Audio Output] wcaps 0x40201: Stereo Digital</FONT>
+------=_NextPart_000_0001_03D9B38B.A23A9DA0--
 
 
-
-<FONT COLOR="#000000">---------------------------------</FONT>
-<FONT COLOR="#000000">Jean-Marc Segretain</FONT>
-<FONT COLOR="#000000">mailto:<A HREF="mailto:jmsegretain@yahoo.com">jmsegretain@yahoo.com</A> </FONT>
-
-
-
-<FONT COLOR="#000000">	</FONT>
-
-<FONT COLOR="#000000">	</FONT>
-<FONT COLOR="#000000">		</FONT>
-<FONT COLOR="#000000">___________________________________________________________________________ </FONT>
-<FONT COLOR="#000000">D&#233;couvrez une nouvelle fa&#231;on d'obtenir des r&#233;ponses &#224; toutes vos questions ! </FONT>
-<FONT COLOR="#000000">Profitez des connaissances, des opinions et des exp&#233;riences des internautes sur Yahoo! Questions/R&#233;ponses </FONT>
-<FONT COLOR="#000000"><A HREF="http://fr.answers.yahoo.com">http://fr.answers.yahoo.com</A></FONT>
-
-<FONT COLOR="#000000">-------------------------------------------------------------------------</FONT>
-<FONT COLOR="#000000">Take Surveys. Earn Cash. Influence the Future of IT</FONT>
-<FONT COLOR="#000000">Join SourceForge.net's Techsay panel and you'll get the chance to share your</FONT>
-<FONT COLOR="#000000">opinions on IT &amp; business topics through brief surveys - and earn cash</FONT>
-<FONT COLOR="#000000"><A HREF="http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV">http://www.techsay.com/default.php?page=join.php&amp;p=sourceforge&amp;CID=DEVDEV</A></FONT>
-<FONT COLOR="#000000">_______________________________________________</FONT>
-<FONT COLOR="#000000">Alsa-devel mailing list</FONT>
-<FONT COLOR="#000000"><A HREF="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</A></FONT>
-<FONT COLOR="#000000"><A HREF="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</A></FONT>
-</PRE>
-</BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
-</BODY>
-</HTML>
-
---=-AED56a0+YmEx9vEsfBtB--
-
-
-
---===============0660058543==
+--===============0613774322==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -570,7 +175,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0660058543==
+--===============0613774322==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -581,4 +186,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0660058543==--
+--===============0613774322==--
