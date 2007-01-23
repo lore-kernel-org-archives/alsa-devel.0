@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H9E2m-0001Qz-AR delayed 10 hours
-Date: Tue, 23 Jan 2007 09:10:13 -0800
-Message-ID: <E1H9P9x-00058m-9u@externalmx-1.sourceforge.net>
+Subject: Warning: message 1H99x3-00068U-V4 delayed 10 hours
+Date: Tue, 23 Jan 2007 09:50:29 -0800
+Message-ID: <E1H9Pmv-0004Ce-9M@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,9 +22,9 @@ This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
 recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1H9E2m-0001Qz-AR
-The subject of the message is: To whom ceased from the skin is therefore was before
-The date of the message is:    Tue, 23 Jan 2007 10:47:52 +0530
+The message identifier is:     1H99x3-00068U-V4
+The subject of the message is:  to he answered Saul Hear all
+The date of the message is:    Tue, 23 Jan 2007 08:00:56 +0700
 
 The address to which the message has not yet been delivered is:
 
