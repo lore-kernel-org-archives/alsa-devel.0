@@ -1,19 +1,13 @@
-From: =?iso-2022-jp?B?GyRCPXY+cEt+NUpPMkwha30bKEI=?= <syoukai-w-id-a0ef864fe1@jyojyoumankituromantan.net>
-Subject: =?iso-2022-jp?b?GyRCPXY+cCFES341SiFEISNMfiQ3JE4bKEI=?=
-	=?iso-2022-jp?b?GyRCNiZNLSRyMkwkPyQ3JF4kOyRzJCshKRsoQg==?=
-Date: Tue, 23 Jan 2007 14:13:50 +0900
-Message-ID: <20070123051343.5E90D99A83@mail.perex.cz>
+From: "Henry \"Drew\" W. Abbot, Jr." <hwa5c@virginia.edu>
+Subject: Re: yet another full duplex wannabe
+Date: Tue, 23 Jan 2007 01:10:46 -0500
+Message-ID: <45B5A6E6.10809@virginia.edu>
+References: <45B528BA.9020101@virginia.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA0402C6
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2007 06:14:49 +0100 (MET)
-Received: from localhost (unknown [218.25.20.195])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	5E90D99A83
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2007 06:13:43 +0100 (MET)
+In-Reply-To: <45B528BA.9020101@virginia.edu>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,53 +17,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆
-　　　叙　情　満　喫　浪　漫　譚
-◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆◇◆
+Whoops!  So, first of all, the feedback was due to me not muting PCM 
+Playback via the mixer, haha.  No wonder there was so much feedback!  No 
+wonder ecasound et al didn't work!  Doh!  Anyway, by realizing this 
+silly mistake and coming up with better code, I achieved my goal.  If 
+anyone cares to look at, laugh at, and/or criticize some code, advise me 
+to use the async interface, take a different approach etc. here's what I 
+got:
+http://people.virginia.edu/~hwa5c/code/fulldup8b.c
 
-◇叙情を満喫すると言ったら
-　ココしかありません！
-◇運営開始から
-　様々な浪漫譚のご報告有り！
+Best,
+Drew
 
-http://hhy.optus.nu/jm-romantan/index.html
 
---------------------------------------
+Henry "Drew" W. Abbot, Jr. wrote:
 
-※今回は、どうしても叙情を満喫したい
-　女性様よりお申し込みがありました！
-※ランダムにて順次ご紹介させて頂いて
-　おります。
-※ご希望でございましたら、お早めに
-　ご連絡をお願い致します。
-※女性様は既に連絡待ちの状態と
-　なっております！！
+>Greetings,
+>   I'm trying to achieve a full-duplex sound processing app with ALSA.  
+>I've been messing around with various code examples for days now, and 
+>I've started hitting some of (what seems to be) the same ol' 
+>difficulties any newbie encounters when trying to tackle full duplex 
+>with ALSA.  For now, the goal is simply to simultaneously capture from 
+>plughw:0,0 and playback to plughw:0,0.  I've gotten a few "working" test 
+>apps -- by "working", I mean I can hear stuff, but the sound is really 
+>choppy -- that is, I'll hear captured sound for one period, then I'll 
+>hear about one period of silence while readi blocks, then another period 
+>of sound, then another period of silence, etc. (this can resemble the 
+>sound of a helicopter) -- anyway, the net result is an ugly and 
+>distorted capture.  The main two test apps I'm working with right now 
+>are both based on the pcm.c example.  In one, I essentially turned the 
+>write_loop into a readwrite_loop, and in the other, I use two threads 
+>(via pthreads), one to capture and one to playback.  I've only messed 
+>with the standard interleaved, blocking interface.  From the discussion 
+>at 
+>http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09937.html, 
+>I assume a better approach would be to use snd_async_add_pcm_handler() 
+>and/or mmapped access and snd_pcm_avail_update() on both capture and 
+>playback PCMs.  However, should I be running the capture and playback in 
+>separate threads or in the same thread?  In separate processes (i.e. 
+>fork() vs. pthreads)?  Intuitively, separate threads seems like it could 
+>help, but I should be calling writei pretty soon after calling readi 
+>completes (right?), so it also seems like having them run in separate 
+>threads would complicate things.  Right now, I've tried to "hack it," 
+>such that whenever readi is blocking, sound will still be playing from 
+>the last writei (is this conceptually accurate?), but to no avail.  
+>Messing with the period and buffer sizes changes the "helicopter effect" 
+>somewhat (i.e. for smaller periods, the sound has a tendency to blow up 
+>/ be unstable -- I guess this is feedback), but basically it's the 
+>same.  At first, I thought I was just way off, but after running the 
+>latency.c example and getting the same "helicopter-like" results, I 
+>gained back some confidence.  I even tried running 'ecasound -i 
+>alsahw,0,0 -o alsahw,0,0' and it, too, yielded similar results.  I 
+>didn't try messing with period or buffer sizes with ecasound, but I 
+>tried many with latency.c and nothing seemed to produce smooth, 
+>undistorted sound.  Surely, I don't have to apply low-latency patches or 
+>something to simply run a full-duplex userland app, do I?  I know what 
+>you guys want to say... I should just forget about all of it and use 
+>JACK, and yes, I am already at the JACK website reading the 
+>documentation, but I would like to get my own lower-level ALSA code 
+>working, too.  In summary, my questions are:
+>   1) Any ideas on why latency.c and ecasound aren't working smoothly?
+>   2) Any advice on whether to use the standard ALSA interface, the 
+>async, the mmap, etc. for a full duplex app?
+>   3) Any advice on single-threaded vs. multi-threaded?
+>   4) Should my capture and playback PCMs be configured the same way?  
+>I.e. how about this for an app.. should I have a smaller period size for 
+>capture, and capture each little bit at a time, and when the time comes 
+>around to send another larger period for playback, I can send however 
+>many smaller capture periods I have received at that time.
+>
+>Thanks for your time, and sorry for such a long post.
+>
+>
+>Best,
+>Drew
+>
+>
+>
+>
+>-------------------------------------------------------------------------
+>Take Surveys. Earn Cash. Influence the Future of IT
+>Join SourceForge.net's Techsay panel and you'll get the chance to share your
+>opinions on IT & business topics through brief surveys - and earn cash
+>http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>  
+>
 
-http://hhy.optus.nu/jm-romantan/index.html
-
---------------------------------------
-
-◎ご紹介する女性様の
-
-　『　ご紹介専用詳細確認ページ　』
-
-　…を作成させて頂きました。
-
-◎顔写真、その他PR等ご確認可能です。
-◎専用ページからはそのまま無料で登録
-　可能となっております！
-
-◎また、今回の女性様以外にも多数の
-　叙情希望女性様もございます。
-◎詳細はコチラから↓
-
-http://hhy.optus.nu/jm-romantan/index.html
-
---------------------------------------
-　　　叙　情　満　喫　浪　漫　譚
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
