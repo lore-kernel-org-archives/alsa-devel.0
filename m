@@ -1,11 +1,17 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1H8fX6-0007v9-IK delayed 72 hours
-Date: Wed, 24 Jan 2007 11:29:00 -0800
-Message-ID: <E1H9nno-0007Gl-8c@externalmx-1.sourceforge.net>
+From: Matthias Koenig <list@phasorlab.de>
+Subject: Re: [PATCH] alsa-driver: portman2x4 code cleanup
+Date: Wed, 24 Jan 2007 20:43:46 +0100
+Message-ID: <87ejpkjjm5.fsf@zebra.localdomain>
+References: <n7xr6tksauu.fsf@sor.suse.de> <s5hzm88bbqt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.187])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D9412F0
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2007 20:43:48 +0100 (MET)
+In-Reply-To: <s5hzm88bbqt.wl%tiwai@suse.de> (Takashi Iwai's message of "Wed,
+	24 Jan 2007 18:00:58 +0100")
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,36 +21,117 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+--=-=-=
 
-The message identifier is:     1H8fX6-0007v9-IK
-The subject of the message is: [VAR114]
-The date of the message is:    Sun, 21 Jan 2007 21:56:54 +0530
+Takashi Iwai <tiwai@suse.de> writes:
+>> Signed-off-by: Matthias Koenig <mkoenig@suse.de>
+>> ============================================================
+>> Summary: portman2x4 code cleanup
+>> 
+>> - changed code structure to mirror the one of the mts64.c driver 
+>>   for better maintenance
+>> - added proper handling of platform device
+>> - general cleanup (no CamelCase names)
+>
+> Thanks, the changes look good to me.
+>
+> Since the patch couldn't be applied cleanly, I fixed it manually.
 
-The address to which the message has not yet been delivered is:
+Hmm, what was the problem? I just used the hg quilt extensions
+and took the resulting patch.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+> Also, added cpu_relax() in busy loops, and fixed unneeded
+> initialization of variables.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Ok, thanks
+
+> The code is now committed to ALSA HG tree.  Please give it a try.
+
+Ah, I just tested and found that the rawmidi open/close callbacks
+have to be defined and cannot be NULL. So the driver as it is
+will oops if device will be opened.
+Fixed this, now tested with amidi input/output on all ports works
+fine. Patch is below.
+
+> BTW, if the driver works for you, we can move this to alsa-kernel tree
+> so that it's merged to the upstream kernel...
+
+Great, yes I think it can then be moved to alsa-kernel tree.
+
+Matthias
+
+Signed-off-by: Matthias Koenig <mkoenig@suse.de>
+===========================================================
+Summary: Fix callbacks
+
+
+--=-=-=
+Content-Type: text/x-diff
+Content-Disposition: inline; filename=portman2x4-callbacks.patch
+
+diff -r 34388b137f38 drivers/portman2x4-kernel.c
+--- a/drivers/portman2x4-kernel.c	Wed Jan 24 17:57:48 2007 +0100
++++ b/drivers/portman2x4-kernel.c	Wed Jan 24 20:14:19 2007 +0100
+@@ -508,6 +508,15 @@ static int portman_device_init(struct po
+ /*********************************************************************
+  * Rawmidi
+  *********************************************************************/
++static int snd_portman_midi_open(struct snd_rawmidi_substream *substream)
++{
++	return 0;
++}
++
++static int snd_portman_midi_close(struct snd_rawmidi_substream *substream)
++{
++	return 0;
++}
+ 
+ static void snd_portman_midi_input_trigger(struct snd_rawmidi_substream *substream,
+ 					   int up)
+@@ -539,14 +548,14 @@ static void snd_portman_midi_output_trig
+ }
+ 
+ static struct snd_rawmidi_ops snd_portman_midi_output = {
+-	.open =		NULL,
+-	.close =	NULL,
++	.open =		snd_portman_midi_open,
++	.close =	snd_portman_midi_close,
+ 	.trigger =	snd_portman_midi_output_trigger,
+ };
+ 
+ static struct snd_rawmidi_ops snd_portman_midi_input = {
+-	.open =		NULL,
+-	.close =	NULL,
++	.open =		snd_portman_midi_open,
++	.close =	snd_portman_midi_close,
+ 	.trigger =	snd_portman_midi_input_trigger,
+ };
+ 
+
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-=-=--
