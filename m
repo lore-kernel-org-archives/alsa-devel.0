@@ -1,12 +1,11 @@
-From: Philipp Matthias Hahn <pmhahn@svs.Informatik.Uni-Oldenburg.de>
-Subject: Re: A: VIA Technologies Inc. VT1720/24
-Date: Wed, 24 Jan 2007 13:10:40 +0100
-Message-ID: <45B74CC0.4060905@svs.Informatik.Uni-Oldenburg.de>
-References: <45AFE785.6020307@informatik.uni-oldenburg.de>
+From: "Carlton Prestonx" <aeyie@kt.rim.or.jp>
+Subject: dame pandemic
+Date: Wed, 24 Jan 2007 09:18:35 -0400
+Message-ID: <024401c73f92$3cdb99a0$7884e2e0@uprowm>
+Reply-To: Carlton Prestonx <aeyie@kt.rim.or.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090806020102030001040802"
+Content-Type: multipart/mixed; boundary="===============0516745116=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45AFE785.6020307@informatik.uni-oldenburg.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,188 +15,185 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA developers <alsa-devel@lists.sourceforge.net>
-Cc: ALSA users <alsa-user@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090806020102030001040802
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+--===============0516745116==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0003_02E1A38C.E61B4FB0"
 
-Philipp Matthias Hahn wrote:
-> I'm not subscribed, so please cc: me on replies.
-> 
-> I have several Fujitsu-Siemens Scenic W600 with an Onboard AD1885 AC97
-> Audio Codec. (See
-> http://www.fujitsu-siemens.co.uk/rl/servicesupport/techsupport/boards/Motherboards/FSC/D1321/D1321.htm
-
-Wrong link, the right one is
-http://www.fujitsu-siemens.co.uk/rl/servicesupport/techsupport/Boards/Motherboards/FSC/D1527/D1527.htm
-
-> for the board description). This one is working fine with the
-> snd-intel8x0 module from the Linux-2.6.18.6 kernel.
-> 
-> In one of those computers I plugged in an additional sound card:
-> 
-> 	AudioTrak Prodigy 7.1 HiFi
-> 
-> XXXXX:/dev# lspci -s 2:0d.0
-> 02:0d.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-> [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-> 
-> XXXXX:/dev# lspci -s 2:0d.0 -nvxxx
-> 02:0d.0 0401: 1412:1724 (rev 01)
->         Subsystem: 3138:4154
->         Flags: medium devsel, IRQ 21
->         I/O ports at 3c00 [disabled] [size=32]
->         I/O ports at 3800 [disabled] [size=128]
->         Capabilities: [80] Power Management version 1
-> 00: 12 14 24 17 00 00 10 02 01 00 01 04 00 40 00 00
-> 10: 01 3c 00 00 01 38 00 00 00 00 00 00 00 00 00 00
-> 20: 00 00 00 00 00 00 00 00 00 00 00 00 38 31 54 41
-> 30: 00 00 00 00 80 00 00 00 00 00 00 00 05 01 00 00
-> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 80: 01 00 01 04 00 00 00 00 00 00 00 00 00 00 00 00
-> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 
-> Now I have two problems:
-> 
-> 1. The onboard intel8x0-sound is now missing, that is, the following
-> Device is no longer listed using "lspci":
-> 0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
-> (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
-> 
-> Is there a way to re-enable it, so I can use both cards?
-> (On a side node not relevant for ALSA: the board also has an onboard
-> integrated graphics controller, which is also disables by plugging in an
-> AGP card. Would also be nice to re-enable it.)
-
-Solved: I had to switch the BIOS from "Auto" to "Always enable".
-
-> 2. Loading the "snd-ice1724" module reports this failure:
-> 
-> ACPI: PCI Interrupt 0000:02:0d.0[A] -> GSI 21 (level, low) -> IRQ 21
-> ice1724: No matching model found for ID 0x38315441
-> ice1724: Invalid EEPROM (size = 120)
-> ACPI: PCI interrupt for device 0000:02:0d.0 disabled
-> ICE1724: probe of 0000:02:0d.0 failed with error -5
-> 
-> Can somebody help me to get this working?
-> 
-> Seemd I'm not alone, but I can't understand the language:
-> http://www.google.com/search?q=cache:ZaBwG4Ge5b4J:forum.ubuntu.pl/viewtopic.php%3Ft%3D16017%26view%3Dprevious%26sid%3D0a6db6f9be5123927dfb6c3a582e3eef+ice1724+0x38315441&hl=de&gl=de&ct=clnk&cd=1&client=firefox
-
-I did some reading and hacking myself, since it just seems to be the
-same as the Prodigy 7.1 with just a different model ID. See the attached
-patch for a first version. It seems to work thus far without any problems.
-
-Sincerly
-
-Philipp Hahn
--- 
-      Dipl.-Inform. Philipp.Hahn@informatik.uni-oldenburg.de
-      Abteilung Systemsoftware und verteilte Systeme, Fk. II
-Carl von Ossietzky Universitaet Oldenburg, 26111 Oldenburg, Germany
-    http://www.svs.informatik.uni-oldenburg.de/contact/pmhahn/
-      Telefon: +49 441 798-2866    Telefax: +49 441 798-2756
-
---------------090806020102030001040802
-Content-Type: text/x-patch;
- name="sound_pci_ice1712.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="sound_pci_ice1712.diff"
-
-From: Philipp Matthias Hahn <pmhahn@pmhahn.de>
-
-Fix small typo in comment of Prodigy 7.1 Light
-Add support for AudioTrak Prodigt 7.1 HiFi
-
-Signed-of-by: Philipp Matthias Hahn <pmhahn@pmhahn.de>
----
-
---- sound/pci/ice1712/aureon.c	2006-12-17 01:21:00.000000000 +0100
-+++ sound/pci/ice1712/aureon.c	2007-01-19 10:50:19.000000000 +0100
-@@ -2085,7 +2085,7 @@ static unsigned char prodigy71_eeprom[] 
- };
- 
- static unsigned char prodigy71lt_eeprom[] __devinitdata = {
--	0x4b,	/* SYSCINF: clock 512, spdif-in/ADC, 4DACs */
-+	0x4b,	/* SYSCONF: clock 384, spdif-in/ADC, 4DACs */
- 	0x80,	/* ACLINK: I2S */
- 	0xfc,	/* I2S: vol, 96k, 24bit, 192k */
- 	0xc3,	/* SPDIF: out-en, out-int, spdif-in */
-@@ -2100,6 +2100,22 @@ static unsigned char prodigy71lt_eeprom[
- 	0x00,	/* GPIO_STATE2 */
- };
- 	
-+static unsigned char prodigy71hifi_eeprom[] __devinitdata = {
-+	[ICE_EEP2_SYSCONF]     = 0x0b,	/* clock 512, spdif-in/ADC, 4DACs */
-+	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-+	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
-+	[ICE_EEP2_SPDIF]       = 0xc3,	/* out-en, out-int, spdif-in */
-+	[ICE_EEP2_GPIO_DIR]    = 0xff,
-+	[ICE_EEP2_GPIO_DIR1]   = 0xff,
-+	[ICE_EEP2_GPIO_DIR2]   = 0x5f,
-+	[ICE_EEP2_GPIO_MASK]   = 0x00,
-+	[ICE_EEP2_GPIO_MASK1]  = 0x00,
-+	[ICE_EEP2_GPIO_MASK2]  = 0x00,
-+	[ICE_EEP2_GPIO_STATE]  = 0x00,
-+	[ICE_EEP2_GPIO_STATE1] = 0x00,
-+	[ICE_EEP2_GPIO_STATE2] = 0x00,
-+};
-+
- 
- /* entry point */
- struct snd_ice1712_card_info snd_vt1724_aureon_cards[] __devinitdata = {
-@@ -2153,5 +2169,15 @@ struct snd_ice1712_card_info snd_vt1724_
- 		.eeprom_data = prodigy71lt_eeprom,
- 		.driver = "Prodigy71LT",
- 	},
-+	{
-+		.subvendor = VT1724_SUBDEVICE_PRODIGY71HIFI,
-+		.name = "Audiotrak Prodigy 7.1 HiFi",
-+		.model = "prodigy71hifi",
-+		.chip_init = aureon_init,
-+		.build_controls = aureon_add_controls,
-+		.eeprom_size = sizeof(prodigy71hifi_eeprom),
-+		.eeprom_data = prodigy71hifi_eeprom,
-+		.driver = "Prodigy71HiFi", /* should be identical with Prodigy71 */
-+	},
- 	{ } /* terminator */
- };
---- sound/pci/ice1712/aureon.h	2006-12-17 01:21:00.000000000 +0100
-+++ sound/pci/ice1712/aureon.h	2007-01-19 10:50:19.000000000 +0100
-@@ -28,13 +28,15 @@
- 				       "{Terratec,Aureon 7.1 Space},"\
- 				       "{Terratec,Aureon 7.1 Universe}," \
- 					"{AudioTrak,Prodigy 7.1}," \
--					"{AudioTrak,Prodigy 7.1 LT},"
-+					"{AudioTrak,Prodigy 7.1 LT},"\
-+					"{AudioTrak,Prodigy 7.1 HiFi},"
- 
- #define VT1724_SUBDEVICE_AUREON51_SKY	0x3b154711	/* Aureon 5.1 Sky */
- #define VT1724_SUBDEVICE_AUREON71_SPACE	0x3b154511	/* Aureon 7.1 Space */
- #define VT1724_SUBDEVICE_AUREON71_UNIVERSE	0x3b155311	/* Aureon 7.1 Universe */
- #define VT1724_SUBDEVICE_PRODIGY71	0x33495345	/* PRODIGY 7.1 */
- #define VT1724_SUBDEVICE_PRODIGY71LT	0x32315441	/* PRODIGY 7.1 LT */
-+#define VT1724_SUBDEVICE_PRODIGY71HIFI	0x38315441	/* PRODIGY 7.1 HiFi */
- 
- extern struct snd_ice1712_card_info  snd_vt1724_aureon_cards[];
- 
+------=_NextPart_000_0003_02E1A38C.E61B4FB0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0002_02E1A38C.E61B4FB0"
 
 
---------------090806020102030001040802
+------=_NextPart_001_0002_02E1A38C.E61B4FB0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+ before flying back to California. If the pilot used the full width of the river to turn, Loutzenhiser, 43, of Idyllwild; and Pablo Cerda, 23, of Fountain Valley. A public  (Watch Michael J. Fox back McCaskill on stem cells -- :32 ) Democrats say they are ahead  polls show that a clear majority of Americans see the war as a mistake and far fewer  first for the five U.S. Forest Service firefighters who were overrun by flames  course," said Adrianne Marsh, a spokeswoman for McCaskill who was finishing a four-day Second guessing is not a strategy. Several thousand GOP supporters cheered Bush as he  because the case is continuing.Last week's fire was stoked by Santa Ana winds  The airplane, which also carried flight instructor Tyler Stanger, struck the building  before flying back to California. If the pilot used the full width of the river to turn,
+
+probable cause of the crash was. The full board will likely vote on a ruling at a 
+
+as it swept southwest through the mountains about 90 miles east of Los Angeles.  can't answer that question," Bush said. "Harsh criticism is not a plan for victory.  leader, blasted Democrats on Friday, saying they have no plan to keep Americans safe   said as the service began. "It has shaken this agency and the men and women of the  said as the service began. "It has shaken this agency and the men and women of the ttempted a U-turn with only 1,300 feet of room for the turn. To make a successful turn, Oyler "adamantly denies involvement in this fire and in any of these fires, The airplane, which also carried flight instructor Tyler Stanger, struck the building square miles before being contained Monday. Three firefighters died when the flames  Glenwood Springs, Colorado, according to the National Interagency Fire Center. of five funerals began Friday, and praised authorities for chargin
+ g the man accused  first for the five U.S. Forest Service firefighters who were overrun by
+  flames  question: 'What's your plan?' " Bush said at a rally for Missouri Sen. Jim Talent,   before flying back to California. If the pilot used the full width of the river to turn, Oyler has any links to at least 40 fires in the area since May, according to an  official involved in the investigation who spoke on condition of anonymity   before flying back to California. If the pilot used the full width of the river to turn, October 26 in Southern California's San Jacinto Mountains. of five funerals began Friday, and praised authorities for charging the man accused  Board said the wind, coupled with the pilot's inability to turn sharply, forced the  aircraft away from its intended path over the East River and into the building.  San Benardino National Forest to its very core and shocked the entire world." determined who was at the controls of the Cirrus SR20.The report issued Friday sa
+ id  Second guessing is not a strategy. Several thousand GOP supporters cheered Bush as he 
+   help with some of the closure, the healing that we in the Forest Service community, square miles before being contained Monday. Three firefighters died when the flames  the river without filing flight plans or checking in with air traffic control. The  the airplane was flying along the East River between Manhattan and Queens when it a Service took the lives of five heroes," U.S. Forest Service Chaplain Steve Seltzner " attorney Mark McDonald said outside court. "He's very distraught and scared 
+
+------=_NextPart_001_0002_02E1A38C.E61B4FB0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2720.3000" name=3DGENERATOR>
+</HEAD>
+<BODY bgColor=3D>
+<DIV><FONT size=3D2> before flying back to California. If the pilot used the full width of the river to turn, Loutzenhiser, 43, of Idyllwild; and Pablo Cerda, 23, of Fountain Valley. A public  (Watch Michael J. Fox back McCaskill on stem cells -- :32 ) Democrats say they are ahead  polls show that a clear majority of Americans see the war as a mistake and far fewer  first for the five U.S. Forest Service firefighters who were overrun by flames  course," said Adrianne Marsh, a spokeswoman for McCaskill who was finishing a four-day Second guessing is not a strategy. Several thousand GOP supporters cheered Bush as he  because the case is continuing.Last week's fire was stoked by Santa Ana winds  The airplane, which also carried flight instructor Tyler Stanger, struck the building  before flying back to California. If the pilot used the full width of the river to turn,<BR>probable cause of t
+ he crash was. The full board will likely vote on a ruling at a  balsa invidious formaldehy
+ de<IMG alt=3Dn hspace=3D0=20 src=3D"cid:024401c73f92$3cdb99a0$7884e2e0@uprowm" border=3D0> 
+as it swept southwest through the mountains about 90 miles east of Los Angeles.  can't answer that question," Bush said. "Harsh criticism is not a plan for victory.  leader, blasted Democrats on Friday, saying they have no plan to keep Americans safe   said as the service began. "It has shaken this agency and the men and women of the  said as the service began. "It has shaken this agency and the men and women of the ttempted a U-turn with only 1,300 feet of room for the turn. To make a successful turn, Oyler "adamantly denies involvement in this fire and in any of these fires, The airplane, which also carried flight instructor Tyler Stanger, struck the building square miles before being contained Monday. Three firefighters died when the flames  Glenwood Springs, Colorado, according to the National Interagency Fire Center. of five funerals began Friday, and praised authorities for chargin
+ g the man accused  first for the five U.S. Forest Service firefighters who were overrun by
+  flames  question: 'What's your plan?' " Bush said at a rally for Missouri Sen. Jim Talent,   before flying back to California. If the pilot used the full width of the river to turn, Oyler has any links to at least 40 fires in the area since May, according to an  official involved in the investigation who spoke on condition of anonymity   before flying back to California. If the pilot used the full width of the river to turn, October 26 in Southern California's San Jacinto Mountains. of five funerals began Friday, and praised authorities for charging the man accused  Board said the wind, coupled with the pilot's inability to turn sharply, forced the  aircraft away from its intended path over the East River and into the building.  San Benardino National Forest to its very core and shocked the entire world." determined who was at the controls of the Cirrus SR20.The report issued Friday sa
+ id  Second guessing is not a strategy. Several thousand GOP supporters cheered Bush as he 
+   help with some of the closure, the healing that we in the Forest Service community, square miles before being contained Monday. Three firefighters died when the flames  the river without filing flight plans or checking in with air traffic control. The  the airplane was flying along the East River between Manhattan and Queens when it a Service took the lives of five heroes," U.S. Forest Service Chaplain Steve Seltzner " attorney Mark McDonald said outside court. "He's very distraught and scared <DIV><FONT size=3D2></FONT></DIV>
+</BODY></HTML>
+------=_NextPart_001_0002_02E1A38C.E61B4FB0--
+
+------=_NextPart_000_0003_02E1A38C.E61B4FB0
+Content-Type: image/jpeg;
+	name="Carrierc.jpeg"
+Content-Transfer-Encoding: base64
+Content-ID: <024401c73f92$3cdb99a0$7884e2e0@uprowm>
+
+R0lGODlhmAF/AfcAAAAAAP8AAP///wCZmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAmAF/AQAI/wAFCBxIsKDBgwgTKlzIsKHD
+hxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bNmzhz6tzJs6fP
+n0BXBhg6VCHRokGTXjwaQKnTiEybRkUatePUplCRGtX6tOJUAVcFVj1JVCPWg1eZEuT6deBY
+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
+
+------=_NextPart_000_0003_02E1A38C.E61B4FB0--
+
+
+--===============0516745116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -208,7 +204,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---------------090806020102030001040802
+--===============0516745116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -219,4 +215,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---------------090806020102030001040802--
+--===============0516745116==--
