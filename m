@@ -1,10 +1,10 @@
-From: "Reach Brokers & Realtors" <noreply@massgrowth.com>
-Subject: Reach 100K Brokers, Originators or Realtors Overnite!
-Date: 23 Jan 2007 17:49:07 -0800
-Message-ID: <20070123174907.43CCAD1D9CA44154@massgrowth.com>
-Reply-To: Reach Brokers <reply@massgrowth.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H99x3-00068U-V4 delayed 24 hours
+Date: Tue, 23 Jan 2007 22:47:29 -0800
+Message-ID: <E1H9bur-0007dc-NJ@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1117942319=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,62 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1117942319==
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-<HTML><HEAD><TITLE></TITLE>
-<META http-equiv=3DContent-Language content=3Den-us>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">=
+The message identifier is:     1H99x3-00068U-V4
+The subject of the message is:  to he answered Saul Hear all
+The date of the message is:    Tue, 23 Jan 2007 08:00:56 +0700
 
-<META content=3D"MSHTML 6.00.3790.2706" name=3DGENERATOR></HEAD>
-<BODY>
-<P>Dear Industry Professional, </P>
-<P>
-If you're looking to expand your wholesale network and reach mortgage broker=
-s, originators or real estate professionals, we can help. Specializing in Fi=
-nance and Real Estate since 2001, Prospector can help your company reach its=
- sales goals. We can handle all or part of your B2B net campaign or customiz=
-e a marketing plan to best suit your needs. Let Prospector do the lead minin=
-g so you can focus on the call backs. If you'd like more information about o=
-ur email data, blast services or custom=20
-html design please <A href=3D"http://209.35.106.182/prospector_contact.htm">=
-click here</A> or call us toll free at 1 (866) 759-5799.<BR><BR>USA Mortgage=
- List <BR>This database currently contains over 100,000 Mortgage Broker/Orig=
-inator email contacts across the US. Individual States are also available up=
-on request.<BR><BR>USA Realtor List<BR>This database contains over 100,000 R=
-ealtor Broker/Agent email contacts across the US. Individual States are also=
- available upon request.<BR><BR>
-USA Insurance List <BR>This database contains over 100,000 email contacts of=
- Insurance Brokers and Agents across the US <BR><BR>Customized Lists<BR>Pros=
-pector maintains fresh contacts in all 50 states, please inquire for quantit=
-ies and pricing</P>
-<P>Prospector wants your email campaign to be a success.</P>
-<P>to unsubscribe <A href=3D"http://209.35.106.182/unsubscribe.htm">click he=
-re</A></P></BODY></HTML>
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
---===============1117942319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1117942319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1117942319==--
