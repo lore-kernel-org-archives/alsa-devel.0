@@ -1,13 +1,11 @@
-From: "Mathew Valencia" <gossippedGatorade's@abacusinternet.com>
-Subject: AUNI.OB this is really amazing company that you always
-	dreamt
-Date: Wed, 24 Jan 2007 19:01:34 +0000 (UTC)
-Message-ID: <01c73fe9$f18f51e0$6c822ecf@gossippedGatorade's>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1H8fX6-0007v9-IK delayed 72 hours
+Date: Wed, 24 Jan 2007 11:29:00 -0800
+Message-ID: <E1H9nno-0007Gl-8c@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Wed, 24 Jan 2007 19:00:41 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,31 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The Beauty of the peenny stoock arena is that issues appreciate so fast!  
-A bit of inside info and returns of 1000% are not unheard of.  We are 
-bringing you what is REAL HOT right now.
-Weekly blitz has started. Millions of traders will read
-this message todays morning.Guess what will happen next several days.Did you end your papertrade already ?Time to try it on real.
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-With lucrative deals in China, American Unity 
-Investments (AUNI-OTC-BB) is exactly where you want to be.
+The message identifier is:     1H8fX6-0007v9-IK
+The subject of the message is: [VAR114]
+The date of the message is:    Sun, 21 Jan 2007 21:56:54 +0530
 
-Currently trading at around 16 cents, AUNI^OB is firing up a massive 
-publicity blitz to showcase their successful dealings in China.
+The address to which the message has not yet been delivered is:
 
-We are looking at this one shooting up to the $1.00 mark once results are 
-released and the promotion officially begins (several days)!
-Growth projected 37.5% up.
-Wednesday expectations around +37.5% +0.06(0.22) at least and  +81.2 +0.13(0.29)% at most (not bad).
-You know thet we know something new. Look at monday result - it flying already - was 0.08 now 0.168.
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-6678326A6A456E79336B73797166697B7171787878336A
-giparh
-
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
