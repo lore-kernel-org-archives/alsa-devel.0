@@ -1,13 +1,13 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Sound detection
-Date: Thu, 25 Jan 2007 16:03:29 +0000
-Message-ID: <1169741009.3866.4.camel@localhost.localdomain>
-References: <45B35F07.50404@gmail.com>  <s5hwt3b9tc6.wl%tiwai@suse.de>
+From: <MAILER-DAEMON@k66.ru>
+Subject: Undeliverable mail: Message could not be delivered
+Date: Thu, 25 Jan 2007 21:10:59 +0500
+Message-ID: <receipt-38264614@k66.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0218722249=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hwt3b9tc6.wl%tiwai@suse.de>
+Received: from k66.ru (k66.ru [87.224.128.21])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 319B2330
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2007 17:08:43 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,39 +17,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andreas Corneliussen <corneliussen@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-01-25 at 13:36 +0100, Takashi Iwai wrote:
-> At Sun, 21 Jan 2007 13:39:35 +0100,
-> Andreas Corneliussen wrote:
-> > 
-> > Hi
-> > I've just build a mediacenter, and is about to construct an hifi 
-> > amplifier for it. Therefore i would like to know a way to make alsa 
-> > detect when nothing is playing at the output, and then run a external 
-> > command. And detect when something has started playing at the output, 
-> > and run an external command before any output is generatet.
-> > This I would like to do, because I then could make an interface between 
-> > the amplifier and the computer to make sure that it does not use anymore 
-> > standbypower than needed.
-> 
-> It's an interesting question.  Currently, there is no good framework
-> for such a functionality, so you need to build something new.
-> 
 
-Fwiw, the Dynamic Audio Power Management code in ASoC (Alsa for SoC
-devices) does this very thing. Please feel free to have a look and take
-code if required.
+--===============0218722249==
+Content-Type: multipart/report; report-type="delivery-status";
+	boundary="_===38264614====k66.ru===_"
 
-http://opensource.wolfsonmicro.com/~lg/asoc/
 
-Liam
+--_===38264614====k66.ru===_
+Content-Type: text/plain; charset="utf-8"
 
+Failed to deliver to 'sondana@mail.ru'
+SMTP module(domain @87.224.128.21:mail.ru) reports:
+ message text rejected by mxs.mail.ru:
+ 550 Message was not accepted -- invalid mailbox.  Local mailbox sondana@mail.ru is unavailable: user not found
+
+
+--_===38264614====k66.ru===_
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; k66.ru
+
+Original-Recipient: rfc822;<sondana@mail.ru>
+Final-Recipient: rfc822;<sondana@mail.ru>
+Action: failed
+Status: 5.0.0
+
+--_===38264614====k66.ru===_
+Content-Type: text/rfc822-headers
+
+Received: from [87.224.223.133] (HELO alsa-project.org)
+  by k66.ru (CommuniGate Pro SMTP 4.3.12)
+  with ESMTP id 38264609 for sondana@mail.ru; Thu, 25 Jan 2007 21:10:53 +0500
+From: alsa-devel@alsa-project.org
+To: sondana@mail.ru
+Subject: Message could not be delivered
+Date: Thu, 25 Jan 2007 21:18:53 +0500
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0002_C0EC46AA.66804C24"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <auto-000038264609@k66.ru>
+
+--_===38264614====k66.ru===_--
+
+
+--===============0218722249==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0218722249==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0218722249==--
