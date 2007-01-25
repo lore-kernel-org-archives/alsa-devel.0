@@ -1,17 +1,14 @@
-From: Konstantin Kletschke <konsti@ku-gbr.de>
-Subject: Re: A: VIA Technologies Inc. VT1720/24
-Date: Thu, 25 Jan 2007 13:36:21 +0100
-Message-ID: <20070125123620.GA8634@synertronixx3>
-References: <45AFE785.6020307@informatik.uni-oldenburg.de>
-	<45B74CC0.4060905@svs.Informatik.Uni-Oldenburg.de>
-	<s5hac08cvct.wl%tiwai@suse.de>
-	<20070125101319.GA3340@titan.lahn.de>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: MOUT PCI(E)424
+Date: Thu, 25 Jan 2007 13:23:19 +0000
+Message-ID: <20070125132319.GA3191@localhost.localdomain>
+References: <20070125093839.GA5805@linux-2.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20070125101319.GA3340@titan.lahn.de>
+In-Reply-To: <20070125093839.GA5805@linux-2.site>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,57 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Fons Adriaensen <fons@kokkinizita.net>
+Cc: Alsa Developres <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Well actually I am fiddling around with the same card also. Since
-nobody responded here in this mailing list anymore I went into
+On Thu, Jan 25, 2007 at 10:38:39AM +0100, Fons Adriaensen wrote:
+> Is the MOTU PCI(E) 424 supported by ALSA ?
+> 
+> It's not in the matrix on the ALSA site, so the answer is probably 'no'.
+> Any alternatives ? We need 24 analog outputs at 96 kHz, and a few inputs.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2384
+RME HDSP MADI card? That can handle 32 ins and 32 outs at 96kHz, but
+getting signals in and out of MADI format is expensive
+(eg. RME ADI-648 plus 3 x 8-channel 96kHz ADAT interfaces).
 
-and evolved a separate prodigy_hifi.c which is quite redundant due to
-the simialirities but I have to get know to als coding and wanted to
-clean up later. This here looks clean and seems to work though.
+The only other alternative AFAIK is to use 3 x 8-channel cards
+(eg. M-Audio Delta 1010(LT) synced via S/PDIF), but you can probably
+forget about low-latency operation with jackd if you do that - pcm_multi
+and -rt kernel didn't work together with jackd last time I tried
+(big xruns on SMP, lockup on UP).
 
-I went back here Raymond pointing me to the alsa-devel archive. This
-is the first mail which arrives at my mail account so I answer now
-here.
-
-I applied your stuff onto alsa-driver-1.0.14rc2.
-
-Am 2007-01-25 11:13 +0100 schrieb Philipp Matthias Hahn:
-
-> Yes, see below. Three more questions:
-> 1. Since the "Aureon7.1", "Prodigy7.1" and my "Prodigy7.1HiFi"; as well
-> as the "Prodigy7.1LT" and the "Prodigy7.1XT" respectively seem so share
-> the same EEPROM-Date, wouldn't it be better to re-use/share those
-> eeprom-data instead of declaring them 3 respectively 2 times?
-
-In my opinion Prodigy7.1HiFi eeprom_ data has to be slightly
-different, I need to put 
-
-[ICE_EEP2_SYSCONF] = 0x4b
-
-instead of
-
-[ICE_EEP2_SYSCONF] = 0x0b
-
-Otherwise I got speeded up sound playback.
-See note (0014172) in this thread by me.
-
-What I am currently fiddling about is the CS8415A Chip:
-
-ALSA /XXX/alsa-kernel/pci/ice1712/aureon.c:1921: No CS8415
-chip. Skipping CS8415 controls.
-
-In the note (0014176) I am trying to search it at the i2c address it
-should appear at. Still I did not found it :-)
-
-Regards, Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+John
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
