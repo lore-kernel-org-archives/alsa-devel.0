@@ -1,9 +1,9 @@
-From: Apr. <bkjt@folharural.com.br>
-Subject: pointedly
-Date: Thu, 25 Jan 2007 06:25:45 -0800
-Message-ID: <45B8BDE9.8030302@folharural.com.br>
+From: mango <gwicvh@royalsnet.com>
+Subject: ventilation
+Date: Thu, 25 Jan 2007 06:26:25 -0800
+Message-ID: <45B8BE11.9070503@royalsnet.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1594164623=="
+Content-Type: multipart/mixed; boundary="===============2033285727=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1594164623==
+--===============2033285727==
 Content-Type: multipart/related;
-	boundary="------------010101080900070408000106"
+	boundary="------------000100000506070003050703"
 
---------------010101080900070408000106
+--------------000100000506070003050703
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,30 +31,30 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="floodlight"
- src="cid:part1.07050807.07080300@folharural.com.br" height="223"
- width="482"><br>
-I am not sure if I would be queasy or not. i am really interested.<br>
-But it is not just about changing the background color, you can also
-hide certain features. I used Google Answers myself and loved it. The
-risk of cancer of the mouth, throat, esophagus, bladder, kidney, and
-pancreas decrease.<br>
-Here are some screenshots of that. My Mother has been in the hospital
-several times, and I have so much admiration for her nurses. Access
-ErrorHeadline functionality has been disabled from your intranet. Keep
-the feedback coming! This will work for most aggregators that run in a
-browser, like Bloglines, or use a browser component to display HTML,
-like most e-mail client based aggregators. Search Marketing Blog.<br>
+<img alt="periodic" src="cid:part1.01070400.04030200@royalsnet.com"
+ height="223" width="482"><br>
+Sure right now it seems really popular to dance. The new display
+therefore demonstrates significant vertical integration on the mobile
+search result page to bring back more direct results.<br>
+Search blog: "Panama" platform available to new advertisers in the U.
+Answers, including category leaders, featured users, and more. Are they
+only showing in the States or something?<br>
+I hope it is temp things and update is still going on. Brady,
+Congressman Joseph M. The Committee to Save Convention Hall is
+sponsoring an online Fax Bank at Hallwatch. There are millions of
+children in the United States living in proverty with no future in
+sight. So why not give this idea a go. Today we launched nationwide
+schools search on Yahoo!<br>
 </body>
 </html>
 
---------------010101080900070408000106
+--------------000100000506070003050703
 Content-Type: image/gif;
- name="hastily.gif"
+ name="facade.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.07050807.07080300@folharural.com.br>
+Content-ID: <part1.01070400.04030200@royalsnet.com>
 Content-Disposition: inline;
- filename="hastily.gif"
+ filename="facade.gif"
 
 R0lGODdhBwLfAPUZAOrG7Pn82VwVqF9vhgIgDacrK0NRNDk0ggs7mowgg4+Qb3GoYr6bEyRnY7FW
 iZUBVZ5lZDpuihxDYSeGhmKEmL8rlCEY2nudjZH+T+eAu6frx2sDKZDE9caOyOIjY0WXrx+R+bjG
@@ -254,11 +254,11 @@ i90a69zagVHb03zajdzUw32ctdzWNz28Q50S5fHY4xHP25zcefHWH91cT13ds3zcwXwfcT3e+x3N
 3xfhDZHksbEgU77MPV6c29HlY57yFN7EWRzbId7kBx7cu0XmK53lSx7gHR0ee97Xf97o132kxzl9
 t93KhZ2Qj57el52sR77RPz7bqf7iQ77cb/7VJR7kwVnVw7neof7KH+YUI61+yZ6zhZ7UxyS+4oke
 7ikd6L0+xuMe671dyHOR7tXezUPY02s9G30ef2ElCAAAOw==
---------------010101080900070408000106--
+--------------000100000506070003050703--
 
 
 
---===============1594164623==
+--===============2033285727==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -269,7 +269,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1594164623==
+--===============2033285727==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -280,4 +280,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1594164623==--
+--===============2033285727==--
