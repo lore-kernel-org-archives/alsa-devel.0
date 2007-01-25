@@ -1,14 +1,15 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: MOUT PCI(E)424
-Date: Thu, 25 Jan 2007 13:23:19 +0000
-Message-ID: <20070125132319.GA3191@localhost.localdomain>
-References: <20070125093839.GA5805@linux-2.site>
+From: "Alfredo Pironti" <alfredo.pironti@gmail.com>
+Subject: Re: Asus M2N-MX audio issues
+Date: Thu, 25 Jan 2007 14:09:10 +0100
+Message-ID: <56c1d2c90701250509n18ec5aaek58350f308ded3c87@mail.gmail.com>
+References: <56c1d2c90701210351k2a8eb05eo33eb821a105c89d6@mail.gmail.com>
+	<s5hy7nr9tjm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hy7nr9tjm.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <20070125093839.GA5805@linux-2.site>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,27 +19,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Fons Adriaensen <fons@kokkinizita.net>
-Cc: Alsa Developres <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 25, 2007 at 10:38:39AM +0100, Fons Adriaensen wrote:
-> Is the MOTU PCI(E) 424 supported by ALSA ?
-> 
-> It's not in the matrix on the ALSA site, so the answer is probably 'no'.
-> Any alternatives ? We need 24 analog outputs at 96 kHz, and a few inputs.
+> >
+> > All tests I am reporting here have been done both with 2.6.19 and
+> > 2.6.20.rc5 kernels (the latter using alsa 1.0.14rc2 I suppose).
+>
+> Unfortunately 2.6.20 kernel took only a small part of ALSA 1.0.14rc2
+> changes.  Many fixes for HD-audio are missing.  Try to build modules
+> from alsa-driver-1.0.14rc2 tarball externally.
 
-RME HDSP MADI card? That can handle 32 ins and 32 outs at 96kHz, but
-getting signals in and out of MADI format is expensive
-(eg. RME ADI-648 plus 3 x 8-channel 96kHz ADAT interfaces).
+Done, and it completely resolved any issue.
 
-The only other alternative AFAIK is to use 3 x 8-channel cards
-(eg. M-Audio Delta 1010(LT) synced via S/PDIF), but you can probably
-forget about low-latency operation with jackd if you do that - pcm_multi
-and -rt kernel didn't work together with jackd last time I tried
-(big xruns on SMP, lockup on UP).
+Thank you very much for your work and support.
 
-John
+I hope to see latest alsa drivers in kernel as soon as possible.
+
+Cheers,
+Alfredo
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
