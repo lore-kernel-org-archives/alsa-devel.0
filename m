@@ -1,16 +1,11 @@
-From: "Quinn" <rhlxc@oyacomputers.com>
-Subject: Susan likes the personal touch,
-	like a bathrobe in her room,
-	and a bouquet of flowers ready for her arrival.
-Date: Fri, 26 Jan 2007 13:24:25 -0500
-Message-ID: <000801c74177$d21f9fb0$b8cb2fee@ieoujg>
+From: "Waters" <bkvlbm@onlinecourseevaluations.com>
+Subject: It's so easy to direct potential customers to a
+	particular product or service page.
+Date: Fri, 26 Jan 2007 13:31:05 -0500
+Message-ID: <000801c74178$3888aa30$c988c7e4@mfmdkx>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0217531858=="
+Content-Type: multipart/mixed; boundary="===============1787384884=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from adsl-211-52-169.asm.bellsouth.net
-	(adsl-211-52-169.asm.bellsouth.net [68.211.52.169])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A545C2DF
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 19:28:53 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,39 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0217531858==
+--===============1787384884==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0004_01C7414D.E942E0F0"
+	boundary="----=_NextPart_000_0004_01C7414E.4FA7A5B0"
 
-------=_NextPart_000_0004_01C7414D.E942E0F0
+------=_NextPart_000_0004_01C7414E.4FA7A5B0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0005_01C7414D.E9448EA0"
+	boundary="----=_NextPart_001_0005_01C7414E.4FAA64D0"
 
-------=_NextPart_001_0005_01C7414D.E9448EA0
+------=_NextPart_001_0005_01C7414E.4FAA64D0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Keep in mind that everyone on your Web site is involved in a journey.
-If I'm stressed out to the max and I'm looking for solutions, do I first =
-think of calling my problem emotional trauma? "But," I wonder aloud. =
-It's like they caught the fish, reeled it in, but forgot the net.
-She wants to buy from you. So think about what you need to accomplish, =
-how you can best accomplish it, then head out and get it done. Here's =
-the real problem.
-"The most effective strategy is to state a specific benefit of the =
-product or service you're promoting - right in the copy of the paid =
-listing - before offering an incentive. Of course, it isn't quite that =
-easy.
-Are You Using the Words Your Customers Are Using? I said to my =
-confrontational dude, "The purpose of GrokDotCom's copy is to inform and =
-build long-term relationships with our readers by providing valuable =
-content, not by selling them anything.
-------=_NextPart_001_0005_01C7414D.E9448EA0
+"I'll convey your reactions to Bryan, Jeffrey and Lisa.
+Now you're getting the idea! MindManager is the tool that lets us =
+develop our ideas and map out plans of action visually, on the spot, =
+then share those creations with others. This is also the form they want =
+you to use if your "opt-out" request was not honored.
+New PublicationsYou'll also want to keep an eye on our publications =
+page. And the ever-popular stress and anxiety. Acme attains rapid =
+delivery through active management and focused teamwork coupled with the =
+constant improvement of our internal processes and development =
+methodology.
+Apparently, the matter didn't cross very many other minds out there, =
+because it wasn't exactly easy to tiptoe my way through the Internet =
+tulips to discover a useful answer. These are the babies that are going =
+to mean the most to your online efforts.
+It may be what you've been missing out on up until now. "Hey, you're =
+that Martian what's-it from GrokDotCom, aren't you?
+------=_NextPart_001_0005_01C7414E.4FAA64D0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -61,49 +57,51 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"deplore" hspace=3D0=20
-src=3D"cid:000301c74177$d2173b40$b8cb2fee@ieoujg" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"power steering"=20
+hspace=3D0=20
+src=3D"cid:000301c74178$387aee90$c988c7e4@mfmdkx" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Keep in mind that everyone on your Web =
-site is=20
-involved in a journey.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If I'm stressed out to the max and I'm =
-looking for=20
-solutions, do I first think of calling my problem emotional trauma? =
-"But," I wonder=20
-aloud. It's like they caught the fish, reeled it in, but forgot the=20
-net.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>She wants to buy from you. So think =
-about what you=20
-need to accomplish, how you can best accomplish it, then head out and =
-get it done.=20
-Here's the real problem.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"The most effective strategy is to =
-state a specific=20
-benefit of the product or service you're promoting - right in the copy =
-of the paid=20
-listing - before offering an incentive. Of course, it isn't quite =
-that=20
-easy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Are You Using the Words Your Customers =
-Are Using? I=20
-said to my confrontational dude, "The purpose of GrokDotCom's copy is to =
-inform and=20
-build long-term relationships with our readers by providing valuable =
-content, not by=20
-selling them anything.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>"I'll convey your reactions to Bryan, =
+Jeffrey and=20
+Lisa.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Now you're getting the idea! =
+MindManager is the=20
+tool that lets us develop our ideas and map out plans of action =
+visually, on the=20
+spot, then share those creations with others. This is also the form they =
+want you to=20
+use if your "opt-out" request was not honored.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>New PublicationsYou'll also want to =
+keep an eye on=20
+our publications page. And the ever-popular stress and anxiety. Acme =
+attains rapid=20
+delivery through active management and focused teamwork coupled with the =
+constant=20
+improvement of our internal processes and development =
+methodology.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Apparently, the matter didn't cross =
+very many other=20
+minds out there, because it wasn't exactly easy to tiptoe my way through =
+the=20
+Internet tulips to discover a useful answer. These are the babies that =
+are going to=20
+mean the most to your online efforts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It may be what you've been missing out =
+on up until=20
+now. "Hey, you're that Martian what's-it from GrokDotCom, aren't=20
+you?</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0005_01C7414D.E9448EA0--
+------=_NextPart_001_0005_01C7414E.4FAA64D0--
 
-------=_NextPart_000_0004_01C7414D.E942E0F0
+------=_NextPart_000_0004_01C7414E.4FA7A5B0
 Content-Type: image/gif;
-	name="ain't.gif"
+	name="waylay.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000301c74177$d2173b40$b8cb2fee@ieoujg>
+Content-ID: <000301c74178$387aee90$c988c7e4@mfmdkx>
 
 R0lGODdhBgLbAPQVAA0IDyojFCkADy4kBXtb4srUsYy4hU9whPTCbWOdwN6RXGjnSeVejmZ87u52
 wGk9gNP+9x/rhcgN4nOpWNsEN1R2Dzrr+cFWBxLLCPT6G/0UkwFOnQhr8H/tBCoEbKFV/SwAAAAA
@@ -337,11 +335,11 @@ pdB0YelyekRvHlCCUN3MLfOJ0WdczYLm058f6SQQmCanquBETFZPykkcmtSl/LkprZxq1rC+EpJu
 fSf1ztFPsuq1dngliinBCFFqoGmvaAWIWJPYTpiuMyHpnCFR3agDnnLom5REZ0QPK71bcY+GGMIs
 r/YK2jtN8le2/KCcrhJaVvLQrallH5se6kcfbrOPGfQsCUIAADs=
 
-------=_NextPart_000_0004_01C7414D.E942E0F0--
+------=_NextPart_000_0004_01C7414E.4FA7A5B0--
 
 
 
---===============0217531858==
+--===============1787384884==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -352,7 +350,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0217531858==
+--===============1787384884==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -363,4 +361,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0217531858==--
+--===============1787384884==--
