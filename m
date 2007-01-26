@@ -1,15 +1,19 @@
-From: <jmsgrtn-alsa@yahoo.com>
-Subject: RE : Re: RE : Re: No sound with intel hda driver on a
-	sony vaio vgx xl100 system
-Date: Thu, 25 Jan 2007 23:20:22 +0100 (CET)
-Message-ID: <20070125222022.20025.qmail@web36803.mail.mud.yahoo.com>
-References: <s5hzm879toc.wl%tiwai@suse.de>
-Reply-To: jmsgrtn-alsa@yahoo.com
+From: =?iso-2022-jp?B?GyRCIVpCZz9NNSQhWzQwQTRMNU5BGyhC?= <mastermail@halkarimaxweb2.com>
+Subject: =?iso-2022-jp?b?GyRCNDBBNEw1TkEkR003JFNFXSQ7ISobKEI=?=
+	=?iso-2022-jp?b?GyRCNEpDMU14TVEkR0t+Qi1FWRsoQk5PGyRCIzEidhsoQg==?=
+Date: Fri, 26 Jan 2007 10:09:28 +0900
+Message-ID: <20070126010916.5A4B1998B4@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hzm879toc.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25CB1295
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 02:09:29 +0100 (MET)
+Received: from localhost (unknown [218.25.20.195])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	5A4B1998B4
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 02:09:16 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,145 +23,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When i force model "vaio" dmesg gives :
+▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 
+               
+        《《《 　パートナー無料紹介センター　》》》
 
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA
-/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_in=
-tel.c:696:
-codec_mask =3D 0x1
-ALSA /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:1739: hda_codec:
-model 'vaio' is selected
+　　　　　ハイレベルのセレブな女性が随時登録！！
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 
+    ┏━━━━┓┏━━━━┓┏━━━━┓┏━━━━┓
+　　┃□━━┓┃┃□━━┓┃┃□━━┓┃┃□━━┓┃
+　　┃┃簡単┃┃┃┃安心┃┃┃┃便利┃┃┃┃確実┃┃
+　　┃┗━━■┃┃┗━━■┃┃┗━━■┃┃┗━━■┃
+　　┗━━━━┛┗━━━━┛┗━━━━┛┗━━━━┛
+４拍子そろった優良サイトを使い1時間後には貴方も素敵な恋人をGet!
 
-When i force "vaio-ar" :
+★★チェックポイント★★………★………★………★………★………★
+│
+│　相手の写真を見ても電話番号交換も、その全てが使いたい放題!!
+│
+│　地域検索や相手に直でメールが送れる機能なんかもあって、
+│　そのサービスは有料サイトクラス♪
+│
+│　サイトに顔写真付きで紹介中の女の子が数人掲載されているけど、
+│　彼女達は直メールOKの女の子達(o￣∇￣)ノ
+│　サイトから直接彼女達宛にメールが送れるので、見て貰えるうちに早めにGO!!
+│
+│  ◆　　http://pq-h.cc/fnv/index.php?media=pc432
+│　￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+…★………★………★………★………★………★………★………★
 
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA
-/home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_in=
-tel.c:696:
-codec_mask =3D 0x1
-ALSA /home/jm/tmp/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:1739: hda_codec:
-model 'vaio-ar' is selected
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+　　　　２４時間いつでも熱い出会いを提供し続けます!!
+　￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+　　　　　　　　充┃実┃し┃た┃サ┃ー┃ビ┃ス┃
+　　　　　　　　━┛━┛━┛━┛━┛━┛━┛━┛
 
-What other information so you need ?
+　　　☆──────────★　　☆────────────★
+　　　│  新規登録者優待    │　　│ＰＣ、携帯どちらでもＯＫ│
+　　　★──────────☆　　★────────────☆
+　　　☆──────────★　　☆────────────★
+　　　│ 直アド直電話ＯＫ   │　　│　 ＳＳＬ(暗号)通信　 　│
+　　　★──────────☆　　★────────────☆
 
+　◆お客様がいつご利用されても楽しめるよう日々サービスの改善
+　　をしてまいります。いつ起るかわからない【激アツ企画、激ア
+　　ツ紹介】は登録された会員様へ優先的にお知らせします。　　
+　　　　　　　　　　　　
+　　全国に100万人は居ると言われている『出会い系中毒者』
+　　　　　　　　　　　　　　　　　　~~~~~~~~~~~~~~~~~~~~
+　　中でも一番の人気が『逆援妻』と『即H希望者』
+　　　　　　　　　　　~~~~~~~~~~　~~~~~~~~~~~~~　
+　　ココのサイトでは特に逆援妻に力を入れており、その登録率、
 
-Jean-Marc
+　　出会い率は業界でも一目置かれる存在となっています。　
+――――――――――――――――――――――――――――――――――
 
---- Takashi Iwai <tiwai@suse.de> a =E9crit :
-
-> At Tue, 23 Jan 2007 23:46:42 +0100 (CET),
-> <jmsgrtn-alsa@yahoo.com> wrote:
-> > =
-
-> > I have tried both model. none of them works.
-> > Is there anything I missed ?
-> =
-
-> Please elaborate what didn't work exactly.  If you specified model
-> option, the kernel messages must appear differently.  If not, the
-> model option was not passed properly by any reason.
-> =
-
-> =
-
-> Takashi
-> =
-
-> =
-
-> > =
-
-> > --- Tobin Davis <tdavis@dsl-only.net> a =E9crit :
-> > =
-
-> > > Your subsystem ID (104d:81f7) is not listed in the driver currently.
-> > > The driver is configured to use the generic parser if it can't find a
-> > > match.
-> > > =
-
-> > > There are two defined models for your codec (vaio, vaio-ar).  Try
-> > > loading the driver with one of those models as follows:
-> > > modprobe -r snd-hda-intel                  # remove driver
-> > > modprobe snd-hda-intel model=3Dvaio  # reload with model deffinition
-> > > =
-
-> > > Try both model deffinitions to see which works better for you.  Report
-> > > back your results and we'll get it added.
-> > > =
-
-> > > Thanks,
-> > > =
-
-> > > Tobin Davis
-> > > =
-
-> > > On Mon, 2007-01-22 at 22:22 +0100, jmsgrtn-alsa@yahoo.com wrote:
-> > > =
-
-> > > > Hi
-> > > > =
-
-> > > > I can't have any sound on my sony VAIO vgx-xl100 system with the
-> 1.0.14rc2
-> > > > build on a 2.6.18 kernel (debian)
-> > > > =
-
-> > > > the output of lspci -nv is :
-> > > > =
-
-> > > > 00:1b.0 0403: 8086:27d8 (rev 01)
-> > > > 	Subsystem: 104d:81f7
-> > > > 	Flags: bus master, fast devsel, latency 0, IRQ 169
-> > > > 	Memory at fdff8000 (64-bit, non-prefetchable) [size=3D16K]
-> > > > 	Capabilities: <access denied>
-> > > > =
-
-> > > > dmesg gives :
-> > > > =
-
-> > > > ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-> > > > PCI: Enabling device 0000:00:1b.0 (0000 -> 0002)
-> > > > ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 1=
-69
-> > > > PCI: Setting latency timer of device 0000:00:1b.0 to 64
-> > > > ALSA
-> > > >
-> > >
-> >
-
-
-
-	=
-
-
-	=
-
-		=
-
-___________________________________________________________________________ =
-
-D=E9couvrez une nouvelle fa=E7on d'obtenir des r=E9ponses =E0 toutes vos qu=
-estions ! =
-
-Profitez des connaissances, des opinions et des exp=E9riences des internaut=
-es sur Yahoo! Questions/R=E9ponses =
-
-http://fr.answers.yahoo.com
+.:...:☆..*    　 貴方の理想の女性…見つけます。       *..☆:...:..
+.☆:..       他でだめだったなら一度お試しください。　　　     ..:☆..
+☆::.     　ワンクリック登録、料金発生、架空請求などは、　　　 .::☆
+:☆..*            　《絶対にありません!!》                 :☆..*:
+　　　　　　　　　　 ~~~~~~~~~~~~~~~~~~~~~~
+　　　http://mem-k.cc/fnv/reg.php?media=pc432
+――――――――――――――――――――――――――――――――――
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
