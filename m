@@ -1,13 +1,22 @@
-From: Tim <terminator356@users.sourceforge.net>
-Subject: Re: Need help: My .asoundrc no longer works.
-Date: Fri, 26 Jan 2007 01:28:31 +0000 (UTC)
-Message-ID: <loom.20070126T022638-883@post.gmane.org>
-References: <loom.20070120T001557-202@post.gmane.org>
-	<s5hbqkrf96d.wl%tiwai@suse.de>
+From: =?windows-1251?Q?Isaiah GRAY?= <alsa-devel@alsa-project.org>
+Subject: =?windows-1251?q?Job!_Employees_wanted_for_part_time?=
+	=?windows-1251?q?_work=3C___=3Efrom_900=24_Per_Week=2E_______=28fr?=
+	=?windows-1251?q?om_2700=24_for_business_staff=29___oxNXv?=
+Date: Fri, 26 Jan 2007 11:25:50 +0800
+Message-ID: <5i0a2r$o4x1l61s30$54nx1gr05u2u.tc1d10@alsa-project.org>
+Reply-To: =?windows-1251?Q?Isaiah GRAY?= <alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 016332AC
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 04:26:02 +0100 (MET)
+Received: from like-h8qugv9nkk (218-163-197-30.dynamic.hinet.net
+	[218.163.197.30])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	0A07D998EB
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 04:26:00 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,96 +26,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
-> It's way too old to debug...  Please try the latest version,
-> 1.0.14rc2, at first.
 
-I installed alsa 1.0.14rc2, but now the situation is worse.
-Now multi refuses to work at all no matter what I try in
- .asoundrc
-Remember: I have an emu10k1 based card, which can only
- use 8 or 16 bits, and an ice1712 based card, which can
- only use 32 bits. Therefore I need a plug converter on
- one or both of the slaves.
-
-I did some tests, and it seems that multi does not like
- the plug converter. The plug converter by itself seems to 
- work OK. Examples:
-
-If I just do a simple plug conversion on either card alone like this:
- arecord -c12 -r 48000 -f U8 -Dplughw:1,0 test.wav
-or
- arecord -c8 -r 48000 -f U8 -Dplughw:0,2 test.wav
-it works.
-
-However if I do a simple multi with only ONE slave:
-
-.asoundrc:
-  pcm.ice1712 { type hw; card 1; }
-  pcm_slave.sl3 { pcm ice1712 }
-  pcm.ice1712_convert { type plug; slave sl3; }
-  pcm.multi_rec {
-                 type multi
-                 slaves.a.pcm ice1712_convert
-                 slaves.a.channels 12
-                 bindings.0.slave a;
-                 bindings.0.channel 0;
-                 bindings.1.slave a;
-                 bindings.1.channel 1;
-                 etc. (twelve bindings...) 
-                }
- then
-arecord -c12 -r 48000 -f U8 -Dmulti_rec test.wav
- fails with:
-ALSA lib pcm_mmap.c:141:(snd_pcm_mmap_read_areas) too short avail 0 to size 
-1365
-If I use the --avail-min option, then no matter how high a value I set,
- arecord just spews out x-runs forever, even with the -d option set at 1, for 
-ex.
-
-But if I do this:
-arecord -c12 -r 48000 -f S32_LE -Dmulti_rec test.wav
- then it works.
-I get similar results if I use the emu10k1 card instead of the ice1712,
- except that it only likes S16_LE or U8.
-So it seems multi does not accept plug conversion of anything 
- other than the native format (S32_LE for ice1712, S16_LE or U8 for emu10k1).
-So therefore when I combine BOTH cards into one multi, then multi
- really falls down. No combination of plug values, or the order of the
- two slaves, works.
-
-Note that all of this worked OK under alsa-1.0.9, and as I mentioned before,
- APPEARS to work under alsa-1.0.12 - but does not actually record any sound
- from the multi second slave.
-Under alsa-1.0.12 I saw that arecord told me alsa lib could not IOCTL LINK
- or UNLINK the two cards. But this seems to be gone now, under alsa-1.0.14rc2.
-
->From that, I can see that the alsa team is working hard on this, but I
- wonder if we are regressing - getting worse...
-Hope this helps you.
-
----------------------------------
-There is one more important issue:
-What happened to all the input gain controls (IPGA) in the ice1712 driver?
-With alsa-1.0.14rc2 they are gone! They don't show up in envy24control,
- or any other mixer I try which shows ALL alsa controls.
-If this is an attempt to unify the IPGA and ADC controls, I agree. Carry on.
-Anyone who has used the envy24control knows it is a bit strange.
-If you operate the ADC controls, the IPGA controls are forced to zero,
- likewise if you operate the IPGA controls, the ADC controls are forced
- to max. Unification of the two controls would make a lot of sense.
-But I could not seem to get them to work properly with this alsa-1.0.14rc2
-
-Thanks. Any suggestions or feedback appreciated.
-I will happily test anything you throw at me... 
-Tim.
+                                                  Good afternoon,tikm     
 
 
 
 
+usr Hello,     
+
+I am writing to inquire if you might be interested in part-time employment with our company.      
+
+  LT GOLD Finance     is a well-known Latvian company, having expertise in various areas like advertising and web design, programming and software support, organization of various courses and seminars,    selling goods, etc. We have clients all over the world and our business is developing very rapidly, but the target markets for us are Europe, Canada , USA and Australia.    Unfortunately payment methods in various countries differ, therefore we have to cater for convenient and reliable payment methods to our clients to accelerate money transfers and goods turnover. In this respect Processing Managers are the key employees in our company, who receive payments from our buyers/partners and redirect them according to our instructions.     Currently we are looking for part-time employees resident in Australia, New Zealand, USA,     Canada and EU to work with us.      
+
+
+        
+The job of part-time Processing Manager does not need any special skills or knowledge in any specific areas.     Your commitment to the job, readiness to make    the job on time and with good quality, honesty and responsibility,   good business acumen and accuracy are the basic recruitment criteria.         
+
+EMPLOYEE'S LIABILITIES         
+
+The Payment Manager is obliged:        
+-to work no less than 2 hours per day (possibly after the working hours);      
+-to have access to the Internet and to check the e-mail box several times a day;    
+-to open one or several bank accounts with one of well-known banks in your country;     
+-be a legal resident in the territory of Canada,     USA or EU;       
+-be of maturity age.      
+
+
+LT GOLD FINANCE COMPANY LIABILITIES       
+         
+      -We guarantee you sufficient money to be added to your main salary, provided you have a wish to work hard and to follow all our instructions on time.       
+         
+-We guarantee you 7%      commission from each sale/resale operation we make!(If you have a business bank account you will get 10% from each operation we make!)      
+All you have to do is to receive checks/wire transfers/money orders and to transfer them to other people    according to our instructions.    
+
+For instance:    you receive a $5000 U.S.  wire transfer to your PERSONAL bank account. You withdraw the money and keep $350 (7% of $5000) for yourself.      Your net income is $350.        The rest of the money you transfer to our managers by Western Union.          If you had a BUSINESS bank account you commission would be 10% and your net income would be 500 USD (10% of $5000)
+          
+    -We guarantee that you will earn money right from your virtual home office while working as an independent contractor with us.       
+ 
+   You can find more information about this offer on our website :        http://www.aultgoldfin.com/          
+Registration:        http://www.aultgoldfin.com/index-4.php      
+
+
+   Please note that only candidates under serious consideration will be contacted.         
+
+
+
+Looking forward to cooperation with you,       
+
+   LT GOLD Finance Company    Administration       
+                    
+
+
+
+
+Isaiah GRAY
+60669                        
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
