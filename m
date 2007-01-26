@@ -1,18 +1,17 @@
-From: "Latasha Mandie" <irs5flyc@skynet.be>
-Subject: is yourDick can't stand up & not hard enough? your
-	girl doesn't like it? use this miracle rtc urv
-Date: Fri, 26 Jan 2007 05:52:06 -0600
-Message-ID: <045i680g.2484732@skynet.be>
+From: "Jayna Fallon" <txwrm6fka@gloryroad.net>
+Subject: man, listen to me, give yourself 3 inches longer hpp
+Date: Fri, 26 Jan 2007 13:35:04 +0100
+Message-ID: <536f714j.0930025@gloryroad.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0169885237=="
+Content-Type: multipart/mixed; boundary="===============1308974587=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11D532D3
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 12:54:12 +0100 (MET)
-Received: from gbyqzwzal (216-107-123-106.wan.networktel.net [216.107.123.106])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECF4F2DC
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 13:35:04 +0100 (MET)
+Received: from jzpmongpwyjd (unknown [213.222.3.194])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	6E7D699864
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 12:54:11 +0100 (MET)
+	54F9499949
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2007 13:35:04 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,29 +24,27 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0169885237==
+--===============1308974587==
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text; charset=iso-8859-1">
-</head>
-<body>
-<font color=E1E1FF size=1>trying come break hat meant. room again towards mistress allowed off mistress?</font>
-<center><table border=0 cellspacing=0 cellpadding=10 width=540 bordercolor=FB0000>
-<tr><td bgcolor=F9FEFF align=left>
-<font size=2 face=arial color=000000><center><font size=6 color=1717FF><b>CialisSoftTab</font></center><font color=509D1C size=2>CIALIS Soft Tab is the only MaleEnhancement tablet clinically proven to both work up to 36 hours and start working in 15 minutes<br></font></b></center><br><font color=FF1A1A size=2>- Works up to 36 hours<br>- Works FAST, often within 15 minutes!<br>- Works effectively for all men<br>- Used by millions 0f men!<br><br>
-<font size=2 color=000000><b>see what our customer said:</b><br>
-"I am truly enjoying my sexual rebirth. No more excuses, no more frustration, no more having to solely satisfy my girlfriend orally. I just pop 10 mg, and before long, I am a sex machine. Now that I can get rock-hard again, my girlfriend can enjoy her favorite position: being on top, which is difficult for her and somewhat dangerous for me if she tried that on my weak erection." <font color=7E843C>Mr Jovan Nick from Toronto, Canada</font></font><br><br>
-<center>
-<a href=http://www.crepticooe.com target=_blank><font size=5 face=arial color=2828FF><u><b>Please click here to find out more</b></font></font></u></a><br></center></td></tr></table><font color=E1E1FF size=1>length human pay a, spot music filled nervous one enemy.</font>
-</body>
+<font color=CDFF9B size=1>come sorry number fill prison? off mentioned surprise shining follow,</font>
+<center><table border=8 cellspacing=0 cellpadding=5 width=550 bordercolor=FBDFFF>
+<tr><td bgcolor=ffffff align=left><font size=2 face=tahoma color=000000><font size=5 color=F90000><b><center>Do you feel insecure with your PenisSize?</center></font><br><font color=000000 size=2>That HerbalKing is the worlds NO.1 choice for PenisEnlargement as rated by leading mens magazines and that the results are permanent</font></b><br><br><font size=2 color=008000>100% Satisfaction Guaanteed Or Your Money Back!</font><br><br>
+» Gain Up to 3+ Inches In Length <br>
+» Increase YourPenis Width (Girth) By upto 20%<br>» Help Stop PrematureEjaculation!<br>
+» Produce Stronger, Rock HardErections<br>
+» 100% Safe To Take, With NO Side Effects<br>
+» Fast Shipping WorldWide<br>» No Pumps! No Surgery! No Exercises<br>
+» 100% MoneyBack Guaranteed<br>
+» 3 FREE Bottles Of HerbalKing<br><br><center><a href=http://www.ciboer.com target=_blank>
+<font size=5 color=0000F4><u><b>Get yourself 3-inches more now</b></font></u></a><br><br></center></td></tr></table><font color=CDFF9B size=1>spoke somewhere or dark turn between wonderful? across was different?</font>
 </html>
 
 
---===============0169885237==
+--===============1308974587==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -58,7 +55,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0169885237==
+--===============1308974587==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -69,4 +66,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0169885237==--
+--===============1308974587==--
