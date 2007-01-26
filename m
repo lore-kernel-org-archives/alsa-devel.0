@@ -1,9 +1,9 @@
-From: David Hoskins <reqomf@egsltd.com>
-Subject: Seniors are also at higher risk of malnourishment.
-Date: Fri, 26 Jan 2007 09:31:29 +0000
-Message-ID: <45B9CA71.7040007@egsltd.com>
+From: Nik Ramsey <cdgkx@mauifrank.com>
+Subject: Login below to post a comment.
+Date: Fri, 26 Jan 2007 09:34:30 +0000
+Message-ID: <45B9CB26.9020505@mauifrank.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0104978524=="
+Content-Type: multipart/mixed; boundary="===============2028773428=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0104978524==
+--===============2028773428==
 Content-Type: multipart/related;
-	boundary="------------030504030707020609050703"
+	boundary="------------080109080201050507080709"
 
---------------030504030707020609050703
+--------------080109080201050507080709
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,52 +31,55 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="title" src="cid:part1.03070002.01070202@egsltd.com"
+<img alt="luminary" src="cid:part1.04010007.03060005@mauifrank.com"
  height="206" width="516"><br>
-Packaged grilled or roasted chicken pieces make this recipe extra-easy.
-Talk with your doctor and have your hearing evaluated by a
-professional.<br>
-While the final result doesn't taste exactly like the real thing, it
-makes a flavorful alternative to bottled soy sauce.<br>
-So there's this huge issue. 5 GB of RAM, I can run tons of apps at the
-same time John. As well as answering press calls all afternoon
-yesterday, I was writing emails back and forth and drafting possible
-press releases for Wikipedia all evening.<br>
-us updateThe code for this has been updated again. The BBC's Surendra
-Phuyal in Kathmandu says the plains-dwelling Madheshi groups are
-increasingly resentful of domination by hill people. The BBC's Russian
-affairs analyst Steven Eke says when weapons are left out of the
-equation, trade between Russia and India has actually fallen to its
-lowest level for more than two decades.<br>
-Microsoft researchers Andy Wilson and Eric Horvitz declined to discuss
-the patent filing specifically, citing company policy, but they did talk
-about the project in general. Many seniors are unable to eat and drink
-without assistance due to physical or mental disability.<br>
-Amazon's ad writer might think of taking some "DUH" Classes.<br>
-Pandher was seen lying on the ground after the assault.<br>
-I'm a UK press volunteer for Wikimedia and got quoted in some of
-yesterday's media coverage. I certainly do, frequently. Super Bowl
-Appetizer ExchangeJolinda, the Guide to Vegetarian Cuisine Guide,
-suggests a selection of Favorite Easy Vegetarian and Vegan Dips and
-Appetizers. They have called an indefinite strike. The Ulfa has called
-for a boycott of  India's Republic Day celebrations, to be held on
-Friday. The trends are probably open to interpretation, and I'll be
-interested in hearing what people think.<br>
-Kissa on taas ihan sekona, se sai jonku ihme hepulin pihalla ja juos
-jonnekkin.<br>
-Toimi ihan hyvin, pelasin ja juttelin samalla.<br>
-Talk with your doctor and have your hearing evaluated by a professional.
-Wow, people like you still exist.<br>
+Fast forward to today:GAMES:  I swore off computer video games due to
+cost. The BBC's Russian affairs analyst Steven Eke says when weapons are
+left out of the equation, trade between Russia and India has actually
+fallen to its lowest level for more than two decades.<br>
+They need to do a good job AND command the market.<br>
+How To Do a Breast Self-Exam8 Warning Signs of LymphomaColon Cancer
+Prevention Tips What's HotDrug Interactions Type 2 SignsWhat Are the
+Symptoms? Have you used a Mac lately? Have you used a Mac lately?<br>
+Accounting rules prevent the company from recognizing that revenue until
+people have a chance to use the upgrade offers. The announcement comes
+amid expectations that the Taleban will  to mount a spring offensive.
+Fun Food Trivia - Guess the Mystery FoodTRIVIA QUESTION: While my name
+is synonymous with Chinese food, I am not commonly found in Chinese
+restaurants outside North America.<br>
+Don't forget that the key is to compare each number to the same quarter
+the previous year, not the quarter immediately preceding. Fun Food
+Trivia - Guess the Mystery FoodTRIVIA QUESTION: While my name is
+synonymous with Chinese food, I am not commonly found in Chinese
+restaurants outside North America.<br>
+I feel strongly that Apple is too timid in the integration of television
+and computing.<br>
+Vanhojen ja uusien arkkimuottien vertaamista.<br>
+With the changes, higher income beneficiaries will pay a higher
+percentage of premium costs. Are you in southern Nepal? Bihar is one of
+India's poorest and most lawless states. NSAID medications are taken by
+many senior men to help prevent a second heart attack and for relief
+from arthritis pain. The official said the passengers in fact had every
+right to their places on the train, which had been bound for the capital
+of Assam, Guwahati. So paying for Wikipedia copy is considered a
+definite no-no.<br>
+Packaged grilled or roasted chicken pieces make this recipe
+extra-easy.<br>
+Login below to post a comment.<br>
+To finish the dish, the velveted chicken is combined with broccoli in a
+savory, oyster-flavored sauce. What makes you think you can save a
+document somewhere and expect it to be able to be read in a few hundred
+years or more?<br>
 </body>
 </html>
 
---------------030504030707020609050703
+--------------080109080201050507080709
 Content-Type: image/gif;
- name="hickey.gif"
+ name="euphoric.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.03070002.01070202@egsltd.com>
+Content-ID: <part1.04010007.03060005@mauifrank.com>
 Content-Disposition: inline;
- filename="hickey.gif"
+ filename="euphoric.gif"
 
 R0lGODdhmgIKAfZLAPPI2/bv8Nnlxghep1lvFicePzkom4eWWiYpFVycHC9xhXRgaGIlCnhwWLmg
 CVSVYRKWjYWCixqRHDYRo30BCnV1URhcLEYhYW0cmWIda0cGTl5im1VLkUlXSpASMnjOJKqk5G7d
@@ -570,11 +573,11 @@ p+i+5R4jsaIb6USu5y8+5AGP7KJsplrO7A9Ps/m+7EdHqFdu6J79OoBty/7u7Kke4lwe8eQO4nw8
 3Lsd6rR+5oc+8bY+4WWL8bGr8RY+72itfAhv7yFf6iN/7xEdONJO2xgu4Sq/xCwf6m3d8tqL4/FO
 T2NO8eW+35k+OjDOkJPN9Nh+64pOy6Musku+rodj9B//0mne4h7N0beN5a1sMywuMDDd8IoK4CA/
 tE7LykUd9ESf3iDn89DeOCWvtnCup4F8tmCv2YWv75gO98aj1wkP408dCAA7
---------------030504030707020609050703--
+--------------080109080201050507080709--
 
 
 
---===============0104978524==
+--===============2028773428==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -585,7 +588,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0104978524==
+--===============2028773428==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -596,4 +599,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0104978524==--
+--===============2028773428==--
