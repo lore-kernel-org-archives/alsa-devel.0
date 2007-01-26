@@ -1,10 +1,11 @@
-From: "Waters" <bkvlbm@onlinecourseevaluations.com>
-Subject: It's so easy to direct potential customers to a
-	particular product or service page.
-Date: Fri, 26 Jan 2007 13:31:05 -0500
-Message-ID: <000801c74178$3888aa30$c988c7e4@mfmdkx>
+From: "Parsons" <vjwzs@pomelosmbc.com>
+Subject: But if you only list features - if you don't spell out
+	the benefits for your visitors - then you are hoping they'll
+	take the time to translate each of your specified features.
+Date: Fri, 26 Jan 2007 13:31:38 -0500
+Message-ID: <000801c74178$4a106d60$c099486c@zodeeb>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1787384884=="
+Content-Type: multipart/mixed; boundary="===============1262242486=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,40 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1787384884==
+--===============1262242486==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0004_01C7414E.4FA7A5B0"
+	boundary="----=_NextPart_000_0004_01C7414E.612ECCA0"
 
-------=_NextPart_000_0004_01C7414E.4FA7A5B0
+------=_NextPart_000_0004_01C7414E.612ECCA0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0005_01C7414E.4FAA64D0"
+	boundary="----=_NextPart_001_0005_01C7414E.6131B2D0"
 
-------=_NextPart_001_0005_01C7414E.4FAA64D0
+------=_NextPart_001_0005_01C7414E.6131B2D0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-"I'll convey your reactions to Bryan, Jeffrey and Lisa.
-Now you're getting the idea! MindManager is the tool that lets us =
-develop our ideas and map out plans of action visually, on the spot, =
-then share those creations with others. This is also the form they want =
-you to use if your "opt-out" request was not honored.
+It's real clunky saying, "Okay, everyone, type in this url .
+They are the words that should appear prominently in your headlines and =
+hyperlinks. Value is a trade-off. Best of all, most of us didn't even =
+need to look at the instructions to get the hang of it .
+So if you have thousands, even millions, of visitors to your Web site, =
+how do you talk to each one as an individual? Guess which one =
+predisposes me to take action. We couldn't responsibly justify our =
+existance without them.
 New PublicationsYou'll also want to keep an eye on our publications =
-page. And the ever-popular stress and anxiety. Acme attains rapid =
-delivery through active management and focused teamwork coupled with the =
-constant improvement of our internal processes and development =
-methodology.
-Apparently, the matter didn't cross very many other minds out there, =
-because it wasn't exactly easy to tiptoe my way through the Internet =
-tulips to discover a useful answer. These are the babies that are going =
-to mean the most to your online efforts.
-It may be what you've been missing out on up until now. "Hey, you're =
-that Martian what's-it from GrokDotCom, aren't you?
-------=_NextPart_001_0005_01C7414E.4FAA64D0
+page. Drain the brains of everyone who interacts with your customers and =
+hears how they phrase their own needs.
+These words constitute the implicit promise that you understand and can =
+meet the felt needs of your visitors. These are going to be busy folks =
+for the next two years, monitoring email practice and writing up stacks =
+of reports to evaluate the effectiveness of the Act.
+------=_NextPart_001_0005_01C7414E.6131B2D0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -57,51 +57,50 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"power steering"=20
-hspace=3D0=20
-src=3D"cid:000301c74178$387aee90$c988c7e4@mfmdkx" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"ebullient" hspace=3D0=20
+src=3D"cid:000301c74178$4a01ee70$c099486c@zodeeb" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"I'll convey your reactions to Bryan, =
-Jeffrey and=20
-Lisa.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Now you're getting the idea! =
-MindManager is the=20
-tool that lets us develop our ideas and map out plans of action =
-visually, on the=20
-spot, then share those creations with others. This is also the form they =
-want you to=20
-use if your "opt-out" request was not honored.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It's real clunky saying, "Okay, =
+everyone, type in=20
+this url .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>They are the words that should appear =
+prominently=20
+in your headlines and hyperlinks. Value is a trade-off. Best of all, =
+most of us=20
+didn't even need to look at the instructions to get the hang of it =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>So if you have thousands, even =
+millions, of=20
+visitors to your Web site, how do you talk to each one as an individual? =
+Guess which=20
+one predisposes me to take action. We couldn't responsibly justify our =
+existance=20
+without them.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>New PublicationsYou'll also want to =
 keep an eye on=20
-our publications page. And the ever-popular stress and anxiety. Acme =
-attains rapid=20
-delivery through active management and focused teamwork coupled with the =
-constant=20
-improvement of our internal processes and development =
-methodology.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Apparently, the matter didn't cross =
-very many other=20
-minds out there, because it wasn't exactly easy to tiptoe my way through =
-the=20
-Internet tulips to discover a useful answer. These are the babies that =
-are going to=20
-mean the most to your online efforts.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It may be what you've been missing out =
-on up until=20
-now. "Hey, you're that Martian what's-it from GrokDotCom, aren't=20
-you?</FONT></DIV></BODY></HTML>
+our publications page. Drain the brains of everyone who interacts with =
+your=20
+customers and hears how they phrase their own needs.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>These words constitute the implicit =
+promise that=20
+you understand and can meet the felt needs of your visitors. These are =
+going to be=20
+busy folks for the next two years, monitoring email practice and writing =
+up stacks=20
+of reports to evaluate the effectiveness of the =
+Act.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0005_01C7414E.4FAA64D0--
+------=_NextPart_001_0005_01C7414E.6131B2D0--
 
-------=_NextPart_000_0004_01C7414E.4FA7A5B0
+------=_NextPart_000_0004_01C7414E.612ECCA0
 Content-Type: image/gif;
-	name="waylay.gif"
+	name="far.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000301c74178$387aee90$c988c7e4@mfmdkx>
+Content-ID: <000301c74178$4a01ee70$c099486c@zodeeb>
 
 R0lGODdhBgLbAPQVAA0IDyojFCkADy4kBXtb4srUsYy4hU9whPTCbWOdwN6RXGjnSeVejmZ87u52
 wGk9gNP+9x/rhcgN4nOpWNsEN1R2Dzrr+cFWBxLLCPT6G/0UkwFOnQhr8H/tBCoEbKFV/SwAAAAA
@@ -335,11 +334,11 @@ pdB0YelyekRvHlCCUN3MLfOJ0WdczYLm058f6SQQmCanquBETFZPykkcmtSl/LkprZxq1rC+EpJu
 fSf1ztFPsuq1dngliinBCFFqoGmvaAWIWJPYTpiuMyHpnCFR3agDnnLom5REZ0QPK71bcY+GGMIs
 r/YK2jtN8le2/KCcrhJaVvLQrallH5se6kcfbrOPGfQsCUIAADs=
 
-------=_NextPart_000_0004_01C7414E.4FA7A5B0--
+------=_NextPart_000_0004_01C7414E.612ECCA0--
 
 
 
---===============1787384884==
+--===============1262242486==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -350,7 +349,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1787384884==
+--===============1262242486==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -361,4 +360,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1787384884==--
+--===============1262242486==--
