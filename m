@@ -1,20 +1,16 @@
-From: "Danail Bichrest" <merybren@gabrian.com>
-Subject: Re: R X fiy
-Date: Sat, 27 Jan 2007 00:08:50 +0100
-Message-ID: <01c7419e$f09c93e0$0501a8c0@JOHN>
-Reply-To: Danail Bichrest <merybren@gabrian.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: ice1712 IPGA and ADC controls
+Date: Fri, 26 Jan 2007 23:26:55 +0000
+Message-ID: <200701262325.33755.gineera@aspect135.co.uk>
+References: <loom.20070120T001557-202@post.gmane.org>
+	<s5hbqkrf96d.wl%tiwai@suse.de>
+	<loom.20070126T022638-883@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 307AF25A
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 00:08:51 +0100 (MET)
-Received: from mail2painter.com (dyn-83-156-48-11.ppp.tiscali.fr
-	[83.156.48.11])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	B01809991E
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 00:08:50 +0100 (MET)
+In-Reply-To: <loom.20070126T022638-883@post.gmane.org>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,26 +20,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jyrki Petry <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In his mailing-
+'Re: [Alsa-devel] Need help: My .asoundrc no longer works.'
 
-Vixxagra $3, 35
-Vaxxlium $1, 20
-Cixxalis $3, 75
-Xaxxnax  $1, 45
-Amxxbien $2, 90
+On Friday 26 January 2007 01:28, Tim wrote:
 
-http://www.44rx.*com 
+> ---------------------------------
+> There is one more important issue:
+> What happened to all the input gain controls (IPGA) in the ice1712 driver?
+> With alsa-1.0.14rc2 they are gone! They don't show up in envy24control,
+>  or any other mixer I try which shows ALL alsa controls.
+> If this is an attempt to unify the IPGA and ADC controls, I agree. Carry
+> on. Anyone who has used the envy24control knows it is a bit strange.
+> If you operate the ADC controls, the IPGA controls are forced to zero,
+>  likewise if you operate the IPGA controls, the ADC controls are forced
+>  to max. Unification of the two controls would make a lot of sense.
+> But I could not seem to get them to work properly with this alsa-1.0.14rc2
+>
+> Tim.
 
-Remove "*" to make the link working!
+I was intending to raise this matter myself.  In the changelog 1.0.12 to 
+1.0.13 I noticed this:-
 
---
+  + AK4XXX AD/DA converters
+    - ak4xxx - Remove bogus IPGA controls
 
-Yep,  said Moody.
-No!  cried Professor McGonagall, running down the stairs and pulling
-out her wand; a moment later, with a loud snapping noise, Draco Malfoy
+      Remove IPGA volume controls and merge the IPGA range to ADC volume
+      controls.  These two volumes are not really independent but connected
+      simply in different ranges 0-0x7f and 0x80-max.  It doesn't make sense
+      to provide two controls.
+
+      Since both 0x7f and 0x80 specify 0dB, a hack is needed for IPGA range
+      to skip 0x80 (increment one) for such controls.
+
+But I could not find the changeset on Hg and was intending to ask about it.
+
+>From an analogue electronics POV this may not be a wise change.  Adding gain 
+usually worsens singal-to-noise ratio and other signal parameters, and 
+attenuation may mean avoidable gain elsewhere. So the best operating point in 
+general is with no gain or attenuation at the converter.  Then the minimum of 
+either would be used if necessary, in conjuction with controls on the source 
+equipment.
+
+Thus to achieve best performance I would think it is important to be aware of 
+both these controls separately.  That is what the Terratec 'Windows' driver 
+for my ice1712 sound card does.  If gain is needed, for example, it may be 
+better to add it elsewhere than at the converter.  The 'strange' behaviour of 
+the two controls in 1.0.12 is in fact entirely correct and neccessary when 
+the underlying electronics is considered -it is vitally important to avoid 
+gain and attenuation together even though the effect seems the same.
+
+Remember that the ice1712 creates essentially a semi-pro sound system, so the 
+users should be aware of technical and signal performance tradeoffs 
+throughout their equipment (eg mixing desk, effects units), and be able to 
+make intelligent decisions about the best settings of them all.  User 
+friendliness should not override technical quality issues in this case.  It 
+is not really a domestic piece of kit (eg delta 1010, ews88, dsp24).
+
+Alan
 
 
 -------------------------------------------------------------------------
