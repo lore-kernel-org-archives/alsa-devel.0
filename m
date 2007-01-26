@@ -1,11 +1,12 @@
-From: "Janis Merritt" <grammarsFaulknerian@abdiecasting.com>
-Subject: fwd: NMXC - winner for today
-Date: Fri, 26 Jan 2007 18:33:41 +0000 (UTC)
-Message-ID: <01c74178$79ffb2b0$6c822ecf@grammarsFaulknerian>
+From: "Dianne Cherry" <duff'sbuttock@abb.lv>
+Subject: fwd: Octavio - NMXC did you took
+Date: Fri, 26 Jan 2007 20:27:26 +0000 (UTC)
+Message-ID: <01c74188$57c1e0f0$6c822ecf@duff'sbuttock>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0418147581=="
+Content-Type: text/plain; charset="windows-1250"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Fri, 26 Jan 2007 18:33:30 -0060
+Date: Fri, 26 Jan 2007 20:27:04 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,47 +19,18 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0418147581==
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-I have heard something great will happen on friday with this one.
-
-Rise again.
-It will break charts soon.
-
-Check NMXC(New Mexico Software, Inc) and think how incredible this issue will move! For this moment at this time it’s cost is Up again x.077 
-
-Also news are comming!They will make this issue very HOT. 
-And it will fly like others.
-
-6678326A6A456E79336B73797166697B7171787878336A
-Atheneus
-
-
-
-
---===============0418147581==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0418147581==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0418147581==--
+Q2hlY2sgTk1YQyhOZXcgTWV4aWNvIFNvZnR3YXJlLCBJbmMpIGFuZCB0aGluayBob3cgaW5jcmVk
+aWJsZSB0aGlzIGlzc3VlIHdpbGwgbW92ZSEgRm9yIHRoaXMgbW9tZW50IGF0IHRoaXMgdGltZSBp
+dJJzIGNvc3QgZXF1YWxzICAwLjA3NyAKSXQgYWxtb3N0IGJyZWFrIGNoYXJ0IC4gVXAgbm93IG9u
+ICs2MyAlCgpJdCBhbHJlYWR5IHN0YXJ0IHRvIGZseSBsaWtlIG90aGVycy4uLgpOZXdzIGFsbW9z
+dCBoZXJlLgoKNjY3ODMyNkE2QTQ1NkU3OTMzNkI3Mzc5NzE2NjY5N0I3MTcxNzg3ODc4MzM2QQpB
+dGhlbmV1cwoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZs
+dWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFu
+ZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElU
+ICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gK
+aHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNl
+Zm9yZ2UmQ0lEPURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNh
+LWRldmVsCg==
