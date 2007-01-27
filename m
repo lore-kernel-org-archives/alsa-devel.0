@@ -3,11 +3,18 @@ Subject: =?iso-2022-jp?b?GyRCPiZJSjd0IXU/Xj1xJSshPCVJGyhCMQ==?=
  =?iso-2022-jp?b?GyRCS3wxX0osJCwbKEI3ODAwGyRCMV8hKjR8NFYhJj90Tkw4QkRqGyhC?=
  =?iso-2022-jp?b?GyRCJE4zK0U5NS1HMCF1Pzc9VSU7ITwlayRHJDkhKhsoQg==?=
 Date: Sun, 28 Jan 2007 03:47:33 +0900
-Message-ID: <20070127.1847330531@s2049-yan.jp>
+Message-ID: <20070127.1847320906@s2049-yan.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from ns.yan.jp (ns.yan.jp [210.255.121.212])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57672256
+	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 19:47:37 +0100 (MET)
+Received: from OEM_USER32 (p5010-ipbffx02yamaguchi.yamaguchi.ocn.ne.jp
+	[60.45.200.138])
+	by ns.yan.jp (8.13.1/3.7W/050804) with SMTP id l0RIlZFp009074
+	for alsa-devel@alsa-project.org; Sun, 28 Jan 2007 03:47:35 +0900 (JST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,7 +24,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 ■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
