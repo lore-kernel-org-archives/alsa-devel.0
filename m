@@ -1,21 +1,14 @@
-From: "Rodrigo Fletcher" <ciyv@bosslog.com>
-Subject: Wh/t IS 0EM software and why d0 you care?
-Date: Sat, 27 Jan 2007 22:11:01 +0000 (UTC)
-Message-ID: <01c7425f$ec3b63f0$6c822ecf@ciyv>
+From: Bill Unruh <unruh@physics.ubc.ca>
+Subject: Re: [Alsa-user] Cheap USB audio card with phantom
+Date: Sat, 27 Jan 2007 14:30:31 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
+References: <1169882126.3763.5.camel@localhost>
+	<1169932531.10410.3.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0561867374=="
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="1737365482-492038651-1169937031=:27182"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10D922C2
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 23:10:15 +0100 (MET)
-Received: from kl (host-89-228-246-184.kalisz.mm.pl [89.228.246.184])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	D412A9998F
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 23:10:14 +0100 (MET)
-Received: from 196.31.215.9 (HELO mail.bosslog.com)
-	by alsa-project.org with esmtp (40)<V5B@ *U)'(P) id 67<Y(8-T;*T7(--(
-	for alsa-devel@alsa-project.org; Sat, 27 Jan 2007 22:10:15 -0060
-Date: Sat, 27 Jan 2007 22:10:15 -0060
+In-Reply-To: <1169932531.10410.3.camel@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,49 +18,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
---===============0561867374==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000E_01C74268.4DFFCBF0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000E_01C74268.4DFFCBF0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-Here comes the opportunityfor the life time.For the very first time you are going to get theSpecial Bundle pack of Windows XP Professional with SP2 Full Version and Office 2003 Professional (1 CD Edition) for only $99.95 only!!!! Limited time offer. Hurry up before prices go up.
-
-
-------=_NextPart_000_000E_01C74268.4DFFCBF0
-Content-Type: text/html;
-	charset="Windows-1252"
+--1737365482-492038651-1169937031=:27182
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE></TITLE>
-<META content=3D"text/html; charset=3DWindows-1252" http-equiv=3DContent-Type>
-<META content=3D"MSHTML 4.72.3110.3" name=3DGENERATOR></HEAD>
-<BODY>
-<p align=3Djustify><font face=3Dverdana size=3D+1 color=3D#ff0000>Here=20=
-comes the opportunityfor the life time.<br><br>For the very first time=20=
-you are going to get the<br><font color=3Dblue><b><u><a=20=
-href=3D"INSERT_LANADING_PAGE_URL">Special Bundle pack of Windows XP=20=
-Professional with SP2 Full Version and Office 2003 Professional (1 CD=20=
-Edition)<br> for only $99.95 only!!!!</a> </u></b></font><br>Limited time=20=
-offer. Hurry up before prices go up.</font></p>
-</BODY></HTML>
+On Sat, 27 Jan 2007, Jean-Michel Pour=E9 wrote:
 
-------=_NextPart_000_000E_01C74268.4DFFCBF0--
+>> I am looking for a cheap two channels USB audio card, with two XLR
+>> entries and preamp. This is for an Internet Podcast. Of course, I need
+>> good Alsa support.
 
+Not sure what you want-- that may be why you get no response. By two
+channels in, do you mean a single stereo channel in? What do you mean by
+"two xlr entries" or "preamp"? sound cards tend not to be mixer boards, a=
+nd
+especially not cheap mixer boards. Why not buy a cheap usb soundcard (I
+like the maudio transit-- under $100-- it has a standard stereo in) and a=
+dd a preamp if that is really
+what you need.
 
+Why do you need XLR connectors and a preamp for Internet Podcast?
+>
+> I lost hours connecting on Websites to look for information.
+> Can anyone help me, this would be very nice.
+>
+> Is there a single fully-supported card answering my needs?
+>
+> Thank you in advance,
+> Jean-Michel
+>
+>
+> -----------------------------------------------------------------------=
+--
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share=
+ your
+> opinions on IT & business topics through brief surveys - and earn cash
+> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
+DEVDEV
+> _______________________________________________
+> Alsa-user mailing list
+> Alsa-user@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-user
+>
 
---===============0561867374==
+--=20
+William G. Unruh   |  Canadian Institute for|     Tel: +1(604)822-3273
+Physics&Astronomy  |     Advanced Research  |     Fax: +1(604)822-5324
+UBC, Vancouver,BC  |   Program in Cosmology |     unruh@physics.ubc.ca
+Canada V6T 1Z1     |      and Gravity       |  www.theory.physics.ubc.ca/
+--1737365482-492038651-1169937031=:27182
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -78,7 +85,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0561867374==
+--1737365482-492038651-1169937031=:27182
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -89,4 +96,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0561867374==--
+--1737365482-492038651-1169937031=:27182--
