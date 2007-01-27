@@ -1,17 +1,11 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: ice1712 IPGA and ADC controls
-Date: Sat, 27 Jan 2007 12:38:07 +0000
-Message-ID: <20070127123807.GA2662@localhost.localdomain>
-References: <loom.20070120T001557-202@post.gmane.org>
-	<s5hbqkrf96d.wl%tiwai@suse.de>
-	<loom.20070126T022638-883@post.gmane.org>
-	<200701262325.33755.gineera@aspect135.co.uk>
+From: Gregor Jasny <jasny@vidsoft.de>
+Subject: Need help with patch for #2724 (usbaudio, core)
+Date: Sat, 27 Jan 2007 14:24:45 +0100
+Message-ID: <20070127132445.GA11859@vidsoft.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="C7zPtVaVf+AK4Oqc"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <200701262325.33755.gineera@aspect135.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,84 +15,113 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 26, 2007 at 11:26:55PM +0000, Alan Horstmann wrote:
-> In his mailing-
-> 'Re: [Alsa-devel] Need help: My .asoundrc no longer works.'
-> 
-> On Friday 26 January 2007 01:28, Tim wrote:
-> 
-> > ---------------------------------
-> > There is one more important issue:
-> > What happened to all the input gain controls (IPGA) in the ice1712 driver?
-> > With alsa-1.0.14rc2 they are gone! They don't show up in envy24control,
-> >  or any other mixer I try which shows ALL alsa controls.
-> > If this is an attempt to unify the IPGA and ADC controls, I agree. Carry
-> > on. Anyone who has used the envy24control knows it is a bit strange.
-> > If you operate the ADC controls, the IPGA controls are forced to zero,
-> >  likewise if you operate the IPGA controls, the ADC controls are forced
-> >  to max. Unification of the two controls would make a lot of sense.
-> > But I could not seem to get them to work properly with this alsa-1.0.14rc2
-> >
-> > Tim.
-> 
-> I was intending to raise this matter myself.  In the changelog 1.0.12 to 
-> 1.0.13 I noticed this:-
-> 
->   + AK4XXX AD/DA converters
->     - ak4xxx - Remove bogus IPGA controls
-> 
->       Remove IPGA volume controls and merge the IPGA range to ADC volume
->       controls.  These two volumes are not really independent but connected
->       simply in different ranges 0-0x7f and 0x80-max.  It doesn't make sense
->       to provide two controls.
-> 
->       Since both 0x7f and 0x80 specify 0dB, a hack is needed for IPGA range
->       to skip 0x80 (increment one) for such controls.
-> 
-> But I could not find the changeset on Hg and was intending to ask about it.
-> 
-> >From an analogue electronics POV this may not be a wise change.  Adding gain 
-> usually worsens singal-to-noise ratio and other signal parameters, and 
-> attenuation may mean avoidable gain elsewhere. So the best operating point in 
-> general is with no gain or attenuation at the converter.  Then the minimum of 
-> either would be used if necessary, in conjuction with controls on the source 
-> equipment.
 
-I agree. The correct place to set input levels is in the output stage
-of the preceding equipment, eg. mic preamp or mixing desk output.
-Users of this type of equipment can reasonably be expected to know
-that.
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Thus to achieve best performance I would think it is important to be aware of 
-> both these controls separately.  That is what the Terratec 'Windows' driver 
-> for my ice1712 sound card does.  If gain is needed, for example, it may be 
-> better to add it elsewhere than at the converter.  The 'strange' behaviour of 
-> the two controls in 1.0.12 is in fact entirely correct and neccessary when 
-> the underlying electronics is considered -it is vitally important to avoid 
-> gain and attenuation together even though the effect seems the same.
-> 
-> Remember that the ice1712 creates essentially a semi-pro sound system, so the 
-> users should be aware of technical and signal performance tradeoffs 
-> throughout their equipment (eg mixing desk, effects units), and be able to 
-> make intelligent decisions about the best settings of them all.  User 
-> friendliness should not override technical quality issues in this case.  It 
-> is not really a domestic piece of kit (eg delta 1010, ews88, dsp24).
+Hi,
 
-Yes, absolutely. The last thing this kind of card needs is for the
-input signal to be degraded by changing the gain of the ADC. 
-The user really needs to have separate control over this.
-Hardware mixing is a slightly different matter as it's usually only used
-for zero-latency monitoring when recording overdubs (ie. the mixed signal
-never gets recorded so a slight degradation doesn't matter).
+I've tried to write a patch for bug #2724. The problem is that some
+Logitech webcams have interface alternatives with a rate of 0:
 
-John
+  Interface 3
+    Altset 1
+    Format: 0x2
+    Channels: 1
+    Endpoint: 6 IN (ASYNC)
+    Rates: 0
+  Interface 3
+    Altset 2
+    Format: 0x2
+    Channels: 1
+    Endpoint: 6 IN (ASYNC)
+    Rates: 0
+  Interface 3
+    Altset 3
+    Format: 0x2
+    Channels: 1
+    Endpoint: 6 IN (ASYNC)
+    Rates: 16000
+
+The ALSA Kernel driver seems to be somewhat unhappy about this and
+oopses in snd_interval_list which gets called with:
+
+i: dc4f0928 count: 3635438588 list: ffffffff mask 4294967295
+
+I've tried to track down the origin of -1 in constraint_list->list but got
+lost in the depths of the hw param stuff.
+
+The attached patch skips all alternatives with no valid rates. With this
+patch my Quickcam 5000 works like a charm. But I'm unsure if this is the
+right approach to fix this bug.
+
+I think the right way to go is to fix also the cause of the oops, so
+that the ALSA core doesn't oops when no valid rate is given.
+
+Thanks for your comments,
+Gregor
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="logitech.diff"
+
+diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+index 19bdcc7..661e557 100644
+--- a/sound/usb/usbaudio.c
++++ b/sound/usb/usbaudio.c
+@@ -2455,7 +2455,7 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
+ 		/*
+ 		 * build the rate table and bitmap flags
+ 		 */
+-		int r, idx, c;
++		int r, idx, c, nonzero_rates = 0;
+ 		/* this table corresponds to the SNDRV_PCM_RATE_XXX bit */
+ 		static unsigned int conv_rates[] = {
+ 			5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000,
+@@ -2478,6 +2478,7 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
+ 			    fp->altsetting == 5 && fp->maxpacksize == 392)
+ 				rate = 96000;
+ 			fp->rate_table[r] = rate;
++                        nonzero_rates |= rate;
+ 			if (rate < fp->rate_min)
+ 				fp->rate_min = rate;
+ 			else if (rate > fp->rate_max)
+@@ -2493,6 +2494,10 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
+ 			if (!found)
+ 				fp->needs_knot = 1;
+ 		}
++                if (!nonzero_rates) {
++                        hwc_debug("No rate was nonzero. Skipping format!\n");
++                        return -1;
++                }
+ 		if (fp->needs_knot)
+ 			fp->rates |= SNDRV_PCM_RATE_KNOT;
+ 	} else {
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--C7zPtVaVf+AK4Oqc--
