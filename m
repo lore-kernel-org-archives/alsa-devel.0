@@ -1,11 +1,13 @@
-From: Gregor Jasny <jasny@vidsoft.de>
-Subject: Need help with patch for #2724 (usbaudio, core)
-Date: Sat, 27 Jan 2007 14:24:45 +0100
-Message-ID: <20070127132445.GA11859@vidsoft.de>
+From: =?ISO-2022-JP?B?GyRCJUElMSVDJUglOyVzJT8hPCRVJC9FQRsoQiA=?= <s2049@yan.jp>
+Subject: =?iso-2022-jp?b?GyRCPiZJSjd0IXU/Xj1xJSshPCVJGyhCMQ==?=
+ =?iso-2022-jp?b?GyRCS3wxX0osJCwbKEI3ODAwGyRCMV8hKjR8NFYhJj90Tkw4QkRqGyhC?=
+ =?iso-2022-jp?b?GyRCJE4zK0U5NS1HMCF1Pzc9VSU7ITwlayRHJDkhKhsoQg==?=
+Date: Sun, 28 Jan 2007 03:47:33 +0900
+Message-ID: <20070127.1847330531@s2049-yan.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="C7zPtVaVf+AK4Oqc"
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,110 +20,121 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+　　　チケットセンターふく伝　メール通信　第３号（隔週号）
+　　　　　　　　　　　　　　　　　　　　　　　　　　2007.1.28
+■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
 
-Hi,
+━━━━━━━━ 開店記念＆新春セール第２弾 ━━━━━━━━━━
 
-I've tried to write a patch for bug #2724. The problem is that some
-Logitech webcams have interface alternatives with a rate of 0:
+　　全国共通百貨店券・ＪＣＢギフトカード・全国共通図書カード
 
-  Interface 3
-    Altset 1
-    Format: 0x2
-    Channels: 1
-    Endpoint: 6 IN (ASYNC)
-    Rates: 0
-  Interface 3
-    Altset 2
-    Format: 0x2
-    Channels: 1
-    Endpoint: 6 IN (ASYNC)
-    Rates: 0
-  Interface 3
-    Altset 3
-    Format: 0x2
-    Channels: 1
-    Endpoint: 6 IN (ASYNC)
-    Rates: 16000
+　　　１００００円分を７８００円で販売です！（２２％オフ）
 
-The ALSA Kernel driver seems to be somewhat unhappy about this and
-oopses in snd_interval_list which gets called with:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-i: dc4f0928 count: 3635438588 list: ffffffff mask 4294967295
+━━━━　開店記念＆新春セールだからできる超お得セール！　━━━
 
-I've tried to track down the origin of -1 in constraint_list->list but got
-lost in the depths of the hw param stuff.
+全国で使える「全国共通百貨店券」「ＪＣＢギフトカード」
+「全国共通図書カード」１００００円分を７８００円で激安販売です！
+さらに送料は当社負担！
+またとない開店記念＆新春セールだけの超お得セールです。
 
-The attached patch skips all alternatives with no valid rates. With this
-patch my Quickcam 5000 works like a charm. But I'm unsure if this is the
-right approach to fix this bug.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-I think the right way to go is to fix also the cause of the oops, so
-that the ALSA core doesn't oops when no valid rate is given.
+※お一人様のお申込可能数量には上限がございます。
+※セール期間は、１月２５日（木）〜１月３１日（水）となります。
+※販売数量には限りがございます。予定数量に達し次第、セール期間内
+　でも終了となります。
+※今回の開店記念＆新春セールはモニター販売となります。
+　ご購入頂いたお客様には、簡単なアンケートをご用意しておりますの
+　でご協力をお願いいたします。（個人情報等は記入不要です）
 
-Thanks for your comments,
-Gregor
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="logitech.diff"
+　金券ショップの「福伝」が、平成１８年１１月２８日
+　ネットショップの「チケットセンターふく伝」としてＯＰＥＮ！
+　今回は開店記念＆新春セールの第２弾、「全国共通百貨店券」
+　「ＪＣＢギフトカード」「全国共通図書カード」の激安セールです。
+　全国のデパートやお店、書店で使えます。
+　使用期限はありませんので、この機会にご購入されておけば
+　とってもお得です。
 
-diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index 19bdcc7..661e557 100644
---- a/sound/usb/usbaudio.c
-+++ b/sound/usb/usbaudio.c
-@@ -2455,7 +2455,7 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
- 		/*
- 		 * build the rate table and bitmap flags
- 		 */
--		int r, idx, c;
-+		int r, idx, c, nonzero_rates = 0;
- 		/* this table corresponds to the SNDRV_PCM_RATE_XXX bit */
- 		static unsigned int conv_rates[] = {
- 			5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000,
-@@ -2478,6 +2478,7 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
- 			    fp->altsetting == 5 && fp->maxpacksize == 392)
- 				rate = 96000;
- 			fp->rate_table[r] = rate;
-+                        nonzero_rates |= rate;
- 			if (rate < fp->rate_min)
- 				fp->rate_min = rate;
- 			else if (rate > fp->rate_max)
-@@ -2493,6 +2494,10 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
- 			if (!found)
- 				fp->needs_knot = 1;
- 		}
-+                if (!nonzero_rates) {
-+                        hwc_debug("No rate was nonzero. Skipping format!\n");
-+                        return -1;
-+                }
- 		if (fp->needs_knot)
- 			fp->rates |= SNDRV_PCM_RATE_KNOT;
- 	} else {
+　　　　　　　詳細は当社ホームページでチェック！
+　　　　　　　　　　　　　　　↓
+　 　   　http://tcenterfd.100free.com/index.html
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+※商品は、千円券×１０枚（１００００円分）が１セットとなります。
+※価格は、１セット（１００００円分）→７８００円となります。
+　２２００円引きの２２％オフとなります。
+　送料は当社で負担させて頂きますが、速達をご希望のお客様は別途
+　速達料金２７０円が加算されます。
+※御注文はお一人様各商品１０セットまでとさせて頂きます。
+※御注文受付期限は、１月３１日（水）までとなりますが、販売数量
+　に限りがありますので予定数量に達し次第、期限内でもセール終了
+　となります。早期終了が予想されますので、ご了承下さい。
+※商品は簡易包装となります。（今回の開店記念＆新春セールでは
+　贈答用包装は行っておりませんのでご了承下さい。）
+※ご購入頂いたお客様には、当社の販売方法、対応、ホームページの
+　ご感想に関する簡単なアンケートをご用意していますので、ご協力
+　をお願いいたします。（個人情報等の記入は不要です）
+　アンケートはお振込のご案内メールと一緒になっていますので、
+　商品到着後にご返信下さい。
+※各商品の絵柄、図柄のご指定はできません。
+※同業者様や転売目的の御注文はご遠慮下さい。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━　御注文方法　━━━━━━━━━━━━━
+
+１．ここ(↓)をクリックして当社ホームページへアクセスして下さい。
+　　http://tcenterfd.100free.com/index.html
+２．トップページの「開店記念＆新春セール第２弾」のバナーから
+　　ご入場して下さい。
+３．ご説明にしたがって、お申込み下さい。
+４．折り返し当社より、御注文番号・お振込先・お振込金額等をお知
+　　らせいたします。
+５．銀行振込みにて御入金下さい。　なお、お振込手数料はお客様の
+　　ご負担となりますので、ご了承下さい。
+６．お振込日（午後２時３０分以降のお振込は翌日扱いとなります）
+　　の翌日に商品を簡易書留郵便にて発送いたします。（ご注文金額
+　　が５万円を超える場合は書留郵便にて発送いたします。）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
+
+　　　　　　　　　　　チケットセンターふく伝
+　　　　ホームページ　http://tcenterfd.100free.com/index.html
+　　―――――――――――――――――――――――――――――
+　　　　〒262-0011　　千葉県千葉市花見川区三角町１２−２
+　　　　　　　　　　　TEL 043-258-3687
+　　　　　　　　　　　チケットセンターふく伝
+　　　　　　　　　　　代表　福永　和弘
+
+■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
+　　　　　　　　　　　　　　Copyright(C)TickeCenter-FUKUDEN Inc.
+
+※ホームページアドレスは平成１９年２月１６日より
+　　http://www.rakuten.co.jp/fukuden/
+　　へ移転の予定です。（楽天市場申請中）
+
+―――――――――――――――――――――――――――――――――
+<事業者><送信者>
+チケットセンターふく伝
+千葉県千葉市花見川区三角町１２−２
+―――――――――――――――――――――――――――――――――
+特定商取引法施行規則　受取りを希望しない場合の連絡方法
+
+弊社からの広告メールの配信停止を希望の場合は、下記のメールアドレスの
+件名に「配信停止」と記入して送信してください。
+cancel@reject.udzk.com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---C7zPtVaVf+AK4Oqc--
