@@ -1,20 +1,14 @@
-From: =?ISO-2022-JP?B?GyRCJUElMSVDJUglOyVzJT8hPCRVJC9FQRsoQiA=?= <s2049@yan.jp>
-Subject: =?iso-2022-jp?b?GyRCPiZJSjd0IXU/Xj1xJSshPCVJGyhCMQ==?=
- =?iso-2022-jp?b?GyRCS3wxX0osJCwbKEI3ODAwGyRCMV8hKjR8NFYhJj90Tkw4QkRqGyhC?=
- =?iso-2022-jp?b?GyRCJE4zK0U5NS1HMCF1Pzc9VSU7ITwlayRHJDkhKhsoQg==?=
-Date: Sun, 28 Jan 2007 03:47:33 +0900
-Message-ID: <20070127.1847320906@s2049-yan.jp>
+From: "Santos Kalin" <Dolengo@bu.la>
+Subject: V.O.P. - Very Original Products.
+Date: Sat, 27 Jan 2007 18:54:56 +0000
+Message-ID: <468d01c74244$00683a8a$71da4bdb@219-75-218-113.eonet.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0858627492=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ns.yan.jp (ns.yan.jp [210.255.121.212])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57672256
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 19:47:37 +0100 (MET)
-Received: from OEM_USER32 (p5010-ipbffx02yamaguchi.yamaguchi.ocn.ne.jp
-	[60.45.200.138])
-	by ns.yan.jp (8.13.1/3.7W/050804) with SMTP id l0RIlZFp009074
-	for alsa-devel@alsa-project.org; Sun, 28 Jan 2007 03:47:35 +0900 (JST)
+Received: from 219-75-218-113.eonet.ne.jp (219-75-218-113.eonet.ne.jp
+	[219.75.218.113])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F4190277
+	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2007 19:55:21 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,124 +18,167 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Owen Timo <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
+This is a multi-part message in MIME format.
 
-　　　チケットセンターふく伝　メール通信　第３号（隔週号）
-　　　　　　　　　　　　　　　　　　　　　　　　　　2007.1.28
-■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
+--===============0858627492==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_7045_A6701CD2.389BEF1C"
 
-━━━━━━━━ 開店記念＆新春セール第２弾 ━━━━━━━━━━
+This is a multi-part message in MIME format.
 
-　　全国共通百貨店券・ＪＣＢギフトカード・全国共通図書カード
+------=_NextPart_000_7045_A6701CD2.389BEF1C
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_D238_9BEF45A6.7045A670"
 
-　　　１００００円分を７８００円で販売です！（２２％オフ）
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------=_NextPart_001_D238_9BEF45A6.7045A670
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-━━━━　開店記念＆新春セールだからできる超お得セール！　━━━
+Genuie  and  from the Original manufacturer are selling by Trusted =
+vendor.
 
-全国で使える「全国共通百貨店券」「ＪＣＢギフトカード」
-「全国共通図書カード」１００００円分を７８００円で激安販売です！
-さらに送料は当社負担！
-またとない開店記念＆新春セールだけの超お得セールです。
+Don't miss this chance to buy Hight-Quality production!
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Our online shop: http://www.everwinwin.info
 
-※お一人様のお申込可能数量には上限がございます。
-※セール期間は、１月２５日（木）〜１月３１日（水）となります。
-※販売数量には限りがございます。予定数量に達し次第、セール期間内
-　でも終了となります。
-※今回の開店記念＆新春セールはモニター販売となります。
-　ご購入頂いたお客様には、簡単なアンケートをご用意しておりますの
-　でご協力をお願いいたします。（個人情報等は記入不要です）
+Only today and only for you all prices eased for 60%!
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+P.S.: Forward this email to 10 your friends and you'll get a good bid =
+from us.
+qftltjuptqpltntnuntpursguiuutmujqqtmtpulufutuutoqfufshrl
+sdjgnwruifgdkjgsdsdflkjw
+------=_NextPart_001_D238_9BEF45A6.7045A670
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-　金券ショップの「福伝」が、平成１８年１１月２８日
-　ネットショップの「チケットセンターふく伝」としてＯＰＥＮ！
-　今回は開店記念＆新春セールの第２弾、「全国共通百貨店券」
-　「ＪＣＢギフトカード」「全国共通図書カード」の激安セールです。
-　全国のデパートやお店、書店で使えます。
-　使用期限はありませんので、この機会にご購入されておけば
-　とってもお得です。
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><STRONG>Genuie</STRONG>&nbsp;<IMG=20
+style=3D"WIDTH: 116px; HEIGHT: 20px" alt=3D"" hspace=3D0=20
+src=3D"cid:00741CD2389BEF1CD2389$BEF45A67$045A6701@219-75-218-113.eonet.ne.jp" align=3Dbottom =
+border=3D0>=20
+and&nbsp;<IMG style=3D"WIDTH: 56px; HEIGHT: 20px" alt=3D"" hspace=3D0=20
+src=3D"cid:0071CD2389BEF1CD2389B$EF45A670$45A6701C@219-75-218-113.eonet.ne.jp" align=3Dbottom =
+border=3D0> from the=20
+Original manufacturer are selling by <STRONG>Trusted</STRONG>=20
+vendor.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Don't miss this chance to buy=20
+<STRONG>Hight-Quality</STRONG> production!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Our online shop: <A=20
+href=3D"http://www.everwinwin.info">http://www.everwinwin.info</A></FONT>=
+</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Only today and only for you all =
+<STRONG>prices=20
+eased for 60%!</STRONG></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><STRONG>P.S.:</STRONG> Forward this =
+email to 10=20
+your friends and you'll get a good bid from =
+us.<BR><BR>
+qftltjuptqpltntnuntpursguiuutmujqqtmtpulufutuutoqfufshrl
+fdgnrgbrgrhjekijeidfjdij</FONT></DIV></BODY></HTML>
 
-　　　　　　　詳細は当社ホームページでチェック！
-　　　　　　　　　　　　　　　↓
-　 　   　http://tcenterfd.100free.com/index.html
+------=_NextPart_001_D238_9BEF45A6.7045A670--
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------=_NextPart_000_7045_A6701CD2.389BEF1C
+Content-Type: image/gif;
+	name="4157.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <00741CD2389BEF1CD2389$BEF45A67$045A6701@219-75-218-113.eonet.ne.jp>
 
-※商品は、千円券×１０枚（１００００円分）が１セットとなります。
-※価格は、１セット（１００００円分）→７８００円となります。
-　２２００円引きの２２％オフとなります。
-　送料は当社で負担させて頂きますが、速達をご希望のお客様は別途
-　速達料金２７０円が加算されます。
-※御注文はお一人様各商品１０セットまでとさせて頂きます。
-※御注文受付期限は、１月３１日（水）までとなりますが、販売数量
-　に限りがありますので予定数量に達し次第、期限内でもセール終了
-　となります。早期終了が予想されますので、ご了承下さい。
-※商品は簡易包装となります。（今回の開店記念＆新春セールでは
-　贈答用包装は行っておりませんのでご了承下さい。）
-※ご購入頂いたお客様には、当社の販売方法、対応、ホームページの
-　ご感想に関する簡単なアンケートをご用意していますので、ご協力
-　をお願いいたします。（個人情報等の記入は不要です）
-　アンケートはお振込のご案内メールと一緒になっていますので、
-　商品到着後にご返信下さい。
-※各商品の絵柄、図柄のご指定はできません。
-※同業者様や転売目的の御注文はご遠慮下さい。
+R0lGODdhdgAVAMYAAAROvGyq3LzS7CR+zJS+5NTq9FSW3ARmxDyO1Ozy9BxyzKTO7ISy5AxyzMTe
+7Gyi3ARavHSy3DSC1KTG7BRuzEyW1PT6/OTu9AxuxFyi3CyG1JzG7AxmxEyO1LTS7NTi9Hyu5Lza
+7Cx+zJzC5PTy/IS65ARixARWvHSq3Nzq9Fye3Bx6zJTC5Fya3ARqxESO1KzO7BRyxMze9HSm3ARe
+vHyy3Pz6/OTy9CyCzHSu3Nzu9ARSvLzW7FSa1Oz2/Iy25Gym3DyK1KzK7Eya3GSi3AxqxEyS1LTW
+7NTm9MTa9PT29Iy65CR6zESS1KzS7BR2zHy25CR+1JS+7ARmzOzy/Bx2zIS25MTe9ARaxDSG1KTK
+7EyW3PT+/OTu/AxuzLTS9Lza9Cx+1JzC7ARizARWxHSq5Nzq/JTC7ARqzESO3KzO9BRyzMzi9ARe
+xHyy5Pz+/OTy/CyC1HSu5Nzu/ARSxLzW9FSa3Gym5GSm3AxqzEyS3NTm/PT2/Iy+5CR61AAAACwA
+AAAAdgAVAAAH/oBvgoOEhYaHiImKi4yNjo+QkZKTggmMlpSZmpmYm56ONlQ+fDaLfKJ8b3w+NySJ
+Nj5UfKmNXWxXAnVgMmwXFoawoj6jw6vEjyTDro03NwYicSJbVIkMNxoSQVpBcRI4HodUL904N3iK
+X3cvK14mJ2RYBy4rQURqv6pbEt3ecXFhYeLgCJjGSAA2iSyoCCNBgwgDPgSx4XGk1CErWNqYwBIA
+URI0bdpAsAPDhIk2WEoQssTFgMaTIaEcUhPmQBsa8Z4MwIHjycaQJlZIseDDCw2TLw+YNHkAQkYT
+U8pYLFQGC9KNGd508XBHyJVEW0wckCfAkIUsbVyYqEKFh4ux/iaWGLrRBu7YAxy+FJLD1MSAHyFS
+wKFCpQsPOTHEihXCpwrcIFciX3Eg+cgQuG20GJpwV+xbE2f41AGx4UYiHVXEtolDaxADGmjEOnnz
+5cAUpX0KHemMJwjUtWYq9dE41gCcRGb6bPDAZpVPpUQSdRk7xYRpQmwoKLbTo81tFzJS8AjxppMh
+D7erdxwkI8/YNnIEeUADV+6gFArGKLXzZo4CeW0EkQocF6TlFz6OkPAEXC8MRtiDc3xAhFgH0CAG
+IT5I4N0NWbxhQRyKMdGFIznUdQAaSQzim1JZ0FJbfYNYcIFiVRz3hhYHjOFCGx2B8ZZSQBzyxQ8l
+/LDEEiUc/tnHB44dcIMJaMTQAAUNPKGAWkuZgAeCb7RAIQYIvXGFF+9tMZUiFqzYRha/LFGXCWvI
+MMgRLuhnQm6CBODdW+AMMqFtN8DwAX238WdIFgDsQAcdZKCEBRZORHHXPCtUUSmFJyIAwleESJEW
+boRYQaEJMjFywwdk2rRECu1Uh6cgN9A3ln0J6DeWC0SA4AYINfj22RohoKXWGkgYosUDQOAhRxB3
+HQCDpNU1AYcxCbjBlAvxFQJGEWLdZoCuIERgRGcH9MmIGHc9gYBYNAxRCHq2xfVGdvLY1AYZit6w
+w1PxBrGEXQPUkQgVKkA1lhoDWEdDdIUskV4bPbR2gR8G/p90wg4Y05FRXWpVUYAjKninlFIrUEPI
+fHARYEEYijUAxK4RhBvuDRXc1UYGfUzxEhp6LFEHEl2kkIQYRKxA3FjPwpVVJYNsoNSOWYxoQxMm
+4upGzFi74QYRLtwWYGuHWHJDAn4cxZRehTiR5RJEQMDUBoq4hFQfVxjRgEYauYBBA16o1WgWTai2
+wAomYdEDIlpggPcKH7hh1UluKILCS1ics4hpV7SABxBEXHBIFy004cxhaVSQhn0DZ9CEHi8QIMgH
+YmQQhAgN5FEEBgNsAcIRfKSwRRMqpADCC000odlKg3xxQxNGvHCEFS9U0ES2CQHRhPTrfaL99tub
+x30iHd5/L/742odPviHmnz9J+t2rjwj7TLsvP/nXZRIIADs=
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━　御注文方法　━━━━━━━━━━━━━
+------=_NextPart_000_7045_A6701CD2.389BEF1C
+Content-Type: image/gif;
+	name="7561.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <0071CD2389BEF1CD2389B$EF45A670$45A6701C@219-75-218-113.eonet.ne.jp>
 
-１．ここ(↓)をクリックして当社ホームページへアクセスして下さい。
-　　http://tcenterfd.100free.com/index.html
-２．トップページの「開店記念＆新春セール第２弾」のバナーから
-　　ご入場して下さい。
-３．ご説明にしたがって、お申込み下さい。
-４．折り返し当社より、御注文番号・お振込先・お振込金額等をお知
-　　らせいたします。
-５．銀行振込みにて御入金下さい。　なお、お振込手数料はお客様の
-　　ご負担となりますので、ご了承下さい。
-６．お振込日（午後２時３０分以降のお振込は翌日扱いとなります）
-　　の翌日に商品を簡易書留郵便にて発送いたします。（ご注文金額
-　　が５万円を超える場合は書留郵便にて発送いたします。）
+R0lGODdhOgAVAMYAAAQCBISChMTCxERCRKSipOTi5CQiJGRiZJSSlPTy9BQSFNTS1LSytDQyNHRy
+dFRSVIyKjOzq7AwKDMzKzExKTKyqrCwqLGxqbJyanPz6/BwaHNza3Ly6vDw6PHx6fIyGjFxeXPTq
+7AQGBISGhMTGxERGRKSmpOTm5CQmJGRmZJSWlPT29BQWFNTW1LS2tDQ2NHR2dFRWVIyOjOzu7AwO
+DMzOzExOTKyurCwuLGxubJyenPz+/BweHNze3Ly+vDw+PHx+fAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwA
+AAAAOgAVAAAH/oA7goOEhYaHiImKi4yFITuPjZKDkZKVk5iZhCEeMQuOlzsrCRmDFQ8EmoUJJhcD
+HRQXGAU7MgAAFqWJCTgaD4IFtxETqoIhBrfJtyU7ELcouogRNAAvghu3IcTGmLbPIDkgHTQVOwkp
+JSSLEQoAHYMYPzLFHMkypZEFK7sz0Tsz7d7xa5ShwS0YiSakuMBgRw0YDTQo4DFARSl27gQlcHAB
+QogEARqwYGHhQLkWFbYRqgeAxoxEGA7usAAggjIAFP4FFHTiFo4VP27WzPABCARDznA6IqTjFpAM
+BHgA4UAiAopbNzJQE3ii3YAJzwTUqPCDQQYIEBAYynErhSIC/k4JZSjQIiaACyt27pgG4EeNZ7QI
+RRAQmJCHWwfext3hgkI7ZSAy6OX7LsYtETEq+DsEFwAORU0BANlxIRmKHwYBgMhbjSc1axlG8Ehm
+gQO32yE2SLjlI1FnCCZuGeDwCKBqyX0F8bUmaAYBmy1DFWILwEAoBr1Djzhwy8WgBNRWt2PeNaO/
+ELdUKJpxFYACIAIWMCgtYewtCDAOzkhQ48EtGztoAIAICBRwAjUR7GADBQycsAEFt6RyWyEFvKAM
+dC0xEJxoBbBwCw0eKkMAEMngEMFuP4B1GXoANJAAIxnEwwMNNITwAhC0mKAACyPs0MIDPOw4gAkc
+vMACCDsgIfACRSegoIANJwDRQZAs4OBAgotIN2Exm3DpZShaIhJmIAA7
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
+------=_NextPart_000_7045_A6701CD2.389BEF1C--
 
-　　　　　　　　　　　チケットセンターふく伝
-　　　　ホームページ　http://tcenterfd.100free.com/index.html
-　　―――――――――――――――――――――――――――――
-　　　　〒262-0011　　千葉県千葉市花見川区三角町１２−２
-　　　　　　　　　　　TEL 043-258-3687
-　　　　　　　　　　　チケットセンターふく伝
-　　　　　　　　　　　代表　福永　和弘
 
-■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
-　　　　　　　　　　　　　　Copyright(C)TickeCenter-FUKUDEN Inc.
 
-※ホームページアドレスは平成１９年２月１６日より
-　　http://www.rakuten.co.jp/fukuden/
-　　へ移転の予定です。（楽天市場申請中）
 
-―――――――――――――――――――――――――――――――――
-<事業者><送信者>
-チケットセンターふく伝
-千葉県千葉市花見川区三角町１２−２
-―――――――――――――――――――――――――――――――――
-特定商取引法施行規則　受取りを希望しない場合の連絡方法
-
-弊社からの広告メールの配信停止を希望の場合は、下記のメールアドレスの
-件名に「配信停止」と記入して送信してください。
-cancel@reject.udzk.com
+--===============0858627492==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0858627492==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0858627492==--
