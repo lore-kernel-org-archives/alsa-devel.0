@@ -1,16 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: ice1712 IPGA and ADC controls
-Date: Sun, 28 Jan 2007 22:59:52 +0000
-Message-ID: <200701282259.52583.gineera@aspect135.co.uk>
-References: <loom.20070120T001557-202@post.gmane.org>
-	<200701262325.33755.gineera@aspect135.co.uk>
-	<20070127123807.GA2662@localhost.localdomain>
+From: "and" <inovjtutxbb@tie.cl>
+Subject: Rocket Stock Report
+Date: Sun, 28 Jan 2007 20:17:24 +0600
+Message-ID: <AF63603214DE07C.FE4206FEBA@tie.cl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1667644198=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20070127123807.GA2662@localhost.localdomain>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CCFF28E
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 00:17:21 +0100 (MET)
+Received: from 113-104-85.adsl.cust.tie.cl (113-104-85.adsl.cust.tie.cl
+	[200.113.104.85])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	C6F039982C
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 00:17:19 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,70 +22,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 27 January 2007 12:38, John Rigg wrote:
-> On Fri, Jan 26, 2007 at 11:26:55PM +0000, Alan Horstmann wrote:
-> > From an analogue electronics POV this may not be a wise change.  Adding
-> > gain usually worsens singal-to-noise ratio and other signal parameters,
-> > and attenuation may mean avoidable gain elsewhere. So the best operating
-> > point in general is with no gain or attenuation at the converter.  Then
-> > the minimum of either would be used if necessary, in conjuction with
-> > controls on the source equipment.
->
-> I agree. The correct place to set input levels is in the output stage
-> of the preceding equipment, eg. mic preamp or mixing desk output.
-> Users of this type of equipment can reasonably be expected to know
-> that.
->
-> > Thus to achieve best performance I would think it is important to be
-> > aware of both these controls separately.  That is what the Terratec
-> > 'Windows' driver for my ice1712 sound card does.  If gain is needed, for
-> > example, it may be better to add it elsewhere than at the converter.  The
-> > 'strange' behaviour of the two controls in 1.0.12 is in fact entirely
-> > correct and neccessary when the underlying electronics is considered -it
-> > is vitally important to avoid gain and attenuation together even though
-> > the effect seems the same.
-> >
-> > Remember that the ice1712 creates essentially a semi-pro sound system, so
-> > the users should be aware of technical and signal performance tradeoffs
-> > throughout their equipment (eg mixing desk, effects units), and be able
-> > to make intelligent decisions about the best settings of them all.  User
-> > friendliness should not override technical quality issues in this case. 
-> > It is not really a domestic piece of kit (eg delta 1010, ews88, dsp24).
->
-> Yes, absolutely. The last thing this kind of card needs is for the
-> input signal to be degraded by changing the gain of the ADC.
-> The user really needs to have separate control over this.
-> Hardware mixing is a slightly different matter as it's usually only used
-> for zero-latency monitoring when recording overdubs (ie. the mixed signal
-> never gets recorded so a slight degradation doesn't matter).
->
-> John
+--===============1667644198==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0002_01C74319.52B31560"
 
-(Adding to my previous posting)
-What John and I are saying is that the driver should retain these two as 
-separate controls as they perform distinct hardware functions, inspite of the 
-similar nominal effect on gain.  There is no way for the driver to ensure 
-that any user GUI labels the dual function of a combined control or will mark 
-the '0dB' (no gain, no ADC attenuation) level of any fader/control.  In this 
-case, the two controls need to be there to tell the user about the hardware, 
-and the choices to be made about the settings, rather than hiding this.  Thus 
-I advocate reverting to the 1.0.12 behaviour.
+------=_NextPart_000_0002_01C74319.52B31560
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Having separate driver controls still permits a dedicated mixer app or similar 
-to create a combined slider with suitable markings etc if that were 
-appropriate to it's target user group, though as already said, these are 
-mostly semi-pro system cards.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2912" name=3D"GENERATOR">
+</HEAD>
+<BODY>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><B>TRADERS! PSUD is going through the roof next week!</B></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><I>WATCH OUT! </I></FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><I>Monday January 29 IS SURE TO BE A GOOD DAY!</I></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Company: <B>PetroSun</B> </FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Sym: <B>PSUD</B> </FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Currently: <B>$0.52 (+0.09 Close) 20.9%</B></FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Friday Target: <B>$1.50</B></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>2007-01-11 11:46 ET - News Release</FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>PetroSun, Incorporated (PNKSHEETS: PSUD) recently announced that they have an agreement executed with New Standard Exploration NL of West Perth, Australia. It covers the Exploration Pemit 417 which is location within Western Australias Canning Basin. a Joint venture has been established to explore develop and produce oil and or gas from EP417. PetroSun was assigned a 75% working interest in the permit, intial consideration of $5Million.</FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><B><U>ADD THIS TO YOUR LIST AND WATCH IT LIKE A HAWK ON Monday January 29, 2007!!!!<U></B></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0002_01C74319.52B31560--
 
 
-Alan
 
+--===============1667644198==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1667644198==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1667644198==--
