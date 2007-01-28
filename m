@@ -1,17 +1,16 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: [Alsa-user] Cheap USB audio card with phantom
-Date: Sun, 28 Jan 2007 19:36:58 +0000
-Message-ID: <20070128193658.GA2658@localhost.localdomain>
-References: <1169882126.3763.5.camel@localhost>
-	<Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
-	<1169974525.4788.13.camel@localhost>
-	<200701281803.24483.mgd@technosis.de>
+From: Tim <terminator356@users.sourceforge.net>
+Subject: Re: ice1712 IPGA and ADC controls
+Date: Sun, 28 Jan 2007 20:54:15 +0000 (UTC)
+Message-ID: <loom.20070128T211007-41@post.gmane.org>
+References: <loom.20070120T001557-202@post.gmane.org>
+	<s5hbqkrf96d.wl%tiwai@suse.de>
+	<loom.20070126T022638-883@post.gmane.org>
+	<200701262325.33755.gineera@aspect135.co.uk>
+	<20070127123807.GA2662@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200701281803.24483.mgd@technosis.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,20 +23,36 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 28, 2007 at 06:03:08PM +0100, Michael Gerdau wrote:
-> > I need to record voices with good quality.
-> 
-> From this I deduce you don't require long cables with your mic which
-> implies you don't need balanced cables (at all cost).
-> 
-> Nothing wrong with using XLR, but from what you write not a "must have"
-> type of requirement.
+Tim wrote:
+> > > What happened to all the input gain controls (IPGA) in the ice1712 
+driver?
+Alan wrote:
+> >     - ak4xxx - Remove bogus IPGA controls
 
-Any mic that needs 48V phantom power needs a balanced cable
-in order to work. XLR inputs are the de facto standard on
-phantom capable mic preamps.
+I just looked at the AK4524 datasheet. 
+Well, the gain and attenuation are certainly two seperate 
+ parts of the chip combined into one register. But ultimately 
+ are two means to an end.
+Table 12, the IPGA Code Table says it all, for me.
+See that gain (db) column? 
+THAT is what I want to see when I look at a slider! How 'bout you?
+To merge a point made previously: If users of these cards are 
+ more "technical" or "professional", then they will understand
+ what they are doing, either because they know, or we simply tell 
+ them with a helpful line about this matter in the readme.
+Right?
+BTW if any mixer out there is to do this correctly it could only
+ be envy24control. I don't know if any standard alsa mixer could 
+ know about the specific db steps on these chips.
 
-John
+My spider senses tell me the envy24control devels are working on this. 
+Right guys?... Hello?...
+
+Tim.
+P.S. I said I had trouble with envy24control. Switched to newest one. All OK!
+
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
