@@ -1,15 +1,16 @@
-From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
+From: John Rigg <aldev@sound-man.co.uk>
 Subject: Re: [Alsa-user] Cheap USB audio card with phantom
-Date: Sun, 28 Jan 2007 18:50:07 +0100
-Message-ID: <1170006607.4563.1.camel@localhost>
+Date: Sun, 28 Jan 2007 19:36:58 +0000
+Message-ID: <20070128193658.GA2658@localhost.localdomain>
 References: <1169882126.3763.5.camel@localhost>
 	<Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
 	<1169974525.4788.13.camel@localhost>
 	<200701281803.24483.mgd@technosis.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
 In-Reply-To: <200701281803.24483.mgd@technosis.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,20 +21,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: mgd@technosis.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TGUgZGltYW5jaGUgMjggamFudmllciAyMDA3IMOgIDE4OjAzICswMTAwLCBNaWNoYWVsIEdlcmRh
-dSBhIMOpY3JpdCA6Cj4gTm90aGluZyB3cm9uZyB3aXRoIHVzaW5nIFhMUiwgYnV0IGZyb20gd2hh
-dCB5b3Ugd3JpdGUgbm90IGEgIm11c3QKPiBoYXZlIgo+IHR5cGUgb2YgcmVxdWlyZW1lbnQuIAoK
-SSByZWNvcmQgbXkgdm9pY2UgYXQgaGlnaCBxdWFsaXR5IChvdXRnb2luZykgYW5kIHJlY29yZCB0
-aGUgU0lQIHZvaWNlCihpbmNvbWluZykgd2l0aCBsb3cgcXVhbGl0eS4gCgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpUYWtlIFN1cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQK
-Sm9pbiBTb3VyY2VGb3JnZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBj
-aGFuY2UgdG8gc2hhcmUgeW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJv
-dWdoIGJyaWVmIHN1cnZleXMgLSBhbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20v
-ZGVmYXVsdC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Sun, Jan 28, 2007 at 06:03:08PM +0100, Michael Gerdau wrote:
+> > I need to record voices with good quality.
+> 
+> From this I deduce you don't require long cables with your mic which
+> implies you don't need balanced cables (at all cost).
+> 
+> Nothing wrong with using XLR, but from what you write not a "must have"
+> type of requirement.
+
+Any mic that needs 48V phantom power needs a balanced cable
+in order to work. XLR inputs are the de facto standard on
+phantom capable mic preamps.
+
+John
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
