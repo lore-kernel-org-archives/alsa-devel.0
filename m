@@ -1,87 +1,50 @@
-From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
-Subject: Re: Cheap USB audio card with phantom
-Date: Sun, 28 Jan 2007 09:55:25 +0100
-Message-ID: <1169974525.4788.13.camel@localhost>
-References: <1169882126.3763.5.camel@localhost>
-	<1169932531.10410.3.camel@localhost>
-	<Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HAnoU-0004yQ-HI delayed 24 hours
+Date: Sun, 28 Jan 2007 07:04:22 -0800
+Message-ID: <E1HBBZu-0000vG-64@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmsgeW91IGZvciB5b3VyIGFuc3dlcnM6Cgo+IE5vdCBzdXJlIHdoYXQgeW91IHdhbnQtLSB0
-aGF0IG1heSBiZSB3aHkgeW91IGdldCBubyByZXNwb25zZS4gQnkgdHdvCj4gY2hhbm5lbHMgaW4s
-IGRvIHlvdSBtZWFuIGEgc2luZ2xlIHN0ZXJlbyBjaGFubmVsIGluPyBXaGF0IGRvIHlvdSBtZWFu
-Cj4gYnkKPiAidHdvIHhsciBlbnRyaWVzIiBvciAicHJlYW1wIj8gc291bmQgY2FyZHMgdGVuZCBu
-b3QgdG8gYmUgbWl4ZXIKPiBib2FyZHMsIGFuZAo+IGVzcGVjaWFsbHkgbm90IGNoZWFwIG1peGVy
-IGJvYXJkcy4gV2h5IG5vdCBidXkgYSBjaGVhcCB1c2Igc291bmRjYXJkCj4gKEkKPiBsaWtlIHRo
-ZSBtYXVkaW8gdHJhbnNpdC0tIHVuZGVyICQxMDAtLSBpdCBoYXMgYSBzdGFuZGFyZCBzdGVyZW8g
-aW4pCj4gYW5kIGFkZCBhIHByZWFtcCBpZiB0aGF0IGlzIHJlYWxseQo+IHdoYXQgeW91IG5lZWQu
-Cj4gCj4gV2h5IGRvIHlvdSBuZWVkIFhMUiBjb25uZWN0b3JzIGFuZCBhIHByZWFtcCBmb3IgSW50
-ZXJuZXQgUG9kY2FzdD8gCgpJIG5lZWQgYSBwcm9mZXNzaW9ubmFsIHZvaWNlIG1pY3JvcGhvbmUs
-IGxpa2UgaW4gYSBub3JtYWwgcmFkaW8uClRoZXJlZm9yZSwgSSBuZWVkIFhMUiBlbnRyaWVzLgoK
-PiBJIGhhdmUgYW4gRWRpcm9sIFVBLTI1LiBJIGRvbid0IGtub3cgaWYgaXQncyBmdWxseSBzdXBw
-b3J0ZWQsIGJ1dCBhcwo+IGZhcgo+IGFzIEkgY2FuIHRlbGwsIGl0IHdvcmtzIHBlcmZlY3RseS4g
-SXQgcmVjb3JkcyBhbmQgcGxheXMgaW4gYWxsIHRoZQo+IGJpdHJhdGVzIGV0Yy4KPiBpdCdzIHN1
-cHBvc2VkIHRvLCBhbmQgdGhlIE1JREkgaW50ZXJmYWNlIHdvcmtzIGFzIHdlbGwuCj4gVGhhdCBk
-b2Vzbid0IG1lYW4gdGhhdCBldmVyeSBMaW51eCBwcm9ncmFtIHdvcmtzIHdlbGwgd2l0aCBpdCwg
-c2luY2UKPiBzb21lIG9mIHRoZW0KPiBlLmcuIEF1ZGFjaXR5IHNlZW1zIHRvIGFzc3VtZSB0aGF0
-IGl0IHNob3VsZCBoYXZlIG1peGVyIGNvbnRyb2xzLAo+IHdoaWNoCj4gaXQgZG9lc24ndCBoYXZl
-LCBzaW5jZSB0aG9zZSBhcmUgb24gdGhlIGJveC4gQnV0IEkndmUgdXNlZCBpdCB3aXRoCj4gSmFj
-aywgQXJkb3VyIGFuZAo+IFJvc2VnYXJkZW4gd2l0aG91dCBhbnkgcHJvYmxlbXMgYXQgYWxsLgoK
-SSBwaG9uZSBwZW9wbGUgdXNpbmcgU0lQIHByb3RvY29sLgpUaGUgU0lQIHBob25lIChUd2lua2xl
-KSBuZWVkcyBhIG1peGVyLgoKQXQgdGhlIHNhbWUgdGltZSwgSSByZWNvcmQgbXkgdm9pY2UgYXQg
-aGlnaCByYXRlLgpUaGVuIEkgbWl4IHRoZSByZXN1bHQgaW4gQXVkYWNpdHksIGJ1dCBJIHdpbGwg
-c29vbiBzd2l0Y2ggdG8gQXJkb3VyLgoKVGhpcyBpcyBvbmx5IE9ORSBuZWVkLCBJIGhhdmUgb3Ro
-ZXIgbmVlZHMgLi4uCkkgYWxzbyBwcm9kdWNlIHNob3J0IGZpbG1zIHNob3QgaW4gRFYuCkkgbmVl
-ZCB0byByZWNvcmQgdm9pY2VzIHdpdGggZ29vZCBxdWFsaXR5LgoKPiBJJ3ZlIGFsc28gdGVzdGVk
-IHRoZSBNLUF1ZGlvIE1vYmlsZVByZSwgYW5kIGl0IGFsc28gc2VlbWVkIHRvIHdvcmsKPiB3ZWxs
-LiBJdCBoYXMKPiBtaXhlciBjb250cm9scyBhbmQga25vYnMgb24gdGhlIGJveCwgd2hpY2ggaXMg
-a2luZCBvZiBjb25mdXNpbmcuIEkKPiBoYXZlbid0IHRlc3RlZAo+IGl0IGEgbG90IHRob3VnaC4g
-VGhlcmUncyBzb21lIGluZm8gYWJvdXQgbmVlZGluZyB0byBsb2FkIGZpcm13YXJlIHRvCj4gdGhl
-IE1vYmlsZVByZSwKPiBidXQgSSBkaWRuJ3QgbmVlZCB0byBkbyB0aGF0LiBJIHRoaW5rIHRoZXkg
-Y29tZSBpbiBkaWZmZXJlbnQgdmVyc2lvbnMKPiB3aXRob3V0Cj4gY2hhbmdpbmcgdGhlIG5hbWUu
-IEJ1dCB0aGVyZSBpcyBhIGZpcm13YXJlIGxvYWRlciBmb3IgaXQgaWYgaXQncwo+IG5lZWRlZCwg
-YnV0Cj4gaWYgdGhleSBrZWVwIGNoYW5naW5nIGl0IHdpdGhvdXQgbGV0dGluZyBwZW9wbGUga25v
-dyBhYm91dCBpdCwgSQo+IHdvdWxkbid0Cj4gYmV0IG9uIGJ1eWluZyBvbmUgd2l0aG91dCB0ZXN0
-aW5nIGl0IGZpcnN0Lgo+IAoKVGggTS1hdWRpbyBQcmUgaXMgYSBzdWl0YWJsZSBzb2x1dGlvbi4K
-Ckkgd2FzIHdvbmRlcmluZyBhYm91dCB0aGUgbmV3IFRBU0NBTSBVUy0xMjJMLgpJdCBpcyB2ZXJ5
-IGNoZWFwICgxNTkg4oKsKSBhbmQgcXVpdGUgcG9wdWxhci4KRG8geW91IHRoaW5rIGl0IGlzIHN1
-cHBvcnRlZCBieSBBbHNhPwoKTW9yZSBnZW5lcmFseSwgYXJlIHRoZXJlIGVzdGFibGlzaGVkIHN0
-YW5kYXJkcyBpbiBhdWRpbz8KV2hhdCBhcmUgdGhlc2VzIGFjcm9ueW1zOiBBU0lPLCBBU0lPMiwg
-R1NJRjIsIFdETSwgQ29yZUF1ZGlvLCBDb3JlTUlESSwKa2VybmVsIHN0cmVhbWluZywgZXRjLi4u
-CgpJIHdpbGwgY3JlYXRlIGEgcGFnZSBvbiB0aGUgdW5vZmZpY2lhbCBBbHNhIHdpa2kuCgo+IFdl
-bGwsIGEgVVNCIGF1ZGlvIGludGVyZmFjZSBoYXJkbHkgcXVhbGlmaWVzIGFzIGEgc291bmQgY2Fy
-ZCwgZWl0aGVyLgo+IFRoZXJlIGFyZSBxdWl0ZSBhIGZldyBVU0IgYW5kIEZpcmV3aXJlIGludGVy
-ZmFjZXMgdGhhdCBoYXZlIHByZWFtcHMKPiB3aXRoIFhMUiBpbnB1dHMsIGxhcmdlbHkgYmVjYXVz
-ZSB0aGF0J3Mgd2hhdCBtaWNyb3Bob25lcyAoaW4gYQo+IGJyb2FkY2FzdAo+IG9yIHJlY29yZGlu
-ZyBjb250ZXh0KSB1c2UuCj4gCj4gRmluZGluZyBzdWNoIGEgZGV2aWNlIHRoYXQgd29ya3Mgd2l0
-aCBMaW51eCBjb3VsZCBiZSBhIGNoYWxsZW5nZQo+IHRob3VnaC4KPiBJIGdvdCB0aGUgaW1wcmVz
-c2lvbiBmcm9tIGEgcXVpY2sgbG9vayBhdCB0aGUgTS1BdWRpbyB3ZWIgc2l0ZSB0aGF0Cj4gbW9z
-dCBvZiB0aGVpciBVU0IgZGV2aWNlcyBsaXN0ZWQgb24gdGhlIEFMU0EgbWF0cml4IGhhdmUgYmVl
-bgo+IGRpc2NvbnRpbnVlZC4gSXMgYSBGaXJld2lyZSBkZXZpY2Ugd2l0aCBqYWNrZCBhbmQgbGli
-ZnJlZWJvYiBub3QKPiBhbiBvcHRpb24/CgpJZiB0aGVyZSBpcyBhIGNoZWFwICg8IDIwMOKCrCkg
-RmlyZXdpcmUgY2FyZCB3aXRoIHR3byBYTFIgZW50cmllcywgcGxlYXNlCmxldCBtZSBrbm93LiBJ
-IGFtIGludGVyZXN0ZWQuCgpLaW5kIHJlZ2FyZHMsCkplYW4tTWljaGVsIFBvdXLDqQoKCgotLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVy
-ZSBvZiBJVApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBn
-ZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9w
-aWNzIHRocm91Z2ggYnJpZWYgc3VydmV5cyAtIGFuZCBlYXJuIGNhc2gKaHR0cDovL3d3dy50ZWNo
-c2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lEPURFVkRF
-VgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLXVz
-ZXIgbWFpbGluZyBsaXN0CkFsc2EtdXNlckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS11c2VyCg==
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HAnoU-0004yQ-HI
+The subject of the message is:  For a shadow of
+The date of the message is:    Sat, 27 Jan 2007 20:41:45 +0700
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
