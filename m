@@ -1,14 +1,11 @@
-From: Robert Emil Berge <list@rebi.no>
-Subject: Re: [Alsa-user] Cheap USB audio card with phantom
-Date: Sun, 28 Jan 2007 02:22:47 +0100
-Message-ID: <20070128022247.87fd23f7.list@rebi.no>
-References: <1169882126.3763.5.camel@localhost>
-	<1169932531.10410.3.camel@localhost>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HAnoU-0004yQ-HI delayed 10 hours
+Date: Sat, 27 Jan 2007 17:28:06 -0800
+Message-ID: <E1HAypy-0004s6-13@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1169932531.10410.3.camel@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,48 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyNyBKYW4gMjAwNyAyMjoxNTozMSArMDEwMApKZWFuLU1pY2hlbCBQb3Vyw6kgPGpt
-cG91cmVAZnJlZS5mcj4gd3JvdGU6Cgo+ID4gSSBhbSBsb29raW5nIGZvciBhIGNoZWFwIHR3byBj
-aGFubmVscyBVU0IgYXVkaW8gY2FyZCwgd2l0aCB0d28gWExSCj4gPiBlbnRyaWVzIGFuZCBwcmVh
-bXAuIFRoaXMgaXMgZm9yIGFuIEludGVybmV0IFBvZGNhc3QuIE9mIGNvdXJzZSwgSSBuZWVkCj4g
-PiBnb29kIEFsc2Egc3VwcG9ydC4KCkkgaGF2ZSBhbiBFZGlyb2wgVUEtMjUuIEkgZG9uJ3Qga25v
-dyBpZiBpdCdzIGZ1bGx5IHN1cHBvcnRlZCwgYnV0IGFzIGZhcgphcyBJIGNhbiB0ZWxsLCBpdCB3
-b3JrcyBwZXJmZWN0bHkuIEl0IHJlY29yZHMgYW5kIHBsYXlzIGluIGFsbCB0aGUgYml0cmF0ZXMg
-ZXRjLgppdCdzIHN1cHBvc2VkIHRvLCBhbmQgdGhlIE1JREkgaW50ZXJmYWNlIHdvcmtzIGFzIHdl
-bGwuClRoYXQgZG9lc24ndCBtZWFuIHRoYXQgZXZlcnkgTGludXggcHJvZ3JhbSB3b3JrcyB3ZWxs
-IHdpdGggaXQsIHNpbmNlIHNvbWUgb2YgdGhlbQplLmcuIEF1ZGFjaXR5IHNlZW1zIHRvIGFzc3Vt
-ZSB0aGF0IGl0IHNob3VsZCBoYXZlIG1peGVyIGNvbnRyb2xzLCB3aGljaAppdCBkb2Vzbid0IGhh
-dmUsIHNpbmNlIHRob3NlIGFyZSBvbiB0aGUgYm94LiBCdXQgSSd2ZSB1c2VkIGl0IHdpdGggSmFj
-aywgQXJkb3VyIGFuZApSb3NlZ2FyZGVuIHdpdGhvdXQgYW55IHByb2JsZW1zIGF0IGFsbC4KCkkn
-dmUgYWxzbyB0ZXN0ZWQgdGhlIE0tQXVkaW8gTW9iaWxlUHJlLCBhbmQgaXQgYWxzbyBzZWVtZWQg
-dG8gd29yayB3ZWxsLiBJdCBoYXMKbWl4ZXIgY29udHJvbHMgYW5kIGtub2JzIG9uIHRoZSBib3gs
-IHdoaWNoIGlzIGtpbmQgb2YgY29uZnVzaW5nLiBJIGhhdmVuJ3QgdGVzdGVkCml0IGEgbG90IHRo
-b3VnaC4gVGhlcmUncyBzb21lIGluZm8gYWJvdXQgbmVlZGluZyB0byBsb2FkIGZpcm13YXJlIHRv
-IHRoZSBNb2JpbGVQcmUsCmJ1dCBJIGRpZG4ndCBuZWVkIHRvIGRvIHRoYXQuIEkgdGhpbmsgdGhl
-eSBjb21lIGluIGRpZmZlcmVudCB2ZXJzaW9ucyB3aXRob3V0CmNoYW5naW5nIHRoZSBuYW1lLiBC
-dXQgdGhlcmUgaXMgYSBmaXJtd2FyZSBsb2FkZXIgZm9yIGl0IGlmIGl0J3MgbmVlZGVkLCBidXQK
-aWYgdGhleSBrZWVwIGNoYW5naW5nIGl0IHdpdGhvdXQgbGV0dGluZyBwZW9wbGUga25vdyBhYm91
-dCBpdCwgSSB3b3VsZG4ndApiZXQgb24gYnV5aW5nIG9uZSB3aXRob3V0IHRlc3RpbmcgaXQgZmly
-c3QuCgo+IAo+IEkgbG9zdCBob3VycyBjb25uZWN0aW5nIG9uIFdlYnNpdGVzIHRvIGxvb2sgZm9y
-IGluZm9ybWF0aW9uLgo+IENhbiBhbnlvbmUgaGVscCBtZSwgdGhpcyB3b3VsZCBiZSB2ZXJ5IG5p
-Y2UuCj4gCj4gSXMgdGhlcmUgYSBzaW5nbGUgZnVsbHktc3VwcG9ydGVkIGNhcmQgYW5zd2VyaW5n
-IG15IG5lZWRzPwo+IAo+IFRoYW5rIHlvdSBpbiBhZHZhbmNlLAo+IEplYW4tTWljaGVsCj4gCj4g
-Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQo+IFRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2Ug
-dGhlIEZ1dHVyZSBvZiBJVAo+IEpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNheSBwYW5lbCBh
-bmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKPiBvcGluaW9ucyBvbiBJVCAm
-IGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVmIHN1cnZleXMgLSBhbmQgZWFybiBjYXNoCj4g
-aHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNl
-Zm9yZ2UmQ0lEPURFVkRFVgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGFrZSBTdXJ2ZXlzLiBFYXJuIENhc2gu
-IEluZmx1ZW5jZSB0aGUgRnV0dXJlIG9mIElUCkpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNh
-eSBwYW5lbCBhbmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKb3BpbmlvbnMg
-b24gSVQgJiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzIC0gYW5kIGVhcm4g
-Y2FzaApodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9am9pbi5waHAmcD1z
-b3VyY2Vmb3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HAnoU-0004yQ-HI
+The subject of the message is:  For a shadow of
+The date of the message is:    Sat, 27 Jan 2007 20:41:45 +0700
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys - and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
