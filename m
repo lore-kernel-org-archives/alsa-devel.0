@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HAnoU-0004yQ-HI delayed 10 hours
-Date: Sat, 27 Jan 2007 17:28:06 -0800
-Message-ID: <E1HAypy-0004s6-13@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HAcCa-0007Nn-VB delayed 24 hours
+Date: Sat, 27 Jan 2007 17:40:38 -0800
+Message-ID: <E1HAz26-00067u-SV@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HAnoU-0004yQ-HI
-The subject of the message is:  For a shadow of
-The date of the message is:    Sat, 27 Jan 2007 20:41:45 +0700
+The message identifier is:     1HAcCa-0007Nn-VB
+The subject of the message is: And ye the signet; and glorified saith the door of Shimeah
+The date of the message is:    Fri, 26 Jan 2007 20:17:52 -0500
 
 The address to which the message has not yet been delivered is:
 
