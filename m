@@ -1,16 +1,14 @@
-From: John Rigg <aldev@sound-man.co.uk>
+From: Robert Emil Berge <list@rebi.no>
 Subject: Re: [Alsa-user] Cheap USB audio card with phantom
-Date: Sun, 28 Jan 2007 00:42:51 +0000
-Message-ID: <20070128004251.GA3016@localhost.localdomain>
+Date: Sun, 28 Jan 2007 02:22:47 +0100
+Message-ID: <20070128022247.87fd23f7.list@rebi.no>
 References: <1169882126.3763.5.camel@localhost>
 	<1169932531.10410.3.camel@localhost>
-	<Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0701271424130.27182@info.physics.ubc.ca>
+In-Reply-To: <1169932531.10410.3.camel@localhost>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,38 +21,48 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 27, 2007 at 02:30:31PM -0800, Bill Unruh wrote:
-> On Sat, 27 Jan 2007, Jean-Michel Pour=E9 wrote:
-> =
-
-> >>I am looking for a cheap two channels USB audio card, with two XLR
-> >>entries and preamp. This is for an Internet Podcast. Of course, I need
-> >>good Alsa support.
-> =
-
-> Not sure what you want-- that may be why you get no response. By two
-> channels in, do you mean a single stereo channel in? What do you mean by
-> "two xlr entries" or "preamp"? sound cards tend not to be mixer boards, a=
-nd
-> especially not cheap mixer boards. =
-
-
-Well, a USB audio interface hardly qualifies as a sound card, either.
-There are quite a few USB and Firewire interfaces that have preamps
-with XLR inputs, largely because that's what microphones (in a broadcast
-or recording context) use.
-
-Finding such a device that works with Linux could be a challenge though.
-I got the impression from a quick look at the M-Audio web site that
-most of their USB devices listed on the ALSA matrix have been
-discontinued. Is a Firewire device with jackd and libfreebob not
-an option?
-
-John
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys - and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+T24gU2F0LCAyNyBKYW4gMjAwNyAyMjoxNTozMSArMDEwMApKZWFuLU1pY2hlbCBQb3Vyw6kgPGpt
+cG91cmVAZnJlZS5mcj4gd3JvdGU6Cgo+ID4gSSBhbSBsb29raW5nIGZvciBhIGNoZWFwIHR3byBj
+aGFubmVscyBVU0IgYXVkaW8gY2FyZCwgd2l0aCB0d28gWExSCj4gPiBlbnRyaWVzIGFuZCBwcmVh
+bXAuIFRoaXMgaXMgZm9yIGFuIEludGVybmV0IFBvZGNhc3QuIE9mIGNvdXJzZSwgSSBuZWVkCj4g
+PiBnb29kIEFsc2Egc3VwcG9ydC4KCkkgaGF2ZSBhbiBFZGlyb2wgVUEtMjUuIEkgZG9uJ3Qga25v
+dyBpZiBpdCdzIGZ1bGx5IHN1cHBvcnRlZCwgYnV0IGFzIGZhcgphcyBJIGNhbiB0ZWxsLCBpdCB3
+b3JrcyBwZXJmZWN0bHkuIEl0IHJlY29yZHMgYW5kIHBsYXlzIGluIGFsbCB0aGUgYml0cmF0ZXMg
+ZXRjLgppdCdzIHN1cHBvc2VkIHRvLCBhbmQgdGhlIE1JREkgaW50ZXJmYWNlIHdvcmtzIGFzIHdl
+bGwuClRoYXQgZG9lc24ndCBtZWFuIHRoYXQgZXZlcnkgTGludXggcHJvZ3JhbSB3b3JrcyB3ZWxs
+IHdpdGggaXQsIHNpbmNlIHNvbWUgb2YgdGhlbQplLmcuIEF1ZGFjaXR5IHNlZW1zIHRvIGFzc3Vt
+ZSB0aGF0IGl0IHNob3VsZCBoYXZlIG1peGVyIGNvbnRyb2xzLCB3aGljaAppdCBkb2Vzbid0IGhh
+dmUsIHNpbmNlIHRob3NlIGFyZSBvbiB0aGUgYm94LiBCdXQgSSd2ZSB1c2VkIGl0IHdpdGggSmFj
+aywgQXJkb3VyIGFuZApSb3NlZ2FyZGVuIHdpdGhvdXQgYW55IHByb2JsZW1zIGF0IGFsbC4KCkkn
+dmUgYWxzbyB0ZXN0ZWQgdGhlIE0tQXVkaW8gTW9iaWxlUHJlLCBhbmQgaXQgYWxzbyBzZWVtZWQg
+dG8gd29yayB3ZWxsLiBJdCBoYXMKbWl4ZXIgY29udHJvbHMgYW5kIGtub2JzIG9uIHRoZSBib3gs
+IHdoaWNoIGlzIGtpbmQgb2YgY29uZnVzaW5nLiBJIGhhdmVuJ3QgdGVzdGVkCml0IGEgbG90IHRo
+b3VnaC4gVGhlcmUncyBzb21lIGluZm8gYWJvdXQgbmVlZGluZyB0byBsb2FkIGZpcm13YXJlIHRv
+IHRoZSBNb2JpbGVQcmUsCmJ1dCBJIGRpZG4ndCBuZWVkIHRvIGRvIHRoYXQuIEkgdGhpbmsgdGhl
+eSBjb21lIGluIGRpZmZlcmVudCB2ZXJzaW9ucyB3aXRob3V0CmNoYW5naW5nIHRoZSBuYW1lLiBC
+dXQgdGhlcmUgaXMgYSBmaXJtd2FyZSBsb2FkZXIgZm9yIGl0IGlmIGl0J3MgbmVlZGVkLCBidXQK
+aWYgdGhleSBrZWVwIGNoYW5naW5nIGl0IHdpdGhvdXQgbGV0dGluZyBwZW9wbGUga25vdyBhYm91
+dCBpdCwgSSB3b3VsZG4ndApiZXQgb24gYnV5aW5nIG9uZSB3aXRob3V0IHRlc3RpbmcgaXQgZmly
+c3QuCgo+IAo+IEkgbG9zdCBob3VycyBjb25uZWN0aW5nIG9uIFdlYnNpdGVzIHRvIGxvb2sgZm9y
+IGluZm9ybWF0aW9uLgo+IENhbiBhbnlvbmUgaGVscCBtZSwgdGhpcyB3b3VsZCBiZSB2ZXJ5IG5p
+Y2UuCj4gCj4gSXMgdGhlcmUgYSBzaW5nbGUgZnVsbHktc3VwcG9ydGVkIGNhcmQgYW5zd2VyaW5n
+IG15IG5lZWRzPwo+IAo+IFRoYW5rIHlvdSBpbiBhZHZhbmNlLAo+IEplYW4tTWljaGVsCj4gCj4g
+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQo+IFRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2Ug
+dGhlIEZ1dHVyZSBvZiBJVAo+IEpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNheSBwYW5lbCBh
+bmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKPiBvcGluaW9ucyBvbiBJVCAm
+IGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVmIHN1cnZleXMgLSBhbmQgZWFybiBjYXNoCj4g
+aHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNl
+Zm9yZ2UmQ0lEPURFVkRFVgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGFrZSBTdXJ2ZXlzLiBFYXJuIENhc2gu
+IEluZmx1ZW5jZSB0aGUgRnV0dXJlIG9mIElUCkpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNh
+eSBwYW5lbCBhbmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKb3BpbmlvbnMg
+b24gSVQgJiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzIC0gYW5kIGVhcm4g
+Y2FzaApodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9am9pbi5waHAmcD1z
+b3VyY2Vmb3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
