@@ -1,18 +1,11 @@
-From: "and" <inovjtutxbb@tie.cl>
-Subject: Rocket Stock Report
-Date: Sun, 28 Jan 2007 20:17:24 +0600
-Message-ID: <AF63603214DE07C.FE4206FEBA@tie.cl>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HAcCa-0007Nn-VB delayed 48 hours
+Date: Sun, 28 Jan 2007 17:41:40 -0800
+Message-ID: <E1HBLWe-0006yB-O0@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1667644198=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CCFF28E
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 00:17:21 +0100 (MET)
-Received: from 113-104-85.adsl.cust.tie.cl (113-104-85.adsl.cust.tie.cl
-	[200.113.104.85])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	C6F039982C
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 00:17:19 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,59 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1667644198==
-Content-Type: multipart/related;
-	boundary="----=_NextPart_000_0002_01C74319.52B31560"
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-------=_NextPart_000_0002_01C74319.52B31560
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The message identifier is:     1HAcCa-0007Nn-VB
+The subject of the message is: And ye the signet; and glorified saith the door of Shimeah
+The date of the message is:    Fri, 26 Jan 2007 20:17:52 -0500
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2912" name=3D"GENERATOR">
-</HEAD>
-<BODY>
-<DIV align=3Dleft><FONT face=3DArial size=3D2><B>TRADERS! PSUD is going through the roof next week!</B></FONT></DIV><BR>
-<DIV align=3Dleft><FONT face=3DArial size=3D2><I>WATCH OUT! </I></FONT></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2><I>Monday January 29 IS SURE TO BE A GOOD DAY!</I></FONT></DIV><BR>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>Company: <B>PetroSun</B> </FONT></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>Sym: <B>PSUD</B> </FONT></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>Currently: <B>$0.52 (+0.09 Close) 20.9%</B></FONT></DIV>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>Friday Target: <B>$1.50</B></FONT></DIV><BR>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>2007-01-11 11:46 ET - News Release</FONT></DIV><BR>
-<DIV align=3Dleft><FONT face=3DArial size=3D2>PetroSun, Incorporated (PNKSHEETS: PSUD) recently announced that they have an agreement executed with New Standard Exploration NL of West Perth, Australia. It covers the Exploration Pemit 417 which is location within Western Australias Canning Basin. a Joint venture has been established to explore develop and produce oil and or gas from EP417. PetroSun was assigned a 75% working interest in the permit, intial consideration of $5Million.</FONT></DIV><BR>
-<DIV align=3Dleft><FONT face=3DArial size=3D2><B><U>ADD THIS TO YOUR LIST AND WATCH IT LIKE A HAWK ON Monday January 29, 2007!!!!<U></B></FONT></DIV></BODY></HTML>
+The address to which the message has not yet been delivered is:
 
-------=_NextPart_000_0002_01C74319.52B31560--
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-
-
---===============1667644198==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1667644198==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1667644198==--
