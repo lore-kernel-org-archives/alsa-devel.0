@@ -1,22 +1,17 @@
-From: Konstantin Kletschke <lists@ku-gbr.de>
-Subject: Re: A: VIA Technologies Inc. VT1720/24
-Date: Mon, 29 Jan 2007 17:45:26 +0100
-Message-ID: <20070129164526.GB4006@synertronixx3>
-References: <45AFE785.6020307@informatik.uni-oldenburg.de>
-	<45B74CC0.4060905@svs.Informatik.Uni-Oldenburg.de>
-	<s5hac08cvct.wl%tiwai@suse.de>
-	<20070125101319.GA3340@titan.lahn.de>
-	<s5hd553bbfs.wl%tiwai@suse.de>
-	<20070126202950.GA5721@titan.lahn.de>
-	<s5hbqkhq4i6.wl%tiwai@suse.de>
-	<20070129153011.GA2831@synertronixx3>
-	<s5h4pq9q1mw.wl%tiwai@suse.de>
+From: "Chrystie Terry" <cterry@nww.com>
+Subject: Co-Branding Opportunity with LinuxWorld
+Date: Mon, 29 Jan 2007 11:51:54 -0500
+Message-ID: <200701291651.l0TGplqC031807@hestia.nww.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h4pq9q1mw.wl%tiwai@suse.de>
+Received: from hestia.nww.com (hestia.nww.com [198.3.122.6])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA2EE2AB
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 17:51:55 +0100 (MET)
+Received: from cterryWINXP ([172.17.22.34])
+	by hestia.nww.com (8.13.1/8.13.1) with ESMTP id l0TGplqC031807
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2007 11:51:47 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,25 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA developers <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am 2007-01-29 16:43 +0100 schrieb Takashi Iwai:
+I would like to speak with you about a co-branding opportunity between 
+Advanced Linux Sound Architecture and LinuxWorld.com.   Our Partnership 
+Program allows you to include LinuxWorld's award-winning news content n 
+your Web site. The LinuxWorld syndicated news partnership program is 
+strictly a co-branding trade that anyone with a relevant website can 
+apply to join for FREE!
 
-> It's directly to me, and looks like no post appearing on ML.
+Please review the program overview at 
+http://www.linuxworld.com/partners/partnerprogram.html.  If you have 
+any questions please feel free to contact me at 508-490-6594 or 
+cterry@nww.com.  
 
-Ok, so my setup os all right. I just wondered...
+I look forward to speaking with you and to hopefully working with you 
+on a mutually beneficial marketing partnership! 
 
-> missing.  It's almost identical with what Philipp posted.
+Chrystie Terry
+Manager of Online Audience Development
+LinuxWorld.com
+PH: (508) 490-6594
+FX: (508) 490-6400
+cterry@nww.com 
 
-Okay, so lets see what he says about my questions :-)
-
-Konsti
-
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
