@@ -1,10 +1,9 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HAnoU-0004yQ-HI delayed 48 hours
-Date: Mon, 29 Jan 2007 11:59:31 -0800
-Message-ID: <E1HBcf5-0000qq-TA@externalmx-1.sourceforge.net>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC codec probe failure bug
+Date: Mon, 29 Jan 2007 22:13:04 +0000
+Message-ID: <1170108784.31420.67.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-UP8DfcYtIQIFzcny2IqO"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +17,55 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HAnoU-0004yQ-HI
-The subject of the message is:  For a shadow of
-The date of the message is:    Sat, 27 Jan 2007 20:41:45 +0700
+--=-UP8DfcYtIQIFzcny2IqO
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-The address to which the message has not yet been delivered is:
+This patch fixes a bug whereby some resources were not being freed when
+codec probe() failed.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
+--=-UP8DfcYtIQIFzcny2IqO
+Content-Disposition: attachment; filename=asoc-probe-bug.patch
+Content-Type: text/x-patch; name=asoc-probe-bug.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r d7d86515fc27 soc/soc-core.c
+--- a/soc/soc-core.c	Mon Jan 29 15:33:49 2007 +0100
++++ b/soc/soc-core.c	Mon Jan 29 21:33:01 2007 +0000
+@@ -1234,7 +1234,7 @@ platform_err:
+ 		codec_dev->remove(pdev);
+ 
+ cpu_dai_err:
+-	for (i--; i > 0; i--) {
++	for (i--; i >= 0; i--) {
+ 		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
+ 		if (cpu_dai->remove)
+ 			cpu_dai->remove(pdev);
+
+--=-UP8DfcYtIQIFzcny2IqO
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--=-UP8DfcYtIQIFzcny2IqO
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-UP8DfcYtIQIFzcny2IqO--
