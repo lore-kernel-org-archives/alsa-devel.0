@@ -1,15 +1,10 @@
 From: Tim <terminator356@users.sourceforge.net>
-Subject: Re: ice1712 IPGA and ADC controls
-Date: Tue, 30 Jan 2007 23:01:45 +0000 (UTC)
-Message-ID: <loom.20070131T000127-424@post.gmane.org>
+Subject: Re: Need help: My .asoundrc no longer works.
+Date: Tue, 30 Jan 2007 23:23:50 +0000 (UTC)
+Message-ID: <loom.20070131T000358-219@post.gmane.org>
 References: <loom.20070120T001557-202@post.gmane.org>
-	<200701262325.33755.gineera@aspect135.co.uk>
-	<20070127123807.GA2662@localhost.localdomain>
-	<200701282259.52583.gineera@aspect135.co.uk>
-	<s5h7iv61116.wl%tiwai@suse.de>
-	<20070129191551.GA2673@localhost.localdomain>
-	<loom.20070130T064723-509@post.gmane.org>
-	<s5hac00ojg0.wl%tiwai@suse.de>
+	<s5hbqkrf96d.wl%tiwai@suse.de>
+	<loom.20070126T022638-883@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -26,16 +21,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
-> A question from usability viewpoint is what is the good way to handle
-> two linked volumes.  For example,
+Tim <terminator356 <at> users.sourceforge.net> writes:
 > 
-> 1) two volume bars can be changed at any time.  If one of them is
->    changed, another is automatically set (jumps) to zero.
-> 2) when one volume is set to non-zero, another is visiblly disabled.
->    to zero and cannot be changed.  Once after both are set to zero,
->    both become accessible.
-The answer is obvious - combine them into one control! He he...
+> Takashi Iwai <tiwai <at> suse.de> writes:
+> > It's way too old to debug...  Please try the latest version,
+> > 1.0.14rc2, at first.
+> 
+> I installed alsa 1.0.14rc2, but now the situation is worse.
+> Now multi refuses to work at all no matter what I try in
+>  .asoundrc
+
+Sorry, it turns out that in fact I am getting the same
+ results as under alsa-1.0.12.
+My multi DOES work, but refuses to record any sound from the
+ second slave, no matter whether I make the second slave emu10k1 or 
+ the ice1712.
+Even with LIBASOUND_DEBUG=1, there is no indication of any trouble
+ during arecord. arecord will happily record all channels in the
+ multi - but examination of the resulting raw files shows complete
+ silence is recorded from ALL of the second slave's channels.
+Alsa is 'quietly' having trouble somewhere, without reporting any error. 
+
+I am currently deep into the alsa-driver code, inserting printk
+ 'checkpoints' to try and find out what's happening.
+
+So, while I do that, is any one else having these troubles?
+Any ideas, Takashi?
+Thanks. Tim.
 
 
 
