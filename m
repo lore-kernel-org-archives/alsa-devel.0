@@ -1,12 +1,11 @@
-From: "Clifford Forbes" <castortransvestites@abdijaverbode.be>
-Subject: WEXE.PK you must know and use all of it's suggestions.
-Date: Tue, 30 Jan 2007 15:00:34 +0000 (UTC)
-Message-ID: <01c7447e$cac0f5c0$6c822ecf@castortransvestites>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HAnoU-0004yQ-HI delayed 72 hours
+Date: Tue, 30 Jan 2007 07:50:21 -0800
+Message-ID: <E1HBvFV-0001vM-1K@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 30 Jan 2007 14:56:16 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,34 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TUESDAY - JAN 30, 2006 
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-GOOD ST(O)CK TIP - (PINKSHEETS: WEXE)  
-WEST EXCELSIOR ENTERPRICES, INC. 
-200% rise are expected in the next 5 trading sessions - grab some today! 
+The message identifier is:     1HAnoU-0004yQ-HI
+The subject of the message is:  For a shadow of
+The date of the message is:    Sat, 27 Jan 2007 20:41:45 +0700
 
-MAJOR NEWS IS EXPECTED. OUR LAST PICK SHOWED YOU GROW OF 1200% IN 14 DAYS.
+The address to which the message has not yet been delivered is:
 
-WEXE is showing signs of making a huge leap in the coming days. It appears that a major announcement would catapolt the companies stoock to over 2.00 per share. This undervalued symbool is currently trading at approximately 0.55 and we predict that it will break 1.30 by next monday. We are recommending a buy and hold on this one - 
-Call your stock broker now to get more information on WEXE. 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-
-About West Excelsior:
-West Excelsior Enterprises, Inc. engages in the acquisition, development, and exploration of mineral properties. The company primarily explores for gold-silver, copper, lead, zinc, and molybdenum. It holds interests primarily in the Santa Maria del Oro mineral properties comprising six claims totaling 1,550 hectares located in the Sierra Madre del Sur Province, Mexico. The company was founded in 1999 and is based in Las Vegas, Nevada. The Company is currently focusing on projects in Mexico and East Africa. 
-
-Without just words: 
-Company need additional investments to start project on new region 
-Market Cap: 55.00M
-Delta dayly (open 0.370 on 01/25/2007 - close 0.600 on 01/25/2007)
-
-Did you saw it rise on November ?
-Time has come to another one.
-
-
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
