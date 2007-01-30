@@ -1,12 +1,19 @@
-From: Ronny Standtke <Ronny.Standtke@gmx.net>
-Subject: How to debug?
-Date: Tue, 30 Jan 2007 22:51:28 +0100
-Message-ID: <200701302251.28880.Ronny.Standtke@gmx.net>
+From: Tim <terminator356@users.sourceforge.net>
+Subject: Re: ice1712 IPGA and ADC controls
+Date: Tue, 30 Jan 2007 23:01:45 +0000 (UTC)
+Message-ID: <loom.20070131T000127-424@post.gmane.org>
+References: <loom.20070120T001557-202@post.gmane.org>
+	<200701262325.33755.gineera@aspect135.co.uk>
+	<20070127123807.GA2662@localhost.localdomain>
+	<200701282259.52583.gineera@aspect135.co.uk>
+	<s5h7iv61116.wl%tiwai@suse.de>
+	<20070129191551.GA2673@localhost.localdomain>
+	<loom.20070130T064723-509@post.gmane.org>
+	<s5hac00ojg0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,24 +26,18 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Takashi Iwai <tiwai <at> suse.de> writes:
+> A question from usability viewpoint is what is the good way to handle
+> two linked volumes.  For example,
+> 
+> 1) two volume bars can be changed at any time.  If one of them is
+>    changed, another is automatically set (jumps) to zero.
+> 2) when one volume is set to non-zero, another is visiblly disabled.
+>    to zero and cannot be changed.  Once after both are set to zero,
+>    both become accessible.
+The answer is obvious - combine them into one control! He he...
 
-I am desperately trying to use a webcam and a headset with my Linux-Desktop 
-(KDE). You can read the whole thread here: 
-http://lists.kde.org/?l=kde-linux&m=116749763322140&w=2
-At the end someone from the KDE camp suggested that I come over here...
 
-So I asked for help at the alsa-user mailing list:
-http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg18711.html
-At the end nobody could tell me how to get more debugging info.
-
-So please, how do I get more debugging info when reloading alsa? Or even 
-better, does anybody know why my on-board soundcard disappears when I use the 
-index options?
-
-Greetings & Thank you
-
-Ronny Standtke
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
