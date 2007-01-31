@@ -1,11 +1,22 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HCFGa-0000nA-Ln delayed 10 hours
-Date: Wed, 31 Jan 2007 21:28:07 -0800
-Message-ID: <E1HCUUR-0007p9-Kd@externalmx-1.sourceforge.net>
+From: Fons Adriaensen <fons@kokkinizita.net>
+Subject: Re: ice1712 IPGA and ADC controls
+Date: Wed, 31 Jan 2007 22:48:58 +0100
+Message-ID: <20070131214858.GB7164@linux-2.site>
+References: <200701262325.33755.gineera@aspect135.co.uk>
+	<20070127123807.GA2662@localhost.localdomain>
+	<200701282259.52583.gineera@aspect135.co.uk>
+	<s5h7iv61116.wl%tiwai@suse.de>
+	<20070129191551.GA2673@localhost.localdomain>
+	<loom.20070130T064723-509@post.gmane.org>
+	<s5hac00ojg0.wl%tiwai@suse.de>
+	<loom.20070131T000127-424@post.gmane.org>
+	<s5h8xfjvay6.wl%tiwai@suse.de> <s5h1wlbv62t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5h1wlbv62t.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Tim <terminator356@users.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+On Wed, Jan 31, 2007 at 11:33:30AM +0100, Takashi Iwai wrote:
+> 
+>     +---+ +18dB
+>     |   |
+>     |   | analog
+>     |   | gain
+>     |   |
+>     +---+ 0dB
+>     |   |
+>     |   | digital
+>     |   | att 
+>     |[=]--[ -30dB ]
+>     |   |
+>     +---+ -64dB
 
-The message identifier is:     1HCFGa-0000nA-Ln
-The subject of the message is: because of her, eyes of the ears: of the similitude of the king also
-The date of the message is:    Wed, 31 Jan 2007 18:42:48 +0530
+This seems a good solution. BTW, is this issue somehow related to
+the bug I experienced first with SuSE 8.1 and which is AFAIK still
+there in 10.0, resulting in the gain controls in envy24control with
+the Terratec EWS88MT not working properly ? 
 
-The address to which the message has not yet been delivered is:
+-- 
+FA
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Lascia la spina, cogli la rosa.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
