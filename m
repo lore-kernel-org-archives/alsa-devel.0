@@ -1,8 +1,8 @@
-From: Daniel Yek <dyek@real.com>
-Subject: 32-bit ALSA application ABI-compatible on 64-bit
-	Fedora Core 6?
-Date: Wed, 31 Jan 2007 07:51:43 -0800
-Message-ID: <6.2.1.2.2.20070131072922.58b0fc90@mailone.real.com>
+From: "Burt Gallagher" <rottenestlimerick's@abdizayn.com>
+Subject: Today morning: Pack 'em in -- New Yorkers get a
+	robotic garage
+Date: Wed, 31 Jan 2007 16:28:38 -0330
+Message-ID: <01c74554$dcdda0b0$6c822ecf@rottenestlimerick's>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,33 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+WEXE are producing the real GOLD!
 
-I installed 64-bit Fedora Core 6, hoping to be able to use 32-bit chroot 
-environment on 64-bit OS, so that I can develop for both architectures on 
-the same dev. machine.
+Take a look at mining sector for today - almost everywhere strong gains.
+We are just call it yesterday and it came up. Today it will rise even more.
 
-So far, the compilation, etc., went well in the chroot environment. 
-However, I have a problem playing audio clips from a 32-bit application on 
-the 64-bit OS, making it less ideal as my 32-bit dev. machine. I heard 
-fast-paced audio (with channels data mixed up, I believe, causing noise.) 
-We somehow ended with 2-bit sample-width output (supposed to be 16-bit.)
+News came from the company.
 
-At this point, I just want to gather some information, until I have time to 
-delve further into it.
+West Excelsior Enterprises Inc. Completes Second Round Private Placement Financing
+Tuesday January 30, 7:16 pm ET
 
-Is 32-bit ALSA application supposed to be able to play on a 64-bit OS (with 
-parallel 32-bit + 64-bit libraries installed)? Is 32-bit alsa-lib 
-ABI-compatible with the 64-bit ALSA module in the kernel?
+LAS VEGAS, NEVADA--(MARKET WIRE)--Jan 30, 2007 -- West Excelsior Enterprises Inc. (Other OTC:WEXE.PK - News) is pleased to announce that it has completed a non-brokered private placement for 333,333 restricted common shares at a price of $.45 per share for total proceeds of $150,000.
 
-As always, appreciate your insights! Thank you.
+The Company is pleased to see the conclusion of this non-brokered private placement, which allows the Company to continue to complete its exploration program of the Santa Maria property in the Sierra Madre del Sur Province, Mexico.
+
+About West Excelsior:
+West Excelsior Enterprises, Inc. engages in the acquisition, development, and exploration of mineral properties. The company primarily explores for gold-silver, copper, lead, zinc, and molybdenum. It holds interests primarily in the Santa Maria del Oro mineral properties comprising six claims totaling 1,550 hectares located in the Sierra Madre del Sur Province, Mexico. The company was founded in 1999 and is based in Las Vegas, Nevada. The Company is currently focusing on projects in Mexico and East Africa. 
+
+Without just words:
+Pricce: $0.55 -> $0.63
+Marrket: Bullish
+
+Company need additional investments to start mining new region.
+Market Cap: 58.00M -> 63.00M
+Delta dayly (open 0.550 on 01/30/2007 - close 0.630 on 01/30/2007)
+
+More news will come from company about they new results shortly.
+I hope it will get enough investment to launch surveyed regions for give us increase.
+Time has come to another one. Rise to stars...
 
 
--- 
-Daniel Yek
 
 
 -------------------------------------------------------------------------
