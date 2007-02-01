@@ -1,7 +1,7 @@
 From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Q1: Linked streams and drivers
-Date: Thu, 01 Feb 2007 16:31:01 +1300
-Message-ID: <45C15EF5.5010904@audioscience.com>
+Subject: Q2: Driver notified of MMAP commit.
+Date: Thu, 01 Feb 2007 16:37:33 +1300
+Message-ID: <45C1607D.3090202@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,19 +20,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Greetings,
 
-I know there is some mechanism for linking streams together so that a
-single trigger command starts/stops all streams.
+I am trying to add mmap support to our driver (asihpi).
 
-Is the underlying driver notified of the link? and if so how?
+I'm looking for a way for the driver to be notified when the application
+commits more data into the mmapped buffer, so I can pass that on to our
+DMA engine.  Is there a driver operation that does this?
 
-Reason is that in our hardware we have the ability to link streams at
-the hardware (on card firmware actually) level, so that one command
-starts multiple streams.
+Aside: Is it true that ALSA assumes that once DMA is started, it will
+run round and round the circular buffer forever (until stopped) no
+matter whether there is valid data there or not?
+
+Our DMA operates differently in that it only takes valid data, and then
+stops until more data is written to the buffer.   In this case the
+detection of xrun condition is difficult...
 
 thanks
 
 Eliot
-AudioScience Inc.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
