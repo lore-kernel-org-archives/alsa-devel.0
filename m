@@ -1,22 +1,16 @@
-From: Fons Adriaensen <fons@kokkinizita.net>
+From: Alan Horstmann <gineera@aspect135.co.uk>
 Subject: Re: ice1712 IPGA and ADC controls
-Date: Wed, 31 Jan 2007 22:48:58 +0100
-Message-ID: <20070131214858.GB7164@linux-2.site>
-References: <200701262325.33755.gineera@aspect135.co.uk>
-	<20070127123807.GA2662@localhost.localdomain>
-	<200701282259.52583.gineera@aspect135.co.uk>
-	<s5h7iv61116.wl%tiwai@suse.de>
-	<20070129191551.GA2673@localhost.localdomain>
+Date: Thu, 1 Feb 2007 10:10:31 +0000
+Message-ID: <200702011001.46417.gineera@aspect135.co.uk>
+References: <loom.20070120T001557-202@post.gmane.org>
 	<loom.20070130T064723-509@post.gmane.org>
 	<s5hac00ojg0.wl%tiwai@suse.de>
-	<loom.20070131T000127-424@post.gmane.org>
-	<s5h8xfjvay6.wl%tiwai@suse.de> <s5h1wlbv62t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hac00ojg0.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <s5h1wlbv62t.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,33 +21,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Tim <terminator356@users.sourceforge.net>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 31, 2007 at 11:33:30AM +0100, Takashi Iwai wrote:
-> 
->     +---+ +18dB
->     |   |
->     |   | analog
->     |   | gain
->     |   |
->     +---+ 0dB
->     |   |
->     |   | digital
->     |   | att 
->     |[=]--[ -30dB ]
->     |   |
->     +---+ -64dB
+On Tuesday 30 January 2007 11:14, Takashi Iwai wrote:
+> At Tue, 30 Jan 2007 06:18:38 +0000 (UTC),
+>
+> Tim wrote:
+> >
+> > There is no such thing as analog attenuation on these chips.
+> > Only an analog gain stage from 0db to +18, followed by a digital
+> >  attenuation stage from 0db down to infinity (mute).
+> > Both of these functions are accessed through the same register,
+> >  as a continous range from 0 to 164. The first 127 steps
+> >  'activate' the digital attenuator, with 127 being 0db, while the
+> >  last 37 steps 'activate' the analog gain.
+> > In other words, from 0-127 ONLY the digital attenuation stage is
+> >  activated. From 128 to 164, ONLY the analog gain stage is activated.
 
-This seems a good solution. BTW, is this issue somehow related to
-the bug I experienced first with SuSE 8.1 and which is AFAIK still
-there in 10.0, resulting in the gain controls in envy24control with
-the Terratec EWS88MT not working properly ? 
+Agreed correct so far.
 
--- 
-FA
+> > It was intended to be one control.
 
-Lascia la spina, cogli la rosa.
+I don't accept that assertion, though only AKM know their intentions.  I still 
+maintain it is 2 functions combined into a single register -like a composite 
+video signal; if the signal goes >0.3V it is video, whereas <0.3V it is a 
+sync pulse.  That doesn't mean sync and video are the same.  In the AKM 
+convertor case, we need to look at the functions being controlled not at the 
+registers to understand the significance of each part.  Hence I see 2 
+separate features of the convertor chip.
+
+This discussion is frustrating because we have not started from the position 
+of designing the capture system, starting with the signal path, then the 
+digital control logic and then specifying how the software should operate it.  
+
+It seems rather a case here of the software 'tail' wagging the 
+'high-resolution-capture-system' dog.  But while manufacturers don't express 
+their design intentions with drivers for linux, this is where we are left.
+
+> > Anyways, I say we add some type of 'decorations' to envy24control.
+> > Some type of markings. Two end-to-end 'braces' along the side spanning
+> > the length of sliders, one labeled "digital att." meaning that the range
+> > from 0-127 is digital attenuation, and the other labeled "analog gain"
+> > meaning the range 127-164 is analog gain. It would be a great visual
+> > reminder of this underlying technical detail we have discussed here, so
+> > everyone should understand it.
+> > And of course all values in db's as well as integers.
+>
+> Yes.  It's the way to go, IMO.
+> Make the API simple.  Improve the usability in another part.
+>
+> A question from usability viewpoint is what is the good way to handle
+> two linked volumes.  For example,
+>
+> 1) two volume bars can be changed at any time.  If one of them is
+>    changed, another is automatically set (jumps) to zero.
+> 2) when one volume is set to non-zero, another is visiblly disabled.
+>    to zero and cannot be changed.  Once after both are set to zero,
+>    both become accessible.
+>
+> I think the latter is less confusing, at least.  The jump of volume
+> bar always annoyed me.
+
+Two controls interlinked worked fine for me -perhaps because I understand why?  
+I think any scheme should provide a quick way to get to that 0dB position, 
+which is one other reason I don't like a single combined fader.  Trying to 
+set 127 not 126 or 128 in the mid-range with mouse movement is tricky, 
+compared to simply pulling the control to max or min.
+
+Terratec for example implement the analogue gain as a rotary control above the 
+channel fader.
+
+If the driver provides only a single control, then would envy24control be the 
+only mixer to make the user aware of the dual function, and to make the 0dB 
+point accessible (whether by marking one control or splitting to two)?  Any 
+other recording app would leave the user unaware of what is happening.  Have 
+I grasped the proposals correctly?
+
+
+Alan
 
 
 -------------------------------------------------------------------------
