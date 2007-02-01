@@ -1,15 +1,15 @@
 From: Alan Horstmann <gineera@aspect135.co.uk>
 Subject: Re: ice1712 IPGA and ADC controls
-Date: Thu, 1 Feb 2007 10:10:31 +0000
-Message-ID: <200702011001.46417.gineera@aspect135.co.uk>
+Date: Thu, 1 Feb 2007 10:08:24 +0000
+Message-ID: <200702011008.24471.gineera@aspect135.co.uk>
 References: <loom.20070120T001557-202@post.gmane.org>
-	<loom.20070130T064723-509@post.gmane.org>
-	<s5hac00ojg0.wl%tiwai@suse.de>
+	<s5h1wlbv62t.wl%tiwai@suse.de>
+	<loom.20070201T053544-384@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hac00ojg0.wl%tiwai@suse.de>
+In-Reply-To: <loom.20070201T053544-384@post.gmane.org>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,83 +20,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
+To: Tim <terminator356@users.sourceforge.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 30 January 2007 11:14, Takashi Iwai wrote:
-> At Tue, 30 Jan 2007 06:18:38 +0000 (UTC),
+On Thursday 01 February 2007 05:01, Tim wrote:
 >
-> Tim wrote:
-> >
-> > There is no such thing as analog attenuation on these chips.
-> > Only an analog gain stage from 0db to +18, followed by a digital
-> >  attenuation stage from 0db down to infinity (mute).
-> > Both of these functions are accessed through the same register,
-> >  as a continous range from 0 to 164. The first 127 steps
-> >  'activate' the digital attenuator, with 127 being 0db, while the
-> >  last 37 steps 'activate' the analog gain.
-> > In other words, from 0-127 ONLY the digital attenuation stage is
-> >  activated. From 128 to 164, ONLY the analog gain stage is activated.
+> Also my Delta1010's Windows driver mixer-app has
+>  db numbers on the monitor mixer tab's vu meters.
 
-Agreed correct so far.
+How do M-Audio display the IPGA and DATT controls in this Windows driver?  Are 
+they combined?  Terratec use a rotary IPGA control above the fader.
 
-> > It was intended to be one control.
 
-I don't accept that assertion, though only AKM know their intentions.  I still 
-maintain it is 2 functions combined into a single register -like a composite 
-video signal; if the signal goes >0.3V it is video, whereas <0.3V it is a 
-sync pulse.  That doesn't mean sync and video are the same.  In the AKM 
-convertor case, we need to look at the functions being controlled not at the 
-registers to understand the significance of each part.  Hence I see 2 
-separate features of the convertor chip.
-
-This discussion is frustrating because we have not started from the position 
-of designing the capture system, starting with the signal path, then the 
-digital control logic and then specifying how the software should operate it.  
-
-It seems rather a case here of the software 'tail' wagging the 
-'high-resolution-capture-system' dog.  But while manufacturers don't express 
-their design intentions with drivers for linux, this is where we are left.
-
-> > Anyways, I say we add some type of 'decorations' to envy24control.
-> > Some type of markings. Two end-to-end 'braces' along the side spanning
-> > the length of sliders, one labeled "digital att." meaning that the range
-> > from 0-127 is digital attenuation, and the other labeled "analog gain"
-> > meaning the range 127-164 is analog gain. It would be a great visual
-> > reminder of this underlying technical detail we have discussed here, so
-> > everyone should understand it.
-> > And of course all values in db's as well as integers.
+> Curiously, a quote from my manual about the Windows mixer-app:
 >
-> Yes.  It's the way to go, IMO.
-> Make the API simple.  Improve the usability in another part.
+>  "The (dac/adc) faders can be set incrementally in 0.5db steps,
+>   of which there are 18."
 >
-> A question from usability viewpoint is what is the good way to handle
-> two linked volumes.  For example,
->
-> 1) two volume bars can be changed at any time.  If one of them is
->    changed, another is automatically set (jumps) to zero.
-> 2) when one volume is set to non-zero, another is visiblly disabled.
->    to zero and cannot be changed.  Once after both are set to zero,
->    both become accessible.
->
-> I think the latter is less confusing, at least.  The jump of volume
-> bar always annoyed me.
+> I'm scratching my head - what the heck do they mean by 18 0.5db steps?
+> That's not nearly enough to cover the range!
 
-Two controls interlinked worked fine for me -perhaps because I understand why?  
-I think any scheme should provide a quick way to get to that 0dB position, 
-which is one other reason I don't like a single combined fader.  Trying to 
-set 127 not 126 or 128 in the mid-range with mouse movement is tricky, 
-compared to simply pulling the control to max or min.
-
-Terratec for example implement the analogue gain as a rotary control above the 
-channel fader.
-
-If the driver provides only a single control, then would envy24control be the 
-only mixer to make the user aware of the dual function, and to make the 0dB 
-point accessible (whether by marking one control or splitting to two)?  Any 
-other recording app would leave the user unaware of what is happening.  Have 
-I grasped the proposals correctly?
+A manual error I think due to trying to shorten sentences.  There are 18 dB of 
+adjustment, in steps of 0.5dB is probably what was meant to be said!
 
 
 Alan
