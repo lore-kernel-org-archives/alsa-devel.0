@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 18/19] ASoC 0.13 Sharp tosa machine
-Date: Fri, 02 Feb 2007 14:46:23 +0000
-Message-ID: <1170427583.18082.149.camel@localhost.localdomain>
+Subject: [PATCH 16/19] ASoC Sharp corgi machine
+Date: Fri, 02 Feb 2007 14:46:11 +0000
+Message-ID: <1170427571.18082.146.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-yaM4Z2DoSdWXYHJHjOsh"
+Content-Type: multipart/mixed; boundary="=-9wrbRHXp2aVQicSoqT6C"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,18 +17,22 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---=-yaM4Z2DoSdWXYHJHjOsh
+--=-9wrbRHXp2aVQicSoqT6C
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This patch updates the Sharp tosa machine driver to the new API in ASoC
+This patch updates the Sharp corgi machine driver to the new API in ASoC
 0.13.
 
 Changes:-
 
-o  Update machine operations to new API.
+o  Manually configure DAI hardware format.
+
+o Removed config_sysclk() function. No longer needed as clocking is now
+configured manually.
 
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+
 
 Privacy & Confidentiality Notice
 -------------------------------------------------
@@ -48,47 +52,137 @@ Registered office:
 Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
 
 
---=-yaM4Z2DoSdWXYHJHjOsh
-Content-Disposition: attachment; filename="asoc13-tosa.patch"
-Content-Type: text/x-patch; name="asoc13-tosa.patch"; charset=UTF-8
+--=-9wrbRHXp2aVQicSoqT6C
+Content-Disposition: attachment; filename="asoc13-corgi.patch"
+Content-Type: text/x-patch; name="asoc13-corgi.patch"; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-diff -r fc216dd0eb92 soc/pxa/tosa.c
---- a/soc/pxa/tosa.c	Thu Feb 01 16:52:06 2007 +0100
-+++ b/soc/pxa/tosa.c	Thu Feb 01 17:49:01 2007 +0000
-@@ -40,6 +40,7 @@
+diff -r fc216dd0eb92 soc/pxa/corgi.c
+--- a/soc/pxa/corgi.c	Thu Feb 01 16:52:06 2007 +0100
++++ b/soc/pxa/corgi.c	Thu Feb 01 17:53:41 2007 +0000
+@@ -37,6 +37,7 @@
  
- #include "../codecs/wm9712.h"
+ #include "../codecs/wm8731.h"
  #include "pxa2xx-pcm.h"
-+#include "pxa2xx-ac97.h"
++#include "pxa2xx-i2s.h"
  
- static struct snd_soc_machine tosa;
+ #define CORGI_HP        0
+ #define CORGI_MIC       1
+@@ -119,8 +120,59 @@ static int corgi_shutdown(struct snd_pcm
+ 	return 0;
+ }
  
-@@ -228,12 +229,14 @@ static struct snd_soc_dai_link tosa_dai[
- 	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_HIFI],
- 	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_HIFI],
- 	.init = tosa_ac97_init,
-+	.ops = &tosa_ops,
- },
- {
- 	.name = "AC97 Aux",
- 	.stream_name = "AC97 Aux",
- 	.cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_AUX],
- 	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_AUX],
-+	.ops = &tosa_ops,
- },
++static int corgi_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int clk = 0;
++	int ret = 0;
++
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 48000:
++	case 96000:
++		clk = 12288000;
++		break;
++	case 11025:
++	case 22050:
++	case 44100:
++		clk = 11289600;
++		break;
++	}
++
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set the codec system clock for DAC and ADC */
++	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8731_SYSCLK, clk,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	/* set the I2S system clock as input (unused) */
++	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ static struct snd_soc_ops corgi_ops = {
+ 	.startup = corgi_startup,
++	.hw_params = corgi_hw_params,
+ 	.shutdown = corgi_shutdown,
  };
  
-@@ -241,7 +244,6 @@ static struct snd_soc_machine tosa = {
- 	.name = "Tosa",
- 	.dai_link = tosa_dai,
- 	.num_links = ARRAY_SIZE(tosa_dai),
--	.ops = &tosa_ops,
+@@ -264,35 +316,6 @@ static int corgi_wm8731_init(struct snd_
+ 	return 0;
+ }
+ 
+-static unsigned int corgi_config_sysclk(struct snd_soc_pcm_runtime *rtd,
+-	struct snd_soc_clock_info *info)
+-{
+-	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
+-		/* pxa2xx is i2s master  */
+-		switch (info->rate) {
+-		case 44100:
+-		case 88200:
+-			/* configure codec digital filters for 44.1, 88.2 */
+-			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
+-				11289600);
+-		break;
+-		default:
+-			/* configure codec digital filters for all other rates */
+-			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
+-				CORGI_AUDIO_CLOCK);
+-		break;
+-		}
+-		/* config pxa i2s as master */
+-		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
+-			CORGI_AUDIO_CLOCK);
+-	} else {
+-		/* codec is i2s master -
+-		 * only configure codec DAI clock and filters */
+-		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
+-			CORGI_AUDIO_CLOCK);
+-	}
+-}
+-
+ /* corgi digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link corgi_dai = {
+ 	.name = "WM8731",
+@@ -300,7 +323,7 @@ static struct snd_soc_dai_link corgi_dai
+ 	.cpu_dai = &pxa_i2s_dai,
+ 	.codec_dai = &wm8731_dai,
+ 	.init = corgi_wm8731_init,
+-	.config_sysclk = corgi_config_sysclk,
++	.ops = &corgi_ops,
  };
  
- static struct snd_soc_device tosa_snd_devdata = {
+ /* corgi audio machine driver */
+@@ -308,7 +331,6 @@ static struct snd_soc_machine snd_soc_ma
+ 	.name = "Corgi",
+ 	.dai_link = &corgi_dai,
+ 	.num_links = 1,
+-	.ops = &corgi_ops,
+ };
+ 
+ /* corgi audio private data */
 
---=-yaM4Z2DoSdWXYHJHjOsh
+--=-9wrbRHXp2aVQicSoqT6C
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,7 +193,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-yaM4Z2DoSdWXYHJHjOsh
+--=-9wrbRHXp2aVQicSoqT6C
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -110,4 +204,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-yaM4Z2DoSdWXYHJHjOsh--
+--=-9wrbRHXp2aVQicSoqT6C--
