@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 16/19] ASoC Sharp corgi machine
-Date: Fri, 02 Feb 2007 14:46:11 +0000
-Message-ID: <1170427571.18082.146.camel@localhost.localdomain>
+Subject: [PATCH 19/19] ASoC 0.13 Sharp poodle machine
+Date: Fri, 02 Feb 2007 14:46:31 +0000
+Message-ID: <1170427591.18082.150.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-9wrbRHXp2aVQicSoqT6C"
+Content-Type: multipart/mixed; boundary="=-5iUCdO5enC0EQbpyZRVa"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,12 +17,12 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---=-9wrbRHXp2aVQicSoqT6C
+--=-5iUCdO5enC0EQbpyZRVa
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This patch updates the Sharp corgi machine driver to the new API in ASoC
-0.13.
+This patch updates the Sharp poodle machine driver to the new API in
+ASoC 0.13.
 
 Changes:-
 
@@ -32,7 +32,6 @@ o Removed config_sysclk() function. No longer needed as clocking is now
 configured manually.
 
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-
 
 Privacy & Confidentiality Notice
 -------------------------------------------------
@@ -52,27 +51,27 @@ Registered office:
 Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
 
 
---=-9wrbRHXp2aVQicSoqT6C
-Content-Disposition: attachment; filename="asoc13-corgi.patch"
-Content-Type: text/x-patch; name="asoc13-corgi.patch"; charset=UTF-8
+--=-5iUCdO5enC0EQbpyZRVa
+Content-Disposition: attachment; filename="asoc13-poodle.patch"
+Content-Type: text/x-patch; name="asoc13-poodle.patch"; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-diff -r fc216dd0eb92 soc/pxa/corgi.c
---- a/soc/pxa/corgi.c	Thu Feb 01 16:52:06 2007 +0100
-+++ b/soc/pxa/corgi.c	Thu Feb 01 17:53:41 2007 +0000
-@@ -37,6 +37,7 @@
+diff -r fc216dd0eb92 soc/pxa/poodle.c
+--- a/soc/pxa/poodle.c	Thu Feb 01 16:52:06 2007 +0100
++++ b/soc/pxa/poodle.c	Thu Feb 01 17:53:15 2007 +0000
+@@ -34,6 +34,7 @@
  
  #include "../codecs/wm8731.h"
  #include "pxa2xx-pcm.h"
 +#include "pxa2xx-i2s.h"
  
- #define CORGI_HP        0
- #define CORGI_MIC       1
-@@ -119,8 +120,59 @@ static int corgi_shutdown(struct snd_pcm
+ #define POODLE_HP        1
+ #define POODLE_HP_OFF    0
+@@ -100,8 +101,59 @@ static int poodle_shutdown(struct snd_pc
  	return 0;
  }
  
-+static int corgi_hw_params(struct snd_pcm_substream *substream,
++static int poodle_hw_params(struct snd_pcm_substream *substream,
 +	struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -122,17 +121,19 @@ diff -r fc216dd0eb92 soc/pxa/corgi.c
 +	return 0;
 +}
 +
- static struct snd_soc_ops corgi_ops = {
- 	.startup = corgi_startup,
-+	.hw_params = corgi_hw_params,
- 	.shutdown = corgi_shutdown,
+ static struct snd_soc_ops poodle_ops = {
+ 	.startup = poodle_startup,
++	.hw_params = poodle_hw_params,
+ 	.shutdown = poodle_shutdown,
  };
  
-@@ -264,35 +316,6 @@ static int corgi_wm8731_init(struct snd_
- 	return 0;
- }
+@@ -223,34 +275,6 @@ static int poodle_wm8731_init(struct snd
  
--static unsigned int corgi_config_sysclk(struct snd_soc_pcm_runtime *rtd,
+ 	snd_soc_dapm_sync_endpoints(codec);
+ 	return 0;
+-}
+-
+-static unsigned int poodle_config_sysclk(struct snd_soc_pcm_runtime *rtd,
 -	struct snd_soc_clock_info *info)
 -{
 -	if (info->bclk_master & SND_SOC_DAIFMT_CBS_CFS) {
@@ -147,42 +148,39 @@ diff -r fc216dd0eb92 soc/pxa/corgi.c
 -		default:
 -			/* configure codec digital filters for all other rates */
 -			rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
--				CORGI_AUDIO_CLOCK);
+-				POODLE_AUDIO_CLOCK);
 -		break;
 -		}
--		/* config pxa i2s as master */
 -		return rtd->cpu_dai->config_sysclk(rtd->cpu_dai, info,
--			CORGI_AUDIO_CLOCK);
+-			POODLE_AUDIO_CLOCK);
 -	} else {
 -		/* codec is i2s master -
 -		 * only configure codec DAI clock and filters */
 -		return rtd->codec_dai->config_sysclk(rtd->codec_dai, info,
--			CORGI_AUDIO_CLOCK);
+-			POODLE_AUDIO_CLOCK);
 -	}
--}
--
- /* corgi digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link corgi_dai = {
- 	.name = "WM8731",
-@@ -300,7 +323,7 @@ static struct snd_soc_dai_link corgi_dai
+ }
+ 
+ /* poodle digital audio interface glue - connects codec <--> CPU */
+@@ -260,7 +284,7 @@ static struct snd_soc_dai_link poodle_da
  	.cpu_dai = &pxa_i2s_dai,
  	.codec_dai = &wm8731_dai,
- 	.init = corgi_wm8731_init,
--	.config_sysclk = corgi_config_sysclk,
-+	.ops = &corgi_ops,
+ 	.init = poodle_wm8731_init,
+-	.config_sysclk = poodle_config_sysclk,
++	.ops = &poodle_ops,
  };
  
- /* corgi audio machine driver */
-@@ -308,7 +331,6 @@ static struct snd_soc_machine snd_soc_ma
- 	.name = "Corgi",
- 	.dai_link = &corgi_dai,
+ /* poodle audio machine driver */
+@@ -268,7 +292,6 @@ static struct snd_soc_machine snd_soc_ma
+ 	.name = "Poodle",
+ 	.dai_link = &poodle_dai,
  	.num_links = 1,
--	.ops = &corgi_ops,
+-	.ops = &poodle_ops,
  };
  
- /* corgi audio private data */
+ /* poodle audio private data */
 
---=-9wrbRHXp2aVQicSoqT6C
+--=-5iUCdO5enC0EQbpyZRVa
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -193,7 +191,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-9wrbRHXp2aVQicSoqT6C
+--=-5iUCdO5enC0EQbpyZRVa
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -204,4 +202,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-9wrbRHXp2aVQicSoqT6C--
+--=-5iUCdO5enC0EQbpyZRVa--
