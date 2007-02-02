@@ -1,9 +1,10 @@
-From: "Cythia" <houstreke@the-christensons.com>
-Subject: Everything good with you
-Date: Fri, 02 Feb 2007 06:27:46 +0200
-Message-ID: <e8bd01c74693$40aaa310$4d3ac38f@houstreke>
+From: Jakub Schmidtke <sjakub@gmail.com>
+Subject: ALC660VD and ALC861VD patch for hda-intel
+Date: Fri, 2 Feb 2007 06:50:16 +0100
+Message-ID: <200702020650.16657.sjakub@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1043679984=="
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_YEtwFBxubxgmat5"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,422 +15,851 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jackeline <freemarker-devel@lists.sourceforge.net>
-Cc: Elida <xen-announce@lists.sourceforge.net>, Idalia <k3b-user-request@lists.sourceforge.net>, Francesca Torres <ggi-develop@lists.sourceforge.net>, Nikki <svrloc-discuss@lists.sourceforge.net>, Christie <undead-devel@lists.sourceforge.net>, Gayle Alvarez <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de, tonton@bdefracte.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============1043679984==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_039_52D6_EFC87177.91303DC7"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_039_52D6_EFC87177.91303DC7
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_5B5_9EB8_6D1E1672.06B7C871"
-
-------=_NextPart_5B5_9EB8_6D1E1672.06B7C871
+--Boundary-00=_YEtwFBxubxgmat5
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
+After further investigation I have found drivers from realtek
+(ftp://202.65.194.211/pc/audio/realtek-linux-audiopack-4.05e.tar.bz2 )
+which had support for ALC660 (vd?) codec. Which is quite similar to alv861vd, 
+but there is no datasheet available. So I examined that driver and added 660 
+to my patch, using 861vd code, and changing few things. Also correcting some 
+errors in realtek's code, as it was copy-pasted from 883 code, and for 
+example didn't muted correct channels at startup.
+
+This patch is instead of previous one I have sent, not after and adds support 
+for 861vd and 660vd codecs.
+
+Could anybody tell me if this patch is of any value?
+Or maybe someone has similar device and could test if it works with his 
+hardware as well?
+
+P.S. I called the new codec 660-VD, because the only occurence of 660 in 
+realtek's webpage is ALC660-VD in some press info. And ALC660 is already 
+used, as a variant of 861 codec. The codec added by me is similar to 861vd, 
+not 861, so I think 660vd is a good name for that :)
 
 
+--Boundary-00=_YEtwFBxubxgmat5
+Content-Type: text/x-diff; charset="iso-8859-2"; name="alc660vd_alc861vd.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="alc660vd_alc861vd.patch"
 
-fall plug sell Phileas Fogg, then, amusement had won the twenty thousand =
-po   size =60I wood always have invent no friends, madam.' =60And your ca=
-rgo?'=60Your relatives--'     
+--- a/pci/hda/patch_realtek.c	2007-02-01 18:00:44.000000000 +0100
++++ b/pci/hda/patch_realtek.c	2007-02-02 06:36:34.000000000 +0100
+@@ -94,6 +94,13 @@
+ 	ALC262_MODEL_LAST /* last tag */
+ };
+ 
++/* ALC660VD models */
++enum {
++	ALC660VD_BASIC,
++	ALC660VD_AUTO,
++	ALC660VD_MODEL_LAST,
++};
++
+ /* ALC861 models */
+ enum {
+ 	ALC861_3ST,
+@@ -108,6 +115,13 @@
+ 	ALC861_MODEL_LAST,
+ };
+ 
++/* ALC861-VD models */
++enum {
++	ALC861VD_BASIC,
++	ALC861VD_AUTO,
++	ALC861VD_MODEL_LAST,
++};
++
+ /* ALC882 models */
+ enum {
+ 	ALC882_3ST_DIG,
+@@ -7925,20 +7939,768 @@
+ }
+ 
+ /*
++ * ALC861-VD support
++ *
++ * Based on ALC882
++ *
++ * In addition, an independent DAC 
++ */
++#define ALC861VD_DIGOUT_NID	0x06
++
++static hda_nid_t alc861vd_dac_nids[4] = {
++	/* front, surr, clfe, side surr */
++	0x02, 0x03, 0x04, 0x05
++};
++
++static hda_nid_t alc861vd_adc_nids[1] = {
++	/* Only one ADC */
++	0x09,
++};
++
++/* input MUX */
++/* FIXME: should be a matrix-type input source selection */
++static struct hda_input_mux alc861vd_capture_source = {
++	.num_items = 4,
++	.items = {
++		{ "Mic", 0x0 },
++		{ "Front Mic", 0x1 },
++		{ "Line", 0x2 },
++		{ "CD", 0x4 },
++	},
++};
++
++#define alc861vd_mux_enum_info alc_mux_enum_info
++#define alc861vd_mux_enum_get alc_mux_enum_get
++
++static int alc861vd_mux_enum_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct alc_spec *spec = codec->spec;
++	const struct hda_input_mux *imux = spec->input_mux;
++	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
++	static hda_nid_t capture_mixers[1] = { 0x22 };
++	hda_nid_t nid = capture_mixers[adc_idx];
++	unsigned int *cur_val = &spec->cur_mux[adc_idx];
++	unsigned int i, idx;
++
++	idx = ucontrol->value.enumerated.item[0];
++	if (idx >= imux->num_items)
++		idx = imux->num_items - 1;
++	if (*cur_val == idx && ! codec->in_resume)
++		return 0;
++	for (i = 0; i < imux->num_items; i++) {
++		unsigned int v = (i == idx) ? 0x7000 : 0x7080;
++		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
++				    v | (imux->items[i].index << 8));
++	}
++	*cur_val = idx;
++	return 1;
++}
++
++/*
++ * 6ch mode
++ */
++static struct hda_verb alc861vd_sixstack_ch6_init[] = {
++	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
++	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ } /* end */
++};
++
++/*
++ * 8ch mode
++ */
++static struct hda_verb alc861vd_sixstack_ch8_init[] = {
++	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ } /* end */
++};
++
++static struct hda_channel_mode alc861vd_sixstack_modes[2] = {
++	{ 6, alc861vd_sixstack_ch6_init },
++	{ 8, alc861vd_sixstack_ch8_init },
++};
++
++/* Pin assignment: Front=0x14, Rear=0x15, CLFE=0x16, Side=0x17
++ *                 Mic=0x18, Front Mic=0x19, Line-In=0x1a, HP=0x1b
++ */
++static struct snd_kcontrol_new alc861vd_base_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Surround Playback Volume", 0x03, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x04, 1, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x04, 2, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
++	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Side Playback Volume", 0x05, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Side Playback Switch", 0x0f, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
++	
++	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
++	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
++	/* Why there is no Line2/HP entry? (0x03 in 0x0b) */
++
++	{ } /* end */
++};
++
++static struct snd_kcontrol_new alc861vd_chmode_mixer[] = {
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Channel Mode",
++		.info = alc_ch_mode_info,
++		.get = alc_ch_mode_get,
++		.put = alc_ch_mode_put,
++	},
++	{ } /* end */
++};
++
++static struct hda_verb alc861vd_init_verbs[] = {
++	/* Front mixer: unmute input/output amp left and right (volume = 0) */
++	{0x02, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	/* Rear mixer */
++	{0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	/* CLFE mixer */
++	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	/* Side mixer */
++	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++
++	/* Front Pin: output 0 (0x0c) */
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* Rear Pin: output 1 (0x0d) */
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x01},
++	/* CLFE Pin: output 2 (0x0e) */
++	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x16, AC_VERB_SET_CONNECT_SEL, 0x02},
++	/* Side Pin: output 3 (0x0f) */
++	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x17, AC_VERB_SET_CONNECT_SEL, 0x03},
++
++	/* Mic (rear) pin: input vref at 80% */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Front Mic pin: input vref at 80% */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line In pin: input */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line-2 In: Headphone output (output 0 - 0x0c) */
++	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* CD pin widget for input */
++	{0x1c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++
++	/* FIXME: use matrix-type input source selection */
++	/* Mixer elements: 0x18, 19, 1a, 1b, 1c, 1d, 14, 15, 16, 17, 0b */
++	/* Input mixer1: unmute Mic, F-Mic, Line, CD inputs */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* ADC1: mute amp left and right */
++	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x09, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	{ }
++};
++
++/*
++ * generic initialization of ADC, input mixers and output mixers
++ */
++static struct hda_verb alc861vd_auto_init_verbs[] = {
++	/*
++	 * Unmute ADC0 and set the default input to mic-in
++	 */
++	{0x09, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++
++	/* Unmute input amps (CD, Line In, Mic 1 & Mic 2) of the analog-loopback
++	 * mixer widget
++	 * Note: PASD motherboards uses the Line In 2 as the input for front panel
++	 * mic (mic 2)
++	 */
++	/* Amp Indices: Mic1 = 0, Mic2 = 1, Line1 = 2, Line2 = 3, CD = 4 */
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(4)},
++
++	/*
++	 * Set up output mixers (0x02 - 0x05)
++	 */
++	/* set vol=0 to output mixers */
++	{0x02, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	/* set up input amps for analog loopback */
++	/* Amp Indices: DAC = 0, mixer = 1 */
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++
++	/* FIXME: use matrix-type input source selection */
++	/* Mixer elements: 0x18, 19, 1a, 1b, 1c, 1d, 14, 15, 16, 17, 0b */
++	/* Input mixer1: unmute Mic, F-Mic, Line, CD inputs */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x00 << 8))},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x03 << 8))},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x02 << 8))},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, (0x7080 | (0x04 << 8))},
++
++	{ }
++};
++
++static struct snd_kcontrol_new alc861vd_capture_mixer[] = {
++	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
++
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		/* The multiple "Capture Source" controls confuse alsamixer
++		 * So call somewhat different..
++		 *FIXME: the controls appear in the "playback" view!
++		 */
++		/* .name = "Capture Source", */
++		.name = "Input Source",
++		.count = 1,
++		.info = alc861vd_mux_enum_info,
++		.get = alc861vd_mux_enum_get,
++		.put = alc861vd_mux_enum_put,
++	},
++	{ } /* end */
++};
++
++/* pcm configuration: identiacal with ALC880 */
++#define alc861vd_pcm_analog_playback	alc880_pcm_analog_playback
++#define alc861vd_pcm_analog_capture	alc880_pcm_analog_capture
++#define alc861vd_pcm_digital_playback	alc880_pcm_digital_playback
++#define alc861vd_pcm_digital_capture	alc880_pcm_digital_capture
++
++/*
++ * configuration and preset
++ */
++static const char *alc861vd_models[ALC861VD_MODEL_LAST] = {
++	[ALC861VD_BASIC]	= "basic",
++	[ALC861VD_AUTO]		= "auto",
++};
++
++static struct snd_pci_quirk alc861vd_cfg_tbl[] = {
++	{}
++};
++
++static struct alc_config_preset alc861vd_presets[] = {
++	[ALC861VD_BASIC] = {
++		.mixers = { alc861vd_base_mixer, alc861vd_chmode_mixer },
++		.init_verbs = { alc861vd_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc861vd_dac_nids),
++		.dac_nids = alc861vd_dac_nids,
++		.dig_out_nid = ALC861VD_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_sixstack_modes),
++		.channel_mode = alc861vd_sixstack_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++};
++
++
++/*
++ * BIOS auto configuration
++ */
++static void alc861vd_auto_set_output_and_unmute(struct hda_codec *codec, hda_nid_t nid,
++					      int pin_type, int dac_idx)
++{
++	/* set as output */
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, pin_type);
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
++}
++
++static void alc861vd_auto_init_multi_out(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
++
++	for (i = 0; i <= HDA_SIDE; i++) {
++		hda_nid_t nid = spec->autocfg.line_out_pins[i];	
++		if (nid)
++			alc861vd_auto_set_output_and_unmute(codec, nid, PIN_OUT, i);
++	}
++}
++
++
++static void alc861vd_auto_init_hp_out(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	hda_nid_t pin;
++
++	pin = spec->autocfg.hp_pins[0];
++	if (pin) /* connect to front */
++		alc861vd_auto_set_output_and_unmute(codec, pin, PIN_HP, 0); /* use dac 0 */
++}
++
++#define alc861vd_is_input_pin(nid)	alc880_is_input_pin(nid)
++#define ALC861VD_PIN_CD_NID		ALC880_PIN_CD_NID
++
++static void alc861vd_auto_init_analog_input(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
++
++	for (i = 0; i < AUTO_PIN_LAST; i++) {
++		hda_nid_t nid = spec->autocfg.input_pins[i];
++		if (alc861vd_is_input_pin(nid)) {
++			snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
++					    i <= AUTO_PIN_FRONT_MIC ? PIN_VREF80 : PIN_IN);
++			if (nid != ALC861VD_PIN_CD_NID)
++				snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
++						    AMP_OUT_MUTE);
++		}
++	}
++}
++
++#define alc861vd_idx_to_mixer_vol(nid)		((nid) + 0x02)
++#define alc861vd_idx_to_mixer_switch(nid)	((nid) + 0x0c)
++
++/* add playback controls from the parsed DAC table */
++/* Based on ALC880 version. But ALC861VD has separate,
++ * different NIDs for mute/unmute switch and volume control */
++static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
++					     const struct auto_pin_cfg *cfg)
++{
++	char name[32];
++	static const char *chname[4] = { "Front", "Surround", "CLFE", "Side" };
++	hda_nid_t nid_v, nid_s;
++	int i, err;
++
++	for (i = 0; i < cfg->line_outs; i++) {
++		if (! spec->multiout.dac_nids[i])
++			continue;
++		nid_v = alc861vd_idx_to_mixer_vol(alc880_dac_to_idx(spec->multiout.dac_nids[i]));
++		nid_s = alc861vd_idx_to_mixer_switch(alc880_dac_to_idx(spec->multiout.dac_nids[i]));
++		
++		if (i == 2) {
++			/* Center/LFE */
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, "Center Playback Volume",
++					       HDA_COMPOSE_AMP_VAL(nid_v, 1, 0, HDA_OUTPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, "LFE Playback Volume",
++					       HDA_COMPOSE_AMP_VAL(nid_v, 2, 0, HDA_OUTPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE, "Center Playback Switch",
++					       HDA_COMPOSE_AMP_VAL(nid_s, 1, 2, HDA_INPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE, "LFE Playback Switch",
++					       HDA_COMPOSE_AMP_VAL(nid_s, 2, 2, HDA_INPUT))) < 0)
++				return err;
++		} else {
++			sprintf(name, "%s Playback Volume", chname[i]);
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
++					       HDA_COMPOSE_AMP_VAL(nid_v, 3, 0, HDA_OUTPUT))) < 0)
++				return err;
++			sprintf(name, "%s Playback Switch", chname[i]);
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE, name,
++					       HDA_COMPOSE_AMP_VAL(nid_v, 3, 2, HDA_INPUT))) < 0)
++				return err;
++		}
++	}
++	return 0;
++}
++
++/* add playback controls for speaker and HP outputs */
++/* Based on ALC880 version. But ALC861VD has separate,
++ * different NIDs for mute/unmute switch and volume control */
++static int alc861vd_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
++					const char *pfx)
++{
++	hda_nid_t nid_v, nid_s;
++	int err;
++	char name[32];
++
++	if (! pin)
++		return 0;
++
++	if (alc880_is_fixed_pin(pin)) {
++		nid_v = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
++		/* specify the DAC as the extra output */
++		if (! spec->multiout.hp_nid)
++			spec->multiout.hp_nid = nid_v;
++		else
++			spec->multiout.extra_out_nid[0] = nid_v;
++		/* control HP volume/switch on the output mixer amp */
++		nid_v = alc861vd_idx_to_mixer_vol(alc880_fixed_pin_idx(pin));
++		nid_s = alc861vd_idx_to_mixer_switch(alc880_fixed_pin_idx(pin));
++		
++		sprintf(name, "%s Playback Volume", pfx);
++		if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
++				       HDA_COMPOSE_AMP_VAL(nid_v, 3, 0, HDA_OUTPUT))) < 0)
++			return err;
++		sprintf(name, "%s Playback Switch", pfx);
++		if ((err = add_control(spec, ALC_CTL_BIND_MUTE, name,
++				       HDA_COMPOSE_AMP_VAL(nid_s, 3, 2, HDA_INPUT))) < 0)
++			return err;
++	} else if (alc880_is_multi_pin(pin)) {
++		/* set manual connection */
++		/* we have only a switch on HP-out PIN */
++		sprintf(name, "%s Playback Switch", pfx);
++		if ((err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
++				       HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT))) < 0)
++			return err;
++	}
++	return 0;
++}
++
++/* Based on ALC880 version - had to change it to override alc880_auto_create_extra_out
++ * and alc880_auto_create_multi_out_ctls */
++/* parse the BIOS configuration and set up the alc_spec */
++/* return 1 if successful, 0 if the proper config is not found, or a negative error code */
++static int alc861vd_parse_auto_config(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int err;
++	static hda_nid_t alc861vd_ignore[] = { 0x1d, 0 };
++
++	if ((err = snd_hda_parse_pin_def_config(codec, &spec->autocfg,
++						alc861vd_ignore)) < 0)
++		return err;
++	if (! spec->autocfg.line_outs)
++		return 0; /* can't find valid BIOS pin config */
++
++	if ((err = alc880_auto_fill_dac_nids(spec, &spec->autocfg)) < 0 ||
++	    (err = alc861vd_auto_create_multi_out_ctls(spec, &spec->autocfg)) < 0 ||
++	    (err = alc861vd_auto_create_extra_out(spec,
++						spec->autocfg.speaker_pins[0],
++						"Speaker")) < 0 ||
++	    (err = alc861vd_auto_create_extra_out(spec, spec->autocfg.hp_pins[0],
++						"Headphone")) < 0 ||
++	    (err = alc880_auto_create_analog_input_ctls(spec, &spec->autocfg)) < 0)
++		return err;
++
++	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
++
++	if (spec->autocfg.dig_out_pin)
++		spec->multiout.dig_out_nid = ALC861VD_DIGOUT_NID;
++/*
++ *	if (spec->autocfg.dig_in_pin)
++ *		spec->dig_in_nid = ALC861VD_DIGIN_NID;
++ */
++
++	if (spec->kctl_alloc)
++		spec->mixers[spec->num_mixers++] = spec->kctl_alloc;
++
++	spec->init_verbs[spec->num_init_verbs++] = alc861vd_auto_init_verbs;
++
++	spec->num_mux_defs = 1;
++	spec->input_mux = &spec->private_imux;
++
++	return 1;
++}
++
++/* additional initialization for auto-configuration model */
++static void alc861vd_auto_init(struct hda_codec *codec)
++{
++	alc861vd_auto_init_multi_out(codec);
++	alc861vd_auto_init_hp_out(codec);
++	alc861vd_auto_init_analog_input(codec);
++}
++
++static int patch_alc861vd(struct hda_codec *codec)
++{
++	struct alc_spec *spec;
++	int err, board_config;
++
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
++	if (spec == NULL)
++		return -ENOMEM;
++
++	codec->spec = spec;
++
++	board_config = snd_hda_check_board_config(codec, ALC861VD_MODEL_LAST,
++						  alc861vd_models,
++						  alc861vd_cfg_tbl);
++
++	if (board_config < 0 || board_config >= ALC861VD_MODEL_LAST) {
++		printk(KERN_INFO "hda_codec: Unknown model for ALC861VD, "
++		       "trying auto-probe from BIOS...\n");
++		board_config = ALC861VD_AUTO;
++	}
++
++	if (board_config == ALC861VD_AUTO) {
++		/* automatic parse from the BIOS config */
++		err = alc861vd_parse_auto_config(codec);
++		if (err < 0) {
++			alc_free(codec);
++			return err;
++		} else if (! err) {
++			printk(KERN_INFO
++			       "hda_codec: Cannot set up configuration "
++			       "from BIOS.  Using base mode...\n");
++			board_config = ALC861VD_BASIC;
++		}
++	}
++
++	if (board_config != ALC861VD_AUTO)
++		setup_preset(spec, &alc861vd_presets[board_config]);
++
++	spec->stream_name_analog = "ALC861VD Analog";
++	spec->stream_analog_playback = &alc861vd_pcm_analog_playback;
++	spec->stream_analog_capture = &alc861vd_pcm_analog_capture;
++
++	spec->stream_name_digital = "ALC861VD Digital";
++	spec->stream_digital_playback = &alc861vd_pcm_digital_playback;
++	spec->stream_digital_capture = &alc861vd_pcm_digital_capture;
++
++	spec->adc_nids = alc861vd_adc_nids;
++	spec->num_adc_nids = ARRAY_SIZE(alc861vd_adc_nids);
++	
++	spec->mixers[spec->num_mixers] = alc861vd_capture_mixer;
++	spec->num_mixers++;
++
++	codec->patch_ops = alc_patch_ops;
++	
++	if (board_config == ALC861VD_AUTO)
++		spec->init_hook = alc861vd_auto_init;
++
++	return 0;
++}
++
++/*
++ * ALC660VD support
++ *
++ * Based on ALC861VD
++ *
++ */
++static hda_nid_t alc660vd_dac_nids[3] = {
++	/* front, rear, clfe, rear_surr */
++	0x02, 0x04, 0x03
++};
++
++static hda_nid_t alc660vd_adc_nids[1] = {
++	/* ADC1 */
++	0x09,
++};
++
++
++static struct snd_kcontrol_new alc660vd_base_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
++	{ } /* end */
++};
++
++static struct hda_verb alc660vd_init_verbs[] = {
++	/* ADC1: mute amp left and right */
++	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x09, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	/* Front mixer: unmute input/output amp left and right (volume = 0) */
++	{0x02, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++
++	/* Rear mixer */
++	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++
++	/* CLFE mixer */
++	{0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(4)},
++
++	/* Front Pin: output 0 (0x0c) */
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* Rear Pin: output 1 (0x0d) */
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x01},
++	/* CLFE Pin: output 2 (0x0e) */
++	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x16, AC_VERB_SET_CONNECT_SEL, 0x02},
++	/* Side Pin: output 3 (0x0f) */
++	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x17, AC_VERB_SET_CONNECT_SEL, 0x03},
++	/* Mic (rear) pin: input vref at 80% */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Front Mic pin: input vref at 80% */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line In pin: input */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line-2 In: Headphone output (output 0 - 0x0c) */
++	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* CD pin widget for input */
++	{0x1c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++
++	/* FIXME: use matrix-type input source selection */
++	/* Mixer elements: 0x18, 19, 1a, 1b, 1c, 1d, 14, 15, 16, 17, 0b */
++	/* Input mixer */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(4)},
++	{ }
++};
++
++/*
++ * configuration and preset
++ */
++static const char *alc660vd_models[ALC660VD_MODEL_LAST] = {
++	[ALC660VD_BASIC]	= "basic",
++	[ALC660VD_AUTO]		= "auto",
++};
++
++static struct snd_pci_quirk alc660vd_cfg_tbl[] = {
++	SND_PCI_QUIRK(0x10de, 0x03f0, "ALC660VD Basic", ALC660VD_BASIC),
++        SND_PCI_QUIRK(0x1019, 0xa88d, "ALC660VD Basic", ALC660VD_BASIC),
++	SND_PCI_QUIRK(0x1043, 0x0000, "Asus G1", ALC660VD_BASIC),
++	{}
++};
++
++static struct alc_config_preset alc660vd_presets[] = {
++        [ALC660VD_BASIC] = {
++		.mixers = { alc660vd_base_mixer },
++		.init_verbs = { alc660vd_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc660vd_dac_nids),
++		.dac_nids = alc660vd_dac_nids,
++		.dig_out_nid = ALC861VD_DIGOUT_NID,
++		.num_adc_nids = ARRAY_SIZE(alc660vd_adc_nids),
++		.adc_nids = alc660vd_adc_nids,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_sixstack_modes),
++		.channel_mode = alc861vd_sixstack_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++};
++
++
++static int patch_alc660vd(struct hda_codec *codec)
++{
++	struct alc_spec *spec;
++	int err, board_config;
++
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
++	if (spec == NULL)
++		return -ENOMEM;
++
++	codec->spec = spec;
++
++	board_config = snd_hda_check_board_config(codec, ALC660VD_MODEL_LAST,
++						  alc660vd_models,
++						  alc660vd_cfg_tbl);
++
++	if (board_config < 0 || board_config >= ALC660VD_MODEL_LAST) {
++		printk(KERN_INFO "hda_codec: Unknown model for ALC660-VD, "
++		       "trying auto-probe from BIOS...\n");
++		board_config = ALC660VD_AUTO;
++	}
++
++	if (board_config == ALC660VD_AUTO) {
++		/* automatic parse from the BIOS config */
++		/* Automatic parsing - same as for 861vd */
++		err = alc861vd_parse_auto_config(codec);
++		
++		if (err < 0) {
++			alc_free(codec);
++			return err;
++		} else if (! err) {
++			printk(KERN_INFO
++			       "hda_codec: Cannot set up configuration "
++			       "from BIOS.  Using base mode...\n");
++			board_config = ALC660VD_BASIC;
++		}
++	}
++
++	if (board_config != ALC660VD_AUTO)
++		setup_preset(spec, &alc660vd_presets[board_config]);
++
++	spec->stream_name_analog = "ALC660VD Analog";
++	spec->stream_analog_playback = &alc861vd_pcm_analog_playback;
++	spec->stream_analog_capture = &alc861vd_pcm_analog_capture;
++
++	spec->stream_name_digital = "ALC660VD Digital";
++	spec->stream_digital_playback = &alc861vd_pcm_digital_playback;
++	spec->stream_digital_capture = &alc861vd_pcm_digital_capture;
++
++	spec->adc_nids = alc660vd_adc_nids;
++	spec->num_adc_nids = ARRAY_SIZE(alc660vd_adc_nids);
++
++	spec->mixers[spec->num_mixers] = alc861vd_capture_mixer;
++	spec->num_mixers++;
++
++	codec->patch_ops = alc_patch_ops;
++
++	if (board_config == ALC660VD_AUTO)
++		spec->init_hook = alc861vd_auto_init;
++
++	return 0;
++}
++
++/*
+  * patch entries
+  */
+ struct hda_codec_preset snd_hda_preset_realtek[] = {
+ 	{ .id = 0x10ec0260, .name = "ALC260", .patch = patch_alc260 },
+ 	{ .id = 0x10ec0262, .name = "ALC262", .patch = patch_alc262 },
+- 	{ .id = 0x10ec0880, .name = "ALC880", .patch = patch_alc880 },
++	{ .id = 0x10ec0660, .name = "ALC660-VD", .patch = patch_alc660vd },
++	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660", .patch = patch_alc861 },
++	{ .id = 0x10ec0861, .name = "ALC861", .patch = patch_alc861 },
++	{ .id = 0x10ec0862, .name = "ALC861-VD", .patch = patch_alc861vd },
++	{ .id = 0x10ec0880, .name = "ALC880", .patch = patch_alc880 },
+ 	{ .id = 0x10ec0882, .name = "ALC882", .patch = patch_alc882 },
+ 	{ .id = 0x10ec0883, .name = "ALC883", .patch = patch_alc883 },
+ 	{ .id = 0x10ec0885, .name = "ALC885", .patch = patch_alc882 },
+ 	{ .id = 0x10ec0888, .name = "ALC888", .patch = patch_alc883 },
+-	{ .id = 0x10ec0861, .rev = 0x100300, .name = "ALC861",
+-	  .patch = patch_alc861 },
+-	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
+-	  .patch = patch_alc861 },
+-	{ .id = 0x10ec0660, .name = "ALC660", .patch = patch_alc861 },
+ 	{} /* terminator */
+ };
 
-He rough followed the clown, and scatter soon clean sheep found himself o=
-nce  sex visit During the night Camp built Walbach was passed spend on th=
-e le It punishment was hop leave here that the Union Pacific nod Railroad=
- was in 
-This was cover the market Honourable blastous overtaken William Batulcar'=
-s establi  
-That flight pled evening, Mr difficult fight Fogg, as tranquil and phlegm=
-aticintend stem Fix, it must be thoughtful tight confessed, understood no=
-thing of wweakly request =60No deal quietly freight. Going in ballast.'As=
- for slide Captain Speedy, board he wed continued to meeting howl and gr =
-    
-
-spoke Passepartout hole entered and shone slowly asked for Mr Batulcar, w=
-h Fort McPherson was left judge behind at eight train scream witty in the=
- mor  The one paste discovery hundred and messup jelly first meridian was=
- passed.   &nbsp
-
-roof =60What do you judge want?' said nose he water to Passepartout, whom=
-   
-
-=60Mr Fogg,' replied soon exactly she, =60it base is for linen me to ask =
-thatOn smell the paddle 13th excite they passed the connect edge of the B=
-anks of Nsand space energetic =60Have fold you any passengers?'business T=
-his shade was sprang a misfortune. Mr Fogg, in order angle not to de     =
-  
-
-perform mist =60Would you frightened like a arm servant, sir?' asked Pass=
-epartou    Mr Fogg moon and his wind development partners had resumed stu=
-ff their game; n  coal Once, credit having resolved on spent a bold slung=
- stroke, he was on       
-
-=60A servant!' sort cried Mr Batulcar, basin threw suffer caressing the t=
-hic       =60No pain intend burst passengers. Never feed have passengers.=
- Too much in     
-
-
-sat lost =60Pardon me, truthfully madam; my fortune belongs answer to you=
- If yband Passepartout's angrily disapprove visage animal darkened with =
-the skies, andtight waste dove amusement =60Is your vessel a swift one?'T=
-he tax launch wind, depressed however, did not grow as skirt boisterous a=
-s m 
-
-=60So I can be umbrella cry without camp of no use to you?' island story =
-caught Mr Fogg, Aouda and disease Fix raised their heads, and beh   land =
-inquisitively Stamp insurance inquisitive Proctor and Phileas Fogg recogn=
-ized each oth     
-
-=60Dear keep Mr hide Fogg!' beside said know the young woman.The 16th des=
-ign of December thumb was the book hung seventy-fifth day sin=60Between e=
-leven never and twelve prick soothe forgiven knots. The "Henrietta",On co=
-ok this day whip the voiceless engineer came cake on deck, went up to   
-
-=60None.'=60Ah! it's bitter you, tail is it, knowledge smash Englishman?'=
- cried the colon  =60And blow hate shut who plays it,' replied Phileas ca=
-st Fogg coolly, t   
-=60The devil! license I wrestle tame should cloth so like to cross the Pa=
-cific  
-
-suck cough =60Dear Aouda!' spend replied connect Phileas Fogg. It need no=
-t belie Without knowing shook why - continue it apple was presentiment, p=
-erhapstouch soap =60Will you wound carry me terrible and three other pers=
-ons to Live=60Certain, sir,' upset vessel replied the stroke engineer. bi=
-d =60You must re 
-
-fat =60Ah!' said man murder the mass Honourable Mr Batulcar. =60You are n=
-o  =60Well, it mass dust foolishly sleep pleases me to have it diamonds,'=
- replied    He made a movement shake as if horse to swell seize rat the c=
-ard which h         &nbsp
-
-=60A strung day man shy apian dresses as he can.'=60I thundering equally =
-will library consider,' set replied Mr Fogg.     
-          
-
-------=_NextPart_5B5_9EB8_6D1E1672.06B7C871
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii"=
->
-<META content=3D"MSHTML 5.50.4922.1500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff><FONT face=3DArial size=3D1>
-<DIV>
-<p><IMG alt=3D"" hspace=3D0 src=3D"cid:ecf6001c7469344115c0f0ab351f8c@hou=
-streke" align=3Dbaseline border=3D0></p>
-<BR><BR>fall plug sell Phileas Fogg, then, amusement had won the twenty t=
-housand po&nbsp;&nbsp;&nbsp;size =60I wood always have invent no friends,=
- madam.'&nbsp;=60And your cargo?'=60Your relatives--'&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;<BR>
-He rough followed the clown, and scatter soon clean sheep found himself o=
-nce&nbsp;&nbsp;sex visit During the night Camp built Walbach was passed s=
-pend on the le&nbsp;It punishment was hop leave here that the Union Pacif=
-ic nod Railroad was in&nbsp;
-This was cover the market Honourable blastous overtaken William Batulcar'=
-s establi&nbsp;&nbsp;
-That flight pled evening, Mr difficult fight Fogg, as tranquil and phlegm=
-aticintend stem Fix, it must be thoughtful tight confessed, understood no=
-thing of wweakly request =60No deal quietly freight. Going in ballast.'As=
- for slide Captain Speedy, board he wed continued to meeting howl and gr&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
-spoke Passepartout hole entered and shone slowly asked for Mr Batulcar, w=
-h&nbsp;Fort McPherson was left judge behind at eight train scream witty i=
-n the mor&nbsp;&nbsp;The one paste discovery hundred and messup jelly fir=
-st meridian was passed.&nbsp;&nbsp;&nbsp;&nbsp<BR>
-roof =60What do you judge want?' said nose he water to Passepartout, whom=
-&nbsp;&nbsp;&nbsp;<BR>
-=60Mr Fogg,' replied soon exactly she, =60it base is for linen me to ask =
-thatOn smell the paddle 13th excite they passed the connect edge of the B=
-anks of Nsand space energetic =60Have fold you any passengers?'business T=
-his shade was sprang a misfortune. Mr Fogg, in order angle not to de&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
-perform mist =60Would you frightened like a arm servant, sir?' asked Pass=
-epartou&nbsp;&nbsp;&nbsp;&nbsp;Mr Fogg moon and his wind development part=
-ners had resumed stuff their game; n&nbsp;&nbsp;coal Once, credit having =
-resolved on spent a bold slung stroke, he was on&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;<BR>
-=60A servant!' sort cried Mr Batulcar, basin threw suffer caressing the t=
-hic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=60No pain intend burst pass=
-engers. Never feed have passengers. Too much in&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;<BR>
-<BR>sat lost =60Pardon me, truthfully madam; my fortune belongs answer to=
- you. If yband Passepartout's angrily disapprove visage animal darkened w=
-ith the skies, andtight waste dove amusement =60Is your vessel a swift on=
-e?'The tax launch wind, depressed however, did not grow as skirt boistero=
-us as m&nbsp;<BR>
-=60So I can be umbrella cry without camp of no use to you?'&nbsp;island s=
-tory caught Mr Fogg, Aouda and disease Fix raised their heads, and beh&nb=
-sp;&nbsp;&nbsp;land inquisitively Stamp insurance inquisitive Proctor and=
- Phileas Fogg recognized each oth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
-=60Dear keep Mr hide Fogg!' beside said know the young woman.The 16th des=
-ign of December thumb was the book hung seventy-fifth day sin=60Between e=
-leven never and twelve prick soothe forgiven knots. The "Henrietta",On co=
-ok this day whip the voiceless engineer came cake on deck, went up to&nbs=
-p;&nbsp;&nbsp;<BR>
-=60None.'=60Ah! it's bitter you, tail is it, knowledge smash Englishman?'=
- cried the colon&nbsp;&nbsp;=60And blow hate shut who plays it,' replied =
-Phileas cast Fogg coolly, t&nbsp;&nbsp;&nbsp;
-=60The devil! license I wrestle tame should cloth so like to cross the Pa=
-cific&nbsp;&nbsp;
-<BR>suck cough =60Dear Aouda!' spend replied connect Phileas Fogg. It nee=
-d not belie Without knowing shook why - continue it apple was presentimen=
-t, perhapstouch soap =60Will you wound carry me terrible and three other =
-persons to Live=60Certain, sir,' upset vessel replied the stroke engineer=
- bid =60You must re&nbsp;<BR>
-fat =60Ah!' said man murder the mass Honourable Mr Batulcar. =60You are n=
-o&nbsp;&nbsp;=60Well, it mass dust foolishly sleep pleases me to have it =
-diamonds,' replied&nbsp;&nbsp;&nbsp;&nbsp;He made a movement shake as if =
-horse to swell seize rat the card which h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp<BR>
-=60A strung day man shy apian dresses as he can.'=60I thundering equally =
-will library consider,' set replied Mr Fogg.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-</DIV></FONT></BODY></HTML>
-
-------=_NextPart_5B5_9EB8_6D1E1672.06B7C871--
-
-------=_NextPart_039_52D6_EFC87177.91303DC7
-Content-Type: image/gif;
-	name="pdeydaunu.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <ecf6001c7469344115c0f0ab351f8c@houstreke>
-
-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
-------=_NextPart_039_52D6_EFC87177.91303DC7--
-
-
-
---===============1043679984==
+--Boundary-00=_YEtwFBxubxgmat5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -440,7 +870,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1043679984==
+--Boundary-00=_YEtwFBxubxgmat5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -451,4 +881,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1043679984==--
+--Boundary-00=_YEtwFBxubxgmat5--
