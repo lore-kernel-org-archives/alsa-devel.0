@@ -1,14 +1,16 @@
-From: Ronny Standtke <Ronny.Standtke@gmx.net>
-Subject: Re: How to debug?
-Date: Fri, 2 Feb 2007 21:44:47 +0100
-Message-ID: <200702022144.47885.Ronny.Standtke@gmx.net>
-References: <200701302251.28880.Ronny.Standtke@gmx.net>
-	<s5habzwjujs.wl%tiwai@suse.de>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] ac97_bus power management
+Date: Fri, 2 Feb 2007 22:44:37 +0100
+Message-ID: <20070202214436.GA3607@tuba>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5habzwjujs.wl%tiwai@suse.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0C0FC26F
+	for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2007 22:44:38 +0100 (MET)
+Received: from ml by tuba with local (Exim 4.50) id 1HD6Cz-0000ws-3j
+	for alsa-devel@alsa-project.org; Fri, 02 Feb 2007 22:44:37 +0100
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,78 +21,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Any reason why ac97_bus.c comes without CONFIG_PM?
+This patch adds CONFIG_PM to the ac97_bus driver.
 
-Thank you very much for your reply.
+Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
-> How did you set index options?
-
-Here is what I did just now:
-
-I removed all customizations from /etc/modprobe.d/alsa-base and reloaded alsa. 
-Then all my soundcards are visible:
-
------------
-dhcppc0:~# cat /proc/asound/cards
- 0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                      Intel 82801DB-ICH4 with AD1980 at 0xeb000000, irq 217
- 1 [Headset        ]: USB-Audio - Logitech USB Headset
-                      Logitech Logitech USB Headset at usb-0000:00:1d.0-2, 
-full speed
- 2 [U0x46d0x8ce    ]: USB-Audio - USB Device 0x46d:0x8ce
-                      USB Device 0x46d:0x8ce at usb-0000:00:1d.7-4, high speed
-dhcppc0:~# cat /sys/module/snd_intel8x0/parameters/index
--1
-dhcppc0:~# cat /sys/module/snd_usb_audio/parameters/index
--1,-1,-1,-1,-1,-1,-1,-1
------------
-
-The many "-1" indices for the snd_usb_audio module look strange. Is this 
-normal?
-
-Then I appended the following lines at the end of /etc/modprobe.d/alsa-base:
------------
-alias snd-card-0 snd-intel8x0
-options snd-intel8x0 index=0
-alias snd-card-1 snd-usb-audio
-options snd-usb-audio index=-2
-alias snd-card-2 snd-usb-audio
-options snd-usb-audio index=-2
-options snd cards_limit=3
------------
-
-Then I looked at the visible soundcards and the passed index options. 
-Unfortunately the on-board soundcard is gone again!
-
------------
-dhcppc0:~# /etc/init.d/alsa reload
-Unloading ALSA sound driver modules: snd-usb-audio snd-usb-lib snd-rawmidi 
-snd-seq-device snd-hwdep snd-intel8x0 snd-ac97-codec snd-ac97-bus snd-pcm-oss 
-snd-mixer-oss snd-pcm snd-timer snd-page-alloc.
-Loading ALSA sound driver modules: snd-usb-audio snd-usb-lib snd-rawmidi 
-snd-seq-device snd-hwdep snd-intel8x0 snd-ac97-codec snd-ac97-bus snd-pcm-oss 
-snd-mixer-oss snd-pcm snd-timer snd-page-alloc.
-dhcppc0:~# cat /proc/asound/cards
- 0 [U0x46d0x8ce    ]: USB-Audio - USB Device 0x46d:0x8ce
-                      USB Device 0x46d:0x8ce at usb-0000:00:1d.7-4, high speed
- 1 [Headset        ]: USB-Audio - Logitech USB Headset
-                      Logitech Logitech USB Headset at usb-0000:00:1d.0-2, 
-full speed
-dhcppc0:~# cat /sys/module/snd_intel8x0/parameters/index
-0
-dhcppc0:~# cat /sys/module/snd_usb_audio/parameters/index
--2,-1,-1,-1,-1,-1,-1,-1
------------
-
-So what can I do next? I would really like to help fixing this issue.
-
-Greetings and Thank you again!
-
-Ronny
+--- ../alsa-driver-1.0.14rc2-original/alsa-kernel/ac97_bus.c	2007-01-15 14:25:18.000000000 +0100
++++ alsa-kernel/ac97_bus.c	2007-02-02 21:39:47.000000000 +0100
+@@ -26,6 +26,7 @@
+ 	return 1;
+ }
+ 
++#ifdef CONFIG_PM
+ static int ac97_bus_suspend(struct device *dev, pm_message_t state)
+ {
+ 	int ret = 0;
+@@ -45,12 +46,15 @@
+ 
+ 	return ret;
+ }
++#endif /* CONFIG_PM */
+ 
+ struct bus_type ac97_bus_type = {
+ 	.name		= "ac97",
+ 	.match		= ac97_bus_match,
++#ifdef CONFIG_PM
+ 	.suspend	= ac97_bus_suspend,
+ 	.resume		= ac97_bus_resume,
++#endif /* CONFIG_PM */
+ };
+ 
+ static int __init ac97_bus_init(void)
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
