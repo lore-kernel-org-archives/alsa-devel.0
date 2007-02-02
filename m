@@ -1,9 +1,9 @@
-From: "just" <one@ccmcnet.com>
-Subject: Rumer Tallulah DONT
-Date: Fri, 2 Feb 2007 19:10:00 +0200
-Message-ID: <000901c746ec$f90acfd0$fd48e958@AHMET>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC uda1380 codec driver
+Date: Fri, 02 Feb 2007 17:06:23 +0000
+Message-ID: <1170435983.18082.174.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2014182183=="
+Content-Type: multipart/mixed; boundary="=-QrEoUHm4OCbcjGWKZb3m"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,179 +14,898 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============2014182183==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0005_01C746FD.BC939FD0"
 
-------=_NextPart_000_0005_01C746FD.BC939FD0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0006_01C746FD.BC939FD0"
+--=-QrEoUHm4OCbcjGWKZb3m
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+This patch adds ASoC support for the UDA1380 codec driver and is a port
+of Giorgio Padrin's uda1380 alsa-driver code. Many thanks to Giorgio for
+his good work on the original driver, this made porting very easy. :) 
 
-------=_NextPart_001_0006_01C746FD.BC939FD0
-Content-Type: text/plain;
-	charset="iso-8859-9"
-Content-Transfer-Encoding: quoted-printable
-
-
-Where dishes about love.
-Louis vuitton frock shine attended.
-Troy adopt, news though biological would, home!
-Bazaar sixmonth appear covered august harpers similar featuring naked.
-Unfamiliar showed xbox gears?
-Makeup, frizzy, hair as she, stepped out treatment.
-Believes been, too hasty past spe what not.
-Moores daughter diet the charlies angels, full throttle star.
-Perfect figure so her children, wouldnt obsess. Children, wouldnt obsess =
-abou, read.
-Chases patch moments before cracks falls pitts pecs confessed.
-Festival th annual monday. Hair as she stepped out treatment yesterday =
-ashton. Los angeles sharon, stone? Worried friendship lifesaver put =
-training. Garner courteney, cox hudson fiance jen! Pretty aniston police =
-whore are. Rod stewart exwife was spotted smooching yearold, ice. Wear =
-scout marc by jacobs store well?
-Having facial beverly hills beauty salon actress. Whitney houston =
-partners daves daily, station cheap flights zealand.
-------=_NextPart_001_0006_01C746FD.BC939FD0
-Content-Type: text/html;
-	charset="iso-8859-9"
-Content-Transfer-Encoding: quoted-printable
-
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-9">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000401c746ec$f90acfd0$fd48e958@AHMET" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Where dishes about love.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Louis vuitton frock shine =
-attended.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Troy adopt, news though biological =
-would, home!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Bazaar sixmonth appear covered august =
-harpers=20
-similar featuring naked.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Unfamiliar showed xbox =
-gears?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Makeup, frizzy, hair as she, stepped =
-out treatment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Believes been, too hasty past spe what =
-not.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Moores daughter diet the charlies =
-angels, full=20
-throttle star.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Perfect figure so her children, wouldnt =
-obsess.=20
-Children, wouldnt obsess abou, read.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Chases patch moments before cracks =
-falls pitts pecs confessed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Festival th annual monday. Hair as she =
-stepped out=20
-treatment yesterday ashton. Los angeles sharon, stone? Worried =
-friendship=20
-lifesaver put training. Garner courteney, cox hudson fiance jen! Pretty =
-aniston=20
-police whore are. Rod stewart exwife was spotted smooching yearold, ice. =
-Wear=20
-scout marc by jacobs store well?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Having facial beverly hills beauty =
-salon actress.=20
-Whitney houston partners daves daily, station cheap flights=20
-zealand.</FONT></DIV></BODY></HTML>
-
-------=_NextPart_001_0006_01C746FD.BC939FD0--
-
-------=_NextPart_000_0005_01C746FD.BC939FD0
-Content-Type: image/gif;
-	name="love life.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000401c746ec$f90acfd0$fd48e958@AHMET>
-
-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
-
-------=_NextPart_000_0005_01C746FD.BC939FD0--
+Signed-off-by: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Signed-off-by: Richard Purdie <richard@openedhand.com>
+Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
 
 
---===============2014182183==
+ 
+
+--=-QrEoUHm4OCbcjGWKZb3m
+Content-Disposition: attachment; filename=asoc-uda1380.patch
+Content-Type: text/x-patch; name=asoc-uda1380.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r fc216dd0eb92 soc/codecs/uda1380.c
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/soc/codecs/uda1380.c	Wed Jan 31 16:43:17 2007 +0000
+@@ -0,0 +1,747 @@
++/*
++ * uda1380.c - Philips UDA1380 ALSA SoC audio driver
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Modified by Richard Purdie <richard@openedhand.com> to fit into SoC
++ * codec model.
++ *
++ * Copyright (c) 2005 Giorgio Padrin <giorgio@mandarinlogiq.org>
++ * Copyright 2005 Openedhand Ltd.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/types.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++#include <linux/errno.h>
++#include <linux/ioctl.h>
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/control.h>
++#include <sound/initval.h>
++#include <sound/info.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include "uda1380.h"
++
++#define UDA1380_VERSION "0.5"
++#define AUDIO_NAME "uda1380"
++/*
++ * Debug
++ */
++
++#define UDA1380_DEBUG 0
++
++#ifdef UDA1380_DEBUG
++#define dbg(format, arg...) \
++	printk(KERN_DEBUG AUDIO_NAME ": " format "\n" , ## arg)
++#else
++#define dbg(format, arg...) do {} while (0)
++#endif
++
++/*
++ * uda1380 register cache
++ */
++static const u16 uda1380_reg[UDA1380_CACHEREGNUM] = {
++    0x0502, 0x0000, 0x0000, 0x3f3f,
++    0x0202, 0x0000, 0x0000, 0x0000,
++    0x0000, 0x0000, 0x0000, 0x0000,
++    0x0000, 0x0000, 0x0000, 0x0000,
++    0x0000, 0xff00, 0x0000, 0x4800,
++    0x0000, 0x0000, 0x0000, 0x0000,
++    0x0000, 0x0000, 0x0000, 0x0000,
++    0x0000, 0x0000, 0x0000, 0x0000,
++    0x0000, 0x8000, 0x0002, 0x0000,
++};
++
++/*
++ * read uda1380 register cache
++ */
++static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
++	unsigned int reg)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg == UDA1380_RESET)
++		return 0;
++	if (reg >= UDA1380_CACHEREGNUM)
++		return -1;
++	return cache[reg];
++}
++
++/*
++ * write uda1380 register cache
++ */
++static inline void uda1380_write_reg_cache(struct snd_soc_codec *codec,
++	u16 reg, unsigned int value)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg >= UDA1380_CACHEREGNUM)
++		return;
++	cache[reg] = value;
++}
++
++/*
++ * write to the UDA1380 register space
++ */
++static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
++	unsigned int value)
++{
++	u8 data[3];
++
++	/* data is
++	 *   data[0] is register offset
++	 *   data[1] is MS byte
++	 *   data[2] is LS byte
++	 */
++	data[0] = reg;
++	data[1] = (value & 0xff00) >> 8;
++	data[2] = value & 0x00ff;
++
++	uda1380_write_reg_cache (codec, reg, value);
++
++	/* the interpolator & decimator regs must only be written when the
++	 * codec DAI is active.
++	 */
++	if (!codec->active && (reg >= UDA1380_MVOL))
++		return 0;
++	dbg("uda hw write %x val %x\n", reg, value);
++	if (codec->hw_write(codec->control_data, data, 3) == 3) {
++		unsigned int val;
++		i2c_master_send(codec->control_data, data, 1);
++		i2c_master_recv(codec->control_data, data, 2);
++		val = (data[0]<<8) | data[1];
++		if (val != value) {
++			dbg("READ BACK VAL %x\n", (data[0]<<8) | data[1]);
++			return -EIO;
++		}
++		return 0;
++	} else
++		return -EIO;
++}
++
++#define uda1380_reset(c)	uda1380_write(c, UDA1380_RESET, 0)
++
++/* declarations of ALSA reg_elem_REAL controls */
++static const char *uda1380_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz",
++	"96kHz"};
++static const char *uda1380_input_sel[] = {"Line", "Mic"};
++static const char *uda1380_output_sel[] = {"Direct", "Mixer"};
++static const char *uda1380_spf_mode[] = {"Flat", "Minimum1", "Minimum2", "Maximum"};
++
++static const struct soc_enum uda1380_enum[] = {
++	SOC_ENUM_DOUBLE(UDA1380_DEEMP, 0, 8, 5, uda1380_deemp),
++	SOC_ENUM_SINGLE(UDA1380_ADC, 3, 2, uda1380_input_sel),
++	SOC_ENUM_SINGLE(UDA1380_MODE, 14, 4, uda1380_spf_mode),
++	SOC_ENUM_SINGLE(UDA1380_PM, 7, 2, uda1380_output_sel), /* R02_EN_AVC */
++};
++
++static const struct snd_kcontrol_new uda1380_snd_controls[] = {
++	SOC_DOUBLE("Playback Volume", UDA1380_MVOL, 0, 8, 255, 1),
++	SOC_DOUBLE("Mixer Volume", UDA1380_MIXVOL, 0, 8, 255, 1),
++	SOC_ENUM("Sound Processing Filter Mode", uda1380_enum[2]),
++	SOC_DOUBLE("Treble Volume", UDA1380_MODE, 4, 12, 3, 0),
++	SOC_DOUBLE("Bass Volume", UDA1380_MODE, 0, 8, 15, 0),
++	SOC_ENUM("Playback De-emphasis", uda1380_enum[0]),
++	SOC_DOUBLE("Capture Volume", UDA1380_DEC, 0, 8, 127, 0),
++	SOC_DOUBLE("Line Capture Volume", UDA1380_PGA, 0, 8, 15, 0),
++	SOC_SINGLE("Mic Capture Volume", UDA1380_PGA, 8, 11, 0),
++	SOC_DOUBLE("Playback Switch", UDA1380_DEEMP, 3, 11, 1, 1),
++	SOC_SINGLE("Capture Switch", UDA1380_PGA, 15, 1, 0),
++	SOC_SINGLE("AGC Timing", UDA1380_AGC, 8, 7, 0),
++	SOC_SINGLE("AGC Target level", UDA1380_AGC, 2, 3, 1),
++	SOC_SINGLE("AGC Switch", UDA1380_AGC, 0, 1, 0),
++	SOC_SINGLE("Silence", UDA1380_MIXER, 7, 1, 0),
++	SOC_SINGLE("Silence Detection", UDA1380_MIXER, 6, 1, 0),
++};
++
++/* add non dapm controls */
++static int uda1380_add_controls(struct snd_soc_codec *codec)
++{
++	int err, i;
++
++	for (i = 0; i < ARRAY_SIZE(uda1380_snd_controls); i++) {
++		err = snd_ctl_add(codec->card,
++			snd_soc_cnew(&uda1380_snd_controls[i],codec, NULL));
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++/* Input mux */
++static const struct snd_kcontrol_new uda1380_input_mux_control =
++	SOC_DAPM_ENUM("Input Select", uda1380_enum[1]);
++
++/* Output mux */
++static const struct snd_kcontrol_new uda1380_output_mux_control =
++	SOC_DAPM_ENUM("Output Select", uda1380_enum[3]);
++
++static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
++	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
++		&uda1380_input_mux_control),
++	SND_SOC_DAPM_MUX("Output Mux", SND_SOC_NOPM, 0, 0,
++		&uda1380_output_mux_control),
++	SND_SOC_DAPM_PGA("Left PGA", UDA1380_PM, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Right PGA", UDA1380_PM, 1, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Mic LNA", UDA1380_PM, 4, 0, NULL, 0),
++	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", UDA1380_PM, 2, 0),
++	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", UDA1380_PM, 0, 0),
++	SND_SOC_DAPM_INPUT("VINM"),
++	SND_SOC_DAPM_INPUT("VINL"),
++	SND_SOC_DAPM_INPUT("VINR"),
++	SND_SOC_DAPM_MIXER("Analog Mixer", UDA1380_PM, 6, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("VOUTLHP"),
++	SND_SOC_DAPM_OUTPUT("VOUTRHP"),
++	SND_SOC_DAPM_OUTPUT("VOUTL"),
++	SND_SOC_DAPM_OUTPUT("VOUTR"),
++	SND_SOC_DAPM_DAC("DAC", "Playback", UDA1380_PM, 10, 0),
++	SND_SOC_DAPM_PGA("HeadPhone Driver", UDA1380_PM, 13, 0, NULL, 0),
++};
++
++static const char *audio_map[][3] = {
++
++	/* output mux */
++	{"HeadPhone Driver", NULL, "Output Mux"},
++	{"VOUTR", NULL, "Output Mux"},
++	{"VOUTL", NULL, "Output Mux"},
++
++	{"Analog Mixer", NULL, "VINR"},
++	{"Analog Mixer", NULL, "VINL"},
++	{"Analog Mixer", NULL, "DAC"},
++
++	{"Output Mux", "Direct", "DAC"},
++	{"Output Mux", "Mixer", "Analog Mixer"},
++
++	/* headphone driver */
++	{"VOUTLHP", NULL, "HeadPhone Driver"},
++	{"VOUTRHP", NULL, "HeadPhone Driver"},
++
++	/* input mux */
++	{"Left ADC", NULL, "Input Mux"},
++	{"Input Mux", "Mic", "Mic LNA"},
++	{"Input Mux", "Line", "Left PGA"},
++
++	/* right input */
++	{"Right ADC", NULL, "Right PGA"},
++
++	/* inputs */
++	{"Mic LNA", NULL, "VINM"},
++	{"Left PGA", NULL, "VINL"},
++	{"Right PGA", NULL, "VINR"},
++
++	/* terminator */
++	{NULL, NULL, NULL},
++};
++
++static int uda1380_add_widgets(struct snd_soc_codec *codec)
++{
++	int i;
++
++	for(i = 0; i < ARRAY_SIZE(uda1380_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &uda1380_dapm_widgets[i]);
++	}
++
++	/* set up audio path interconnects */
++	for(i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++			audio_map[i][1], audio_map[i][2]);
++	}
++
++	snd_soc_dapm_new_widgets(codec);
++	return 0;
++}
++
++static int uda1380_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	int iface;
++	/* set up DAI based upon fmt */
++
++	iface = uda1380_read_reg_cache (codec, UDA1380_IFACE);
++	iface &= ~(R01_SFORI_MASK | R01_SIM | R01_SFORO_MASK);
++
++	/* FIXME: how to select I2S for DATAO and MSB for DATAI correctly? */
++	switch(fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		iface |= R01_SFORI_I2S | R01_SFORO_I2S;
++		break;
++	case SND_SOC_DAIFMT_LSB:
++		iface |= R01_SFORI_LSB16 | R01_SFORO_I2S;
++		break;
++	case SND_SOC_DAIFMT_MSB:
++		iface |= R01_SFORI_MSB | R01_SFORO_I2S;
++	}
++
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBM_CFM) {
++		iface |= R01_SIM;
++	}
++
++	uda1380_write(codec, UDA1380_IFACE, iface);
++
++	return 0;
++}
++
++/*
++ * Flush reg cache
++ * We can only write the interpolator and decimator registers
++ * when the DAI is being clocked by the CPU DAI. It's up to the
++ * machine and cpu DAI driver to do this before we are called.
++ */
++static int uda1380_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	int reg, reg_start, reg_end, clk;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		reg_start = UDA1380_MVOL;
++		reg_end = UDA1380_MIXER;
++	} else {
++		reg_start = UDA1380_DEC;
++		reg_end = UDA1380_AGC;
++	}
++
++	/* FIXME disable DAC_CLK */
++	clk = uda1380_read_reg_cache (codec, 00);
++	uda1380_write(codec, UDA1380_CLK, clk & ~R00_DAC_CLK);
++
++	for (reg = reg_start; reg <= reg_end; reg++ ) {
++		dbg("reg %x val %x\n",reg, uda1380_read_reg_cache (codec, reg));
++		uda1380_write(codec, reg, uda1380_read_reg_cache (codec, reg));
++	}
++
++	/* FIXME enable DAC_CLK */
++	uda1380_write(codec, UDA1380_CLK, clk | R00_DAC_CLK);
++
++	return 0;
++}
++
++static int uda1380_pcm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
++
++	/* set WSPLL power and divider if running from this clock */
++	if (clk & R00_DAC_CLK) {
++		int rate = params_rate(params);
++		u16 pm = uda1380_read_reg_cache(codec, UDA1380_PM);
++		clk &= ~0x3; /* clear SEL_LOOP_DIV */
++		switch (rate) {
++		case 6250 ... 12500:
++			clk |= 0x0;
++			break;
++		case 12501 ... 25000:
++			clk |= 0x1;
++			break;
++		case 25001 ... 50000:
++			clk |= 0x2;
++			break;
++		case 50001 ... 100000:
++			clk |= 0x3;
++			break;
++		}
++		uda1380_write(codec, UDA1380_PM, R02_PON_PLL | pm);
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		clk |= R00_EN_DAC | R00_EN_INT;
++	else
++		clk |= R00_EN_ADC | R00_EN_DEC;
++
++	uda1380_write(codec, UDA1380_CLK, clk);
++	return 0;
++}
++
++static void uda1380_pcm_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
++
++	/* shut down WSPLL power if running from this clock */
++	if (clk & R00_DAC_CLK) {
++		u16 pm = uda1380_read_reg_cache(codec, UDA1380_PM);
++		uda1380_write(codec, UDA1380_PM, ~R02_PON_PLL & pm);
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		clk &= ~(R00_EN_DAC | R00_EN_INT);
++	else
++		clk &= ~(R00_EN_ADC | R00_EN_DEC);
++
++	uda1380_write(codec, UDA1380_CLK, clk);
++}
++
++static int uda1380_mute(struct snd_soc_codec_dai *codec_dai, int mute)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u16 mute_reg = uda1380_read_reg_cache(codec, UDA1380_DEEMP) & 0xbfff;
++
++	/* FIXME: mute(codec,0) is called when the magician clock is already
++	 * set to WSPLL, but for some unknown reason writing to interpolator
++	 * registers works only when clocked by SYSCLK */
++	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
++	uda1380_write(codec, UDA1380_CLK, ~R00_DAC_CLK & clk);
++	if(mute)
++		uda1380_write(codec, UDA1380_DEEMP, mute_reg | 0x4000);
++	else
++		uda1380_write(codec, UDA1380_DEEMP, mute_reg);
++	uda1380_write(codec, UDA1380_CLK, clk);
++	return 0;
++}
++
++static int uda1380_dapm_event(struct snd_soc_codec *codec, int event)
++{
++	int pm = uda1380_read_reg_cache(codec, UDA1380_PM);
++
++	switch (event) {
++		case SNDRV_CTL_POWER_D0: /* full On */
++		case SNDRV_CTL_POWER_D1: /* partial On */
++		case SNDRV_CTL_POWER_D2: /* partial On */
++			/* enable internal bias */
++			uda1380_write(codec, UDA1380_PM, R02_PON_BIAS | pm);
++			break;
++		case SNDRV_CTL_POWER_D3hot: /* Off, with power */
++			/* everything off except internal bias */
++			uda1380_write(codec, UDA1380_PM, R02_PON_BIAS);
++			break;
++		case SNDRV_CTL_POWER_D3cold: /* Off, without power */
++			/* everything off, inactive */
++			uda1380_write(codec, UDA1380_PM, 0x0);
++			break;
++	}
++	codec->dapm_state = event;
++	return 0;
++}
++
++#define UDA1380_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
++		SNDRV_PCM_RATE_48000)
++
++struct snd_soc_codec_dai uda1380_dai[] = {
++{
++	.name = "UDA1380",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = UDA1380_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = UDA1380_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.ops = {
++		.hw_params = uda1380_pcm_hw_params,
++		.shutdown = uda1380_pcm_shutdown,
++		.prepare = uda1380_pcm_prepare,
++	},
++	.dai_ops = {
++		.digital_mute = uda1380_mute,
++		.set_fmt = uda1380_set_dai_fmt,
++	},
++},
++{/* playback only  - dual interface */
++	.name = "UDA1380",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = UDA1380_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = {
++		.hw_params = uda1380_pcm_hw_params,
++		.shutdown = uda1380_pcm_shutdown,
++		.prepare = uda1380_pcm_prepare,
++	},
++	.dai_ops = {
++		.digital_mute = uda1380_mute,
++		.set_fmt = uda1380_set_dai_fmt,
++	},
++},
++{ /* capture only - dual interface*/
++	.name = "UDA1380",
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = UDA1380_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = {
++		.hw_params = uda1380_pcm_hw_params,
++		.shutdown = uda1380_pcm_shutdown,
++		.prepare = uda1380_pcm_prepare,
++	},
++	.dai_ops = {
++		.set_fmt = uda1380_set_dai_fmt,
++	},
++},
++};
++EXPORT_SYMBOL_GPL(uda1380_dai);
++
++static int uda1380_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++	return 0;
++}
++
++static int uda1380_resume(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++	int i;
++	u8 data[2];
++	u16 *cache = codec->reg_cache;
++
++	/* Sync reg_cache with the hardware */
++	for (i = 0; i < ARRAY_SIZE(uda1380_reg); i++) {
++		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
++		data[1] = cache[i] & 0x00ff;
++		codec->hw_write(codec->control_data, data, 2);
++	}
++	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++	uda1380_dapm_event(codec, codec->suspend_dapm_state);
++	return 0;
++}
++
++/*
++ * initialise the UDA1380 driver
++ * register the mixer and dsp interfaces with the kernel
++ */
++static int uda1380_init(struct snd_soc_device *socdev, int dac_clk)
++{
++	struct snd_soc_codec *codec = socdev->codec;
++	int ret = 0;
++
++	codec->name = "UDA1380";
++	codec->owner = THIS_MODULE;
++	codec->read = uda1380_read_reg_cache;
++	codec->write = uda1380_write;
++	codec->dapm_event = uda1380_dapm_event;
++	codec->dai = uda1380_dai;
++	codec->num_dai = ARRAY_SIZE(uda1380_dai);
++	codec->reg_cache_size = ARRAY_SIZE(uda1380_reg);
++	codec->reg_cache =
++			kzalloc(sizeof(u16) * ARRAY_SIZE(uda1380_reg), GFP_KERNEL);
++	if (codec->reg_cache == NULL)
++		return -ENOMEM;
++	memcpy(codec->reg_cache, uda1380_reg,
++		sizeof(u16) * ARRAY_SIZE(uda1380_reg));
++	codec->reg_cache_size = sizeof(u16) * ARRAY_SIZE(uda1380_reg);
++	uda1380_reset(codec);
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if(ret < 0) {
++		printk(KERN_ERR "uda1380: failed to create pcms\n");
++		goto pcm_err;
++	}
++
++	/* power on device */
++	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++	/* set clock input */
++	switch (dac_clk) {
++	case UDA1380_DAC_CLK_SYSCLK:
++		uda1380_write(codec, UDA1380_CLK, 0);
++		break;
++	case UDA1380_DAC_CLK_WSPLL:
++		uda1380_write(codec, UDA1380_CLK, R00_DAC_CLK);
++		break;
++	}
++
++	/* uda1380 init */
++	uda1380_add_controls(codec);
++	uda1380_add_widgets(codec);
++	ret = snd_soc_register_card(socdev);
++	if (ret < 0) {
++      	printk(KERN_ERR "uda1380: failed to register card\n");
++		goto card_err;
++    }
++
++	return ret;
++
++card_err:
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++pcm_err:
++	kfree(codec->reg_cache);
++	return ret;
++}
++
++static struct snd_soc_device *uda1380_socdev;
++
++#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++
++#define I2C_DRIVERID_UDA1380 0xfefe /* liam -  need a proper id */
++
++static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
++
++/* Magic definition of all other variables and things */
++I2C_CLIENT_INSMOD;
++
++static struct i2c_driver uda1380_i2c_driver;
++static struct i2c_client client_template;
++
++/* If the i2c layer weren't so broken, we could pass this kind of data
++   around */
++
++static int uda1380_codec_probe(struct i2c_adapter *adap, int addr, int kind)
++{
++	struct snd_soc_device *socdev = uda1380_socdev;
++	struct uda1380_setup_data *setup = socdev->codec_data;
++	struct snd_soc_codec *codec = socdev->codec;
++	struct i2c_client *i2c;
++	int ret;
++
++	if (addr != setup->i2c_address)
++		return -ENODEV;
++
++	client_template.adapter = adap;
++	client_template.addr = addr;
++
++	i2c = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
++	if (i2c == NULL){
++		kfree(codec);
++		return -ENOMEM;
++	}
++	memcpy(i2c, &client_template, sizeof(struct i2c_client));
++	i2c_set_clientdata(i2c, codec);
++	codec->control_data = i2c;
++
++	ret = i2c_attach_client(i2c);
++	if(ret < 0) {
++		printk(KERN_ERR "failed to attach codec at addr %x\n", addr);
++		goto err;
++	}
++
++	ret = uda1380_init(socdev, setup->dac_clk);
++	if(ret < 0) {
++		printk(KERN_ERR "failed to initialise UDA1380\n");
++		goto err;
++	}
++	return ret;
++
++err:
++	kfree(codec);
++	kfree(i2c);
++	return ret;
++}
++
++static int uda1380_i2c_detach(struct i2c_client *client)
++{
++	struct snd_soc_codec* codec = i2c_get_clientdata(client);
++	i2c_detach_client(client);
++	kfree(codec->reg_cache);
++	kfree(client);
++	return 0;
++}
++
++static int uda1380_i2c_attach(struct i2c_adapter *adap)
++{
++	return i2c_probe(adap, &addr_data, uda1380_codec_probe);
++}
++
++/* corgi i2c codec control layer */
++static struct i2c_driver uda1380_i2c_driver = {
++	.driver = {
++		.name =  "UDA1380 I2C Codec",
++		.owner = THIS_MODULE,
++	},
++	.id =             I2C_DRIVERID_UDA1380,
++	.attach_adapter = uda1380_i2c_attach,
++	.detach_client =  uda1380_i2c_detach,
++	.command =        NULL,
++};
++
++static struct i2c_client client_template = {
++	.name =   "UDA1380",
++	.driver = &uda1380_i2c_driver,
++};
++#endif
++
++static int uda1380_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct uda1380_setup_data *setup;
++	struct snd_soc_codec* codec;
++	int ret = 0;
++
++	printk(KERN_INFO "UDA1380 Audio Codec %s", UDA1380_VERSION);
++
++	setup = socdev->codec_data;
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	socdev->codec = codec;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	uda1380_socdev = socdev;
++#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++	if (setup->i2c_address) {
++		normal_i2c[0] = setup->i2c_address;
++		codec->hw_write = (hw_write_t)i2c_master_send;
++		ret = i2c_add_driver(&uda1380_i2c_driver);
++		if (ret != 0)
++			printk(KERN_ERR "can't add i2c driver");
++	}
++#else
++	/* Add other interfaces here */
++#endif
++	return ret;
++}
++
++/* power down chip */
++static int uda1380_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec* codec = socdev->codec;
++
++	if (codec->control_data)
++		uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++	i2c_del_driver(&uda1380_i2c_driver);
++#endif
++	kfree(codec);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_uda1380 = {
++	.probe = 	uda1380_probe,
++	.remove = 	uda1380_remove,
++	.suspend = 	uda1380_suspend,
++	.resume =	uda1380_resume,
++};
++
++EXPORT_SYMBOL_GPL(soc_codec_dev_uda1380);
++
++MODULE_AUTHOR("Giorgio Padrin");
++MODULE_DESCRIPTION("Audio support for codec Philips UDA1380");
++MODULE_LICENSE("GPL");
+diff -r fc216dd0eb92 soc/codecs/uda1380.h
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/soc/codecs/uda1380.h	Wed Jan 31 16:43:17 2007 +0000
+@@ -0,0 +1,84 @@
++/*
++ * Audio support for Philips UDA1380
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Copyright (c) 2005 Giorgio Padrin <giorgio@mandarinlogiq.org>
++ */
++
++#define UDA1380_CLK		0x00
++#define UDA1380_IFACE	0x01
++#define UDA1380_PM		0x02
++#define UDA1380_AMIX	0x03
++#define UDA1380_HP		0x04
++#define UDA1380_MVOL	0x10
++#define UDA1380_MIXVOL	0x11
++#define UDA1380_MODE	0x12
++#define UDA1380_DEEMP	0x13
++#define UDA1380_MIXER	0x14
++#define UDA1380_INTSTAT	0x18
++#define UDA1380_DEC		0x20
++#define UDA1380_PGA		0x21
++#define UDA1380_ADC		0x22
++#define UDA1380_AGC		0x23
++#define UDA1380_DECSTAT	0x28
++#define UDA1380_RESET	0x7f
++
++#define UDA1380_CACHEREGNUM 0x24
++
++/* Register flags */
++#define R00_EN_ADC	0x0800
++#define R00_EN_DEC	0x0400
++#define R00_EN_DAC	0x0200
++#define R00_EN_INT	0x0100
++#define R00_DAC_CLK	0x0010
++#define R01_SFORI_I2S   0x0000
++#define R01_SFORI_LSB16 0x0100
++#define R01_SFORI_LSB18 0x0200
++#define R01_SFORI_LSB20 0x0300
++#define R01_SFORI_MSB   0x0500
++#define R01_SFORI_MASK  0x0700
++#define R01_SFORO_I2S   0x0000
++#define R01_SFORO_LSB16 0x0001
++#define R01_SFORO_LSB18 0x0002
++#define R01_SFORO_LSB20 0x0003
++#define R01_SFORO_LSB24 0x0004
++#define R01_SFORO_MSB   0x0005
++#define R01_SFORO_MASK  0x0007
++#define R01_SEL_SOURCE  0x0040
++#define R01_SIM		0x0010
++#define R02_PON_PLL	0x8000
++#define R02_PON_HP	0x2000
++#define R02_PON_DAC	0x0400
++#define R02_PON_BIAS	0x0100
++#define R02_EN_AVC	0x0080
++#define R02_PON_AVC	0x0040
++#define R02_PON_LNA	0x0010
++#define R02_PON_PGAL	0x0008
++#define R02_PON_ADCL	0x0004
++#define R02_PON_PGAR	0x0002
++#define R02_PON_ADCR	0x0001
++#define R13_MTM		0x4000
++#define R14_SILENCE	0x0080
++#define R14_SDET_ON	0x0040
++#define R21_MT_ADC	0x8000
++#define R22_SEL_LNA	0x0008
++#define R22_SEL_MIC	0x0004
++#define R22_SKIP_DCFIL	0x0002
++#define R23_AGC_EN	0x0001
++
++struct uda1380_setup_data {
++	unsigned short i2c_address;
++	int            dac_clk;
++#define UDA1380_DAC_CLK_SYSCLK 0
++#define UDA1380_DAC_CLK_WSPLL  1
++};
++
++#define UDA1380_DAI_DUPLEX		0 /* playback and capture on single DAI */
++#define UDA1380_DAI_PLAYBACK	1 /* playback DAI */
++#define UDA1380_DAI_CAPTURE		2 /* capture DAI */
++
++extern struct snd_soc_codec_dai uda1380_dai[3];
++extern struct snd_soc_codec_device soc_codec_dev_uda1380;
+diff -r fc216dd0eb92 soc/codecs/Makefile
+--- a/soc/codecs/Makefile	Thu Feb 01 16:52:06 2007 +0100
++++ b/soc/codecs/Makefile	Fri Feb 02 15:25:51 2007 +0000
+@@ -2,8 +2,10 @@ snd-soc-wm8731-objs := wm8731.o
+ snd-soc-wm8731-objs := wm8731.o
+ snd-soc-wm8750-objs := wm8750.o
+ snd-soc-wm9712-objs := wm9712.o
++snd-soc-uda1380-objs := uda1380.o
+ 
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_WM8731)	+= snd-soc-wm8731.o
+ obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
+ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
++obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
+diff -r fc216dd0eb92 soc/codecs/Kconfig
+--- a/soc/codecs/Kconfig	Thu Feb 01 16:52:06 2007 +0100
++++ b/soc/codecs/Kconfig	Fri Feb 02 15:26:39 2007 +0000
+@@ -13,3 +13,7 @@ config SND_SOC_WM9712
+ config SND_SOC_WM9712
+ 	tristate
+ 	depends on SND_SOC
++
++config SND_SOC_UDA1380
++	tristate
++	depends on SND_SOC
+
+--=-QrEoUHm4OCbcjGWKZb3m
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -197,7 +916,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============2014182183==
+--=-QrEoUHm4OCbcjGWKZb3m
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -208,4 +927,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2014182183==--
+--=-QrEoUHm4OCbcjGWKZb3m--
