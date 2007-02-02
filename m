@@ -1,9 +1,9 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH 7/19] ASoC 0.13 generic AC97 codec
-Date: Fri, 02 Feb 2007 14:44:40 +0000
-Message-ID: <1170427480.18082.136.camel@localhost.localdomain>
+Subject: [PATCH 8/19] ASoC 0.13 AT91xxxx slave patch
+Date: Fri, 02 Feb 2007 14:44:48 +0000
+Message-ID: <1170427488.18082.138.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-rUFqdyNrDSzr4txlzMz/"
+Content-Type: multipart/mixed; boundary="=-N/PC3GCk9IpyGVlIb5XK"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,18 +17,14 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---=-rUFqdyNrDSzr4txlzMz/
+--=-N/PC3GCk9IpyGVlIb5XK
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This patch updates the AC97 codec driver to the new API in ASoC 0.13.
+This patch adds support for I2S slave mode for the ETI_B1 machine from
+Endrelia.
 
-Changes:-
-
-o Removed DAI capabilities matching code in favour of manual matching in
-the machine drivers.
-
-
+Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
 
@@ -50,71 +46,42 @@ Registered office:
 Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
 
 
---=-rUFqdyNrDSzr4txlzMz/
-Content-Disposition: attachment; filename="asoc13-codec-ac97.patch"
-Content-Type: text/x-patch; name="asoc13-codec-ac97.patch"; charset=UTF-8
+--=-N/PC3GCk9IpyGVlIb5XK
+Content-Disposition: attachment; filename="asoc13-at91-kconfig-slave.patch"
+Content-Type: text/x-patch; name="asoc13-at91-kconfig-slave.patch";
+	charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-diff -r fc216dd0eb92 soc/codecs/ac97.c
---- a/soc/codecs/ac97.c	Thu Feb 01 16:52:06 2007 +0100
-+++ b/soc/codecs/ac97.c	Fri Feb 02 10:29:02 2007 +0000
-@@ -26,22 +26,7 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
+diff -r fc216dd0eb92 soc/at91/Kconfig
+--- a/soc/at91/Kconfig	Thu Feb 01 16:52:06 2007 +0100
++++ b/soc/at91/Kconfig	Wed Jan 31 16:43:17 2007 +0000
+@@ -13,12 +13,20 @@ config SND_AT91_SOC_I2S
+ 	tristate
  
--#define AC97_VERSION "0.5"
--
--#define AC97_DIR \
--	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
--
--#define AC97_RATES \
--	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
--	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
--	SNDRV_PCM_RATE_48000)
--
--/* may need to expand this */
--static struct snd_soc_dai_mode soc_ac97[] = {
--	{0, 0,	SNDRV_PCM_FMTBIT_S16_LE,	AC97_RATES},
--	{0, 0,	SNDRV_PCM_FMTBIT_S18_3LE,	AC97_RATES},
--	{0, 0,	SNDRV_PCM_FMTBIT_S20_3LE,	AC97_RATES},
--};
-+#define AC97_VERSION "0.6"
- 
- static int ac97_prepare(struct snd_pcm_substream *substream)
- {
-@@ -55,21 +40,25 @@ static int ac97_prepare(struct snd_pcm_s
- 	return snd_ac97_set_rate(codec->ac97, reg, runtime->rate);
- }
- 
-+#define STD_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
+ config SND_AT91_SOC_ETI_B1_WM8731
+-	tristate "SoC I2S Audio support for Endrelia ETI-B1 board"
+-	depends on SND_AT91_SOC && MACH_ETI_B1
++	tristate "SoC I2S Audio support for WM8731-based Endrelia ETI-B1 boards"
++	depends on SND_AT91_SOC && (MACH_ETI_B1 || MACH_ETI_C1)
+ 	select SND_AT91_SOC_I2S
+ 	select SND_SOC_WM8731
+ 	help
+-	  Say Y if you want to add support for SoC audio on Endrelia
+-          ETI-B1 board.
++	  Say Y if you want to add support for SoC audio on WM8731-based
++	  Endrelia Technologies Inc ETI-B1 or ETI-C1 boards.
 +
- static struct snd_soc_codec_dai ac97_dai = {
- 	.name = "AC97 HiFi",
- 	.playback = {
- 		.stream_name = "AC97 Playback",
- 		.channels_min = 1,
--		.channels_max = 2,},
-+		.channels_max = 2,
-+		.rates = STD_AC97_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
- 	.capture = {
- 		.stream_name = "AC97 Capture",
- 		.channels_min = 1,
--		.channels_max = 2,},
-+		.channels_max = 2,
-+		.rates = STD_AC97_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
- 	.ops = {
- 		.prepare = ac97_prepare,},
--	.caps = {
--		.num_modes = ARRAY_SIZE(soc_ac97),
--		.mode = soc_ac97,},
- };
++config SND_AT91_SOC_ETI_SLAVE
++	bool "Run codec in slave Mode on Endrelia boards"
++	depends on SND_AT91_SOC_ETI_B1_WM8731
++	default n
++	help
++	  Say Y if you want to run with the AT91 SSC generating the BCLK
++	  and LRC signals on Endrelia boards.
  
- static unsigned int ac97_read(struct snd_soc_codec *codec,
+ endmenu
 
---=-rUFqdyNrDSzr4txlzMz/
+--=-N/PC3GCk9IpyGVlIb5XK
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -125,7 +92,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-rUFqdyNrDSzr4txlzMz/
+--=-N/PC3GCk9IpyGVlIb5XK
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -136,4 +103,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-rUFqdyNrDSzr4txlzMz/--
+--=-N/PC3GCk9IpyGVlIb5XK--
