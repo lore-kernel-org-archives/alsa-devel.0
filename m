@@ -1,9 +1,11 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC uda1380 codec driver
-Date: Fri, 02 Feb 2007 17:06:23 +0000
-Message-ID: <1170435983.18082.174.camel@localhost.localdomain>
+From: Jakub Schmidtke <sjakub@gmail.com>
+Subject: [PATCH 1/2] Added ALC861VD/ALC660VD support to
+	hda-intel
+Date: Fri, 2 Feb 2007 18:11:33 +0100
+Message-ID: <200702021811.33314.sjakub@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-QrEoUHm4OCbcjGWKZb3m"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_FD3wFRaZ2ALZgE7"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,898 +16,789 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-
---=-QrEoUHm4OCbcjGWKZb3m
-Content-Type: text/plain
+--Boundary-00=_FD3wFRaZ2ALZgE7
+Content-Type: text/plain;
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
-
-This patch adds ASoC support for the UDA1380 codec driver and is a port
-of Giorgio Padrin's uda1380 alsa-driver code. Many thanks to Giorgio for
-his good work on the original driver, this made porting very easy. :) 
-
-Signed-off-by: Giorgio Padrin <giorgio@mandarinlogiq.org>
-Signed-off-by: Richard Purdie <richard@openedhand.com>
-Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Content-Disposition: inline
 
 
+I hope this time I do this right ;)
 
+Forget the last patch, I have read some more about stacks and models, and 
+changed quite a few things and fixed some errors. I decidec not to do 
+separate sections for ALC861VD and ALC660VD, because they are really similar, 
+but add 660VD as one of the models of 861VD - just like 861 and 660 are done.
+
+Did also some more testing - but only 3stack models, as this is the type of 
+hardware I have. Outputs, inputs and capture work, including HP mute, mic 
+recording, boosting etc.
+
+
+Changes:-
+
+o Added ALC861VD support to patch_realtek.c under hda-intel
+
+o Added ALC660VD as a model of 861VD
+
+o Added pci quirks for Asus G1 as well as for two devices found in Realtek's 
+driver to point at ALC660VD model (3stack-660)
+
+o Added pci quirk for Lenovo 3000 C200 - although untested, it should work 
+with ALC861VD 3stack model
+
+o Changed preset id = 0x10ec0660 to point at new patch_alc861vd instead of 
+patch_861
+
+o Organised the list of presets
+
+
+Signed-off-by: Jakub Schmidtke <sjakub@gmail.com>
+
+--Boundary-00=_FD3wFRaZ2ALZgE7
+Content-Type: text/x-diff; charset="iso-8859-2"; name="alc861vd_660vd_1.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="alc861vd_660vd_1.patch"
+
+--- a/pci/hda/patch_realtek.c	2007-02-02 17:43:42.000000000 +0100
++++ b/pci/hda/patch_realtek.c	2007-02-02 17:47:36.000000000 +0100
+@@ -108,6 +108,16 @@
+ 	ALC861_MODEL_LAST,
+ };
  
-
---=-QrEoUHm4OCbcjGWKZb3m
-Content-Disposition: attachment; filename=asoc-uda1380.patch
-Content-Type: text/x-patch; name=asoc-uda1380.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r fc216dd0eb92 soc/codecs/uda1380.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/soc/codecs/uda1380.c	Wed Jan 31 16:43:17 2007 +0000
-@@ -0,0 +1,747 @@
-+/*
-+ * uda1380.c - Philips UDA1380 ALSA SoC audio driver
++/* ALC861-VD models */
++enum {
++	ALC660VD_3ST,
++	ALC861VD_3ST,
++	ALC861VD_3ST_DIG,
++	ALC861VD_6ST_DIG,
++	ALC861VD_AUTO,
++	ALC861VD_MODEL_LAST,
++};
++
+ /* ALC882 models */
+ enum {
+ 	ALC882_3ST_DIG,
+@@ -7925,20 +7935,706 @@
+ }
+ 
+ /*
++ * ALC861-VD support
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * Based on ALC882
 + *
-+ * Modified by Richard Purdie <richard@openedhand.com> to fit into SoC
-+ * codec model.
-+ *
-+ * Copyright (c) 2005 Giorgio Padrin <giorgio@mandarinlogiq.org>
-+ * Copyright 2005 Openedhand Ltd.
++ * In addition, an independent DAC
 + */
++#define ALC861VD_DIGOUT_NID	0x06
 +
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/types.h>
-+#include <linux/string.h>
-+#include <linux/slab.h>
-+#include <linux/errno.h>
-+#include <linux/ioctl.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/initval.h>
-+#include <sound/info.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
++static hda_nid_t alc861vd_dac_nids[4] = {
++	/* front, surr, clfe, side surr */
++	0x02, 0x03, 0x04, 0x05
++};
 +
-+#include "uda1380.h"
++/* dac_nids for ALC660vd are in a different order - according to
++ * Realtek's driver.
++ * This should probably tesult in a different mixer for 6stack models
++ * of ALC660vd codecs, but for now there is only 3stack mixer
++ * - and it is the same as in 861vd.
++ * adc_nids in ALC660vd are (is) the same as in 861vd
++ */
++static hda_nid_t alc660vd_dac_nids[3] = {
++	/* front, rear, clfe, rear_surr */
++	0x02, 0x04, 0x03
++};
 +
-+#define UDA1380_VERSION "0.5"
-+#define AUDIO_NAME "uda1380"
++static hda_nid_t alc861vd_adc_nids[1] = {
++	/* ADC0 */
++	0x09,
++};
++
++/* input MUX */
++/* FIXME: should be a matrix-type input source selection */
++static struct hda_input_mux alc861vd_capture_source = {
++	.num_items = 4,
++	.items = {
++		{ "Mic", 0x0 },
++		{ "Front Mic", 0x1 },
++		{ "Line", 0x2 },
++		{ "CD", 0x4 },
++	},
++};
++
++#define alc861vd_mux_enum_info alc_mux_enum_info
++#define alc861vd_mux_enum_get alc_mux_enum_get
++
++static int alc861vd_mux_enum_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct alc_spec *spec = codec->spec;
++	const struct hda_input_mux *imux = spec->input_mux;
++	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
++	static hda_nid_t capture_mixers[1] = { 0x22 };
++	hda_nid_t nid = capture_mixers[adc_idx];
++	unsigned int *cur_val = &spec->cur_mux[adc_idx];
++	unsigned int i, idx;
++
++	idx = ucontrol->value.enumerated.item[0];
++	if (idx >= imux->num_items)
++		idx = imux->num_items - 1;
++	if (*cur_val == idx && ! codec->in_resume)
++		return 0;
++	for (i = 0; i < imux->num_items; i++) {
++		unsigned int v = (i == idx) ? 0x7000 : 0x7080;
++		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE,
++				    v | (imux->items[i].index << 8));
++	}
++	*cur_val = idx;
++	return 1;
++}
++
 +/*
-+ * Debug
++ * 2ch mode
 + */
-+
-+#define UDA1380_DEBUG 0
-+
-+#ifdef UDA1380_DEBUG
-+#define dbg(format, arg...) \
-+	printk(KERN_DEBUG AUDIO_NAME ": " format "\n" , ## arg)
-+#else
-+#define dbg(format, arg...) do {} while (0)
-+#endif
-+
-+/*
-+ * uda1380 register cache
-+ */
-+static const u16 uda1380_reg[UDA1380_CACHEREGNUM] = {
-+    0x0502, 0x0000, 0x0000, 0x3f3f,
-+    0x0202, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0xff00, 0x0000, 0x4800,
-+    0x0000, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0x0000, 0x0000, 0x0000,
-+    0x0000, 0x8000, 0x0002, 0x0000,
++static struct hda_channel_mode alc861vd_3stack_2ch_modes[1] = {
++	{ 2, NULL }
 +};
 +
 +/*
-+ * read uda1380 register cache
++ * 6ch mode
 + */
-+static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
-+	unsigned int reg)
-+{
-+	u16 *cache = codec->reg_cache;
-+	if (reg == UDA1380_RESET)
-+		return 0;
-+	if (reg >= UDA1380_CACHEREGNUM)
-+		return -1;
-+	return cache[reg];
-+}
++static struct hda_verb alc861vd_6stack_ch6_init[] = {
++	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
++	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ } /* end */
++};
 +
 +/*
-+ * write uda1380 register cache
++ * 8ch mode
 + */
-+static inline void uda1380_write_reg_cache(struct snd_soc_codec *codec,
-+	u16 reg, unsigned int value)
-+{
-+	u16 *cache = codec->reg_cache;
-+	if (reg >= UDA1380_CACHEREGNUM)
-+		return;
-+	cache[reg] = value;
-+}
++static struct hda_verb alc861vd_6stack_ch8_init[] = {
++	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++	{ } /* end */
++};
++
++static struct hda_channel_mode alc861vd_6stack_modes[2] = {
++	{ 6, alc861vd_6stack_ch6_init },
++	{ 8, alc861vd_6stack_ch8_init },
++};
++
++static struct snd_kcontrol_new alc861vd_chmode_mixer[] = {
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Channel Mode",
++		.info = alc_ch_mode_info,
++		.get = alc_ch_mode_get,
++		.put = alc_ch_mode_put,
++	},
++	{ } /* end */
++};
++
++static struct snd_kcontrol_new alc861vd_capture_mixer[] = {
++	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
++
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		/* The multiple "Capture Source" controls confuse alsamixer
++		 * So call somewhat different..
++		 *FIXME: the controls appear in the "playback" view!
++		 */
++		/* .name = "Capture Source", */
++		.name = "Input Source",
++		.count = 1,
++		.info = alc861vd_mux_enum_info,
++		.get = alc861vd_mux_enum_get,
++		.put = alc861vd_mux_enum_put,
++	},
++	{ } /* end */
++};
++
++/* Pin assignment: Front=0x14, Rear=0x15, CLFE=0x16, Side=0x17
++ *                 Mic=0x18, Front Mic=0x19, Line-In=0x1a, HP=0x1b
++ */
++static struct snd_kcontrol_new alc861vd_6st_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Surround Playback Volume", 0x03, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
++
++	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x04, 1, 0x0,
++				HDA_OUTPUT),
++	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x04, 2, 0x0,
++				HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
++	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Side Playback Volume", 0x05, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Side Playback Switch", 0x0f, 2, HDA_INPUT),
++
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
++
++	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Front Mic Boost", 0x19, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
++	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
++
++	{ } /* end */
++};
++
++static struct snd_kcontrol_new alc861vd_3st_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
++
++	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Front Mic Boost", 0x19, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
++	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
++
++	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
++	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
++
++	{ } /* end */
++};
 +
 +/*
-+ * write to the UDA1380 register space
++ * generic initialization of ADC, input mixers and output mixers
 + */
-+static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
-+	unsigned int value)
++static struct hda_verb alc861vd_volume_init_verbs[] = {
++	/*
++	 * Unmute ADC0 and set the default input to mic-in
++	 */
++	{0x09, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++
++	/* Unmute input amps (CD, Line In, Mic 1 & Mic 2) of
++	 * the analog-loopback mixer widget
++	 */
++	/* Amp Indices: Mic1 = 0, Mic2 = 1, Line1 = 2, Line2 = 3, CD = 4 */
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(3)},
++	{0x0b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(4)},
++
++	/* Capture mixer: unmute Mic, F-Mic, Line, CD inputs */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(4)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(5)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(6)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(8)},
++
++	/*
++	 * Set up output mixers (0x02 - 0x05)
++	 */
++	/* set vol=0 to output mixers */
++	{0x02, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++
++	/* set up input amps for analog loopback */
++	/* Amp Indices: DAC = 0, mixer = 1 */
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++
++	{ }
++};
++
++/*
++ * 3-stack pin configuration:
++ * front = 0x14, mic/clfe = 0x18, HP = 0x19, line/surr = 0x1a, f-mic = 0x1b
++ */
++static struct hda_verb alc861vd_3stack_init_verbs[] = {
++	/*
++	 * Set pin mode and muting
++	 */
++	/* set front pin widgets 0x14 for output */
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	/* Mic (rear) pin: input vref at 80% */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Front Mic pin: input vref at 80% */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line In pin: input */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line-2 In: Headphone output (output 0 - 0x0c) */
++	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* CD pin widget for input */
++	{0x1c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++
++	{ }
++};
++
++/*
++ * 6-stack pin configuration:
++ */
++static struct hda_verb alc861vd_6stack_init_verbs[] = {
++	/*
++	 * Set pin mode and muting
++	 */
++	/* set front pin widgets 0x14 for output */
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	/* Rear Pin: output 1 (0x0d) */
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x01},
++	/* CLFE Pin: output 2 (0x0e) */
++	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x16, AC_VERB_SET_CONNECT_SEL, 0x02},
++	/* Side Pin: output 3 (0x0f) */
++	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x17, AC_VERB_SET_CONNECT_SEL, 0x03},
++
++	/* Mic (rear) pin: input vref at 80% */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Front Mic pin: input vref at 80% */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line In pin: input */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* Line-2 In: Headphone output (output 0 - 0x0c) */
++	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* CD pin widget for input */
++	{0x1c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
++
++	{ }
++};
++
++/* pcm configuration: identiacal with ALC880 */
++#define alc861vd_pcm_analog_playback	alc880_pcm_analog_playback
++#define alc861vd_pcm_analog_capture	alc880_pcm_analog_capture
++#define alc861vd_pcm_digital_playback	alc880_pcm_digital_playback
++#define alc861vd_pcm_digital_capture	alc880_pcm_digital_capture
++
++/*
++ * configuration and preset
++ */
++static const char *alc861vd_models[ALC861VD_MODEL_LAST] = {
++	[ALC660VD_3ST]		= "3stack-660",
++	[ALC861VD_3ST]		= "3stack",
++	[ALC861VD_3ST_DIG]	= "3stack-digout",
++	[ALC861VD_6ST_DIG]	= "6stack-digout",
++	[ALC861VD_AUTO]		= "auto",
++};
++
++static struct snd_pci_quirk alc861vd_cfg_tbl[] = {
++	SND_PCI_QUIRK(0x1043, 0x1339, "Asus G1", ALC660VD_3ST),
++	SND_PCI_QUIRK(0x10de, 0x03f0, "Realtek ALC660 demo", ALC660VD_3ST),
++	SND_PCI_QUIRK(0x1019, 0xa88d, "Realtek ALC660 demo", ALC660VD_3ST),
++
++	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo 3000 C200", ALC861VD_3ST),
++	{}
++};
++
++static struct alc_config_preset alc861vd_presets[] = {
++	[ALC660VD_3ST] = {
++		.mixers = { alc861vd_3st_mixer },
++		.init_verbs = { alc861vd_volume_init_verbs,
++				 alc861vd_3stack_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc660vd_dac_nids),
++		.dac_nids = alc660vd_dac_nids,
++		.num_adc_nids = ARRAY_SIZE(alc861vd_adc_nids),
++		.adc_nids = alc861vd_adc_nids,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_3stack_2ch_modes),
++		.channel_mode = alc861vd_3stack_2ch_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++	[ALC861VD_3ST] = {
++		.mixers = { alc861vd_3st_mixer },
++		.init_verbs = { alc861vd_volume_init_verbs,
++				 alc861vd_3stack_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc861vd_dac_nids),
++		.dac_nids = alc861vd_dac_nids,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_3stack_2ch_modes),
++		.channel_mode = alc861vd_3stack_2ch_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++	[ALC861VD_3ST_DIG] = {
++		.mixers = { alc861vd_3st_mixer },
++		.init_verbs = { alc861vd_volume_init_verbs,
++		 		 alc861vd_3stack_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc861vd_dac_nids),
++		.dac_nids = alc861vd_dac_nids,
++		.dig_out_nid = ALC861VD_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_3stack_2ch_modes),
++		.channel_mode = alc861vd_3stack_2ch_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++	[ALC861VD_6ST_DIG] = {
++		.mixers = { alc861vd_6st_mixer, alc861vd_chmode_mixer },
++		.init_verbs = { alc861vd_volume_init_verbs,
++				alc861vd_6stack_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc861vd_dac_nids),
++		.dac_nids = alc861vd_dac_nids,
++		.dig_out_nid = ALC861VD_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc861vd_6stack_modes),
++		.channel_mode = alc861vd_6stack_modes,
++		.input_mux = &alc861vd_capture_source,
++	},
++};
++
++/*
++ * BIOS auto configuration
++ */
++static void alc861vd_auto_set_output_and_unmute(struct hda_codec *codec,
++				hda_nid_t nid, int pin_type, int dac_idx)
 +{
-+	u8 data[3];
++	/* set as output */
++	snd_hda_codec_write(codec, nid, 0,
++				AC_VERB_SET_PIN_WIDGET_CONTROL, pin_type);
++	snd_hda_codec_write(codec, nid, 0,
++				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
++}
 +
-+	/* data is
-+	 *   data[0] is register offset
-+	 *   data[1] is MS byte
-+	 *   data[2] is LS byte
-+	 */
-+	data[0] = reg;
-+	data[1] = (value & 0xff00) >> 8;
-+	data[2] = value & 0x00ff;
++static void alc861vd_auto_init_multi_out(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
 +
-+	uda1380_write_reg_cache (codec, reg, value);
++	for (i = 0; i <= HDA_SIDE; i++) {
++		hda_nid_t nid = spec->autocfg.line_out_pins[i];
++		if (nid)
++			alc861vd_auto_set_output_and_unmute(codec, nid,
++								PIN_OUT, i);
++	}
++}
 +
-+	/* the interpolator & decimator regs must only be written when the
-+	 * codec DAI is active.
-+	 */
-+	if (!codec->active && (reg >= UDA1380_MVOL))
-+		return 0;
-+	dbg("uda hw write %x val %x\n", reg, value);
-+	if (codec->hw_write(codec->control_data, data, 3) == 3) {
-+		unsigned int val;
-+		i2c_master_send(codec->control_data, data, 1);
-+		i2c_master_recv(codec->control_data, data, 2);
-+		val = (data[0]<<8) | data[1];
-+		if (val != value) {
-+			dbg("READ BACK VAL %x\n", (data[0]<<8) | data[1]);
-+			return -EIO;
++
++static void alc861vd_auto_init_hp_out(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	hda_nid_t pin;
++
++	pin = spec->autocfg.hp_pins[0];
++	if (pin) /* connect to front and  use dac 0 */
++		alc861vd_auto_set_output_and_unmute(codec, pin, PIN_HP, 0);
++}
++
++#define alc861vd_is_input_pin(nid)	alc880_is_input_pin(nid)
++#define ALC861VD_PIN_CD_NID		ALC880_PIN_CD_NID
++
++static void alc861vd_auto_init_analog_input(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
++
++	for (i = 0; i < AUTO_PIN_LAST; i++) {
++		hda_nid_t nid = spec->autocfg.input_pins[i];
++		if (alc861vd_is_input_pin(nid)) {
++			snd_hda_codec_write(codec, nid, 0,
++					AC_VERB_SET_PIN_WIDGET_CONTROL,
++					i <= AUTO_PIN_FRONT_MIC ?
++							PIN_VREF80 : PIN_IN);
++			if (nid != ALC861VD_PIN_CD_NID)
++				snd_hda_codec_write(codec, nid, 0,
++						AC_VERB_SET_AMP_GAIN_MUTE,
++						AMP_OUT_MUTE);
 +		}
-+		return 0;
-+	} else
-+		return -EIO;
++	}
 +}
 +
-+#define uda1380_reset(c)	uda1380_write(c, UDA1380_RESET, 0)
++#define alc861vd_idx_to_mixer_vol(nid)		((nid) + 0x02)
++#define alc861vd_idx_to_mixer_switch(nid)	((nid) + 0x0c)
 +
-+/* declarations of ALSA reg_elem_REAL controls */
-+static const char *uda1380_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz",
-+	"96kHz"};
-+static const char *uda1380_input_sel[] = {"Line", "Mic"};
-+static const char *uda1380_output_sel[] = {"Direct", "Mixer"};
-+static const char *uda1380_spf_mode[] = {"Flat", "Minimum1", "Minimum2", "Maximum"};
-+
-+static const struct soc_enum uda1380_enum[] = {
-+	SOC_ENUM_DOUBLE(UDA1380_DEEMP, 0, 8, 5, uda1380_deemp),
-+	SOC_ENUM_SINGLE(UDA1380_ADC, 3, 2, uda1380_input_sel),
-+	SOC_ENUM_SINGLE(UDA1380_MODE, 14, 4, uda1380_spf_mode),
-+	SOC_ENUM_SINGLE(UDA1380_PM, 7, 2, uda1380_output_sel), /* R02_EN_AVC */
-+};
-+
-+static const struct snd_kcontrol_new uda1380_snd_controls[] = {
-+	SOC_DOUBLE("Playback Volume", UDA1380_MVOL, 0, 8, 255, 1),
-+	SOC_DOUBLE("Mixer Volume", UDA1380_MIXVOL, 0, 8, 255, 1),
-+	SOC_ENUM("Sound Processing Filter Mode", uda1380_enum[2]),
-+	SOC_DOUBLE("Treble Volume", UDA1380_MODE, 4, 12, 3, 0),
-+	SOC_DOUBLE("Bass Volume", UDA1380_MODE, 0, 8, 15, 0),
-+	SOC_ENUM("Playback De-emphasis", uda1380_enum[0]),
-+	SOC_DOUBLE("Capture Volume", UDA1380_DEC, 0, 8, 127, 0),
-+	SOC_DOUBLE("Line Capture Volume", UDA1380_PGA, 0, 8, 15, 0),
-+	SOC_SINGLE("Mic Capture Volume", UDA1380_PGA, 8, 11, 0),
-+	SOC_DOUBLE("Playback Switch", UDA1380_DEEMP, 3, 11, 1, 1),
-+	SOC_SINGLE("Capture Switch", UDA1380_PGA, 15, 1, 0),
-+	SOC_SINGLE("AGC Timing", UDA1380_AGC, 8, 7, 0),
-+	SOC_SINGLE("AGC Target level", UDA1380_AGC, 2, 3, 1),
-+	SOC_SINGLE("AGC Switch", UDA1380_AGC, 0, 1, 0),
-+	SOC_SINGLE("Silence", UDA1380_MIXER, 7, 1, 0),
-+	SOC_SINGLE("Silence Detection", UDA1380_MIXER, 6, 1, 0),
-+};
-+
-+/* add non dapm controls */
-+static int uda1380_add_controls(struct snd_soc_codec *codec)
++/* add playback controls from the parsed DAC table */
++/* Based on ALC880 version. But ALC861VD has separate,
++ * different NIDs for mute/unmute switch and volume control */
++static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
++					     const struct auto_pin_cfg *cfg)
 +{
-+	int err, i;
++	char name[32];
++	static const char *chname[4] = {"Front", "Surround", "CLFE", "Side"};
++	hda_nid_t nid_v, nid_s;
++	int i, err;
 +
-+	for (i = 0; i < ARRAY_SIZE(uda1380_snd_controls); i++) {
-+		err = snd_ctl_add(codec->card,
-+			snd_soc_cnew(&uda1380_snd_controls[i],codec, NULL));
-+		if (err < 0)
++	for (i = 0; i < cfg->line_outs; i++) {
++		if (! spec->multiout.dac_nids[i])
++			continue;
++		nid_v = alc861vd_idx_to_mixer_vol(
++				alc880_dac_to_idx(
++					spec->multiout.dac_nids[i]));
++		nid_s = alc861vd_idx_to_mixer_switch(
++				alc880_dac_to_idx(
++					spec->multiout.dac_nids[i]));
++
++		if (i == 2) {
++			/* Center/LFE */
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL,
++						"Center Playback Volume",
++						HDA_COMPOSE_AMP_VAL(nid_v, 1,
++							0, HDA_OUTPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL,
++						"LFE Playback Volume",
++						HDA_COMPOSE_AMP_VAL(nid_v, 2,
++							0, HDA_OUTPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE,
++						"Center Playback Switch",
++						HDA_COMPOSE_AMP_VAL(nid_s, 1,
++						2, HDA_INPUT))) < 0)
++				return err;
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE,
++						"LFE Playback Switch",
++						HDA_COMPOSE_AMP_VAL(nid_s, 2,
++						2, HDA_INPUT))) < 0)
++				return err;
++		} else {
++			sprintf(name, "%s Playback Volume", chname[i]);
++			if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
++						HDA_COMPOSE_AMP_VAL(nid_v, 3,
++							0, HDA_OUTPUT))) < 0)
++				return err;
++			sprintf(name, "%s Playback Switch", chname[i]);
++			if ((err = add_control(spec, ALC_CTL_BIND_MUTE, name,
++						HDA_COMPOSE_AMP_VAL(nid_v, 3,
++							2, HDA_INPUT))) < 0)
++				return err;
++		}
++	}
++	return 0;
++}
++
++/* add playback controls for speaker and HP outputs */
++/* Based on ALC880 version. But ALC861VD has separate,
++ * different NIDs for mute/unmute switch and volume control */
++static int alc861vd_auto_create_extra_out(struct alc_spec *spec,
++					hda_nid_t pin, const char *pfx)
++{
++	hda_nid_t nid_v, nid_s;
++	int err;
++	char name[32];
++
++	if (! pin)
++		return 0;
++
++	if (alc880_is_fixed_pin(pin)) {
++		nid_v = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
++		/* specify the DAC as the extra output */
++		if (! spec->multiout.hp_nid)
++			spec->multiout.hp_nid = nid_v;
++		else
++			spec->multiout.extra_out_nid[0] = nid_v;
++		/* control HP volume/switch on the output mixer amp */
++		nid_v = alc861vd_idx_to_mixer_vol(
++				alc880_fixed_pin_idx(pin));
++		nid_s = alc861vd_idx_to_mixer_switch(
++				alc880_fixed_pin_idx(pin));
++
++		sprintf(name, "%s Playback Volume", pfx);
++		if ((err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
++				HDA_COMPOSE_AMP_VAL(nid_v, 3, 0,
++							HDA_OUTPUT))) < 0)
++			return err;
++		sprintf(name, "%s Playback Switch", pfx);
++		if ((err = add_control(spec, ALC_CTL_BIND_MUTE, name,
++				HDA_COMPOSE_AMP_VAL(nid_s, 3, 2,
++							HDA_INPUT))) < 0)
++			return err;
++	} else if (alc880_is_multi_pin(pin)) {
++		/* set manual connection */
++		/* we have only a switch on HP-out PIN */
++		sprintf(name, "%s Playback Switch", pfx);
++		if ((err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
++				HDA_COMPOSE_AMP_VAL(pin, 3, 0,
++							HDA_OUTPUT))) < 0)
 +			return err;
 +	}
-+
 +	return 0;
 +}
 +
-+/* Input mux */
-+static const struct snd_kcontrol_new uda1380_input_mux_control =
-+	SOC_DAPM_ENUM("Input Select", uda1380_enum[1]);
-+
-+/* Output mux */
-+static const struct snd_kcontrol_new uda1380_output_mux_control =
-+	SOC_DAPM_ENUM("Output Select", uda1380_enum[3]);
-+
-+static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
-+	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
-+		&uda1380_input_mux_control),
-+	SND_SOC_DAPM_MUX("Output Mux", SND_SOC_NOPM, 0, 0,
-+		&uda1380_output_mux_control),
-+	SND_SOC_DAPM_PGA("Left PGA", UDA1380_PM, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Right PGA", UDA1380_PM, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mic LNA", UDA1380_PM, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", UDA1380_PM, 2, 0),
-+	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", UDA1380_PM, 0, 0),
-+	SND_SOC_DAPM_INPUT("VINM"),
-+	SND_SOC_DAPM_INPUT("VINL"),
-+	SND_SOC_DAPM_INPUT("VINR"),
-+	SND_SOC_DAPM_MIXER("Analog Mixer", UDA1380_PM, 6, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("VOUTLHP"),
-+	SND_SOC_DAPM_OUTPUT("VOUTRHP"),
-+	SND_SOC_DAPM_OUTPUT("VOUTL"),
-+	SND_SOC_DAPM_OUTPUT("VOUTR"),
-+	SND_SOC_DAPM_DAC("DAC", "Playback", UDA1380_PM, 10, 0),
-+	SND_SOC_DAPM_PGA("HeadPhone Driver", UDA1380_PM, 13, 0, NULL, 0),
-+};
-+
-+static const char *audio_map[][3] = {
-+
-+	/* output mux */
-+	{"HeadPhone Driver", NULL, "Output Mux"},
-+	{"VOUTR", NULL, "Output Mux"},
-+	{"VOUTL", NULL, "Output Mux"},
-+
-+	{"Analog Mixer", NULL, "VINR"},
-+	{"Analog Mixer", NULL, "VINL"},
-+	{"Analog Mixer", NULL, "DAC"},
-+
-+	{"Output Mux", "Direct", "DAC"},
-+	{"Output Mux", "Mixer", "Analog Mixer"},
-+
-+	/* headphone driver */
-+	{"VOUTLHP", NULL, "HeadPhone Driver"},
-+	{"VOUTRHP", NULL, "HeadPhone Driver"},
-+
-+	/* input mux */
-+	{"Left ADC", NULL, "Input Mux"},
-+	{"Input Mux", "Mic", "Mic LNA"},
-+	{"Input Mux", "Line", "Left PGA"},
-+
-+	/* right input */
-+	{"Right ADC", NULL, "Right PGA"},
-+
-+	/* inputs */
-+	{"Mic LNA", NULL, "VINM"},
-+	{"Left PGA", NULL, "VINL"},
-+	{"Right PGA", NULL, "VINR"},
-+
-+	/* terminator */
-+	{NULL, NULL, NULL},
-+};
-+
-+static int uda1380_add_widgets(struct snd_soc_codec *codec)
++/* parse the BIOS configuration and set up the alc_spec
++ * return 1 if successful, 0 if the proper config is not found,
++ * or a negative error code
++ * Based on ALC880 version - had to change it to override
++ * alc880_auto_create_extra_out and alc880_auto_create_multi_out_ctls */
++static int alc861vd_parse_auto_config(struct hda_codec *codec)
 +{
-+	int i;
++	struct alc_spec *spec = codec->spec;
++	int err;
++	static hda_nid_t alc861vd_ignore[] = { 0x1d, 0 };
 +
-+	for(i = 0; i < ARRAY_SIZE(uda1380_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &uda1380_dapm_widgets[i]);
-+	}
++	if ((err = snd_hda_parse_pin_def_config(codec, &spec->autocfg,
++						alc861vd_ignore)) < 0)
++		return err;
++	if (! spec->autocfg.line_outs)
++		return 0; /* can't find valid BIOS pin config */
 +
-+	/* set up audio path interconnects */
-+	for(i = 0; audio_map[i][0] != NULL; i++) {
-+		snd_soc_dapm_connect_input(codec, audio_map[i][0],
-+			audio_map[i][1], audio_map[i][2]);
-+	}
++	if ((err = alc880_auto_fill_dac_nids(spec, &spec->autocfg)) < 0 ||
++		(err = alc861vd_auto_create_multi_out_ctls(spec,
++			&spec->autocfg)) < 0 ||
++		(err = alc861vd_auto_create_extra_out(spec,
++			spec->autocfg.speaker_pins[0], "Speaker")) < 0 ||
++		(err = alc861vd_auto_create_extra_out(spec,
++			spec->autocfg.hp_pins[0], "Headphone")) < 0 ||
++		(err = alc880_auto_create_analog_input_ctls(spec,
++			&spec->autocfg)) < 0)
++		return err;
 +
-+	snd_soc_dapm_new_widgets(codec);
-+	return 0;
++	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
++
++	if (spec->autocfg.dig_out_pin)
++		spec->multiout.dig_out_nid = ALC861VD_DIGOUT_NID;
++
++	if (spec->kctl_alloc)
++		spec->mixers[spec->num_mixers++] = spec->kctl_alloc;
++
++	spec->init_verbs[spec->num_init_verbs++]
++		= alc861vd_volume_init_verbs;
++
++	spec->num_mux_defs = 1;
++	spec->input_mux = &spec->private_imux;
++
++	return 1;
 +}
 +
-+static int uda1380_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
-+		unsigned int fmt)
++/* additional initialization for auto-configuration model */
++static void alc861vd_auto_init(struct hda_codec *codec)
 +{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	int iface;
-+	/* set up DAI based upon fmt */
-+
-+	iface = uda1380_read_reg_cache (codec, UDA1380_IFACE);
-+	iface &= ~(R01_SFORI_MASK | R01_SIM | R01_SFORO_MASK);
-+
-+	/* FIXME: how to select I2S for DATAO and MSB for DATAI correctly? */
-+	switch(fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		iface |= R01_SFORI_I2S | R01_SFORO_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LSB:
-+		iface |= R01_SFORI_LSB16 | R01_SFORO_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_MSB:
-+		iface |= R01_SFORI_MSB | R01_SFORO_I2S;
-+	}
-+
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBM_CFM) {
-+		iface |= R01_SIM;
-+	}
-+
-+	uda1380_write(codec, UDA1380_IFACE, iface);
-+
-+	return 0;
++	alc861vd_auto_init_multi_out(codec);
++	alc861vd_auto_init_hp_out(codec);
++	alc861vd_auto_init_analog_input(codec);
 +}
 +
-+/*
-+ * Flush reg cache
-+ * We can only write the interpolator and decimator registers
-+ * when the DAI is being clocked by the CPU DAI. It's up to the
-+ * machine and cpu DAI driver to do this before we are called.
-+ */
-+static int uda1380_pcm_prepare(struct snd_pcm_substream *substream)
++static int patch_alc861vd(struct hda_codec *codec)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int reg, reg_start, reg_end, clk;
++	struct alc_spec *spec;
++	int err, board_config;
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		reg_start = UDA1380_MVOL;
-+		reg_end = UDA1380_MIXER;
-+	} else {
-+		reg_start = UDA1380_DEC;
-+		reg_end = UDA1380_AGC;
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
++	if (spec == NULL)
++		return -ENOMEM;
++
++	codec->spec = spec;
++
++	board_config = snd_hda_check_board_config(codec, ALC861VD_MODEL_LAST,
++						  alc861vd_models,
++						  alc861vd_cfg_tbl);
++
++	if (board_config < 0 || board_config >= ALC861VD_MODEL_LAST) {
++		printk(KERN_INFO "hda_codec: Unknown model for ALC660VD/"
++			"ALC861VD, trying auto-probe from BIOS...\n");
++		board_config = ALC861VD_AUTO;
 +	}
 +
-+	/* FIXME disable DAC_CLK */
-+	clk = uda1380_read_reg_cache (codec, 00);
-+	uda1380_write(codec, UDA1380_CLK, clk & ~R00_DAC_CLK);
-+
-+	for (reg = reg_start; reg <= reg_end; reg++ ) {
-+		dbg("reg %x val %x\n",reg, uda1380_read_reg_cache (codec, reg));
-+		uda1380_write(codec, reg, uda1380_read_reg_cache (codec, reg));
-+	}
-+
-+	/* FIXME enable DAC_CLK */
-+	uda1380_write(codec, UDA1380_CLK, clk | R00_DAC_CLK);
-+
-+	return 0;
-+}
-+
-+static int uda1380_pcm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
-+
-+	/* set WSPLL power and divider if running from this clock */
-+	if (clk & R00_DAC_CLK) {
-+		int rate = params_rate(params);
-+		u16 pm = uda1380_read_reg_cache(codec, UDA1380_PM);
-+		clk &= ~0x3; /* clear SEL_LOOP_DIV */
-+		switch (rate) {
-+		case 6250 ... 12500:
-+			clk |= 0x0;
-+			break;
-+		case 12501 ... 25000:
-+			clk |= 0x1;
-+			break;
-+		case 25001 ... 50000:
-+			clk |= 0x2;
-+			break;
-+		case 50001 ... 100000:
-+			clk |= 0x3;
-+			break;
++	if (board_config == ALC861VD_AUTO) {
++		/* automatic parse from the BIOS config */
++		err = alc861vd_parse_auto_config(codec);
++		if (err < 0) {
++			alc_free(codec);
++			return err;
++		} else if (! err) {
++			printk(KERN_INFO
++			       "hda_codec: Cannot set up configuration "
++			       "from BIOS.  Using base mode...\n");
++			board_config = ALC861VD_3ST;
 +		}
-+		uda1380_write(codec, UDA1380_PM, R02_PON_PLL | pm);
 +	}
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		clk |= R00_EN_DAC | R00_EN_INT;
-+	else
-+		clk |= R00_EN_ADC | R00_EN_DEC;
++	if (board_config != ALC861VD_AUTO)
++		setup_preset(spec, &alc861vd_presets[board_config]);
 +
-+	uda1380_write(codec, UDA1380_CLK, clk);
-+	return 0;
-+}
++	spec->stream_name_analog = "ALC861VD Analog";
++	spec->stream_analog_playback = &alc861vd_pcm_analog_playback;
++	spec->stream_analog_capture = &alc861vd_pcm_analog_capture;
 +
-+static void uda1380_pcm_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
++	spec->stream_name_digital = "ALC861VD Digital";
++	spec->stream_digital_playback = &alc861vd_pcm_digital_playback;
++	spec->stream_digital_capture = &alc861vd_pcm_digital_capture;
 +
-+	/* shut down WSPLL power if running from this clock */
-+	if (clk & R00_DAC_CLK) {
-+		u16 pm = uda1380_read_reg_cache(codec, UDA1380_PM);
-+		uda1380_write(codec, UDA1380_PM, ~R02_PON_PLL & pm);
-+	}
++	spec->adc_nids = alc861vd_adc_nids;
++	spec->num_adc_nids = ARRAY_SIZE(alc861vd_adc_nids);
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		clk &= ~(R00_EN_DAC | R00_EN_INT);
-+	else
-+		clk &= ~(R00_EN_ADC | R00_EN_DEC);
++	spec->mixers[spec->num_mixers] = alc861vd_capture_mixer;
++	spec->num_mixers++;
 +
-+	uda1380_write(codec, UDA1380_CLK, clk);
-+}
++	codec->patch_ops = alc_patch_ops;
 +
-+static int uda1380_mute(struct snd_soc_codec_dai *codec_dai, int mute)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u16 mute_reg = uda1380_read_reg_cache(codec, UDA1380_DEEMP) & 0xbfff;
++	if (board_config == ALC861VD_AUTO)
++		spec->init_hook = alc861vd_auto_init;
 +
-+	/* FIXME: mute(codec,0) is called when the magician clock is already
-+	 * set to WSPLL, but for some unknown reason writing to interpolator
-+	 * registers works only when clocked by SYSCLK */
-+	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
-+	uda1380_write(codec, UDA1380_CLK, ~R00_DAC_CLK & clk);
-+	if(mute)
-+		uda1380_write(codec, UDA1380_DEEMP, mute_reg | 0x4000);
-+	else
-+		uda1380_write(codec, UDA1380_DEEMP, mute_reg);
-+	uda1380_write(codec, UDA1380_CLK, clk);
-+	return 0;
-+}
-+
-+static int uda1380_dapm_event(struct snd_soc_codec *codec, int event)
-+{
-+	int pm = uda1380_read_reg_cache(codec, UDA1380_PM);
-+
-+	switch (event) {
-+		case SNDRV_CTL_POWER_D0: /* full On */
-+		case SNDRV_CTL_POWER_D1: /* partial On */
-+		case SNDRV_CTL_POWER_D2: /* partial On */
-+			/* enable internal bias */
-+			uda1380_write(codec, UDA1380_PM, R02_PON_BIAS | pm);
-+			break;
-+		case SNDRV_CTL_POWER_D3hot: /* Off, with power */
-+			/* everything off except internal bias */
-+			uda1380_write(codec, UDA1380_PM, R02_PON_BIAS);
-+			break;
-+		case SNDRV_CTL_POWER_D3cold: /* Off, without power */
-+			/* everything off, inactive */
-+			uda1380_write(codec, UDA1380_PM, 0x0);
-+			break;
-+	}
-+	codec->dapm_state = event;
-+	return 0;
-+}
-+
-+#define UDA1380_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
-+		SNDRV_PCM_RATE_48000)
-+
-+struct snd_soc_codec_dai uda1380_dai[] = {
-+{
-+	.name = "UDA1380",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA1380_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA1380_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = {
-+		.hw_params = uda1380_pcm_hw_params,
-+		.shutdown = uda1380_pcm_shutdown,
-+		.prepare = uda1380_pcm_prepare,
-+	},
-+	.dai_ops = {
-+		.digital_mute = uda1380_mute,
-+		.set_fmt = uda1380_set_dai_fmt,
-+	},
-+},
-+{/* playback only  - dual interface */
-+	.name = "UDA1380",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA1380_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = {
-+		.hw_params = uda1380_pcm_hw_params,
-+		.shutdown = uda1380_pcm_shutdown,
-+		.prepare = uda1380_pcm_prepare,
-+	},
-+	.dai_ops = {
-+		.digital_mute = uda1380_mute,
-+		.set_fmt = uda1380_set_dai_fmt,
-+	},
-+},
-+{ /* capture only - dual interface*/
-+	.name = "UDA1380",
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = UDA1380_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = {
-+		.hw_params = uda1380_pcm_hw_params,
-+		.shutdown = uda1380_pcm_shutdown,
-+		.prepare = uda1380_pcm_prepare,
-+	},
-+	.dai_ops = {
-+		.set_fmt = uda1380_set_dai_fmt,
-+	},
-+},
-+};
-+EXPORT_SYMBOL_GPL(uda1380_dai);
-+
-+static int uda1380_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
-+	return 0;
-+}
-+
-+static int uda1380_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int i;
-+	u8 data[2];
-+	u16 *cache = codec->reg_cache;
-+
-+	/* Sync reg_cache with the hardware */
-+	for (i = 0; i < ARRAY_SIZE(uda1380_reg); i++) {
-+		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
-+		data[1] = cache[i] & 0x00ff;
-+		codec->hw_write(codec->control_data, data, 2);
-+	}
-+	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+	uda1380_dapm_event(codec, codec->suspend_dapm_state);
 +	return 0;
 +}
 +
 +/*
-+ * initialise the UDA1380 driver
-+ * register the mixer and dsp interfaces with the kernel
-+ */
-+static int uda1380_init(struct snd_soc_device *socdev, int dac_clk)
-+{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int ret = 0;
-+
-+	codec->name = "UDA1380";
-+	codec->owner = THIS_MODULE;
-+	codec->read = uda1380_read_reg_cache;
-+	codec->write = uda1380_write;
-+	codec->dapm_event = uda1380_dapm_event;
-+	codec->dai = uda1380_dai;
-+	codec->num_dai = ARRAY_SIZE(uda1380_dai);
-+	codec->reg_cache_size = ARRAY_SIZE(uda1380_reg);
-+	codec->reg_cache =
-+			kzalloc(sizeof(u16) * ARRAY_SIZE(uda1380_reg), GFP_KERNEL);
-+	if (codec->reg_cache == NULL)
-+		return -ENOMEM;
-+	memcpy(codec->reg_cache, uda1380_reg,
-+		sizeof(u16) * ARRAY_SIZE(uda1380_reg));
-+	codec->reg_cache_size = sizeof(u16) * ARRAY_SIZE(uda1380_reg);
-+	uda1380_reset(codec);
-+
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if(ret < 0) {
-+		printk(KERN_ERR "uda1380: failed to create pcms\n");
-+		goto pcm_err;
-+	}
-+
-+	/* power on device */
-+	uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+	/* set clock input */
-+	switch (dac_clk) {
-+	case UDA1380_DAC_CLK_SYSCLK:
-+		uda1380_write(codec, UDA1380_CLK, 0);
-+		break;
-+	case UDA1380_DAC_CLK_WSPLL:
-+		uda1380_write(codec, UDA1380_CLK, R00_DAC_CLK);
-+		break;
-+	}
-+
-+	/* uda1380 init */
-+	uda1380_add_controls(codec);
-+	uda1380_add_widgets(codec);
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+      	printk(KERN_ERR "uda1380: failed to register card\n");
-+		goto card_err;
-+    }
-+
-+	return ret;
-+
-+card_err:
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+pcm_err:
-+	kfree(codec->reg_cache);
-+	return ret;
-+}
-+
-+static struct snd_soc_device *uda1380_socdev;
-+
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+
-+#define I2C_DRIVERID_UDA1380 0xfefe /* liam -  need a proper id */
-+
-+static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
-+
-+/* Magic definition of all other variables and things */
-+I2C_CLIENT_INSMOD;
-+
-+static struct i2c_driver uda1380_i2c_driver;
-+static struct i2c_client client_template;
-+
-+/* If the i2c layer weren't so broken, we could pass this kind of data
-+   around */
-+
-+static int uda1380_codec_probe(struct i2c_adapter *adap, int addr, int kind)
-+{
-+	struct snd_soc_device *socdev = uda1380_socdev;
-+	struct uda1380_setup_data *setup = socdev->codec_data;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct i2c_client *i2c;
-+	int ret;
-+
-+	if (addr != setup->i2c_address)
-+		return -ENODEV;
-+
-+	client_template.adapter = adap;
-+	client_template.addr = addr;
-+
-+	i2c = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
-+	if (i2c == NULL){
-+		kfree(codec);
-+		return -ENOMEM;
-+	}
-+	memcpy(i2c, &client_template, sizeof(struct i2c_client));
-+	i2c_set_clientdata(i2c, codec);
-+	codec->control_data = i2c;
-+
-+	ret = i2c_attach_client(i2c);
-+	if(ret < 0) {
-+		printk(KERN_ERR "failed to attach codec at addr %x\n", addr);
-+		goto err;
-+	}
-+
-+	ret = uda1380_init(socdev, setup->dac_clk);
-+	if(ret < 0) {
-+		printk(KERN_ERR "failed to initialise UDA1380\n");
-+		goto err;
-+	}
-+	return ret;
-+
-+err:
-+	kfree(codec);
-+	kfree(i2c);
-+	return ret;
-+}
-+
-+static int uda1380_i2c_detach(struct i2c_client *client)
-+{
-+	struct snd_soc_codec* codec = i2c_get_clientdata(client);
-+	i2c_detach_client(client);
-+	kfree(codec->reg_cache);
-+	kfree(client);
-+	return 0;
-+}
-+
-+static int uda1380_i2c_attach(struct i2c_adapter *adap)
-+{
-+	return i2c_probe(adap, &addr_data, uda1380_codec_probe);
-+}
-+
-+/* corgi i2c codec control layer */
-+static struct i2c_driver uda1380_i2c_driver = {
-+	.driver = {
-+		.name =  "UDA1380 I2C Codec",
-+		.owner = THIS_MODULE,
-+	},
-+	.id =             I2C_DRIVERID_UDA1380,
-+	.attach_adapter = uda1380_i2c_attach,
-+	.detach_client =  uda1380_i2c_detach,
-+	.command =        NULL,
-+};
-+
-+static struct i2c_client client_template = {
-+	.name =   "UDA1380",
-+	.driver = &uda1380_i2c_driver,
-+};
-+#endif
-+
-+static int uda1380_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct uda1380_setup_data *setup;
-+	struct snd_soc_codec* codec;
-+	int ret = 0;
-+
-+	printk(KERN_INFO "UDA1380 Audio Codec %s", UDA1380_VERSION);
-+
-+	setup = socdev->codec_data;
-+	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (codec == NULL)
-+		return -ENOMEM;
-+
-+	socdev->codec = codec;
-+	mutex_init(&codec->mutex);
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	uda1380_socdev = socdev;
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	if (setup->i2c_address) {
-+		normal_i2c[0] = setup->i2c_address;
-+		codec->hw_write = (hw_write_t)i2c_master_send;
-+		ret = i2c_add_driver(&uda1380_i2c_driver);
-+		if (ret != 0)
-+			printk(KERN_ERR "can't add i2c driver");
-+	}
-+#else
-+	/* Add other interfaces here */
-+#endif
-+	return ret;
-+}
-+
-+/* power down chip */
-+static int uda1380_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec* codec = socdev->codec;
-+
-+	if (codec->control_data)
-+		uda1380_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
-+
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	i2c_del_driver(&uda1380_i2c_driver);
-+#endif
-+	kfree(codec);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device soc_codec_dev_uda1380 = {
-+	.probe = 	uda1380_probe,
-+	.remove = 	uda1380_remove,
-+	.suspend = 	uda1380_suspend,
-+	.resume =	uda1380_resume,
-+};
-+
-+EXPORT_SYMBOL_GPL(soc_codec_dev_uda1380);
-+
-+MODULE_AUTHOR("Giorgio Padrin");
-+MODULE_DESCRIPTION("Audio support for codec Philips UDA1380");
-+MODULE_LICENSE("GPL");
-diff -r fc216dd0eb92 soc/codecs/uda1380.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/soc/codecs/uda1380.h	Wed Jan 31 16:43:17 2007 +0000
-@@ -0,0 +1,84 @@
-+/*
-+ * Audio support for Philips UDA1380
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * Copyright (c) 2005 Giorgio Padrin <giorgio@mandarinlogiq.org>
-+ */
-+
-+#define UDA1380_CLK		0x00
-+#define UDA1380_IFACE	0x01
-+#define UDA1380_PM		0x02
-+#define UDA1380_AMIX	0x03
-+#define UDA1380_HP		0x04
-+#define UDA1380_MVOL	0x10
-+#define UDA1380_MIXVOL	0x11
-+#define UDA1380_MODE	0x12
-+#define UDA1380_DEEMP	0x13
-+#define UDA1380_MIXER	0x14
-+#define UDA1380_INTSTAT	0x18
-+#define UDA1380_DEC		0x20
-+#define UDA1380_PGA		0x21
-+#define UDA1380_ADC		0x22
-+#define UDA1380_AGC		0x23
-+#define UDA1380_DECSTAT	0x28
-+#define UDA1380_RESET	0x7f
-+
-+#define UDA1380_CACHEREGNUM 0x24
-+
-+/* Register flags */
-+#define R00_EN_ADC	0x0800
-+#define R00_EN_DEC	0x0400
-+#define R00_EN_DAC	0x0200
-+#define R00_EN_INT	0x0100
-+#define R00_DAC_CLK	0x0010
-+#define R01_SFORI_I2S   0x0000
-+#define R01_SFORI_LSB16 0x0100
-+#define R01_SFORI_LSB18 0x0200
-+#define R01_SFORI_LSB20 0x0300
-+#define R01_SFORI_MSB   0x0500
-+#define R01_SFORI_MASK  0x0700
-+#define R01_SFORO_I2S   0x0000
-+#define R01_SFORO_LSB16 0x0001
-+#define R01_SFORO_LSB18 0x0002
-+#define R01_SFORO_LSB20 0x0003
-+#define R01_SFORO_LSB24 0x0004
-+#define R01_SFORO_MSB   0x0005
-+#define R01_SFORO_MASK  0x0007
-+#define R01_SEL_SOURCE  0x0040
-+#define R01_SIM		0x0010
-+#define R02_PON_PLL	0x8000
-+#define R02_PON_HP	0x2000
-+#define R02_PON_DAC	0x0400
-+#define R02_PON_BIAS	0x0100
-+#define R02_EN_AVC	0x0080
-+#define R02_PON_AVC	0x0040
-+#define R02_PON_LNA	0x0010
-+#define R02_PON_PGAL	0x0008
-+#define R02_PON_ADCL	0x0004
-+#define R02_PON_PGAR	0x0002
-+#define R02_PON_ADCR	0x0001
-+#define R13_MTM		0x4000
-+#define R14_SILENCE	0x0080
-+#define R14_SDET_ON	0x0040
-+#define R21_MT_ADC	0x8000
-+#define R22_SEL_LNA	0x0008
-+#define R22_SEL_MIC	0x0004
-+#define R22_SKIP_DCFIL	0x0002
-+#define R23_AGC_EN	0x0001
-+
-+struct uda1380_setup_data {
-+	unsigned short i2c_address;
-+	int            dac_clk;
-+#define UDA1380_DAC_CLK_SYSCLK 0
-+#define UDA1380_DAC_CLK_WSPLL  1
-+};
-+
-+#define UDA1380_DAI_DUPLEX		0 /* playback and capture on single DAI */
-+#define UDA1380_DAI_PLAYBACK	1 /* playback DAI */
-+#define UDA1380_DAI_CAPTURE		2 /* capture DAI */
-+
-+extern struct snd_soc_codec_dai uda1380_dai[3];
-+extern struct snd_soc_codec_device soc_codec_dev_uda1380;
-diff -r fc216dd0eb92 soc/codecs/Makefile
---- a/soc/codecs/Makefile	Thu Feb 01 16:52:06 2007 +0100
-+++ b/soc/codecs/Makefile	Fri Feb 02 15:25:51 2007 +0000
-@@ -2,8 +2,10 @@ snd-soc-wm8731-objs := wm8731.o
- snd-soc-wm8731-objs := wm8731.o
- snd-soc-wm8750-objs := wm8750.o
- snd-soc-wm9712-objs := wm9712.o
-+snd-soc-uda1380-objs := uda1380.o
- 
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
- obj-$(CONFIG_SND_SOC_WM8731)	+= snd-soc-wm8731.o
- obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
-+obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
-diff -r fc216dd0eb92 soc/codecs/Kconfig
---- a/soc/codecs/Kconfig	Thu Feb 01 16:52:06 2007 +0100
-+++ b/soc/codecs/Kconfig	Fri Feb 02 15:26:39 2007 +0000
-@@ -13,3 +13,7 @@ config SND_SOC_WM9712
- config SND_SOC_WM9712
- 	tristate
- 	depends on SND_SOC
-+
-+config SND_SOC_UDA1380
-+	tristate
-+	depends on SND_SOC
+  * patch entries
+  */
+ struct hda_codec_preset snd_hda_preset_realtek[] = {
+ 	{ .id = 0x10ec0260, .name = "ALC260", .patch = patch_alc260 },
+ 	{ .id = 0x10ec0262, .name = "ALC262", .patch = patch_alc262 },
+- 	{ .id = 0x10ec0880, .name = "ALC880", .patch = patch_alc880 },
++	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
++		.patch = patch_alc861 },
++	{ .id = 0x10ec0660, .name = "ALC660-VD", .patch = patch_alc861vd },
++	{ .id = 0x10ec0861, .name = "ALC861", .patch = patch_alc861 },
++	{ .id = 0x10ec0862, .name = "ALC861-VD", .patch = patch_alc861vd },
++	{ .id = 0x10ec0880, .name = "ALC880", .patch = patch_alc880 },
+ 	{ .id = 0x10ec0882, .name = "ALC882", .patch = patch_alc882 },
+ 	{ .id = 0x10ec0883, .name = "ALC883", .patch = patch_alc883 },
+ 	{ .id = 0x10ec0885, .name = "ALC885", .patch = patch_alc882 },
+ 	{ .id = 0x10ec0888, .name = "ALC888", .patch = patch_alc883 },
+-	{ .id = 0x10ec0861, .rev = 0x100300, .name = "ALC861",
+-	  .patch = patch_alc861 },
+-	{ .id = 0x10ec0861, .rev = 0x100340, .name = "ALC660",
+-	  .patch = patch_alc861 },
+-	{ .id = 0x10ec0660, .name = "ALC660", .patch = patch_alc861 },
+ 	{} /* terminator */
+ };
 
---=-QrEoUHm4OCbcjGWKZb3m
+--Boundary-00=_FD3wFRaZ2ALZgE7
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -916,7 +809,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-QrEoUHm4OCbcjGWKZb3m
+--Boundary-00=_FD3wFRaZ2ALZgE7
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -927,4 +820,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-QrEoUHm4OCbcjGWKZb3m--
+--Boundary-00=_FD3wFRaZ2ALZgE7--
