@@ -1,9 +1,9 @@
-From: "marion rundell" <mrundell@gmail.com>
-Subject: Re: What sound card?
-Date: Fri, 2 Feb 2007 00:09:40 -0600
-Message-ID: <19d301c74690$ba5276f0$1402a8c0@pcc41100>
+From: "Aditya Shankar" <mc.aditya@gmail.com>
+Subject: Query regarding ALSA control interface
+Date: Fri, 2 Feb 2007 12:22:40 +0530
+Message-ID: <24a2bfdf0702012252l30ddbb4cs3eebfbab8e11a5ba@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1262210003=="
+Content-Type: multipart/mixed; boundary="===============0705928905=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,79 +17,72 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============1262210003==
+--===============0705928905==
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_19D0_01C7465E.6EE52690"
+	boundary="----=_Part_15176_14550049.1170399160479"
 
-This is a multi-part message in MIME format.
+------=_Part_15176_14550049.1170399160479
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-------=_NextPart_000_19D0_01C7465E.6EE52690
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hi All,
 
-I have been searching for a way to get coax spdif out of a Linux 2.4 =
-system at 24 bit, 96 kHz.  I have been unsuccessful.
+I have a small query regarding mixer controls. I work on a custom ARM
+platform and am trying to get the control interface working.
 
-Through much research, we have found that regardless of what we try...we =
-are not going to get 24 bit, 96 kHz coax spdif out of 2.4.  I have =
-received NO responses from the dev groups.
+I have defined a kcontrols structure and have initialized the name field to
+"Master Capture Route". This does not show up as a control
+when i run alsamixer but works well in OSS Emulation mode.
 
-I think the real question that I need to ask the alsa-dev group is if I =
-am using Linux 2.6 (SUSI) or any Linux...what soundcard is the best to =
-get coax spdif out...at the above rate. =20
+I did a alsactl store and found this in asound.state file..
 
-Thanks.
+control.6 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 7 (step 1)'
+                iface MIXER
+                name 'Master Capture Route'
+                value 0
+        }
 
-Marion
-mrundell@gmail.com
+The value field is initialized to an integer value in the case off all other
+controls but here I find it to be 0. Is this the reason why i'm not finding
+the control in the alsamixer window.? Can anybody let me know? Or Is there a
+way to  get  the control component  working in both modes using a common
+name??
 
-------=_NextPart_000_19D0_01C7465E.6EE52690
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thanks in Advance,
+Aditya
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.5730.11" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV>I have been searching for a way to get coax spdif out of a Linux =
-2.4 system=20
-at 24 bit, 96 kHz.&nbsp; I have been unsuccessful.</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Through much research, we have found =
-that=20
-regardless of what we try...we are not going to get 24 bit, 96 kHz coax =
-spdif=20
-out of 2.4.&nbsp; I have received NO responses from the dev =
-groups.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I think the real question that I need =
-to ask the=20
-alsa-dev group is if I am using Linux 2.6 (SUSI) or any Linux...what =
-soundcard=20
-is the best to get coax spdif out...at the above rate.&nbsp; =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Marion</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><A=20
-href=3D"mailto:mrundell@gmail.com">mrundell@gmail.com</A><BR></FONT></DIV=
-></DIV></FONT></BODY></HTML>
+------=_Part_15176_14550049.1170399160479
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-------=_NextPart_000_19D0_01C7465E.6EE52690--
+<div>Hi All,</div>
+<div>&nbsp;</div>
+<div>I have a small query regarding mixer controls. I work on a custom ARM platform and am trying to get the control interface working.</div>
+<div>&nbsp;</div>
+<div>I have defined a kcontrols structure and have initialized the name field to &quot;Master Capture Route&quot;. This does not show up as a control </div>
+<div>when i run alsamixer but works well in OSS Emulation mode. </div>
+<div>&nbsp;</div>
+<div>I did a alsactl store and found this in asound.state file..</div>
+<div>&nbsp;</div>
+<div>control.6 {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comment.access &#39;read write&#39;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comment.type INTEGER<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comment.count 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comment.range &#39;0 - 7 (step 1)&#39;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iface MIXER
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name &#39;Master Capture Route&#39;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value 0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</div>
+<div>&nbsp;</div>
+<div>The value field is initialized to an integer value in the case off all other controls but here I find it to be 0. Is this the reason why i&#39;m not finding the control in the alsamixer window.? Can anybody let me know? Or&nbsp;Is there a way to &nbsp;get&nbsp; the control component &nbsp;working in both modes using a common name?? 
+</div>
+<div>&nbsp;</div>
+<div>Thanks in Advance,</div>
+<div>Aditya</div>
+
+------=_Part_15176_14550049.1170399160479--
 
 
-
---===============1262210003==
+--===============0705928905==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -100,7 +93,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1262210003==
+--===============0705928905==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,4 +104,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1262210003==--
+--===============0705928905==--
