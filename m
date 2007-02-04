@@ -1,9 +1,10 @@
-From: <MAILER-DAEMON@k66.ru>
-Subject: Undeliverable mail: Report
-Date: Sun, 04 Feb 2007 09:49:22 +0500
-Message-ID: <receipt-40073881@k66.ru>
+From: Ralf Hersel <ralf.hersel@gmx.net>
+Subject: HDA-Intel headphone problem
+Date: Sun, 04 Feb 2007 11:10:47 +0100
+Message-ID: <1170583847.6557.11.camel@hersel-r>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0792973363=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,76 +15,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa.jcu.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello
 
---===============0792973363==
-Content-Type: multipart/report; report-type="delivery-status";
-	boundary="_===40073881====k66.ru===_"
+After reading hunderts of forum messages with no result I would like to
+ask you.
 
+I'm not able to switch on the headphone jacks on my notebook.
 
---_===40073881====k66.ru===_
-Content-Type: text/plain; charset="utf-8"
+Configuration:
+Notebook: HP Pavilion dv9097ea
+Jack layout on front: 1 Mic-in, 1 Audio-out chinch, 1 Audio-SPDIF-out
+chinch
 
-Failed to deliver to 'mbremer@gmx.de'
-SMTP module(domain @87.224.128.21:gmx.de) reports:
- host mx0.gmx.net says:
- 550 5.1.1 does not want to receive mail from your address. ( http://www.gmx.net/serverrules )
+Soundcard and Codec:
+	ralf@hersel-r:~$ cat /proc/asound/cards
+	0 [Intel ]: HDA-Intel - HDA Intel
+	HDA Intel at 0xde300000 irq 66
+	1 [Headset ]: USB-Audio - Logitech USB Headset
+	Logitech Logitech USB Headset at usb-0000:00:1d.0-2, full speed
 
+	ralf@hersel-r:~$ head -n 1 /proc/asound/card0/codec*
+	Codec: Generic 14f1 ID 50
 
---_===40073881====k66.ru===_
-Content-Type: message/delivery-status
+ALSA-Mixer shows only 3 controls: Master, PCM, In-Gain.
+I tried all possible combination of control settings without success.
 
-Reporting-MTA: dns; k66.ru
+I tried these settings in /etc/modprobe.d/alsa-base:
+	3stack-digout
+	z71v
+	auto
+	3stack-dig
+Have not tried any 'position-fix' settings.
 
-Original-Recipient: rfc822;<mbremer@gmx.de>
-Final-Recipient: rfc822;<mbremer@gmx.de>
-Action: failed
-Status: 5.0.0
-
---_===40073881====k66.ru===_
-Content-Type: text/rfc822-headers
-
-Received: from [87.224.223.133] (HELO alsa.jcu.cz)
-  by k66.ru (CommuniGate Pro SMTP 4.3.12)
-  with ESMTP id 40073874 for mbremer@gmx.de; Sun, 04 Feb 2007 09:49:17 +0500
-From: alsa-devel@alsa.jcu.cz
-To: mbremer@gmx.de
-Subject: Report
-Date: Sun, 4 Feb 2007 09:53:40 +0500
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0010_F20AE09C.4D97E450"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <auto-000040073874@k66.ru>
-
---_===40073881====k66.ru===_--
+Thanks a lot for your help.
+Regards
+Ralf
 
 
---===============0792973363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0792973363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0792973363==--
