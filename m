@@ -1,11 +1,13 @@
-From: Gerald Grabner <gerald.grabner@gmx.net>
-Subject: seq: maximum number of events w.r.t. ordering in queue
-Date: Sun, 04 Feb 2007 20:04:49 +0100
-Message-ID: <45C62E51.3050608@gmx.net>
+From: Bjoern Fay <mail@bfay.de>
+Subject: Re: Edirol UA-101 patch ?
+Date: Sun, 04 Feb 2007 23:06:52 +0100
+Message-ID: <1170626812.3853.31.camel@main.chaos>
+References: <1170416804.45c324a4d7044@imp.free.fr>
+	<s5hirekjxw6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-g9/cpUuJTgjNFDfkS6o4"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hirekjxw6.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,103 +17,233 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, balkanboy@free.fr
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
 
-for simultaneously playing many midi tracks each with a large number
-of events, it would be convenient to output one track after the other
-in a simple loop, without caring about the ordering of the events.
+--=-g9/cpUuJTgjNFDfkS6o4
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Of course, this requires an output buffer large enough to hold all
-events, otherwise events of the later are postponed every time the
-buffer is full. But one question remains, at least for me:
-Is there a maximum number of events w.r.t. the ordering in a queue?
+Hello,
 
-Below is a simple test program that pumps a number of events in
-reverse tick order into the output buffer, i.e. starting with the
-latest tick (high hotes) and finishing with tick=0 (low notes).
-output_buffer_size, client_pool_output and client_pool_output_room are
-increased to have the capacity for all events. But still, the (high)
-notes with the lowest ticks are played only towards the end instead of
-at the beginning - obviously because they were output last. The
-ordering is failing.
+sorry for the long time, but I was a bit stressed and time was short.
 
-Is there a way to ensure that all events are played in correct order,
-regardless of when the are outputted?
+I didn't neither know what the sign-off is good for nor where to put it,
+so I put it at the end of the changelog. Hope that's o.k., if not put it
+where it belongs or mail me what to do.
 
-Many thanks,
-Gerald
+The patch is still again the debian source of the 2.6.18 Kernel, hope
+that's not a problem.
 
-BTW: alsa version = 1.0.11
+I also subscribed to the alsa-devel list now.
 
-**
+And as stated the first time, I'm not very familar with software
+development, so if there something I could/should do, just mail. I hope
+that it will not take so long for my answer/reaction the next time.
 
-#include <alsa/asoundlib.h>
-#include <stdio.h>
+If there is someone who has an idea how to manage this playback-sync
+problem or how to write a mixer (quirk) for the UA-101 (I think that
+it's not so difficult, if you have some knowledge in USB-Mixer for ALSA,
+but I can work without it and hence don't want to invest so much time to
+work that out alone), I am willing to do some tests or what else is
+needed.
 
-int main()
-{
-  // open sequencer
-  snd_seq_t* seq;
-  snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0) ;
-  int my_port = snd_seq_create_simple_port
-    ( seq, "standard port",
-      SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-      SND_SEQ_PORT_TYPE_APPLICATION) ;
+Greetings
+Bjoern
 
-  // number of events
-  unsigned int n = 600 ;
 
-  // buffer size for all events
-  unsigned int b = (n+1)*sizeof(snd_seq_event_t);
 
-  // set output buffer and client pool size
-  if ( snd_seq_set_output_buffer_size(seq,b) )
-    printf("Error setting output_buffer_size\n");
-  if ( snd_seq_set_client_pool_output(seq,b) )
-    printf("Error setting client_pool_output\n");
-  if ( snd_seq_set_client_pool_output_room(seq,b) )
-    printf("Error setting client_pool_output_room\n");
+Am Freitag, den 02.02.2007, 18:02 +0100 schrieb Takashi Iwai:
+> At Fri, 02 Feb 2007 12:46:44 +0100,
+> balkanboy@free.fr wrote:
+> > 
+> > Hello,
+> > 
+> > I browsed the archives of the mailing list and noticed a recent message from
+> > Bjoern Fay  about a possible patch for supporting the Edirol UA-101.
+> > 
+> > Will this patch be released soon and how to get it ?
+> 
+> The patch looked OK but as I already replied earlier, the following
+> things have to be fulfilled:
+> 
+> - create a unified patch (diff -ru) including all changes in a single
+>   patch file
+> - provide a proper changelog (summary and description of the patch)
+> - sign-off (Signed-off-by: XXX) from the author / submitter
+> 
+> Bjoern, could you do the above so that I can merge your patch to the
+> upstream?
+> 
+> 
+> Takashi
+> 
 
-  // connect to 21:0 (OPL3)
-  snd_seq_connect_to(seq, my_port, 21, 0);
+--=-g9/cpUuJTgjNFDfkS6o4
+Content-Disposition: attachment; filename=ua-101-changelog.txt
+Content-Type: text/plain; name=ua-101-changelog.txt; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-  // queue (default: 96 PPQ and 120 BPM)
-  int queue = snd_seq_alloc_queue(seq);
-  snd_seq_start_queue (seq, queue, NULL);
-  snd_seq_drain_output(seq);
+2007-02-04 Bjoern Fay mail@bfay.de
+	Added support for the Edirol UA-101 (only in high-speed mode) by taking the quirks for the UA-1000 and change them accordingly. Changes were made in "usbaudio.c", "usbaudio.h", and "usbquirks.h"
+	MIDI and recording seem to work perfectly (with JACK), but playback gives some few glitches. I think that's the mentioned synchronizing-problem in the UA-1000 quirk ("FIXME: playback must be synchronized to capture"), so I didn't change that.
+	ToDo: Adding Mixer-Support for the built-in control-panel/patch-bay/router.
 
-  // set and schedule events
-  snd_seq_event_t ev ;
-  snd_seq_ev_clear(&ev);
-  snd_seq_ev_set_subs(&ev);
-  snd_seq_ev_set_noteon(&ev,0,60,127);
-  unsigned int i;
-  for ( i=0 ; i<n ; i++ )
-    {
-      // note range: 12-107
-      ev.data.note.note = (unsigned char) (12+(107-12)*i/(n-1));
-      // tick in decreasing order, total length = 4 quarters
-      snd_seq_ev_schedule_tick(&ev, queue, 0, (n-1-i)*96*4/n);
-      // output event
-      snd_seq_event_output(seq, &ev);
-    }
-  printf("scheduling done...\n");
+Signed-off-by: Bjoern Fay
 
-  // send events and wait for end
-  snd_seq_drain_output(seq);
-  snd_seq_sync_output_queue(seq);
-  sleep(1);
 
-  // done
-  snd_seq_close ( seq ) ;
-  return 0 ;
-}
+--=-g9/cpUuJTgjNFDfkS6o4
+Content-Disposition: attachment; filename=ua-101.patch
+Content-Type: text/x-patch; name=ua-101.patch; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+diff -ru linux-source-2.6.18/sound/usb/usbaudio.c linux-my-hack/sound/usb/usbaudio.c
+--- linux-source-2.6.18/sound/usb/usbaudio.c	2006-09-20 05:42:06.000000000 +0200
++++ linux-my-hack/sound/usb/usbaudio.c	2006-12-28 22:35:26.000000000 +0100
+@@ -3007,6 +3007,59 @@
+ 	return 0;
+ }
+ 
++/*
++ * Create a stream for an Edirol UA-101 interface.
++ * Copy, paste and modify from Edirol UA-1000
++ */
++static int create_ua101_quirk(struct snd_usb_audio *chip,
++			       struct usb_interface *iface,
++			       const struct snd_usb_audio_quirk *quirk)
++{
++	static const struct audioformat ua101_format = {
++		.format = SNDRV_PCM_FORMAT_S32_LE,
++		.fmt_type = USB_FORMAT_TYPE_I,
++		.altsetting = 1,
++		.altset_idx = 1,
++		.attributes = 0,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++	};
++	struct usb_host_interface *alts;
++	struct usb_interface_descriptor *altsd;
++	struct audioformat *fp;
++	int stream, err;
++
++	if (iface->num_altsetting != 2)
++		return -ENXIO;
++	alts = &iface->altsetting[1];
++	altsd = get_iface_desc(alts);
++	if (alts->extralen != 18 || alts->extra[1] != USB_DT_CS_INTERFACE ||
++	    altsd->bNumEndpoints != 1)
++		return -ENXIO;
++
++	fp = kmalloc(sizeof(*fp), GFP_KERNEL);
++	if (!fp)
++		return -ENOMEM;
++	memcpy(fp, &ua101_format, sizeof(*fp));
++
++	fp->channels = alts->extra[11];
++	fp->iface = altsd->bInterfaceNumber;
++	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
++	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
++	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++	fp->rate_max = fp->rate_min = combine_triple(&alts->extra[15]);
++
++	stream = (fp->endpoint & USB_DIR_IN)
++		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++	err = add_audio_endpoint(chip, stream, fp);
++	if (err < 0) {
++		kfree(fp);
++		return err;
++	}
++	/* FIXME: playback must be synchronized to capture */
++	usb_set_interface(chip->dev, fp->iface, 0);
++	return 0;
++}
++
+ static int snd_usb_create_quirk(struct snd_usb_audio *chip,
+ 				struct usb_interface *iface,
+ 				const struct snd_usb_audio_quirk *quirk);
+@@ -3188,6 +3241,7 @@
+ 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
+ 		[QUIRK_AUDIO_EDIROL_UA700_UA25] = create_ua700_ua25_quirk,
+ 		[QUIRK_AUDIO_EDIROL_UA1000] = create_ua1000_quirk,
++		[QUIRK_AUDIO_EDIROL_UA101] = create_ua101_quirk,
+ 	};
+ 
+ 	if (quirk->type < QUIRK_TYPE_COUNT) {
+diff -ru linux-source-2.6.18/sound/usb/usbaudio.h linux-my-hack/sound/usb/usbaudio.h
+--- linux-source-2.6.18/sound/usb/usbaudio.h	2006-09-20 05:42:06.000000000 +0200
++++ linux-my-hack/sound/usb/usbaudio.h	2006-12-28 17:01:50.000000000 +0100
+@@ -159,6 +159,7 @@
+ 	QUIRK_AUDIO_FIXED_ENDPOINT,
+ 	QUIRK_AUDIO_EDIROL_UA700_UA25,
+ 	QUIRK_AUDIO_EDIROL_UA1000,
++	QUIRK_AUDIO_EDIROL_UA101,
+ 
+ 	QUIRK_TYPE_COUNT
+ };
+diff -ru linux-source-2.6.18/sound/usb/usbquirks.h linux-my-hack/sound/usb/usbquirks.h
+--- linux-source-2.6.18/sound/usb/usbquirks.h	2006-09-20 05:42:06.000000000 +0200
++++ linux-my-hack/sound/usb/usbquirks.h	2006-12-28 22:32:56.000000000 +0100
+@@ -1093,7 +1093,37 @@
+ 		}
+ 	}
+ },
+-	/* TODO: add Edirol UA-101 support */
++/* Roland UA-101 in High-Speed Mode only */
++{
++	USB_DEVICE(0x0582, 0x007d),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Roland",
++		.product_name = "UA-101",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_EDIROL_UA101
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_EDIROL_UA101
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = & (const struct snd_usb_midi_endpoint_info) {
++					.out_cables = 0x0001,
++					.in_cables  = 0x0001
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ {
+ 	/* has ID 0x0081 when not in "Advanced Driver" mode */
+ 	USB_DEVICE(0x0582, 0x0080),
+
+--=-g9/cpUuJTgjNFDfkS6o4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--=-g9/cpUuJTgjNFDfkS6o4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--=-g9/cpUuJTgjNFDfkS6o4--
