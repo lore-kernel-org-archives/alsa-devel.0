@@ -1,12 +1,16 @@
-From: "Elvin Mckenzie" <forfeitsmatchmaker's@absign.com>
-Subject: Important trading news - Actor Ryan O'Neal arrested
-Date: Mon, 5 Feb 2007 17:44:02 +0000 (UTC)
-Message-ID: <01c7494d$2539e890$6c822ecf@forfeitsmatchmaker's>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Query regarding ALSA control interface
+Date: Mon, 05 Feb 2007 18:56:27 +0100
+Message-ID: <1170698187.1391.1173011395@webmail.messagingengine.com>
+References: <24a2bfdf0702012252l30ddbb4cs3eebfbab8e11a5ba@mail.gmail.com>
+	<1170404256.27352.1172535505@webmail.messagingengine.com>
+	<24a2bfdf0702020054g68ccd946v180eae48c2d55f0b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 5 Feb 2007 17:43:28 +0360
+Content-Disposition: inline
+In-Reply-To: <24a2bfdf0702020054g68ccd946v180eae48c2d55f0b@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,33 +20,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: Aditya Shankar <mc.aditya@gmail.com>
+Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-We called it and UP it goes! HPGI on raise again today.
+(please don't top-post)
+Aditya Shankar wrote:
+> Thanks for your reply. But my problem is not that I dont see any capture
+> controls. I am not able to get that particular control which I had mentioned
+> in my earlier mail.
 
-HPGI up 22% in its first great day of trading. Look for more gains from
-this high-flier tomorrow and during the next few weeks!
-
-Hemisphere Gold Discovers a Series of Gold Anomalies Trending North-South for Over 20 km
-Monday February 5, 6:30 am ET
-Company Reports on Initial Stream Sediment Sampling Program
-
-Symm: HPGI
-Prev. close:1.50
-
-Read up on why these junior gold industry companies are THE place to be.
-Type in Google : "zealllc com 2006 jnrgold" and read all about it.
-
-HPGI is as hot as they come with major surveys underway and a blazing
-hot publicity campaign is ready to announce the BIG Find!
-
-Get in early and win with HPGI.
-
-This letter includes long-sighted statements. This is not an offer to buy or sell any shares. The sponsor of this letter paid out ten thousand dollars for distribution of this publication.
+Please show the output of "amixer controls" and "amixer scontrols".
 
 
-
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
