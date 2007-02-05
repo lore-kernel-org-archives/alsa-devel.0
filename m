@@ -1,15 +1,15 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: Question regarding spam on alsa-devel
-Date: Mon, 5 Feb 2007 14:41:31 -0500
-Message-ID: <9e4733910702051141y667bdcc8s8e15be07668d3046@mail.gmail.com>
-References: <1170698531.28278.128.camel@localhost>
-	<s5hiregxyt9.wl%tiwai@suse.de>
+From: Gerald Grabner <gerald.grabner@gmx.net>
+Subject: Re: seq: maximum number of events w.r.t. ordering in
+ queue
+Date: Mon, 05 Feb 2007 21:07:23 +0100
+Message-ID: <45C78E7B.70206@gmx.net>
+References: <45C62E51.3050608@gmx.net>
+	<1170699026.3324.1173012819@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hiregxyt9.wl%tiwai@suse.de>
-Content-Disposition: inline
+In-Reply-To: <1170699026.3324.1173012819@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,35 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <cladisch@fastmail.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2/5/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 05 Feb 2007 10:02:11 -0800,
-> Tobin Davis wrote:
-> >
-> > Right now, half of my incoming spam is from this mailing list.
-> >
-> > I noticed that the kernel developers mailing list is now only taking email from
-> > subscribers, which drastically cuts down on spam.  Is there any reason this can't be
-> > done for alsa-devel?  The only thing that would be of issue is that users would have
-> > to subscribe before posting emails, which doesn't seem to be that big of a deal.
->
-> We did so some time ago, but changed to open because we got complains
-> from kernel guys that the cross-posting caused problems.  If LKML was
-> also limited only for subscribers, I think we can do that again,
-> too...
+Clemens Ladisch wrote:
+> Gerald Grabner wrote:
+>> for simultaneously playing many midi tracks each with a large number
+>> of events, it would be convenient to output one track after the other
+>> in a simple loop, without caring about the ordering of the events.
+>>
+>> Of course, this requires an output buffer large enough to hold all
+>> events, otherwise events of the later are postponed every time the
+>> buffer is full. But one question remains, at least for me:
+>> Is there a maximum number of events w.r.t. the ordering in a queue?
+> 
+> Yes.  Your client buffer can have any size, but the events stored in the
+> kernel for a queue are sent from an interrupt handler and must therefore
+> be in locked kernel memory.  The kernel buffer is currently restricted
+> to 2000 events for one client.
 
-I can post to LKML and I'm not subscribed, are you sure this has been changed?
+Ok, I see, many thanks!
 
-How about moving the list from sourceforge to vger.kernel.org since
-they have implemented some major spam filtering. I believe it is those
-new spam filters that are keeping lkml clean.
+In my test application, the threshold is 500 events. How am I loosing
+the remaining 1500 events?
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Regards,
+Gerald
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
