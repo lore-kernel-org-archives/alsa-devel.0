@@ -1,13 +1,13 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC Samsung S3C24xx audio DMA
-Date: Mon, 05 Feb 2007 17:28:10 +0000
-Message-ID: <1170696490.14069.13.camel@localhost.localdomain>
-References: <1170439403.18082.200.camel@localhost.localdomain>
-	<s5h64akjtnv.wl%tiwai@suse.de>
+Subject: Re: [PATCH 1/3] ASoC Samsung S3C24xx I2S support.
+Date: Mon, 05 Feb 2007 17:31:23 +0000
+Message-ID: <1170696683.14069.16.camel@localhost.localdomain>
+References: <1170439399.18082.198.camel@localhost.localdomain>
+	<s5h7iv0ju2p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-rJvo6pdOmWbwV7KTXAnd"
+Content-Type: multipart/mixed; boundary="=-wGCK6oop1Xzd6WneEzPx"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h64akjtnv.wl%tiwai@suse.de>
+In-Reply-To: <s5h7iv0ju2p.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,37 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-rJvo6pdOmWbwV7KTXAnd
+--=-wGCK6oop1Xzd6WneEzPx
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Fri, 2007-02-02 at 19:33 +0100, Takashi Iwai wrote:
-> At Fri, 02 Feb 2007 18:03:23 +0000,
+On Fri, 2007-02-02 at 19:25 +0100, Takashi Iwai wrote:
+> At Fri, 02 Feb 2007 18:03:19 +0000,
 > Liam Girdwood wrote:
 > > 
-> > diff -r 0f9c7c3b7657 soc/s3c24xx/s3c24xx-pcm.h
+> > diff -r 0f9c7c3b7657 soc/s3c24xx/s3c24xx-i2s.c
 > > --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-> > +++ b/soc/s3c24xx/s3c24xx-pcm.h	Fri Feb 02 17:50:25 2007 +0000
+> > +++ b/soc/s3c24xx/s3c24xx-i2s.c	Wed Jan 31 16:43:17 2007 +0000
 
-Fixed.
+
+All fixed.
+
+Fwiw, I can't release the only machine driver we have for this platform
+until Feb 11th. However, it would be nice if the platform driver could
+be supported (albeit without any public machines) in the next alsa
+release.
+
+Cheers
 
 Liam
 
---=-rJvo6pdOmWbwV7KTXAnd
-Content-Disposition: attachment; filename=asoc-s3c2-pcm.patch
-Content-Type: text/x-patch; name=asoc-s3c2-pcm.patch; charset=utf-8
+--=-wGCK6oop1Xzd6WneEzPx
+Content-Disposition: attachment; filename=asoc-s3c2-i2s.patch
+Content-Type: text/x-patch; name=asoc-s3c2-i2s.patch; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-diff -r f86a99e3f12c soc/s3c24xx/s3c24xx-pcm.c
+diff -r f86a99e3f12c soc/s3c24xx/s3c24xx-i2s.c
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/soc/s3c24xx/s3c24xx-pcm.c	Mon Feb 05 17:06:00 2007 +0000
-@@ -0,0 +1,462 @@
++++ b/soc/s3c24xx/s3c24xx-i2s.c	Mon Feb 05 17:01:39 2007 +0000
+@@ -0,0 +1,439 @@
 +/*
-+ * s3c24xx-pcm.c  --  ALSA Soc Audio Layer
++ * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
 + *
 + * (c) 2006 Wolfson Microelectronics PLC.
 + * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
@@ -62,491 +70,471 @@ diff -r f86a99e3f12c soc/s3c24xx/s3c24xx-pcm.c
 + *  Free Software Foundation;  either version 2 of the  License, or (at your
 + *  option) any later version.
 + *
++ *
 + *  Revision history
 + *    11th Dec 2006   Merged with Simtec driver
 + *    10th Nov 2006   Initial version.
 + */
 +
-+#include <linux/module.h>
 +#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/dma-mapping.h>
-+
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
++#include <sound/initval.h>
 +#include <sound/soc.h>
 +
-+#include <asm/dma.h>
-+#include <asm/io.h>
 +#include <asm/hardware.h>
-+#include <asm/arch/dma.h>
++#include <asm/io.h>
++#include <asm/arch/regs-iis.h>
++#include <asm/arch/regs-gpio.h>
++#include <asm/arch/regs-clock.h>
 +#include <asm/arch/audio.h>
++#include <asm/dma.h>
++#include <asm/arch/dma.h>
 +
 +#include "s3c24xx-pcm.h"
++#include "s3c24xx-i2s.h"
 +
-+#define S3C24XX_PCM_DEBUG 0
-+#if S3C24XX_PCM_DEBUG
++#define S3C24XX_I2S_DEBUG 0
++#if S3C24XX_I2S_DEBUG
 +#define DBG(x...) printk(KERN_DEBUG x)
 +#else
 +#define DBG(x...)
 +#endif
 +
-+static const struct snd_pcm_hardware s3c24xx_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_INTERLEAVED |
-+				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				    SNDRV_PCM_INFO_MMAP |
-+				    SNDRV_PCM_INFO_MMAP_VALID,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+				    SNDRV_PCM_FMTBIT_U16_LE |
-+				    SNDRV_PCM_FMTBIT_U8 |
-+				    SNDRV_PCM_FMTBIT_S8,
-+	.channels_min		= 2,
-+	.channels_max		= 2,
-+	.buffer_bytes_max	= 128*1024,
-+	.period_bytes_min	= PAGE_SIZE,
-+	.period_bytes_max	= PAGE_SIZE*2,
-+	.periods_min		= 2,
-+	.periods_max		= 128,
-+	.fifo_size		= 32,
++static struct s3c2410_dma_client s3c24xx_dma_client_out = {
++	.name = "I2S PCM Stereo out"
 +};
 +
-+struct s3c24xx_runtime_data {
-+	spinlock_t lock;
-+	int state;
-+	unsigned int dma_loaded;
-+	unsigned int dma_limit;
-+	unsigned int dma_period;
-+	dma_addr_t dma_start;
-+	dma_addr_t dma_pos;
-+	dma_addr_t dma_end;
-+	struct s3c24xx_pcm_dma_params *params;
++static struct s3c2410_dma_client s3c24xx_dma_client_in = {
++	.name = "I2S PCM Stereo in"
 +};
 +
-+/* s3c24xx_pcm_enqueue
-+ *
-+ * place a dma buffer onto the queue for the dma system
-+ * to handle.
-+*/
-+static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
++static struct s3c24xx_pcm_dma_params s3c24xx_i2s_pcm_stereo_out = {
++	.client		= &s3c24xx_dma_client_out,
++	.channel	= DMACH_I2S_OUT,
++	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO
++};
++
++static struct s3c24xx_pcm_dma_params s3c24xx_i2s_pcm_stereo_in = {
++	.client		= &s3c24xx_dma_client_in,
++	.channel	= DMACH_I2S_IN,
++	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO
++};
++
++struct s3c24xx_i2s_info {
++	void __iomem	*regs;
++	struct clk	*iis_clk;
++};
++static struct s3c24xx_i2s_info s3c24xx_i2s;
++
++static void s3c24xx_snd_txctrl(int on)
 +{
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	dma_addr_t pos = prtd->dma_pos;
-+	int ret;
++	u32 iisfcon;
++	u32 iiscon;
++	u32 iismod;
 +
 +	DBG("Entered %s\n", __FUNCTION__);
 +
-+	while ( prtd->dma_loaded < prtd->dma_limit) {
-+		unsigned long len = prtd->dma_period;
++	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
++	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
++	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
 +
-+		DBG("dma_loaded: %d\n",prtd->dma_loaded);
++	DBG("r: IISCON: %lx IISMOD: %lx IISFCON: %lx\n", iiscon, iismod, iisfcon);
 +
-+		if ((pos + len) > prtd->dma_end) {
-+			len  = prtd->dma_end - pos;
-+			DBG(KERN_DEBUG "%s: corrected dma len %ld\n",
-+			       __FUNCTION__, len);
-+		}
++	if (on) {
++		iisfcon |= S3C2410_IISFCON_TXDMA | S3C2410_IISFCON_TXENABLE;
++		iiscon  |= S3C2410_IISCON_TXDMAEN | S3C2410_IISCON_IISEN;
++		iiscon  &= ~S3C2410_IISCON_TXIDLE;
++		iismod  |= S3C2410_IISMOD_TXMODE;
 +
-+		ret = s3c2410_dma_enqueue(prtd->params->channel, substream, pos, len);
-+
-+		if (ret == 0) {
-+			prtd->dma_loaded++;
-+			pos += prtd->dma_period;
-+			if (pos >= prtd->dma_end)
-+				pos = prtd->dma_start;
-+		} else
-+			break;
-+	}
-+
-+	prtd->dma_pos = pos;
-+}
-+
-+static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
-+							void *dev_id, int size,
-+							enum s3c2410_dma_buffresult result)
-+{
-+	struct snd_pcm_substream *substream = dev_id;
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	if (result == S3C2410_RES_ABORT || result == S3C2410_RES_ERR)
-+		return;
-+
-+	if (substream)
-+		snd_pcm_period_elapsed(substream);
-+
-+	spin_lock(&prtd->lock);
-+	if (prtd->state & ST_RUNNING) {
-+		prtd->dma_loaded--;
-+		s3c24xx_pcm_enqueue(substream);
-+	}
-+
-+	spin_unlock(&prtd->lock);
-+}
-+
-+static int s3c24xx_pcm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c24xx_pcm_dma_params *dma = rtd->dai->cpu_dai->dma_data;
-+	unsigned long totbytes = params_buffer_bytes(params);
-+	int ret=0;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
-+	if (!dma)
-+		return 0;
-+
-+	/* prepare DMA */
-+	prtd->params = dma;
-+
-+	DBG("params %p, client %p, channel %d\n", prtd->params,
-+		prtd->params->client, prtd->params->channel);
-+
-+	ret = s3c2410_dma_request(prtd->params->channel,
-+				  prtd->params->client, NULL);
-+
-+	if (ret) {
-+		DBG(KERN_ERR "failed to get dma channel\n");
-+		return ret;
-+	}
-+
-+	/* channel needs configuring for mem=>device, increment memory addr,
-+	 * sync to pclk, half-word transfers to the IIS-FIFO. */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		s3c2410_dma_devconfig(prtd->params->channel,
-+						S3C2410_DMASRC_MEM, S3C2410_DISRCC_INC |
-+						S3C2410_DISRCC_APB, prtd->params->dma_addr);
-+
-+		s3c2410_dma_config(prtd->params->channel,
-+						2, S3C2410_DCON_SYNC_PCLK | S3C2410_DCON_HANDSHAKE);
++		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
++		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
++		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
 +	} else {
-+		s3c2410_dma_config(prtd->params->channel,
-+						2, S3C2410_DCON_HANDSHAKE | S3C2410_DCON_SYNC_PCLK);
++		/* note, we have to disable the FIFOs otherwise bad things
++		 * seem to happen when the DMA stops. According to the
++		 * Samsung supplied kernel, this should allow the DMA
++		 * engine and FIFOs to reset. If this isn't allowed, the
++		 * DMA engine will simply freeze randomly.
++		 */
 +
-+		s3c2410_dma_devconfig(prtd->params->channel,
-+						S3C2410_DMASRC_HW, 0x3,
-+						prtd->params->dma_addr);
++		iisfcon &= ~S3C2410_IISFCON_TXENABLE;
++		iisfcon &= ~S3C2410_IISFCON_TXDMA;
++		iiscon  |=  S3C2410_IISCON_TXIDLE;
++		iiscon  &= ~S3C2410_IISCON_TXDMAEN;
++		iismod  &= ~S3C2410_IISMOD_TXMODE;
++
++		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
++		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
++		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
 +	}
 +
-+	s3c2410_dma_set_buffdone_fn(prtd->params->channel,
-+				    s3c24xx_audio_buffdone);
++	DBG("w: IISCON: %lx IISMOD: %lx IISFCON: %lx\n", iiscon, iismod, iisfcon);
++}
 +
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++static void s3c24xx_snd_rxctrl(int on)
++{
++	u32 iisfcon;
++	u32 iiscon;
++	u32 iismod;
 +
-+	runtime->dma_bytes = totbytes;
++	DBG("Entered %s\n", __FUNCTION__);
 +
-+	spin_lock_irq(&prtd->lock);
-+	prtd->dma_loaded = 0;
-+	prtd->dma_limit = runtime->hw.periods_min;
-+	prtd->dma_period = params_period_bytes(params);
-+	prtd->dma_start = runtime->dma_addr;
-+	prtd->dma_pos = prtd->dma_start;
-+	prtd->dma_end = prtd->dma_start + totbytes;
-+	spin_unlock_irq(&prtd->lock);
++	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
++	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
++	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
++
++	DBG("r: IISCON: %lx IISMOD: %lx IISFCON: %lx\n", iiscon, iismod, iisfcon);
++
++	if (on) {
++		iisfcon |= S3C2410_IISFCON_RXDMA | S3C2410_IISFCON_RXENABLE;
++		iiscon  |= S3C2410_IISCON_RXDMAEN | S3C2410_IISCON_IISEN;
++		iiscon  &= ~S3C2410_IISCON_RXIDLE;
++		iismod  |= S3C2410_IISMOD_RXMODE;
++
++		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
++		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
++		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
++	} else {
++		/* note, we have to disable the FIFOs otherwise bad things
++		 * seem to happen when the DMA stops. According to the
++		 * Samsung supplied kernel, this should allow the DMA
++		 * engine and FIFOs to reset. If this isn't allowed, the
++		 * DMA engine will simply freeze randomly.
++		 */
++
++        iisfcon &= ~S3C2410_IISFCON_RXENABLE;
++        iisfcon &= ~S3C2410_IISFCON_RXDMA;
++        iiscon  |= S3C2410_IISCON_RXIDLE;
++        iiscon  &= ~S3C2410_IISCON_RXDMAEN;
++		iismod  &= ~S3C2410_IISMOD_RXMODE;
++
++		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
++		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
++		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
++	}
++
++	DBG("w: IISCON: %lx IISMOD: %lx IISFCON: %lx\n", iiscon, iismod, iisfcon);
++}
++
++/*
++ * Wait for the LR signal to allow synchronisation to the L/R clock
++ * from the codec. May only be needed for slave mode.
++ */
++static int s3c24xx_snd_lrsync(void)
++{
++	u32 iiscon;
++	unsigned long timeout = jiffies + msecs_to_jiffies(5);
++
++	DBG("Entered %s\n", __FUNCTION__);
++
++	while (1) {
++		iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
++		if (iiscon & S3C2410_IISCON_LRINDEX)
++			break;
++
++		if (timeout < jiffies)
++			return -ETIMEDOUT;
++	}
 +
 +	return 0;
 +}
 +
-+static int s3c24xx_pcm_hw_free(struct snd_pcm_substream *substream)
++/*
++ * Check whether CPU is the master or slave
++ */
++static inline int s3c24xx_snd_is_clkmaster(void)
 +{
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
++	DBG("Entered %s\n", __FUNCTION__);
++
++	return (readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & S3C2410_IISMOD_SLAVE) ? 0:1;
++}
++
++/*
++ * Set S3C24xx I2S DAI format
++ */
++static int s3c24xx_i2s_set_fmt(struct snd_soc_cpu_dai *cpu_dai,
++		unsigned int fmt)
++{
++	u32 iismod;
 +
 +	DBG("Entered %s\n", __FUNCTION__);
 +
-+	/* TODO - do we need to ensure DMA flushed */
-+	snd_pcm_set_runtime_buffer(substream, NULL);
++	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
++	DBG("hw_params r: IISMOD: %lx \n", iismod);
 +
-+	if(prtd->params) {
-+		s3c2410_dma_free(prtd->params->channel, prtd->params->client);
-+		prtd->params = NULL;
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		iismod |= S3C2410_IISMOD_SLAVE;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_LEFT_J:
++		iismod |= S3C2410_IISMOD_MSB;
++		break;
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
++	DBG("hw_params w: IISMOD: %lx \n", iismod);
 +	return 0;
 +}
 +
-+static int s3c24xx_pcm_prepare(struct snd_pcm_substream *substream)
++static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
 +{
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	int ret = 0;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	u32 iismod;
 +
 +	DBG("Entered %s\n", __FUNCTION__);
 +
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
-+	if (!prtd->params)
-+	 	return 0;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		rtd->dai->cpu_dai->dma_data = &s3c24xx_i2s_pcm_stereo_out;
++	else
++		rtd->dai->cpu_dai->dma_data = &s3c24xx_i2s_pcm_stereo_in;
 +
-+	/* flush the DMA channel */
-+	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
-+	prtd->dma_loaded = 0;
-+	prtd->dma_pos = prtd->dma_start;
++	/* Working copies of register */
++	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
++	DBG("hw_params r: IISMOD: %lx\n", iismod);
 +
-+	/* enqueue dma buffers */
-+	s3c24xx_pcm_enqueue(substream);
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		iismod |= S3C2410_IISMOD_16BIT;
++		break;
++	}
 +
-+	return ret;
++	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
++	DBG("hw_params w: IISMOD: %lx\n", iismod);
++	return 0;
 +}
 +
-+static int s3c24xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
 +	int ret = 0;
 +
 +	DBG("Entered %s\n", __FUNCTION__);
-+
-+	spin_lock(&prtd->lock);
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_RESUME:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		prtd->state |= ST_RUNNING;
-+		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
-+		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STARTED);
-+		break;
++		if (!s3c24xx_snd_is_clkmaster()) {
++			ret = s3c24xx_snd_lrsync();
++			if (ret)
++				goto exit_err;
++		}
 +
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			s3c24xx_snd_rxctrl(1);
++		else
++			s3c24xx_snd_txctrl(1);
++		break;
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		prtd->state &= ~ST_RUNNING;
-+		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STOP);
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			s3c24xx_snd_rxctrl(0);
++		else
++			s3c24xx_snd_txctrl(0);
 +		break;
-+
 +	default:
 +		ret = -EINVAL;
 +		break;
 +	}
 +
-+	spin_unlock(&prtd->lock);
-+
++exit_err:
 +	return ret;
 +}
 +
-+static snd_pcm_uframes_t s3c24xx_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+	unsigned long res;
-+	dma_addr_t src, dst;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	spin_lock(&prtd->lock);
-+	s3c2410_dma_getposition(prtd->params->channel, &src, &dst);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		res = dst - prtd->dma_start;
-+	else
-+		res = src - prtd->dma_start;
-+
-+	spin_unlock(&prtd->lock);
-+
-+	DBG("Pointer %x %x\n",src,dst);
-+
-+	/* we seem to be getting the odd error from the pcm library due
-+	 * to out-of-bounds pointers. this is maybe due to the dma engine
-+	 * not having loaded the new values for the channel before being
-+	 * callled... (todo - fix )
-+	 */
-+
-+	if (res >= snd_pcm_lib_buffer_bytes(substream)) {
-+		if (res == snd_pcm_lib_buffer_bytes(substream))
-+			res = 0;
-+	}
-+
-+	return bytes_to_frames(substream->runtime, res);
-+}
-+
-+static int s3c24xx_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct s3c24xx_runtime_data *prtd;
-+
-+	int ret;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	snd_soc_set_runtime_hwparams(substream, &s3c24xx_pcm_hardware);
-+
-+	prtd = kzalloc(sizeof(struct s3c24xx_runtime_data), GFP_KERNEL);
-+	if (prtd == NULL)
-+		return -ENOMEM;
-+
-+	runtime->private_data = prtd;
-+	return 0;
-+}
-+
-+static int s3c24xx_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	if(prtd)
-+		kfree(prtd);
-+	else
-+		DBG("s3c24xx_pcm_close called with prtd == NULL\n");
-+
-+	return 0;
-+}
-+
-+static int s3c24xx_pcm_mmap(struct snd_pcm_substream *substream,
-+	struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+                                     runtime->dma_area,
-+                                     runtime->dma_addr,
-+                                     runtime->dma_bytes);
-+}
-+
-+static struct snd_pcm_ops s3c24xx_pcm_ops = {
-+	.open		= s3c24xx_pcm_open,
-+	.close		= s3c24xx_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= s3c24xx_pcm_hw_params,
-+	.hw_free	= s3c24xx_pcm_hw_free,
-+	.prepare	= s3c24xx_pcm_prepare,
-+	.trigger	= s3c24xx_pcm_trigger,
-+	.pointer	= s3c24xx_pcm_pointer,
-+	.mmap		= s3c24xx_pcm_mmap,
-+};
-+
-+static int s3c24xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
-+{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = s3c24xx_pcm_hardware.buffer_bytes_max;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
-+	if (!buf->area)
-+		return -ENOMEM;
-+	buf->bytes = size;
-+	return 0;
-+}
-+
-+static void s3c24xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
-+static u64 s3c24xx_pcm_dmamask = DMA_32BIT_MASK;
-+
-+static int s3c24xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
-+	struct snd_pcm *pcm)
-+{
-+	int ret = 0;
-+
-+	DBG("Entered %s\n", __FUNCTION__);
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &s3c24xx_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = 0xffffffff;
-+
-+	if (dai->playback.channels_min) {
-+		ret = s3c24xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (dai->capture.channels_min) {
-+		ret = s3c24xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
-+ out:
-+	return ret;
-+}
-+
-+struct snd_soc_platform s3c24xx_soc_platform = {
-+	.name		= "s3c24xx-audio",
-+	.pcm_ops 	= &s3c24xx_pcm_ops,
-+	.pcm_new	= s3c24xx_pcm_new,
-+	.pcm_free	= s3c24xx_pcm_free_dma_buffers,
-+};
-+
-+EXPORT_SYMBOL_GPL(s3c24xx_soc_platform);
-+
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("Samsung S3C24XX PCM DMA module");
-+MODULE_LICENSE("GPL");
-diff -r f86a99e3f12c soc/s3c24xx/s3c24xx-pcm.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/soc/s3c24xx/s3c24xx-pcm.h	Mon Feb 05 16:58:03 2007 +0000
-@@ -0,0 +1,32 @@
 +/*
-+ *  s3c24xx-pcm.h --
++ * Set S3C24xx Clock source
++ */
++static int s3c24xx_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
++	int clk_id, unsigned int freq, int dir)
++{
++	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
++
++	DBG("Entered %s\n", __FUNCTION__);
++
++	iismod &= ~S3C2440_IISMOD_MPLL;
++
++	switch (clk_id) {
++	case S3C24XX_CLKSRC_PCLK:
++		break;
++	case S3C24XX_CLKSRC_MPLL:
++		iismod |= S3C2440_IISMOD_MPLL;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
++	return 0;
++}
++
++/*
++ * Set S3C24xx Clock dividers
++ */
++static int s3c24xx_i2s_set_clkdiv(struct snd_soc_cpu_dai *cpu_dai,
++	int div_id, int div)
++{
++	u32 reg;
++
++	DBG("Entered %s\n", __FUNCTION__);
++
++	switch (div_id) {
++	case S3C24XX_DIV_MCLK:
++		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~S3C2410_IISMOD_FS_MASK;
++		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
++		break;
++	case S3C24XX_DIV_BCLK:
++		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~(S3C2410_IISMOD_384FS);
++		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
++		break;
++	case S3C24XX_DIV_PRESCALER:
++		writel(div, s3c24xx_i2s.regs + S3C2410_IISPSR);
++		reg = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
++		writel(reg | S3C2410_IISCON_PSCEN, s3c24xx_i2s.regs + S3C2410_IISCON);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/*
++ * To avoid duplicating clock code, allow machine driver to
++ * get the clockrate from here.
++ */
++u32 s3c24xx_i2s_get_clockrate(void)
++{
++	return clk_get_rate(s3c24xx_i2s.iis_clk);
++}
++EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
++
++static int s3c24xx_i2s_probe(struct platform_device *pdev)
++{
++	DBG("Entered %s\n", __FUNCTION__);
++
++	s3c24xx_i2s.regs = ioremap(S3C2410_PA_IIS, 0x100);
++	if (s3c24xx_i2s.regs == NULL)
++		return -ENXIO;
++
++	s3c24xx_i2s.iis_clk=clk_get(&pdev->dev, "iis");
++	if (s3c24xx_i2s.iis_clk == NULL) {
++		DBG("failed to get iis_clock\n");
++		return -ENODEV;
++	}
++	clk_enable(s3c24xx_i2s.iis_clk);
++
++	/* Configure the I2S pins in correct mode */
++	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
++	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
++	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
++	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
++	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
++
++	writel(S3C2410_IISCON_IISEN, s3c24xx_i2s.regs + S3C2410_IISCON);
++
++	s3c24xx_snd_txctrl(0);
++	s3c24xx_snd_rxctrl(0);
++
++	return 0;
++}
++
++#define S3C24XX_I2S_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++
++struct snd_soc_cpu_dai s3c24xx_i2s_dai = {
++	.name = "s3c24xx-i2s",
++	.id = 0,
++	.type = SND_SOC_DAI_I2S,
++	.probe = s3c24xx_i2s_probe,
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = S3C24XX_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
++	.capture = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = S3C24XX_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
++	.ops = {
++		.trigger = s3c24xx_i2s_trigger,
++		.hw_params = s3c24xx_i2s_hw_params,},
++	.dai_ops = {
++		.set_fmt = s3c24xx_i2s_set_fmt,
++		.set_clkdiv = s3c24xx_i2s_set_clkdiv,
++		.set_sysclk = s3c24xx_i2s_set_sysclk,
++	},
++};
++EXPORT_SYMBOL_GPL(s3c24xx_i2s_dai);
++
++/* Module information */
++MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
++MODULE_DESCRIPTION("s3c24xx I2S SoC Interface");
++MODULE_LICENSE("GPL");
+diff -r f86a99e3f12c soc/s3c24xx/s3c24xx-i2s.h
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/soc/s3c24xx/s3c24xx-i2s.h	Mon Feb 05 10:22:04 2007 +0000
+@@ -0,0 +1,35 @@
++/*
++ * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
++ *
++ * Copyright 2005 Wolfson Microelectronics PLC.
++ * Author: Graeme Gregory
++ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
 + *
 + *  This program is free software; you can redistribute  it and/or modify it
 + *  under  the terms of  the GNU General  Public License as published by the
 + *  Free Software Foundation;  either version 2 of the  License, or (at your
 + *  option) any later version.
 + *
-+ *  ALSA PCM interface for the Samsung S3C24xx CPU
++ *  Revision history
++ *    10th Nov 2006   Initial version.
 + */
 +
-+#ifndef _S3C24XX_PCM_H
-+#define _S3C24XX_PCM_H
++#ifndef S3C24XXI2S_H_
++#define S3C24XXI2S_H_
 +
-+#define ST_RUNNING		(1<<0)
-+#define ST_OPENED		(1<<1)
++/* clock sources */
++#define S3C24XX_CLKSRC_PCLK 0
++#define S3C24XX_CLKSRC_MPLL 1
 +
-+struct s3c24xx_pcm_dma_params {
-+	struct s3c2410_dma_client *client;			/* stream identifier */
-+	int channel;						/* Channel ID */
-+	dma_addr_t dma_addr;
-+};
++/* Clock dividers */
++#define S3C24XX_DIV_MCLK	0
++#define S3C24XX_DIV_BCLK	1
++#define S3C24XX_DIV_PRESCALER	2
 +
-+#define S3C24XX_DAI_I2S			0
++/* prescaler */
++#define S3C24XX_PRESCALE(a,b) \
++	(((a - 1) << S3C2410_IISPSR_INTSHIFT) | ((b - 1) << S3C2410_IISPSR_EXTSHFIT))
 +
-+extern struct snd_soc_cpu_dai s3c24xx_i2s_dai;
++u32 s3c24xx_i2s_get_clockrate(void);
 +
-+/* platform data */
-+extern struct snd_soc_platform s3c24xx_soc_platform;
-+extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
-+
-+#endif
++#endif /*S3C24XXI2S_H_*/
 
---=-rJvo6pdOmWbwV7KTXAnd
+--=-wGCK6oop1Xzd6WneEzPx
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -557,7 +545,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---=-rJvo6pdOmWbwV7KTXAnd
+--=-wGCK6oop1Xzd6WneEzPx
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -568,4 +556,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=-rJvo6pdOmWbwV7KTXAnd--
+--=-wGCK6oop1Xzd6WneEzPx--
