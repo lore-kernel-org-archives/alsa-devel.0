@@ -1,15 +1,13 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: seq: maximum number of events w.r.t. ordering in
-	queue
-Date: Mon, 05 Feb 2007 19:10:25 +0100
-Message-ID: <1170699026.3324.1173012819@webmail.messagingengine.com>
-References: <45C62E51.3050608@gmx.net>
+From: Rolf Stefan Wilke <stefan.wilke@uni-ulm.de>
+Subject: [PATCH] Emu10k1 - STAC9758 (fixes #2308)
+Date: Mon, 5 Feb 2007 19:16:35 +0100
+Message-ID: <200702051916.35353.stefan.wilke@uni-ulm.de>
+Reply-To: stefan.wilke@uni-ulm.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <45C62E51.3050608@gmx.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,27 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Gerald Grabner <gerald.grabner@gmx.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: James@superbug.demon.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Gerald Grabner wrote:
-> for simultaneously playing many midi tracks each with a large number
-> of events, it would be convenient to output one track after the other
-> in a simple loop, without caring about the ordering of the events.
-> 
-> Of course, this requires an output buffer large enough to hold all
-> events, otherwise events of the later are postponed every time the
-> buffer is full. But one question remains, at least for me:
-> Is there a maximum number of events w.r.t. the ordering in a queue?
+The following patch fixes bug #2308 [no sound on front channel for 
+emu10k1 - sigmatel STAC9758]; at least for me. Thanks to Raymond at bugtrack!
 
-Yes.  Your client buffer can have any size, but the events stored in the
-kernel for a queue are sent from an interrupt handler and must therefore
-be in locked kernel memory.  The kernel buffer is currently restricted
-to 2000 events for one client.
+	Stefan
 
-
-Regards,
-Clemens
+--- alsa-driver-1.0.14rc2.orig/alsa-kernel/pci/emu10k1/emumixer.c       
+2007-01-15 14:25:27.000000000 +0100
++++ alsa-driver-1.0.14rc2/alsa-kernel/pci/emu10k1/emumixer.c    2007-02-05 
+19:10:48.000000000 +0100
+@@ -1582,6 +1582,7 @@
+                        if (emu->ac97->id == AC97_ID_STAC9758) {
+                                emu->rear_ac97 = 1;
+                                snd_emu10k1_ptr_write(emu, AC97SLOT, 0, 
+AC97SLOT_CNTR|AC97SLOT_LFE|AC97SLOT_REAR_LEFT|AC97SLOT_REAR_RIGHT);
++                               snd_ac97_write_cache(emu->ac97, 0x04, 0x0202);
+                        }
+                        /* remove unused AC97 controls */
+                        snd_ac97_write_cache(emu->ac97, AC97_SURROUND_MASTER, 
+0x0202);
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
