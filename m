@@ -1,15 +1,18 @@
-From: Gerald Grabner <gerald.grabner@gmx.net>
-Subject: Re: seq: maximum number of events w.r.t. ordering in
- queue
-Date: Mon, 05 Feb 2007 21:07:23 +0100
-Message-ID: <45C78E7B.70206@gmx.net>
-References: <45C62E51.3050608@gmx.net>
-	<1170699026.3324.1173012819@webmail.messagingengine.com>
+From: Jason Baron <jbaron@redhat.com>
+Subject: stac92xx_parse_auto_config() can return 0 on error?
+Date: Mon, 5 Feb 2007 16:40:57 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0702051624060.26250@dhcp83-20.boston.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1170699026.3324.1173012819@webmail.messagingengine.com>
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14F6D18F
+	for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2007 22:43:23 +0100 (MET)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by mx1.redhat.com (8.13.1/8.13.1) with ESMTP id l15LhMuf012602
+	for <alsa-devel@alsa-project.org>; Mon, 5 Feb 2007 16:43:22 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,32 +22,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: John Linville <linville@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Gerald Grabner wrote:
->> for simultaneously playing many midi tracks each with a large number
->> of events, it would be convenient to output one track after the other
->> in a simple loop, without caring about the ordering of the events.
->>
->> Of course, this requires an output buffer large enough to hold all
->> events, otherwise events of the later are postponed every time the
->> buffer is full. But one question remains, at least for me:
->> Is there a maximum number of events w.r.t. the ordering in a queue?
-> 
-> Yes.  Your client buffer can have any size, but the events stored in the
-> kernel for a queue are sent from an interrupt handler and must therefore
-> be in locked kernel memory.  The kernel buffer is currently restricted
-> to 2000 events for one client.
 
-Ok, I see, many thanks!
+hi,
 
-In my test application, the threshold is 500 events. How am I loosing
-the remaining 1500 events?
+I just ran into a RHEL4 U5 beta kernel oops in snd_hda_input_mux_info(), 
+because the 'imux' parameter pointer was NULL. I traced this back to 
+stac92xx_parse_auto_config(), which can return 0, if 'line_outs' is not 
+set, without having initialized the 'input_mux'.
 
-Regards,
-Gerald
+The oops does not happen on the upstream kernel on this hardware b/c 
+'line_outs' was set (additional code has been added since RHEL4 to set 
+it). However, it still appears to me, that if 'line_outs' is not set, we 
+should return an error code, and not 0.
+
+thanks,
+
+-Jason
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
