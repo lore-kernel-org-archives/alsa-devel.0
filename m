@@ -1,15 +1,12 @@
-From: Winfried Ritsch <ritsch@iem.at>
-Subject: Re: RME AES32 & MADI
-Date: Mon, 5 Feb 2007 10:27:28 +0100
-Message-ID: <200702051027.29226.ritsch@iem.at>
-References: <20070131121148.GA20540@trinnov.com> <s5h3b5ojtf6.wl%tiwai@suse.de>
-Reply-To: ritsch@iem.at
+From: "Micha Nelissen" <micha.nelissen@Prodrive.nl>
+Subject: Driver mmap kernel memory
+Date: Mon, 5 Feb 2007 10:51:16 +0100
+Message-ID: <4CD35CD1F8085945B597F80EEC894213092023@exc01.bk.prodrive.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3b5ojtf6.wl%tiwai@suse.de>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,79 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa Development List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-Am Freitag, 2. Februar 2007 19:39 schrieb Takashi Iwai:
-> At Wed, 31 Jan 2007 13:11:48 +0100,
->
-> Remy Bruno wrote:
-> > Hello,
-> >
-> > I have been working on the AES32 and will soon provide a patch to get it
-> > (hopefully) fully operational (hdspm code).
-> >
-> > Moreover, I also worked on the MADI card, but the original hdspm driver
-> > didn't work for me (ie the code before my modifications to support
-> > AES32). I had to deal with the following points:
-> >   - it needed the DDS feature (clock divisor), as for the AES32 and
-> > hdsp9632 cards (this may be a new behavior for recent cards)
-> >   - the channel map needed to always be channel_map_madi_ss (and never
-> >     channel_map_madi_ds, even at 96k), as for AES32. Otherwise, the
-> > routing was not correct.
-> >   - not enough DMA memory was beeing allocated (only for
-> >     "params_channels(params)" channels whereas it should be allocated for
-> > all the channels, otherwise it didn't work at 96kHz) (alsa-lib was
-> > complaining, so I don't think an old MADI card would work either)
-> >   - I had to play with the channel and rate rules
-> >     (snd_hdspm_hw_rule_channels_rate and so on) to get it working. Not
-> >     completely clear to me how it works but it didn't work as it was
-> >
-> > So here come my questions:
-> >   - Was the MADI driver completely fonctionnal before now? In other
-> > words, maybe an older revision of the card was working as the code
-> > suggested (ie differently than the revision I have, which is 204), can
-> > anyone confirm this?
->
-> The early version has surely worked, IIRC.
-> But, Winfried should know better....
->
-Yes we are still working with MADI-Cards, on early version one version Rev 1.1 
-and a newer card. The only thing is, that there are some troubles with  the 
-correct Statusinformation, which are not functional limiting the card. 
+I have a 16 bit alsa driver that allocates kernel memory, uses
+SNDRV_DMA_TYPE_CONTINUOUS, snd_dma_continuous_data(GFP_KERNEL), and
+specifies MMAP | MMAP_VALID et.al. The idea is that user space writes
+into this mmapped memory, and from the kernel I send the data to the
+sound device. 
 
-We did not test DS mode extensively, but i can think of I tested it once MADI  
-to MADI and it worked. 
+For testing, I've modified this driver to check the values in the buffer
+to be increasing 1, 2, 3, etc.. and written a test program that opens
+alsa and writes these values in a buffer using snd_pcm_writei.
 
-> >   - As a corollary: should I keep the compatibility with the old code? IE
-> > keep using channel_map_madi_ds, etc. for revisions < 204?
->
-> Well, the only question is whether it breaks the older models.
->
-If you post a patch or code so I can test it on old cards, it should be OK if 
-you change this.
+I observe that some samples are from the previous iteration in the
+buffer, but the surrounding samples are ok. For example with 2000 frames
+buffer size, period size 500, then in the third iteration I read 2000,
+4001, 4002, ... instead of 4000, 4001, 4002, ...
 
-BTW:
-Also I never finished to make a memory map interface for the mixer and meters, 
-since it needs 16384 Bytes Mixer and the same for meters of values to copy, 
-which is more ctl-interface can transfer at one time. Should we work on that, 
-or everybody uses individual access to fader and meters for the software ?
+Memory test ran ok, so that's not the problem, and also linux is running
+stable.
 
-mfg
-   winfried
+The rate is 8 khz, and I'm not getting alsa underruns.
 
--- 
---
-- ao.Univ.Prof. DI Winfried Ritsch 
-- ritsch@iem.at - http://iem.at/ritsch
-- Institut fuer Elektronische Musik und Akustik
-- University of Music and Dramatic Art Graz
-- Tel. ++43-316-389-3510 (3170) Fax ++43-316-389-3171 
-- PGP-ID 69617A69 (see keyserver http://wwwkeys.eu.gpg.net/)
---
+Has anyone seen this behaviour before, and how to fix it ? Or, any hints
+how to reproduce the alsa mmap behaviour in a smaller software stack ?
+
+Thanks in advance,
+
+Micha
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
