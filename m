@@ -1,15 +1,16 @@
-From: Gerald Grabner <gerald.grabner@gmx.net>
-Subject: Re: seq: maximum number of events w.r.t. ordering in
- queue
-Date: Tue, 06 Feb 2007 21:40:43 +0100
-Message-ID: <45C8E7CB.9000700@gmx.net>
-References: <45C62E51.3050608@gmx.net>
-	<1170763163.22570.1173152487@webmail.messagingengine.com>
+From: "Mervin" <f.a.hannatnvn@globalspine.net>
+Subject: Windows Vista Business ready to download
+Date: Tue, 6 Feb 2007 14:54:46 -0600
+Message-ID: <1260934583.210481971592@globalspine.net>
+Reply-To: Mervin Holmes <f.a.hannatnvn@globalspine.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1170763163.22570.1173152487@webmail.messagingengine.com>
+Received: from VDSL-130-13-86-126.PHNX.QWEST.NET
+	(VDSL-130-13-86-126.PHNX.QWEST.NET [130.13.86.126])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D027F34A
+	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2007 21:52:17 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,38 +20,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Gerald Grabner wrote:
->>   // buffer size for all events
->>   unsigned int b = (n+1)*sizeof(snd_seq_event_t);
->>
->>   // set output buffer and client pool size
->>   if ( snd_seq_set_output_buffer_size(seq,b) )
->>     printf("Error setting output_buffer_size\n");
->>   if ( snd_seq_set_client_pool_output(seq,b) )
->>     printf("Error setting client_pool_output\n");
->
-> What the documentation failed to tell you is that the parameter to
-> snd_seq_set_client_pool_output() is measured in events, not in
-> bytes, and that a value that is too big is silently ignored.
+The most comprehensive edition of Windows Vista, Vista Business Upgrade (DVD-ROM) is the first operating system that combines all of the advanced infrastructure features of a business-focused operating system, all of the management and efficiency features of a mobility-focused operating system, and all of the digital entertainment features of a consumer-focused operating system. For the person who wants one operating system that is great for working from home, working on the road, and for entertainment, Vista Business is a no-compromise operating system that lets you have it all. Windows Vista Business contains a number of new features, the most notable of which are: Windows Vista Business combines all the features of a business-focused operating system, all the efficiency features of a mobility-focused operating system, and all of the digital entertainment features of a consumer-focused
+  operating system; Remotely connect to business networks; Windows BitLocker Drive Encrypti
+ ption provides improve levels of protection against theft for your important business data whether you are at home, on the road, or in the office; Delivers all of the entertainment features available in Vista Home Premium; includes everything you need to enjoy the latest in digital photography, music, movies, analog TV, or even HDTV; Upgrade from your current edition of Microsoft Windows XP or Windows 2000 (including Windows XP Professional, Windows XP Home, Windows XP Media Center, Windows XP Tablet PC, Windows XP Professional x64, Windows 2000)
+Windows Vista Business Upgrade (DVD-ROM)
+Retail Price $299.00
+Our Price $79.95
+You save $219.05
+http://zovieradiretto.org
+Please note, that there will be more special offers available for our constant customers. Every effort has been made to ensure the accuracy of all information contained herein. DS Team makes no warranty expressed or implied with respect to accuracy of the information, including price, product editorials or product specifications. Product and manufacturer names are used only for the purpose of identification. We appreciate your cooperation with us and we'll be glad to see you as our clients in the future.
 
-Indeed, that did the trick!
-
-
-Besides the fact that ALSA is a great piece of software, the
-documentation is a bit poor in some places - like this one. Since I am
-not a developer of the ALSA lib, I can only make suggestions, e.g.
-adding the following doxygen snippet at line 264/265 in seqmid.c
-(alsa-lib-1.0.14rc2) for snd_seq_set_client_pool_output:
-
- * The pool size is measured in events, not in bytes. The maximum size
- * is 2000, values greater than that are ignored.
-
-Thx & Regards,
-Gerald
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
