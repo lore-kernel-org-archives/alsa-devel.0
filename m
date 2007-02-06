@@ -1,15 +1,17 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: seq: maximum number of events w.r.t. ordering in
-	queue
-Date: Tue, 06 Feb 2007 12:59:23 +0100
-Message-ID: <1170763163.22570.1173152487@webmail.messagingengine.com>
-References: <45C62E51.3050608@gmx.net>
+From: Jason Baron <jbaron@redhat.com>
+Subject: Re: stac92xx_parse_auto_config() can return 0 on error?
+Date: Tue, 6 Feb 2007 11:53:21 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0702061149470.28241@dhcp83-20.boston.redhat.com>
+References: <Pine.LNX.4.64.0702051624060.26250@dhcp83-20.boston.redhat.com>
+	<1170714593.28278.151.camel@localhost> <s5h64afy0bb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <45C62E51.3050608@gmx.net>
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE162306
+	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2007 17:55:54 +0100 (MET)
+In-Reply-To: <s5h64afy0bb.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,26 +21,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Gerald Grabner <gerald.grabner@gmx.net>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: John Linville <linville@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gerald Grabner wrote:
->   // buffer size for all events
->   unsigned int b = (n+1)*sizeof(snd_seq_event_t);
+
+On Tue, 6 Feb 2007, Takashi Iwai wrote:
+
+> At Mon, 05 Feb 2007 14:29:53 -0800,
+> Tobin Davis wrote:
+> > 
+> > On Mon, 2007-02-05 at 16:40 -0500, Jason Baron wrote:
+> > 
+> >     hi,
+> >     
+> >     I just ran into a RHEL4 U5 beta kernel oops in snd_hda_input_mux_info(), 
+> >     because the 'imux' parameter pointer was NULL. I traced this back to 
+> >     stac92xx_parse_auto_config(), which can return 0, if 'line_outs' is not 
+> >     set, without having initialized the 'input_mux'.
+> >     
+> >     The oops does not happen on the upstream kernel on this hardware b/c 
+> >     'line_outs' was set (additional code has been added since RHEL4 to set 
+> >     it). However, it still appears to me, that if 'line_outs' is not set, we 
+> >     should return an error code, and not 0.
+> >     
+> >     thanks,
+> >     
+> >     -Jason
+> > 
+> > Try this patch to see if it works with your alsa version.  It's a simple patch that
+> > adds the error condition, and should be able to be applied to older alsa versions.
+> > 
+> > Summary:  add error for undetected line_outs.
+> > 
+> > This adds an error condition to stac92xx_parse_auto_config if line_outs is less than
+> > zero.
+> > 
 > 
->   // set output buffer and client pool size
->   if ( snd_seq_set_output_buffer_size(seq,b) )
->     printf("Error setting output_buffer_size\n");
->   if ( snd_seq_set_client_pool_output(seq,b) )
->     printf("Error setting client_pool_output\n");
+> line_outs won't be negative, so this situation can't happen.
+> The problem is that stac92xx_parse_auto_config() returns "0" (which
+> means successful) even if line_outs = 0 and thus nothing is
+> configured.  Simply changing it to return -EINVAL would work. 
+> 
+> However, this is no best solution.  In the case of patch_realtek.c or
+> others, the codec probe routine behaves slightly differently. 
+> *_parse_auto_config() may return 0 if no ane configuration is found.
+> Then it falls back to model=basic.  Returning a negative means a fatal
+> error to stop.  Meanwhile, in the case of sigmatel, there is no
+> fallback, so it always stop.
+> 
+> The patch below adds the fallback to model=ref in case that no proper
+> auto-config is available.  Please give it a try.
+> 
+> 
+> Takashi
+> 
+> 
 
-What the documentation failed to tell you is that the parameter to
-snd_seq_set_client_pool_output() is measured in events, not in bytes,
-and that a value that is too big is silently ignored.
+ok. thanks. in our backport, we don't have 'STAC_925x_REF' 
+defined....should we be using 'STAC_REF' instead? Also, the change that 
+introduced this problem into our 'beta' tree was:
+
+@@ -855,14 +1137,14 @@ static int stac92xx_parse_auto_config(st
+
+        if ((err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, 
+NULL)) < 0)
+                return err;
+-       if (! spec->autocfg.line_outs && ! spec->autocfg.hp_pin)
++       if (! spec->autocfg.line_outs)
+                return 0; /* can't find valid pin config */
 
 
-HTH
-Clemens
+If i revert this single change, i avoid the oops as well....
+
+thanks.
+
+-Jason
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
