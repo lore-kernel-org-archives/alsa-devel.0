@@ -1,10 +1,15 @@
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Tue,  6 Feb 2007 12:28:33 +0100 (MET)
-Message-ID: <20070206112833.408B4339@alsa.jcu.cz>
+From: "Aditya Shankar" <mc.aditya@gmail.com>
+Subject: Re: Query regarding ALSA control interface
+Date: Tue, 6 Feb 2007 17:08:33 +0530
+Message-ID: <24a2bfdf0702060338l72fc651dsedd0ed57e2e71270@mail.gmail.com>
+References: <24a2bfdf0702012252l30ddbb4cs3eebfbab8e11a5ba@mail.gmail.com>
+	<1170404256.27352.1172535505@webmail.messagingengine.com>
+	<24a2bfdf0702020054g68ccd946v180eae48c2d55f0b@mail.gmail.com>
+	<1170698187.1391.1173011395@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0561682871=="
+Content-Type: multipart/mixed; boundary="===============0353531855=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1170698187.1391.1173011395@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,155 +19,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
+--===============0353531855==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_4743_32286353.1170761913217"
 
---===============0561682871==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="0C47E335.1170761313/alsa.jcu.cz"
-
-This is a MIME-encapsulated message.
-
---0C47E335.1170761313/alsa.jcu.cz
-Content-Description: Notification
-Content-Type: text/plain
-
-This is the ALSA's E-mail Delivery System program at host alsa.jcu.cz.
-
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
-
-For further assistance, please send mail to <postmaster>
-
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
-
-			The ALSA's E-mail Delivery System program
-
-<alsa-devel@lists.sourceforge.net> (expanded from
-    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550-SPAM: This message appears to be spam (5.6 points). 550-- 550-If
-    you believe this message was classified as spam in error, 550-please open a
-    Support Request at the URL below. 550-(Please include this message in any
-    Support Request). 550-- 550-- 550-Spam Filtering performed by
-    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
-    550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0 RCVD_BY_IP
-    Received by mail server with no name 550-1.5 RCVD_NUMERIC_HELO
-    Received: contains an IP address used for HELO 550-0.0 HTML_MESSAGE
-    BODY: HTML included in message 550-1.5 MPART_ALT_DIFF         BODY: HTML
-    and text parts are different 550-0.5 HTML_20_30             BODY: Message
-    is 20% to 30% HTML 550-2.0 MIME_HTML_ONLY         BODY: Message only has
-    text/html MIME parts 550 0.0 MIME_HTML_ONLY_MULTI   Multipart message only
-    has text/html MIME parts (in reply to end of DATA command)
-
---0C47E335.1170761313/alsa.jcu.cz
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 0C47E335
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Tue,  6 Feb 2007 12:28:30 +0100 (MET)
-
-Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
-Original-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-	mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message
-	appears to
-	be spam (5.6 points). 550-- 550-If you believe this message was
-	classified
-	as spam in error, 550-please open a Support Request at the URL below.
-	550-(Please include this message in any Support Request). 550-- 550--
-	550-Spam Filtering performed by sourceforge.net. 550-See
-	http://spamassassin.org/tag/ for more details. 550-Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0
-	RCVD_BY_IP
-	Received by mail server with no name 550-1.5 RCVD_NUMERIC_HELO
-	Received: contains an IP address used for HELO 550-0.0 HTML_MESSAGE
-	BODY: HTML included in message 550-1.5 MPART_ALT_DIFF BODY: HTML
-	and text parts are different 550-0.5 HTML_20_30 BODY: Message
-	is 20% to 30% HTML 550-2.0 MIME_HTML_ONLY BODY: Message only has
-	text/html MIME parts 550 0.0 MIME_HTML_ONLY_MULTI Multipart message
-	only
-	has text/html MIME parts (in reply to end of DATA command)
-
---0C47E335.1170761313/alsa.jcu.cz
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-
-Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id 0C47E335; Tue,  6 Feb 2007 12:28:30 +0100 (MET)
-Delivered-To: alsa-devel@alsa-project.org
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE67D314
-	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2007 12:28:29 +0100 (MET)
-Received: from 217.141.22.8 (unknown [217.141.22.8])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	A3B9299AA9
-	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2007 12:28:29 +0100 (MET)
-Received: from smtp1.catalog.com (smtp1.catalog.com [209.217.36.158])
-	by 217.141.22.8 (Qmailv1) with ESMTP id 1W463T22UL
-	for <alsa-devel@alsa-project.org>; Tue, 06 Feb 2007 12:28:42 +0100
-Received: from 216.194.70.4 ([extremevideo.cjb.net]:8502 "EHLO
-	extremevideo.cjb.net"
-	smtp-auth: "rphfkkhlrw" TLS-CIPHER: <none> TLS-PEER-CN1: <none>)
-	by smtp1.catalog.com with ESMTP id 17ey-kMHk7-CgE (ORCPT
-	<rfc822; rphfkkhlrw@extremevideo.cjb.net>);
-	Tue, 06 Feb 2007 06:45:55 +0100
-Date: Tue, 06 Feb 2007 06:45:55 +0100
-From: "JEAN PAUL CONSTANTINO" <rphfkkhlrw@extremevideo.cjb.net>
-X-Mailer: The Bat! (v2.12.00) Personal
-X-Priority: 3
-Message-ID: <75721336178846.2007020606455557816@extremevideo.cjb.net>
-To: alsa-devel@alsa-project.org
-Subject: Got to be good
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="----------A1M0XX6EMBYU551X"
-
-------------A1M0XX6EMBYU551X
-Content-Type: text/html; charset=us-ascii
+------=_Part_4743_32286353.1170761913217
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<body>
-Hey,<br>
-Recieving this email &nbsp;Gaurantees,<br>
-<span style="font-weight: bold;">FreeBottle of Natural Green Food Suppliments</span><br>
-This offer is valid for a short time or till stocks last<br>
-<br>
-Visit <a href="http://www.geocities.com/bo_xebugydi">NaturalGreens</a> and apply for your FreeBottle now !<br>
-<br>
-Have a Good one<br>
-S.S.Samuels<br>
-Authorized Dealers<br>
-**********************<br>
-<br>
-<br>
-At least 19 family were murder in one region as thunderstorm packing tornadoes raked across Florida.
-The National Weather Service confirmed Friday that a significant
-tornado happening maltreated two counties and mutilation review teams are being arrange.
-It looks like a total war zone about 300 porch wide,
-U.S. Sen. Bill Nelson said after touring the county.
-</body>
-</html>
+On 2/5/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+>
+> (please don't top-post)
+> Aditya Shankar wrote:
+> > Thanks for your reply. But my problem is not that I dont see any capture
+> > controls. I am not able to get that particular control which I had
+> mentioned
+> > in my earlier mail.
+>
+> Please show the output of "amixer controls" and "amixer scontrols".
+>
+>
+> Regards,
+> Clemens
+>
+
+Hi Clemens,
+
+The output of amixer controls is as below..
+
+numid=4,iface=MIXER,name='Master Balance Playback Volume'
+numid=3,iface=MIXER,name='Master Monoconfig Playback Volume'
+numid=1,iface=MIXER,name='Master Output Playback Volume'
+numid=2,iface=MIXER,name='Master Playback Volume'
+numid=6,iface=MIXER,name='Master Capture Route'
+numid=5,iface=MIXER,name='Master Capture Volume'
+
+The output of amixer scontrols is
+
+Simple mixer control 'Master',0
+Simple mixer control 'Master Balance',0
+Simple mixer control 'Master Monoconfig',0
+Simple mixer control 'Master Output',0
+
+Please let me know what you think..
+
+Regards,
+Aditya
+
+------=_Part_4743_32286353.1170761913217
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<br><br>
+<div><span class="gmail_quote">On 2/5/07, <b class="gmail_sendername">Clemens Ladisch</b> &lt;<a href="mailto:cladisch@fastmail.net">cladisch@fastmail.net</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">(please don&#39;t top-post)<br>Aditya Shankar wrote:<br>&gt; Thanks for your reply. But my problem is not that I dont see any capture
+<br>&gt; controls. I am not able to get that particular control which I had mentioned<br>&gt; in my earlier mail.<br><br>Please show the output of &quot;amixer controls&quot; and &quot;amixer scontrols&quot;.<br><br><br>Regards,
+<br>Clemens<br></blockquote></div>
+<div>&nbsp;</div>
+<div>Hi Clemens,</div>
+<div><br>The output of amixer controls is as below..</div>
+<div>&nbsp;</div>
+<div>numid=4,iface=MIXER,name=&#39;Master Balance Playback Volume&#39;<br>numid=3,iface=MIXER,name=&#39;Master Monoconfig Playback Volume&#39;<br>numid=1,iface=MIXER,name=&#39;Master Output Playback Volume&#39;<br>numid=2,iface=MIXER,name=&#39;Master Playback Volume&#39;
+<br>numid=6,iface=MIXER,name=&#39;Master Capture Route&#39;<br>numid=5,iface=MIXER,name=&#39;Master Capture Volume&#39;</div>
+<div>&nbsp;</div>
+<div>The output of amixer scontrols is </div>
+<div>&nbsp;</div>
+<div>Simple mixer control &#39;Master&#39;,0<br>Simple mixer control &#39;Master Balance&#39;,0<br>Simple mixer control &#39;Master Monoconfig&#39;,0<br>Simple mixer control &#39;Master Output&#39;,0</div>
+<div>&nbsp;</div>
+<div>Please let me know what you think..</div>
+<div>&nbsp;</div>
+<div>Regards,</div>
+<div>Aditya</div>
+<div>&nbsp;</div>
+
+------=_Part_4743_32286353.1170761913217--
 
 
-
-
-
-------------A1M0XX6EMBYU551X--
-
-
---0C47E335.1170761313/alsa.jcu.cz--
-
-
---===============0561682871==
+--===============0353531855==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -173,7 +112,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0561682871==
+--===============0353531855==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -184,4 +123,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0561682871==--
+--===============0353531855==--
