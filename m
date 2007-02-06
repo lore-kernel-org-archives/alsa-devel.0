@@ -1,12 +1,15 @@
-From: "Dusty Wilkinson" <defunctsSaturnalia's@aawot.com>
-Subject: Metatema is a leading web development
-Date: Tue, 6 Feb 2007 20:04:34 +0000 (UTC)
-Message-ID: <01c74a29$dfc76610$6c822ecf@defunctsSaturnalia's>
+From: Gerald Grabner <gerald.grabner@gmx.net>
+Subject: Re: seq: maximum number of events w.r.t. ordering in
+ queue
+Date: Tue, 06 Feb 2007 21:40:43 +0100
+Message-ID: <45C8E7CB.9000700@gmx.net>
+References: <45C62E51.3050608@gmx.net>
+	<1170763163.22570.1173152487@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Tue, 6 Feb 2007 20:03:31 -0060
+In-Reply-To: <1170763163.22570.1173152487@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,33 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: Clemens Ladisch <cladisch@fastmail.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Glad to see you, lucky devil!
+Clemens Ladisch wrote:
+> Gerald Grabner wrote:
+>>   // buffer size for all events
+>>   unsigned int b = (n+1)*sizeof(snd_seq_event_t);
+>>
+>>   // set output buffer and client pool size
+>>   if ( snd_seq_set_output_buffer_size(seq,b) )
+>>     printf("Error setting output_buffer_size\n");
+>>   if ( snd_seq_set_client_pool_output(seq,b) )
+>>     printf("Error setting client_pool_output\n");
+>
+> What the documentation failed to tell you is that the parameter to
+> snd_seq_set_client_pool_output() is measured in events, not in
+> bytes, and that a value that is too big is silently ignored.
 
-Have you read the unbelieveble news of the LOMJ's new technology?
-If not, you have the chance to think it over!
-BREAKING NEWS: 
-LOM Logistics, Inc. Starts more advanced than ebay online auction system! 
- 
-Last year, ebay did 3.2 Billion dollars in revenue, LOM Logistics (Pinksheets: LOMJ) is pleased to try to capture this market with system much more technically advanced then ebay. 
- 
-LOM Logistics Site www.Livenegotiator.Com Receives Prelaunch Interest as Its Live Negotiating Technology is Made Available for Private Label Usage 
-Tuesday February 6, 1:09 pm ET  
- 
-LITTLE ROCK, Ark.--(BUSINESS WIRE)--LOM Logistics, Inc. (PINK SHEETS:LOMJ - News), is pleased to announce that it is already receiving a growing interest in its private label business opportunities for its live negotiating technology. The Company is currently modernizing an advanced beta version of its pioneering live negotiating technology that provides  real-time order tracking system which points to a central live negotiating marketplace. LOM Logistics, Inc. will show the technology in separate business sector applications allowing the users to choose which technology application suits better their business needs, focus and direction. 
-  
-The private label opportunity is geared towards any individual or business looking to expand their potential income stream with an enhanced online presence. Using the LOM cutting edge live negotiating technology for the business entrepreneur, regardless of their respective industry, one can take complete control of their online negotiations like never before. The Company will create each private labeled e-commerce website complete with customized graphics, and presentation featuring the multiple benefits of the live negotiating technology in the LOM system. Each private labeled site will represent its own virtual storefront while allowing users to enjoy the benefits of a common listing base for goods and services while using the revolutionary live negotiating technology. 
- 
-Please visit www.livenegotiator.com for more information on this exciting new technology. 
- 
-DISCLAIMER: 
-This message contains far-sighted statements. This is not an offer to buy or sell any shares. The sponsor of this letter paid ten thousand dollars for distribution of this publication.
-     
+Indeed, that did the trick!
 
 
+Besides the fact that ALSA is a great piece of software, the
+documentation is a bit poor in some places - like this one. Since I am
+not a developer of the ALSA lib, I can only make suggestions, e.g.
+adding the following doxygen snippet at line 264/265 in seqmid.c
+(alsa-lib-1.0.14rc2) for snd_seq_set_client_pool_output:
 
+ * The pool size is measured in events, not in bytes. The maximum size
+ * is 2000, values greater than that are ignored.
+
+Thx & Regards,
+Gerald
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
