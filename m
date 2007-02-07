@@ -1,15 +1,12 @@
-From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
-Subject: Re: The per-soundcard Documentation is ABSURDLY out of
- date
-Date: Wed, 07 Feb 2007 18:37:39 +0100
-Message-ID: <45CA0E63.6030003@ingomueller.net>
-References: <1170860322.30963.27.camel@localhost.localdomain>
-	<s5h7iuuudtq.wl%tiwai@suse.de>
+From: "Allyn, Mark A" <mark.a.allyn@intel.com>
+Subject: Bluetooth audio driver causing kernel oops with
+	alsa-driver-hg20070206
+Date: Wed, 7 Feb 2007 10:06:20 -0800
+Message-ID: <5FD5754DDBA0B1499B5A0B4BB541948585D5D7@fmsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1572480155=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h7iuuudtq.wl%tiwai@suse.de>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,53 +19,115 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai schrieb:
-> At Wed, 07 Feb 2007 09:58:42 -0500,
-> Paul Davis wrote:
->> Someone on ardour-users just asked a question based on docs for the RME
->> HDSP 9632 @ alsa-project.org. I took a look.
->>
->> The docs there are written as if no linux distro has ALSA builtin. The
->> same appears to be true for every other card I looked at. It tells
->> people how to (re)build and (re)install ALSA.
->>
->> This is deeply confusing and wrong. I wish I had time to correct it
->> myself.
-> 
-> I come to believe that it makes little sense to keep this style of
-> project page, at least, as it is.  We have too little horses while the
-> load gets bigger and bigger.  As I've suggested many times, we should
-> change to more open style like Wiki to avoid rotten information.
-> (Yeah once ago I was against Wiki, but the time changed...)
-> 
+This is a multi-part message in MIME format.
 
-Hi!
+--===============1572480155==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C74AE2.ABC3BC61"
 
-I agree totally with you, Takashi. As you sure know, there is already a
-wiki on http://alsa.opensrc.org/. I'd suggest to merge these two major
-sources of information: the mentioned wiki and the official page. On
-that mailinglist two months ago when I was not that deep into the
-subject, I wrote (title "PLEASE improve the ALSA documentation!") that
-one of the biggest problems was, that the documentation was "splattered
-all over the internet". The merging of those two sites would therefor
-not only be more easily to maintain, but it would be a lot better for
-the user!
+This is a multi-part message in MIME format.
 
-There's something else I already wrote back then: I said that I was
-willing to help and I'm repeating it here! Since then, I made over 1500
-contributions to the wiki, most of them simple transfering to a new
-wikisoftware, but also restructuring and some new articles. I also said,
-that I didn't want to be alone, but hey, nobody can conjure up
-volounteers and as you said, Takashi, few horses and big loads... Maybe
-this can be an occasion that more people join the forces and that the
-documentation is finally rebuilt!!
+------_=_NextPart_001_01C74AE2.ABC3BC61
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks to anyone sharing his ideas about that topic!
+Hello:
+=20
+I have tried the snapshot, alsa-driver-hg20070206, on a system running
+Red Flag and that has a sigmatel 2202 Codec on the Intel-hda device. The
+kernel is 2.6.17.
+=20
+The enclosed dmesg output shows a kernel oops that happened when I tried
+to run the alsaconf command. It appears that the problem is in the
+snd_bt_sco_volume_get function (which is within the btsco driver).=20
+=20
+I am wondering, can this be due to a structure mismatch between the
+btsco driver and the Alsa tree? I tried searching for btsco within alsa
+and could not find it.=20
+=20
+Who is responsible for the btsco audio driver?
+=20
+Thank you
+=20
+Mark Allyn
 
-Regards, Ingo
+------_=_NextPart_001_01C74AE2.ABC3BC61
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.2912" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007>Hello:</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>I have =
+tried the=20
+snapshot, alsa-driver-hg20070206, on a system running Red Flag and that =
+has a=20
+sigmatel 2202 Codec on the Intel-hda device. The kernel is=20
+2.6.17.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>The =
+enclosed dmesg=20
+output shows a kernel oops that happened when I tried to run the =
+alsaconf=20
+command. It appears that the problem is in the snd_bt_sco_volume_get =
+function=20
+(which is within the btsco driver). </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>I am =
+wondering, can=20
+this be due to a structure mismatch between the btsco driver and the =
+Alsa tree?=20
+I tried searching for btsco within alsa and could not find it.=20
+</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>Who is =
+responsible=20
+for the btsco audio driver?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>Thank=20
+you</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D265125917-07022007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D265125917-07022007>Mark=20
+Allyn</SPAN></FONT></DIV></BODY></HTML>
+
+------_=_NextPart_001_01C74AE2.ABC3BC61--
+
+
+--===============1572480155==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1572480155==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1572480155==--
