@@ -1,15 +1,14 @@
-From: "Fishel Lail" <dale@sandia.org>
-Subject: Hi
-Date: Wed, 7 Feb 2007 00:55:44 +0100
-Message-ID: <01c74a4a$50d96bd0$1402a8c0@vieper>
-Reply-To: Fishel Lail <dale@sandia.org>
+From: Rui Nuno Capela <rncbc@rncbc.org>
+Subject: Re: USX2Y 2.6.20-rt2 Oops on disconnect [SOLVED]
+Date: Wed, 07 Feb 2007 00:54:23 +0000
+Message-ID: <45C9233F.6030405@rncbc.org>
+References: <20070205065636.GA1652@elte.hu>	<200702051525.49465.fzu@wemgehoertderstaat.de>	<49143.192.168.1.8.1170712006.squirrel@www.rncbc.org>
+	<200702052327.06365.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sandia.org (p57A96EF8.dip.t-dialin.net [87.169.110.248])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 73947306
-	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2007 00:55:48 +0100 (MET)
+In-Reply-To: <200702052327.06365.annabellesgarden@yahoo.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,21 +18,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Marlowe Heesch <alsa-devel@alsa-project.org>
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Karsten Wiese wrote:
+> Am Montag, 5. Februar 2007 22:46 schrieb Rui Nuno Capela:
+>> Hi Karsten,
+>>
+>> I'm having this kernel oops right on disconnecting my US-224. Probably it
+>> has been creeping around before, but only now I had the opportunity to
+>> report.
+>>
+>> ...
+> 
+> hm, just pulled the usb-cable off my us428 twice with nothing in dmesg.
+> Under jackd working.
+> Which is the way to reproduce this?
+> As a shot in the dark, please try the attached patch.
+> Should be correct anyhow ;-)
+> 
+> ...
+> Hi Takashi,
+> 
+> had some oopses here running -rt kernels,
+> which vanished after applying this.
+> 
+>       Karsten
+> ------------------------------------------------------------------- 
+> snd_hwdep_release() racefix
+> 
+> 
+> snd_card_file_remove() can free the snd_card.
+> Touch hw->* only before calling snd_card_file_remove().
+> 
+> Unrelated: Allow hwdep devices not to have own ops.release();
+> 
+> 
+> Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+> 
+> 
+> --- /alsa-kernel/core/hwdep.c_	2007-01-30 20:32:01.000000000 +0100
+> +++ /alsa-kernel/core/hwdep.c	2007-01-30 20:32:01.000000000 +0100
+> @@ -156,15 +156,16 @@
+>  	int err = -ENXIO;
+>  	struct snd_hwdep *hw = file->private_data;
+>  	struct module *mod = hw->card->module;
+> +
+>  	mutex_lock(&hw->open_mutex);
+> -	if (hw->ops.release) {
+> +	if (hw->ops.release)
+>  		err = hw->ops.release(hw, file);
+> -		wake_up(&hw->open_wait);
+> -	}
+>  	if (hw->used > 0)
+>  		hw->used--;
+> -	snd_card_file_remove(hw->card, file);
+>  	mutex_unlock(&hw->open_mutex);
+> +	wake_up(&hw->open_wait);
+> +
+> +	snd_card_file_remove(hw->card, file);
+>  	module_put(mod);
+>  	return err;
+>  }
+> 
 
-Vaiagra $3. 35
-Vaulium $1. 25
-Cuialis $3. 75
-Abmbien $2. 90
-Suoma   $1. 15
+OK. Karsten's patch (snd_hwdep_release-racefix.diff) applied. Oops no
+more, at least on this early reported machine. I've just missed that one
+before and assumed it was already present on the -rt patchset (as was
+the OHCI fix).
 
-http://www.33!rx.com
+Make me wait no longer. Make it through 2.6.21 merge window too, please?
 
-Important: Remove "!" in the above link
-
+Cheers.
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
