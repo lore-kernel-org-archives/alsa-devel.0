@@ -1,14 +1,11 @@
-From: Rui Nuno Capela <rncbc@rncbc.org>
-Subject: Re: USX2Y 2.6.20-rt2 Oops on disconnect [SOLVED]
-Date: Wed, 07 Feb 2007 00:54:23 +0000
-Message-ID: <45C9233F.6030405@rncbc.org>
-References: <20070205065636.GA1652@elte.hu>	<200702051525.49465.fzu@wemgehoertderstaat.de>	<49143.192.168.1.8.1170712006.squirrel@www.rncbc.org>
-	<200702052327.06365.annabellesgarden@yahoo.de>
+From: Shingo HORISAWA <tora2329@yahoo.co.jp>
+Subject: Problems with Realtek HD Audio
+Date: Wed, 7 Feb 2007 10:26:32 +0900 (JST)
+Message-ID: <20070207012632.28910.qmail@web3211.mail.kcd.yahoo.co.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200702052327.06365.annabellesgarden@yahoo.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,82 +15,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> Am Montag, 5. Februar 2007 22:46 schrieb Rui Nuno Capela:
->> Hi Karsten,
->>
->> I'm having this kernel oops right on disconnecting my US-224. Probably it
->> has been creeping around before, but only now I had the opportunity to
->> report.
->>
->> ...
-> 
-> hm, just pulled the usb-cable off my us428 twice with nothing in dmesg.
-> Under jackd working.
-> Which is the way to reproduce this?
-> As a shot in the dark, please try the attached patch.
-> Should be correct anyhow ;-)
-> 
-> ...
-> Hi Takashi,
-> 
-> had some oopses here running -rt kernels,
-> which vanished after applying this.
-> 
->       Karsten
-> ------------------------------------------------------------------- 
-> snd_hwdep_release() racefix
-> 
-> 
-> snd_card_file_remove() can free the snd_card.
-> Touch hw->* only before calling snd_card_file_remove().
-> 
-> Unrelated: Allow hwdep devices not to have own ops.release();
-> 
-> 
-> Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
-> 
-> 
-> --- /alsa-kernel/core/hwdep.c_	2007-01-30 20:32:01.000000000 +0100
-> +++ /alsa-kernel/core/hwdep.c	2007-01-30 20:32:01.000000000 +0100
-> @@ -156,15 +156,16 @@
->  	int err = -ENXIO;
->  	struct snd_hwdep *hw = file->private_data;
->  	struct module *mod = hw->card->module;
-> +
->  	mutex_lock(&hw->open_mutex);
-> -	if (hw->ops.release) {
-> +	if (hw->ops.release)
->  		err = hw->ops.release(hw, file);
-> -		wake_up(&hw->open_wait);
-> -	}
->  	if (hw->used > 0)
->  		hw->used--;
-> -	snd_card_file_remove(hw->card, file);
->  	mutex_unlock(&hw->open_mutex);
-> +	wake_up(&hw->open_wait);
-> +
-> +	snd_card_file_remove(hw->card, file);
->  	module_put(mod);
->  	return err;
->  }
-> 
+Hi, alsa developers.
 
-OK. Karsten's patch (snd_hwdep_release-racefix.diff) applied. Oops no
-more, at least on this early reported machine. I've just missed that one
-before and assumed it was already present on the -rt patchset (as was
-the OHCI fix).
+I have two problems about Realtek HD audio.
 
-Make me wait no longer. Make it through 2.6.21 merge window too, please?
+(1) Capturing stops suddenly
 
-Cheers.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+  When I was capturing a sound from microphone for
+recording voice 
+  using "arecord", it had stopped suddenly.
+  After that, I couldn't capture a sound at all.
+  To repair this situation, I had to restart ALSA or
+system.
+  
+  It seems that this problem occurs when there are heavily
+loads. 
+  (For example, when I was using ethereal, it occured.) 
+
+
+(2) Sound from embedded speaker
+
+  When I plug a headphone into PC,
+  I can hear sounds from both of headephone and embedded
+speaker.
+  (Normally, sounds should be heard from headphone.)
+  
+Are these known problem?
+And if you know how to avoid them, please tell me.
+
+
+FYI, my PC is TOSHIBA dynabook Satellite K10, 
+and my distro is Fedora Core 6.
+The audio device is ATI technologies SB450 HDA Audio.
+
+
+Best regards.
+
+--------------------------------------
+Start Yahoo! Auction now! Check out the cool campaign
+http://pr.mail.yahoo.co.jp/auction/
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
