@@ -1,21 +1,12 @@
-From: "Hugging R. Histamine" <extreme-filming@globalmaint.com>
-Subject: Problems everywhere?
-Date: Wed, 07 Feb 2007 02:45:19 -0500
-Message-ID: <1728223293.20070207024519@globalmaint.com>
+From: "Micha Nelissen" <micha.nelissen@Prodrive.nl>
+Subject: Re: Driver mmap kernel memory
+Date: Wed, 7 Feb 2007 09:31:50 +0100
+Message-ID: <4CD35CD1F8085945B597F80EEC894213092024@exc01.bk.prodrive.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54D8232C
-	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2007 08:41:03 +0100 (MET)
-Received: from -1221609128 (201-42-172-67.dsl.telesp.net.br [201.42.172.67])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	68EC099876
-	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2007 08:40:58 +0100 (MET)
-Received: from globalmaint.com (-1219670536 [-1222224200])
-	by 201-42-172-67.dsl.telesp.net.br (Qmailv1) with ESMTP id 683A760430
-	for <alsa-devel@alsa-project.org>; Wed, 07 Feb 2007 02:45:19 -0500
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,27 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa Development List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The most powerful medicines for you!
+Takashi Iwai wrote:
+>> Has anyone seen this behaviour before, and how to fix it ? Or, any
+>> hints how to reproduce the alsa mmap behaviour in a smaller software
+>> stack ? 
+> 
+> Which architecture is it?  It might be a memory coherency problem.
+> Does the normal snd_pcm_writei() work as expected?
 
-Female Sex Libido Enhancer - $139.48 - specially designed for women. While the pharmaceutical industry has many products that helps maintain or increase sexual health in men, when it comes to women they have no options available. 
+The CPU architecture is armeb.
 
-Pheromone cologne for men - $35.99 - The human pheromones that attracts females has finally been recreated in the laboratory! Naturally found in minute amounts in the perspiration of men, these natural pheromones are an evolutionary remnant from a time when human females relied on scent to locate male mates. 
+I have more information now. The problem disappears if I do the endian
+swap in the kernel driver. That means that I specify
+SNDDRV_PCM_FMTBIT_S16_BE | SNDDRV_PCM_FMTBIT_S16_LE, instead of only
+SNDDRV_PCM_FMTBIT_S16_BE, and I decide using the runtime->format whether
+to swap or not.
 
-Lipothin - $35.99 - the finest lipotropic fat burner ever! Made from only the finest pharmaceutical grade botanicals, Lipothin contains a unique and highly effective formula of all-natural ingredients which will increase your heart rate, suppress your appetite, and greatly accelerate the burning of fat. 
+Hope this helps,
 
-Imitrex - $9.06 - acute treatment of migraine attacks. 
-
-Prokzac - $3.31 - one of the world's most widely prescribed antidepressants; it has been prescribed for more than 40 million people worldwide. Chances are, someone you know is getting better because of it. 
-
-and more!
-
-our site http://niaqo.hk/
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
+Micha
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
