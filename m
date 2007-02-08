@@ -1,13 +1,11 @@
-From: Shingo HORISAWA <tora2329@yahoo.co.jp>
-Subject: Re: Problems with Realtek HD Audio
-Date: Thu, 8 Feb 2007 12:55:54 +0900 (JST)
-Message-ID: <20070208035554.90167.qmail@web3213.mail.kcd.yahoo.co.jp>
-References: <s5hodo6utp0.wl%tiwai@suse.de>
+From: "Micha Nelissen" <micha.nelissen@Prodrive.nl>
+Subject: Re: Driver mmap kernel memory
+Date: Thu, 8 Feb 2007 09:27:51 +0100
+Message-ID: <4CD35CD1F8085945B597F80EEC894213092025@exc01.bk.prodrive.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C74B5B.05C23C1F"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hodo6utp0.wl%tiwai@suse.de>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,62 +15,224 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa Development List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi.
+This is a multi-part message in MIME format.
 
-Thanks for your response.
+------_=_NextPart_001_01C74B5B.05C23C1F
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-At first, I tried the latest ALSA HG driver, 
-but both problems occured again.
+Takashi Iwai wrote:
+> At Wed, 7 Feb 2007 09:31:50 +0100,
+> Micha Nelissen wrote:
+>>=20
+>> The CPU architecture is armeb.
+>=20
+> OK then you'd need dma_mmap_coherent() for mmapping the data.
 
-In /proc/asound/card0/codec#0, 
-codec was recognized as follows:
+Hmm? I'm not mmapping anything into user space, I suppose ALSA does this
+?
 
- Codec: Realtek ALC262
- Address: 0
- Vendor Id: 0x10ec0262
- Sybsystem Id: 0x11790500
- Revision Id: x100100
- Default: PCM
-   .
-   .
-   .
+In the driver, I access the buffer using the runtime->dma_area field.
+=20
+>> I have more information now. The problem disappears if I do the
+>> endian swap in the kernel driver. That means that I specify
+>> SNDDRV_PCM_FMTBIT_S16_BE | SNDDRV_PCM_FMTBIT_S16_LE, instead of only
+>> SNDDRV_PCM_FMTBIT_S16_BE, and I decide using the runtime->format
+>> whether to swap or not.
+>=20
+> Could you elaborate?  It sounds like a coincidence to me...
 
-So, it was recoginzed correctly, I think.
+What do you want to know ? I've attached some code that shows the piece
+in the kernel driver doing the checking of the buffer values
+(alsa-buf-check.c). Also attached is an alsa test program that I used
+(testtune.c).
 
+Fields in my_device: p_start (=3D dma_area), p_cur (=3D current playback
+pointer), p_end (=3D end of playback buffer); all point into dma_area.
 
-> Did you get any kernel message, for example,
-> something regarding
-> DMA/IRQ problem?  Does playback still work even
-> after this happens?
-> How about mixer volume / switch after this?
+Hope this helps,
 
-Though I couldn't find any messages when this happend, 
-but I could find the following message on
-/var/log/messages 
-when I started capturing by "arecord" command:
+Micha
 
-   kernel: hda-intel: Invalid position buffer, using LPIB
-read method instead.
+------_=_NextPart_001_01C74B5B.05C23C1F
+Content-Type: application/octet-stream;
+	name="alsa-buf-check.c"
+Content-Transfer-Encoding: base64
+Content-Description: alsa-buf-check.c
+Content-Disposition: attachment;
+	filename="alsa-buf-check.c"
 
-As for the playback, there is not a problem.
-There aren't any changes to mixer volume / switch don't
-after that.
+I2lmIDEKCQkJCWlmIChzYW1wbGUgIT0gbXlfZGV2aWNlLT5leHBfdmFsdWUpIHsKCQkJCSAgICBp
+ZiAobXlfZGV2aWNlLT5udW1fZXJyb3JzIDwgMjUpIHsKCQkJCQlpbnQgaTsKCQkJCQlwcmludGso
+ImVycm9yISBleHBlY3Q9JWQsIGdvdD0lZCwgcGxheXBvcz0lZCwgd3JhcHM9JWQsIGZvdW5kIEAi
+LCAKCQkJCQkgICAgbXlfZGV2aWNlLT5leHBfdmFsdWUsIHNhbXBsZSwgCgkJCQkJICAgIChteV9k
+ZXZpY2UtPnBfY3VyLW15X2RldmljZS0+cGxheWJhY2tfc3Vic3RyZWFtLT5ydW50aW1lLT5kbWFf
+YXJlYSkvc2l6ZW9mKHNhbXBsZSksIAoJCQkJCSAgICBteV9kZXZpY2UtPm51bV93cmFwcyk7CgkJ
+CQkJZm9yIChpPTA7IGk8MzIqMTAyNDsgaSsrKQoJCQkJCSAgICBpZiAoKChzMTYqKW15X2Rldmlj
+ZS0+cGxheWJhY2tfc3Vic3RyZWFtLT5ydW50aW1lLT5kbWFfYXJlYSlbaV0gPT0gbXlfZGV2aWNl
+LT5leHBfdmFsdWUpCgkJCQkJCXByaW50aygiICVkIiwgaSk7CgkJCQkJcHJpbnRrKCJcbiIpOwoJ
+CQkJICAgIH0gZWxzZSBpZiAobXlfZGV2aWNlLT5udW1fZXJyb3JzID09IDI1KQoJCQkJCXByaW50
+aygibWF4IG51bWJlciBvZiBzYW1wbGUgZXJyb3JzIHJlYWNoZWRcbiIpOwoJCQkJICAgIG15X2Rl
+dmljZS0+bnVtX2Vycm9ycysrOwoJCQkJfQoJCQkJbXlfZGV2aWNlLT5leHBfdmFsdWUrKzsKI2Vu
+ZGlmCQkJCQoK
 
+------_=_NextPart_001_01C74B5B.05C23C1F
+Content-Type: application/octet-stream;
+	name="testtune.c"
+Content-Transfer-Encoding: base64
+Content-Description: testtune.c
+Content-Disposition: attachment;
+	filename="testtune.c"
 
-Best Regards.
+I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDxhbHNhL3BjbS5oPgojaW5jbHVk
+ZSA8bWF0aC5oPgojaW5jbHVkZSA8c3lzL3RpbWUuaD4KCiNkZWZpbmUgU1dBUDE2KHgpICgoKCgo
+dW5zaWduZWQgc2hvcnQpeCkgJiAweGZmMDApID4+IDgpIHwgKCh4ICYgMHhmZikgPDwgOCkpCgpj
+aGFyKiBwY21kZXYgPSAiZGVmYXVsdCI7CgppbnQgbWFpbihpbnQgYXJnYywgY2hhcioqIGFyZ3Yp
+CnsKICAgICAgICBzbmRfcGNtX2h3X3BhcmFtc190ICpod3BhcmFtcz1OVUxMOwogICAgICAgIHNu
+ZF9wY21fc3dfcGFyYW1zX3QgKnN3cGFyYW1zPU5VTEw7CglzbmRfcGNtX3N0YXR1c190KiBzdGF0
+dXM7CglzbmRfcGNtX3QqIHBjbV9oYW5kbGU7CiAgICAgICAgaW50IGRpcjsKICAgICAgICB1aW50
+IGV4YWN0X3V2YWx1ZTsKICAgICAgICB1bnNpZ25lZCBsb25nIGV4YWN0X3VsdmFsdWU7Cgl1bnNp
+Z25lZCBzaG9ydCogYnVmOwoJc3RydWN0IHRpbWV2YWwgc3R2LCBjdHY7CiAgICAgICAgaW50IGNo
+YW5uZWxzLCBzZW50LCBjdXJydGltZSwgZGlzcHRpbWUsIGN1cnJhdmcsIG1heGF2ZzsKCWludCBy
+YXRlLCBmb3JtYXQsIHN0ZXJlbywgcncsIGRlbGF5OwogICAgICAgIGludCBwZXJpb2RzPTI7CiAg
+ICAgICAgaW50IHBlcmlvZHNpemU9NTAwOwoJaW50IGksIGVyciwgb2Zmc2V0LCBudW1mcmFtZXM7
+CgoJcmF0ZSA9IDgwMDA7CglzdGVyZW8gPSAwOwoJcncgPSAxOwoKICAgICAgICBpZiAoc25kX3Bj
+bV9vcGVuKCZwY21faGFuZGxlLCBwY21kZXYsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLDApIDwg
+MCkgewogICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX2NhcmRfb3Blbl9yOiBFcnJvciBvcGVu
+aW5nIFBDTSBkZXZpY2UgJXNcbiIsIHBjbWRldiApOwogICAgICAgICAgICAgICAgcmV0dXJuIC0x
+OwogICAgICAgIH0KCiAgICAgICAgLyogQWxsb2NhdGUgdGhlIHNuZF9wY21faHdfcGFyYW1zX3Qg
+c3RydWN0dXJlIG9uIHRoZSBzdGFjay4gKi8KICAgICAgICBzbmRfcGNtX2h3X3BhcmFtc19hbGxv
+Y2EoJmh3cGFyYW1zKTsKCiAgICAgICAgLyogSW5pdCBod3BhcmFtcyB3aXRoIGZ1bGwgY29uZmln
+dXJhdGlvbiBzcGFjZSAqLwogICAgICAgIGlmIChzbmRfcGNtX2h3X3BhcmFtc19hbnkocGNtX2hh
+bmRsZSwgaHdwYXJhbXMpIDwgMCkgewogICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9w
+YXJhbXM6IENhbm5vdCBjb25maWd1cmUgdGhpcyBQQ00gZGV2aWNlLlxuIik7CiAgICAgICAgICAg
+ICAgICByZXR1cm4gLTE7CiAgICAgICAgfQoKICAgICAgICBpZiAoc25kX3BjbV9od19wYXJhbXNf
+c2V0X2FjY2VzcyhwY21faGFuZGxlLCBod3BhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJM
+RUFWRUQpIDwgMCkgewogICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9wYXJhbXM6IEVy
+cm9yIHNldHRpbmcgYWNjZXNzLlxuIik7CiAgICAgICAgICAgICAgICByZXR1cm4gLTE7CiAgICAg
+ICAgfQogICAgICAgIC8qIFNldCBzYW1wbGUgZm9ybWF0ICovCiAgICAgICAgZm9ybWF0PVNORF9Q
+Q01fRk9STUFUX1MxNl9MRTsKICAgICAgICBpZiAoc25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1h
+dChwY21faGFuZGxlLCBod3BhcmFtcywgZm9ybWF0KSA8IDApIHsKICAgICAgICAgICAgICAgIHBy
+aW50ZigiYWxzYV9zZXRfcGFyYW1zOiBFcnJvciBzZXR0aW5nIGZvcm1hdC5cbiIpOwogICAgICAg
+ICAgICAgICAgcmV0dXJuIC0xOwogICAgICAgIH0KICAgICAgICAvKiBTZXQgbnVtYmVyIG9mIGNo
+YW5uZWxzICovCiAgICAgICAgaWYgKHN0ZXJlbykgY2hhbm5lbHM9MjsKICAgICAgICBlbHNlIGNo
+YW5uZWxzPTE7CiAgICAgICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVscyhwY21f
+aGFuZGxlLCBod3BhcmFtcywgY2hhbm5lbHMpIDwgMCkgewogICAgICAgICAgICAgICAgcHJpbnRm
+KCJhbHNhX3NldF9wYXJhbXM6IEVycm9yIHNldHRpbmcgY2hhbm5lbHMuXG4iKTsKICAgICAgICAg
+ICAgICAgIHJldHVybiAtMTsKICAgICAgICB9CiAgICAgICAgLyogU2V0IHNhbXBsZSByYXRlLiBJ
+ZiB0aGUgZXhhY3QgcmF0ZSBpcyBub3Qgc3VwcG9ydGVkICovCiAgICAgICAgLyogYnkgdGhlIGhh
+cmR3YXJlLCB1c2UgbmVhcmVzdCBwb3NzaWJsZSByYXRlLiAgICAgICAgICovCiAgICAgICAgZXhh
+Y3RfdXZhbHVlPXJhdGU7CiAgICAgICAgZGlyPTA7CiAgICAgICAgaWYgKChlcnI9c25kX3BjbV9o
+d19wYXJhbXNfc2V0X3JhdGVfbmVhcihwY21faGFuZGxlLCBod3BhcmFtcywgJmV4YWN0X3V2YWx1
+ZSwgJmRpcikpPDApewogICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9wYXJhbXM6IEVy
+cm9yIHNldHRpbmcgcmF0ZSB0byAlaTolcyIscmF0ZSxzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAg
+ICAgICAgICAgICByZXR1cm4gLTE7CiAgICAgICAgfQogICAgICAgIGlmIChkaXIgIT0gMCkgewog
+ICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9wYXJhbXM6IFRoZSByYXRlICVkIEh6IGlz
+IG5vdCBzdXBwb3J0ZWQgYnkgeW91ciBoYXJkd2FyZS5cbiAiCiAgICAgICAgICAgICAgICAiPT0+
+IFVzaW5nICVkIEh6IGluc3RlYWQuXG4iLCByYXRlLCBleGFjdF91dmFsdWUpOwogICAgICAgIH0K
+ICAgICAgICAvKiBjaG9vc2UgZ3JlYXRlciBwZXJpb2Qgc2l6ZSB3aGVuIHJhdGUgaXMgaGlnaCAq
+LwogICAgICAgIHBlcmlvZHNpemU9cGVyaW9kc2l6ZSoocmF0ZS84MDAwKTsKCiAgICAgICAgLyog
+U2V0IGJ1ZmZlciBzaXplIChpbiBmcmFtZXMpLiBUaGUgcmVzdWx0aW5nIGxhdGVuY3kgaXMgZ2l2
+ZW4gYnkgKi8KICAgICAgICAvKiBsYXRlbmN5ID0gcGVyaW9kc2l6ZSAqIHBlcmlvZHMgLyAocmF0
+ZSAqIGJ5dGVzX3Blcl9mcmFtZSkgICAgICovCiAgICAgICAgLyogc2V0IHBlcmlvZCBzaXplICov
+CiAgICAgICAgZXhhY3RfdWx2YWx1ZT1wZXJpb2RzaXplOwogICAgICAgIGRpcj0wOwogICAgICAg
+IGlmIChzbmRfcGNtX2h3X3BhcmFtc19zZXRfcGVyaW9kX3NpemVfbmVhcihwY21faGFuZGxlLCBo
+d3BhcmFtcywgJmV4YWN0X3VsdmFsdWUsICZkaXIpIDwgMCkgewogICAgICAgICAgICAgICAgcHJp
+bnRmKCJhbHNhX3NldF9wYXJhbXM6IEVycm9yIHNldHRpbmcgcGVyaW9kIHNpemUuXG4iKTsKICAg
+ICAgICAgICAgICAgIHJldHVybiAtMTsKICAgICAgICB9CiAgICAgICAgaWYgKGRpciAhPSAwKSB7
+CiAgICAgICAgICAgICAgICBwcmludGYoImFsc2Ffc2V0X3BhcmFtczogVGhlIHBlcmlvZCBzaXpl
+ICVkIGlzIG5vdCBzdXBwb3J0ZWQgYnkgeW91ciBoYXJkd2FyZS5cbiAiCiAgICAgICAgICAgICAg
+ICAiPT0+IFVzaW5nICVkIGluc3RlYWQuXG4iLCBwZXJpb2RzaXplLCAoaW50KWV4YWN0X3VsdmFs
+dWUpOwogICAgICAgIH0KICAgICAgICBwZXJpb2RzaXplPWV4YWN0X3VsdmFsdWU7CiAgICAgICAg
+LyogU2V0IG51bWJlciBvZiBwZXJpb2RzLiBQZXJpb2RzIHVzZWQgdG8gYmUgY2FsbGVkIGZyYWdt
+ZW50cy4gKi8KICAgICAgICBleGFjdF91dmFsdWU9cGVyaW9kczsKICAgICAgICBkaXI9MDsKICAg
+ICAgICBpZiAoc25kX3BjbV9od19wYXJhbXNfc2V0X3BlcmlvZHNfbmVhcihwY21faGFuZGxlLCBo
+d3BhcmFtcywgJmV4YWN0X3V2YWx1ZSwgJmRpcikgPCAwKSB7CiAgICAgICAgICAgICAgICBwcmlu
+dGYoImFsc2Ffc2V0X3BhcmFtczogRXJyb3Igc2V0dGluZyBwZXJpb2RzLlxuIik7CiAgICAgICAg
+ICAgICAgICByZXR1cm4gLTE7CiAgICAgICAgfQogICAgICAgIGlmIChkaXIgIT0gMCkgewogICAg
+ICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9wYXJhbXM6IFRoZSBudW1iZXIgb2YgcGVyaW9k
+cyAlZCBpcyBub3Qgc3VwcG9ydGVkIGJ5IHlvdXIgaGFyZHdhcmUuXG4gIgogICAgICAgICAgICAg
+ICAgIj09PiBVc2luZyAlZCBpbnN0ZWFkLlxuIiwgcGVyaW9kcywgZXhhY3RfdXZhbHVlKTsKICAg
+ICAgICB9CiAgICAgICAgLyogQXBwbHkgSFcgcGFyYW1ldGVyIHNldHRpbmdzIHRvICovCiAgICAg
+ICAgLyogUENNIGRldmljZSBhbmQgcHJlcGFyZSBkZXZpY2UgICovCiAgICAgICAgaWYgKChlcnI9
+c25kX3BjbV9od19wYXJhbXMocGNtX2hhbmRsZSwgaHdwYXJhbXMpKSA8IDApIHsKICAgICAgICAg
+ICAgICAgIHByaW50ZigiYWxzYV9zZXRfcGFyYW1zOiBFcnJvciBzZXR0aW5nIEhXIHBhcmFtczol
+cyIsc25kX3N0cmVycm9yKGVycikpOwogICAgICAgICAgICAgICAgcmV0dXJuIC0xOwogICAgICAg
+IH0KICAgICAgICAvKnByZXBhcmUgc3cgcGFyYW1zICovCiAgICAgICAgaWYgKHJ3KXsKICAgICAg
+ICAgICAgICAgIHNuZF9wY21fc3dfcGFyYW1zX2FsbG9jYSgmc3dwYXJhbXMpOwogICAgICAgICAg
+ICAgICAgc25kX3BjbV9zd19wYXJhbXNfY3VycmVudChwY21faGFuZGxlLCBzd3BhcmFtcyk7CiAg
+ICAgICAgICAgICAgICBpZiAoKGVycj1zbmRfcGNtX3N3X3BhcmFtc19zZXRfc3RhcnRfdGhyZXNo
+b2xkKHBjbV9oYW5kbGUsIHN3cGFyYW1zLHBlcmlvZHMqcGVyaW9kc2l6ZSApKTwwKXsKICAgICAg
+ICAgICAgICAgICAgICAgICAgcHJpbnRmKCJhbHNhX3NldF9wYXJhbXM6IEVycm9yIHNldHRpbmcg
+c3RhcnQgdGhyZXNob2xkOiVzIixzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAgICAgICAgICAg
+ICAgICAgIHJldHVybiAtMTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGlmICgo
+ZXJyPXNuZF9wY21fc3dfcGFyYW1zKHBjbV9oYW5kbGUsIHN3cGFyYW1zKSk8MCl7CiAgICAgICAg
+ICAgICAgICAgICAgICAgIHByaW50ZigiYWxzYV9zZXRfcGFyYW1zOiBFcnJvciBzZXR0aW5nIFNX
+IHBhcmFtczolcyIsc25kX3N0cmVycm9yKGVycikpOwogICAgICAgICAgICAgICAgICAgICAgICBy
+ZXR1cm4gLTE7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgfQoKCW51bWZyYW1lcyA9IDY0KjEw
+MjQ7CglidWYgPSBtYWxsb2MobnVtZnJhbWVzKnNpemVvZihidWZbMF0pKTsKCWZvciAoaSA9IDA7
+IGkgPCBudW1mcmFtZXM7IGkrKyl7CgkJYnVmW2ldID0gaTsKCQlidWZbaV0gPSBTV0FQMTYoYnVm
+W2ldKTsKCX0KCglnZXR0aW1lb2ZkYXkoJnN0diwgTlVMTCk7CglzZW50ID0gMDsKCWRpc3B0aW1l
+ID0gMDsKCW1heGF2ZyA9IDA7CglvZmZzZXQgPSAwOwoJc25kX3BjbV9zdGF0dXNfYWxsb2NhKCZz
+dGF0dXMpOwoJZG8gewoJCWVyciA9IHNuZF9wY21fd3JpdGVpKHBjbV9oYW5kbGUsIGJ1ZitvZmZz
+ZXQsIG51bWZyYW1lcy1vZmZzZXQpOwoJCS8vdXNsZWVwKDEwMDAwMDApOwoJCWdldHRpbWVvZmRh
+eSgmY3R2LCBOVUxMKTsKCQlwcmludGYoIlQ6ICVsZC4lMDhsZCBieXRlcyB3cml0dGVuPSUzZCAi
+LCAKCQkgICAgY3R2LnR2X3NlYyAtIHN0di50dl9zZWMgLSAoY3R2LnR2X3VzZWMgPCBzdHYudHZf
+dXNlYyA/IDEgOiAwKSwgCgkJICAgIGN0di50dl91c2VjIC0gc3R2LnR2X3VzZWMgKyAoY3R2LnR2
+X3VzZWMgPCBzdHYudHZfdXNlYyA/IDEwMDAwMDAgOiAwKSwgZXJyKTsKCQlpZiAoZXJyID4gMCkg
+ewoJCQlzZW50ICs9IGVycjsKCQkJY3VycnRpbWUgPSAoY3R2LnR2X3NlYyAtIHN0di50dl9zZWMp
+Oy8vICogMTAwMCArIChjdHYudHZfdXNlYyAtIHN0di50dl91c2VjKSAvIDEwMDA7CgkJCS8vaWYg
+KGN0di50dl91c2VjIDwgc3R2LnR2X3VzZWMpCgkJCS8vCWN1cnJ0aW1lICs9IDEwMDA7CgkJCWlm
+IChjdXJydGltZSA+IDApIHsKCQkJCWN1cnJhdmcgPSBzZW50L2N1cnJ0aW1lOwoJCQkJaWYgKGN1
+cnJhdmcgPiBtYXhhdmcpCgkJCQkJbWF4YXZnID0gY3VycmF2ZzsKCQkJfQoJCQlpZiAoY3VycnRp
+bWUgPiBkaXNwdGltZSkgewoJCQkJLy9mcHJpbnRmKHN0ZGVyciwgIlBsYXlpbmcgcmF0ZTogJTVk
+IHNhbXBsZXMvc2VjICAgICBcciIsIG1heGF2Zyk7CgkJCQlkaXNwdGltZSsrOwoJCQkJbWF4YXZn
+ID0gMDsKCQkJfSAKCQl9CgkJaWYgKGVyciA9PSAtRUFHQUlOKSB7CgkJCXByaW50Zigib3ZlcnJ1
+biEgd2FpdGluZyB1bnRpbCBidWZmZXIgZW1wdHkgIik7CgkJCWlmIChzbmRfcGNtX3dhaXQocGNt
+X2hhbmRsZSwgMjAwMCkgPT0gMCkgewoJCQkgICAgcHJpbnRmKCJ0aW1lZCBvdXQhIGh3IGJyb2tl
+bj9cbiIpOwoJCQkgICAgYnJlYWs7CgkJCX0KCQl9IGVsc2UgaWYgKGVyciA9PSAtRVBJUEUpIHsK
+CQkJcHJpbnRmKCJ1bmRlcnJ1biEgIik7CgkJCXNuZF9wY21fcHJlcGFyZShwY21faGFuZGxlKTsK
+CQl9IGVsc2UgaWYgKGVyciA8IDApIHsKCQkJcHJpbnRmKCJlcnJvciAlZDogJXMgIiwgZXJyLCBz
+bmRfc3RyZXJyb3IoZXJyKSk7CgkJfSBlbHNlIGlmIChlcnIgPj0gMCAmJiBlcnIgPCBudW1mcmFt
+ZXMpIHsKCQkJb2Zmc2V0ICs9IGVycjsKCQl9CgkJaWYgKHNuZF9wY21fc3RhdHVzKHBjbV9oYW5k
+bGUsIHN0YXR1cykgPCAwKQoJCQlwcmludGYoImVycm9yIGdldHRpbmcgc3RhdHVzISAiKTsKCQlk
+ZWxheSA9IHNuZF9wY21fc3RhdHVzX2dldF9kZWxheShzdGF0dXMpOwoJCXByaW50ZigiZGVsYXk9
+JTRkICIsIGRlbGF5KTsKCQlpZiAoZGVsYXkgPiAwICYmIGRlbGF5IDwgNjQwKSB7CgkJCS8vIHNw
+ZWVkIHVwCgkJCXNlbnQgLT0gMzIwOwoJCQlwcmludGYoImFydGlmaWNpYWwgc3BlZWR1cCEgIik7
+CgkJfQoJCWlmIChvZmZzZXQgPT0gbnVtZnJhbWVzKQoJCQlvZmZzZXQgPSAwOwoJCWN0di50dl9z
+ZWMgPSBzdHYudHZfc2VjICsgc2VudCAvIHJhdGUgLSBjdHYudHZfc2VjOwoJCWN0di50dl91c2Vj
+ID0gc3R2LnR2X3VzZWMgKyAoc2VudCAlIHJhdGUpICogMTAwMCAvIHJhdGUgKiAxMDAwIC0gY3R2
+LnR2X3VzZWM7CgkJaWYgKGN0di50dl91c2VjIDwgMCkKCQkJY3R2LnR2X3VzZWMgPSAwOwoJCWVs
+c2UgaWYgKGN0di50dl91c2VjID4gMTAwMDAwMCkgewoJCQljdHYudHZfc2VjKys7CgkJCWN0di50
+dl91c2VjIC09IDEwMDAwMDA7CgkJfQoJCXByaW50Zigic2xlZXBpbmcgJWxkLiUwNmxkIHNlY29u
+ZHNcbiIsIGN0di50dl9zZWMsIGN0di50dl91c2VjKTsKCQkvL3NlbGVjdCgwLCBOVUxMLCBOVUxM
+LCBOVUxMLCAmY3R2KTsKCX0gd2hpbGUgKDEpOwoKCXJldHVybiAwOwp9Cg==
 
-Shingo.
-
---------------------------------------
-Start Yahoo! Auction now! Check out the cool campaign
-http://pr.mail.yahoo.co.jp/auction/
-
+------_=_NextPart_001_01C74B5B.05C23C1F
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+------_=_NextPart_001_01C74B5B.05C23C1F
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------_=_NextPart_001_01C74B5B.05C23C1F--
