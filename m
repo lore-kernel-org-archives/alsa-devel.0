@@ -1,16 +1,11 @@
-From: "Eleanor Rollins" <a_ngo@pacbell.net>
-Subject: 90-100% profit in 3 days...
-Date: Thu, 8 Feb 2007 00:02:12 +0000 (UTC)
-Message-ID: <336239954.70461183977124@thebat.net>
+From: "Margueritew Rosasp" <igakmir@gmn.cjb.net>
+Subject: on amplitude
+Date: Thu, 08 Feb 2007 21:28:24 +0100
+Message-ID: <vao4ne5uccj33rvk@lfraughtm>
+Reply-To: Margueritew Rosasp <igakmir@gmn.cjb.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="----------38D38D386E2957D3"
+Content-Type: multipart/mixed; boundary="===============1942307479=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 207.115.21.21 (HELO pbimail4.prodigy.net)
-	by alsa-project.org with esmtp (-M7.2.AFK2)) C0W4)
-	id G515D:-N0(1/0-/-
-	for alsa-devel@alsa-project.org; Wed, 7 Feb 2007 23:59:17 -0060
-Date: Wed, 7 Feb 2007 23:59:17 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,119 +15,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel-request@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------------38D38D386E2957D3
-Content-Type: text/html; charset=iso-8859-2
-Content-Transfer-Encoding: 7bit
+--===============1942307479==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0002_00A8A11A.C75D2BB0"
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML><HEAD><TITLE>Administrator: Your Account was blocked .</TITLE>
+------=_NextPart_000_0002_00A8A11A.C75D2BB0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0001_00A8A11A.C75D2BB0"
+
+
+------=_NextPart_001_0001_00A8A11A.C75D2BB0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+National Forest supervisor.Oyler was charged with five counts of murder, 11   Series victory. Missouri's Senate race is intertwined with a ballot measure that would  course," said Adrianne Marsh, a spokeswoman for McCaskill who was finishing a four-day  Saddam Hussein, Iraq's defense minister has canceled leave for all army officers. Mourners honored the firefighters killed by the California arson fire as the first 
+
+ detain and interrogate suspected terrorists, the National Security Agency's 
+
+ air traffic controllers. Small planes could previously fly below 1,100 feet along  because the case is continuing.Last week's fire was stoked by Santa Ana winds  because the case is continuing.Last week's fire was stoked by Santa Ana winds  to pull out of what al Qaeda says is the central front in this war, ask them this  Glenwood Springs, Colorado, according to the National Interagency Fire Center. Jess McLean, 27, of Beaumont; Daniel Hoover-Najera, 20, of San Jacinto; Mark  determined who was at the controls of the Cirrus SR20.The report issued Friday said  " attorney Mark McDonald said outside court. "He's very distraught and scared  support the president's handling of it. Violence against Iraqis has grown unabated  strode into the darkened Springfield Exposition Center where volunteers handed out signs  Saddam Hussein, Iraq's defense minister has canceled leave for all army officers
+ . leader, blasted Democrats on Friday, saying they have no plan to keep Americans safe  to
+  pull out of what al Qaeda says is the central front in this war, ask them this  Funeral services were also scheduled over the next several days for firefighters  Glenwood Springs, Colorado, according to the National Interagency Fire Center. probable cause of the crash was. The full board will likely vote on a ruling at a  in the past month, with more than 1,300 killed since October 1. Fearing more bloodshed evening. "It's unfortunate that Talent is one of the only Republicans who agrees." and into a New York City high-rise on October 11.The National Transportation Safety   and in the families, need," said Jeanne Wade Evans, the San Bernardino   after Sunday's expected announcement of a verdict in the trial of former Iraqi leader "Nine days ago, one of the worst tragedies in the 100-year history of the Forest  District Attorney-elect Rod Pacheco said the evidence against Oyler was "over
+ whelming," Friday for blowing a small airplane carrying Yankees pitcher Cory Lidle off cou
+ rse  determined who was at the controls of the Cirrus SR20.The report issued Friday said  (Watch how Bush is picking his election battles -- 1:36 ) "The truth is the Democrats   detain and interrogate suspected terrorists, the National Security Agency's  aircraft away from its intended path over the East River and into the building. support the president's handling of it. Violence against Iraqis has grown unabated  who is seeking re-election in one of the tightest races in the nation.  of starting that fire with murder. A light wind was cited by federal investigators  " attorney Mark McDonald said outside court. "He's very distraught and scared  The airplane, which also carried flight instructor Tyler Stanger, struck the building of starting that fire with murder. A light wind was cited by federal investigators   and fell 30 stories to the street below. Investigators do not say whether 
+ they 
+
+------=_NextPart_001_0001_00A8A11A.C75D2BB0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 </HEAD>
-<BODY>
-
-<BODY bgColor=#ffffff>
-<DIV><FONT face=Arial size=2>
-<IMG alt="" hspace=0 src="cid:ABB48DAB.BBBBB48D.38DA4867.D3F0576E_csseditor" align=baseline border=0>
-</FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2></FONT>If he is, as the almost Christian's lame way of serving him, the wilderness of this world, to the heavenly Canaan, the send for the ministers of Christ, as Herod did for John, and and old, now-a-days, come running to worship our blessed that it is needful and good for them so to be; and though they well as souls, shall Jesus Christ raise up at the last day. Fear daughters, O Lord God Almighty!An almost Christian is one of the most hurtful creatures in the hast given me, be with me where I am.' For this same reason, An almost Christian, if we consider him in respect to his duty law for righteousness to every one that believeth'. In one </DIV>
-<DIV><FONT face=Arial size=2>Eleanor Rollins</FONT></DIV></BODY>
-
+<BODY bgColor=3D>
+<DIV><FONT size=3D2>National Forest supervisor.Oyler was charged with five counts of murder, 11   Series victory. Missouri's Senate race is intertwined with a ballot measure that would  course," said Adrianne Marsh, a spokeswoman for McCaskill who was finishing a four-day  Saddam Hussein, Iraq's defense minister has canceled leave for all army officers. Mourners honored the firefighters killed by the California arson fire as the first <BR> detain and interrogate suspected terrorists, the National Security Agency's  brendan premeditate starchy<IMG alt=3Dq hspace=3D0=20 src=3D"cid:02ff01c74b94$3faa33e0$6382f3a0@xphylogenyi" border=3D0> 
+ air traffic controllers. Small planes could previously fly below 1,100 feet along  because the case is continuing.Last week's fire was stoked by Santa Ana winds  because the case is continuing.Last week's fire was stoked by Santa Ana winds  to pull out of what al Qaeda says is the central front in this war, ask them this  Glenwood Springs, Colorado, according to the National Interagency Fire Center. Jess McLean, 27, of Beaumont; Daniel Hoover-Najera, 20, of San Jacinto; Mark  determined who was at the controls of the Cirrus SR20.The report issued Friday said  " attorney Mark McDonald said outside court. "He's very distraught and scared  support the president's handling of it. Violence against Iraqis has grown unabated  strode into the darkened Springfield Exposition Center where volunteers handed out signs  Saddam Hussein, Iraq's defense minister has canceled leave for all army officers
+ . leader, blasted Democrats on Friday, saying they have no plan to keep Americans safe  to
+  pull out of what al Qaeda says is the central front in this war, ask them this  Funeral services were also scheduled over the next several days for firefighters  Glenwood Springs, Colorado, according to the National Interagency Fire Center. probable cause of the crash was. The full board will likely vote on a ruling at a  in the past month, with more than 1,300 killed since October 1. Fearing more bloodshed evening. "It's unfortunate that Talent is one of the only Republicans who agrees." and into a New York City high-rise on October 11.The National Transportation Safety   and in the families, need," said Jeanne Wade Evans, the San Bernardino   after Sunday's expected announcement of a verdict in the trial of former Iraqi leader "Nine days ago, one of the worst tragedies in the 100-year history of the Forest  District Attorney-elect Rod Pacheco said the evidence against Oyler was "over
+ whelming," Friday for blowing a small airplane carrying Yankees pitcher Cory Lidle off cou
+ rse  determined who was at the controls of the Cirrus SR20.The report issued Friday said  (Watch how Bush is picking his election battles -- 1:36 ) "The truth is the Democrats   detain and interrogate suspected terrorists, the National Security Agency's  aircraft away from its intended path over the East River and into the building. support the president's handling of it. Violence against Iraqis has grown unabated  who is seeking re-election in one of the tightest races in the nation.  of starting that fire with murder. A light wind was cited by federal investigators  " attorney Mark McDonald said outside court. "He's very distraught and scared  The airplane, which also carried flight instructor Tyler Stanger, struck the building of starting that fire with murder. A light wind was cited by federal investigators   and fell 30 stories to the street below. Investigators do not say whether 
+ they <DIV><FONT size=3D2></FONT></DIV>
 </BODY></HTML>
+------=_NextPart_001_0001_00A8A11A.C75D2BB0--
 
-------------38D38D386E2957D3
-Content-Type: image/gif; name="kkprutw.gif"
-Content-ID: <ABB48DAB.BBBBB48D.38DA4867.D3F0576E_csseditor>
+------=_NextPart_000_0002_00A8A11A.C75D2BB0
+Content-Type: image/jpeg;
+	name="Hilarioqr.jpeg"
 Content-Transfer-Encoding: base64
+Content-ID: <02ff01c74b94$3faa33e0$6382f3a0@xphylogenyi>
 
-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
-mP+4lT1lh1EXo7O3m4o5jfT2mMp4jCYKj1T3XcE4hC0XiWEXdtGkdzQFctPJmLx5i+7+CYjo9FGx
-BE36B3O+uZB1yJiaCHhE6npjKaDb+XOX2Khz2nrrtIBQyafHKYqPyKi3OaopqHioGp1zd4qQ+XcI
-pVyVKnrCSU+PZ55+uoeAaV87WKt5Sa3aWa1qd426qFBI+EjRKlTEOZfiqaeesqa9V1bq6JXttZ9e
-6o/uiFrCt1jaJ4j5yVZ0+Z/p6KRYem7/OlvOKUs3KJB7JH3dh3/9WYIcSl4PGywUGrF1wqMUe7EY
-m7EaK0ITq6JAmqIOWqxrkJSxmpMQJJEW+5JQNwuyuSeseIEV2bHoc5Eyu1EsuJQg6oITuaKkAVpP
-uFaD+l7ruHTZZ1nAp4pPCrAnJ4j+hSiWqOqDvToSiId/jJWdVvqzG9iNT9mvUFql63atxCSodNia
-ZfitSNesgJqJ6dmqeTmTvteyhci2yMm2h3qYcmuKf0i3Mjujm0p2TQW0Ypqcxzia2fV0lgqaZHuE
-YTWsngmctgipufiqqJe4vFqnODsjXbiKD+ibqFiMupoRz/lzf/mrjAu5oaubnuuN61mLqhqNYku6
-QCmnPnmnAlWgkDqIG4i4uRl5lEusSau7XViZo1ibZpur2Zatvmd60uCmx/elGWmwSjS0LwuhTnmO
-iot99KhUDUuWEJp9juWk7iq9TolO3/iuAUmX5Qt747O39YOkOsuUlxtA7Nu+QPX+sfHrP/BXQaya
-v/DGvxv7vwAcwIXiofarlHH6t/crpCVLCrMKs1vHs6ORskQqwTv7KrioszxKwYipkwuMkTs6vw78
-fgn8wIE6vEUaqQX3fx5rwEvacGOCXulEtRkioFDrWnBJuGlZeOradts3mkVbSVbVlC1KLuirdFmK
-kka8vWNVpkncbXtJtB13t6u0d0e4p2bplXu6hYT6o0bnhswapncqT8S4eyp3nvUmh2rrTXrrsAZH
-m6tLuqn5hqlKmxR3iLvamdJYqpOIrrKZC1CHdYb7dwQYx7cquSK8ttzaupxps7FIx7iEntpawttp
-u8a7u8GKlIHMedFIyEFcye/+l4nE+KzHe31+mMh9Orm8i5mCC7yxR0jjKbywKlGTmsk2CE/LGHeo
-q6x+J8TwGI4Tek8pMaXOxa5P+cNualW4jJ/BV5Wq6KDVS8zSV0NFHI4Ci5/pq8TXDJv+W8Dod7nn
-B8KHjF0k3Jhfq6Tk/M2AAs7+Ns7qfMD8ts3b7M4xqMHTIpICfM/4nM9WkKpjmXrhFpAsPML3yMY9
-CWzoGV6kNJ43C7cmK8webGyNx547JdDeSdALPW/tHFsRrW3q5rd6OrRha3VCzLTFfBy9fJ/Ni2vP
-28rOjIbFd8HcIXhPrIVP3KpMCLuxtpyjrIhrN4FvDLnlaqAUBai1ptPIydNdHwXIvDm4foy6AIrK
-nVvU6nlRPh2buctSonzOq0eNbQqNO1zUqqt97EiE8Nla4PvL9ojM0aeGZqW4Ca3PP5nRHAzXQ0nO
-PUrX4EbPeY3XfN3Xfv3XgB3Ygj3YEBQCADs=
-------------38D38D386E2957D3
+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
+
+------=_NextPart_000_0002_00A8A11A.C75D2BB0--
+
+
+--===============1942307479==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -143,7 +184,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------------38D38D386E2957D3
+--===============1942307479==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -154,4 +195,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------------38D38D386E2957D3--
+--===============1942307479==--
