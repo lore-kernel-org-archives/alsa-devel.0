@@ -1,18 +1,15 @@
-From: Jason Baron <jbaron@redhat.com>
-Subject: Re: stac92xx_parse_auto_config() can return 0 on error?
-Date: Thu, 8 Feb 2007 11:34:23 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0702081133190.6346@dhcp83-20.boston.redhat.com>
-References: <Pine.LNX.4.64.0702051624060.26250@dhcp83-20.boston.redhat.com>
-	<1170714593.28278.151.camel@localhost> <s5h64afy0bb.wl%tiwai@suse.de>
-	<s5hd54kpsy5.wl%tiwai@suse.de>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: Some Alsa SoC questions
+Date: Thu, 08 Feb 2007 16:55:43 +0000
+Message-ID: <1170953743.4476.240.camel@localhost.localdomain>
+References: <de95dc6f0702071323h585a03aaoed61b3c3beed90db@mail.gmail.com>
+	<1170948696.4476.210.camel@localhost.localdomain>
+	<de95dc6f0702080758q45498ca8t2859c92a2420882d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1430432F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2007 17:37:16 +0100 (MET)
-In-Reply-To: <s5hd54kpsy5.wl%tiwai@suse.de>
+In-Reply-To: <de95dc6f0702080758q45498ca8t2859c92a2420882d@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,80 +19,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: John Linville <linville@redhat.com>, alsa-devel@alsa-project.org
+To: Brad Beveridge <brad.beveridge@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2007-02-08 at 07:58 -0800, Brad Beveridge wrote:
+> On 08/02/07, Liam Girdwood <lg@opensource.wolfsonmicro.com> wrote:
+> > On Wed, 2007-02-07 at 13:23 -0800, Brad Beveridge wrote:
+> >
+> > > On the codec side I've started with the AK4535, and pulled out almost
+> > > everything interesting.  The AK4550 has two input pins which control a
+> > > de-emphasis filter for when the codec does ADC conversions, but I
+> > > don't really know what to do with them.
+> > >
+> >
+> > I would suggest contacting AKM for information on the input pins.
+> >
+> > > On to the questions:
+> > > 1) Is the AK4550 codec really without registers like I think it is?
+> > > 2) What is the best way to hook up the de-emphasis pins and expose
+> > > them?  I feel like I need generic functions in the codec to control
+> > > them, and those generics should somehow hook to machine-specific
+> > > functions.  I don't know how to do this.
+> > > 3) Am I basically on the right track here?
+> >
+> > Please check 1,2 and 3 with AKM.
+> Hi, and thanks for the quick reply.
+> I think I spoke imprecisely with regard to #2.  I know how the
+> de-emphasis pins are physically hooked up to the SA2410, they are just
+> GPIOs.  What I am unsure about is exactly how to expose control of
+> these GPIOs. 
 
+I see now, I thought you were asking what they should be routed to in
+the schematics.
 
-On Thu, 8 Feb 2007, Takashi Iwai wrote:
-
-> At Tue, 06 Feb 2007 12:47:52 +0100,
-> I wrote:
-> > 
-> > At Mon, 05 Feb 2007 14:29:53 -0800,
-> > Tobin Davis wrote:
-> > > 
-> > > On Mon, 2007-02-05 at 16:40 -0500, Jason Baron wrote:
-> > > 
-> > >     hi,
-> > >     
-> > >     I just ran into a RHEL4 U5 beta kernel oops in snd_hda_input_mux_info(), 
-> > >     because the 'imux' parameter pointer was NULL. I traced this back to 
-> > >     stac92xx_parse_auto_config(), which can return 0, if 'line_outs' is not 
-> > >     set, without having initialized the 'input_mux'.
-> > >     
-> > >     The oops does not happen on the upstream kernel on this hardware b/c 
-> > >     'line_outs' was set (additional code has been added since RHEL4 to set 
-> > >     it). However, it still appears to me, that if 'line_outs' is not set, we 
-> > >     should return an error code, and not 0.
-> > >     
-> > >     thanks,
-> > >     
-> > >     -Jason
-> > > 
-> > > Try this patch to see if it works with your alsa version.  It's a simple patch that
-> > > adds the error condition, and should be able to be applied to older alsa versions.
-> > > 
-> > > Summary:  add error for undetected line_outs.
-> > > 
-> > > This adds an error condition to stac92xx_parse_auto_config if line_outs is less than
-> > > zero.
-> > > 
-> > 
-> > line_outs won't be negative, so this situation can't happen.
-> > The problem is that stac92xx_parse_auto_config() returns "0" (which
-> > means successful) even if line_outs = 0 and thus nothing is
-> > configured.  Simply changing it to return -EINVAL would work. 
-> > 
-> > However, this is no best solution.  In the case of patch_realtek.c or
-> > others, the codec probe routine behaves slightly differently. 
-> > *_parse_auto_config() may return 0 if no ane configuration is found.
-> > Then it falls back to model=basic.  Returning a negative means a fatal
-> > error to stop.  Meanwhile, in the case of sigmatel, there is no
-> > fallback, so it always stop.
-> > 
-> > The patch below adds the fallback to model=ref in case that no proper
-> > auto-config is available.  Please give it a try.
-> 
-> Can anyone confirm whether the patch fixes the problem or not?
-> I'd like to put this into the upstream ASAP, so that it's surely
-> merged in 2.6.21...
-> 
-> 
-> thanks,
-> 
-> Takashi
+>  My thoughts are that control of these pins is somewhat
+> analogous to reading/writing registers on a codec, and so therefore
+> the codec driver should expose an interface to the outside world that
+> lets you turn on/off the de-emphasis input filter.  To actually
+> configure the pins, the codec needs to call out to functions in the
+> machine-specific driver - analogous to the hw_read/hw_write functions.
+>  Hmm, using these functions may actually be the correct thing to do in
+> this case.  If they are the correct way to access machine specific
+> stuff, do I just setup the hw_read/write pointers in my
+> machine_codec_init function?  (ie the function smdk2440_uda1341_init
+> in smdk2440.c).
 > 
 
+I would probably create a mixer kcontrol in your machine driver for the
+deemphasis. I know it's technically codec specific, but the hardware
+control method is very machine specific.
 
-The upstream code works fine on the box that had the oops, i think due to
-the 'fixup' code at the end of 'snd_hda_parse_pin_def_config()' which we
-didn't have in RHEL4. In rhel4 the patch wouldn't compile, due to the
-STAC_D945_REF, being not defined. However, i did verify that just 
-returning and error code made the oops go away.
+I would also probably stick a comment in you codec driver stating this.
+Anyone then creating a new machine driver for this codec can then copy
+and modify your original kcontrol.
 
--Jason
+
+Liam
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
