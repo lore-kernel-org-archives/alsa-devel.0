@@ -1,10 +1,9 @@
-From: <daniel.car@cox.net>
-Subject: Looking for help with dmix plug-in on ARM
-Date: Thu, 8 Feb 2007 10:44:10 -0800
-Message-ID: <15711510.1170960250793.JavaMail.root@fed1wml07.mgt.cox.net>
+From: Penelope Bender <love.ethel@plimutfar.com>
+Subject: Hey was up? 02.08.2007
+Date: Thu, 08 Feb 2007 13:14:13 -0600
+Message-ID: <8283305257.20070208131413@plimutfar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1801651086=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,57 +14,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa.jcu.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============1801651086==
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 
-I'm working on an unannounced SOC audio driver on an ARM system.  I have a problem were audio works fine with out dmix, but when I try to use dmix no audio data gets to the driver.  The dmix plug-in does work when attaching external usb audio device.  Trying to use dmix so that more then one application can generate audio simultaneously.
+<font color=3dorange><b>Buenos dias!</b></font><br><br>
+<br>
+<b>VIP Replica watches=2e<br><br>
+<br>
+Handbags, Clutches, Monogram, Wallets, Accessories!
+<br>
+Signature green sticker with serial number on watch back=2e<br><br>
+<br>
+We Have a Huge Assortment of Other Accessories=2e</b><br>
+<br>
+Click here now for details: <a href=3d"http://www=2ereplelry=2ecom">http:=
+//www=2ereplelry=2ecom</a><br><br>
+ <br>  =20
+**********************<br>
+<br>
+Please write back with subj "take off" to get removed=2e<br>
+YOUR ID: YQ0RAkkBAxENBSoKAB4PQRoSB10XDwpBTktIB0tPTwO3sbP_tbC_tL6_vry0uzNj=
+<br>
+<br>
+**********************<br>
+<br><br><br><br>=20
+Ending up the same, sweatin' in the rain=2eHe said you ain't seen noting =
+=2e<br>
+<br>
+Evil talkin' bandit man=2eMakin' love drunk or stoned=2e<br>
+=20
+Till the boys told me something I missed=2eOh, you hurt me, desert me in =
+my darkest hour=2e<br>
+=20
+Soon you will fall, making mistakes like before=2eLookin' for dollars get=
+ broken-boned=2e<br>
+=20
+You've got the phone and the number=2eIt happens so naturely=2e I did not=
+ know it was love=2e<br>
+=20
+Yes, I've got fire in my finger tips=2eBack to the land, where the sunshi=
+ne heals my soul=2e<br>
+<br>
+The way that dreamers often do=2eCome the morning, she was gone=2e<br>
+=20
+But there's a heartbeat pulse that keeps on pumping=2eI can do nothing ri=
+ght=2e<br>
+<br>
 
-If I try with version 1.0.11 of ALSA the audio driver doesn't receive any data after the snd_pcm_period_elapsed() function call.  If I try with version 1.0.13 of ALSA, aplay returns an error saying: 
-# aplay -D hw:0,0 pcm48khz_2ch_stereo.wav open_stream success
-  Playing WAVE 'pcm48khz_2ch_stereo.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-  aplay: set_params:882: Broken configuration for this PCM: no configurations available
 
-I'm planning on building a debug version of 1.0.14rc2 and tracing thru the code to see why aplay fails.  Is there a better way to debug this?  Are there any tricks for building ALSA with debug info?
 
-Here is how the driver is set up:
-static snd_pcm_hardware_t snd_oloriver_playback_hw = {
- .info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-	   SNDRV_PCM_INFO_MMAP_VALID),
- .formats 	    = SNDRV_PCM_FMTBIT_S16_LE,
-  .rates 	    = SNDRV_PCM_RATE_48000,
-  .rate_min	    = 48000, 
-  .rate_max	    = 48000,
-  .channels_min     = 2,
-  .channels_max     = 2,
-  .buffer_bytes_max = 65536,
-  .period_bytes_min = 32768,
-  .period_bytes_max = 32768,
-  .periods_min 	    = 2,
-  .periods_max 	    = 2,
-};  
-
-No config file is used for the working version.  For the dmix version the etc/asound.conf file is:
- pcm.chemamix {
-      type dmix
-      ipc_key 1024
-       slave {
-        pcm "hw:0,0"
-        rate 48000
-       }
-  }
-
-  pcm.!default {
-     type plug
-     slave.pcm chemamix
-  }
-
-Thanks,
-Daniel
+--===============1801651086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1801651086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1801651086==--
