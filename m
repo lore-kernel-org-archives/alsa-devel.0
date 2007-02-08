@@ -1,12 +1,13 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Hg repo not accessible??
-Date: Thu, 8 Feb 2007 14:50:53 +1300
-Message-ID: <200702081450.53514.linux@audioscience.com>
+From: Shingo HORISAWA <tora2329@yahoo.co.jp>
+Subject: Re: Problems with Realtek HD Audio
+Date: Thu, 8 Feb 2007 12:55:54 +0900 (JST)
+Message-ID: <20070208035554.90167.qmail@web3213.mail.kcd.yahoo.co.jp>
+References: <s5hodo6utp0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hodo6utp0.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,18 +20,56 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+Hi, Takashi.
 
-I get a "403 forbidden" error when I try to clone or pull from the alsa Hg 
-repo.
+Thanks for your response.
 
-It used to work OK for me.  Is it me or the repo?
+At first, I tried the latest ALSA HG driver, 
+but both problems occured again.
 
-thanks
--- 
---
-Eliot Blennerhassett
-AudioScience Inc.
+In /proc/asound/card0/codec#0, 
+codec was recognized as follows:
+
+ Codec: Realtek ALC262
+ Address: 0
+ Vendor Id: 0x10ec0262
+ Sybsystem Id: 0x11790500
+ Revision Id: x100100
+ Default: PCM
+   .
+   .
+   .
+
+So, it was recoginzed correctly, I think.
+
+
+> Did you get any kernel message, for example,
+> something regarding
+> DMA/IRQ problem?  Does playback still work even
+> after this happens?
+> How about mixer volume / switch after this?
+
+Though I couldn't find any messages when this happend, 
+but I could find the following message on
+/var/log/messages 
+when I started capturing by "arecord" command:
+
+   kernel: hda-intel: Invalid position buffer, using LPIB
+read method instead.
+
+As for the playback, there is not a problem.
+There aren't any changes to mixer volume / switch don't
+after that.
+
+
+Best Regards.
+
+Shingo.
+
+--------------------------------------
+Start Yahoo! Auction now! Check out the cool campaign
+http://pr.mail.yahoo.co.jp/auction/
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
