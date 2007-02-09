@@ -1,20 +1,14 @@
-From: "Talc P. Juxtapose" <graham@grisoto.com>
-Subject: Health for everybody
-Date: Fri, 09 Feb 2007 00:25:07 -0500
-Message-ID: <5078313927.20070209002507@grisoto.com>
+From: John Dey <jsdey@optonline.net>
+Subject: Re: Sound
+Date: Thu, 08 Feb 2007 20:29:40 -0500
+Message-ID: <f0f1a399e9c96656d456f7d105cea380@optonline.net>
+References: <c99d7187abfe513910c0ca9886ffff21@optonline.net>
+	<20070208223023.GA18278@rfa.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1752009326=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3C282D9
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 01:24:05 +0100 (MET)
-Received: from 149402088 (unknown [220.116.54.42])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	D257799C66
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 01:24:03 +0100 (MET)
-Received: from grisoto.com (149468376 [150056008])
-	by gmsr.com (Qmailv1) with ESMTP id 6E1CDDD2A2
-	for <alsa-devel@alsa-project.org>; Fri, 09 Feb 2007 00:25:07 -0500
+In-reply-to: <20070208223023.GA18278@rfa.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,53 +18,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Federico Grau <grauf@rfa.org>
+Cc: Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============1752009326==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hi Frederico,
 
-The most powerful medicines for you!
+Thanks for your response.  I get the following:
 
-100% Pure Okinawan Coral Calcium - $35.99 - the preferred source for readily absorbable and accessible calcium in the body. Superior 100% pure coral calcium is harvested from Okinawa, Japan – home to the longest-lived people on earth. 
+[robo9@robo9 dev]$ ls -l /dev/snd
+total 0
+crw------- 1 root root 116,  0 Feb  8 11:21 controlC0
+crw------- 1 root root 116, 16 Feb  8 11:21 pcmC0D0p
+crw------- 1 root root 116,  1 Feb  8 11:21 seq
+crw------- 1 root root 116, 33 Feb  8 11:21 timer
 
-Aciphex - $1.08 - used for the treatment of persistent, frequent heartburn and other symptoms associated with acid reflux disease. Persistent and frequent occurrences are classified as 2 or more days a week. 
+which confirms my suspicion.  I changed group to audio and added user  
+to that group.  I changed permission.  But still no luck.  I get the  
+following from aplay:
 
-Testosterone - $7.5 - a steroid hormone from the androgen group. Testosterone is secreted in the testes of men and the ovaries of women. 
+[robo9@robo9 Desktop]$ aplay BWV535.wav
+ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
+ALSA lib conf.c:3492:(_snd_config_evaluate) function  
+snd_func_card_driver returned error: No such device
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:3492:(_snd_config_evaluate) function snd_func_concat  
+returned error: No such device
+ALSA lib confmisc.c:1072:(snd_func_refer) error evaluating name
+ALSA lib conf.c:3492:(_snd_config_evaluate) function snd_func_refer  
+returned error: No such device
+ALSA lib conf.c:3961:(snd_config_expand) Evaluate error: No such device
+ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default
+aplay: main:547: audio open error: No such device
 
-Pheromone cologne for men - $35.99 - The human pheromones that attracts females has finally been recreated in the laboratory! Naturally found in minute amounts in the perspiration of men, these natural pheromones are an evolutionary remnant from a time when human females relied on scent to locate male mates. 
+Any further suggestions would be appreciated.  Thanks.
 
-Lipitor - $1.42 - used with diet changes to reduce the amount of cholesterol and certain fatty substances in the blood. Lowering blood levels of cholesterol and fats may help to prevent heart disease, angina, strokes, and heart attacks. 
+John
 
-and more!
+John
+On Feb 8, 2007, at 5:30 PM, Federico Grau wrote:
 
-our site http://niaqo.hk/
+> *** off list
+>
+> Hello John,
+>
+> Check the required permissions with this command:
+>     ls -la /dev/snd
+>
+> On my system I have device file permissions such as:
+>     crw-rw----   1 root audio 116,  24 Sep  9  2005 pcmC0D0c
+>
+> Which means my non-root users need to be in the "audio" group in order  
+> to use
+> the audio devices.
+>
+> donfede
+>
+>
+> On Thu, Feb 08, 2007 at 03:24:40PM -0500, John Dey wrote:
+>> Hello Members,
+>>
+>> I have posted here on the same topic but haven't received any
+>> responses.  I do have some new information that makes me believe that
+>> alsa is working just fine on my PS3 using YDL 5 but needs some
+>> adjustments to permissions on file/sockets.  aplay and speaker-test
+>> works as root but not as user.  What changes do I need to make so that
+>> I can run aplay at user level?  Thanks.
+>>
+>> John
+>>
+>>
+>> ---------------------------------------------------------------------- 
+>> ---
+>> Using Tomcat but need to do more? Need to support web services,  
+>> security?
+>> Get stuff done quickly with pre-integrated technology to make your  
+>> job easier.
+>> Download IBM WebSphere Application Server v.1.0.1 based on Apache  
+>> Geronimo
+>> http://sel.as-us.falkag.net/sel? 
+>> cmd=lnk&kid=120709&bid=263057&dat=121642
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+> -- 
+> Federico Grau
+> Free Software Developer and Sysadmin
+> Radio Free Asia
+> 2025 M Street, NW
+> Suite 300
+> Washington, DC  20036
+> 202-587-2046  Telephone
+> 202-721-7468  Facsimile
+> CONFIDENTIAL COMMUNICATION
+> This e-mail message is intended only for the use of the addressee and  
+> may
+> contain information that is privileged and confidential.  Any  
+> unauthorized
+> dissemination, distribution, or copying is strictly prohibited.  If you
+> receive this transmission in error, please contact network@rfa.org.
+>
 
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-
-
---===============1752009326==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1752009326==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1752009326==--
