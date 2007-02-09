@@ -1,20 +1,14 @@
-From: "Wildernesses T. Overloading" <dcuccio@gombfred.com>
-Subject: International Legal RX
-Date: Fri, 09 Feb 2007 14:56:31 -0500
-Message-ID: <6470205591.20070209145631@gombfred.com>
+From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
+Subject: Re: [Alsa-user] Multiple identical audio devices
+Date: Fri, 09 Feb 2007 21:23:08 +0100
+Message-ID: <1171052588.4985.4.camel@localhost>
+References: <1170943295.4283.3.camel@localhost>
+	<45CCCB2D.2040104@ingomueller.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0894894775=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8C90195
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 20:52:07 +0100 (MET)
-Received: from 147665248 (unknown [216.94.53.135])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	BC89B99B7B
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 20:52:02 +0100 (MET)
-Received: from gombfred.com (143466216 [143230600])
-	by power.hotmatchup.com (Qmailv1) with ESMTP id FF8DA65EB5
-	for <alsa-devel@alsa-project.org>; Fri, 09 Feb 2007 14:56:31 -0500
+In-Reply-To: <45CCCB2D.2040104@ingomueller.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,95 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Ingo =?ISO-8859-1?Q?M=FCller?= <alsa@ingomueller.net>
+Cc: alsa-user@lists.sourceforge.net, Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============0894894775==
-Content-Type: multipart/alternative;
-	boundary="----------12D83148D3C8EAB"
-
-This is a multi-part message in MIME format.
-
-------------12D83148D3C8EAB
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
-
-View Full Products List
-http://
-
-------------12D83148D3C8EAB
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://masqr.hk/">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------12D83148D3C8EAB--
-
-
-
-
---===============0894894775==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier.
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0894894775==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0894894775==--
+TGUgdmVuZHJlZGkgMDkgZsOpdnJpZXIgMjAwNyDDoCAyMDoyNyArMDEwMCwgSW5nbyBNw7xsbGVy
+IGEgw6ljcml0IDoKPiBIaSEKPiAKPiBJIGRvbid0IGtub3cgd2V0aGVyIHRoaXMgd29ya3MsIGl0
+J3MgbWF5YmUganVzdCBhbiBpZGVhLiBMb29rIGF0ICJsc3VzYgo+IC12Ii4gSW4gdGhlIGZpcnN0
+IGxpbmUgb2YgeW91ciBkZXZpY2UsIGl0IHNheXMgIkJ1cyB4eHggRGV2aWNlIHl5eToKPiAuLi4i
+LiBNYXliZSB5b3UgY2FuIHVzZSB0aGUgdmFsdWVzIHh4eCBhbmQgeXl5IHdpdGggdWRldiB0byBn
+aXZlIHRoZSB0d28KPiBkZXZpY2VzIHVuaXF1ZSBuYW1lcyAtIGFzIGxvbmcgYXMgdGhleSBkb24n
+dCBjaGFuZ2UgdXNiIHNsb3RzLgo+IAo+IFJlZ2FyZHMsIEluZ28KCkkgd29uZGVyIGlmIFVkZXYg
+Y291bCBmaXggbXkgcHJvYmxlbS4gCk1vc3QgYXBwbGljYXRpb25zIHJlcXVpcmUgVGhlIHBsdWdo
+dzp4LHkgc3ludGF4LiAKCkluIGZhY3QsIEkgd291bGQgbGlrZSBteSBmaXJzdCBVU0IgZGV2aWNl
+IHRvIGJlIHBsdWdodzowLDAgYW5kIHRoZQpzZWNvbmQgVVNCIGRldmljZSB0byBiZSBwbHVnaHc6
+MSwwLgoKQW55IHNvbHV0aW9uIHRvIGJlIGFibGUgdG8gc2V0IHRoZSBwbHVnaHcgbnVtYmVycyBv
+ZiB0d28gaWRlbnRpY2FsCmRldmljZXM/IEkgYW0gdXNpbmcgS2VybmVsIDIuNi4yMCB3aXRoIHVk
+ZXYuCgpLaW5kIHJlZ2FyZHMsCkplYW4tTWljaGVsCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpVc2luZyBU
+b21jYXQgYnV0IG5lZWQgdG8gZG8gbW9yZT8gTmVlZCB0byBzdXBwb3J0IHdlYiBzZXJ2aWNlcywg
+c2VjdXJpdHk/CkdldCBzdHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdyYXRlZCB0ZWNo
+bm9sb2d5IHRvIG1ha2UgeW91ciBqb2IgZWFzaWVyLgpEb3dubG9hZCBJQk0gV2ViU3BoZXJlIEFw
+cGxpY2F0aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwpodHRwOi8v
+c2VsLmFzLXVzLmZhbGthZy5uZXQvc2VsP2NtZD1sbmsma2lkPTEyMDcwOSZiaWQ9MjYzMDU3JmRh
+dD0xMjE2NDIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
