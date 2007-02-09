@@ -1,19 +1,11 @@
-From: "baris elektronik" <bariselektronik@msn.com>
-Subject: Elektrikli Bisiklet
-Date: Fri, 9 Feb 2007 08:00:26 +0200
-Message-ID: <20070209060008.4715499C84@mail.perex.cz>
-Reply-To: bariselektronik@msn.com
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HF02i-0007oN-Vi delayed 24 hours
+Date: Thu, 08 Feb 2007 22:19:13 -0800
+Message-ID: <E1HFP6H-0005Id-F5@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1257"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C99ED223
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 07:00:13 +0100 (MET)
-Received: from ommo.net (unknown [88.235.22.97])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	4715499C84
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2007 07:00:08 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,38 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-aHR0cDovL2hlbWFsaGVtc2F0LmNvbS9tYWluL2F1Y3Rpb25kZXRhaWwvMTc3ODM4Ni9iaXNpa2xl
-dF92ZV9zY29vdGVyX2Frc2VzdWFybGFyaS9lbGVrdHJpa2xpX2Jpc2lrbGV0LnBocAoKQWv8IGth
-cGFzaXRlc2kgMTZhbXBlci5CaXIg/mFyaiBpbGUgNTBrbS4geW9sIHlhcGFyLmXwZXIgaXN0ZXJz
-ZW5peiB5ZWRlayBha/wgCnRlbWluIGVkaXAgaWtpIGthdP0geW9sIDEwMGttLiBnaWRlcnNpbml6
-LiAKClRla2VybGVrIOdhcP0gOiAyNiIgaW5jLiAKCkj9eiA6IDM1LTQwa20uIAoKTW90b3IgOiAy
-NDBXLiAyNFYuIGb9cudhbP0gdGVrZXJsZWsgaedpIG1vdG9yLgpNYXJrYSA6IGthbGl0ZWxpIOdp
-biBtYWz9LgreYXJqIG9sbWEgc/xyZXNpIDpUYW0ga2FwYXNpdGUgOCBzYWF0Lkj9emz9IP5hcmog
-aWxlIDQgc2FhdC5GYWthdCBo/Xps/SD+YXJqIG9sYXn9bmRhIApha/xsZXJpbiD2bXL8IGv9c2Fs
-/XIuS2FsaXRlbGkgYmlyIGFr/CBub3JtYWxkZSA1IHn9bCBnaWRlcmtlbiBo/Xps/SD+YXJqIGls
-ZSBidSD2bfxyIDIgCnn9bCBvbHVyLiAKU09SVSBWRSBDRVZBUExBUiA6IApTcG9yIGFtYeds/SBi
-aXNpa2xldCBvbGFyYWsga3VsbGFuYWJpbGlybWl5aW06IEV2ZXQgLCBha/wgYml0dGnwaW5kZSB5
-b2x1bnV6YSBwZWRhbCDnZXZpcmVyZWsgbm9ybWFsIGJpc2lrbGV0IG9sYXJhayBkZXZhbSBlZGVy
-c2luaXouIAoKQmlzaWtsZXQga2HnIGttIGj9emEg5/1rYWJpbGl5b3I6MzAgLSA0NWttLmj9eiB5
-YXBhYmlsaXJzaW5pei4KCk5lIGthZGFyIHP8cmUgZ2lkaXlvcjo1MGttIHlvbCB5YXBhYmlsaXJz
-aW5pei5ZZWRlayBha/wgaWxlIDEwMGttLiBhbXBlcmkgefxrc2VrIGJpciBiYf5rYSBha/wgaWxl
-IGRhaGFkYSDnb2sga20uZ2lkZWJpbGlyc2luaXouIAoKTW9udGFq/SBuYXP9bCBvbHV5b3I6U2Fk
-ZWNlIGJpc2lrbGV0aW5pemluIPZuIHRla2VybGXwaW5pIOf9a2Fy/XAsIHNpemUgZ/ZuZGVyZWNl
-8GltaXog9m4gdGVrZXJsZWsgbW90b3J1bnUgdGFr/XlvcnN1bnV6LllhZGEgc2l6ZSBlbiB5YWv9
-biBiaXIgYmlzaWtsZXTnaWRlIHRha3T9cmFiaWxpcnNpbml6LlNpemUgZ/ZuZGVyZWNl8GltaXog
-ZGV0YXls/SBtb250YWogY2QgLSBzaSBn9nJzZWwgYef9ZGFuIHlhcmT9bWP9IG9sYWNha3T9ci4g
-CgpOZSBrYWRhciBz/HJlZGUgc2FyaiBvbHV5b3I6IFRhbSD+YXJqIHP8cmVzaSA4IHNhYXR0aXIu
-SP16bP0g/mFyaiBjaWhhev0gYWz9cCBkYWhhIGv9c2Egc/xyZWRlIDQgc2FhdHRlIGRvbGR1cmFi
-bGlyc2luaXouIAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBk
-byBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZm
-IGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3Vy
-IGpvYiBlYXNpZXIuCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYu
-MS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5l
-dC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HF02i-0007oN-Vi
+The subject of the message is: children of the garments are Come thither, mine eyes:
+The date of the message is:    Thu, 08 Feb 2007 09:03:47 +0530
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier.
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
