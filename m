@@ -1,14 +1,11 @@
-From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
-Subject: Re: Naming two identical USB devices (need help)
-Date: Sat, 10 Feb 2007 10:02:56 +0100
-Message-ID: <1171098176.4083.7.camel@localhost>
-References: <1171060928.13387.10.camel@localhost>
-	<75b66ecd0702091825r24befd63tab99a9aa9c9df788@mail.gmail.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HFPpE-00056c-2c delayed 24 hours
+Date: Sat, 10 Feb 2007 01:39:54 -0800
+Message-ID: <E1HFoi2-00026D-Mg@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <75b66ecd0702091825r24befd63tab99a9aa9c9df788@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,32 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TGUgdmVuZHJlZGkgMDkgZsOpdnJpZXIgMjAwNyDDoCAyMToyNSAtMDUwMCwgTGVlIFJldmVsbCBh
-IMOpY3JpdCA6Cj4gSSBkb24ndCB0aGluayB0aGVyZSdzIGFuIGVhc3kgd2F5IHdpdGggYW55IGN1
-cnJlbnQgTGludXggZGlzdHJvLgo+IAo+IERvbid0IFVTQiBkZXZpY2VzIGhhdmUgc29tZSBraW5k
-IG9mIGhhcmR3YXJlIHNlcmlhbCBudW1iZXIgb3IgR1VJRAo+IHRoYXQgdWRldiBjb3VsZCBiZSB0
-YXVnaHQgYWJvdXQ/Cj4gCj4gTGVlIAoKRGVhciBBbHNhIGRldmVsb3BwZXJzLAoKdWRldmluZm8g
-Y2FuIGhhbmRsZSBzZXJpYWwgSUQuCkl0IGlzIHZlcnkgdmVyc2F0aWxlLgoKQnV0IHRoZW4gdGhl
-IHF1ZXN0aW9uIGlzLCBob3cgZG8gSSB1c2UgVWRldiB0byB0ZWFjaCBBbHNhIGhvdyB0byBzZXQg
-dXAKcGx1Z2h3OngseSBudW1iZXJzLiBJdCBzaG91bGQgYmUgcG9zc2libGUgdG8gcmVuYW1lIFBD
-TXMgdXNpbmcgVWRldi4gQnV0CmhvdyBkbyBJIHJlbmFtZSBwbHVnaHc6eCx5LgoKSSBzZWFyY2hl
-ZCBvbiBHb29nbGUgYW5kIHRoZSB3aWtpIHdpdGhvdXQgYW5zd2Vycy4KCkkgY2FuIGhhcmRseSBp
-bWFnaW5lIHRoYXQgcHJvZmVzc2lvbm5hbCBoYXJkd2FyZSB3aXRoIHNldmVyYWwgaWRlbnRpY2Fs
-CmNhcmRzIGNhbm5vdCBkaXN0aW5ndWlzaCBhdWRpbyBkZXZpY2VzIG9uY2UgZm9yIGFsbC4KCkkg
-YW0gdmVyeSBoYXBweSB3aXRoIEFsc2EsIGFuZCBJIGNhbiB3YWl0IGEgY291cGxlIG9mIG1vbnRo
-cyBiZWZvcmUgQWxzYQpoYW5kbGVzIFVkZXYgYmV0dGVyLiBCdXQgcGxlYXNlIGluZm9ybSBtZSBz
-byB0aGF0IEkgY2FuIHNoaXAgbXkgc2Vjb25kCmNhcmQgYmFjay4KCktpbmQgcmVnYXJkcywKSmVh
-bi1NaWNoZWwKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBt
-b3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRv
-bmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpv
-YiBlYXNpZXIuCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYuMS4w
-LjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9z
-ZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HFPpE-00056c-2c
+The subject of the message is: the Lord how that I have a The last, said let this shall be
+The date of the message is:    Fri, 09 Feb 2007 12:34:69 +0530
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier.
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
