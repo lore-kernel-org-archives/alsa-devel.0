@@ -1,10 +1,11 @@
-From: jan taylor <invest_j373@yahoo.co.jp>
-Subject: TRUST
-Date: Sat, 10 Feb 2007 12:56:28 +0900 (JST)
-Message-ID: <20070210035628.17976.qmail@web3103.mail.kcd.yahoo.co.jp>
-Reply-To: invest_jan200@yahoo.com.hk
+From: "baris elektronik" <bariselektronik@msn.com>
+Subject: Elektrikli Bisiklet
+Date: Sat, 10 Feb 2007 06:19:19 +0200
+Message-ID: <E1HFjhQ-0006JI-Kj@externalmx-1.sourceforge.net>
+Reply-To: bariselektronik@msn.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0514490276=="
+Content-Type: text/plain; charset="windows-1257"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,53 +19,35 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0514490276==
-Content-Type: multipart/alternative; boundary="0-993898665-1171079788=:17613"
-
---0-993898665-1171079788=:17613
-Content-Type: text/plain; charset=iso-2022-jp
-
-新しいメールアドレスをお知らせします新しいメールアドレス： invest_j373@yahoo.co.jp
-
-Dear friend,
-
-
-I am miss jan charles taylor daughter of former liberian president charles taylor of liberia, My family have $35m to invest, the funds are deposited in a Security Company and we need a trusted foreigner that will assist us invest the funds
-
-miss jan charles taylor
-
-
-
-- 
-
-
---0-993898665-1171079788=:17613
-Content-Type: text/html; charset=iso-2022-jp
-
-<div style="border: solid 1px #cccccc; width:448px; background-color:white; margin:10px 0px;";><table border=0 cellspacing=0 cellpadding=0 width="448"><tr><td class=tablot background="http://i.yimg.jp/i/jp/pim/gr/gr_announce_1.gif" valign=center height=57><big style="padding:10px;">新しいメールアドレスをお知らせします</big></td></tr></table><div style="padding:10px;">新しいメールアドレス： <b>invest_j373@yahoo.co.jp</b><br><br><span style="color:green;">Dear friend,<br><br><br>I am miss jan charles taylor daughter of former liberian president charles taylor of liberia, My family have $35m to invest, the funds are deposited in a Security Company and we need a trusted foreigner that will assist us invest the funds<br><br>miss jan charles taylor<br><br></span><br><br>- <span style="color:green;"></span></div></div>
---0-993898665-1171079788=:17613--
-
-
---===============0514490276==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier.
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0514490276==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0514490276==--
+aHR0cDovL2hlbWFsaGVtc2F0LmNvbS9tYWluL2F1Y3Rpb25kZXRhaWwvMTc3ODM4Ni9iaXNpa2xl
+dF92ZV9zY29vdGVyX2Frc2VzdWFybGFyaS9lbGVrdHJpa2xpX2Jpc2lrbGV0LnBocAoKQWv8IGth
+cGFzaXRlc2kgMTZhbXBlci5CaXIg/mFyaiBpbGUgNTBrbS4geW9sIHlhcGFyLmXwZXIgaXN0ZXJz
+ZW5peiB5ZWRlayBha/wgCnRlbWluIGVkaXAgaWtpIGthdP0geW9sIDEwMGttLiBnaWRlcnNpbml6
+LiAKClRla2VybGVrIOdhcP0gOiAyNiIgaW5jLiAKCkj9eiA6IDM1LTQwa20uIAoKTW90b3IgOiAy
+NDBXLiAyNFYuIGb9cudhbP0gdGVrZXJsZWsgaedpIG1vdG9yLgpNYXJrYSA6IGthbGl0ZWxpIOdp
+biBtYWz9LgreYXJqIG9sbWEgc/xyZXNpIDpUYW0ga2FwYXNpdGUgOCBzYWF0Lkj9emz9IP5hcmog
+aWxlIDQgc2FhdC5GYWthdCBo/Xps/SD+YXJqIG9sYXn9bmRhIApha/xsZXJpbiD2bXL8IGv9c2Fs
+/XIuS2FsaXRlbGkgYmlyIGFr/CBub3JtYWxkZSA1IHn9bCBnaWRlcmtlbiBo/Xps/SD+YXJqIGls
+ZSBidSD2bfxyIDIgCnn9bCBvbHVyLiAKU09SVSBWRSBDRVZBUExBUiA6IApTcG9yIGFtYeds/SBi
+aXNpa2xldCBvbGFyYWsga3VsbGFuYWJpbGlybWl5aW06IEV2ZXQgLCBha/wgYml0dGnwaW5kZSB5
+b2x1bnV6YSBwZWRhbCDnZXZpcmVyZWsgbm9ybWFsIGJpc2lrbGV0IG9sYXJhayBkZXZhbSBlZGVy
+c2luaXouIAoKQmlzaWtsZXQga2HnIGttIGj9emEg5/1rYWJpbGl5b3I6MzAgLSA0NWttLmj9eiB5
+YXBhYmlsaXJzaW5pei4KCk5lIGthZGFyIHP8cmUgZ2lkaXlvcjo1MGttIHlvbCB5YXBhYmlsaXJz
+aW5pei5ZZWRlayBha/wgaWxlIDEwMGttLiBhbXBlcmkgefxrc2VrIGJpciBiYf5rYSBha/wgaWxl
+IGRhaGFkYSDnb2sga20uZ2lkZWJpbGlyc2luaXouIAoKTW9udGFq/SBuYXP9bCBvbHV5b3I6U2Fk
+ZWNlIGJpc2lrbGV0aW5pemluIPZuIHRla2VybGXwaW5pIOf9a2Fy/XAsIHNpemUgZ/ZuZGVyZWNl
+8GltaXog9m4gdGVrZXJsZWsgbW90b3J1bnUgdGFr/XlvcnN1bnV6LllhZGEgc2l6ZSBlbiB5YWv9
+biBiaXIgYmlzaWtsZXTnaWRlIHRha3T9cmFiaWxpcnNpbml6LlNpemUgZ/ZuZGVyZWNl8GltaXog
+ZGV0YXls/SBtb250YWogY2QgLSBzaSBn9nJzZWwgYef9ZGFuIHlhcmT9bWP9IG9sYWNha3T9ci4g
+CgpOZSBrYWRhciBz/HJlZGUgc2FyaiBvbHV5b3I6IFRhbSD+YXJqIHP8cmVzaSA4IHNhYXR0aXIu
+SP16bP0g/mFyaiBjaWhhev0gYWz9cCBkYWhhIGv9c2Egc/xyZWRlIDQgc2FhdHRlIGRvbGR1cmFi
+bGlyc2luaXouIAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBk
+byBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZm
+IGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3Vy
+IGpvYiBlYXNpZXIuCkRvd25sb2FkIElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYu
+MS4wLjEgYmFzZWQgb24gQXBhY2hlIEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5l
+dC9zZWw/Y21kPWxuayZraWQ9MTIwNzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
