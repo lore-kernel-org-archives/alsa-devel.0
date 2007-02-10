@@ -1,14 +1,11 @@
-From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
-Subject: Re: Naming two identical USB devices (need help)
-Date: Sat, 10 Feb 2007 20:31:42 +0100
-Message-ID: <1171135902.6594.2.camel@localhost>
-References: <1171060928.13387.10.camel@localhost>
-	<45CE0689.8060302@ingomueller.net>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HFlRf-0004p2-U3 delayed 10 hours
+Date: Sat, 10 Feb 2007 12:27:48 -0800
+Message-ID: <E1HFyp2-0006WQ-8s@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45CE0689.8060302@ingomueller.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,25 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Ingo =?ISO-8859-1?Q?M=FCller?= <alsa@ingomueller.net>
-Cc: Alsa Dev <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-TGUgc2FtZWRpIDEwIGbDqXZyaWVyIDIwMDcgw6AgMTg6NTMgKzAxMDAsIEluZ28gTcO8bGxlciBh
-IMOpY3JpdCA6Cj4gSSdtIGdvaW5nIHRvIHBsYXkgd2l0aCB1ZGV2IG5vdywgdG9vLCBzbyBpZiBJ
-IGZpbmQgc29tZXRoaW5nLCBJJ2xsCj4gdGVsbAo+IHlvdS4gSW4gcmV0dXJuLCBpdCB3b3VsZCBi
-ZSBhd2Vzb21lIGlmIHlvdSBjb3VsZCB3cml0ZSBkb3duIC0gZXZlbiBpdAo+IGlzCj4gb25seSBz
-aG9ydCAtIGEgaG93dG8gYWJvdXQgaG93IHRvIG1hbmFnZSB0d28gaWRlbnRpY2FsIGRldmljZXMs
-IG9uY2UKPiB3ZQo+IGdvdCBpdCB3b3JraW5nLgo+IAoKRmFudGFzdGljLgoKVGhhbmsgeW91IHZl
-cnkgbXVjaCBmb3IgeW91ciBoZWxwLgpJIHdpbGwgYWRkIGEgcGFnZSBvbiB0aGUgd2lraSBhYm91
-dCB1ZGV2IHJ1bGVzLgoKS2luZCByZWdhcmRzLApKZWFuLU1pY2hlbAoKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KVXNpbmcgVG9tY2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIg
-c2VydmljZXMsIHNlY3VyaXR5PwpHZXQgc3R1ZmYgZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVn
-cmF0ZWQgdGVjaG5vbG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llci4KRG93bmxvYWQgSUJNIFdl
-YlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25p
-bW8KaHR0cDovL3NlbC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlk
-PTI2MzA1NyZkYXQ9MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HFlRf-0004p2-U3
+The subject of the message is: and on the tabernacle of the city.  And live saith the
+The date of the message is:    Sat, 10 Feb 2007 11:40:40 +0530
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier.
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
