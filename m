@@ -2,19 +2,19 @@ From: =?utf-7?q?MetWebTasar=FDm.Com_ <m=5F=5Fmimar@hotmail.com>,
 	?=@perex.cz
 Subject: =?utf-7?q?GOOGLE_DA_B=DDR=DDNC=DD_SAYFADA_=C7IKMAK_?=
 	=?utf-7?b?3VNURVJN3VPdTt1aPw==?=
-Date: Sun, 11 Feb 2007 04:05:22 +0200
-Message-ID: <20070211020517.2903299904@mail.perex.cz>
+Date: Sun, 11 Feb 2007 04:29:30 +0200
+Message-ID: <20070211022907.8F8EA99A9D@mail.perex.cz>
 Reply-To: m__mimar@hotmail.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="f8a12200-5b0a-4520-a576-6cb122a8fd6e"
+Content-Type: multipart/mixed; boundary="30ba9e64-f69c-4d39-a49e-926c08b4212c"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FC10316
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 03:05:18 +0100 (MET)
-Received: from hotmail330.com (unknown [88.242.199.166])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB117324
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 03:29:26 +0100 (MET)
+Received: from hotmail484.com (unknown [88.242.199.166])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	2903299904
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 03:05:17 +0100 (MET)
+	8F8EA99A9D
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 03:29:07 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -29,7 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 
 
 This is a multi-part message in MIME format
---f8a12200-5b0a-4520-a576-6cb122a8fd6e
+--30ba9e64-f69c-4d39-a49e-926c08b4212c
 Content-Type: text/plain; charset=utf-7
 Content-Transfer-Encoding: quoted-printable
 
@@ -66,7 +66,7 @@ Tel   : + 90 (216) 338 12 75 pbx   Fax: +90 (216) 348 13 23
                            338 12 69       GSM : +90 555 592 60 41
 S=F6=F0=FCtl=FC=E7e=FEme Cad. Karadut Sok. NO:5/11
 Kad=FDk=F6y =DDSTANBUL  
---f8a12200-5b0a-4520-a576-6cb122a8fd6e
+--30ba9e64-f69c-4d39-a49e-926c08b4212c
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -77,7 +77,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---f8a12200-5b0a-4520-a576-6cb122a8fd6e
+--30ba9e64-f69c-4d39-a49e-926c08b4212c
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -88,4 +88,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---f8a12200-5b0a-4520-a576-6cb122a8fd6e--
+--30ba9e64-f69c-4d39-a49e-926c08b4212c--
