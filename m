@@ -1,10 +1,17 @@
-From: "Base" <pkgjqslwcyt@capcomp.com>
-Subject: Rocket Stock Report
+From: "Virtual" <pitjywoxul@ca.mcd.com>
+Subject: Traders Daily Report
 Date: Sun, 11 Feb 2007 19:31:21 +0600
-Message-ID: <26D2208E5E6EA1D.350B4D771B@capcomp.com>
+Message-ID: <C50B4287AD6BA31.2F141FE958@ca.mcd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1823624831=="
+Content-Type: multipart/mixed; boundary="===============0487092321=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE2A7303
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 02:31:56 +0100 (MET)
+Received: from [190.86.73.179] (unknown [190.86.73.179])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	05B7499B64
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 02:31:53 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,14 +21,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1823624831==
+--===============0487092321==
 Content-Type: multipart/related;
-	boundary="----=_NextPart_000_0005_01C74E13.35CCAE20"
+	boundary="----=_NextPart_000_0004_01C74E13.35B44420"
 
-------=_NextPart_000_0005_01C74E13.35CCAE20
+------=_NextPart_000_0004_01C74E13.35B44420
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -44,11 +51,11 @@ Content-Transfer-Encoding: quoted-printable
 <DIV align=3Dleft><FONT face=3DArial size=3D2><I>WATCH OUT THE JUICE IS LOOSE!</I></FONT></DIV><BR>
 <DIV align=3Dleft><FONT face=3DArial size=3D2><B><U>MONDAY FEBRUARY 12th IS SURELY GOING TO BE ONE BIG DAY FOR CBFE!</U></B></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0005_01C74E13.35CCAE20--
+------=_NextPart_000_0004_01C74E13.35B44420--
 
 
 
---===============1823624831==
+--===============0487092321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -59,7 +66,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1823624831==
+--===============0487092321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -70,4 +77,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1823624831==--
+--===============0487092321==--
