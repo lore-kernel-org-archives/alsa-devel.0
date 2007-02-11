@@ -1,22 +1,10 @@
-From: "Qua U. Mentors" <isteo@gmwmedia.com>
-Subject: International Legal RX
-Date: Mon, 12 Feb 2007 00:09:52 -0500
-Message-ID: <6891654230.20070212000952@gmwmedia.com>
+From: "Base" <pkgjqslwcyt@capcomp.com>
+Subject: Rocket Stock Report
+Date: Sun, 11 Feb 2007 19:31:21 +0600
+Message-ID: <26D2208E5E6EA1D.350B4D771B@capcomp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0947093075=="
+Content-Type: multipart/mixed; boundary="===============1823624831=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71FD7310
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 01:09:00 +0100 (MET)
-Received: from -1219808704 (82-47-139-140.cable.ubr10.brad.blueyonder.co.uk
-	[82.47.139.140])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	1B2B499B27
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 01:08:51 +0100 (MET)
-Received: from gmwmedia.com (-1212679368 [-1219861328])
-	by 82-47-139-140.cable.ubr10.brad.blueyonder.co.uk (Qmailv1) with ESMTP
-	id B028F42B2F
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 00:09:52 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,76 +14,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============1823624831==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0005_01C74E13.35CCAE20"
 
---===============0947093075==
-Content-Type: multipart/alternative;
-	boundary="----------EFABDAF6C68AAB0"
+------=_NextPart_000_0005_01C74E13.35CCAE20
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-This is a multi-part message in MIME format.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2912" name=3D"GENERATOR">
+</HEAD>
+<BODY>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><B>The Chinese Market it is RED HOT!! The China sector is bringing investors and daily traders some very HUGE returns.</B></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><I>***CBFE***</I></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>China Biolife Enterprises, Inc.</FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Sym: <B>CBFE</B> </FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Date Of Trade: <B>Monday, February 12 2007</B> </FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Current Price: <B>$1.30</B></FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>Rating: <B>10/10</B> </FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><I>About CBFE:</I></FONT></DIV>
+<DIV align=3Dleft><FONT face=3DArial size=3D2>China Biolife Enterprises, Inc. is a leading company in bamboo extracts and nutraceutical markets in China. The company provided solutions for food and dietary supplement industries and nutraceutical markets. The Company's vision is to help people live healthier lives by offering "natural, green and safe" products. Our Product - bamboo juice was extracted from refresh bamboo. Bamboo juice comprises with bamboo wax, bamboo acid etc. Adopting modern technical ways, it can be processed to be a serial health care products and medicine attached different effect.</FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><I>WATCH OUT THE JUICE IS LOOSE!</I></FONT></DIV><BR>
+<DIV align=3Dleft><FONT face=3DArial size=3D2><B><U>MONDAY FEBRUARY 12th IS SURELY GOING TO BE ONE BIG DAY FOR CBFE!</U></B></FONT></DIV></BODY></HTML>
 
-------------EFABDAF6C68AAB0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
-
-View Full Products List
-http://
-
-------------EFABDAF6C68AAB0
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://masqr.hk/">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------EFABDAF6C68AAB0--
+------=_NextPart_000_0005_01C74E13.35CCAE20--
 
 
 
-
---===============0947093075==
+--===============1823624831==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -106,7 +59,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0947093075==
+--===============1823624831==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -117,4 +70,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0947093075==--
+--===============1823624831==--
