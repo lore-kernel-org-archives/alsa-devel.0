@@ -1,21 +1,21 @@
-From: "Dustman K. Liberates" <guido@gertieland.com>
-Subject: For Your Eyes Only
-Date: Sun, 11 Feb 2007 01:40:58 -0500
-Message-ID: <9414345060.20070211014058@gertieland.com>
+From: "Vary H. Dyslexia" <summers@greatsmilesnj.com>
+Subject: Want to cure yourself?
+Date: Sun, 11 Feb 2007 00:28:00 -0500
+Message-ID: <8112063150.20070211002800@greatsmilesnj.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBB8F21F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 07:36:25 +0100 (MET)
-Received: from -1217877432 (p54AC535C.dip.t-dialin.net [84.172.83.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6937F2E3
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 08:34:09 +0100 (MET)
+Received: from -1216525704 (61-228-97-67.dynamic.hinet.net [61.228.97.67])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	7C22D9997C
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 07:36:17 +0100 (MET)
-Received: from gertieland.com (-1217897872 [-1217664456])
-	by p54AC535C.dip.t-dialin.net (Qmailv1) with ESMTP id EB9D427130
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 01:40:58 -0500
+	B88BE99B65
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 08:34:06 +0100 (MET)
+Received: from greatsmilesnj.com (-1214440480 [-1216447968])
+	by 61-228-97-67.dynamic.hinet.net (Qmailv1) with ESMTP id A6DC59B69F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 00:28:00 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,23 +28,10 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The most powerful medicines for you!
+Buy top products at Canadian Pharmacy store. Legal and quality medications at low price only. There is no need to go to your local drug store just click here: 
+http://masqr.hk/
 
-Ginseng - $35.99 - used to improve the body's resistance to stress and to increase vitality. 
-
-Pure Natural Hoodia - $35.99 - Pure Natural Hoodia is a natural weght loss pill containing Hoodia Gordoni extract. 
-
-Zovirax - $1.6 - the treatment of herpes simplex virus infections of the skin and mucous membranes including initial and recurrent genital herpes. 
-
-Merindia - $3.29 - a short-term supplement to diet and exercise in the treatment of weight loss. 
-
-Quick-detox - $35.99 - Rid your body of all traces of toxins in as little as two hours with this highly effective detoxification formula. 
-
-and more!
-
-our site http://masqr.hk/
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+Recover your health! Completely confidential and secure purchase! Licensed medications only! 
 
 
 -------------------------------------------------------------------------
