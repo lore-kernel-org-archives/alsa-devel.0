@@ -1,11 +1,21 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HF02i-0007oN-Vi delayed 72 hours
-Date: Sat, 10 Feb 2007 21:00:27 -0800
-Message-ID: <E1HG6p9-0007yz-0p@externalmx-1.sourceforge.net>
+From: "Dustman K. Liberates" <guido@gertieland.com>
+Subject: For Your Eyes Only
+Date: Sun, 11 Feb 2007 01:40:58 -0500
+Message-ID: <9414345060.20070211014058@gertieland.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBB8F21F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 07:36:25 +0100 (MET)
+Received: from -1217877432 (p54AC535C.dip.t-dialin.net [84.172.83.92])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	7C22D9997C
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 07:36:17 +0100 (MET)
+Received: from gertieland.com (-1217897872 [-1217664456])
+	by p54AC535C.dip.t-dialin.net (Qmailv1) with ESMTP id EB9D427130
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 01:40:58 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+The most powerful medicines for you!
 
-The message identifier is:     1HF02i-0007oN-Vi
-The subject of the message is: children of the garments are Come thither, mine eyes:
-The date of the message is:    Thu, 08 Feb 2007 09:03:47 +0530
+Ginseng - $35.99 - used to improve the body's resistance to stress and to increase vitality. 
 
-The address to which the message has not yet been delivered is:
+Pure Natural Hoodia - $35.99 - Pure Natural Hoodia is a natural weght loss pill containing Hoodia Gordoni extract. 
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Zovirax - $1.6 - the treatment of herpes simplex virus infections of the skin and mucous membranes including initial and recurrent genital herpes. 
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Merindia - $3.29 - a short-term supplement to diet and exercise in the treatment of weight loss. 
+
+Quick-detox - $35.99 - Rid your body of all traces of toxins in as little as two hours with this highly effective detoxification formula. 
+
+and more!
+
+our site http://masqr.hk/
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
