@@ -1,21 +1,20 @@
-From: "Wrigglier C. Julia" <ololikantor@grandmashouseforpets.com>
+From: "Snuffles M. Tending" <latsha@grafiks.net>
 Subject: International Legal RX
-Date: Sun, 11 Feb 2007 05:48:21 -0500
-Message-ID: <9707906663.20070211054821@grandmashouseforpets.com>
+Date: Sun, 11 Feb 2007 13:37:50 -0500
+Message-ID: <4777401664.20070211133750@grafiks.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0030840239=="
+Content-Type: multipart/mixed; boundary="===============0361566616=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC84B287
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 11:43:48 +0100 (MET)
-Received: from -1219843288 (p2008-ipbf12okidate.aomori.ocn.ne.jp [122.18.16.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA5942D2
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 14:36:53 +0100 (MET)
+Received: from -1218014632 (201-212-119-201.prima.net.ar [201.212.119.201])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	4C47899A29
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 11:43:46 +0100 (MET)
-Received: from grandmashouseforpets.com (-1219900456 [-1219861712])
-	by p2008-ipbf12okidate.aomori.ocn.ne.jp (Qmailv1) with ESMTP id
-	9C588C7FCD
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 05:48:21 -0500
+	A65A299212
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 14:36:40 +0100 (MET)
+Received: from grafiks.net (-1217816912 [-1217961912])
+	by 201-212-119-201.prima.net.ar (Qmailv1) with ESMTP id F147AA1FBE
+	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 13:37:50 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,13 +29,13 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============0030840239==
+--===============0361566616==
 Content-Type: multipart/alternative;
-	boundary="----------3CEA931E04A862F"
+	boundary="----------6D950593ED58D20"
 
 This is a multi-part message in MIME format.
 
-------------3CEA931E04A862F
+------------6D950593ED58D20
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
@@ -61,7 +60,7 @@ Anti-Acidity
 View Full Products List
 http://
 
-------------3CEA931E04A862F
+------------6D950593ED58D20
 Content-Type: text/html
 Content-Transfer-Encoding: 7bit
 
@@ -89,12 +88,12 @@ Content-Transfer-Encoding: 7bit
 </body>
 </html>
 
-------------3CEA931E04A862F--
+------------6D950593ED58D20--
 
 
 
 
---===============0030840239==
+--===============0361566616==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -105,7 +104,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0030840239==
+--===============0361566616==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -116,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0030840239==--
+--===============0361566616==--
