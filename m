@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HG0WP-0006de-BJ delayed 10 hours
-Date: Sun, 11 Feb 2007 00:50:56 -0800
-Message-ID: <E1HGAQC-0008RO-CT@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HFPpE-00056c-2c delayed 48 hours
+Date: Sun, 11 Feb 2007 00:57:51 -0800
+Message-ID: <E1HGAWt-00018s-Hv@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HG0WP-0006de-BJ
-The subject of the message is: of stone, but Let them and power but that
-The date of the message is:    Sun, 11 Feb 2007 00:16:45 +0200
+The message identifier is:     1HFPpE-00056c-2c
+The subject of the message is: the Lord how that I have a The last, said let this shall be
+The date of the message is:    Fri, 09 Feb 2007 12:34:69 +0530
 
 The address to which the message has not yet been delivered is:
 
