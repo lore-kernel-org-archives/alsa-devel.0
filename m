@@ -1,21 +1,11 @@
-From: "Vary H. Dyslexia" <summers@greatsmilesnj.com>
-Subject: Want to cure yourself?
-Date: Sun, 11 Feb 2007 00:28:00 -0500
-Message-ID: <8112063150.20070211002800@greatsmilesnj.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HG0WP-0006de-BJ delayed 10 hours
+Date: Sun, 11 Feb 2007 00:50:56 -0800
+Message-ID: <E1HGAQC-0008RO-CT@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6937F2E3
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 08:34:09 +0100 (MET)
-Received: from -1216525704 (61-228-97-67.dynamic.hinet.net [61.228.97.67])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	B88BE99B65
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 08:34:06 +0100 (MET)
-Received: from greatsmilesnj.com (-1214440480 [-1216447968])
-	by 61-228-97-67.dynamic.hinet.net (Qmailv1) with ESMTP id A6DC59B69F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Feb 2007 00:28:00 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,14 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Buy top products at Canadian Pharmacy store. Legal and quality medications at low price only. There is no need to go to your local drug store just click here: 
-http://masqr.hk/
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-Recover your health! Completely confidential and secure purchase! Licensed medications only! 
+The message identifier is:     1HG0WP-0006de-BJ
+The subject of the message is: of stone, but Let them and power but that
+The date of the message is:    Sun, 11 Feb 2007 00:16:45 +0200
 
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
