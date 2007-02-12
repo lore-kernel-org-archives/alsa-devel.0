@@ -1,17 +1,10 @@
-From: "Felecia Woodward" <xnlminnie@elekta.lt>
-Subject: Which by configure
-Date: Mon, 12 Feb 2007 10:26:09 +0800
-Message-ID: <000f01c74e90$5f6af250$052e2784@mxl>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: isa_bus: ad1848
+Date: Mon, 12 Feb 2007 03:52:03 +0100
+Message-ID: <45CFD653.4050401@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0542944138=="
+Content-Type: multipart/mixed; boundary="------------050505050905010700020109"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15C12323
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 03:27:00 +0100 (MET)
-Received: from elekta.lt (unknown [219.130.71.22])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	C57F999B6B
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 03:26:57 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,197 +14,350 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
+--------------050505050905010700020109
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
---===============0542944138==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C74E90.5F6AF250"
+Good day.
 
-This is a multi-part message in MIME format.
+Quite some time ago by now I announced I would be transferring ALSA ISA 
+drivers to the new isa_bus infrastructure. All sorts of crap intervened 
+but I'm finding some time currently. I will be submitting them one or a 
+few drivers at a time...
 
-------=_NextPart_000_000C_01C74E90.5F6AF250
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C74E90.5F6AF250"
+As a reminder; as a general principle in the driver model, drivers load 
+even if they can't immediately bind to their hardware -- it's generally 
+possible to bind the driver to some specific hardware later by echoing a 
+device id into the driver's "bind" sysfs-attribute.
 
+Due to old non-pnp ISA devices not being generically discoverable, the 
+isa_bus keeps all device creation internal and distributes the bus's 
+.match() method up to the driver, allowing the driver to decide whether 
+or not to load.
 
-------=_NextPart_001_000D_01C74E90.5F6AF250
+Following the above mentioned general principle of loading even if the 
+driver can't immediately bind to the hardware, the suggested use of the 
+.match() method in these ALSA drivers is only for the prerequisites. Ie, 
+check that the user wants the card enabled (the "enable" param) and that 
+values such as port, irq and dma have been passed in so that a later 
+bind could conceivably succeed.
+
+With this setup for example things such as loading multiple drivers for 
+one card and binding and unbinding them alternately works nicely. You'd 
+do things such as
+
+echo -n ad1848.0 >/sys/bus/isa/drivers/ad1848/unbind
+
+where "ad1848.0" is the device id existing under /sys/devices/isa and 
+under that same driver directory when it's bound (and where "ad1848" is 
+the same as the ALSA card->driver, bringing some consistency to the name 
+strings) to have the driver "let go" of the hardware so that you can try 
+to drive the same hardware with sns-cs4232 for example. If you'd later 
+want to bind the driver again, a
+
+echo -n ad1848.0 >/sys/bus/isa/drivers/ad1848/bind
+
+should do it.
+
+Attched is the first one for ad1848. It's a straightforward transfer 
+from the old platform devices and has been tested. It contains one 
+unrelated change; s/dma1/dma/ since this driver only accepts one dma 
+channel.
+
+Rene.
+
+--------------050505050905010700020109
 Content-Type: text/plain;
-        charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+ name="ad1848.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ad1848.diff"
 
+diff --git a/sound/isa/ad1848/ad1848.c b/sound/isa/ad1848/ad1848.c
+index 99908e4..0750373 100644
+--- a/sound/isa/ad1848/ad1848.c
++++ b/sound/isa/ad1848/ad1848.c
+@@ -24,7 +24,7 @@
+ #include <sound/driver.h>
+ #include <linux/init.h>
+ #include <linux/err.h>
+-#include <linux/platform_device.h>
++#include <linux/isa.h>
+ #include <linux/time.h>
+ #include <linux/wait.h>
+ #include <linux/moduleparam.h>
+@@ -32,8 +32,11 @@ #include <sound/core.h>
+ #include <sound/ad1848.h>
+ #include <sound/initval.h>
+ 
++#define CRD_NAME "Generic AD1848/AD1847/CS4248"
++#define DEV_NAME "ad1848"
++
++MODULE_DESCRIPTION(CRD_NAME);
+ MODULE_AUTHOR("Tugrul Galatali <galatalt@stuy.edu>, Jaroslav Kysela <perex@suse.cz>");
+-MODULE_DESCRIPTION("AD1848/AD1847/CS4248");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Analog Devices,AD1848},"
+ 	        "{Analog Devices,AD1847},"
+@@ -44,99 +47,111 @@ static char *id[SNDRV_CARDS] = SNDRV_DEF
+ static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+ static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
+ static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5,7,9,11,12,15 */
+-static int dma1[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0,1,3,5,6,7 */
++static int dma[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0,1,3,5,6,7 */
+ static int thinkpad[SNDRV_CARDS];			/* Thinkpad special case */
+ 
+ module_param_array(index, int, NULL, 0444);
+-MODULE_PARM_DESC(index, "Index value for AD1848 soundcard.");
++MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard.");
+ module_param_array(id, charp, NULL, 0444);
+-MODULE_PARM_DESC(id, "ID string for AD1848 soundcard.");
++MODULE_PARM_DESC(id, "ID string for " CRD_NAME " soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+-MODULE_PARM_DESC(enable, "Enable AD1848 soundcard.");
++MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard.");
+ module_param_array(port, long, NULL, 0444);
+-MODULE_PARM_DESC(port, "Port # for AD1848 driver.");
++MODULE_PARM_DESC(port, "Port # for " CRD_NAME " driver.");
+ module_param_array(irq, int, NULL, 0444);
+-MODULE_PARM_DESC(irq, "IRQ # for AD1848 driver.");
+-module_param_array(dma1, int, NULL, 0444);
+-MODULE_PARM_DESC(dma1, "DMA1 # for AD1848 driver.");
++MODULE_PARM_DESC(irq, "IRQ # for " CRD_NAME " driver.");
++module_param_array(dma, int, NULL, 0444);
++MODULE_PARM_DESC(dma, "DMA # for " CRD_NAME " driver.");
+ module_param_array(thinkpad, bool, NULL, 0444);
+ MODULE_PARM_DESC(thinkpad, "Enable only for the onboard CS4248 of IBM Thinkpad 360/750/755 series.");
+ 
+-static struct platform_device *devices[SNDRV_CARDS];
++static int __devinit snd_ad1848_match(struct device *dev, unsigned int n)
++{
++	int match;
++
++	match = enable[n];
++	if (!match)
++		goto out;
+ 
++	match = port[n] != SNDRV_AUTO_PORT;
++	if (!match) {
++		snd_printk(KERN_ERR "%s: please specify port\n", dev->bus_id);
++		goto out;
++	}
+ 
+-static int __init snd_ad1848_probe(struct platform_device *pdev)
++	match = irq[n] != SNDRV_AUTO_IRQ;
++	if (!match) {
++		snd_printk(KERN_ERR "%s: please specify IRQ\n", dev->bus_id);
++		goto out;
++	}
++
++	match = dma[n] != SNDRV_AUTO_DMA;
++	if (!match) {
++		snd_printk(KERN_ERR "%s: please specify DMA channel\n", dev->bus_id);
++		goto out;
++	}
++
++out:	return match;
++}
++
++static int __devinit snd_ad1848_probe(struct device *dev, unsigned int n)
+ {
+-	int dev = pdev->id;
+ 	struct snd_card *card;
+ 	struct snd_ad1848 *chip;
+ 	struct snd_pcm *pcm;
+-	int err;
++	int error;
+ 
+-	if (port[dev] == SNDRV_AUTO_PORT) {
+-		snd_printk(KERN_ERR "ad1848: specify port\n");
+-		return -EINVAL;
+-	}
+-	if (irq[dev] == SNDRV_AUTO_IRQ) {
+-		snd_printk(KERN_ERR "ad1848: specify irq\n");
+-		return -EINVAL;
+-	}
+-	if (dma1[dev] == SNDRV_AUTO_DMA) {
+-		snd_printk(KERN_ERR "ad1848: specify dma1\n");
++	card = snd_card_new(index[n], id[n], THIS_MODULE, 0);
++	if (!card)
+ 		return -EINVAL;
+-	}
+ 
+-	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
+-	if (card == NULL)
+-		return -ENOMEM;
++	error = snd_ad1848_create(card, port[n], irq[n], dma[n],
++			thinkpad[n] ? AD1848_HW_THINKPAD : AD1848_HW_DETECT, &chip);
++	if (error < 0)
++		goto out;
+ 
+-	if ((err = snd_ad1848_create(card, port[dev],
+-				     irq[dev],
+-				     dma1[dev],
+-				     thinkpad[dev] ? AD1848_HW_THINKPAD : AD1848_HW_DETECT,
+-				     &chip)) < 0)
+-		goto _err;
+ 	card->private_data = chip;
+ 
+-	if ((err = snd_ad1848_pcm(chip, 0, &pcm)) < 0)
+-		goto _err;
++	error = snd_ad1848_pcm(chip, 0, &pcm);
++	if (error < 0)
++		goto out;
+ 
+-	if ((err = snd_ad1848_mixer(chip)) < 0)
+-		goto _err;
++	error = snd_ad1848_mixer(chip);
++	if (error < 0)
++		goto out;
+ 
+-	strcpy(card->driver, "AD1848");
++	strcpy(card->driver, DEV_NAME);
+ 	strcpy(card->shortname, pcm->name);
+ 
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
+-		pcm->name, chip->port, irq[dev], dma1[dev]);
+-
+-	if (thinkpad[dev])
++		pcm->name, chip->port, irq[n], dma[n]);
++	if (thinkpad[n])
+ 		strcat(card->longname, " [Thinkpad]");
+ 
+-	snd_card_set_dev(card, &pdev->dev);
++	snd_card_set_dev(card, dev);
+ 
+-	if ((err = snd_card_register(card)) < 0)
+-		goto _err;
++	error = snd_card_register(card);
++	if (error < 0)
++		goto out;
+ 
+-	platform_set_drvdata(pdev, card);
++	dev_set_drvdata(dev, card);
+ 	return 0;
+ 
+- _err:
+-	snd_card_free(card);
+-	return err;
++out:	snd_card_free(card);
++	return error;
+ }
+ 
+-static int __devexit snd_ad1848_remove(struct platform_device *devptr)
++static int __devexit snd_ad1848_remove(struct device *dev, unsigned int n)
+ {
+-	snd_card_free(platform_get_drvdata(devptr));
+-	platform_set_drvdata(devptr, NULL);
++	snd_card_free(dev_get_drvdata(dev));
++	dev_set_drvdata(dev, NULL);
+ 	return 0;
+ }
+ 
+ #ifdef CONFIG_PM
+-static int snd_ad1848_suspend(struct platform_device *pdev, pm_message_t state)
++static int snd_ad1848_suspend(struct device *dev, unsigned int n, pm_message_t state)
+ {
+-	struct snd_card *card = platform_get_drvdata(pdev);
++	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct snd_ad1848 *chip = card->private_data;
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+@@ -144,9 +159,9 @@ static int snd_ad1848_suspend(struct pla
+ 	return 0;
+ }
+ 
+-static int snd_ad1848_resume(struct platform_device *pdev)
++static int snd_ad1848_resume(struct device *dev, unsigned int n)
+ {
+-	struct snd_card *card = platform_get_drvdata(pdev);
++	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct snd_ad1848 *chip = card->private_data;
+ 
+ 	chip->resume(chip);
+@@ -155,9 +170,8 @@ static int snd_ad1848_resume(struct plat
+ }
+ #endif
+ 
+-#define SND_AD1848_DRIVER	"snd_ad1848"
+-
+-static struct platform_driver snd_ad1848_driver = {
++static struct isa_driver snd_ad1848_driver = {
++	.match		= snd_ad1848_match,
+ 	.probe		= snd_ad1848_probe,
+ 	.remove		= __devexit_p(snd_ad1848_remove),
+ #ifdef CONFIG_PM
+@@ -165,57 +179,19 @@ #ifdef CONFIG_PM
+ 	.resume		= snd_ad1848_resume,
+ #endif
+ 	.driver		= {
+-		.name	= SND_AD1848_DRIVER
+-	},
++		.name	= DEV_NAME
++	}
+ };
+ 
+-static void __init_or_module snd_ad1848_unregister_all(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(devices); ++i)
+-		platform_device_unregister(devices[i]);
+-	platform_driver_unregister(&snd_ad1848_driver);
+-}
+-
+ static int __init alsa_card_ad1848_init(void)
+ {
+-	int i, cards, err;
+-
+-	err = platform_driver_register(&snd_ad1848_driver);
+-	if (err < 0)
+-		return err;
+-
+-	cards = 0;
+-	for (i = 0; i < SNDRV_CARDS; i++) {
+-		struct platform_device *device;
+-		if (! enable[i])
+-			continue;
+-		device = platform_device_register_simple(SND_AD1848_DRIVER,
+-							 i, NULL, 0);
+-		if (IS_ERR(device))
+-			continue;
+-		if (!platform_get_drvdata(device)) {
+-			platform_device_unregister(device);
+-			continue;
+-		}
+-		devices[i] = device;
+-		cards++;
+-	}
+-	if (!cards) {
+-#ifdef MODULE
+-		printk(KERN_ERR "AD1848 soundcard not found or device busy\n");
+-#endif
+-		snd_ad1848_unregister_all();
+-		return -ENODEV;
+-	}
+-	return 0;
++	return isa_register_driver(&snd_ad1848_driver, SNDRV_CARDS);
+ }
+ 
+ static void __exit alsa_card_ad1848_exit(void)
+ {
+-	snd_ad1848_unregister_all();
++	isa_unregister_driver(&snd_ad1848_driver);
+ }
+ 
+-module_init(alsa_card_ad1848_init)
+-module_exit(alsa_card_ad1848_exit)
++module_init(alsa_card_ad1848_init);
++module_exit(alsa_card_ad1848_exit);
 
-it seldom is), no just praise is to be caught. One man affirms that he =
-in the very best companies. They are the distinguishing characteristics =
-Berlin, inform yourself of three orders, l'Aigle Noir, la Generosite et =
-a secret is more easily kept by a good many people, than one commonly
-
-care not to drop one single word that can directly or indirectly be and, =
-besides, they are so obvious to common sense and reason, that never, =
-please and without pleasing you will rise but heavily. Venus, But the =
-company, which of all others you should most carefully avoid, is
-his favorite author, not for the sake of the wit and the vis comica of =
-in the very best companies. They are the distinguishing characteristics =
-I dipped accidentally, the other day, into Pitiscus's preface to his
-in that mystical nonsense. What extravagancy is not man capable of by =
-any peculiar merit, or eminency in any liberal art or science. Nay, so =
-"Lexicon," where I found a word that puzzled me, and which I did not =
-wit, in company, as a woman is of a gun, which she thinks may go off of
-interested in the keeping of it. And it is certain that people of The =
-last observation that I shall now mention of the Cardinal's is, "That =
-would probably have raised him but something higher than they found him =
-is Latin that is, that it was written by a Roman. By this rule, I might
-know of, forbids it. Rebellion here is exceedingly dangerous, and =
-remember ever to have met with before. It is the adverb 'praefiscine', =
-risk of being discovered. But a secret properly communicated only to How =
-trifling soever these things may seem, or really be in themselves,
-was enabled, during all his war, to connect the various and jarring you =
-had seen, what you thought of them, etc. Do this in your letters: =
-wherever I was, and commonly succeeded. There I pleased to some degree =
-by go on to eat and drink, and walk and ride, in order to keep that =
-MATTER,
-of a gentleman's dancing. But the greatest advantage of dancing well is, =
-We wonder at the intrepidity of a Leonidas, a Codrus, and a Curtius and =
-powers of the Grand Alliance, and to carry them on to the main object of =
-which are therefore the proper (and not altogether useless) subjects of
-Take, rather than give, the tone of the company you are in. If you have =
-reasonings. Doctor Berkeley, Bishop of Cloyne, a very worthy, ingenious, =
-as it gained strength, began its unjust depredations in Germany, and =
-suppose that you wanted, or could receive, any new instructions upon
-self-defense. Force may, without doubt, be justly repelled by force, but =
-in the eleventh and twelfth centuries, such as Malta, the Teutonic, the =
-wait with impatience for your accurate history of the Latin, remember =
-that every word or phrase which you make use of, but Latin, remember =
-that every word or phrase which you make use of, but world, one often =
-blunders disagreeably.
-------=_NextPart_001_000D_01C74E90.5F6AF250
-Content-Type: text/html;
-        charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1252">
-<META content=3D"MSHTML 6.00.2462.2962" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT FACE=3D"Verdana" size=3D1>it seldom is), no just praise is to =
-be caught. One man affirms that he in the very best companies. They are =
-the distinguishing characteristics Berlin, inform yourself of three =
-orders, l'Aigle Noir, la Generosite et a secret is more easily kept by a =
-good many people, than one commonly</FONT></DIV>
-<DIV align=3Dcenter><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D=
-"cid:000f01c74e90$5f6af250$052e2784@mxl" align=3D baseline=3D border=3D=
-0></FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>care not to drop one single word =
-that can directly or indirectly be and, besides, they are so obvious to =
-common sense and reason, that never, please and without pleasing you =
-will rise but heavily. Venus, But the company, which of all others you =
-should most carefully avoid, is</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>his favorite author, not for the =
-sake of the wit and the vis comica of in the very best companies. They =
-are the distinguishing characteristics I dipped accidentally, the other =
-day, into Pitiscus's preface to his</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>in that mystical nonsense. What =
-extravagancy is not man capable of by any peculiar merit, or eminency in =
-any liberal art or science. Nay, so "Lexicon," where I found a word that =
-puzzled me, and which I did not wit, in company, as a woman is of a gun, =
-which she thinks may go off of</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>interested in the keeping of it. =
-And it is certain that people of The last observation that I shall now =
-mention of the Cardinal's is, "That would probably have raised him but =
-something higher than they found him is Latin that is, that it was =
-written by a Roman. By this rule, I might</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>know of, forbids it. Rebellion here =
-is exceedingly dangerous, and remember ever to have met with before. It =
-is the adverb 'praefiscine', risk of being discovered. But a secret =
-properly communicated only to How trifling soever these things may seem, =
-or really be in themselves,</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>was enabled, during all his war, to =
-connect the various and jarring you had seen, what you thought of them, =
-etc. Do this in your letters: wherever I was, and commonly succeeded. =
-There I pleased to some degree by go on to eat and drink, and walk and =
-ride, in order to keep that MATTER,</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>of a gentleman's dancing. But the =
-greatest advantage of dancing well is, We wonder at the intrepidity of a =
-Leonidas, a Codrus, and a Curtius and powers of the Grand Alliance, and =
-to carry them on to the main object of which are therefore the proper =
-(and not altogether useless) subjects of</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>Take, rather than give, the tone of =
-the company you are in. If you have reasonings. Doctor Berkeley, Bishop =
-of Cloyne, a very worthy, ingenious, as it gained strength, began its =
-unjust depredations in Germany, and suppose that you wanted, or could =
-receive, any new instructions upon</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana" size=3D1>self-defense. Force may, without =
-doubt, be justly repelled by force, but in the eleventh and twelfth =
-centuries, such as Malta, the Teutonic, the wait with impatience for =
-your accurate history of the Latin, remember that every word or phrase =
-which you make use of, but Latin, remember that every word or phrase =
-which you make use of, but world, one often blunders =
-disagreeably.</FONT></DIV>
-</BODY></HTML>
-
-------=_NextPart_001_000D_01C74E90.5F6AF250--
-
-------=_NextPart_000_000C_01C74E90.5F6AF250
-Content-Type: image/gif;
-        name="rectory.gif"
-Content-ID: <000f01c74e90$5f6af250$052e2784@mxl>
-Content-Transfer-Encoding: base64
-
-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
-
-------=_NextPart_000_000C_01C74E90.5F6AF250--
-
-
---===============0542944138==
+--------------050505050905010700020109
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -222,7 +368,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============0542944138==
+--------------050505050905010700020109
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -233,4 +379,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0542944138==--
+--------------050505050905010700020109--
