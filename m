@@ -1,10 +1,10 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HGHsk-00068C-PX delayed 24 hours
-Date: Mon, 12 Feb 2007 09:37:48 -0800
-Message-ID: <E1HGf7c-0003bG-GO@externalmx-1.sourceforge.net>
+From: "Lead Delivery System" <noreply@bulkgrowth.com>
+Subject: Lead Delivery System
+Date: 12 Feb 2007 10:46:16 -0800
+Message-ID: <20070212104616.7C4998BA3895774E@bulkgrowth.com>
+Reply-To: Lead Delivery System <noreply@bulkgrowth.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1226556892=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +18,101 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+--===============1226556892==
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The message identifier is:     1HGHsk-00068C-PX
-The subject of the message is: what further not known, my sacrifice, of Judah
-The date of the message is:    Sun, 11 Feb 2007 02:18:40 +0530
 
-The address to which the message has not yet been delivered is:
+<html>
+<head>
+<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
+<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows-12=
+52">
+</head>
+<body>
+<p><b><font size=3D"+2">Take your origination business to that next level in=
+ 2007=20
+!</font></b> </p>
+<p><b><font size=3D"+2">We have got HOT prospects who are looking for a new =
+loan=20
+right now!</font></b> <br>
+&nbsp; </p>
+<p>If you're like most originators, 2006 was not your banner year. In fact m=
+any
+<br>
+have gone out of business! Due to the decrease in your volume, you find your=
+self
+<br>
+with less funds to increase marketing, so your origination volume continues =
+to=20
+go down. <br>
+You don't have to spend more if you're serious about being successful in the=
+=20
+mortgage <br>
+origination business. For just<b> $3.99-$7.99 per lead</b>, (depending on=20=
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+location), we can <br>
+provide you&nbsp; with fresh consumer leads every day! </p>
+<p><b>Our Select Lead Program has no setup fees and no long-term commitment.=
+</b>
+</p>
+<p><b>Our consumers are waiting for someone to help them with a mortgage!</b=
+>
+</p>
+<p>The LoanBright Select Leads program is a simple, affordable, easy to=20
+implement mortgage <br>
+lead program offering you a market representative mix of both Purchase and=
+=20
+Refinance leads. <br>
+There are no up-front costs. These are the same quality leads that LoanBrigh=
+t=20
+generates day-in <br>
+and day-out for hundreds of lenders, nationwide, with proven success! They a=
+re=20
+subject to the <br>
+same validation and scrubbing that much more expensive leads go through. <br=
+>
+&nbsp; </p>
+<p>Please <B>
+<A href=3D"http://209.35.106.182/loanbright_Contact.htm">CLICK HERE</A></B> =
+for=20
+more info </p>
+<p>or call us toll free <b>1-800-211-4170</b> </p>
+<p>LoanBright | 27902 Meadow Drive | Suite 375 | Evergreen | CO | 80439 <br>=
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+&nbsp; <br>
+&nbsp; </p>
+<p>to unsubscribe <FONT face=3D"Times New Roman" color=3D#000000><A href=3D"=
+http://209.35.106.182/unsubscribe.htm">click here</A></FONT><FONT face=3DTah=
+oma size=3D2> </FONT>
+</p>
+</body>
+</html>
+
+
+
+--===============1226556892==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============1226556892==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1226556892==--
