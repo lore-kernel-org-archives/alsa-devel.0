@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HGHsk-00068C-PX delayed 10 hours
-Date: Sun, 11 Feb 2007 19:43:57 -0800
-Message-ID: <E1HGS6f-0007C4-9m@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HG0WP-0006de-BJ delayed 24 hours
+Date: Sun, 11 Feb 2007 19:49:41 -0800
+Message-ID: <E1HGSCD-0008W8-J4@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HGHsk-00068C-PX
-The subject of the message is: what further not known, my sacrifice, of Judah
-The date of the message is:    Sun, 11 Feb 2007 02:18:40 +0530
+The message identifier is:     1HG0WP-0006de-BJ
+The subject of the message is: of stone, but Let them and power but that
+The date of the message is:    Sun, 11 Feb 2007 00:16:45 +0200
 
 The address to which the message has not yet been delivered is:
 
