@@ -1,11 +1,16 @@
-From: maser rati <maseriyer@yahoo.com>
-Subject: test mail
-Date: Sun, 11 Feb 2007 22:13:25 -0800 (PST)
-Message-ID: <20070212061325.3591.qmail@web37703.mail.mud.yahoo.com>
+From: "Plamen Costin" <lehmanny@waikiki-network.com>
+Subject: Re: news etherizatio
+Date: Mon, 12 Feb 2007 04:55:49 -0300
+Message-ID: <01c74e7b$35b27420$1101010a@PS>
+Reply-To: Plamen Costin <lehmanny@waikiki-network.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from waikiki-network.com (20158202042.user.veloxzone.com.br
+	[201.58.202.42])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42BC9320
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 07:55:52 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,17 +20,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Kelsie Albert <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-test mail..
+Hi,
 
 
- 
-____________________________________________________________________________________
-Looking for earth-friendly autos? 
-Browse Top Cars by "Green Rating" at Yahoo! Autos' Green Center.
-http://autos.yahoo.com/green_center/
+V / A G R A
+V A L / U M
+C / A L / S
+
+http://www.tedrx .com
+
+Remove space in the above link.
+
+
+
+Harry, I dont understand it either,  said Hermione desperately. I
+just know there are a lot of odd things going on, and I dont like it...
+Moodys right Sirius is right youve got to get in training for the
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
