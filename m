@@ -1,11 +1,16 @@
-From: "August Pope" <TPXMKQ@hotmail.com>
-Subject: Expel Disgusting Fats
-Date: Tue, 13 Feb 2007 17:08:58 +0400
-Message-ID: <8A587EE3.7684.2915C2D5@localhost>
+From: "Clemens Ladisch" <clemens@ladisch.de>
+Subject: Re: [alsa-cvslog] alsa-lib: enable dmix-ing and proper
+ 5.1 routing for USB audio devices
+Date: Tue, 13 Feb 2007 14:14:14 +0100
+Message-ID: <1171372454.22875.1174375553@webmail.messagingengine.com>
+References: <ALOGGER1171354291.14@alsa-project.org>
+	<m2ps8e2ojr.fsf@vador.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <m2ps8e2ojr.fsf@vador.mandriva.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,25 +20,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Thierry Vignaud <tvignaud@mandriva.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thierry Vignaud wrote:
+> Clemens Ladisch <clemens@ladisch.de> writes:
+> > files:       src/conf/cards/USB-Audio.conf
+> > description:
+> > enable dmix-ing and proper 5.1 routing for USB audio devices
+> > 
+> > add a configuration file for USB audio devices
+> 
+> err, don't you need sg like this:
+
+Oops.
+Fixed.
 
 
-
-Latest product of "Hoodia" Guuaranttes:
-
-- results in 2-3 weeks
-- burn fat naturally, and never gain it back
-- much effective than running 10 miles per week
-- no hunger and stay full although eat less or nothing
-- 100% safe (no drugs and chemicals)
-- used by millions of people worldwide...
-
-Act Now! 
-http://aoam.net
-
-
+Thanks!
+Clemens
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
