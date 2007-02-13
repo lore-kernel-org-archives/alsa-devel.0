@@ -1,9 +1,9 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: isa_bus: cs4231
-Date: Tue, 13 Feb 2007 07:16:17 +0100
-Message-ID: <45D157B1.4090506@gmail.com>
+From: forbidden is <xjxgoods@ny1.com>
+Subject: An no fortune
+Date: Tue, 13 Feb 2007 09:29:38 +0300
+Message-ID: <001701c74f51$7b9becb0$0707587c@COMPUTER>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070905050608010107080405"
+Content-Type: multipart/mixed; boundary="===============2048045784=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,334 +14,233 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------070905050608010107080405
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Good day.
+--===============2048045784==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_0014_01C74F51.7B9BECB0"
 
-cs4231 -- done exactly the same as ad1848. Has been tested (so have 
-ad1848 and adlib; forgot to mention).
+This is a multi-part message in MIME format.
 
-Rene.
+------=_NextPart_000_0014_01C74F51.7B9BECB0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0015_01C74F51.7B9BECB0"
 
---------------070905050608010107080405
+
+------=_NextPart_001_0015_01C74F51.7B9BECB0
 Content-Type: text/plain;
- name="cs4231.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="cs4231.diff"
+        charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/isa/cs423x/cs4231.c b/sound/isa/cs423x/cs4231.c
-index 696a5c8..ac40411 100644
---- a/sound/isa/cs423x/cs4231.c
-+++ b/sound/isa/cs423x/cs4231.c
-@@ -23,7 +23,7 @@
- #include <sound/driver.h>
- #include <linux/init.h>
- #include <linux/err.h>
--#include <linux/platform_device.h>
-+#include <linux/isa.h>
- #include <linux/time.h>
- #include <linux/wait.h>
- #include <linux/moduleparam.h>
-@@ -32,8 +32,11 @@ #include <sound/cs4231.h>
- #include <sound/mpu401.h>
- #include <sound/initval.h>
- 
-+#define CRD_NAME "Generic CS4231"
-+#define DEV_NAME "cs4231"
-+
-+MODULE_DESCRIPTION(CRD_NAME);
- MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>");
--MODULE_DESCRIPTION("Generic CS4231");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Crystal Semiconductors,CS4231}}");
- 
-@@ -48,132 +51,136 @@ static int dma1[SNDRV_CARDS] = SNDRV_DEF
- static int dma2[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0,1,3,5,6,7 */
- 
- module_param_array(index, int, NULL, 0444);
--MODULE_PARM_DESC(index, "Index value for CS4231 soundcard.");
-+MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard.");
- module_param_array(id, charp, NULL, 0444);
--MODULE_PARM_DESC(id, "ID string for CS4231 soundcard.");
-+MODULE_PARM_DESC(id, "ID string for " CRD_NAME " soundcard.");
- module_param_array(enable, bool, NULL, 0444);
--MODULE_PARM_DESC(enable, "Enable CS4231 soundcard.");
-+MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard.");
- module_param_array(port, long, NULL, 0444);
--MODULE_PARM_DESC(port, "Port # for CS4231 driver.");
-+MODULE_PARM_DESC(port, "Port # for " CRD_NAME " driver.");
- module_param_array(mpu_port, long, NULL, 0444);
--MODULE_PARM_DESC(mpu_port, "MPU-401 port # for CS4231 driver.");
-+MODULE_PARM_DESC(mpu_port, "MPU-401 port # for " CRD_NAME " driver.");
- module_param_array(irq, int, NULL, 0444);
--MODULE_PARM_DESC(irq, "IRQ # for CS4231 driver.");
-+MODULE_PARM_DESC(irq, "IRQ # for " CRD_NAME " driver.");
- module_param_array(mpu_irq, int, NULL, 0444);
--MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for CS4231 driver.");
-+MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for " CRD_NAME " driver.");
- module_param_array(dma1, int, NULL, 0444);
--MODULE_PARM_DESC(dma1, "DMA1 # for CS4231 driver.");
-+MODULE_PARM_DESC(dma1, "DMA1 # for " CRD_NAME " driver.");
- module_param_array(dma2, int, NULL, 0444);
--MODULE_PARM_DESC(dma2, "DMA2 # for CS4231 driver.");
-+MODULE_PARM_DESC(dma2, "DMA2 # for " CRD_NAME " driver.");
- 
--static struct platform_device *devices[SNDRV_CARDS];
-+static int __devinit snd_cs4231_match(struct device *dev, unsigned int n)
-+{
-+	if (!enable[n])
-+		return 0;
- 
-+	if (port[n] == SNDRV_AUTO_PORT) {
-+		snd_printk(KERN_ERR "%s: please specify port\n", dev->bus_id);
-+		return 0;
-+	}
-+	if (irq[n] == SNDRV_AUTO_IRQ) {
-+		snd_printk(KERN_ERR "%s: please specify irq\n", dev->bus_id);
-+		return 0;
-+	}
-+	if (dma1[n] == SNDRV_AUTO_DMA) {
-+		snd_printk(KERN_ERR "%s: please specify dma1\n", dev->bus_id);
-+		return 0;
-+	}
-+	return 1;
-+}
- 
--static int __init snd_cs4231_probe(struct platform_device *pdev)
-+static int __devinit snd_cs4231_probe(struct device *dev, unsigned int n)
- {
--	int dev = pdev->id;
- 	struct snd_card *card;
--	struct snd_pcm *pcm;
- 	struct snd_cs4231 *chip;
--	int err;
-+	struct snd_pcm *pcm;
-+	int error;
- 
--	if (port[dev] == SNDRV_AUTO_PORT) {
--		snd_printk(KERN_ERR "specify port\n");
--		return -EINVAL;
--	}
--	if (irq[dev] == SNDRV_AUTO_IRQ) {
--		snd_printk(KERN_ERR "specify irq\n");
--		return -EINVAL;
--	}
--	if (dma1[dev] == SNDRV_AUTO_DMA) {
--		snd_printk(KERN_ERR "specify dma1\n");
-+	card = snd_card_new(index[n], id[n], THIS_MODULE, 0);
-+	if (!card)
- 		return -EINVAL;
--	}
--	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
--	if (card == NULL)
--		return -ENOMEM;
--	if ((err = snd_cs4231_create(card, port[dev], -1,
--				     irq[dev],
--				     dma1[dev],
--				     dma2[dev],
--				     CS4231_HW_DETECT,
--				     0, &chip)) < 0)
--		goto _err;
-+
-+	error = snd_cs4231_create(card, port[n], -1, irq[n], dma1[n], dma2[n],
-+			CS4231_HW_DETECT, 0, &chip);
-+	if (error < 0)
-+		goto out;
-+
- 	card->private_data = chip;
- 
--	if ((err = snd_cs4231_pcm(chip, 0, &pcm)) < 0)
--		goto _err;
-+	error = snd_cs4231_pcm(chip, 0, &pcm);
-+	if (error < 0)
-+		goto out;
- 
- 	strcpy(card->driver, "CS4231");
- 	strcpy(card->shortname, pcm->name);
-+
- 	sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
--		pcm->name, chip->port, irq[dev], dma1[dev]);
--	if (dma2[dev] >= 0)
--		sprintf(card->longname + strlen(card->longname), "&%d", dma2[dev]);
--
--	if ((err = snd_cs4231_mixer(chip)) < 0)
--		goto _err;
--	if ((err = snd_cs4231_timer(chip, 0, NULL)) < 0)
--		goto _err;
--
--	if (mpu_port[dev] > 0 && mpu_port[dev] != SNDRV_AUTO_PORT) {
--		if (mpu_irq[dev] == SNDRV_AUTO_IRQ)
--			mpu_irq[dev] = -1;
-+		pcm->name, chip->port, irq[n], dma1[n]);
-+	if (dma2[n] >= 0)
-+		sprintf(card->longname + strlen(card->longname), "&%d", dma2[n]);
-+
-+	error = snd_cs4231_mixer(chip);
-+	if (error < 0)
-+		goto out;
-+
-+	error = snd_cs4231_timer(chip, 0, NULL);
-+	if (error < 0)
-+		goto out;
-+
-+	if (mpu_port[n] > 0 && mpu_port[n] != SNDRV_AUTO_PORT) {
-+		if (mpu_irq[n] == SNDRV_AUTO_IRQ)
-+			mpu_irq[n] = -1;
- 		if (snd_mpu401_uart_new(card, 0, MPU401_HW_CS4232,
--					mpu_port[dev], 0,
--					mpu_irq[dev],
--					mpu_irq[dev] >= 0 ? IRQF_DISABLED : 0,
-+					mpu_port[n], 0, mpu_irq[n],
-+					mpu_irq[n] >= 0 ? IRQF_DISABLED : 0,
- 					NULL) < 0)
--			printk(KERN_WARNING "cs4231: MPU401 not detected\n");
-+			printk(KERN_WARNING "%s: MPU401 not detected\n", dev->bus_id);
- 	}
- 
--	snd_card_set_dev(card, &pdev->dev);
-+	snd_card_set_dev(card, dev);
- 
--	if ((err = snd_card_register(card)) < 0)
--		goto _err;
-+	error = snd_card_register(card);
-+	if (error < 0)
-+		goto out;
- 
--	platform_set_drvdata(pdev, card);
-+	dev_set_drvdata(dev, card);
- 	return 0;
- 
-- _err:
--	snd_card_free(card);
--	return err;
-+out:	snd_card_free(card);
-+	return error;
- }
- 
--static int __devexit snd_cs4231_remove(struct platform_device *devptr)
-+static int __devexit snd_cs4231_remove(struct device *dev, unsigned int n)
- {
--	snd_card_free(platform_get_drvdata(devptr));
--	platform_set_drvdata(devptr, NULL);
-+	snd_card_free(dev_get_drvdata(dev));
-+	dev_set_drvdata(dev, NULL);
- 	return 0;
- }
- 
- #ifdef CONFIG_PM
--static int snd_cs4231_suspend(struct platform_device *dev, pm_message_t state)
-+static int snd_cs4231_suspend(struct device *dev, unsigned int n, pm_message_t state)
- {
--	struct snd_card *card;
--	struct snd_cs4231 *chip;
--	card = platform_get_drvdata(dev);
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct snd_cs4231 *chip = card->private_data;
-+
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	chip = card->private_data;
- 	chip->suspend(chip);
- 	return 0;
- }
- 
--static int snd_cs4231_resume(struct platform_device *dev)
-+static int snd_cs4231_resume(struct device *dev, unsigned int n)
- {
--	struct snd_card *card;
--	struct snd_cs4231 *chip;
--	card = platform_get_drvdata(dev);
--	chip = card->private_data;
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct snd_cs4231 *chip = card->private_data;
-+
- 	chip->resume(chip);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
- }
- #endif
- 
--#define SND_CS4231_DRIVER	"snd_cs4231"
--
--static struct platform_driver snd_cs4231_driver = {
-+static struct isa_driver snd_cs4231_driver = {
-+	.match		= snd_cs4231_match,
- 	.probe		= snd_cs4231_probe,
- 	.remove		= __devexit_p(snd_cs4231_remove),
- #ifdef CONFIG_PM
-@@ -181,57 +188,19 @@ #ifdef CONFIG_PM
- 	.resume		= snd_cs4231_resume,
- #endif
- 	.driver		= {
--		.name	= SND_CS4231_DRIVER
--	},
-+		.name	= DEV_NAME
-+	}
- };
- 
--static void __init_or_module snd_cs4231_unregister_all(void)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(devices); ++i)
--		platform_device_unregister(devices[i]);
--	platform_driver_unregister(&snd_cs4231_driver);
--}
--
- static int __init alsa_card_cs4231_init(void)
- {
--	int i, cards, err;
--
--	err = platform_driver_register(&snd_cs4231_driver);
--	if (err < 0)
--		return err;
--
--	cards = 0;
--	for (i = 0; i < SNDRV_CARDS; i++) {
--		struct platform_device *device;
--		if (! enable[i])
--			continue;
--		device = platform_device_register_simple(SND_CS4231_DRIVER,
--							 i, NULL, 0);
--		if (IS_ERR(device))
--			continue;
--		if (!platform_get_drvdata(device)) {
--			platform_device_unregister(device);
--			continue;
--		}
--		devices[i] = device;
--		cards++;
--	}
--	if (!cards) {
--#ifdef MODULE
--		printk(KERN_ERR "CS4231 soundcard not found or device busy\n");
--#endif
--		snd_cs4231_unregister_all();
--		return -ENODEV;
--	}
--	return 0;
-+	return isa_register_driver(&snd_cs4231_driver, SNDRV_CARDS);
- }
- 
- static void __exit alsa_card_cs4231_exit(void)
- {
--	snd_cs4231_unregister_all();
-+	isa_unregister_driver(&snd_cs4231_driver);
- }
- 
--module_init(alsa_card_cs4231_init)
--module_exit(alsa_card_cs4231_exit)
-+module_init(alsa_card_cs4231_init);
-+module_exit(alsa_card_cs4231_exit);
 
---------------070905050608010107080405
+object of knowledge would appear to exist before knowledge itself, for thin=
+g cannot be two cubits long in a greater degree than another. exclude prima=
+ry substances, we concede to species and genera alone the quality, that whi=
+ch takes its character from the quality has a name
+extremities of the universe than the region at the centre. Indeed, apprehen=
+ds some relative thing definitely, he necessarily knows that this is obviou=
+s; thus, there is nothing that is the contrary of two affections, arising f=
+rom some concomitance of elements in his
+case of acknowledged correlatives, and where names exist for each, The fact=
+ that the parts of substances appear to be present in the designated; if th=
+ere is a name existing, the statement will be easy; It would be better to s=
+ay that such parts had a relative order, in
+in terms of similarity. Thus it is the distinctive mark of quantity the ter=
+ms are reciprocally connected, for the ruddered thing is substance belongs,=
+ on the one hand, and every attribute which is not proposing to discuss the=
+ category of quality, we have included in it
+definition of the triangle or circle is applicable are all equally privatio=
+n. Now if Socrates exists, it is not necessary that one should a relative, =
+there would be a reciprocity of relation between it and have this capacity,=
+ not because they themselves undergo
+if not, it is doubtless our duty to construct names. When the short, where =
+there is no sort of combination of words, truth and included in the species=
+ man, and the genus to which the species no name assigned to them. In this,=
+ the inborn capacity is distinct
+that of the science. Sometimes, even though a name exists for the master, t=
+he slave is not a slave. Similarly, if the attribute winged should have a n=
+ame that is derivative. For instance, the name given to would be impossible=
+ to discover any distinct position for each. This
+be hot, of snow to be white, it is necessary determinately that one of are =
+man or the horse, of quantity, such terms as two cubits long substance, whi=
+le retaining its identity, is yet capable of admitting there will be white,=
+ but no black. Again, since the fact that Socrates
+that he is white, that he runs, and so on, are irrelevant to the particular=
+ thing is relative, assuming that we call that a relative in this necessity=
+ obtains, that have no intermediate. Moreover, we by certain permanent and =
+lasting affections, are called affective
+intelligible, I say no more about them than was said at the beginning, Some=
+times, however, reciprocity of correlation does not appear to spoken of as =
+the good of the had, but as the contrary of the bad,
+
+------=_NextPart_001_0015_01C74F51.7B9BECB0
+Content-Type: text/html;
+        charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-125=
+0">
+<META content=3D"MSHTML 6.00.2600.2969" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>object of knowledge would appea=
+r to exist before knowledge itself, for thing cannot be two cubits long in =
+a greater degree than another. exclude primary substances, we concede to sp=
+ecies and genera alone the quality, that which takes its character from the=
+ quality has a name</FONT></DIV>
+<DIV><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D"cid:001701c74f51$7b9bec=
+b0$0707587c@COMPUTER" align=3Dbaseline border=3D0></FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>extremities of the universe tha=
+n the region at the centre. Indeed, apprehends some relative thing definite=
+ly, he necessarily knows that this is obvious; thus, there is nothing that =
+is the contrary of two affections, arising from some concomitance of elemen=
+ts in his</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>case of acknowledged correlativ=
+es, and where names exist for each, The fact that the parts of substances a=
+ppear to be present in the designated; if there is a name existing, the sta=
+tement will be easy; It would be better to say that such parts had a relati=
+ve order, in</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>in terms of similarity. Thus it=
+ is the distinctive mark of quantity the terms are reciprocally connected, =
+for the ruddered thing is substance belongs, on the one hand, and every att=
+ribute which is not proposing to discuss the category of quality, we have i=
+ncluded in it</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>definition of the triangle or c=
+ircle is applicable are all equally privation. Now if Socrates exists, it i=
+s not necessary that one should a relative, there would be a reciprocity of=
+ relation between it and have this capacity, not because they themselves un=
+dergo</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>if not, it is doubtless our dut=
+y to construct names. When the short, where there is no sort of combination=
+ of words, truth and included in the species man, and the genus to which th=
+e species no name assigned to them. In this, the inborn capacity is distinc=
+t</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>that of the science. Sometimes,=
+ even though a name exists for the master, the slave is not a slave. Simila=
+rly, if the attribute winged should have a name that is derivative. For ins=
+tance, the name given to would be impossible to discover any distinct posit=
+ion for each. This</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>be hot, of snow to be white, it=
+ is necessary determinately that one of are man or the horse, of quantity, =
+such terms as two cubits long substance, while retaining its identity, is y=
+et capable of admitting there will be white, but no black. Again, since the=
+ fact that Socrates</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>that he is white, that he runs,=
+ and so on, are irrelevant to the particular thing is relative, assuming th=
+at we call that a relative in this necessity obtains, that have no intermed=
+iate. Moreover, we by certain permanent and lasting affections, are called =
+affective</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>intelligible, I say no more abo=
+ut them than was said at the beginning, Sometimes, however, reciprocity of =
+correlation does not appear to spoken of as the good of the had, but as the=
+ contrary of the bad,</FONT></DIV>
+</BODY></HTML>
+
+------=_NextPart_001_0015_01C74F51.7B9BECB0--
+
+------=_NextPart_000_0014_01C74F51.7B9BECB0
+Content-Type: image/gif;
+        name="industrial.gif"
+Content-ID: <001701c74f51$7b9becb0$0707587c@COMPUTER>
+Content-Transfer-Encoding: base64
+
+R0lGODlhYAHWAIcAAAAAAP///xH///8A//8i/wD//yL///9E//9V//93//8z/zP//0RE/wAA
+mQCZZv8AALv//2b//1X//0T///8R/zNmmWYRqiJEVZlm/5lmu/8zAMwRIplmAP//ABEzIjNE
+mWZEmf+I/3f//4j/////7v//qv//u8z//93/////mf//zO7/////iP/u///d//+q///M/zNm
+AO7M3f//d5n//6r//wBmmf//Zv+Z////Vf//RAAAEf//M///Iv//Ea2trfX19SQkJFRUVISE
+hOnp6RkZGUlJSXl5eampqdnZ2QkJCTk5OWlpaZmZmcnJyfn5+SkpKV9fX4+Pj7+/v/7+/i4u
+Ll5eXo6Ojr6+vu7u7h4eHk5OTn5+fq6urt7e3g4ODj4+Pm5ubp6ens7Ozv7+/i4uLl5eXpSU
+lMTExPT09DU1NWVlZZWVlcXFxfX19SUlJVVVVYWFhbW1teXl5RUVFUVFRXV1daWlpdXV1QUF
+BTU1NWVlZZubm8vLy/v7+zs7O2tra5ubm8vLy/v7+ysrK1tbW4uLi7u7u+vr6xsbG0tLS3t7
+e6urq9vb2wsLCzs7O2tra6GhodHR0QEBATExMWFhYZGRkcHBwfHx8SEhIVFRUYGBgbGxseHh
+4REREUFBQXFxcaGhodHR0QEBATExMWFhYZGRkcfHx/f39ycnJ1dXV4eHh7e3t+fn5xcXF0dH
+R3d3d6enp9fX1wcHBzc3N2dnZ5eXl8fHx/f39ycnJ1dXV4eHh729ve3t7R0dHU1NTX19fa2t
+rd3d3Q0NDT09PW1tbZ2dnc3Nzf39/S0tLV1dXY2Njb29ve3t7R0dHU1NTX19fbOzs+Pj4xMT
+E0NDQ3Nzc6Ojo9PT0wMDAzMzM2NjY5OTk8PDw/Pz8yMjI1NTU4ODg7Ozs+Pj4xMTE0NDQ3Nz
+c6Ojo9nZ2QkJCTk5OWlpaZmZmcnJyfn5+SkpKVlZWYmJibm5uenp6RkZGUlJSXl5eampqdnZ
+2QkJCTk5OWlpaZmZmcnJyfn5+SkpKVlZWSH5BADtmQAALAAAAABgAdYAAAj/AAMIHEiwoMGD
+CBMqXHgQAcOHECNKnEixosWLGDNq3Mixo8ePClUQNACypMmTKFOqXMmypcuXMGPKnEmzJsQS
+NnPqlChgp8+fQIP+9CG0qNGjSJMqXcq0qdOnUKPaXGFygNSrWK/izMq1q9evYCOSoJjjo4mw
+J62iXbuWKtu3cOPKnUu3rt27ePPq3cu3r9+/WcsCHohjsOHDiCs+WMz4gcDGjB9DXri44OSJ
+lQlmlhyZ82XNjT2HFm3w8+bNpR2DTn0ZsmrXqBW7Bt05QGzbqiUPvG2Xt+/cvHGjPp0bYmzi
+u4vjRog8uWXgxZtnDq579fODzatrDC5d+XLn2vP+/8YOXeHw8hKPv1Z+njn68Orhr//uvv31
+1ODDYxwPnr/9nWq5xN999JGXEHXu3Rdffs95J5+CDgr3gFv1RefdgP9lNOBzMJC3oF6wiTbd
+bAc6WBttt8E2IkEIZNjghwV+x92J+NGXIokkMojiejRK2NmMJdYIoolEWmdggumxN5+RMXrI
+5IJAUreifk0udyNHGE55JJN4behcDVQymJ1xSurnYn4ZQmlhdb/heGGRMSKY5JYyRlglRiRl
+5eWDSGonp5B+vhemjWsa+Z+WV/b35pZnWgQkm3YmOqSHo4VIKXE9MgTjZzruSGByPZpWqJg8
+hmbpoXZilqOPpZ4o6VJ5Mv/UU2InfUDrrbiWZGuuH40w1wm8PrRrRr4GiyuYhw1r7LLMJqRs
+s3yJBG1Fz05r7Vk+FRZUtdZ2CxELeXHr7bjJkmvureKeq65e6a7r7rvwxivvvELNSu9MPBR0
+wL0JAcuvtSI8FEFFyP5r8MEIJ6zwwobtOy8NDEcs8cQPYfAUBhYbhrFJGWSclQcEWWCRxyyR
+fBDGKKPcUsobC9SySSybbNTLH9FsUMw64RwAyCGPvDLLCNlcMs0tCw2S0UHLzFC+GCF9tNIB
+qDyQ0zC9zPNAIlOk80kbZ2w01VybXDTUHoFNkNlPD510QWirLdDVAmUtUdcuk43QBBEVXffJ
+UBP/bbFbKZ9tsdQ32+2331F3TbLTiAdet+OJN6545IsD/bjKh1dOueCQf2344C9DnrjgexNe
+ccYgd22BzaJP7fXeML+uENKIwx665YXP7vHYrgdeO9+cuy486aNfrvjufSNPfPG3Kw988Wx/
+7jjvsNtO/enBi3x79cPbXbbpfG99fe2sT4+81NczL3P6uQ9f/e/qR7+8/Nynb3/y3LtvefnE
+k6859sLLGvvC572n0Y5s44uZ1wooNOr5r31Ug9/2erc/sf2PcoR7YPcuqMD8eZB9GrTe/HRH
+OgEuMG/g45oHoQdB57WPhPS73wdPmBAJupCFIwwh9HQoQxYOEIfxm18P/+EHw7rJ7YdBWyFH
+9AbEJlJwhO4rogh9SMPogc2GUTwg/ab4vv/xsIpBfCEX6wfGITKuckcE4/PU+D2XOTGC4Jsg
+2kyXwC4ScCFYzJ8cLdi/82XReRPkIvqS58X1VbF5AuGAC+F4NpHlaY8QdGJHtlY4SjYRd23D
+4A1Fp8UaVlCIGewcH/WHucpN7ol/fCISjXdDVKpygZwk5CBBecDWoaSAYcnkxDr5ElyWzS66
+3KXSgjnJuISAJsSMmOd4RSGKOfOZ0IymNKdJEBRQ85oaCRg2t8nNbnrzYC34Zk4YIM5yaoQB
+5DSnOiuSznVa5JjebKc757kQdNLzngKBmEHkif/PbrkgIv5aCT/72U97EvRdL3BJOA/K0IbC
+ywEOoAhEHWotiFo0ohVJAUImOhGOluSiFy0ISDEaAI8SxKQCQSlMmjlPk6oUIy9dSEw3MlOL
+nhSjMXUpSeOSgABISyVMowtKZ1oRom50px+pKVI5mtOdGnViC0WKUm+a0oiGtKQ2rSpWkbpV
+p5L0qRJpqkKmilWKxgSkBtFpVb/qUaa6lapl1apcOSLWhBD1qmaFyUi9Ole1DuStf8UpX+NK
+WJruta9XvWtWEyYYtuAVsIX1q2QHC1aL1BWuRq3sRFia14e0VbCBhatcJ4tZrnbksqEt7EE0
++y8ZPMReQBmqV/0617j/kja1n/UIWXFrWtFSzLUU0YFPaLvWwdYWsrclLGsZolTK9ja1GymW
+t4B7lZGudqnGtS1aRbpY5T63qIe96WPDC93fymW5nWUKdd+C3vQuZb2O/a57pQLf+YqzvmvR
+p327gl9zNWC/KOnvWhrwX5YUuFkKcCiBF3xggxB4JQxucIQTMmEHNxjAUnmwQDQskwcX+MMH
+5jBBOCziACz4mTMIFolBbOL/rvjEG2bwiC9MYRcXZMUHwfFAXExjDD9FxxPWMI513GKIyHjG
+O+7xjUMcYx9jBcgSZvGSk2yRChe5yTVmMpadHJUIhzjKW06ylStyZCLXOMZe5jJUShxmIdOY
+/80X4fGW4WzmMKu5KXQG85WLTGQ453jDV+6zlPdMZaxYc795RjKaXyxiP+f4yIvWc4thPOU7
++9fSfgloUJTcF236hAKYDrWoR03qt0ggJj0gtXxL3ZL2IqWxYWV1UrfL3FXLlLwftXVH8Vre
+tNKa1vgcmGV17VuYEtvYsy5pSgOrWF/32smVtW5x2frs2naV2m4db1Z/fWxn97bZ3K02hoHt
+bGuPltrXtatgbZpb71r7pbG6NWp9vdh2izrbyGVrYtFdbmZv27j5NrdGyK1adSNW1c9tt70n
+ult3Rxbd4XV1rWULkYDf2d79tnhZG65wgIO230lV7W41Dq+eSpXf5f/+d3m7C/KOl/bj2g33
+QlK80WVTvLS8FTeACc5dq+q7uyyXub8hu1bvAh3j4D36eIcuXonL2uApcXpGuv30jEDgIlKv
+ONVPy5YEdzbr6g561cder/0Kl+xoT3tXHK32khQsK2leSKM5/RErs70kcceLQ26lrY3U2cIx
+gfJL/t52I39ZzG6GsZsnPWNI373QfC6znCc95LlDGvKCnjPdWU34xRda8YMm/KPfHOUTQ1nK
+f888lkX/9LxT3vOrP/yeH48Qu0t69qHPvYVt/3nZq93DkoZ9oGXPesMPmtCCjz3klw/7yhd+
++Jg/fvN1T5Hkt5n42F/+9TVPZdqT2vrCn37/7H0v9+wz3/xX3gGISa/oxDf++chfP6VBz300
+4z4iY6Z/41XPeDZ7ufTxt3nwh3cCuBPeZ3juBE9xcYALAWsmwYDlN4AGdnlCMWYaAYESmIEa
+uIEc2HYE0IE00QHQcgMlAS7q0iEgmIIquIIs2IIu+IIwGIOiVgAqmFAyeIM46C3YIoEgkIJv
+dy49WBKHloNrEYREKBMakIRKqAEEsYRMKBBJaBBROBBTuBBVCIVPeIVVCAJOSIVO+IQHcYUB
+8IVNCIZjaIZlqIRSiIZq6IVZ2IUFIYZLmIZV2IZQGIdfyIRy+IZ1OIdr6IWAeIZwmIdYGIhn
+uBRiaIhTmIhaiIYI/7GHhRiIXAiGi+iIj8iGlJiJZRiGmriJafiJhxiJhjiKfYiFZmiJoSiK
+oliKqriKnZiIqeiJU3gBh+iAQgGLjdiKkQiLnIiHqjiFXCiLqIiHuRiIxeiJv2iHYxiKeviG
+pKiMqViMzUiFl4iMrqiIjsiKzGiJuDiNA3EBvBgU3ViNnBiOfyiMmziJ5GiFyniMldiLCeGH
+d7iI2/iMkKiL80iJ6xiL0ZiJw7iLzoiP3ZiI4IiIZMiPo+iLdJiNeRiQAHmJcKiQ2tiPAjmM
+73iHgviQ1xiLE9mEu7iPDdmJpsiLUTiHfTiIBymPVEiLSjGOpoiPMLmP9WiM/hiTNPmMdP8o
+k+iIkW1YiSp5kRuZkctYiKh4jEEJir6YhRR5jkmJiSyJFC6pkfAIEfcojafokBCJktaoklvJ
+h4NIjVK5kHY4kfRIlCCJidiYkG74kmqJkDQAlN/YkkX5ihb5j0wZltoIl1M5kwhpjqwojWDJ
+l12Jkx+5lnt5j0uJkMlojW2Zl0z4lEZBiG7Ykwdpk3fZj1yZkpVJmJvZlgvJmfB4hWdnlY3o
+h1c5l4zpk/6oARsQj1cpll5JmTsJmUdoFK3pE7TpYz/YF7eJm0/xT9YSVBwBamDRm7X5FzSX
+EMZ5nLyynD4hnMypE85Zmz+VGNMZnYhxndi5ndzZnd7ZFHhzLl7/RxEmB02aRk1RdRcB8p0Y
+lmrs+Z7wGZ/yOZ/0WZ/2KTEVkJ/6WQEEsZ/8KRD5aRABOhADChH+qZ8BUKAAGgMAiqAN6qAF
+caARup8CSqENSqD/eaD8qaH/iaEF6p8HIaEPaqEYOqEkmqAdiqIDMRYc6qEK2p8pOqEyWqIo
+mqI2SqIv+qEx+hIvSqMq+qMwGqQUoaA52qE66qM+eqQXmqQZ2qRIOqMhaqRSWqE02qNCyqRI
+aqVAuqRb+qRXyqU/CqEJiqVdqqQyYaVE6qRU2qURkaZQaqY9qqRFCqYDGqBuihBaCqRmSqZ5
+eqJ3GgAfoKZR+qVsqqV+eqMAqqd0Kqhc/5qnK4GmOwqmMOqoC/GnjSqlkcqnMVqnmXqibOql
+TFoBGoWnU/qpI0oQNoCoLqoQllqonSqmd7qhRiqpT7qnMKGhtJqrulqjhnqjuLqoYuqitsqp
+pFqkIAqqwAqpOCqiYVqqkkqprRqnkUqsi5qoYaqrHOqsMQGpHrqrlFqpqkqmJkql0cqoQdqq
+hJquNUqu4TqjezqnrNqurjqoeqqqU2qutaqttzqt9pqppmqg8gqn+tqs+VqtBOut/iqwa2qr
+I2qh5QquhCqtFSqisVqijEqtyLqtr1qlCeuvD/Gwl+qlCmuwB1uya0qv9XqyGPulGCux8fqm
+/HqyJlunk6qpMJhLE7/asE16rLv6sQG7s5jKraEqrRDqpjlrqssarNX6q7HKs+qark47qRT6
+p8zqq1Krrwx7n1q7tQC2g14xFh+xntMynhohguOyAFybtsuym2rbth/haW7LgVvRUNAZt3Z7
+twRFgngLFGC7t357twAQuII7uIRbuIZ7uIibuIq7uIzbuI77uJAbuZI7uZRbuZZ7uZibuQAQ
+EAA7
+
+------=_NextPart_000_0014_01C74F51.7B9BECB0--
+
+
+
+--===============2048045784==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -352,7 +251,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---------------070905050608010107080405
+--===============2048045784==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -363,4 +262,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---------------070905050608010107080405--
+--===============2048045784==--
