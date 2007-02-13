@@ -1,14 +1,15 @@
 From: Karsten Wiese <annabellesgarden@yahoo.de>
 Subject: Re: Q: How to detect which USx2y is connected?
-Date: Tue, 13 Feb 2007 18:36:35 +0100
-Message-ID: <200702131836.36010.annabellesgarden@yahoo.de>
-References: <20070205065636.GA1652@elte.hu> <45CDE6B9.80804@rncbc.org>
+Date: Tue, 13 Feb 2007 18:47:10 +0100
+Message-ID: <200702131847.10511.annabellesgarden@yahoo.de>
+References: <20070205065636.GA1652@elte.hu>
 	<23912.194.65.103.1.1171382877.squirrel@www.rncbc.org>
+	<200702131836.36010.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <23912.194.65.103.1.1171382877.squirrel@www.rncbc.org>
+In-Reply-To: <200702131836.36010.annabellesgarden@yahoo.de>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,35 +24,47 @@ To: Rui Nuno Capela <rncbc@rncbc.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rui,
-
-Am Dienstag, 13. Februar 2007 schrieb Rui Nuno Capela:
-> Hi Karsten,
+Am Dienstag, 13. Februar 2007 schrieb Karsten Wiese:
+> Hi Rui,
 > 
-> In my quest in completing us428control implementation, I'm now stumbling
-> on a fundamental question regarding the number of tracks/channel-faders
-> (per bank) each particular usx2y device supports. The question boils down
-> to what is the actual numeric value of the y in the actual usx2y model
-> name :)
+> Am Dienstag, 13. Februar 2007 schrieb Rui Nuno Capela:
+> > Hi Karsten,
+> > 
+> > In my quest in completing us428control implementation, I'm now stumbling
+> > on a fundamental question regarding the number of tracks/channel-faders
+> > (per bank) each particular usx2y device supports. The question boils down
+> > to what is the actual numeric value of the y in the actual usx2y model
+> > name :)
+> > 
+> > In practice, I need to know which usx2y model is actually connected.
+> > 
+> > So, what is the best/deterministic way to detect (programmatically)
+> > whether us428control is connecting to a US224 (y=4, as mine) _or_ a US428
+> > (y=8, as yours) ?
+> > 
+> > Is snd_hwdep_info_get_name() expected to be the most correct method?
 > 
-> In practice, I need to know which usx2y model is actually connected.
+> Yes, I fear. this gives the /proc/bus/usb/002/004 filename.
+> I just did cat /proc/bus/usb/004/005 > x
+> and check x with hexedit: the 1604 and 8001 is in there.
+> I don't know how to portably interpret a read from
+> /proc/bus/usb/004/005 though.
 > 
-> So, what is the best/deterministic way to detect (programmatically)
-> whether us428control is connecting to a US224 (y=4, as mine) _or_ a US428
-> (y=8, as yours) ?
-> 
-> Is snd_hwdep_info_get_name() expected to be the most correct method?
+> libusb seams to only give the product id (1604:800x) by iterating over 
+> all usb-devices.
 
-Yes, I fear. this gives the /proc/bus/usb/002/004 filename.
-I just did cat /proc/bus/usb/004/005 > x
-and check x with hexedit: the 1604 and 8001 is in there.
-I don't know how to portably interpret a read from
-/proc/bus/usb/004/005 though.
+Also the /sys filesystem gives some infos:
 
-libusb seams to only give the product id (1604:800x) by iterating over 
-all usb-devices.
+	$ cat /sys/bus/usb/devices/4-1\:1.0/modalias
+	usb:v1604p8001d0001dc00dsc00dp00icFFisc00ip00
 
+
+How do the (void on 224) 428 slidervalues show up in us428control?
+ 
 Thanks, Karsten
+ 
+
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
