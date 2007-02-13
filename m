@@ -1,13 +1,12 @@
-From: Mikael Nilsson <mikael@nilsson.name>
-Subject: Re: [PATCH] Patch for enabling LFE on more Dell	laptops
-Date: Tue, 13 Feb 2007 20:11:43 +0100
-Message-ID: <1171393903.13742.3.camel@daneel>
-References: <1171364464.12273.6.camel@daneel> <s5h3b5ae0m4.wl%tiwai@suse.de>
+From: "Ronald Stewart" <ronaldjstewart@gmail.com>
+Subject: Hey guys really need help from Ron at Trinity Audio
+Date: Tue, 13 Feb 2007 11:41:09 -0800
+Message-ID: <4c84399f0702131141k3bd833cam5d450cb404c4ab3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3b5ae0m4.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,47 +16,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gdGlzLCAyMDA3LTAyLTEzIGF0IDEyOjUyICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cgo+
-IEFueXdheSwgdGhlIHBhdGNoIGlzIGFwcGxpZWQgdG8gQUxTQSBIRyB0cmVlIG5vdy4gIFRoYW5r
-cy4KCldoaWxlIHdlJ3JlIGF0IGl0LCBwbGVhc2UgYWRkIHRoZSBQcmVjaXNpb24gTTkwIGFzIHdl
-bGw6CgogICAgICAgIFNORF9QQ0lfUVVJUksoUENJX1ZFTkRPUl9JRF9ERUxMLCAweDAxY2YsCiAg
-ICAgICAgICAgICAgICAgICAgICAiRGVsbCBQcmVjaXNpb24gTTkwIiwgU1RBQ19SRUYpLCAKCi9N
-aWthZWwKCj4gCj4gCj4gCj4gVGFrYXNoaQo+IAo+ID4gCj4gPiAtLS0gcGF0Y2hfc2lnbWF0ZWwu
-Yy5vcmlnICAgICAgIDIwMDctMDItMTMgMTE6NDk6NTMuMDAwMDAwMDAwICswMTAwCj4gPiArKysg
-cGF0Y2hfc2lnbWF0ZWwuYyAgICAyMDA3LTAyLTEzIDExOjUxOjI1LjAwMDAwMDAwMCArMDEwMAo+
-ID4gQEAgLTQ1NSw2ICs0NTUsMTAgQEAKPiA+ICAgICAgICAgICAgICAgICAgICAgICAiRGVsbCBM
-YXRpdHVkZSBENjIwIiwgU1RBQ19SRUYpLAo+ID4gICAgICAgICBTTkRfUENJX1FVSVJLKFBDSV9W
-RU5ET1JfSURfREVMTCwgMHgwMWNiLAo+ID4gICAgICAgICAgICAgICAgICAgICAgICJEZWxsIExh
-dGl0dWRlIDEyMEwiLCBTVEFDX1JFRiksCj4gPiArICAgICAgIFNORF9QQ0lfUVVJUksoUENJX1ZF
-TkRPUl9JRF9ERUxMLCAweDAxY2QsCj4gPiArICAgICAgICAgICAgICAgICAgICAgIkRlbGwgSW5z
-cGlyb24gRTE3MDUvOTQwMCIsIFNUQUNfUkVGKSwKPiA+ICsgICAgICAgU05EX1BDSV9RVUlSSyhQ
-Q0lfVkVORE9SX0lEX0RFTEwsIDB4MDFjZSwKPiA+ICsgICAgICAgICAgICAgICAgICAgICAiRGVs
-bCBYUFMgTTE3MTAiLCBTVEFDX1JFRiksCj4gPiAgICAgICAgIHt9IC8qIHRlcm1pbmF0b3IgKi8K
-PiA+ICB9Owo+ID4gIAo+ID4gCj4gPiBUaGFua3MsCj4gPiAKPiA+IC9NaWthZWwKPiA+IC0tIAo+
-ID4gPG1pa2FlbEBuaWxzc29uLm5hbWU+Cj4gPiAKPiA+IFBsdXMgw6dhIGNoYW5nZSwgcGx1cyBj
-J2VzdCBsYSBtw6ptZSBjaG9zZQo+ID4gCj4gPiAKPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+IFVz
-aW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBvcnQgd2ViIHNlcnZp
-Y2VzLCBzZWN1cml0eT8KPiA+IEdldCBzdHVmZiBkb25lIHF1aWNrbHkgd2l0aCBwcmUtaW50ZWdy
-YXRlZCB0ZWNobm9sb2d5IHRvIG1ha2UgeW91ciBqb2IgZWFzaWVyLgo+ID4gRG93bmxvYWQgSUJN
-IFdlYlNwaGVyZSBBcHBsaWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vy
-b25pbW8KPiA+IGh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9zZWw/Y21kPWxuayZraWQ9MTIw
-NzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0Mgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KPiA+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gPiBBbHNh
-LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+ID4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo+IAotLSAKPG1pa2FlbEBuaWxzc29uLm5h
-bWU+CgpQbHVzIMOnYSBjaGFuZ2UsIHBsdXMgYydlc3QgbGEgbcOqbWUgY2hvc2UKCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tClVzaW5nIFRvbWNhdCBidXQgbmVlZCB0byBkbyBtb3JlPyBOZWVkIHRvIHN1cHBv
-cnQgd2ViIHNlcnZpY2VzLCBzZWN1cml0eT8KR2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHBy
-ZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8gbWFrZSB5b3VyIGpvYiBlYXNpZXIuCkRvd25sb2Fk
-IElCTSBXZWJTcGhlcmUgQXBwbGljYXRpb24gU2VydmVyIHYuMS4wLjEgYmFzZWQgb24gQXBhY2hl
-IEdlcm9uaW1vCmh0dHA6Ly9zZWwuYXMtdXMuZmFsa2FnLm5ldC9zZWw/Y21kPWxuayZraWQ9MTIw
-NzA5JmJpZD0yNjMwNTcmZGF0PTEyMTY0MgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3Rz
-LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Guys I am online and emailing you from Trinity the actual unit.
+SORRY if I piss anyone off for doing this but I really need to get
+past this critical empasse...below is an email that i wrote to
+Giuliano, so everything is correct except I dont know if the driver is
+loaded properly because I load up Audacity and echomixer and no audio
+data is coming through on our scope.
+Trinity is on the bench and working so could someone focus on getting
+me past this hiccup?
+thanking you in advance
+
+Ronald Stewart
+Trinity Audio Group
+
+Giuliano,
+
+Hi this is the first time I have ever taken a debugged trinity board and loaded
+linux kernel build.  This build is the proof of concept build from the
+development bread board which uses the echo indigo driver on the bread
+board via PCMCIA BUS.
+
+However the version that I am running is the same driver you wrote to
+talk to the DSP chip and the Cirrus CODEC BUT through the PCI BUS.
+
+Everything on the board is mechanically working EXCEPT I have no way
+to know if the driver is loaded properly???
+
+What we do know is that the PCMCIA BUS was not active because we have
+NO PCMCIA chip.
+
+We know for absolute FACT that we can see the card becasue we can see
+the return on the PCI BUS.
+
+Can you please login to my board and tell us if the driver is operational?
+
+here is the IP 10.0.0.51
+DNS 206.13.28.12
+Gateway 10.0.0.1
+Router 71.129.45.33
+Gateway 71.129.45.33
+
+ALSO here is another way to login if you have problems
+
+Here's how to always access this machine:
+
+ ssh trinityaudio.dyndns.org -l mika
+ password: 123456
+
+thank you and we are online and on standby
+
+Please help
+
+Ron
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier.
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
