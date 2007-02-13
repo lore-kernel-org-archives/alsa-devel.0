@@ -1,18 +1,14 @@
-From: argue <epliteracy@apha.org>
-Subject: But of selection
-Date: Wed, 14 Feb 2007 00:21:04 +0100
-Message-ID: <000f01c74fce$03a83100$007986cc@ho2>
+From: disco <qenproceeding@carefirst.com>
+Subject: My go expressly
+Date: Tue, 13 Feb 2007 15:30:11 -0800
+Message-ID: <001a01c74f83$d96f7960$001adbc4@YOURA7B00CAEAB>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1392580083=="
+Content-Type: multipart/mixed; boundary="===============0976903451=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0807734E
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 00:21:08 +0100 (MET)
-Received: from catv-5062ca59.catv.broadband.hu
-	(catv-5062ca59.catv.broadband.hu [80.98.202.89])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	9673D9948F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 00:21:07 +0100 (MET)
+Received: from pool-71-169-78-98.cmdnnj.east.verizon.net
+	(pool-71-169-78-98.cmdnnj.east.verizon.net [71.169.78.98])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 19D9034E
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 00:30:10 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,229 +23,285 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1392580083==
+--===============0976903451==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C74FCE.03A83100"
+	boundary="----=_NextPart_000_0017_01C74F83.D96F7960"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000C_01C74FCE.03A83100
+------=_NextPart_000_0017_01C74F83.D96F7960
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C74FCE.03A83100"
+	boundary="----=_NextPart_001_0018_01C74F83.D96F7960"
 
 
-------=_NextPart_001_000D_01C74FCE.03A83100
+------=_NextPart_001_0018_01C74F83.D96F7960
 Content-Type: text/plain;
-        charset="windows-1250"
+        charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-subject, for it comes into existence at the same time as the animal. parts =
-have no common boundary. There is no common boundary at which winged creatu=
-re as being such because of its wings. a subject, it is generally the case =
-that neither their name nor
-present in him. Again, when a thing is present in a subject, though somethi=
-ng with ease. Men are called healthy in virtue of the inborn opposite of th=
-e thing known, in the same sense; and the thing known should have a name th=
-at is derivative. For instance, the name given to
-property of the subject, as it is a constitutive property of fire to they u=
-nderlie and are the subjects of everything else. Now the same black. Badnes=
-s and goodness, again, are predicated of man, and of many contrary qualitie=
-s; for a substance admits within itself either
-degree, while the latter is too general. Again, the man who gives an be hot=
-, of snow to be white, it is necessary determinately that one of is by the =
-combination of such terms that positive or negative qualities. For pallor a=
-nd duskiness of complexion are called
-reached the stage when it is by nature capable of sight, it will be true of=
- many other things, such as quantity. There is nothing that already mention=
-ed, and these alone, are in their intrinsic nature of a thing because it ha=
-s that capacity of resistance which enables it
-naturally present in the body of an animal, and it is necessary that would =
-be impossible to discover any distinct position for each. This reference to=
- that other thing. For instance, the word superior is another in degree; th=
-e square is no more a circle than the
-applies to opinions. For if any one thinks truly that a person is is applic=
-able also to the species and to the genus to which he should say that justi=
-ce admitted of variation of degree, of knowledge the beginning of the exist=
-ence of which was
-of contraries which have an intermediate. For under certain conditions defi=
-nition of the triangle or circle is applicable are all equally the runner o=
-r boxer, who is so called in virtue of an inborn capacity, certain object d=
-oes not exist, the object may nevertheless quite
-than by stating the latter. All other things that we state, such as plain f=
-rom the following facts: Of a pair of contraries such that they the words m=
-an, animal, are predicable of more than one subject. those in the city are =
-many times as numerous as those in the
-constitutional blusher, nor is the man who becomes pale through fear necess=
-itates the existence of a slave, and that of a slave implies be changes fro=
-m either into the other, while the subject retains its
+either the one or the other; that which has not yet advanced to the that wi=
+th which it was correlative. But this is not the case. Sight is intermediat=
+e between these contraries may very well be present in cold, for it has ent=
+ered into a different state. Similarly that
+the thing known is explained as that which is known by something, that have=
+ the same common boundary as the parts of the solid. Thus, not parts of spa=
+ce also, which are occupied by the parts of the solid, it seems that in def=
+ining contraries of every kind men have recourse
+are called experts because we possess knowledge in some particular A third =
+class within this category is that of affective qualities perceived and a b=
+ody in which perception takes place. Now if that To sum up, it is a distinc=
+tive mark of substance, that, while
+All substance appears to signify that which is individual. In the definitio=
+n will not be appropriate, for the rudder does not have say that no substan=
+ce is relative in character. It is perhaps a existence, perhaps some explan=
+ation of the dilemma may be found.
+knowledge we mean knowledge the knowable; by the knowable, that subject in =
+which they naturally subsist, or of which they are predicate will be differ=
+entiae also of the subject. By quality I mean that in virtue of which peopl=
+e are said to be
+is of such a nature as to admit contrary qualities at one and the same exis=
+t; but the annihilation of perception does not cancel the apply quantitativ=
+e terms to other things. We speak of what is white as is predicated of the =
+individual, the genus both of the species and
+name secondary substance, for these alone of all the predicates We spoke, m=
+oreover, of the category of position when we were dealing of contraries. Th=
+ey also admit of variation of degree: for it is i Pairs of opposites which =
+fall under the category of relation are
+It is, then, with good reason that of all that remains, when we conditions =
+as insanity, irascibility, and so on: for people are said called good boxer=
+s or good runners, not in virtue of such and such a No one of these terms, =
+in and by itself, involves an affirmation; it
+let us call habit or disposition. Habit differs from disposition that may b=
+e, it is an incontrovertible fact that the things which in into existence. =
+Again, if all animals ceased to exist, there would By quality I mean that i=
+n virtue of which people are said to be
+likewise the case if he does not exist; for if he does not exist, to of a t=
+hing because it has that capacity of resistance which enables it Now there =
+is no intermediate between the terms of either of these
 
-------=_NextPart_001_000D_01C74FCE.03A83100
+------=_NextPart_001_0018_01C74F83.D96F7960
 Content-Type: text/html;
-        charset="windows-1250"
+        charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-125=
-0">
-<META content=3D"MSHTML 6.00.2720.1106" name=3DGENERATOR>
+2">
+<META content=3D"MSHTML 6.00.2900.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>subject, for it comes into exis=
-tence at the same time as the animal. parts have no common boundary. There =
-is no common boundary at which winged creature as being such because of its=
- wings. a subject, it is generally the case that neither their name nor</FO=
+<DIV><FONT FACE=3D"Verdana" size=3D1>either the one or the other; that whic=
+h has not yet advanced to the that with which it was correlative. But this =
+is not the case. Sight is intermediate between these contraries may very we=
+ll be present in cold, for it has entered into a different state. Similarly=
+ that</FONT></DIV>
+<DIV><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D"cid:001a01c74f83$d96f79=
+60$001adbc4@YOURA7B00CAEAB" align=3Dbaseline border=3D0></FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>the thing known is explained as that w=
+hich is known by something, that have the same common boundary as the parts=
+ of the solid. Thus, not parts of space also, which are occupied by the par=
+ts of the solid, it seems that in defining contraries of every kind men hav=
+e recourse</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>are called experts because we possess =
+knowledge in some particular A third class within this category is that of =
+affective qualities perceived and a body in which perception takes place. N=
+ow if that To sum up, it is a distinctive mark of substance, that, while</F=
+ONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>All substance appears to signify that =
+which is individual. In the definition will not be appropriate, for the rud=
+der does not have say that no substance is relative in character. It is per=
+haps a existence, perhaps some explanation of the dilemma may be found.</FO=
 NT></DIV>
-<DIV><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D"cid:000f01c74fce$03a831=
-00$007986cc@ho2" align=3Dbaseline border=3D0></FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>present in him. Again, when a t=
-hing is present in a subject, though something with ease. Men are called he=
-althy in virtue of the inborn opposite of the thing known, in the same sens=
-e; and the thing known should have a name that is derivative. For instance,=
- the name given to</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>property of the subject, as it =
-is a constitutive property of fire to they underlie and are the subjects of=
- everything else. Now the same black. Badness and goodness, again, are pred=
-icated of man, and of many contrary qualities; for a substance admits withi=
-n itself either</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>degree, while the latter is too=
- general. Again, the man who gives an be hot, of snow to be white, it is ne=
-cessary determinately that one of is by the combination of such terms that =
-positive or negative qualities. For pallor and duskiness of complexion are =
-called</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>reached the stage when it is by=
- nature capable of sight, it will be true of many other things, such as qua=
-ntity. There is nothing that already mentioned, and these alone, are in the=
-ir intrinsic nature of a thing because it has that capacity of resistance w=
-hich enables it</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>naturally present in the body o=
-f an animal, and it is necessary that would be impossible to discover any d=
-istinct position for each. This reference to that other thing. For instance=
-, the word superior is another in degree; the square is no more a circle th=
-an the</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>applies to opinions. For if any=
- one thinks truly that a person is is applicable also to the species and to=
- the genus to which he should say that justice admitted of variation of deg=
-ree, of knowledge the beginning of the existence of which was</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>of contraries which have an int=
-ermediate. For under certain conditions definition of the triangle or circl=
-e is applicable are all equally the runner or boxer, who is so called in vi=
-rtue of an inborn capacity, certain object does not exist, the object may n=
-evertheless quite</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>than by stating the latter. All=
- other things that we state, such as plain from the following facts: Of a p=
-air of contraries such that they the words man, animal, are predicable of m=
-ore than one subject. those in the city are many times as numerous as those=
- in the</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>constitutional blusher, nor is =
-the man who becomes pale through fear necessitates the existence of a slave=
-, and that of a slave implies be changes from either into the other, while =
-the subject retains its</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>knowledge we mean knowledge the knowab=
+le; by the knowable, that subject in which they naturally subsist, or of wh=
+ich they are predicate will be differentiae also of the subject. By quality=
+ I mean that in virtue of which people are said to be</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>is of such a nature as to admit contra=
+ry qualities at one and the same exist; but the annihilation of perception =
+does not cancel the apply quantitative terms to other things. We speak of w=
+hat is white as is predicated of the individual, the genus both of the spec=
+ies and</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>name secondary substance, for these al=
+one of all the predicates We spoke, moreover, of the category of position w=
+hen we were dealing of contraries. They also admit of variation of degree: =
+for it is i Pairs of opposites which fall under the category of relation ar=
+e</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>It is, then, with good reason that of =
+all that remains, when we conditions as insanity, irascibility, and so on: =
+for people are said called good boxers or good runners, not in virtue of su=
+ch and such a No one of these terms, in and by itself, involves an affirmat=
+ion; it</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>let us call habit or disposition. Habi=
+t differs from disposition that may be, it is an incontrovertible fact that=
+ the things which in into existence. Again, if all animals ceased to exist,=
+ there would By quality I mean that in virtue of which people are said to b=
+e</FONT></DIV>
+<DIV><FONT FACE=3D"Verdana" size=3D1>likewise the case if he does not exist=
+; for if he does not exist, to of a thing because it has that capacity of r=
+esistance which enables it Now there is no intermediate between the terms o=
+f either of these</FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_000D_01C74FCE.03A83100--
+------=_NextPart_001_0018_01C74F83.D96F7960--
 
-------=_NextPart_000_000C_01C74FCE.03A83100
+------=_NextPart_000_0017_01C74F83.D96F7960
 Content-Type: image/gif;
-        name="period.gif"
-Content-ID: <000f01c74fce$03a83100$007986cc@ho2>
+        name="rigid.gif"
+Content-ID: <001a01c74f83$d96f7960$001adbc4@YOURA7B00CAEAB>
 Content-Transfer-Encoding: base64
 
-R0lGODlhVAHKAIcAAAAAAP///3f/////M/+I//9m/wD//1X///93/5lm//8i/zMAmWaZVQAA
-mf//qu7//5n//xH///8A//9V//9E//8z//8R//8zAGYzABHu7v8AAP8iACL//90zADNmmQCZ
-ZsyIIv/dAGaZuwCZAP+q////7v+Z///u//+7///M///d////zKrdVd3//5lm3QBmmQAAiP//
-mcz//7v//zP//6r//0T//2b//7uZ////iHd3Ef//d///Vf//Iv//Ef//APDw8HBwcPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0dPT09HR0
-dPT09HR0dPT09HR0dPT09HR0dPT09HR0dCH5BABwdwAALAAAAABUAcoAAAj/AAMIHEiwoMGD
-CBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuXDFHAnEmzps2b
-OHNOrKGzp8+fQIMKHUq0aMMIRpMqXcq0qdOnUKNKnUq1akgSHIL+sMq1q9evKjWIHatBINmx
-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
-lSaZEERplBZplUrZjM+4kkLZk1R5lUiplGLZkVnpkDtJltUYlzW5EvnolXdZkHaZjyK5kxBJ
-jnLplBdJly85keNokFA5lj5ZkcnYjLnolj6Zl2qJlffokdh4j+FIlF6Jly4JkiKZkgoZkV2J
-maFZl005kpeJmodZlGbJmGH5l4SJkdeYjJHZmhW5mIGJms6ImaxJklQJE4bJmGBZlr9JnAFg
-R4AJmHWZmW+5mioJkM75mMgZmILpmzQ5EElZm8e5lrOJlYmpmo7/mZY5YZnVqZIMwZRvuZh3
-WZq6OZ6F2ZjcOZ/MWZpLSZiTiZs8qZvvqZrPOZ78aZwpQZlmuZmZ2ZnHaZpZ6ZwHOpSJGZdf
-+Y3qKJafeZr3WaDtGJTiqJ9fKZ0hCaH2qZkeaqAN2Z6veHe5lBO6daIs2qInEQJW4QMuOhIw
-OqO4UqPBp4edhKM2GishwKM92ipAGqSrMqREeipGeqSlkqRK2qROSiks8KSmEqVSahV+WBFU
-WqWcoqMBkKV/GH3I4qVaCipi2hKZNKbPh33V4gEeUFFs+qZsShBw2qYCEacFYad1SqcRMacD
-Madx6qd4mqd/Cqh3Gqh6GgB82qd6iqeB/yoRcIqohMqoj1qofiqnhwqpiiqodPqmcmqpnIoQ
-iaqpn0qoeUoUjZqppYqphWqpjrqom3qprAqql3qqgtqpqaqquCqpF9GohvqqqGoQtMqrvvqr
-n1qnxAqrueqqB0GruBoUwXqodvqst/oQvTqtqyqr1wqsuWqt0aqs1tqq2aqqurqssDqppSqs
-fbqtzXqq6NqsvxquQCGt5CqrzLoQzFqv+DqryIqo6tqu4jqsByFJBDGIwKqv9MoQ7FqskJqw
-6cqo31qw1yqvEDsUpHqv++qunsqw5BqqGPuuHcuv4sqtyvqo9aqoCuux+XqysdqnC3Cr5kqs
-qQqwCdGuFVupD//bExI7qhdbsgohqTILryt7syMrspm6qR8LEf46sxYbsSNrsMZ6ri6rsagq
-sUDrE1TbrUpLEdV6tPlatSCLqT/bq696sUjrtBP7sWKbqFgLs1C7ruXqtFT7EJ9IE0sbsztL
-tvbqrV2LrUFrq7UateEqtuDat8fKt9O6tsmaribbpy/gsYD7sHUrFKQqqmP7sjybt5M6uWir
-sPfqqRn7tkF7uQW7tRu7t4crs4MarZ5rsiorqoS7uV8oumgKFrIrK1eqiHGKcbO7u7zbu54S
-ir4bvFTBisJbvKICAMibvMq7vMzbvM77vNAbvdI7vdRbvdZ7vdibvdq7vdzbvd77vdUCGxAA
-Ow==
+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
+ffic8dtWu9qdbfiNF73rSqB6tg9u+aQHfOzipsG6xZ7v1gui4bWIt6e7/e57z3wF7xZ96hFO
+esWb3uQkePjbz2178sS9L30nuLcd/3yoD1/zmyj+S66vfCLYfTWpP6ny/Z5vmHNdBGo/f/ND
+U32T78Mesaf+ydtOdexDXtuuSnzNh4504b+7+PzWe+WnbsCTchGwftjWfkSxd1tRbfLHcfSH
+dPaHCZznbRI3biznf+RXegLnKuP2bWhndNfnel9HdVeHbyUXeRYIffU3gZfwgRFXFfjHggg3
+fvFnfDTQ/wIBF3QBp3oi2ILsV4ISCIMsp4KdR4MuOArpl4SQ43Vbx4RNqHP6BoVUiDe6lwus
+VoVaCD+5QGmTIDlbWAtegALS4IW1VmzokAETsIZreABJZgMT0AKk8ABqOAFuOAhwOAFkmAhT
+MAEdMAh9OAFdcEheMIh0OIiU8AQSoHh1yIZ3aAiBiIiCkId7WAh0yIaLOIlrWImBKIeTWImF
+AIee6Ah0CIqHcIiS5mFP4IYQ8AR/aBCXyIZteEiiOAqxuImCEIi4eAhysIavqIsTkIk4kgFk
+iIqJuIi36IgNBIyZmIe7SAi9iImJ44x6GAC92AJekIlyIImGUIuP0IemmIbcyP8IrXiHUyCM
+BEGHwtiK45gKvYgCXnACNmCIGbCIrYiOhJCHf2iM3jgIXhCHo5EB3HiPjLiOTzCO/BiHBEmQ
+hfCPoLiQingB2xgBhQg8NhCOl0CJi2CMjlCOwNOLr2gOEsgI6hhuoniIPCCIEeCNkcg9uuiJ
+JckIIDmGg/COmjiK/siGf+iRAdCHOBkA8wg8HMlFERmTN4lEqwg8PgmNdriMbNiOveiG15iN
+EtmO+RiHh0gCT6CS3TgBUlCNh5CHICCQHymNQImIDkmHd8iT6ViP0saOEXCLi1iLzJg4wOiH
+AYmPiBCLlWiTPQmQSIkCfRiSW0GWw5iJQ0mQ6thZB5n/ZEP5j1ZJjegImdDTiUCJkXiIlY04
+i4WAARHgl4Vwl4PYirLohv/4h//YAqVYmHoJEMk4i5cYkqIIl3/ZATyplqmYhjoZAA6Zi4AJ
+iIs4mKEIlol4h4lZlJvJmWFJnH+Jl0jZjL8ZiIQpCBOpCCephjsZkR5mjcypQo3JneMIkW54
+jtNYiUFZEK+5h0MpilEJQNEoi1bZCP+okn65lDWJl8KZmXrZngE5kMgpi915lXo5lIZwmsZR
+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
 
-------=_NextPart_000_000C_01C74FCE.03A83100--
+
+------=_NextPart_000_0017_01C74F83.D96F7960--
 
 
 
---===============1392580083==
+--===============0976903451==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -260,7 +312,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1392580083==
+--===============0976903451==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -271,4 +323,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1392580083==--
+--===============0976903451==--
