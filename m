@@ -1,11 +1,20 @@
-From: "Lead Delivery System" <noreply@bulkgrowth.com>
-Subject: Lead Delivery System
-Date: 12 Feb 2007 10:46:16 -0800
-Message-ID: <20070212104616.7C4998BA3895774E@bulkgrowth.com>
-Reply-To: Lead Delivery System <noreply@bulkgrowth.com>
+From: "Kickoffs G. Globules" <gw@godmoma.com>
+Subject: International Legal RX
+Date: Mon, 12 Feb 2007 19:20:55 -0500
+Message-ID: <7659467473.20070212192055@godmoma.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1226556892=="
+Content-Type: multipart/mixed; boundary="===============1295240589=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17690249
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 20:20:01 +0100 (MET)
+Received: from 147116920 (cable1-233.bentoncountycable.net [208.101.202.234])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	B9FE499258
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 20:19:59 +0100 (MET)
+Received: from godmoma.com (147789432 [147740224])
+	by cable1-233.bentoncountycable.net (Qmailv1) with ESMTP id 3A767FA83B
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2007 19:20:55 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,85 +24,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============1226556892==
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
 
+--===============1295240589==
+Content-Type: multipart/alternative;
+	boundary="----------94916253440F673"
+
+This is a multi-part message in MIME format.
+
+------------94916253440F673
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Welcome to International RX!
+- Best quality drugs 
+- Special Internet prices 
+- Fast and discreet worldwide shipping 
+- Friendly customer support 
+Men's Health 
+Anti-Depressants 
+Pain Relief 
+General health 
+Weight loss 
+Anti-biotics 
+Anti-herpes 
+Women's health 
+Anti-diabetic 
+Blood Pressure/Cholesterol 
+Anti-Allergic/Asthma 
+Anti-Acidity 
+
+View Full Products List
+http://
+
+------------94916253440F673
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
 <html>
-<head>
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows-12=
-52">
-</head>
 <body>
-<p><b><font size=3D"+2">Take your origination business to that next level in=
- 2007=20
-!</font></b> </p>
-<p><b><font size=3D"+2">We have got HOT prospects who are looking for a new =
-loan=20
-right now!</font></b> <br>
-&nbsp; </p>
-<p>If you're like most originators, 2006 was not your banner year. In fact m=
-any
-<br>
-have gone out of business! Due to the decrease in your volume, you find your=
-self
-<br>
-with less funds to increase marketing, so your origination volume continues =
-to=20
-go down. <br>
-You don't have to spend more if you're serious about being successful in the=
-=20
-mortgage <br>
-origination business. For just<b> $3.99-$7.99 per lead</b>, (depending on=20=
-
-location), we can <br>
-provide you&nbsp; with fresh consumer leads every day! </p>
-<p><b>Our Select Lead Program has no setup fees and no long-term commitment.=
-</b>
-</p>
-<p><b>Our consumers are waiting for someone to help them with a mortgage!</b=
->
-</p>
-<p>The LoanBright Select Leads program is a simple, affordable, easy to=20
-implement mortgage <br>
-lead program offering you a market representative mix of both Purchase and=
-=20
-Refinance leads. <br>
-There are no up-front costs. These are the same quality leads that LoanBrigh=
-t=20
-generates day-in <br>
-and day-out for hundreds of lenders, nationwide, with proven success! They a=
-re=20
-subject to the <br>
-same validation and scrubbing that much more expensive leads go through. <br=
->
-&nbsp; </p>
-<p>Please <B>
-<A href=3D"http://209.35.106.182/loanbright_Contact.htm">CLICK HERE</A></B> =
-for=20
-more info </p>
-<p>or call us toll free <b>1-800-211-4170</b> </p>
-<p>LoanBright | 27902 Meadow Drive | Suite 375 | Evergreen | CO | 80439 <br>=
-
-&nbsp; <br>
-&nbsp; </p>
-<p>to unsubscribe <FONT face=3D"Times New Roman" color=3D#000000><A href=3D"=
-http://209.35.106.182/unsubscribe.htm">click here</A></FONT><FONT face=3DTah=
-oma size=3D2> </FONT>
-</p>
+<font color="#333333"><strong>Welcome to International RX!</strong><br>
+- Best quality drugs <br>
+- Special Internet prices <br>
+- Fast and discreet worldwide shipping <br>
+- Friendly customer support
+<p>Men's Health <br>
+  Anti-Depressants <br>
+  Pain Relief <br>
+  General health <br>
+  Weight loss <br>
+  Anti-biotics <br>
+  Anti-herpes <br>
+  Women's health <br>
+  Anti-diabetic <br>
+  Blood Pressure/Cholesterol <br>
+  Anti-Allergic/Asthma <br>
+  Anti-Acidity </p>
+</font>
+<p><font color="#333333"><a href="http://masqr.hk/">View Full Products List</a></font></p>
 </body>
 </html>
 
+------------94916253440F673--
 
 
---===============1226556892==
+
+
+--===============1295240589==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -104,7 +104,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier.
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
---===============1226556892==
+--===============1295240589==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -115,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1226556892==--
+--===============1295240589==--
