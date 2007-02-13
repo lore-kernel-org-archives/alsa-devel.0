@@ -1,13 +1,12 @@
-From: Mikael Nilsson <mikael@nilsson.name>
-Subject: Re: [PATCH] Patch for enabling LFE on more Dell	laptops
-Date: Tue, 13 Feb 2007 13:04:41 +0100
-Message-ID: <1171368281.12273.16.camel@daneel>
-References: <1171364464.12273.6.camel@daneel> <s5h3b5ae0m4.wl%tiwai@suse.de>
+From: "Ondra Zahradnik" <ondra.zahradnik@gmail.com>
+Subject: Re: snd_hda_intel and Asus F3Jv problem on 2.6.19
+Date: Tue, 13 Feb 2007 20:21:44 +0800
+Message-ID: <77c094930702130421l4831f805t5a46af5aa19be74e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h3b5ae0m4.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,59 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gdGlzLCAyMDA3LTAyLTEzIGF0IDEyOjUyICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-QXQgVHVlLCAxMyBGZWIgMjAwNyAxMjowMTowNCArMDEwMCwKPiBNaWthZWwgTmlsc3NvbiB3cm90
-ZToKPiA+IAo+ID4gKHBsZWFzZSBjYzogbWUgb24gcmVwbGllcywgSSdtIG5vdCBvbiB0aGUgbGlz
-dCkKPiA+IAo+ID4gUmVmZXJyaW5nIHRvCj4gPiAKPiA+IGh0dHBzOi8vYnVndHJhY2suYWxzYS1w
-cm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD0yMDkyCj4gPiAKPiA+IEknZCBsaWtlIHRv
-IGFkZCB0aGlzIHBhdGNoIHRvIHRoZSBzbmQtaGRhLWludGVsIGRyaXZlci4gVGhlIHBhdGNoIGlz
-Cj4gPiBhZ2FpbnN0IDEuMC4xNHJjMi4KPiA+IAo+ID4gU3VtbWFyeTogRml4IExGRSBjb250cm9s
-cyBmb3IgRGVsbCBJbnNwaXJvbiBFMTcwNS85NDAwIGFuZCBYUFMgTTE3MTAgbGFwdG9wcwo+ID4g
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWthZWwgTmlsc3NvbiA8bWlrYWVsQG5pbHNzb24ubmFtZT4K
-PiAKPiBUaGUgcGF0Y2ggY291bGRuJ3QgYmUgYXBwbGllZCB0byB0aGUgbGF0ZXN0IEhHIHRyZWUg
-KG9yIDIuNi4yMS1naXQpCj4gYnV0IEkgZml4ZWQgaXQgbWFudWFsbHkuICBBbHNvLCB0aGUgZW1i
-ZWRkZWQgcGF0Y2ggaW4geW91ciBtYWlsIHNlZW1zCj4gYnJva2VuLiAgQ2hlY2sgeW91ciBNVUEu
-CgpEdWguLi4gdGhhbmtzIGluIGFueSBjYXNlLiBUaGUgYnVncyAKCmh0dHBzOi8vYnVndHJhY2su
-YWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD0yMDkyCmh0dHBzOi8vYnVndHJh
-Y2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD0yMTcwCmh0dHBzOi8vYnVn
-dHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD0yNTgwCgpjYW4gcHJv
-YmFibHkgYmUgY2xvc2VkIGJ5IHRoaXMgcGF0Y2guCgovTWlrYWVsCgo+IAo+IEFueXdheSwgdGhl
-IHBhdGNoIGlzIGFwcGxpZWQgdG8gQUxTQSBIRyB0cmVlIG5vdy4gIFRoYW5rcy4KPiAKPiAKPiBU
-YWthc2hpCj4gCj4gPiAKPiA+IC0tLSBwYXRjaF9zaWdtYXRlbC5jLm9yaWcgICAgICAgMjAwNy0w
-Mi0xMyAxMTo0OTo1My4wMDAwMDAwMDAgKzAxMDAKPiA+ICsrKyBwYXRjaF9zaWdtYXRlbC5jICAg
-IDIwMDctMDItMTMgMTE6NTE6MjUuMDAwMDAwMDAwICswMTAwCj4gPiBAQCAtNDU1LDYgKzQ1NSwx
-MCBAQAo+ID4gICAgICAgICAgICAgICAgICAgICAgICJEZWxsIExhdGl0dWRlIEQ2MjAiLCBTVEFD
-X1JFRiksCj4gPiAgICAgICAgIFNORF9QQ0lfUVVJUksoUENJX1ZFTkRPUl9JRF9ERUxMLCAweDAx
-Y2IsCj4gPiAgICAgICAgICAgICAgICAgICAgICAgIkRlbGwgTGF0aXR1ZGUgMTIwTCIsIFNUQUNf
-UkVGKSwKPiA+ICsgICAgICAgU05EX1BDSV9RVUlSSyhQQ0lfVkVORE9SX0lEX0RFTEwsIDB4MDFj
-ZCwKPiA+ICsgICAgICAgICAgICAgICAgICAgICAiRGVsbCBJbnNwaXJvbiBFMTcwNS85NDAwIiwg
-U1RBQ19SRUYpLAo+ID4gKyAgICAgICBTTkRfUENJX1FVSVJLKFBDSV9WRU5ET1JfSURfREVMTCwg
-MHgwMWNlLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICJEZWxsIFhQUyBNMTcxMCIsIFNUQUNf
-UkVGKSwKPiA+ICAgICAgICAge30gLyogdGVybWluYXRvciAqLwo+ID4gIH07Cj4gPiAgCj4gPiAK
-PiA+IFRoYW5rcywKPiA+IAo+ID4gL01pa2FlbAo+ID4gLS0gCj4gPiA8bWlrYWVsQG5pbHNzb24u
-bmFtZT4KPiA+IAo+ID4gUGx1cyDDp2EgY2hhbmdlLCBwbHVzIGMnZXN0IGxhIG3Dqm1lIGNob3Nl
-Cj4gPiAKPiA+IAo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gVXNpbmcgVG9tY2F0IGJ1dCBuZWVk
-IHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNlY3VyaXR5Pwo+ID4g
-R2V0IHN0dWZmIGRvbmUgcXVpY2tseSB3aXRoIHByZS1pbnRlZ3JhdGVkIHRlY2hub2xvZ3kgdG8g
-bWFrZSB5b3VyIGpvYiBlYXNpZXIuCj4gPiBEb3dubG9hZCBJQk0gV2ViU3BoZXJlIEFwcGxpY2F0
-aW9uIFNlcnZlciB2LjEuMC4xIGJhc2VkIG9uIEFwYWNoZSBHZXJvbmltbwo+ID4gaHR0cDovL3Nl
-bC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9
-MTIxNjQyCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+IEFsc2EtZGV2ZWxAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cj4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
-by9hbHNhLWRldmVsCj4gCi0tIAo8bWlrYWVsQG5pbHNzb24ubmFtZT4KClBsdXMgw6dhIGNoYW5n
-ZSwgcGx1cyBjJ2VzdCBsYSBtw6ptZSBjaG9zZQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVXNpbmcgVG9t
-Y2F0IGJ1dCBuZWVkIHRvIGRvIG1vcmU/IE5lZWQgdG8gc3VwcG9ydCB3ZWIgc2VydmljZXMsIHNl
-Y3VyaXR5PwpHZXQgc3R1ZmYgZG9uZSBxdWlja2x5IHdpdGggcHJlLWludGVncmF0ZWQgdGVjaG5v
-bG9neSB0byBtYWtlIHlvdXIgam9iIGVhc2llci4KRG93bmxvYWQgSUJNIFdlYlNwaGVyZSBBcHBs
-aWNhdGlvbiBTZXJ2ZXIgdi4xLjAuMSBiYXNlZCBvbiBBcGFjaGUgR2Vyb25pbW8KaHR0cDovL3Nl
-bC5hcy11cy5mYWxrYWcubmV0L3NlbD9jbWQ9bG5rJmtpZD0xMjA3MDkmYmlkPTI2MzA1NyZkYXQ9
-MTIxNjQyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+>TonTon <tonton <at> bdefracte.org> writes:
+
+>> Finally no combination works. I make further investigation with model
+>> asus-laptop, but I think the problem is related to num_steps reported for
+>> many mixer controls (even if it was working in kernel alsa version).
+>> So no way to launch alsamixer to control volume.
+
+> I've discovered the same problem with ASUS F3T notebook. snd-hda-intel loads ok
+> (and seems to autodetect notebook as asus-laptop) but I get Invalid argument and
+> hda_codec: num_steps = 0 for NID=0x15 in dmesg when trying to start
+> alsamixer/amixer.
+
+I've found the same problem with ASUS A6JE notebook. snd-hda-intel
+loads well, sound card is recognised well, but when I try to run
+alsamixer I get invalid argument error mesage and in dmesg is
+hda_codec: num_steps = 0 for NID=0x15. Is here anything new about this
+issue?
+
+-------------------------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier.
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
