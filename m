@@ -1,13 +1,21 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: trying to get sound working at a mac book
-	pro	(core 2 duo)
-Date: Wed, 14 Feb 2007 11:40:19 -0800
-Message-ID: <1171482019.7083.8.camel@razman.gruemaster.com>
-References: <564d96fb0702141121j185378d1m4c3a192831442fb7@mail.gmail.com>
+From: "Jay Murray" <xathgmrkj@academiawashington.e12.ve>
+Subject: Must Have dispensing chemist's at your provision:
+	separate rebate.
+Date: Wed, 14 Feb 2007 21:59:42 +0200
+Message-ID: <000a01c75072$a6fed1c0$0167e9fc@gblucgqppd>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0324756091=="
+Content-Type: multipart/mixed; boundary="===============0902289566=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <564d96fb0702141121j185378d1m4c3a192831442fb7@mail.gmail.com>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86F0E388
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 20:59:34 +0100 (MET)
+Received: from 88.242.19.99 (unknown [88.242.19.99])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	671C19992B
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 20:59:32 +0100 (MET)
+Received: from mail3.chicagowebs.com (port=27706 helo=gblucgqppd)
+	by 88.242.19.99 with smtp id 6XN-YV5O-ACQ
+	for alsa-devel@alsa-project.org; Wed, 14 Feb 2007 21:59:42 +0200
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,159 +25,231 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Rafael =?ISO-8859-1?Q?Esp=EDndola?= <rafael.espindola@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============0902289566==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000C_01C75083.6A7E04D0"
 
---===============0324756091==
-Content-Type: multipart/alternative; boundary="=-86omk/iugXMJo3nqI7Sz"
+------=_NextPart_000_000C_01C75083.6A7E04D0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000D_01C75083.6A7E04D0"
 
 
---=-86omk/iugXMJo3nqI7Sz
-Content-Type: text/plain; charset=UTF-8
+------=_NextPart_001_000D_01C75083.6A7E04D0
+Content-Type: text/plain;
+	charset="windows-1253"
 Content-Transfer-Encoding: quoted-printable
 
-If you could send me the output from "lspci -s 0:1b -vn" I can add this
-to the driver so you and other Mac users will work out of the box.
+like the princes and return; any question and pitched
 
-Using the subsystem id from the codec output isn't always accurate, and
-the driver uses the output from lspci anyways.
+------=_NextPart_001_000D_01C75083.6A7E04D0
+Content-Type: text/html;
+	charset="windows-1253"
+Content-Transfer-Encoding: quoted-printable
 
-As to internal mic, I can look into it.  Send me the output from
-"cat /proc/asound/card0/codec#*" as an attachment.
-
-Tobin
-
-On Wed, 2007-02-14 at 19:21 +0000, Rafael Esp=C3=ADndola wrote:
-
-> I have installed the alsa drivers from the mercurial repository and
-> the current status is
->=20
-> *) Headphone works
-> *) Speakers work
-> *) Headphone sensing works
-> *) Internal microphone doesn't
->=20
-> I haven't tried to use an external microphone.
->=20
-> Following the steps in http://www.jasonparekh.com/?page_id=3D9 resulted
-> in the microphone working but the speakers stoped.
->=20
-> The subsystem ID of my card is 0x106b1e00. This is the only difference
-> from the one on http://www.jasonparekh.com/?page_id=3D9.
->=20
-> I tried to grep for this subsystem in the windows driver (from
-> bootcamp 1.1.2) but it is not listed. Has someone installed windows on
-> one of these systems? Does sound works?
->=20
-> Any ideas on how to try to find out the correct pin setting? Maybe
-> looking at the macos driver?
->=20
-> And in the case I can make it work, what is the correct way to do an
-> switch on the subsystem? Is there a variant of
-> snd_hda_check_board_config that also uses subsystem ID to
-> disambiguate pin configs?
->=20
-> Thanks,
-> Rafael
->=20
-> -----------------------------------------------------------------------=
---
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share=
- your
-> opinions on IT & business topics through brief surveys-and earn cash
-> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
-DEVDEV
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=20
-Tobin Davis <tdavis@dsl-only.net>
-
---=-86omk/iugXMJo3nqI7Sz
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1253">
+<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
-If you could send me the output from &quot;lspci -s 0:1b -vn&quot; I can add this to the driver so you and other Mac users will work out of the box.<BR>
-<BR>
-Using the subsystem id from the codec output isn't always accurate, and the driver uses the output from lspci anyways.<BR>
-<BR>
-As to internal mic, I can look into it.&nbsp; Send me the output from &quot;cat /proc/asound/card0/codec#*&quot; as an attachment.<BR>
-<BR>
-Tobin<BR>
-<BR>
-On Wed, 2007-02-14 at 19:21 +0000, Rafael Esp&#237;ndola wrote:
-<BLOCKQUOTE TYPE=CITE>
-<PRE>
-<FONT COLOR="#000000">I have installed the alsa drivers from the mercurial repository and</FONT>
-<FONT COLOR="#000000">the current status is</FONT>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DVerdana size=3D2>
+like the princes and return; any question and pitched
+<IMG alt=3D"" hspace=3D0=20 width=621 height=375 src=3D"cid:000b01c75072$a6fed1c0$0167e9fc@gblucgqppd" =
+align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
 
-<FONT COLOR="#000000">*) Headphone works</FONT>
-<FONT COLOR="#000000">*) Speakers work</FONT>
-<FONT COLOR="#000000">*) Headphone sensing works</FONT>
-<FONT COLOR="#000000">*) Internal microphone doesn't</FONT>
+------=_NextPart_001_000D_01C75083.6A7E04D0--
 
-<FONT COLOR="#000000">I haven't tried to use an external microphone.</FONT>
+------=_NextPart_000_000C_01C75083.6A7E04D0
+Content-Type: image/gif;
+	name="dyuvcq.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000b01c75072$a6fed1c0$0167e9fc@gblucgqppd>
 
-<FONT COLOR="#000000">Following the steps in <A HREF="http://www.jasonparekh.com/?page_id=9">http://www.jasonparekh.com/?page_id=9</A> resulted</FONT>
-<FONT COLOR="#000000">in the microphone working but the speakers stoped.</FONT>
+R0lGODlhbQJ3AfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
+/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
+AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
+MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
+ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
+mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
+zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
+/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
+AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
+M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
+ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
+mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
+zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAABAALAAAAABtAncB
+AAj/AP8JHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuX
+MGPKnEmzps2bOHPq3Mmzp8+fQIMKHUq0qNGjSJMqXcq0qdOnUKNKnUq1qtWrWLNq3cq1q9evYMOK
+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
 
-<FONT COLOR="#000000">The subsystem ID of my card is 0x106b1e00. This is the only difference</FONT>
-<FONT COLOR="#000000">from the one on <A HREF="http://www.jasonparekh.com/?page_id=9">http://www.jasonparekh.com/?page_id=9</A>.</FONT>
-
-<FONT COLOR="#000000">I tried to grep for this subsystem in the windows driver (from</FONT>
-<FONT COLOR="#000000">bootcamp 1.1.2) but it is not listed. Has someone installed windows on</FONT>
-<FONT COLOR="#000000">one of these systems? Does sound works?</FONT>
-
-<FONT COLOR="#000000">Any ideas on how to try to find out the correct pin setting? Maybe</FONT>
-<FONT COLOR="#000000">looking at the macos driver?</FONT>
-
-<FONT COLOR="#000000">And in the case I can make it work, what is the correct way to do an</FONT>
-<FONT COLOR="#000000">switch on the subsystem? Is there a variant of</FONT>
-<FONT COLOR="#000000">snd_hda_check_board_config that also uses subsystem ID to</FONT>
-<FONT COLOR="#000000">disambiguate pin configs?</FONT>
-
-<FONT COLOR="#000000">Thanks,</FONT>
-<FONT COLOR="#000000">Rafael</FONT>
-
-<FONT COLOR="#000000">-------------------------------------------------------------------------</FONT>
-<FONT COLOR="#000000">Take Surveys. Earn Cash. Influence the Future of IT</FONT>
-<FONT COLOR="#000000">Join SourceForge.net's Techsay panel and you'll get the chance to share your</FONT>
-<FONT COLOR="#000000">opinions on IT &amp; business topics through brief surveys-and earn cash</FONT>
-<FONT COLOR="#000000"><A HREF="http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV">http://www.techsay.com/default.php?page=join.php&amp;p=sourceforge&amp;CID=DEVDEV</A></FONT>
-<FONT COLOR="#000000">_______________________________________________</FONT>
-<FONT COLOR="#000000">Alsa-devel mailing list</FONT>
-<FONT COLOR="#000000"><A HREF="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</A></FONT>
-<FONT COLOR="#000000"><A HREF="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</A></FONT>
-</PRE>
-</BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
-</BODY>
-</HTML>
-
---=-86omk/iugXMJo3nqI7Sz--
+------=_NextPart_000_000C_01C75083.6A7E04D0--
 
 
 
---===============0324756091==
+--===============0902289566==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -180,7 +260,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0324756091==
+--===============0902289566==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -191,4 +271,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0324756091==--
+--===============0902289566==--
