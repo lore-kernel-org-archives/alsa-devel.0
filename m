@@ -1,23 +1,21 @@
-From: "Unrehearsed K. Vickie" <norton@goodmanjones.co.uk>
-Subject: Can't afford medications you need?
-Date: Wed, 14 Feb 2007 02:53:23 -0500
-Message-ID: <8464023911.20070214025323@goodmanjones.co.uk>
+From: "Voyages L. Sleeping" <isthtyorfnlanswr@gihon.btv.ibm.com>
+Subject: International Legal RX
+Date: Wed, 14 Feb 2007 11:45:02 -0500
+Message-ID: <4744843959.20070214114502@gihon.btv.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A28EC359
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 10:59:38 +0100 (MET)
-Received: from -1220251960 (S01060040f42c298b.ed.shawcable.net
-	[68.149.220.140])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 469CA367
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 12:44:11 +0100 (MET)
+Received: from -1214277176 (unknown [124.5.241.42])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	3482F99B87
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 10:59:35 +0100 (MET)
-Received: from goodmanjones.co.uk (-1220198280 [-1220046312])
-	by S01060040f42c298b.ed.shawcable.net (Qmailv1) with ESMTP id
-	F9696BD3F0
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 02:53:23 -0500
+	357DB99BA0
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 12:44:09 +0100 (MET)
+Received: from gihon.btv.ibm.com (-1217883552 [-1217725648])
+	by gorightbrain.com (Qmailv1) with ESMTP id 160A19A858
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 11:45:02 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,10 +28,23 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-All you can find at US Drug store. Lowest prices on the web, only licensed and quality pills. Must have products. Don't miss your chance to recover your health! 
-http://masqr.hk/
+The most powerful medicines for you!
 
-any pill you need! Absolutely Confidential and Secure purchase
+Spermamax - $40.5 - SPERMAMAX is a scientifically validated herbal nutritional blend to enhance fertility by improving sperm quality, count and motility (spontaneous motion). 
+
+Pure Natural Hoodia - $35.99 - Pure Natural Hoodia is a natural weght loss pill containing Hoodia Gordoni extract. 
+
+Lipitor - $1.42 - used with diet changes to reduce the amount of cholesterol and certain fatty substances in the blood. Lowering blood levels of cholesterol and fats may help to prevent heart disease, angina, strokes, and heart attacks. 
+
+Testosterone - $7.5 - a steroid hormone from the androgen group. Testosterone is secreted in the testes of men and the ovaries of women. 
+
+Ultram - $1.83 - an analgesic used to treat or prevent pain. 
+
+and more!
+
+our site http://masqr.hk/
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
 -------------------------------------------------------------------------
