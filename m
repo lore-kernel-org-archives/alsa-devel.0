@@ -1,20 +1,13 @@
-From: "Pucks M. Freelance" <orozco@gi.konicaminolta.us>
-Subject: International Legal RX
-Date: Wed, 14 Feb 2007 05:12:13 -0500
-Message-ID: <6543650359.20070214051213@gi.konicaminolta.us>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: isa_bus: cs4231
+Date: Wed, 14 Feb 2007 08:16:37 +0100
+Message-ID: <45D2B755.6070406@gmail.com>
+References: <45D157B1.4090506@gmail.com> <s5hsldacc9z.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1016895603=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD3E329F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 06:11:21 +0100 (MET)
-Received: from -1215070296 (unknown [210.123.173.152])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	C89EB99B9F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 06:11:19 +0100 (MET)
-Received: from gi.konicaminolta.us (-1214584480 [-1214584048])
-	by grapetec.com (Qmailv1) with ESMTP id 4D84D1EDC4
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 05:12:13 -0500
+In-Reply-To: <s5hsldacc9z.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,95 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On 02/13/2007 04:23 PM, Takashi Iwai wrote:
 
---===============1016895603==
-Content-Type: multipart/alternative;
-	boundary="----------29D90C2AB47F9EF"
+> They look OK to me.  Could you provide a changelog and a sign-off for
+> each patch?
 
-This is a multi-part message in MIME format.
+Will do. The changelogs will mostly be boring "DEV_NAME: port to isa_bus 
+infrastructure"...
 
-------------29D90C2AB47F9EF
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> BTW, they won't go to 2.6.21 but will be in the next one.
 
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
+That's fine. I'm currently working against 2.6.20 final by the way.
 
-View Full Products List
-http://
+Rene.
 
-------------29D90C2AB47F9EF
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://masqr.hk/">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------29D90C2AB47F9EF--
-
-
-
-
---===============1016895603==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1016895603==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1016895603==--
