@@ -1,11 +1,17 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HGrMD-0002hu-0T delayed 10 hours
-Date: Tue, 13 Feb 2007 16:43:08 -0800
-Message-ID: <E1HH8Em-0001Qg-Dd@externalmx-1.sourceforge.net>
+From: "Lupe Crandall" <wexemplary@7minus7.com>
+Subject: Be managerial as casino
+Date: Wed, 14 Feb 2007 11:50:02 +0900
+Message-ID: <001301c7502e$b2e2e380$00a7cdbc@homecomputer>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1889101159=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B98CC355
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 03:53:07 +0100 (MET)
+Received: from 7minus7.com (unknown [203.128.171.21])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	371019991B
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 03:53:06 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,36 +21,113 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+--===============1889101159==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0010_01C7502E.B2E2E380"
 
-The message identifier is:     1HGrMD-0002hu-0T
-The subject of the message is: [VAR114]
-The date of the message is:    Tue, 13 Feb 2007 12:11:19 +0530
+------=_NextPart_000_0010_01C7502E.B2E2E380
+Content-Type: text/plain;
+        charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
+
+Take a look at this ONE...
+
+
+
+Sym8oL: UTEVCurr Price: $0.016 Action: Aggresive Buy/Hold!
+
+
+
+This sym is gaining momentum!!!
+
+Company info:
+
+
+
+The nature of UTEV's main business is to commercialize =
+environmentally-friendly technologies.UTEV's activities are oriented =
+towards sustainable development which is highly appropriateconsidering =
+that we have entered an era where clean energy and environment will most =
+likely remain major issues.  Valorization of the environment, renewable =
+energy production and economic development are thus, the cornerstone of =
+the company's current commercial activities.!!
+
+
+
+See bullish news online right now, alsa-devel!
+
+------=_NextPart_000_0010_01C7502E.B2E2E380
+Content-Type: text/html;
+        charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1252">
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#0033FF size=3D3D4><FONT =
+size=3D3><STRONG>Take a look at this ONE!</STRONG></FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#990033 size=3D2>Sym8oL: =
+<b>UTEV</b><br>Curr Price: $0.016 <br>Action: Aggresive =
+Buy/Hold!!!</FONT></DIV>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#3300FF size=3D4>This =
+sym is gaining momentum!</FONT></DIV>
+<BR><BR><BR>
+<DIV align=3Dright><FONT face=3DTahoma color=3D#FF0033 size=3D4>Company =
+info:</FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#000033 size=3D4>The =
+nature of UTEV's main business is to commercialize =
+environmentally-friendly technologies.<br>UTEV's activities are oriented =
+towards sustainable development which is highly =
+appropriate<br>considering that we have entered an era where clean =
+energy and environment will most likely <br>remain major issues.  =
+Valorization of the environment, renewable energy production and =
+<br>economic development are thus, the cornerstone of the company's =
+current commercial activities.!!!</FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC0033 size=3D4>See =
+bullish news online right now, alsa-devel...</FONT></DIV>
+<BR>
+</BODY></HTML>
+
+------=_NextPart_000_0010_01C7502E.B2E2E380--
+
+
+--===============1889101159==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier.
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1889101159==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1889101159==--
