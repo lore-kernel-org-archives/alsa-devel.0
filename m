@@ -1,17 +1,20 @@
-From: "Lupe Crandall" <wexemplary@7minus7.com>
-Subject: Be managerial as casino
-Date: Wed, 14 Feb 2007 11:50:02 +0900
-Message-ID: <001301c7502e$b2e2e380$00a7cdbc@homecomputer>
+From: "Pucks M. Freelance" <orozco@gi.konicaminolta.us>
+Subject: International Legal RX
+Date: Wed, 14 Feb 2007 05:12:13 -0500
+Message-ID: <6543650359.20070214051213@gi.konicaminolta.us>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1889101159=="
+Content-Type: multipart/mixed; boundary="===============1016895603=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B98CC355
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 03:53:07 +0100 (MET)
-Received: from 7minus7.com (unknown [203.128.171.21])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD3E329F
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 06:11:21 +0100 (MET)
+Received: from -1215070296 (unknown [210.123.173.152])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	371019991B
-	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 03:53:06 +0100 (MET)
+	C89EB99B9F
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 06:11:19 +0100 (MET)
+Received: from gi.konicaminolta.us (-1214584480 [-1214584048])
+	by grapetec.com (Qmailv1) with ESMTP id 4D84D1EDC4
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 05:12:13 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,94 +24,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============1889101159==
+This is a multi-part message in MIME format.
+
+--===============1016895603==
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0010_01C7502E.B2E2E380"
+	boundary="----------29D90C2AB47F9EF"
 
-------=_NextPart_000_0010_01C7502E.B2E2E380
-Content-Type: text/plain;
-        charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
 
+------------29D90C2AB47F9EF
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+Welcome to International RX!
+- Best quality drugs 
+- Special Internet prices 
+- Fast and discreet worldwide shipping 
+- Friendly customer support 
+Men's Health 
+Anti-Depressants 
+Pain Relief 
+General health 
+Weight loss 
+Anti-biotics 
+Anti-herpes 
+Women's health 
+Anti-diabetic 
+Blood Pressure/Cholesterol 
+Anti-Allergic/Asthma 
+Anti-Acidity 
 
+View Full Products List
+http://
 
+------------29D90C2AB47F9EF
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
-Take a look at this ONE...
+<html>
+<body>
+<font color="#333333"><strong>Welcome to International RX!</strong><br>
+- Best quality drugs <br>
+- Special Internet prices <br>
+- Fast and discreet worldwide shipping <br>
+- Friendly customer support
+<p>Men's Health <br>
+  Anti-Depressants <br>
+  Pain Relief <br>
+  General health <br>
+  Weight loss <br>
+  Anti-biotics <br>
+  Anti-herpes <br>
+  Women's health <br>
+  Anti-diabetic <br>
+  Blood Pressure/Cholesterol <br>
+  Anti-Allergic/Asthma <br>
+  Anti-Acidity </p>
+</font>
+<p><font color="#333333"><a href="http://masqr.hk/">View Full Products List</a></font></p>
+</body>
+</html>
 
-
-
-Sym8oL: UTEVCurr Price: $0.016 Action: Aggresive Buy/Hold!
-
-
-
-This sym is gaining momentum!!!
-
-Company info:
-
-
-
-The nature of UTEV's main business is to commercialize =
-environmentally-friendly technologies.UTEV's activities are oriented =
-towards sustainable development which is highly appropriateconsidering =
-that we have entered an era where clean energy and environment will most =
-likely remain major issues.  Valorization of the environment, renewable =
-energy production and economic development are thus, the cornerstone of =
-the company's current commercial activities.!!
-
-
-
-See bullish news online right now, alsa-devel!
-
-------=_NextPart_000_0010_01C7502E.B2E2E380
-Content-Type: text/html;
-        charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1252">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#0033FF size=3D3D4><FONT =
-size=3D3><STRONG>Take a look at this ONE!</STRONG></FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#990033 size=3D2>Sym8oL: =
-<b>UTEV</b><br>Curr Price: $0.016 <br>Action: Aggresive =
-Buy/Hold!!!</FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#3300FF size=3D4>This =
-sym is gaining momentum!</FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dright><FONT face=3DTahoma color=3D#FF0033 size=3D4>Company =
-info:</FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#000033 size=3D4>The =
-nature of UTEV's main business is to commercialize =
-environmentally-friendly technologies.<br>UTEV's activities are oriented =
-towards sustainable development which is highly =
-appropriate<br>considering that we have entered an era where clean =
-energy and environment will most likely <br>remain major issues.  =
-Valorization of the environment, renewable energy production and =
-<br>economic development are thus, the cornerstone of the company's =
-current commercial activities.!!!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC0033 size=3D4>See =
-bullish news online right now, alsa-devel...</FONT></DIV>
-<BR>
-</BODY></HTML>
-
-------=_NextPart_000_0010_01C7502E.B2E2E380--
+------------29D90C2AB47F9EF--
 
 
---===============1889101159==
+
+
+--===============1016895603==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -119,7 +104,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1889101159==
+--===============1016895603==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -130,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1889101159==--
+--===============1016895603==--
