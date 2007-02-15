@@ -1,11 +1,15 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HGrMD-0002hu-0T delayed 48 hours
-Date: Thu, 15 Feb 2007 01:18:56 -0800
-Message-ID: <E1HHclU-0002VW-Sw@externalmx-1.sourceforge.net>
+From: "=?UTF-8?Q?Rafael_Esp=C3=ADndola?=" <rafael.espindola@gmail.com>
+Subject: Re: trying to get sound working at a mac book pro
+	(core 2 duo)
+Date: Thu, 15 Feb 2007 10:39:51 +0000
+Message-ID: <564d96fb0702150239q40c7fb89x541124179630dfdd@mail.gmail.com>
+References: <564d96fb0702141121j185378d1m4c3a192831442fb7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <564d96fb0702141121j185378d1m4c3a192831442fb7@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,30 +22,27 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+Looking at the windows ini files I noticed that BOARD3.INI is the most
+similar to the macbook pro: has an spdif input (code C) and an
+internal microphone.
 
-The message identifier is:     1HGrMD-0002hu-0T
-The subject of the message is: [VAR114]
-The date of the message is:    Tue, 13 Feb 2007 12:11:19 +0530
+I am copying the config from BOARD3.INI to the linux driver. Currently
+I am using:
 
-The address to which the message has not yet been delivered is:
+static unsigned int macbook_pin_configs[10] = {
+       0x0221401f, 0x90a70120, 0x01813024, 0x01014010,
+       0x400000fd, 0x01016011, 0x1345e240, 0x13c5e22e,
+       0x400000fc, 0x400000fb,
+};
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+This is the best result so far:
+*) mic works after switch to line in and back
+*) speakers works
+*) microphone works
+*) microphone sensing works
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Cheers,
+Rafael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
