@@ -1,18 +1,15 @@
-From: "Nelda Kylee" <wtpza83rubl@cantv.net>
-Subject: build more SPERM in yourPENIS,
-	500% more after taking this pill mother
-Date: Thu, 15 Feb 2007 12:04:27 +0100
-Message-ID: <028a679s.1733869@cantv.net>
+From: "Izchak Goodson" <pranced@buyexpendables.com>
+Subject: KonstantinosS0FT has MlCR0S0FT & AD0BE on_saIe Feb 15
+	13:50:00 MSK 2007
+Date: Thu, 15 Feb 2007 04:08:39 -0700
+Message-ID: <000001c750f1$01bf4080$0100007f@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0449695043=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E59FF303
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 12:04:23 +0100 (MET)
-Received: from gxfwkro (unknown [83.209.34.19])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	9D9ED999B8
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 12:04:23 +0100 (MET)
+Received: from localhost (71-218-14-225.hlrn.qwest.net [71.218.14.225])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 56DCE362
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 12:08:48 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,48 +22,69 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0449695043==
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+OEM software - throw packing case, leave CD, use electronic manuals.
+Pay for software only and save 75-90%!
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text; charset=iso-8859-1">
-</head>
-<body>
-<font color=DFDFDF size=1>whom twenty-one fancy lot favorite, not wanted horses companion keeping comes learned,</font>
-<center><table border=0 cellspacing=0 cellpadding=10 width=540 bordercolor=FB0000>
-<tr><td bgcolor=EFEFEF align=left>
-<font size=2 face=arial color=000000><center><font size=5 color=FF51A8><b>Proven to increase your SPERM by 500%</b></font></center><br><font color=000000 size=2>Ever wanted to ejaculate 5 times more? Would you like to show ur partner/s your Sexual strength and power? Are you about to give up the fight for your biggerOrgasm and greater ejaculation? STOP, there's a solution now!!! WonderCum</font></center><br><font color=0000FF size=2><b>* 500% more sperm<br>* Improved flavor<br>* Rock hardErections<br>* More Staying Power<br>* MultipleOrgasms</font><br><br>
-<font size=1 color=000000 face=verdana>some testimonials from my happy customers:</b><br>
-"After taking WonderCum for just 1 week my sperm volume has tripled" <font color=359AFA>Max, 47, UK</font><br><br> 
-"You guys are amazing with your delivery and customer service and your product actually DOES work. I have been married for the last 23 years and never in our marriage could we achieve the pleasure we can today. All because I am ejaculating the way I never have. My wife loves it and I love it more. Thanks for this great product." <font color=359AFA>Jimmy 59, US</font><br></font><br><center><font size=5 face=tahoma color=FF1C1C><b>Guaranteed Safe and Effective</b></font><br><br>
-<a href=http://www.bridgesmd.com target=_blank><font size=7 face=arial color=60B5C8><u><b><font size=4>Wait no longer, order WonderCum today...<br>we will EXPRESS ship you your package tomorrow!</font></b></font></font></u></a><br></center></td></tr></table><font color=DFDFDF size=1>sale grew end repeated turn within. allowed or pay?</font>
-</body>
-</html>
+Find incredible discounts! See our special offers!
+            TODAY TOP 1O ITEMS
 
-
---===============0449695043==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ $49 Windows XP Pro w/SP2
+ $79 MS Office Enterprise 2007
+ $79 Adobe Acrobat 8 Pro
+ $79 Microsoft Windows Vista Business
+ $99 Macromedia Studio 8
+ $59 Adobe Premiere 2.0
+ $59 Corel Grafix Suite X3
+ $59 Adobe Illustrator CS2
+$129 Autodesk Autocad 2007
+$149 Adobe Creative Suite 2
+and 1000s more under $49.
+http://xyz.bestsoftoem.com/?43374tADpV71867EzGyP48142uTLPY36519ZWitI78194DSxrM
+----
+           Mac Specials:
+Adobe Acrobat PR0 7             $69
+Adobe After Effects             $49
+Adobe Creative Suite 2 Premium $149
+Ableton Live 5.0.1              $49
+Adobe Photoshop CS              $49
+http://xyz.bestsoftoem.com/?25007yDbwp62812QyijK29541yqvki95464CSQSo63203oKqpZ
+----
+See more by this manufacturers:
+Microsoft...Mac...Adobe...Borland...Macromedia
+http://xyz.bestsoftoem.com/?81224Ogdoi16612KWzJz36594mIZxX97044LNVRj97625zlBpF
+----
+Microsoft Windows Vista Ultimate
+Retail price:  $399.00
+Proposition:  $79.95
+Your benefit:  $319.05 (80%)
+Availability: Can be downloaded instantly.
+http://xyz.bestsoftoem.com/2480.php?36756MEYDc63647UjHbV47546kxyBR89079QpyDA41749szkqz
+Best choice for home and professional. (39894 reviews)
+----
+Microsoft Office 2007 Enterprise Edition
+Regular price:  $899.00
+Our offer:  $79.95
+You save:  $819.95 (89%)
+Availability: Pay and download instantly.
+http://xyz.bestsoftoem.com/2442.php?43537imfgN56832PAOxa14906SKHKX29086UtAIr26795pDLIc
+Sales Rank: #1 (827544 reviews)
+----
+Adobe Acrobat 8.0 Professional
+Market price:  $449.00
+We propose:  $79.95
+Your profit:  $369.05 (80%)
+Availability: Available for instant download.
+http://xyz.bestsoftoem.com/2441.php?61804UEeel49221lUqca73509oAGQV74789IcsjJ30868xMlTc
+Top-ranked item. (56351 reviews)
+EXTRACT_SUFX= .tar.Z
+format your port's distribution file is.  (The most common case is
+program is installed.
+assign \%x 0		   ; zero the time counter
+o  WD7000 SCSI controllers.
+22.3.5.3.  0x80 - 0x9f DMA Page Registers
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0449695043==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0449695043==--
