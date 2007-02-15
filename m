@@ -1,12 +1,23 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Default device with fallback
-Date: Thu, 15 Feb 2007 20:49:27 -0500
-Message-ID: <75b66ecd0702151749r7df799f1pe4cd832af58ae443@mail.gmail.com>
+From: "Muskmelon D. Buddy" <istix@gormy.com>
+Subject: No need to visit local drug store.
+Date: Thu, 15 Feb 2007 18:58:36 -0500
+Message-ID: <7530736196.20070215185836@gormy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 997BE340
+	for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2007 03:50:57 +0100 (MET)
+Received: from -1219760552 (p4198-ipbf1810marunouchi.tokyo.ocn.ne.jp
+	[122.16.147.198])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	CC53F99977
+	for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2007 03:50:51 +0100 (MET)
+Received: from gormy.com (-1228786088 [-1228785552])
+	by p4198-ipbf1810marunouchi.tokyo.ocn.ne.jp (Qmailv1) with ESMTP id
+	893B8816DC
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 18:58:36 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,34 +27,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa Dev <alsa-devel@lists.sourceforge.net>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
+We can help you anytime! Various medications for any case! Lowest prices you can find anywhere. Only legal and quality pills here: 
+http://miyol.hk/
 
-Lately there's been a lot of discussion on linux audio lists about the
-best way to handle the default device, in the face of multiple cards
-some of which could be hot-pluggable and might even be identical.
+Instant shipping worldwide! CONFIDENTIAL purchase! 
 
-Module indices can help in a pinch but are no solution - they require
-root access and can't change the default device without requiring all
-sound apps to be restarted.
-
-gnome-sound-properties comes closest to solving the problem - it
-creates an .asoundrc that defines the "default" device for each user
-(compare KDE which does not even try).  But if the default device is
-defined to a USB audio interface, when the device is unplugged apps
-will fail rather than falling back to the next available device.
-
-How hard would it be to extend ALSA to allow defining a default PCM
-that automatically falls back to the first device present if
-unplugged?
-
-As far as I can tell this would solve the ALSA device selection
-problem completely (ignoring OSS emulation which is increasingly
-irrelevant with the new Flash and Skype releases).
-
-Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
