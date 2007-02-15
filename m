@@ -1,11 +1,23 @@
-From: Curtis R Anderson <gleepy@gleepy.net>
-Subject: TASCAM US-144 and usx2y
-Date: Wed, 14 Feb 2007 21:09:58 -0500
-Message-ID: <45D3C0F6.9010306@gleepy.net>
+From: "Jovially U. Newton" <painter@grandmasxxxmag.com>
+Subject: Get medications for your cure!
+Date: Wed, 14 Feb 2007 20:20:59 -0500
+Message-ID: <9431569271.20070214202059@grandmasxxxmag.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AAC52D4
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 05:13:24 +0100 (MET)
+Received: from 141051712 (CPE-124-189-64-218.nsw.bigpond.net.au
+	[124.189.64.218])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	03F21999EB
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 05:13:21 +0100 (MET)
+Received: from grandmasxxxmag.com (146222936 [148559440])
+	by CPE-124-189-64-218.nsw.bigpond.net.au (Qmailv1) with ESMTP id
+	A9CD6AB2C9
+	for <alsa-devel@alsa-project.org>; Wed, 14 Feb 2007 20:20:59 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,26 +27,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Yes, I have a not (yet?) supported TASCAM US-144.
+Most wanted pills at LOW price!
+http://masqr.hk/
 
-As I started to go through source code in alsa-firmware and elsewhere, I 
-see we need to get an Intel HEX firmware file for the unit, like 
-us144fw.ihx, made from some kind of source. I would have to know how to 
-extract these from the Windows or Mac stuff TASCAM releases.
+Make SECURE and CONFIDENTIAL purchase now. Don't waste your time.
 
-The USB identification is 0644:800f, which would have to be added into 
-the hotplug driver.
-
-I can plug my unit back into the USB and get information like the output 
-of lsusb -v or /proc/bus/usb/devices if that would help anyone here.
--- 
-Curtis R. Anderson, Co-creator of "Gleepy the Hen", still
-"In Heaven there is no beer / That's why we drink it here ..."
-http://www.gleepy.net/      mailto:gleepy@intelligencia.com
-mailto:gleepy@gleepy.net (and others)  Yahoo!: gleepythehen
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
