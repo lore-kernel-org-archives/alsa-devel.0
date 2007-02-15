@@ -1,20 +1,20 @@
-From: "Maintainable F. Clayier" <extreeder@glopro.net>
+From: "Pigeonholes R. Rainforest" <duarte@globcomm.net>
 Subject: International Legal RX
-Date: Thu, 15 Feb 2007 10:21:20 -0500
-Message-ID: <1167703528.20070215102120@glopro.net>
+Date: Thu, 15 Feb 2007 15:18:07 -0500
+Message-ID: <9882901463.20070215151807@globcomm.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1914986727=="
+Content-Type: multipart/mixed; boundary="===============0863026679=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF22334B
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 16:16:38 +0100 (MET)
-Received: from -1217526224 (unknown [89.123.95.67])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB29134B
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 16:17:18 +0100 (MET)
+Received: from -1217435136 (unknown [209.195.83.107])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	2A770999B9
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 16:16:24 +0100 (MET)
-Received: from glopro.net (-1214724400 [-1212354656])
-	by globalresourceip.com (Qmailv1) with ESMTP id BF85ED7BBB
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 10:21:20 -0500
+	D9A84999B9
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 16:17:15 +0100 (MET)
+Received: from globcomm.net (-1218032240 [-1217432656])
+	by glazik.com (Qmailv1) with ESMTP id ED4A2EC453
+	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 15:18:07 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -29,13 +29,13 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1914986727==
+--===============0863026679==
 Content-Type: multipart/alternative;
-	boundary="----------49256881B21E1F5"
+	boundary="----------56AB5D3DF23EFAC"
 
 This is a multi-part message in MIME format.
 
-------------49256881B21E1F5
+------------56AB5D3DF23EFAC
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
@@ -60,7 +60,7 @@ Anti-Acidity
 View Full Products List
 http://
 
-------------49256881B21E1F5
+------------56AB5D3DF23EFAC
 Content-Type: text/html
 Content-Transfer-Encoding: 7bit
 
@@ -88,12 +88,12 @@ Content-Transfer-Encoding: 7bit
 </body>
 </html>
 
-------------49256881B21E1F5--
+------------56AB5D3DF23EFAC--
 
 
 
 
---===============1914986727==
+--===============0863026679==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -104,7 +104,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1914986727==
+--===============0863026679==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -115,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1914986727==--
+--===============0863026679==--
