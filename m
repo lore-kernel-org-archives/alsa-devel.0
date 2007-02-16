@@ -1,20 +1,12 @@
-From: "Hooker A. Bravery" <issykris@groomlake.net>
-Subject: International Legal RX
-Date: Thu, 15 Feb 2007 20:32:05 -0500
-Message-ID: <8438931517.20070215203205@groomlake.net>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Default device with fallback
+Date: Thu, 15 Feb 2007 20:49:27 -0500
+Message-ID: <75b66ecd0702151749r7df799f1pe4cd832af58ae443@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1092020912=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9DF62A5
-	for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2007 02:27:16 +0100 (MET)
-Received: from -1218025496 (c9253f11.rjo.virtua.com.br [201.37.63.17])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	007E29997F
-	for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2007 02:27:10 +0100 (MET)
-Received: from groomlake.net (-1217813872 [-1217813440])
-	by c9253f11.rjo.virtua.com.br (Qmailv1) with ESMTP id 7256394976
-	for <alsa-devel@alsa-project.org>; Thu, 15 Feb 2007 20:32:05 -0500
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,95 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hey,
 
---===============1092020912==
-Content-Type: multipart/alternative;
-	boundary="----------92CC9684906255C"
+Lately there's been a lot of discussion on linux audio lists about the
+best way to handle the default device, in the face of multiple cards
+some of which could be hot-pluggable and might even be identical.
 
-This is a multi-part message in MIME format.
+Module indices can help in a pinch but are no solution - they require
+root access and can't change the default device without requiring all
+sound apps to be restarted.
 
-------------92CC9684906255C
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+gnome-sound-properties comes closest to solving the problem - it
+creates an .asoundrc that defines the "default" device for each user
+(compare KDE which does not even try).  But if the default device is
+defined to a USB audio interface, when the device is unplugged apps
+will fail rather than falling back to the next available device.
 
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
+How hard would it be to extend ALSA to allow defining a default PCM
+that automatically falls back to the first device present if
+unplugged?
 
-View Full Products List
-http://
+As far as I can tell this would solve the ALSA device selection
+problem completely (ignoring OSS emulation which is increasingly
+irrelevant with the new Flash and Skype releases).
 
-------------92CC9684906255C
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://miyol.hk/">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------92CC9684906255C--
-
-
-
-
---===============1092020912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1092020912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1092020912==--
