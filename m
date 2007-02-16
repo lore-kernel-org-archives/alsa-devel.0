@@ -1,14 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
+From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
 Subject: Re: Edirol UA-25 dmix broken at 48 Khz
-Date: Fri, 16 Feb 2007 12:33:14 +0100
-Message-ID: <1171625594.23742.1174966389@webmail.messagingengine.com>
+Date: Fri, 16 Feb 2007 13:09:19 +0100
+Message-ID: <1171627759.11183.1.camel@localhost>
 References: <1171621576.4524.2.camel@localhost>
+	<1171625594.23742.1174966389@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1171621576.4524.2.camel@localhost>
+In-Reply-To: <1171625594.23742.1174966389@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,23 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?ISO-8859-1?Q?Jean-Michel=20Pour=E9?= <jmpoure@free.fr>, Alsa Dev <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jean-Michel Pour=E9 wrote:
-> ALSA lib pcm_direct.c:897:(snd_pcm_direct_initialize_slave) requested or =
-auto-format is not available
-
-You're using an old version of the ALSA library that doesn't yet support
-24-bit samples.  Install alsa-lib 1.0.11 or later.
-
-
-HTH
-Clemens
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+TGUgdmVuZHJlZGkgMTYgZsOpdnJpZXIgMjAwNyDDoCAxMjozMyArMDEwMCwgQ2xlbWVucyBMYWRp
+c2NoIGEgw6ljcml0IDoKPiBKZWFuLU1pY2hlbCBQb3Vyw6kgd3JvdGU6Cj4gQUxTQSBsaWIgcGNt
+X2RpcmVjdC5jOjg5Nzooc25kX3BjbV9kaXJlY3RfaW5pdGlhbGl6ZV9zbGF2ZSkgcmVxdWVzdGVk
+IG9yIGF1dG8tZm9ybWF0IGlzIG5vdCBhdmFpbGFibGUKPiBZb3UncmUgdXNpbmcgYW4gb2xkIHZl
+cnNpb24gb2YgdGhlIEFMU0EgbGlicmFyeSB0aGF0IGRvZXNuJ3QgeWV0IHN1cHBvcnQKPiAyNC1i
+aXQgc2FtcGxlcy4gIEluc3RhbGwgYWxzYS1saWIgMS4wLjExIG9yIGxhdGVyLgoKSSBhbSB1c2lu
+ZyAxLjAuMTRyYzIgYW5kIHN3aXRjaGluZyB0byBDVlMgYXNhcC4KS2luZCByZWdhcmRzLCBKZWFu
+LU1pY2hlbAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGFrZSBTdXJ2ZXlzLiBFYXJuIENhc2guIEluZmx1
+ZW5jZSB0aGUgRnV0dXJlIG9mIElUCkpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNheSBwYW5l
+bCBhbmQgeW91J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKb3BpbmlvbnMgb24gSVQg
+JiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzLWFuZCBlYXJuIGNhc2gKaHR0
+cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9y
+Z2UmQ0lEPURFVkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
