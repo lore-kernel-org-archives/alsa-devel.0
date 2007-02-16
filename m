@@ -1,9 +1,9 @@
-From: "Bart M. Curtis" <kgoy@gillvarley.co.uk>
-Subject: rude
-Date: Fri, 16 Feb 2007 22:59:13 +0100
-Message-ID: <002201c75216$7af95ff0$7f85d57d@hlkycu>
+From: "Bel O. Wiley" <kpq@royminchin.plus.com>
+Subject: undeniable
+Date: Fri, 16 Feb 2007 23:04:52 +0100
+Message-ID: <002201c75216$b41dabb0$9a3e5ea3@amanuf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0835315490=="
+Content-Type: multipart/mixed; boundary="===============1870383332=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,67 +14,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0835315490==
+--===============1870383332==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001E_01C7521E.DCB5D8B0"
+	boundary="----=_NextPart_000_001E_01C7521F.15D8EBF0"
 
-------=_NextPart_000_001E_01C7521E.DCB5D8B0
+------=_NextPart_000_001E_01C7521F.15D8EBF0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001F_01C7521E.DCB7D480"
+	boundary="----=_NextPart_001_001F_01C7521F.15DB35E0"
 
-------=_NextPart_001_001F_01C7521E.DCB7D480
+------=_NextPart_001_001F_01C7521F.15DB35E0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-The food is authentic and yet there are some selections not anywhere =
-near the usual. IBM assumes no responsibility regarding the accuracy of =
-the information that is provided by IBM and use of such information is =
-at the recipient's own risk. Oh yeah, and it looks prettier.
-org - 4 hours agoThe objective of this alliance is to highlight Panama's =
-place in the tourism market for people interested in history, ecology, =
-archaeology, bird watching, . 4-fold reduction versus dibazole, a =
-commercial parasiticide containing medication.
-Plus the prices are very reasonable. But not all patients should use it, =
-and those who do should know how to use it safely, experts say. IBM's =
-obligations with respect to its products and services are governed =
-solely by the agreements under which they are provided. As you can =
-probably tell, I'm a little underwhelmed.
-Jitte rein, Matrix raus.
-Glaub nicht das schwarz nur in der Beatdownvariante ohne Controlelemente =
-irgendwie Land sehen wird.
-The project will unite University experts in child health, respiratory =
-medicine and molecular microbiology with clinicians at the Nottingham =
-University Hospitals NHS Trust. - The Cook :: SpunNa dann wollen wir =
-mal.
-Oh yeah, and it looks prettier.
-Rosiglitazone should not be used in those with a history of heart =
-failure. Anderson's Department of Genitourinary Medical Oncology.
-So what was the big news? Interest has grown in alternatives to =
-hormones, including herbal supplements, for controlling hot flashes and =
-other symptoms of menopause," says NIA Director Richard J.
-Low on noodles, very high in vegetables. The menu is all little types of =
-dishes that you can eat with different wines. "Some people started the =
-program unable to stand, even with assistance, for more than five =
-minutes.
-Please note that any information or material sent to IBM will be deemed =
-NOT to be confidential. We don't look outside our boundaries.
-Auf jeden Fall habe ich einen Plan, und das ist schon mehr als manch =
-anderer Netdecker haben wird. As a precautionary measure, members of the =
-public who have been using the product should seek advice from their =
-doctors as soon as possible.
-Dessert: uhh, full fat ice cream from a local parlour. Eric Clapton is =
-maybe the greatest guitarist of all time.
-Flores saubere Anleitung, wie man sich vorbereitet und Sean McKeown =
-Analyse des Metagames des Last Chance Qualifiers bei der PT Phili.
-It used to be a Japanese steakhouse called Kobe. Rosiglitazone and =
-glibenclamide are western drug ingredients used for the management of =
-diabetes which should be used under medical supervision.
-------=_NextPart_001_001F_01C7521E.DCB7D480
+Everything seemed to be in order. Anderson social work supervisor, has =
+offered hypnosis and self-hypnosis classes at M. Flores saubere =
+Anleitung, wie man sich vorbereitet und Sean McKeown Analyse des =
+Metagames des Last Chance Qualifiers bei der PT Phili.
+mal in meinem Leben Limited gezockt habe, bin ich ganz zufrieden. =
+Specifically, it shows that the .
+Is it a trade secret? It always surprises me. Das Geschwindigkeitsduell =
+gewinnt MBM gegen WW normalerweise nicht. Do you know the inside story =
+of the Motorola RAZR?
+Dieser Eintrag wurde am 22.
+Essential oils have chemical properties that can affect the brain and =
+enter the bloodstream, Perez says.
+1957I took V to Jamie Kennedy Wine Bar for her birthday. I couldn't tell =
+which.
+Who cares if Microsoft is innovative or not?
+That assumption is always wrong. News and Notes from the World of =
+ArchaeologyArchaeology Magazine, NY - 5 hours ago.
+The spokesman said the department has no record of the product having =
+been imported in to Hong Kong for sale. Today, these same people have no =
+trouble standing independently.
+FiberopticsHome:: Web Directory:: Fiberoptics  News:: Free RSS news:: =
+Free Newsletter:: Tell a FriendClientfinder. Also weiter geflennt. "The =
+beauty of this approach is that we may be able to render the germ =
+harmless without killing it.
+In addition, a link to a non-IBM Web site does not mean that IBM =
+endorses or accepts any responsibility for the content, or the use, of =
+such Web site. Very garlicky smooth hummus.
+Sometimes I would fall down just by tripping. "In recent years, =
+scientific studies have raised questions about the safety of certain =
+types of menopausal hormone therapy in some women.
+Aber wenigstens bin ich gut vorbereitet auf die morgigen Regionals. =
+gamut possible with lasers, while an InFocus 777 3-chip DLP projector =
+was modified to pump laser light via fiber optics and illuminate a =
+12-foot screen.
+As a precautionary measure, members of the public who have been using =
+the product should seek advice from their doctors as soon as possible.
+Three pediatric studies reported second-degree burns when raw, crushed =
+garlic was directly applied to children's skin as an antipyretic or =
+antiviral treatment. Aber wenigstens bin ich gut vorbereitet auf die =
+morgigen Regionals.
+------=_NextPart_001_001F_01C7521F.15DB35E0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -83,103 +80,92 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"tug" hspace=3D0=20
-src=3D"cid:001d01c75216$7aef74e0$7f85d57d@hlkycu" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"density" hspace=3D0=20
+src=3D"cid:001d01c75216$b4123a00$9a3e5ea3@amanuf" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The food is authentic and yet there are =
-some=20
-selections not anywhere near the usual. IBM assumes no responsibility =
-regarding the=20
-accuracy of the information that is provided by IBM and use of such =
-information is=20
-at the recipient's own risk. Oh yeah, and it looks =
-prettier.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>org - 4 hours agoThe objective of this =
-alliance is=20
-to highlight Panama's place in the tourism market for people interested =
-in history,=20
-ecology, archaeology, bird watching, . 4-fold reduction versus dibazole, =
-a=20
-commercial parasiticide containing medication.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Plus the prices are very reasonable. =
-But not all=20
-patients should use it, and those who do should know how to use it =
-safely, experts=20
-say. IBM's obligations with respect to its products and services are =
-governed solely=20
-by the agreements under which they are provided. As you can probably =
-tell, I'm a=20
-little underwhelmed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Jitte rein, Matrix raus.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Glaub nicht das schwarz nur in der =
-Beatdownvariante=20
-ohne Controlelemente irgendwie Land sehen wird.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The project will unite University =
-experts in child=20
-health, respiratory medicine and molecular microbiology with clinicians =
-at the=20
-Nottingham University Hospitals NHS Trust. - The Cook :: SpunNa dann =
-wollen wir=20
-mal.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Oh yeah, and it looks =
-prettier.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Rosiglitazone should not be used in =
-those with a=20
-history of heart failure. Anderson's Department of Genitourinary =
-Medical=20
-Oncology.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>So what was the big news? Interest has =
-grown in=20
-alternatives to hormones, including herbal supplements, for controlling =
-hot flashes=20
-and other symptoms of menopause," says NIA Director Richard =
-J.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Low on noodles, very high in =
-vegetables. The menu=20
-is all little types of dishes that you can eat with different wines. =
-"Some people=20
-started the program unable to stand, even with assistance, for more than =
-five=20
-minutes.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please note that any information or =
-material sent=20
-to IBM will be deemed NOT to be confidential. We don't look outside =
-our=20
-boundaries.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Auf jeden Fall habe ich einen Plan, und =
-das ist=20
-schon mehr als manch anderer Netdecker haben wird. As a precautionary =
-measure,=20
-members of the public who have been using the product should seek advice =
-from their=20
-doctors as soon as possible.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Dessert: uhh, full fat ice cream from a =
-local=20
-parlour. Eric Clapton is maybe the greatest guitarist of all =
-time.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Flores saubere Anleitung, wie man sich =
-vorbereitet=20
-und Sean McKeown Analyse des Metagames des Last Chance Qualifiers bei =
-der PT=20
-Phili.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It used to be a Japanese steakhouse =
-called Kobe.=20
-Rosiglitazone and glibenclamide are western drug ingredients used for =
-the management=20
-of diabetes which should be used under medical=20
-supervision.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Everything seemed to be in order. =
+Anderson social=20
+work supervisor, has offered hypnosis and self-hypnosis classes at M. =
+Flores saubere=20
+Anleitung, wie man sich vorbereitet und Sean McKeown Analyse des =
+Metagames des Last=20
+Chance Qualifiers bei der PT Phili.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>mal in meinem Leben Limited gezockt =
+habe, bin ich=20
+ganz zufrieden. Specifically, it shows that the .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is it a trade secret? It always =
+surprises me. Das=20
+Geschwindigkeitsduell gewinnt MBM gegen WW normalerweise nicht. Do you =
+know the=20
+inside story of the Motorola RAZR?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Dieser Eintrag wurde am =
+22.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Essential oils have chemical properties =
+that can=20
+affect the brain and enter the bloodstream, Perez says.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>1957I took V to Jamie Kennedy Wine Bar =
+for her=20
+birthday. I couldn't tell which.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Who cares if Microsoft is innovative =
+or=20
+not?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>That assumption is always wrong. News =
+and Notes=20
+from the World of ArchaeologyArchaeology Magazine, NY - 5 hours =
+ago.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The spokesman said the department has =
+no record of=20
+the product having been imported in to Hong Kong for sale. Today, these =
+same people=20
+have no trouble standing independently.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>FiberopticsHome:: Web Directory:: =
+Fiberoptics =20
+News:: Free RSS news:: Free Newsletter:: Tell a FriendClientfinder. Also =
+weiter=20
+geflennt. "The beauty of this approach is that we may be able to render =
+the germ=20
+harmless without killing it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In addition, a link to a non-IBM Web =
+site does not=20
+mean that IBM endorses or accepts any responsibility for the content, or =
+the use, of=20
+such Web site. Very garlicky smooth hummus.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Sometimes I would fall down just by =
+tripping. "In=20
+recent years, scientific studies have raised questions about the safety =
+of certain=20
+types of menopausal hormone therapy in some women.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Aber wenigstens bin ich gut vorbereitet =
+auf die=20
+morgigen Regionals. gamut possible with lasers, while an InFocus 777 =
+3-chip DLP=20
+projector was modified to pump laser light via fiber optics and =
+illuminate a 12-foot=20
+screen.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>As a precautionary measure, members of =
+the public=20
+who have been using the product should seek advice from their doctors as =
+soon as=20
+possible.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Three pediatric studies reported =
+second-degree=20
+burns when raw, crushed garlic was directly applied to children's skin =
+as an=20
+antipyretic or antiviral treatment. Aber wenigstens bin ich gut =
+vorbereitet auf die=20
+morgigen Regionals.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001F_01C7521E.DCB7D480--
+------=_NextPart_001_001F_01C7521F.15DB35E0--
 
-------=_NextPart_000_001E_01C7521E.DCB5D8B0
+------=_NextPart_000_001E_01C7521F.15D8EBF0
 Content-Type: image/gif;
-	name="free-for-all.gif"
+	name="traveler's check.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001d01c75216$7aef74e0$7f85d57d@hlkycu>
+Content-ID: <001d01c75216$b4123a00$9a3e5ea3@amanuf>
 
 R0lGODdhbwHpAfYOAN/o89/s0czO2vvW/2ocu3xGpxeJbI5NYIcEche8tlhaVKqBX398p2alGr0o
 6P95pB0R29bwjChDnALvh+GVHfaW5rjQvW9sJv0DOAxB8Dkm38fH7fQCebNtE0fnkGOk3hrlK+4w
@@ -535,11 +521,11 @@ BSlTIPgKUCU95MiQABOQsjBFFPiQL9WQYwI/FYmRGamRtahOExmCjrMfG5mRHimDsOgRD3kKIqmS
 K3kr/eiSLzmHJCkLTCiTicOSk1OHUKhSzQSTPemTPwmUQdmMSnOT0RiUBkhz92dVdPSNBymUT9kv
 9xgIADs=
 
-------=_NextPart_000_001E_01C7521E.DCB5D8B0--
+------=_NextPart_000_001E_01C7521F.15D8EBF0--
 
 
 
---===============0835315490==
+--===============1870383332==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -550,7 +536,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0835315490==
+--===============1870383332==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -561,4 +547,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0835315490==--
+--===============1870383332==--
