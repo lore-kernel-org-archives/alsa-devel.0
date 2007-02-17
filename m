@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HHwxn-0007FD-Rr delayed 24 hours
-Date: Sat, 17 Feb 2007 00:19:17 -0800
-Message-ID: <E1HIKmr-0005Ne-5k@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HI2l2-0002Qv-ET delayed 10 hours
+Date: Sat, 17 Feb 2007 01:42:18 -0800
+Message-ID: <E1HIM5C-00013j-NS@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HHwxn-0007FD-Rr
-The subject of the message is: Forget approximately huge .
-The date of the message is:    Fri, 16 Feb 2007 08:52:62 +0200
+The message identifier is:     1HI2l2-0002Qv-ET
+The subject of the message is: But one, preach the grievousness of the host and turned white and
+The date of the message is:    Fri, 16 Feb 2007 15:04:66 +0200
 
 The address to which the message has not yet been delivered is:
 
