@@ -1,7 +1,7 @@
-From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
-Subject: Persistant naming of Terratec Aureon 5.1 USB MK.2
-Date: Sat, 17 Feb 2007 14:36:47 +0100
-Message-ID: <1171719407.5843.5.camel@localhost>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HIFr1-0006xK-F2 delayed 10 hours
+Date: Sat, 17 Feb 2007 06:25:21 -0800
+Message-ID: <E1HIQV7-0001jG-7p@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,29 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear friends,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-I have a Terratec Aureon 5.1 USB MK.2 device.
+The message identifier is:     1HIFr1-0006xK-F2
+The subject of the message is: God, who went in the idol out with sackcloth, for his buckets, voice
+The date of the message is:    Sat, 17 Feb 2007 10:09:60 +0700
 
-Presently, Alsa displays:
+The address to which the message has not yet been delivered is:
 
-cat /proc/asound/cards
- 0 [UA25           ]: USB-Audio - EDIROL UA-25
-                      Roland EDIROL UA-25 at usb-0000:00:0b.0-2, full
-speed
- 1 [Audio          ]: USB-Audio - USB Audio
-                      USB Audio at usb-0000:00:0b.1-4.4.3, full speed
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-The name for the "Aureon 5.1 USB MK.2" is simply "Audio".
-Is there a solution to name it Aureon 5.1 USB MK.2?
-
-P.S. The wiki page for this device is here:
-http://alsa.opensrc.org/Terratec_Aureon_5.1_USB_MK.2
-
-Kind regards,
-Jean-Michel
- 
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
