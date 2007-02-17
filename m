@@ -1,7 +1,7 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HI2l2-0002Qv-ET delayed 24 hours
-Date: Sat, 17 Feb 2007 05:30:14 -0800
-Message-ID: <E1HIPdm-0001oN-VS@externalmx-1.sourceforge.net>
+From: Jean-Michel =?ISO-8859-1?Q?Pour=E9?= <jmpoure@free.fr>
+Subject: Persistant naming of Terratec Aureon 5.1 USB MK.2
+Date: Sat, 17 Feb 2007 14:36:47 +0100
+Message-ID: <1171719407.5843.5.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,30 +18,29 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+Dear friends,
 
-The message identifier is:     1HI2l2-0002Qv-ET
-The subject of the message is: But one, preach the grievousness of the host and turned white and
-The date of the message is:    Fri, 16 Feb 2007 15:04:66 +0200
+I have a Terratec Aureon 5.1 USB MK.2 device.
 
-The address to which the message has not yet been delivered is:
+Presently, Alsa displays:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+cat /proc/asound/cards
+ 0 [UA25           ]: USB-Audio - EDIROL UA-25
+                      Roland EDIROL UA-25 at usb-0000:00:0b.0-2, full
+speed
+ 1 [Audio          ]: USB-Audio - USB Audio
+                      USB Audio at usb-0000:00:0b.1-4.4.3, full speed
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+The name for the "Aureon 5.1 USB MK.2" is simply "Audio".
+Is there a solution to name it Aureon 5.1 USB MK.2?
+
+P.S. The wiki page for this device is here:
+http://alsa.opensrc.org/Terratec_Aureon_5.1_USB_MK.2
+
+Kind regards,
+Jean-Michel
+ 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
