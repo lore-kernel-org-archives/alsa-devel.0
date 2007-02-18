@@ -1,16 +1,13 @@
-From: "=?UTF-8?Q?Rafael_Esp=C3=ADndola?=" <rafael.espindola@gmail.com>
-Subject: [PATCH] sound working on the macbook pro
-Date: Sun, 18 Feb 2007 17:06:22 +0000
-Message-ID: <564d96fb0702180906u6dc0f0d9k2cd1d5e1409f1911@mail.gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: isa_bus: es1688
+Date: Sun, 18 Feb 2007 20:26:13 +0100
+Message-ID: <45D8A855.4090505@gmail.com>
+References: <45D2B99B.7000706@gmail.com>	<45D2BAB8.50102@gmail.com>	<s5h8xf0dij1.wl%tiwai@suse.de>	<45D3F422.4060200@gmail.com>
+	<s5hvei3abiw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_10759_9102784.1171818382928"
+Content-Type: multipart/mixed; boundary="------------090701050401040300010009"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67AD12DE
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 18:06:23 +0100 (MET)
-Received: by nf-out-0910.google.com with SMTP id n29so2071912nfc
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 09:06:23 -0800 (PST)
+In-Reply-To: <s5hvei3abiw.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,71 +17,166 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_10759_9102784.1171818382928
-Content-Type: text/plain; charset=UTF-8; format=flowed
+This is a multi-part message in MIME format.
+--------------090701050401040300010009
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-The problem with the pin config of the macbook pro is that it has no
-line outs. Because of this, snd_hda_parse_pin_def_config tries to hack
-the speaker into being a line out. This hack makes the subsequent
-setup fail.
+On 02/15/2007 12:46 PM, Takashi Iwai wrote:
 
-The attached patch does the followig:
-1) install the correct pin config (extracted from macos)
-2) removes the hack from snd_hda_parse_pin_def_config
-3) stac92xx_parse_auto_config no longuer aborts if line_outs == 0
+>> Thank you. Question -- would you allow me to seperate the legacy probing 
+>> code into its own function as per the attached?
+> 
+> That looks fine.  The resultant code will be the same by compiler's
+> optimization.  But, please fold lines in 80 chars for the newly added
+> code :)
 
-item 2 might cause some problems for parts of the system that expect
-this hack. IMHO, we should try to fix these problems and remove the
-hack. It is very confusing to see an Speaker appearing as a line out!
+Okay. After folding the new code, es1688 only had two lines >80 left, so 
+did those as well.
 
-Cheers,
-Rafael
+===
+es1688: separate out the legacy probing code into its own function.
 
-------=_Part_10759_9102784.1171818382928
-Content-Type: text/x-patch; name=sound.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_eybq8cue
-Content-Disposition: attachment; filename="sound.patch"
+Signed-off-by: Rene Herman <rene.herman@gmail.com>
+===
 
-ZGlmZiAtciBjNzU0MGY0MzBkNDUgcGNpL2hkYS9oZGFfY29kZWMuYwotLS0gYS9wY2kvaGRhL2hk
-YV9jb2RlYy5jCUZyaSBGZWIgMTYgMTM6Mjc6MTggMjAwNyArMDEwMAorKysgYi9wY2kvaGRhL2hk
-YV9jb2RlYy5jCVN1biBGZWIgMTggMTY6MTk6MjAgMjAwNyArMDAwMApAQCAtMjE3OSwyNiArMjE3
-OSw2IEBAIGludCBzbmRfaGRhX3BhcnNlX3Bpbl9kZWZfY29uZmlnKHN0cnVjdCAKIAkJICAgY2Zn
-LT5pbnB1dF9waW5zW0FVVE9fUElOX0NEXSwKIAkJICAgY2ZnLT5pbnB1dF9waW5zW0FVVE9fUElO
-X0FVWF0pOwogCi0JLyoKLQkgKiBGSVgtVVA6IGlmIG5vIGxpbmUtb3V0cyBhcmUgZGV0ZWN0ZWQs
-IHRyeSB0byB1c2Ugc3BlYWtlciBvciBIUCBwaW4KLQkgKiBhcyBhIHByaW1hcnkgb3V0cHV0Ci0J
-ICovCi0JaWYgKCEgY2ZnLT5saW5lX291dHMpIHsKLQkJaWYgKGNmZy0+c3BlYWtlcl9vdXRzKSB7
-Ci0JCQljZmctPmxpbmVfb3V0cyA9IGNmZy0+c3BlYWtlcl9vdXRzOwotCQkJbWVtY3B5KGNmZy0+
-bGluZV9vdXRfcGlucywgY2ZnLT5zcGVha2VyX3BpbnMsCi0JCQkgICAgICAgc2l6ZW9mKGNmZy0+
-c3BlYWtlcl9waW5zKSk7Ci0JCQljZmctPnNwZWFrZXJfb3V0cyA9IDA7Ci0JCQltZW1zZXQoY2Zn
-LT5zcGVha2VyX3BpbnMsIDAsIHNpemVvZihjZmctPnNwZWFrZXJfcGlucykpOwotCQl9IGVsc2Ug
-aWYgKGNmZy0+aHBfb3V0cykgewotCQkJY2ZnLT5saW5lX291dHMgPSBjZmctPmhwX291dHM7Ci0J
-CQltZW1jcHkoY2ZnLT5saW5lX291dF9waW5zLCBjZmctPmhwX3BpbnMsCi0JCQkgICAgICAgc2l6
-ZW9mKGNmZy0+aHBfcGlucykpOwotCQkJY2ZnLT5ocF9vdXRzID0gMDsKLQkJCW1lbXNldChjZmct
-PmhwX3BpbnMsIDAsIHNpemVvZihjZmctPmhwX3BpbnMpKTsKLQkJfQotCX0KLQogCXJldHVybiAw
-OwogfQogCmRpZmYgLXIgYzc1NDBmNDMwZDQ1IHBjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwotLS0g
-YS9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMJRnJpIEZlYiAxNiAxMzoyNzoxOCAyMDA3ICswMTAw
-CisrKyBiL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwlTdW4gRmViIDE4IDE2OjI2OjE3IDIwMDcg
-KzAwMDAKQEAgLTUzMCw5ICs1MzAsOSBAQCBzdGF0aWMgdW5zaWduZWQgaW50IG1hY2Jvb2tfcGlu
-X2NvbmZpZ3NbCiB9OwogCiBzdGF0aWMgdW5zaWduZWQgaW50IG1hY2Jvb2tfcHJvX3Bpbl9jb25m
-aWdzWzEwXSA9IHsKLQkweDAyMjE0MDFmLCAweDkwYTcwMTIwLCAweDAxODEzMDI0LCAweDAxMDE0
-MDEwLAotCTB4NDAwMDAwZmQsIDB4MDEwMTYwMTEsIDB4MTM0NWUyNDAsIDB4MTNjNWUyMmUsCi0J
-MHg0MDAwMDBmYywgMHg0MDAwMDBmYiwKKwkweDAxMmI0MDUwLCAweDkwYTAwMTEwLCAweDkwMTAw
-MTQwLCAweDQwMDAwMGYwLAorCTB4NDAwMDAwZjAsIDB4MDE4YjMwMjAsIDB4MDE0YmUwNjAsIDB4
-MDFjYmUwMzAsCisJMHg0MDAwMDBmMCwgMHg0MDAwMDBmMCwKIH07CiAKIHN0YXRpYyB1bnNpZ25l
-ZCBpbnQgKnN0YWM5MjJ4X2JyZF90YmxbU1RBQ185MjJYX01PREVMU10gPSB7CkBAIC0xNDAxLDgg
-KzE0MDEsNiBAQCBzdGF0aWMgaW50IHN0YWM5Mnh4X3BhcnNlX2F1dG9fY29uZmlnKHN0CiAJCQkJ
-CQkmc3BlYy0+YXV0b2NmZywKIAkJCQkJCXNwZWMtPmRtaWNfbmlkcykpIDwgMCkKIAkJcmV0dXJu
-IGVycjsKLQlpZiAoISBzcGVjLT5hdXRvY2ZnLmxpbmVfb3V0cykKLQkJcmV0dXJuIDA7IC8qIGNh
-bid0IGZpbmQgdmFsaWQgcGluIGNvbmZpZyAqLwogCiAJaWYgKChlcnIgPSBzdGFjOTJ4eF9hZGRf
-ZHluX291dF9waW5zKGNvZGVjLCAmc3BlYy0+YXV0b2NmZykpIDwgMCkKIAkJcmV0dXJuIGVycjsK
+Rene.
 
-------=_Part_10759_9102784.1171818382928
+--------------090701050401040300010009
+Content-Type: text/plain;
+ name="es1688_legacy_probe.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="es1688_legacy_probe.diff"
+
+diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
+index f7d0c5f..786438c 100644
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -77,13 +77,48 @@ static int __devinit snd_es1688_match(st
+ 	return enable[n];
+ }
+ 
+-static int __devinit snd_es1688_probe(struct device *dev, unsigned int n)
++static int __devinit snd_es1688_legacy_create(struct snd_card *card, 
++		struct device *dev, unsigned int n, struct snd_es1688 **rchip)
+ {
+-	static unsigned long possible_ports[] = {0x220, 0x240, 0x260};
++	static long possible_ports[] = {0x220, 0x240, 0x260};
+ 	static int possible_irqs[] = {5, 9, 10, 7, -1};
+ 	static int possible_dmas[] = {1, 3, 0, -1};
+-	int i, xirq, xdma;
+ 
++	int i, error;
++
++	if (irq[n] == SNDRV_AUTO_IRQ) {
++		irq[n] = snd_legacy_find_free_irq(possible_irqs);
++		if (irq[n] < 0) {
++			snd_printk(KERN_ERR "%s: unable to find a free IRQ\n",
++				dev->bus_id);
++			return -EBUSY;
++		}
++	}
++	if (dma8[n] == SNDRV_AUTO_DMA) {
++		dma8[n] = snd_legacy_find_free_dma(possible_dmas);
++		if (dma8[n] < 0) {
++			snd_printk(KERN_ERR "%s: unable to find a free DMA\n",
++				dev->bus_id);
++			return -EBUSY;
++		}
++	}
++
++	if (port[n] != SNDRV_AUTO_PORT)
++		return snd_es1688_create(card, port[n], mpu_port[n], irq[n],
++				mpu_irq[n], dma8[n], ES1688_HW_AUTO, rchip);
++
++	i = 0;
++	do {
++		port[n] = possible_ports[i];
++		error = snd_es1688_create(card, port[n], mpu_port[n], irq[n],
++				mpu_irq[n], dma8[n], ES1688_HW_AUTO, rchip);
++	} while (error < 0 && ++i < ARRAY_SIZE(possible_ports)); 
++
++	return error;
++}
++
++static int __devinit snd_es1688_probe(struct device *dev, unsigned int n)
++{
+ 	struct snd_card *card;
+ 	struct snd_es1688 *chip;
+ 	struct snd_opl3 *opl3;
+@@ -94,33 +129,7 @@ static int __devinit snd_es1688_probe(st
+ 	if (!card)
+ 		return -EINVAL;
+ 
+-	error = -EBUSY;
+-
+-	xirq = irq[n];
+-	if (xirq == SNDRV_AUTO_IRQ) {
+-		xirq = snd_legacy_find_free_irq(possible_irqs);
+-		if (xirq < 0) {
+-			snd_printk(KERN_ERR "%s: unable to find a free IRQ\n", dev->bus_id);
+-			goto out;
+-		}
+-	}
+-
+-	xdma = dma8[n];
+-	if (xdma == SNDRV_AUTO_DMA) {
+-		xdma = snd_legacy_find_free_dma(possible_dmas);
+-		if (xdma < 0) {
+-			snd_printk(KERN_ERR "%s: unable to find a free DMA\n", dev->bus_id);
+-			goto out;
+-		}
+-	}
+-
+-	if (port[n] == SNDRV_AUTO_PORT)
+-		for (i = 0; i < ARRAY_SIZE(possible_ports) && error < 0; i++)
+-			error = snd_es1688_create(card, possible_ports[i], mpu_port[n],
+-					xirq, mpu_irq[n], xdma, ES1688_HW_AUTO, &chip);
+-	else
+-		error = snd_es1688_create(card, port[n], mpu_port[n],
+-				xirq, mpu_irq[n], xdma, ES1688_HW_AUTO, &chip);
++	error = snd_es1688_legacy_create(card, dev, n, &chip);
+ 	if (error < 0)
+ 		goto out;
+ 
+@@ -134,19 +143,24 @@ static int __devinit snd_es1688_probe(st
+ 
+ 	strcpy(card->driver, "ES1688");
+ 	strcpy(card->shortname, pcm->name);
+-	sprintf(card->longname, "%s at 0x%lx, irq %i, dma %i", pcm->name, chip->port, xirq, xdma);
++	sprintf(card->longname, "%s at 0x%lx, irq %i, dma %i", pcm->name,
++		chip->port, chip->irq, chip->dma8);
+ 
+-	if (snd_opl3_create(card, chip->port, chip->port + 2, OPL3_HW_OPL3, 0, &opl3) < 0)
+-		printk(KERN_WARNING "%s: opl3 not detected at 0x%lx\n", dev->bus_id, chip->port);
++	if (snd_opl3_create(card, chip->port, chip->port + 2,
++			OPL3_HW_OPL3, 0, &opl3) < 0)
++		printk(KERN_WARNING "%s: opl3 not detected at 0x%lx\n",
++			dev->bus_id, chip->port);
+ 	else {
+ 		error =	snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 		if (error < 0)
+ 			goto out;
+ 	}
+ 
+-	if (mpu_irq[n] >= 0 && mpu_irq[n] != SNDRV_AUTO_IRQ && chip->mpu_port > 0) {
+-		error = snd_mpu401_uart_new(card, 0, MPU401_HW_ES1688, chip->mpu_port,
+-				0, mpu_irq[n], IRQF_DISABLED, NULL);
++	if (mpu_irq[n] >= 0 && mpu_irq[n] != SNDRV_AUTO_IRQ &&
++			chip->mpu_port > 0) {
++		error = snd_mpu401_uart_new(card, 0, MPU401_HW_ES1688,
++				chip->mpu_port, 0,
++				mpu_irq[n], IRQF_DISABLED, NULL);
+ 		if (error < 0)
+ 			goto out;
+ 	}
+
+--------------090701050401040300010009
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -95,7 +187,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------=_Part_10759_9102784.1171818382928
+--------------090701050401040300010009
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -106,4 +198,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------=_Part_10759_9102784.1171818382928--
+--------------090701050401040300010009--
