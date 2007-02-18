@@ -1,11 +1,20 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HIQ4a-0006Jj-GO delayed 24 hours
-Date: Sun, 18 Feb 2007 07:22:12 -0800
-Message-ID: <E1HInrg-00063J-1v@externalmx-1.sourceforge.net>
+From: "Maud Trout" <elsabeth@datavoiceinc.com>
+Subject: on jollie
+Date: Sun, 18 Feb 2007 15:23:01 +0000 (UTC)
+Message-ID: <01c7543a$e0eb6cb0$2000334d@1997g>
+Reply-To: Maud Trout <elsabeth@datavoiceinc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDD792D0
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 16:22:44 +0100 (MET)
+Received: from datavoiceinc.com (unknown [77.51.0.32])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	40BC999BEC
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 16:22:44 +0100 (MET)
+Date: Mon, 19 Feb 2007 18:30:26 +0300
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Inger Filip <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+Hi,
 
-The message identifier is:     1HIQ4a-0006Jj-GO
-The subject of the message is: the entering in the air.  As I baptized into
-The date of the message is:    Sat, 17 Feb 2007 08:57:45 -0500
+VIAvvGRA $3. 35
+VALvvIUM $1. 25
+CIAvvLIS $3. 75
+XAvvNAX
+SOvvMA
 
-The address to which the message has not yet been delivered is:
+FOR LESS!
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+http://vedrx.+com
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Remove "+" in the above link
+
+
+
+People got bored with that stuff she wrote about me last time
+I want to know how shes listening into private conversations when
+shes supposed to be banned from the grounds!  said Hermione angrily.
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
