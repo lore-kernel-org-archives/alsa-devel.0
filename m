@@ -1,13 +1,11 @@
-From: "Euthalia Gilman" <hinsichaz@landaminfo.com>
-Subject: on jollie
-Date: Sun, 18 Feb 2007 15:24:34 +0000 (UTC)
-Message-ID: <01c7543b$19c234b0$2000334d@1997g>
-Reply-To: Euthalia Gilman <hinsichaz@landaminfo.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HI2l2-0002Qv-ET delayed 48 hours
+Date: Sun, 18 Feb 2007 07:24:31 -0800
+Message-ID: <E1HIntv-0006QA-Lg@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Mon, 19 Feb 2007 18:32:01 +0300
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,29 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Adena Wheeler <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-VIAvvGRA $3. 35
-VALvvIUM $1. 25
-CIAvvLIS $3. 75
-XAvvNAX
-SOvvMA
+The message identifier is:     1HI2l2-0002Qv-ET
+The subject of the message is: But one, preach the grievousness of the host and turned white and
+The date of the message is:    Fri, 16 Feb 2007 15:04:66 +0200
 
-FOR LESS!
+The address to which the message has not yet been delivered is:
 
-http://vedrx.+com
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Remove "+" in the above link
-
-
-
-People got bored with that stuff she wrote about me last time
-I want to know how shes listening into private conversations when
-shes supposed to be banned from the grounds!  said Hermione angrily.
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
