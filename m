@@ -1,23 +1,23 @@
-From: "Leftwards G. Requests" <sally@goodcleaners.com>
-Subject: Few steps to become healthy!
-Date: Sat, 17 Feb 2007 15:18:41 -0500
-Message-ID: <6308656950.20070217151841@goodcleaners.com>
+From: "Watchmaker I. Chimney" <sebkri@gorace.com>
+Subject: vsluh mestnye
+Date: Sun, 18 Feb 2007 00:45:30 -0500
+Message-ID: <9958307420.20070218004530@gorace.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 775C738B
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 00:10:57 +0100 (MET)
-Received: from -1228118360 (host218-79-dynamic.54-82-r.retail.telecomitalia.it
-	[82.54.79.218])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2315397
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 01:44:45 +0100 (MET)
+Received: from -1224350496 (24-158-103-211.dhcp.kgpt.tn.charter.com
+	[24.158.103.211])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	48C6899901
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 00:10:10 +0100 (MET)
-Received: from goodcleaners.com (-1228918336 [-1228307672])
-	by host218-79-dynamic.54-82-r.retail.telecomitalia.it (Qmailv1) with
-	ESMTP id 8AE4442B38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Feb 2007 15:18:41 -0500
+	293CD99977
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 01:44:44 +0100 (MET)
+Received: from gorace.com (-1226074680 [-1226077600])
+	by 24-158-103-211.dhcp.kgpt.tn.charter.com (Qmailv1) with ESMTP id
+	A8317DBCEF
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2007 00:45:30 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,10 +30,8 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-US Drug store presents lots of medications at cheapest prices. You won't find such prices in United States or even Canada. We sell legal and quality pills, our friendly support will help you anytime you need. 
-http://mumrq.hk/
-
-And improve your sexual life! Only Confidential purchase. Verified by VISA! 
+Ona davno uzhe progibalas Vnutr, sdavlivaia mozg i obeshchaia skoroe bezumie. 
+Veroiatno, eta mestnost sluzhila im privychnymi ohotnichimi ugodiami, i oni ne Zhelali tak prosto sdavatsia. 
 
 
 -------------------------------------------------------------------------
