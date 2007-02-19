@@ -1,11 +1,16 @@
-From: "Jenny Eaton" <eduwkj@dealership.org>
-Subject: The custom renderer is defined in the FileUpload
-	faces-config file, as is the component family.
-Date: Sun, 18 Feb 2007 20:54:31 -0500
-Message-ID: <001a01c753c9$7e485530$b370856e@aed>
+From: "Liz Harrington" <nlne@staceycravens.com>
+Subject: In the right light,
+	she could still turn heads and charm the chips from casino players'
+	pockets.
+Date: Sun, 18 Feb 2007 17:54:59 -0800
+Message-ID: <001a01c753c9$de091ea0$cf61847b@cybupu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0494118491=="
+Content-Type: multipart/mixed; boundary="===============1313484242=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from VDSL-130-13-150-10.PHNX.QWEST.NET
+	(VDSL-130-13-150-10.PHNX.QWEST.NET [130.13.150.10])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 992FC2F7
+	for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2007 03:01:31 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,73 +20,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0494118491==
+--===============1313484242==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0016_01C7539F.956750B0"
+	boundary="----=_NextPart_000_0016_01C75386.CFD4C7A0"
 
-------=_NextPart_000_0016_01C7539F.956750B0
+------=_NextPart_000_0016_01C75386.CFD4C7A0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0017_01C7539F.956A0FD0"
+	boundary="----=_NextPart_001_0017_01C75386.CFD90D60"
 
-------=_NextPart_001_0017_01C7539F.956A0FD0
+------=_NextPart_001_0017_01C75386.CFD90D60
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-jMaki is all about enabling Java developers to use JavaScript in their =
-Java based applications as .
-You can use a single machine for development, testing, and QA, with each =
-function sequestered in its own Container. HtmlForm with the custom =
-renderer FileUploadForm. Since Sun open sourced millions of lines of =
-source code to launch the Open Solaris project, developers have flocked =
-to take part. Many developers go to JavaOne, but a lot more don't get to =
-go, so this is a good way to see some of the talks.
-There are several products on the market already that do this =
-efficiently; and it is moving from more specialized event driven =
-solutions to the main stream web servers too.
-Although JavaServer Faces technology does help overcome some of =
-theshortcomings associated with using AJAX, it cannot solve all of =
-theproblems, such as inconsistent browser support. In addition to giving =
-you the extra server-side functionality youneed for Ajax, JavaServer =
-Faces technology makes it easy for you to addAjax to your application. =
-Sun designs everything about Startup Essentials with new and emerging =
-companies in mind. The removed attributes were set to required values in =
-the FileUpload's custom renderer, and the added attributes were set as =
-hidden fields to be sent when the user submitted the form.
-But a poorly built applicationwill quickly show problems of maintenance =
-and scalability.
-"  By that he meant that problems arise when technologies and features =
-drive a product's design and the user's experience is only a secondary =
-consideration. Point and click to define user flow through your =
-applicationusing standard JavaServer Faces navigation in the Page =
-Navigator.
-The JavaScript function also specifies a JavaScript callback function.
-A demo application called ScriptCalc will provide a working example of =
-how to extend your applications with user-defined scripts in the =
-JavaScript programming language. At the same time, a page author can =
-include a set ofcomponents on any of their pages using a component tag =
-library withouthaving toknow the details of how a component works. The =
-application used in these articles is derived from the Duke'sBookstore =
-application, included in the Java EE 5 Tutorial. The second benefit is =
-the flip side of the first.
-The Java BluePrints Solutions Catalog's AJAX FileUpload component shows =
-how to use the default JavaServer Faces renderers when creating a custom =
-component.
-This is often the case when adding AJAX functionality to an existing =
-component.
-Allowing JavaScript to directly configure parameters such as the URL =
-accessed by the proxy or a query to a database could open yourself up to =
-unauthorized access.
-With Dynamic Faces, you can get rid of the button and rely on Dynamic =
-Faces to do the work of updating these components using Ajax. Rate and =
-ReviewTell us what you think of the content of this page. As a result of =
-the problems associated with AJAX, new AJAX frameworkshave emerged to =
-overcome them.
-------=_NextPart_001_0017_01C7539F.956A0FD0
+How much would you have to increase your sales by to make enough to =
+cover the cost of a tempting prize like that?
+Once a visitor buys through your affiliate link, any repeat sales in the =
+future will be automatically credited to you. The one I chose, a long =
+time ago, was Search Engine Optimization. Barbaro was limping and =
+doctors soon learned he had fractured three bones in and around the =
+ankle of his right hind leg. For more than two decades, she delivered =
+mail and supplies each week to the tiny community of Skwentna, Alaska.
+Perhaps you might be able to sign them up to work the late shift at late =
+notice, or force them to spend the evening writing up a =
+supposedly-urgent report.
+At the time, "Chicken Ramen" was considered a luxury item since Japanese =
+grocery stores sold fresh noodles at one-sixth the cost of Ando's =
+product. You can have one general domain name and add sub-domains for =
+all your sites. Let's get real with money and play to win. Mostly, I =
+just didn't know there was much else, and I was rather good at SEO and I =
+enjoyed it.
+And besides, I had been offered another job already; this time back as a =
+permanent member of staff, working in the financial services industry.
+Be positiveYes, you can do it. But even if someone is in a faithful and =
+loving relationship, you might still have a bit of fun chipping away at =
+their smug happiness.
+If you do, please don't take offense.
+1 Body Care - HealthCare Affiliate Program: Affiliate Advice Internet =
+affiliate marketing advice and help. These niche site creators have done =
+all the work for you. In response, a concerned friend wrote to Richard =
+Simmons in 1989 and asked for his help. thanks for the memories, Vince.
+Here are some interesting things I learned from the terms and =
+conditions.
+Barbaro was rushed to the University of Pennsylvania's New Bolton Center =
+near Philadelphia where he underwent a five-hour operation to repair the =
+damage.
+"She was unsinkable, indefatigable, incorrigible, irresistible.
+See them all in the archives. Additionally, everyone who visits the =
+sales site through your link receives a cookie which has a 3 year life =
+span. thanks for the memories, Vince.
+------=_NextPart_001_0017_01C75386.CFD90D60
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -90,105 +82,89 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"scowl" hspace=3D0=20
-src=3D"cid:001501c753c9$7e3a9990$b370856e@aed" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"mud" hspace=3D0=20
+src=3D"cid:001501c753c9$ddf3c1e0$cf61847b@cybupu" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>jMaki is all about enabling Java =
-developers to use=20
-JavaScript in their Java based applications as .</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You can use a single machine for =
-development,=20
-testing, and QA, with each function sequestered in its own Container. =
-HtmlForm with=20
-the custom renderer FileUploadForm. Since Sun open sourced millions of =
-lines of=20
-source code to launch the Open Solaris project, developers have flocked =
-to take=20
-part. Many developers go to JavaOne, but a lot more don't get to go, so =
-this is a=20
-good way to see some of the talks.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>There are several products on the =
-market already=20
-that do this efficiently; and it is moving from more specialized event =
-driven=20
-solutions to the main stream web servers too.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Although JavaServer Faces technology =
-does help=20
-overcome some of theshortcomings associated with using AJAX, it cannot =
-solve all of=20
-theproblems, such as inconsistent browser support. In addition to giving =
-you the=20
-extra server-side functionality youneed for Ajax, JavaServer Faces =
-technology makes=20
-it easy for you to addAjax to your application. Sun designs everything =
-about Startup=20
-Essentials with new and emerging companies in mind. The removed =
-attributes were set=20
-to required values in the FileUpload's custom renderer, and the added =
-attributes=20
-were set as hidden fields to be sent when the user submitted the =
-form.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But a poorly built applicationwill =
-quickly show=20
-problems of maintenance and scalability.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"  By that he meant that problems arise =
-when=20
-technologies and features drive a product's design and the user's =
-experience is only=20
-a secondary consideration. Point and click to define user flow through =
-your=20
-applicationusing standard JavaServer Faces navigation in the Page=20
-Navigator.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The JavaScript function also specifies =
-a JavaScript=20
-callback function.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A demo application called ScriptCalc =
-will provide a=20
-working example of how to extend your applications with user-defined =
-scripts in the=20
-JavaScript programming language. At the same time, a page author can =
-include a set=20
-ofcomponents on any of their pages using a component tag library =
-withouthaving=20
-toknow the details of how a component works. The application used in =
-these articles=20
-is derived from the Duke'sBookstore application, included in the Java EE =
-5 Tutorial.=20
-The second benefit is the flip side of the first.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The Java BluePrints Solutions Catalog's =
-AJAX=20
-FileUpload component shows how to use the default JavaServer Faces =
-renderers when=20
-creating a custom component.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This is often the case when adding =
-AJAX=20
-functionality to an existing component.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Allowing JavaScript to directly =
-configure=20
-parameters such as the URL accessed by the proxy or a query to a =
-database could open=20
-yourself up to unauthorized access.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>With Dynamic Faces, you can get rid of =
-the button=20
-and rely on Dynamic Faces to do the work of updating these components =
-using Ajax.=20
-Rate and ReviewTell us what you think of the content of this page. As a =
-result of=20
-the problems associated with AJAX, new AJAX frameworkshave emerged to =
-overcome=20
-them.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>How much would you have to increase =
+your sales by=20
+to make enough to cover the cost of a tempting prize like =
+that?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Once a visitor buys through your =
+affiliate link,=20
+any repeat sales in the future will be automatically credited to you. =
+The one I=20
+chose, a long time ago, was Search Engine Optimization. Barbaro was =
+limping and=20
+doctors soon learned he had fractured three bones in and around the =
+ankle of his=20
+right hind leg. For more than two decades, she delivered mail and =
+supplies each week=20
+to the tiny community of Skwentna, Alaska.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Perhaps you might be able to sign them =
+up to work=20
+the late shift at late notice, or force them to spend the evening =
+writing up a=20
+supposedly-urgent report.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>At the time, "Chicken Ramen" was =
+considered a=20
+luxury item since Japanese grocery stores sold fresh noodles at =
+one-sixth the cost=20
+of Ando's product. You can have one general domain name and add =
+sub-domains for all=20
+your sites. Let's get real with money and play to win. Mostly, I just =
+didn't know=20
+there was much else, and I was rather good at SEO and I enjoyed =
+it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>And besides, I had been offered another =
+job=20
+already; this time back as a permanent member of staff, working in the =
+financial=20
+services industry.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Be positiveYes, you can do it. But even =
+if someone=20
+is in a faithful and loving relationship, you might still have a bit of =
+fun chipping=20
+away at their smug happiness.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>If you do, please don't take =
+offense.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>1 Body Care - HealthCare Affiliate =
+Program:=20
+Affiliate Advice Internet affiliate marketing advice and help. These =
+niche site=20
+creators have done all the work for you. In response, a concerned friend =
+wrote to=20
+Richard Simmons in 1989 and asked for his help. thanks for the =
+memories,=20
+Vince.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Here are some interesting things I =
+learned from the=20
+terms and conditions.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Barbaro was rushed to the University =
+of=20
+Pennsylvania's New Bolton Center near Philadelphia where he underwent a =
+five-hour=20
+operation to repair the damage.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"She was unsinkable, indefatigable, =
+incorrigible,=20
+irresistible.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>See them all in the archives. =
+Additionally,=20
+everyone who visits the sales site through your link receives a cookie =
+which has a 3=20
+year life span. thanks for the memories, =
+Vince.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0017_01C7539F.956A0FD0--
+------=_NextPart_001_0017_01C75386.CFD90D60--
 
-------=_NextPart_000_0016_01C7539F.956750B0
+------=_NextPart_000_0016_01C75386.CFD4C7A0
 Content-Type: image/gif;
-	name="listlessly.gif"
+	name="herein.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001501c753c9$7e3a9990$b370856e@aed>
+Content-ID: <001501c753c9$ddf3c1e0$cf61847b@cybupu>
 
 R0lGODdhbQFrAfUYAB0pFUEaJyo7Le+g+cfrba+/mZSXzneB0NCruWts39HJsvPg3sVoWYuwUfC7
 eHak11RpzuFsjpvjpN13moHSi030tGyb7P5p14Ram9+suodgAmE5ixY4pUsElp8raArftCGl0DO4
@@ -440,11 +416,11 @@ fmVf8f3eHGGf/GnICN5XBE6dg+oZXvRM2bmVWgiSFQQKnAm23c9tHwm6T+48Xvq5G+eFgc3Fn9X5
 AeH5mw1KXdyNnoqp4OCh4BNCYREBm+X1G+MZXPQhIdRh4A16EB5E4RciYAH2FhOGHulB4bUJHBg6
 UBEKigNiARn+zxguWhMq2BSeyf5l0MY1YTNoYQJyRdSUQRAAADs=
 
-------=_NextPart_000_0016_01C7539F.956750B0--
+------=_NextPart_000_0016_01C75386.CFD4C7A0--
 
 
 
---===============0494118491==
+--===============1313484242==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -455,7 +431,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0494118491==
+--===============1313484242==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -466,4 +442,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0494118491==--
+--===============1313484242==--
