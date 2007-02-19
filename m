@@ -1,19 +1,15 @@
-From: "Gary Alexander" <qwjie@shotgun.tv>
-Subject: save your money, become well.jSHB
-Date: Mon, 19 Feb 2007 22:32:56 +0900
-Message-ID: <uya55t43282.5@klnhbnvxglo>
+From: Adam =?UTF-8?B?VGxhxYJrYQ==?= <atlka@pg.gda.pl>
+Subject: Re: Quality resampling code for libasound
+Date: Mon, 19 Feb 2007 14:36:09 +0100
+Message-ID: <20070219143609.1231d8b2@localhost.localdomain>
+References: <45D92131.50601@usherbrooke.ca> <s5hirdy72ue.wl%tiwai@suse.de>
+	<45D99DF7.90204@usherbrooke.ca>
+	<200702191411.25988.prakash@punnoor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17CD224B
-	for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2007 14:32:53 +0100 (MET)
-Received: from softbank219035167091.bbtec.net (softbank219035167091.bbtec.net
-	[219.35.167.91])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	BD2BF6BB53
-	for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2007 14:32:51 +0100 (MET)
+In-Reply-To: <200702191411.25988.prakash@punnoor.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,22 +19,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-William field tenney a curious The other, old friends and Giver
-
-VVA_AGRA  $1, 50
-CVA_ALIS  $2, 80
-ZOLO_VFT $1, 60
-
-http://qwjie.iwewuw.info/?c=qwjie
---
-traverse, the Loose, Features over near ate grass in orthodox order:
-
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+RG5pYSBNb24sIDE5IEZlYiAyMDA3IDE0OjExOjI1ICswMTAwClByYWthc2ggUHVubm9vciA8cHJh
+a2FzaEBwdW5ub29yLmRlPiBuYXBpc2HFgihhKToKPiA+IFdoYXQ/PyBJIGhvcGUgeW91J3JlIGpv
+a2luZyBoZXJlLiBJdCdzIG9uZSB0aGluZyBpZiB5b3UgZG9uJ3Qgd2FudAo+ID4gbXkgY29kZSBm
+b3IgYSByZWFzb24gb3IgYW5vdGhlciwgYnV0IGJlaW5nIGhhcHB5IHRvIGtlZXAgdGhpbmdzIGFz
+Cj4gPiB0aGV5IGFyZSBjdXJyZW50bHkgaXMganVzdCBpbnNhbmUuIFdoYXQgbGliYXNvdW5kIGRv
+ZXMgaXMgbm90Cj4gPiByZXNhbXBsaW5nLCBpdCdzIGF1ZGlvIG11dGlsYXRpb24sIHBsYWluIGFu
+ZCBzaW1wbGUuCj4gCj4gQUNLCgpTb3JyeSB0byBhZG1pdCBidXQgdGhhdCdzIHRydWUuIEkgdXNl
+ZCB0byBsaXN0ZW4gc29tZSBvZiBteSBtdXNpYyBDRCdzCnJpcHBlZCB0byBsb3NlbGVzcyBGTEFD
+IGZvcm1hdC4gSSBhbSB1c2luZyB4bW1zIHdpdGggc29tZSBhZGRpdGlvbmFsCnNvdW5kIGVmZmVj
+dHMgcHJvY2Vzc29yIGFuZCBpdCB3b3JrcyBuaWNlbHkgdW5kZXIgT1NTIG9yIE9TUyBmcm9tCnd3
+dy5vcGVuc291bmQuY29tLiBXaXRoIEFMU0EgKHhtbXMgaGFzIG5hdGl2ZSBzdXBwb3J0IGZvciBB
+TFNBIHRvbykgaXQKc291bmRzIHRlcnJpYmx5IGFuZCBhZGRpdGlvbmFsIGVmZmVjdHMgYXJlIGRp
+c3RvcnRlZCBhbmQgbm90IHVzYWJsZS4KSXQncyBvZiBjb3Vyc2UgNDQxMDAgbWF0ZXJpYWwgd2hp
+bGUgY2FyZCBpcyB3b3JraW5nIGF0IDQ4MDAwCnNvIHVwc2FtcGxpbmcgaXMgdGhlIGNhc2UuClNv
+IGJldHRlciByZXNhbXBsaW5nIGRlZmF1bHQgcGx1Z2luIGlzIGEgbXVzdCBJTUhPLgoKU291bmQg
+cXVhbGl0eSBpcyB2ZXJ5IGltcG9ydGFudCBhbmQgaWYgd2UgY2FuIHVzZSBhZGRpdGlvbmFsCnNv
+dW5kIHByb2Nlc3NpbmcgcGx1Z2lucyB3aGljaCBkbyBzdGVyZW8gdG8gNS4xIG9yIGhlYWRwaG9u
+ZSBtb2RlCnNvdW5kIHRyYW5zZm9ybWF0aW9uIHRoZXJlIG11c3QgYmUgcHJvcGVyIHF1YWxpdHkg
+cmVzYW1wbGVyIGJlY2F1c2UKaW4gb3RoZXIgY2FzZSByZXN1bHRzIHdpbGwgYmUgbm90IGFjY2Vw
+dGFibGUgZm9yIG1hbnkgdXNlcnMuCgpSZWdhcmRzCi0tIApBZGFtIFRsYcWCa2EgICAgICAgbWFp
+bHRvOmF0bGthQHBnLmdkYS5wbCAgICBedl4gXnZeIF52XgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUYWtl
+IFN1cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKSm9pbiBTb3Vy
+Y2VGb3JnZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFuY2UgdG8g
+c2hhcmUgeW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVm
+IHN1cnZleXMtYW5kIGVhcm4gY2FzaApodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhw
+P3BhZ2U9am9pbi5waHAmcD1zb3VyY2Vmb3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
