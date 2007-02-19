@@ -1,9 +1,10 @@
-From: "Teddy Hoover" <dxdjy@precocinadoscorella.com>
-Subject: popover-grouping a, .
-Date: Sun, 18 Feb 2007 20:56:00 -0500
-Message-ID: <001a01c753c9$46994450$45ad8b38@gjqy>
+From: "Jenny Eaton" <eduwkj@dealership.org>
+Subject: The custom renderer is defined in the FileUpload
+	faces-config file, as is the component family.
+Date: Sun, 18 Feb 2007 20:54:31 -0500
+Message-ID: <001a01c753c9$7e485530$b370856e@aed>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0217821409=="
+Content-Type: multipart/mixed; boundary="===============0494118491=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,66 +15,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0217821409==
+--===============0494118491==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0016_01C7539F.5DB83FD0"
+	boundary="----=_NextPart_000_0016_01C7539F.956750B0"
 
-------=_NextPart_000_0016_01C7539F.5DB83FD0
+------=_NextPart_000_0016_01C7539F.956750B0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0017_01C7539F.5DBAFEF0"
+	boundary="----=_NextPart_001_0017_01C7539F.956A0FD0"
 
-------=_NextPart_001_0017_01C7539F.5DBAFEF0
+------=_NextPart_001_0017_01C7539F.956A0FD0
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-For example, component developers creating custom components for web =
-applications build Ajax functionality into the design.
-moreBuyingChoices td. The server returns a response, which is then =
-presented to the user courtesy of more JavaScript code. At Sun's product =
-announcement last week, Tim O'Reilly, president and CEO of O'Reilly =
-Media, Inc. Learn how to increase the security, scalability and =
-performance of your PHP applications by deploying an optimized version =
-of PHP on Solaris.
-For example, a user can continue to move the mouse over a Google map and =
-see a smooth, uninterrupted change in the display because extended parts =
-of the map have been loaded asynchronously.
-Because the component's renderers are specific to an implementation, it =
-would not be wise to try to extend the base renderer class. " The second =
-was a developer session given by John Crupi titled "Ajax: Putting a Face =
-on SOA. Unlike JBI, some technologies such as Servlets currently have a =
-little catching up to do until such asynchronous, event driven responses =
-are dealt with in a standardized way and fit well. Got a question about =
-Java Plug-In technology?
-For instance, the latest version of Solaris, released in January, =
-includes ZFS features that have been available to the OpenSolaris =
-community for several months.
-The event will feature 2 tutorial days followed by three full conference =
-days with 12 tracks. Another important aspect of AJAX-enabled sites is =
-that the events that trigger AJAX responses aren't limited to submitting =
-data in a form or clicking on a link.
 jMaki is all about enabling Java developers to use JavaScript in their =
 Java based applications as .
-What can we do to help you guys? With Dynamic Faces, you can get rid of =
-the button and rely on Dynamic Faces to do the work of updating these =
-components using Ajax. Van Hoogenveen also shares how Sun is porting =
-Solaris to work with the open source Xen virtual machine technology. If =
-you don't find components or widgets that provide the Ajax functionality =
-you need, you must do a lot more JavaScript coding yourself.
-Now Available for DownloadThis preview release introduces UML modeling, =
-XML tools, and Web services orchestration to the NetBeans community.
-The Ajax techniqueuses JavaScripttechnology to respond to a user's =
-action on a widget.
-Garret underscored that what makes the iPod a success is its simplicity =
-and attention to the user's experience.
-These days, users of web sites no longer accept this kind ofinterruption =
-in their workflow. 1 Participants Wanted! Sun designs everything about =
-Startup Essentials with new and emerging companies in mind.
-------=_NextPart_001_0017_01C7539F.5DBAFEF0
+You can use a single machine for development, testing, and QA, with each =
+function sequestered in its own Container. HtmlForm with the custom =
+renderer FileUploadForm. Since Sun open sourced millions of lines of =
+source code to launch the Open Solaris project, developers have flocked =
+to take part. Many developers go to JavaOne, but a lot more don't get to =
+go, so this is a good way to see some of the talks.
+There are several products on the market already that do this =
+efficiently; and it is moving from more specialized event driven =
+solutions to the main stream web servers too.
+Although JavaServer Faces technology does help overcome some of =
+theshortcomings associated with using AJAX, it cannot solve all of =
+theproblems, such as inconsistent browser support. In addition to giving =
+you the extra server-side functionality youneed for Ajax, JavaServer =
+Faces technology makes it easy for you to addAjax to your application. =
+Sun designs everything about Startup Essentials with new and emerging =
+companies in mind. The removed attributes were set to required values in =
+the FileUpload's custom renderer, and the added attributes were set as =
+hidden fields to be sent when the user submitted the form.
+But a poorly built applicationwill quickly show problems of maintenance =
+and scalability.
+"  By that he meant that problems arise when technologies and features =
+drive a product's design and the user's experience is only a secondary =
+consideration. Point and click to define user flow through your =
+applicationusing standard JavaServer Faces navigation in the Page =
+Navigator.
+The JavaScript function also specifies a JavaScript callback function.
+A demo application called ScriptCalc will provide a working example of =
+how to extend your applications with user-defined scripts in the =
+JavaScript programming language. At the same time, a page author can =
+include a set ofcomponents on any of their pages using a component tag =
+library withouthaving toknow the details of how a component works. The =
+application used in these articles is derived from the Duke'sBookstore =
+application, included in the Java EE 5 Tutorial. The second benefit is =
+the flip side of the first.
+The Java BluePrints Solutions Catalog's AJAX FileUpload component shows =
+how to use the default JavaServer Faces renderers when creating a custom =
+component.
+This is often the case when adding AJAX functionality to an existing =
+component.
+Allowing JavaScript to directly configure parameters such as the URL =
+accessed by the proxy or a query to a database could open yourself up to =
+unauthorized access.
+With Dynamic Faces, you can get rid of the button and rely on Dynamic =
+Faces to do the work of updating these components using Ajax. Rate and =
+ReviewTell us what you think of the content of this page. As a result of =
+the problems associated with AJAX, new AJAX frameworkshave emerged to =
+overcome them.
+------=_NextPart_001_0017_01C7539F.956A0FD0
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -82,97 +90,105 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"raring" hspace=3D0=20
-src=3D"cid:001501c753c9$468b88b0$45ad8b38@gjqy" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"scowl" hspace=3D0=20
+src=3D"cid:001501c753c9$7e3a9990$b370856e@aed" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For example, component developers =
-creating custom=20
-components for web applications build Ajax functionality into the=20
-design.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>moreBuyingChoices td. The server =
-returns a=20
-response, which is then presented to the user courtesy of more =
-JavaScript code. At=20
-Sun's product announcement last week, Tim O'Reilly, president and CEO of =
-O'Reilly=20
-Media, Inc. Learn how to increase the security, scalability and =
-performance of your=20
-PHP applications by deploying an optimized version of PHP on =
-Solaris.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For example, a user can continue to =
-move the mouse=20
-over a Google map and see a smooth, uninterrupted change in the display =
-because=20
-extended parts of the map have been loaded asynchronously.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Because the component's renderers are =
-specific to=20
-an implementation, it would not be wise to try to extend the base =
-renderer class. "=20
-The second was a developer session given by John Crupi titled "Ajax: =
-Putting a Face=20
-on SOA. Unlike JBI, some technologies such as Servlets currently have a =
-little=20
-catching up to do until such asynchronous, event driven responses are =
-dealt with in=20
-a standardized way and fit well. Got a question about Java Plug-In=20
-technology?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For instance, the latest version of =
-Solaris,=20
-released in January, includes ZFS features that have been available to =
-the=20
-OpenSolaris community for several months.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The event will feature 2 tutorial days =
-followed by=20
-three full conference days with 12 tracks. Another important aspect of =
-AJAX-enabled=20
-sites is that the events that trigger AJAX responses aren't limited to =
-submitting=20
-data in a form or clicking on a link.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>jMaki is all about enabling Java =
 developers to use=20
 JavaScript in their Java based applications as .</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What can we do to help you guys? With =
-Dynamic=20
-Faces, you can get rid of the button and rely on Dynamic Faces to do the =
-work of=20
-updating these components using Ajax. Van Hoogenveen also shares how Sun =
-is porting=20
-Solaris to work with the open source Xen virtual machine technology. If =
-you don't=20
-find components or widgets that provide the Ajax functionality you need, =
-you must do=20
-a lot more JavaScript coding yourself.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Now Available for DownloadThis preview =
-release=20
-introduces UML modeling, XML tools, and Web services orchestration to =
-the NetBeans=20
-community.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The Ajax techniqueuses =
-JavaScripttechnology to=20
-respond to a user's action on a widget.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Garret underscored that what makes the =
-iPod a=20
-success is its simplicity and attention to the user's =
-experience.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>These days, users of web sites no =
-longer accept=20
-this kind ofinterruption in their workflow. 1 Participants Wanted! Sun =
-designs=20
-everything about Startup Essentials with new and emerging companies =
-in=20
-mind.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>You can use a single machine for =
+development,=20
+testing, and QA, with each function sequestered in its own Container. =
+HtmlForm with=20
+the custom renderer FileUploadForm. Since Sun open sourced millions of =
+lines of=20
+source code to launch the Open Solaris project, developers have flocked =
+to take=20
+part. Many developers go to JavaOne, but a lot more don't get to go, so =
+this is a=20
+good way to see some of the talks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There are several products on the =
+market already=20
+that do this efficiently; and it is moving from more specialized event =
+driven=20
+solutions to the main stream web servers too.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Although JavaServer Faces technology =
+does help=20
+overcome some of theshortcomings associated with using AJAX, it cannot =
+solve all of=20
+theproblems, such as inconsistent browser support. In addition to giving =
+you the=20
+extra server-side functionality youneed for Ajax, JavaServer Faces =
+technology makes=20
+it easy for you to addAjax to your application. Sun designs everything =
+about Startup=20
+Essentials with new and emerging companies in mind. The removed =
+attributes were set=20
+to required values in the FileUpload's custom renderer, and the added =
+attributes=20
+were set as hidden fields to be sent when the user submitted the =
+form.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But a poorly built applicationwill =
+quickly show=20
+problems of maintenance and scalability.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"  By that he meant that problems arise =
+when=20
+technologies and features drive a product's design and the user's =
+experience is only=20
+a secondary consideration. Point and click to define user flow through =
+your=20
+applicationusing standard JavaServer Faces navigation in the Page=20
+Navigator.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The JavaScript function also specifies =
+a JavaScript=20
+callback function.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A demo application called ScriptCalc =
+will provide a=20
+working example of how to extend your applications with user-defined =
+scripts in the=20
+JavaScript programming language. At the same time, a page author can =
+include a set=20
+ofcomponents on any of their pages using a component tag library =
+withouthaving=20
+toknow the details of how a component works. The application used in =
+these articles=20
+is derived from the Duke'sBookstore application, included in the Java EE =
+5 Tutorial.=20
+The second benefit is the flip side of the first.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The Java BluePrints Solutions Catalog's =
+AJAX=20
+FileUpload component shows how to use the default JavaServer Faces =
+renderers when=20
+creating a custom component.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This is often the case when adding =
+AJAX=20
+functionality to an existing component.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Allowing JavaScript to directly =
+configure=20
+parameters such as the URL accessed by the proxy or a query to a =
+database could open=20
+yourself up to unauthorized access.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>With Dynamic Faces, you can get rid of =
+the button=20
+and rely on Dynamic Faces to do the work of updating these components =
+using Ajax.=20
+Rate and ReviewTell us what you think of the content of this page. As a =
+result of=20
+the problems associated with AJAX, new AJAX frameworkshave emerged to =
+overcome=20
+them.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0017_01C7539F.5DBAFEF0--
+------=_NextPart_001_0017_01C7539F.956A0FD0--
 
-------=_NextPart_000_0016_01C7539F.5DB83FD0
+------=_NextPart_000_0016_01C7539F.956750B0
 Content-Type: image/gif;
-	name="parable.gif"
+	name="listlessly.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001501c753c9$468b88b0$45ad8b38@gjqy>
+Content-ID: <001501c753c9$7e3a9990$b370856e@aed>
 
 R0lGODdhbQFrAfUYAB0pFUEaJyo7Le+g+cfrba+/mZSXzneB0NCruWts39HJsvPg3sVoWYuwUfC7
 eHak11RpzuFsjpvjpN13moHSi030tGyb7P5p14Ram9+suodgAmE5ixY4pUsElp8raArftCGl0DO4
@@ -424,11 +440,11 @@ fmVf8f3eHGGf/GnICN5XBE6dg+oZXvRM2bmVWgiSFQQKnAm23c9tHwm6T+48Xvq5G+eFgc3Fn9X5
 AeH5mw1KXdyNnoqp4OCh4BNCYREBm+X1G+MZXPQhIdRh4A16EB5E4RciYAH2FhOGHulB4bUJHBg6
 UBEKigNiARn+zxguWhMq2BSeyf5l0MY1YTNoYQJyRdSUQRAAADs=
 
-------=_NextPart_000_0016_01C7539F.5DB83FD0--
+------=_NextPart_000_0016_01C7539F.956750B0--
 
 
 
---===============0217821409==
+--===============0494118491==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -439,7 +455,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0217821409==
+--===============0494118491==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -450,4 +466,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0217821409==--
+--===============0494118491==--
