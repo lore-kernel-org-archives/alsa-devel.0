@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HHwxn-0007FD-Rr delayed 72 hours
-Date: Mon, 19 Feb 2007 06:43:39 -0800
-Message-ID: <E1HJ9jv-0004M6-CD@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HIQ4a-0006Jj-GO delayed 48 hours
+Date: Mon, 19 Feb 2007 07:17:12 -0800
+Message-ID: <E1HJAGO-0001Nb-H4@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HHwxn-0007FD-Rr
-The subject of the message is: Forget approximately huge .
-The date of the message is:    Fri, 16 Feb 2007 08:52:62 +0200
+The message identifier is:     1HIQ4a-0006Jj-GO
+The subject of the message is: the entering in the air.  As I baptized into
+The date of the message is:    Sat, 17 Feb 2007 08:57:45 -0500
 
 The address to which the message has not yet been delivered is:
 
