@@ -1,9 +1,9 @@
 From: "Luz" <soberytim@isslimited.co.uk>
 Subject: Please be discreet
-Date: Tue, 20 Feb 2007 18:41:08 +0100
-Message-ID: <000b01c75516$4dc7ce10$00000000@pD9E3E81D.dip.t-dialin.net>
+Date: Tue, 20 Feb 2007 18:41:09 +0100
+Message-ID: <000b01c75516$4e24e230$00000000@pD9E3E81D.dip.t-dialin.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1860775435=="
+Content-Type: multipart/mixed; boundary="===============1301991691=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,22 +14,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Mireya <alsa-devel@alsa.jcu.cz>
+To: Mireya <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1860775435==
+--===============1301991691==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0007_01C75516.4DC7CE10"
+	boundary="----=_NextPart_000_0007_01C75516.4E24E230"
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0007_01C75516.4DC7CE10
+------=_NextPart_000_0007_01C75516.4E24E230
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0008_01C75516.4DC7CE10"
+	boundary="----=_NextPart_001_0008_01C75516.4E24E230"
 
-------=_NextPart_001_0008_01C75516.4DC7CE10
+------=_NextPart_001_0008_01C75516.4E24E230
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
@@ -101,7 +101,7 @@ Chillingworth,peel It came to pass, not long cry stamp after sharp the =
 scene above reThere chosen song was witchcraft ripe in little Pearl's =
 wood eyes; and h
 
-------=_NextPart_001_0008_01C75516.4DC7CE10
+------=_NextPart_001_0008_01C75516.4E24E230
 Content-Type: text/html
 Content-Transfer-Encoding: quoted-printable
 
@@ -190,9 +190,9 @@ after sharp the scene above reThere chosen song was witchcraft ripe in =
 little Pearl's wood eyes; and h
 </DIV></BODY></HTML>
 
-------=_NextPart_001_0008_01C75516.4DC7CE10--
+------=_NextPart_001_0008_01C75516.4E24E230--
 
-------=_NextPart_000_0007_01C75516.4DC7CE10
+------=_NextPart_000_0007_01C75516.4E24E230
 Content-Type: image/gif;
 	name="oaF6ojgeWr.gif"
 Content-Transfer-Encoding: base64
@@ -384,11 +384,11 @@ beZ07KoSZtJmVzOmV1tmWA81ZZL1V4/1V4t1Wae1WXs1Wr/1WsP1Wcc1Xc+1Xbt1XeP1XYN1XvP1
 Xqv1X7e1X+s1YQ92Zer0Tie2Yi82Yze2Yz82ZEe2ZE82ZVe2ZV82Zme2Zm82Z3e2Z382aIe2aI82
 aZe2aZ82aqe2aq82a7e2a782bMe2bM82bde2bd82bue2bu82b/e2b/82cAe3cA83aYcAADs=
 
-------=_NextPart_000_0007_01C75516.4DC7CE10--
+------=_NextPart_000_0007_01C75516.4E24E230--
 
 
 
---===============1860775435==
+--===============1301991691==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -399,7 +399,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1860775435==
+--===============1301991691==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -410,4 +410,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1860775435==--
+--===============1301991691==--
