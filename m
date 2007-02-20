@@ -1,11 +1,12 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Mail delivery failed: returning message to sender
-Date: Tue, 20 Feb 2007 06:58:41 -0800
-Message-ID: <E1HJWS1-0002mB-9v@externalmx-1.sourceforge.net>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: How to proper handle surround sound setups
+Date: Tue, 20 Feb 2007 07:08:24 -0800
+Message-ID: <1171984104.6106.41.camel@razman.gruemaster.com>
+References: <1171975258.10279.48.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1562155517=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1171975258.10279.48.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,274 +16,274 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: "Christian F.K. Schaller" <christian@fluendo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
 
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es) failed:
-
-  alsa-devel@lists.sourceforge.net
-    SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to : retry timeout exceeded
-
------- This is a copy of the message, including all the headers. ------
-
-Return-path: <alsa-devel@lists.sourceforge.net>
-Received: from [196.218.104.249] (helo=host-196.218.249.104.tedata.net)
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1HHwxn-0007FD-Rr
-	for alsa-devel@lists.sourceforge.net; Thu, 15 Feb 2007 22:53:08 -0800
-Received: from mail.nhs.uk (port=16823 helo=iqijbawdseyyk)
-	by host-196.218.249.104.tedata.net with smtp
-	id jmb0U-cYY88AID-gj
-	for alsa-devel@lists.sourceforge.net; Fri, 16 Feb 2007 08:52:62 +0200
-Message-ID: <000901c75197$125e4cf0$00aee9fc@iqijbawdseyyk>
-From: "David White" <dmytwgjmbo@ruh-bath.nhs.uk>
-To: alsa-devel@lists.sourceforge.net
-Subject: Forget approximately huge .
-Date: Fri, 16 Feb 2007 08:52:62 +0200
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C751A7.D5E4D300"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2900.2869
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2962
-X-Spam-Score: 2.6 (++)
-X-Spam-Report: Spam Filtering performed by sourceforge.net.
-	See http://spamassassin.org/tag/ for more details.
-	Report problems to https://sf.net/tracker/?func=add&group_id=1&atid=200001
-	0.2 EXTRA_MPART_TYPE       Header has extraneous Content-type:...type= entry
-	0.2 INVALID_DATE           Invalid Date: header (not RFC 2822)
-	0.0 HTML_MESSAGE           BODY: HTML included in message
-	2.0 HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
-	0.1 RCVD_IN_SORBS_DUL      RBL: SORBS: sent directly from dynamic IP address
-	[196.218.104.249 listed in dnsbl.sorbs.net]
-
-------=_NextPart_000_000B_01C751A7.D5E4D300
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C751A7.D5E4D300"
+--===============1562155517==
+Content-Type: multipart/alternative; boundary="=-gdV3mGfixO7Rjyyyt9Ht"
 
 
-------=_NextPart_001_000C_01C751A7.D5E4D300
-Content-Type: text/plain;
-	charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+--=-gdV3mGfixO7Rjyyyt9Ht
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-nothing better goodly person shall it shall present before
+Based on the Intel HD Audio solutions I've seen in newer laptops, the
+only way to do this is to query separately for digital output, as most
+laptops will have the full surround capability through the spdif ports.
+The codecs they are using range from the simple two channel sound chip
+to the 8 channel (7.1 Surround) codecs.  We try to disable the unused
+ports, but that doesn't always work due to the system hardware
+configurations.
 
-------=_NextPart_001_000C_01C751A7.D5E4D300
-Content-Type: text/html;
-	charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+Some of the systems do have a channel mode defined in the driver, maybe
+there is a way to query this from an external application, the same way
+that alsamixer does.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1251">
-<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
-<STYLE></STYLE>
+Just my thoughts.
+
+Tobin
+
+On Tue, 2007-02-20 at 13:40 +0100, Christian F.K. Schaller wrote:
+
+> Hi Alsa devs,
+> We have a long discussion today in the GStreamer community about how to
+> correctly handle surround sound setups.
+> 
+> The ideal solution we are looking for is a situation where the user do
+> not need to configure anything, things just work in an optimal fashion
+> depending on their hardware. We are not sure however what exactly is the
+> status of a lot of things both in theory and in practice. So I am
+> sending out this email to you.
+> 
+> GStreamer currently queries the alsadevice for its capabilities and
+> tries to negotiate an optimal path through its playback pipeline with a
+> little quality loss as possible.
+> 
+> This means that if the soundcard reports supporting surround sound and
+> you are playing a multichannel file then GStreamer will output surround
+> sound by default in most cases.
+> 
+> The discussion started as it seems my ICH4 laptop mistakenly reporting
+> supporting surround sound on the PCM device, while its only supports
+> surround sound indirectly through its s/pdif output(is this a known
+> bug?). This caused me to get only the side speaker output in my
+> headphones which meant almost all dialog in the movie clips where gone.
+> 
+> I thus started arguing that we should default to stereo due to this and
+> only do surround sound if the users selects it on the application level
+> as even if the user truly has a surround capable system they don't
+> necessarily have more than two stereo speakers connected.
+> 
+> The debate then turned to whether connected speakers connected can be
+> autodetected or not. Some people reported that their Mac's and Vista
+> systems did detect at least some speaker detection, but I was not able
+> to clarify if the systems could actually tell you that you have for
+> instance LF, center and LR + a woofer connected and so on.
+> 
+> So my questions to you are:
+> a) do most modern soundcards actually report what is connected to them
+> so the computer could use that information to automatically choose the
+> correct sound output?
+> b) if so what is the state of supporting that functionality in ALSA? Is
+> it widely implemented or in the process of being so an can it be queried
+> using the libalsa API?
+> 
+> The second issue might be caused by our limited understanding of ALSA. 
+> So in the expected case of not being able to detect number of speakers
+> connected we need to default to stereo as that is the only way to give
+> all users something sane out of the box. The question is how we should
+> do this within GStreamer. Currently we are querying ALSA and negotiating
+> based on the optimal capabilities of the card and the sound stream.
+> 
+> We now have two ways to resolve the issue. One is to keep the current
+> approach and set 'stereo' as the preferred channels layout through
+> something we call a capsfilter. This approach has some drawbacks as it
+> requires a lot of logic in the application when overriding the default
+> of stereo or you risk your surround config being interpreted as a wish
+> for upmixing of mono/stereo streams to surround.
+> 
+> The other alternative we are looking at which might simplify things for
+> us is to use the virtual devices which expose the different surround
+> scenarios like using for instance:
+> 
+> defaults.pcm.surround51.device for surround51 output.
+> 
+> In this scenario we use the stereo device by default which would then
+> only report back support for stereo and thus negotiate correctly to
+> stereo with all elements. Users can then through the applications choose
+> the 5.1 audio device at which point we would change to the 5.1 device
+> like the one above. Our worry the by the playback autoplugger which as
+> you know is rarely the casere though is what happens with stereo output
+> as we of course do not want that upmixed. Do these 5.1 virtual devices
+> also handle stereo correctly? What would be the expected result when
+> querying these devices through the libalsa API
+> 
+> Christian
+> 
+> 
+> 
+> 
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share your
+> opinions on IT & business topics through brief surveys-and earn cash
+> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-gdV3mGfixO7Rjyyyt9Ht
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
 </HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DMS Serif size=3D3>
-nothing better goodly person shall it shall present before
-<IMG alt=3D"" hspace=3D0=20 width=564 height=346 src=3D"cid:000a01c75197$125e4cf0$00aee9fc@iqijbawdseyyk" =
-align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
+<BODY>
+Based on the Intel HD Audio solutions I've seen in newer laptops, the only way to do this is to query separately for digital output, as most laptops will have the full surround capability through the spdif ports.&nbsp; The codecs they are using range from the simple two channel sound chip to the 8 channel (7.1 Surround) codecs.&nbsp; We try to disable the unused ports, but that doesn't always work due to the system hardware configurations.<BR>
+<BR>
+Some of the systems do have a channel mode defined in the driver, maybe there is a way to query this from an external application, the same way that alsamixer does.<BR>
+<BR>
+Just my thoughts.<BR>
+<BR>
+Tobin<BR>
+<BR>
+On Tue, 2007-02-20 at 13:40 +0100, Christian F.K. Schaller wrote:
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Hi Alsa devs,</FONT>
+<FONT COLOR="#000000">We have a long discussion today in the GStreamer community about how to</FONT>
+<FONT COLOR="#000000">correctly handle surround sound setups.</FONT>
 
-------=_NextPart_001_000C_01C751A7.D5E4D300--
+<FONT COLOR="#000000">The ideal solution we are looking for is a situation where the user do</FONT>
+<FONT COLOR="#000000">not need to configure anything, things just work in an optimal fashion</FONT>
+<FONT COLOR="#000000">depending on their hardware. We are not sure however what exactly is the</FONT>
+<FONT COLOR="#000000">status of a lot of things both in theory and in practice. So I am</FONT>
+<FONT COLOR="#000000">sending out this email to you.</FONT>
 
-------=_NextPart_000_000B_01C751A7.D5E4D300
-Content-Type: image/gif;
-	name="mlivc.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000a01c75197$125e4cf0$00aee9fc@iqijbawdseyyk>
+<FONT COLOR="#000000">GStreamer currently queries the alsadevice for its capabilities and</FONT>
+<FONT COLOR="#000000">tries to negotiate an optimal path through its playback pipeline with a</FONT>
+<FONT COLOR="#000000">little quality loss as possible.</FONT>
 
-R0lGODlhNAJaAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
-/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
-AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
-MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
-ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
-mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
-zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
-/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
-AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
-M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
-ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
-mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
-zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAABAALAAAAAA0AloB
-AAj/AP8JHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuX
-MGPKnEmzps2bOHPq3Mmzp8+fQIMKHUq0qNGjSJMqXcq0qdOnUKNKnUq1qtWrWLNq3cq1q9evYMOK
-HUu2rNmzaNOqXcu2rdu3cOPKnUu3rt27ePPq3cu3r9+/gAMLHky4sOHDiBMrXsy4sePHkCNLnky5
-suXLmDM3VccN30BuoAfi46auYmmD+OJFDO0RNLeCrgWyJjg7Nehx8Tz/c807NuzXvwuO4zaOIOeD
-pHf39q1w9k/nPlNHxMeZW+7PvQfGA62adneCtknr/9ascLTu0aDPd6YIXTbwh+0zuh6PHnh71vVd
-q/O8nLfB++/9U994240n0Giq9RdfcEEtqJODB+WXnoDLCbQdhd8VWBB1vRlIHmrJUTjhP5x5CF+A
-2K2Gokb6DVSdfSuyVuKB233nXnMxBlijdbSd5iKME0GIk5A3EUnQcN2NVhyC/wGJoUE1erZdcR8m
-NJyFpPG4G5UCVvddettpmR12zIV5XZMc7pdiisQJhyJ371nHGoA30vbminY22SOJOr7ZnZFdijdn
-Z+OU5lxtnCX4XjycqWMjeMNpqdw/YRqYJnoHMUqajfhEeh2TWI7XKEKHAjmqe2VyZ2KpFK7qpDpc
-5v+5ZpWZrlcgj6CG2aJyvRnqH5msRQqamr91WOeNGh4oqXvmYTionpSqmhCEdCqrWrJPhnpsef2h
-mhyrIg4rY2+Phsudt64l2W1BL55rrpZXykalhMgFOOiYYworHrtaMrlddT4WyGSzC/1LK0JMhtZm
-sjNOqpy6TjIYbXfYYqfun/ba5+NxwfF44bMS6+povTgqqN16u9kYr5LAjklQsmEyO6vDMIPs8JHr
-YfqwssDVnCPPAg3nmc7NEqwhqLLWOWKNxzIdrYntdtfubGbK5mNCnMV6MGzjjFZaifGKpmnEDsc3
-G8cUan2zzuByjHSKsP5TaNk/i82bh9QqGOfGfQ7/LaneaK454s10jzcubiaCF0/MyhkOo+MGDbef
-ialVp2xpDPemNriD2xw2y+C1S2U8XWN59Y9Suvtym1sjtKPfb+tLts1Jg5s03bL6i3KeOyq67e8n
-nw6df9VKOLjXfELOEOcZy2r7i2oH+ivzt/9423lTD3Ql67z+ejvtNtuuLYWnA687f4+i3TqU80Wr
-eqIibkv7rGiDnjTotc2WHvd5Duiw+mkTCACHdyeF1U1XvLFRokIEvIMITXDNg6DyDsQhtZWIP7MD
-zgMbKCDbUClRGDyZ0whHMgl+5jRne4/95PeaC81MgE4i4PqmpT9wsS2CZluUlirmnov1EEs6HJzz
-/0BmMBrtkIFFfKHEBHc69flPibXSDeNKJUXWZO5xwJvQDWXlNMbVDos6CxeBcMVA7FQRRhQTkw7T
-6KGGIa+Ly2qV0vA0Q4RYzj2xahfHwBWp03kqaLwpXbHuBkSXPZFBRZyN7PYFSGNVb4nIimPFmIMu
-74lmXc5BoG/yc0dNlguBD7ThuoxDrkISZ3fD0ZojSVmh7jHnj3LjDbEu6Uh9CVJ7XLrQ20hYR9P9
-6FFTwkfCIsihR3VKUmZKXHoaZalhEe5U0CJYJqvTNQ+NrVy8fGRoXAgbG42wkpQUDTPnl0xE8Yhq
-jcJmtEa2HttdKj6aGlnwEkSf3f3olgUpp6nKGP/LDEkLNWE6XdXyac+BPrKXUeFQ4v4yIuSFBVAI
-TcyuCqNJe3oFohGlid42ytGOevSjIA2pSEdK0pKa9KQoTalKV8rSlrrUZVV6qUxnStOa2vSmOM2p
-TndK0oz69KdADapQh0rUohr1qEhNqlKXytSmOvWpUI2qVKdK1apa9apYzapWt8rVrnr1q2ANq1jH
-StaymvWsaE2rWtfK1ra69a1wjatc50rXutr1rnjVzApUsNcV+JWv/1iBUgRrEcJeRAWF5StiGbJY
-w3rEsV5ZbF41IlmBVBYvkIWIYy97kMx6hLNA8SxFRDvZiUCWtHNBrUIyq1rVZsS1OoGtQ2RbWsb/
-FgSxir3tXlebW8v+o7cC6WtjCVJZw/aVuL89LXGPexDFGncggmUucHG7W+gut7idRchwmRtY3/oW
-uJatrkGiC9iBUPeyzrXubs8b3PJCF7zJHS5BMpve+BrXvb9N7nuVW1uMnFayADYvQjbbXgF3V8DY
-NfBzC2yQAFv3tvP1rn4ZnN/AOrjCGAYtcrM74QPL18IGznBzFwxiCSfYveJF8YNNjGAIbzi4Ej6w
-jMU74xf3tyLojTCGYwxjHZ+4uTAm7Id7rGESD5jDMt6xkF28ZBuPV7s99m6TlcxjzvL3xxsm8Ior
-fOUnh3jLK+4ymI18Y9MWxLGE5e+Aq6tlz6aZ/8tRljKUedxgIMcYzXE+8Jt1fGQO41nPW94zmJMM
-5y+3d8pJ/vN82Yxk1jaayU4mc5kjkuMHOxe+4ZVvgi2cYhE39tKI5rN9tctdI2NZwZkW7mrn3GYW
-W1q4NM4zou/bZC3HGcCM3nGIQVvfGvt4vqAe9KQfouZCK+SygiZ0j6OrXjrnWdjKPnOUN21sIj/7
-2H3Gsqmv7WJUe/vBiqayrpONXA3/msfJJq25h72QSlvbyYSeNYdx2+J4Ozvauq6zr+9c5XcbWt98
-brWILd3tMfNb10Om9pA9fGTXfljMsoY2uxdSbBK7Gdi3zji6Aw7tCyv71NROs8XD3JCQ61jQiv+W
-dGBH/u0JmxzcGHd1fi8Oc5JHnNsTf4i7k4xp8x5X3oemdrzxW+TrirbX2yY4eDdLY9T2WuNTVnis
-1Uv0gOc24aLGNWCZvnPdovjrtt6vtHOuGNr2ZN00MTvZI4r2oKi9JW1f+0/fHlueTF3ueM+73vfO
-9777fbReFjW2W9JXv2qF7qKlO8ULvxKa2/2vfrX1whuibs0mhNwiUTxTctz1yxN+7Fahd0Q0T+mC
-m8TxO7HyvCVyd/xaJO4dIf1SsBv2drME9VNhdulJwuuU9L4nuK+2Q1xP4YvIfiKwz325s3737nI3
-6DfnNLxNL+3nZzrC643voc88Xe1LH9i5lnj/vRHMZhU/H71N/77n251+6cb66Uhmvvld//PrGlrr
-2O+8saNu/Scrl+v5h3DZN3TNN2pBRn9bV2e9ZX3n12H9VxMXFoH/5oCBNm5RZnbqZmQWd18+Z3PL
-ZlwsJ2c4t2uLBl0LZngX+GK4Jn74JnMoFoItGG0aGFwh2GkiSHAmFnwMJ4Lh9mTINnAZNoM0GGe1
-d3AqdoGsBYIeyIEeeBM12G+gJ3xRF30lN3UQd4PihoU7CHWgp3sUt2UKd3MeV21t13+VFnahtm6w
-Vl9nmGVj14b+poX/xnKTt34OloYah3ApKHh6yHNUeHBaCHQs+BKC9nBRSIQNFn7klnz2l2cL/yeI
-WWiCWDdofGVYomd7iPhloYZyY9eDvEVmkGhlxDd9ogh0cFhzUshta2hre5Z8hgho57aHOKhbqMVc
-fwZZqqeJG5do1EcTl/hdPndpgReEhkhr8Ld7V7aGeeiH17eFzOh9RThiwgiIqUiMqvaMxAaFaCh2
-+caHM1Zek3iFnhaM13h0q+Zvx9iFvgZqk9iHACiD4MiFfBiG9qZkwZYTXhhkg3hqKTiGxreLiZd1
-sbhsoraIAuZaahZuBrlvBfd2j0iN5FaLftaJJwdpHKdy3RiDdxh/gSdYG2lnskiQjjiMzriJw3iL
-FnlvOPGL+TWGuRiIzfaHCfF74tiOzHiFAv9Hcg7XbfQIcaeYkdeGh9golH32hilZje52iT85fTb3
-e0XphUIpeSlZbNrohvMokPUodMc3Ek4pczY2a1o5iE62gnnocdtoj8sIliEJcFZphDAogSxYbHAp
-j+E1eEcZj0s4l1AIhIfIk3HodFgJhPTocpr4koSZl8O4aTDIkDgRfD33jOlVhA3IWNd4gPSVfrq4
-a/UXiVrHbOIog9S4XVXXiGU5YMe4dF+5X0pJkhd4dWmZgMHImqgJko9mjfB2ls24jNqXcJvJfQOI
-hrCZmoUpmfSXGIxYd3YXE1upc0KxnHLnnC9xnCwhnR9Bndk4gTxhnX0HnVcVedr5d+AZnuL/OZ7k
-WZ6Z0ZU3wYjcSZvYWXIQyJ4hYY4g8Z16Z4VIQZ+jZ5ijZ2YgYZ8lUXT9aZ7YhotIsZ6r9oMUQZ34
-6XkIShIBOZ8C6nly2XzkRWBg55voF2DBWaGqKYC0R3QPiH1R+Jjb947gl2rc+F1CFqIxCYYUqn4t
-SWvlhpm56Xzg2HSzGaH6xooTeIQlJouKJllpJqQdCKQqWKQlOXhSeW9MKGOKmYnfmJmsdqTO5qM0
-2qRzSZY/mm7tKaB0SH04aZRsKaU+eX90yRBfepti2nJNmKSz1ZRguqZZaZE/yY/eqKNwSZUWyItt
-6Y1LioqgmIm0xXJ6SqBzCnAI6onr52uF/3qXFFmR9RhudQiUXmqVnYeT98hp/piFZVqVmjmKWEmU
-BueOtTmLKHqOInipclqTRKaMQ9mhYjmenCeTdeqeoEmCbRmokSh+s1qPYymGILmUd9pvD2l6NomU
-3DaYVKqjh6h7qjqQeuqMZLqmLqmbKmlvogqsfdqmocaUEZeth6qt3larwoaRESqKuKpb3NqEeaqC
-T7iEkDqCSdimYaaXC/akUBqD87qWQ7iWGwivIZmTlMqsqPeYHDqHCPh+NpiC5zeAsQmG5KimiVmA
-0meiKVpqoxmxcxh/BgujpTijUqesxjiszIpj0akSBpp2n1WyX5Gy14kSC6oTMUuyLEsVM/+boFXi
-sjW7szzbsz77s0ALGC7bWi6hs4fHmo81gv41fLcHVtK5njf7pkURtRihn9WptIeVeTh7rVblkEnr
-e0ZhtKw3ph/RrRyhs4pnrlfVjmw4meOnqQrWczkKZ+/nfZaJoeRnoyuaof8FruU4Xe2Hf5fXffDl
-mtWXsc7Xl3Arh+wFo467mxqrjg17o2CnoeWXffoXVaY4kN8KsYyZrifmZv8akp+GpCjIkCNHlSi5
-hH8ahSLHuuP1loRmmPK1rysHsDlIjbn7lxDZr7CYuDTbVOHIkXu4qcbrqPhGrmGamcIqdN1YrdiY
-b8v7rKaaj/pZa2wpsNI6qewalKMKcrv/SlWbS7YDp3Lmu6pMir5el5a3iZd+qbi6GpYzGX7V+Ks3
-yau5RrucW6xoZ5ZVKo10OYVYxbalBmVm2X3/26eTSq7QGJpWh70d2VkITKrkKLf5u78kOb7Pe8Ef
-F6r3mJQPmHQGyHMcjI786lT8SHNFh5Gv2KxGWJQiGcNY+HL8FZAI6a/5Omeo+LvPZqhSiXu1e5Lx
-6sKyKaWxmKjx+lxi+yECS5MGjJ0CbKxnar/aG4oYnLwDu4UMTGfTG6fQ2qKCB8HCCZN96MXRe4Nd
-zGJUuz6nhoJ2OsY5KZ9OaoJMaq93ZpNN/IQFW5q7+Lwx96fEZ6V0DIzZq2mJyXFQWl6e/0ikO1yI
-f5yrYCxVT2e4IxzCXznBFpyhwkd+gxmZDlyvDuu4pFWZgOu8JOrJnBnKd3ui0YiiYmzExRXIDpuO
-Iox0lOusPhbK0fqzS5wRa+x2mBW0mJicX/HLWNHLeYfMOKbMTmjMocfMwhzN0jzN1FzN1nzN2JzN
-2rzN3NzN3vzN4BzO4jzO5FzO5nzO6JzO6rzO7NzO7vzO8BzP8jzP9FzP9nzP+JzP+mwSGwUV4ZQQ
-4RFHLeEj/7wR5UMSBc0TCc1u/fwUC80v6QITx0QmHzHRKfHQOYHRZdbQX6HRJ+HRGAHSYiHSpYXR
-4SE86SE5TdIZ/zI0Lb0hAVUsseQjl/9CQzDyGsdELK0EQ9ZhIPMBP/Px0rYxS4VE0NlBSSct0/Gk
-TP2hNZHCK+5DOcxk06giIJLD1E3kHF7i06Vy08W00tGCT/Oh0kZURvADQwETIgF9JuLESKjy1UD1
-0BX1JbehOmQSNaVkSp1T10ckS6RyL1ODQb8y13ftTPqRQHltPO101FSzHHR9Sgm00ulyPOfiGvri
-Tb3y1zcd2OyzO+iRRnkN1RTNKwCz0vpi1JAN2oTkPqO9MxW1O5qE2qUd1ybDM1JTQ/2y0qpRH7vt
-TCJyHXfEK5yiRXY92ruCHihUKqURHroxUcIdLr0dIg2jHMkdJ/jhLsEd0e5z0JtE2Yv/3dN8gjLo
-4TcWVdWkzTPcjUwj4tuVYt7m7dzFctsoo93kLd9mJEYi4hnVQd6nMd75jSoHnVGAA0TqESLto9mt
-7Rvt/dtvvTrWnd5ebdwpJN7ucuDuzRzhJEwvcuFW1FC+beEFzRxZoz0G7uEh4kW+LdO84jh4MuKA
-dBoL/tnuLdoWvtIFXt0GEuO+DT+60ts4biIoXuLl7VMDHksZU90lk+DBotwz7kqWJOEZc9PWYydU
-Ek4YjtttjS9YbuR2guStbScqRNzz3dXglENS/uW01NwoE9zKUeVkLtoIDuVucuS+tEBf09fDwtWY
-hFFbs9CU5BsPfeXWfebvTUCjBOYz/w7oW17oBaTkwIEe1aTog57o94LoYG3bUU3pN73Tlv7nC+JM
-QR7lmt7kKs7opS7a421A/i0gsa3me05HAu4gT40dXh7ncO4bs+4etU7q9ULoND7hVN7kgj7a2V3p
-5p3r1D3qlw5Eya7sHi3plt7ZO8PTwQ7nvw7r1g7tOEPnzJIcC7QiYyPkti5UC63j4k7VHN4zJo4x
-KLLgSZ7txh7eBc7upT7sqK7tom3uux7izoHce03hJy5Ece7pdPTZg2Pu9M4zvm7j6N3k+m49HgPf
-lu7u0U7uDiLj4Y3m9b7lGF/sKILxxW3qck7rBC7si+4b++0+hN7dWuLxFY/mL3I12v+d8gw+7SpO
-8FZi2b8B40vjLrrC62Qi366+Idjd7+1zSCmP3Jg+7STd5xBC2ECf7q0N9dbO0zrf686eSY6N5vZ+
-77I0IT0O51SP852t3nZt2ZEN8bcx8G8eITWu8toN95C98MVy2hpP9fh9SIotKpqj8T9l0jH98hs/
-6Xbj1lVf1up07Z0OHRwC3lx/8uakJj5f2f0e+F+e0AZV9bERTAAV8iMf9YeU5Wx9IOmk+FRN8QWd
-1JHDPS4uNp7iIeFhI02/zzWB8X6/EilO+0lF8Ye/Eryv+0Tl16eO+xIP/ENV+svOEqmU+Mbf/M7/
-/NAf/dI//dRf/dbPd2Hf65oz+r3/j/lxP0jkUi6rpPALkv0N8fbwzlFlDlPXr9BP3jJb7/cJzf7w
-n9lgLvD0ov3YXvfJ71Hr//4A8U/gQIIFDR5EmFDhQoYNHT6EGFHiRIoVLV7EmFHjxoT4uH38GO8g
-SJIl8Q0EOfLjwXgmVZYsKRIlSXUF1ZU86JHkyYYkZc7kRhDmUIFDYXJEmlTpUqZNnT6FGjVpS25U
-fwpdWXBcSKAvWYbkajBlQao1gY49m9XmR51mGbrsGvchWql17d7Fm1fv0pvceP7T6Xdg275//9E9
-zE1d4cEg/7Z9y23cv75exapFXFQt1smVLwf9jFUx28ajNwuEzDgyyKt0My98vVf2/2zatW0rpfrY
-cel4On8G1u03d2nBqMMmHO479PLEoAtmTn5crmjRygXmzqx8+GrPmp03jxj79njy5c3f/jhZYF/F
-AytDvs564PCPbqlWdX/64FbBOtVTL8i/6QakjDT4ABysLNHiaem/rRjMjL+Z/lMopfqmEw+hDM/j
-sEMPP8yoO5w0M0tEkmYqEbMTSVzowO0GxIe/n4wasTT79KMRsZR0mukkxKz758WEUtrOtRy/QxBE
-JZdkssmv+nPJOp1OCsxA0oK0cifApDtItS3bE43Gv448zcsDvTPKsOZ8xI+qL5F8EcghV4LPyBw1
-1M9JPffk0zausGtTLeWmzHLMQP/9+jPP58DMD8kjDSPzuzMLLA7NmCy7qaZMvVuUwn8khC0rq8BL
-iyjL+kQ1VVWluqkzyQrU9NX8XJ1sq1plXa+9TbeqidcWHw2Tpt4WRZJT4tJEsC911FyT0kHpus+o
-q06V0M7wFF01W223jQhQkbwliFAoEa0Uy6ASPRc/hdgzyi1SQy32XUppdJeuvqYlta0r7T3S3VN9
-sxaiDbkluGCCqxx3t2MTvtI4LRFmNtxIDY2XOQQRRtbYgfhTczeI31w4Yzy/Y/e7gYk1OGWVU2b3
-LH8/XbE5XBtV8UKFpsyp4ZNfQwtng3yWVzNP0WLPLbSE5K3CzRBOsidsV4Y6aib/73OLPXzv+wlr
-g7SOT7qAT905T7TEG1u/UeXi+l2FAxxLxzJjlpnGU6Wmu24l1w4s54aBeyk4RwXlkqAinyYw38Dn
-21e/vOXi21g5ySLN7WLhjnRuuy/HfDwvg974tNg2lxzxctlWN+x4x0Ja4tLzPFvegDcnvabQSTeZ
-TMszxz133XfnvXfffwc+eOGHJ754449HPnnll2e+eeefhz566aenvnrrr8c+e+235757778HP3zx
-xye/fPPPRz999ddnv33334c/fvnnp79+++/HP3/99+e/f///B2AABThAAhbQgAdEYAIVuEAGNtCB
-D4RgBCU4QQpW0IIXxGAGNbhB/w520IMfVNUKVCDCFWirhCA6oUBG+I8UPkQFBmnhQ2IokBO+cCAk
-XOFBbKiUHd7wIDNUSA//MUIiEgSIINxLDI+opyXWRogqtMgMn9iQKdowhUo0yAunmBEp6rAiQmwi
-EvUCxDAuqYyyIaNFnnhGLxJkh1b8YUFKyEaJVLEgW6RiG8VoGzzecAUz/OMbjQjFP94whzAcYiF9
-OBA4KpKFImTkI8FIQiNS0oiH1KEjVajJOQaykFYcYQknucYVAjKRV7wjIgdJQygyRJQLCSUq/6jE
-QqZxlX5s4QtruUiEjJKFrLTkHnmoEFRGspW5pGEPiylHQbaSlYl0ozEh6UxlOv/zl8+8ZhaNOcRt
-HnKZy+SmNa9ISmnKUZvRpCYst3nOZ3qTl9NMJTqxOc51LhGZm8QnNoWJlCKac5V2XGQ1b7nOcN7z
-nvFsZzxtyUuCWrOg8mxmOCV6TH/KE4oCZSdGE7lFcFr0oeUcKERDWsORYjKd6DzoPnkITyHCUZUU
-Jega/SlQjTKUlCRlp0OzOVJxvtOn/0QoQ68Z0YqmlJHwPCkxc0jToN7SqC7VaTK/OdOQqnSYLIzl
-UvU41EqSUJP6/ChMo4rRWc4zmLOM5UsrmVV9RtStaFUkFisq1iMStYlvhOsRLQnVsIL1p1L1ZE+J
-mdRntpCOVqUITtVq07a6kqr/Aa3qTvm6U8guZKFBneo8e9lUysoyiBMFbVHnKlTFctWj0WwpQox6
-zo6W9rCI/Sxr/XnZExp2tKCt7Sptq9bcnravlA0taPm6wxQSN6Zg7eIttThYuQKUss4V62/t2dnZ
-OjWOEo3hcGGrkdT+VaJQnaZcgYvVbh7Voc00qBtd612RJpWs3rWrIWEY3zAmV7gNDW0u1zvPPi4U
-nDX9r3kn+trtJsSTgPyqJLtq2kvq9ZR3/KRfA1lPXOrSjyYNZiazy0n1vpKwCmbmHBEZysVed6AH
-jiwZSaxdXI4Xv49MqRLTStAJ99avBe4TgaPXx+fpGMdM4jH2fPy7mv6YW0Nm/55JoUdEJBvZyU+G
-cpSlPGUqR5DJEAlyQpScFOhOJMtcXkqTIaJYjkYEhxBuKVLtyWQMVznMkVUtRb6cWKEmRcwyxMic
-lyLTrTpWn5m95l1LjJc7P5DPDNEznLn74o0kWo0YKXRF7HtbAz8WpAw2saKl4ugKlpmb3iylequp
-5iJqcZzI7GeGNxnqs4q6rq3e6KmD2GpVU/LVyzXkqbv7aaRuNJKgliIkwYvVGG+5jc39tTqvq8x+
-HjXNGm3kUlUNwrom06luFXBR32vtfAIXr5UdcE7JbN2t1hDQvabmuU3M0vKSF74C/rZm5W3Z82q2
-vpvN5kGxTVhzg1uYngYwWP8n227k/vm0Ac43vV/a2pwGWre3zW7BgxvfifP0ufNOKHUHK3FiR9W3
-DO6yQ23s8EVGmoHVlqxCLS3a46a8zhQnap/dy9kGC3bXpK33eBF+2e4iO+elDW578QvKy6K0zjpf
-+X45TUFP7zagcB04NgMe7obu3NWqhXW+PbnlvTZW4x6tLZMV6dzd0jarQB82UGF85UrjHJEddbFr
-m110FqdXpSh/6o2DjvBLU13omNY0yBntdqYefOUpZizSX+zz+wI+ti1Xe37xjfdMY1rpiLXv1CPu
-YoqXfKCHtnvDZYtxb1fX81XdPOP/DnTBnv7SPhcvxGWfcJrH3N80NvhOR77/zxhrm+Ce/jrfS29z
-CmOW30fXb+vpmVF1L1zok+W7VrvdfNGT/rtVF3firz/zfBYe883Wqa1FDWfbZxja8xVx39mexayf
-1djExnWx089+XEt1/Ku/f36VXGp7Y5LZtz6zXMs08HO2AKwnAkTAXuM/l5s2N2sfk3PACDQYp5PA
-ChSe9bPADNTADeTADvTADwTBXGMz8kA5ZZM5F1I2CPSzpdMyJWHBOgpBLPsQ4KOzGmy7u3hB5/Mz
-NJIKFXQzH7QzfPuiIXw8uzA52ztBHNy0GETBOPOmBJuw7HsnNSMvw2K1E+usUDuqJiorw6JC6Wqx
-SIpC5IMkG5sjvEKw2hK//9ibsY5bLFljqNxqs7JaMDEMLwxrMyZsiDUjtw9zuYz7rnOrv5Qjq31b
-OEN0qZ57J+hjvnTDP0AcxMazPkXEOFDKpL9aPmiat9XSwyT0O0AMv4sCxb5ixIfCKYaTRMJTuWwy
-Lo1rRb+ixD+MLp9aLVRMPNVjvdzDRaPrw040MDYTPjBUuVNMup8TRcHjxZdbxcrKrFjcPovrvFE8
-KbiLOdAzxr6zKLTzulFEQl/8ON07u01CMXPyLNzSxeoSJDOcLa9Ct+bKK1CcP3aUvkk0Pd2Txxsr
-JrizxZ+Sq7KLM2zcr8I6MLjzRkXjRBdDrWRzxcijqHKsRr3zqKgjxWccrf/5g8biqz5sc66bU8jG
-Cz3j88hs9LigK0iSnDqO/CWHXEZhrL/4U0XDY8iPGrWX7MiIrMSVxETF+7pBQkXvm6tSPL/gK8l/
-rLzoI8pt7LxM3LVCJDjf477Yoz3qKsF5XEpy08hyO7pP68PlK8GoFD5AG8oWPEoagkJ0EypfisOa
-s0UZs0gSM7BdurCYTEOYxDoLi8othCFHEr/F08v30z+2JDm1UiZN0igrhMqwzJ8cRIpIA0LEFKbG
-nIhIU0zHhC2/NMLJdDfK1MzN5MzO9MzPBM3QFM3RJM3SNM3TRM3UVM3VZM3WdM3XhM3YlM3ZpM3a
-tM3bxM3c1M3d5M3e9M3/3wTO4BTO4SRO1MSh14LMbyxOJCqyImyK5FxOA9I3UjO3mfQ1+cIrQbLE
-7IxOMfK+tNuwaSRLeYur7hu87rSg40y7Q9tEPxy3WURPD6IpA2y2pQzAb0o1TLTM+KSgjxw99tq+
-YjLErOTPTos88EQo9BrPQFNHSCxQDjrO/HPDzJQsUgtEy6tPdkPIB/3BjchFDp0yDMwziATREjXR
-E0XRFFXRFeVNMBLLJqOlrIuK6Ro0SGs76GRREmxOEpVBkSRJJSTHusDMHG2SlsTLjoPDlPw/t2tI
-w/QhEbvDmss2OBxDVhpM/XLSKRVAX+NOK8VRIp1R2lPQsOo3Ms25diJG/zTtvjQ1LTZlvXgEt/XM
-OAF1UHf7UjB1CpcypY/KR2XsrMCiR6+ss93bPaEErszjOJBq0G7EUzN6UhGc0zgtwDN9vq7jvlg7
-0/pEM5aizp+yT+l7T4Js1CXRTnlLxNcTT8Sr0+YbUz8Vr0lbVUs7VTE9z1HtkOQrqFmlU5iax7EC
-KapstzLVVX/Dol01U5lUU2SlK1vdExcdz35L0m/ysMP0ymnNSWu7IvzM1rO0v7gMw+nzo1zVugFl
-1nI113NF13RV13Vl13Z113eF13iV13ml13q113vF13zV133l1371138F2IAV2IEl2II12INF2IRV
-2IVl2IZ12IeF2IiV2A6JpdiKtdiLxdiMRdeAAAA7
+<FONT COLOR="#000000">This means that if the soundcard reports supporting surround sound and</FONT>
+<FONT COLOR="#000000">you are playing a multichannel file then GStreamer will output surround</FONT>
+<FONT COLOR="#000000">sound by default in most cases.</FONT>
 
-------=_NextPart_000_000B_01C751A7.D5E4D300--
+<FONT COLOR="#000000">The discussion started as it seems my ICH4 laptop mistakenly reporting</FONT>
+<FONT COLOR="#000000">supporting surround sound on the PCM device, while its only supports</FONT>
+<FONT COLOR="#000000">surround sound indirectly through its s/pdif output(is this a known</FONT>
+<FONT COLOR="#000000">bug?). This caused me to get only the side speaker output in my</FONT>
+<FONT COLOR="#000000">headphones which meant almost all dialog in the movie clips where gone.</FONT>
 
+<FONT COLOR="#000000">I thus started arguing that we should default to stereo due to this and</FONT>
+<FONT COLOR="#000000">only do surround sound if the users selects it on the application level</FONT>
+<FONT COLOR="#000000">as even if the user truly has a surround capable system they don't</FONT>
+<FONT COLOR="#000000">necessarily have more than two stereo speakers connected.</FONT>
+
+<FONT COLOR="#000000">The debate then turned to whether connected speakers connected can be</FONT>
+<FONT COLOR="#000000">autodetected or not. Some people reported that their Mac's and Vista</FONT>
+<FONT COLOR="#000000">systems did detect at least some speaker detection, but I was not able</FONT>
+<FONT COLOR="#000000">to clarify if the systems could actually tell you that you have for</FONT>
+<FONT COLOR="#000000">instance LF, center and LR + a woofer connected and so on.</FONT>
+
+<FONT COLOR="#000000">So my questions to you are:</FONT>
+<FONT COLOR="#000000">a) do most modern soundcards actually report what is connected to them</FONT>
+<FONT COLOR="#000000">so the computer could use that information to automatically choose the</FONT>
+<FONT COLOR="#000000">correct sound output?</FONT>
+<FONT COLOR="#000000">b) if so what is the state of supporting that functionality in ALSA? Is</FONT>
+<FONT COLOR="#000000">it widely implemented or in the process of being so an can it be queried</FONT>
+<FONT COLOR="#000000">using the libalsa API?</FONT>
+
+<FONT COLOR="#000000">The second issue might be caused by our limited understanding of ALSA. </FONT>
+<FONT COLOR="#000000">So in the expected case of not being able to detect number of speakers</FONT>
+<FONT COLOR="#000000">connected we need to default to stereo as that is the only way to give</FONT>
+<FONT COLOR="#000000">all users something sane out of the box. The question is how we should</FONT>
+<FONT COLOR="#000000">do this within GStreamer. Currently we are querying ALSA and negotiating</FONT>
+<FONT COLOR="#000000">based on the optimal capabilities of the card and the sound stream.</FONT>
+
+<FONT COLOR="#000000">We now have two ways to resolve the issue. One is to keep the current</FONT>
+<FONT COLOR="#000000">approach and set 'stereo' as the preferred channels layout through</FONT>
+<FONT COLOR="#000000">something we call a capsfilter. This approach has some drawbacks as it</FONT>
+<FONT COLOR="#000000">requires a lot of logic in the application when overriding the default</FONT>
+<FONT COLOR="#000000">of stereo or you risk your surround config being interpreted as a wish</FONT>
+<FONT COLOR="#000000">for upmixing of mono/stereo streams to surround.</FONT>
+
+<FONT COLOR="#000000">The other alternative we are looking at which might simplify things for</FONT>
+<FONT COLOR="#000000">us is to use the virtual devices which expose the different surround</FONT>
+<FONT COLOR="#000000">scenarios like using for instance:</FONT>
+
+<FONT COLOR="#000000">defaults.pcm.surround51.device for surround51 output.</FONT>
+
+<FONT COLOR="#000000">In this scenario we use the stereo device by default which would then</FONT>
+<FONT COLOR="#000000">only report back support for stereo and thus negotiate correctly to</FONT>
+<FONT COLOR="#000000">stereo with all elements. Users can then through the applications choose</FONT>
+<FONT COLOR="#000000">the 5.1 audio device at which point we would change to the 5.1 device</FONT>
+<FONT COLOR="#000000">like the one above. Our worry the by the playback autoplugger which as</FONT>
+<FONT COLOR="#000000">you know is rarely the casere though is what happens with stereo output</FONT>
+<FONT COLOR="#000000">as we of course do not want that upmixed. Do these 5.1 virtual devices</FONT>
+<FONT COLOR="#000000">also handle stereo correctly? What would be the expected result when</FONT>
+<FONT COLOR="#000000">querying these devices through the libalsa API</FONT>
+
+<FONT COLOR="#000000">Christian</FONT>
+
+
+
+
+<FONT COLOR="#000000">-------------------------------------------------------------------------</FONT>
+<FONT COLOR="#000000">Take Surveys. Earn Cash. Influence the Future of IT</FONT>
+<FONT COLOR="#000000">Join SourceForge.net's Techsay panel and you'll get the chance to share your</FONT>
+<FONT COLOR="#000000">opinions on IT &amp; business topics through brief surveys-and earn cash</FONT>
+<FONT COLOR="#000000"><A HREF="http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV">http://www.techsay.com/default.php?page=join.php&amp;p=sourceforge&amp;CID=DEVDEV</A></FONT>
+<FONT COLOR="#000000">_______________________________________________</FONT>
+<FONT COLOR="#000000">Alsa-devel mailing list</FONT>
+<FONT COLOR="#000000"><A HREF="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</A></FONT>
+<FONT COLOR="#000000"><A HREF="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</A></FONT>
+</PRE>
+</BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+
+--=-gdV3mGfixO7Rjyyyt9Ht--
+
+
+
+--===============1562155517==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1562155517==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1562155517==--
