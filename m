@@ -1,16 +1,21 @@
-From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: Re: why would i *not* be able to update a register in
- ac97#0-0+regs when it's read write?
-Date: Tue, 20 Feb 2007 09:46:59 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF899@sea-exch-01.na.corp.dmxmusic.com>
-References: <F8FB97052F1BEF409F7842E960E49B5AAAF896@sea-exch-01.na.corp.dmxmusic.com>
-	<75b66ecd0702161724ncd340a8o1feea138fa98963c@mail.gmail.com>
-	<F8FB97052F1BEF409F7842E960E49B5AAAF897@sea-exch-01.na.corp.dmxmusic.com>
-	<75b66ecd0702161801l3e1492c3j37e001bbf57eaac9@mail.gmail.com>
+From: "Robert" <bhoxqcfax@fortkant.com>
+Subject: the entering in the air.  As I baptized into
+Date: Tue, 20 Feb 2007 19:06:43 +0100
+Message-ID: <000a01c75519$deed3760$014baa3c@wxmmqpkpqc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0482135723=="
+Content-Type: multipart/mixed; boundary="===============1716073061=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3413336
+	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2007 19:06:41 +0100 (MET)
+Received: from 180.151-14-84.ripe.coltfrance.com
+	(180.151-14-84.ripe.coltfrance.com [84.14.151.180])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	43C3399AB4
+	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2007 19:06:41 +0100 (MET)
+Received: from mail.forneyonline.com (port=4008 helo=wxmmqpkpqc)
+	by 180.151-14-84.ripe.coltfrance.com with smtp id W3R-6oy3-Bx
+	for alsa-devel@alsa-project.org; Tue, 20 Feb 2007 19:06:43 +0100
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,615 +25,378 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============1716073061==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000C_01C75522.40AF5570"
 
---===============0482135723==
-Content-class: urn:content-classes:message
+------=_NextPart_000_000C_01C75522.40AF5570
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C75517.1ECF8DAC"
+	boundary="----=_NextPart_001_000D_01C75522.40AF5570"
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C75517.1ECF8DAC
+------=_NextPart_001_000D_01C75522.40AF5570
 Content-Type: text/plain;
- charset=iso-8859-1
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-once again, plz forgive the lack of proper citing.
+overlay the people Israel throughout.
 
-my delayed response is due to the fact that the previously 3 days was a =
-holiday weekend.
-
------Original Message-----
-From: rlrevell@gmail.com on behalf of Lee Revell
-Sent: Fri 2/16/2007 6:01 PM
-To: John Utz
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?
-=20
-On 2/16/07, John Utz <John.Utz@dmxmusic.com> wrote:
->  i think the configure help should be changed; what would you conclude =
-from
-> this list:
->
->   --with-debug=3Dlevel      give the debug level =
-(none,basic,full,detect)
->
->  to me, this certainly implies detect>full>basic>none
->
-
-Agreed.
-
-Good, i am not crazy :-)
-
-Anyway, i went back and reconfigured/recompiled/reinstalled/remodprobed =
-as --with-debug=3Dfull
-
-Nothing changed, i can still write to many registers but not the 1 that =
-i am attempting to change: 60h UAJ Control; Does the '(Page ID =3D 00h)' =
-alter how i need to access the register?:
-
-Vendor Defined Register (Page ID =3D 00h)
-UAJ Control
-Index: 60h                                                           =
-Default Value: 0038h
-    Bit     Attr. Description
-   15:6      RO   Reserved
-    5:4     RW    UAJ_2 (pin 21/22) Control
-                  00: Reserved
-                  01: Output from DAC_2 without analog mixing
-                  10: Input as Line-In signal
-                  11: Input as MIC1 & MIC2 signals (default)
-    3:2     RW    UAJ_1 (pin 23/24) Control
-                  00: Reserved
-                  01: Output from DAC_1 without analog mixing
-                  10: Input as Line-In signal (default)
-                  11: Input as MIC1 & MIC2 signals
-    1:0     RW    UAJ_0 (pin 35/36) Control
-                  00: Output from DAC_0 with analog mixing (default)
-                  01: Output from DAC_0 without analog mixing
-                  10: Input as Line-In signal
-                  11: Input as MIC1 & MIC2 signals
-
-
->  there are two issues:
->
->  1. attempting to write to registers that are documented to be =
-read-write
-> doesnt
->     result in a change of value; how do i debug this?
->
-
-The mode in /proc is misleading but the documentation in
-Documentation/ALSA-Configuration.txt is correct.
-
-What portion of that documentation are you refering to?
-
-Note that I can change lots of other registers to my heart's content.
-
-
->  2. i have an msi motherboard with a via8237Rplus and a vt1618 8ch =
-codec. it
-> has only
->     three plugs on the back that default to a stereo out, line in and =
-mic
-> in.
->
->     they are supposed to be 'Universal Audio Jacks' and thus =
-reconfigurable
-> in the manner
->     mentioned in the documentation that i listed previously - i wont =
-really
-> know if i have this
->     write until i get the write to work
->
-
-How do you know that surround out from this device isn't already =
-supported?
-
-Does:
-
-speaker-test -c 6 -Dsurround51
-
-produce output on all speakers?
-
-That's a very reasonable question to ask;=20
-
-No, it does not, otherwise i wouldnt be attempting to manipulate =
-registers involved with causing the mic and line input plugs to be =
-repurposed as center/lfe and surround outputs.
-
-What is the output of "amixer"?
-
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 25 [81%] [-9.00dB] [on]
-  Front Right: Playback 25 [81%] [-9.00dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 25 [81%] [3.00dB] [on]
-  Front Right: Playback 25 [81%] [3.00dB] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 25 [81%] [-9.00dB] [on]
-  Front Right: Playback 25 [81%] [-9.00dB] [on]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 25 [81%] [-9.00dB] [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 25 [81%] [-9.00dB] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch =
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [-34.50dB] [off]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic1'
-Simple mixer control 'Video',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch =
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [-34.50dB] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 0 [0%] [-45.00dB] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [0.00dB] [on]
-  Front Right: Capture 0 [0%] [0.00dB] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Input Source Select',0
-  Capabilities: enum
-  Items: 'Input1' 'Input2'
-  Item0: 'Input1'
-Simple mixer control 'Input Source Select',1
-  Capabilities: enum
-  Items: 'Input1' 'Input2'
-  Item0: 'Input1'
-Simple mixer control 'VIA DXS',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [-48.00dB]
-  Front Right: Playback 31 [100%] [-48.00dB]
-Simple mixer control 'VIA DXS',1
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [-48.00dB]
-  Front Right: Playback 31 [100%] [-48.00dB]
-Simple mixer control 'VIA DXS',2
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [-48.00dB]
-  Front Right: Playback 31 [100%] [-48.00dB]
-Simple mixer control 'VIA DXS',3
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [-48.00dB]
-  Front Right: Playback 31 [100%] [-48.00dB]
-
-
-Lee
-
-
-
-------_=_NextPart_001_01C75517.1ECF8DAC
+------=_NextPart_001_000D_01C75522.40AF5570
 Content-Type: text/html;
- charset=iso-8859-1
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>RE: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?</TITLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DComic Sans MS size=3D2>
+overlay the people Israel throughout.
+<BR><IMG alt=3D"" hspace=3D0=20 width=514 height=478 src=3D"cid:000b01c75519$deed3760$014baa3c@wxmmqpkpqc" =
+align=3Dbaseline=20 border=3D0><BR></FONT></DIV></BODY></HTML>
 
-<P><FONT SIZE=3D2>once again, plz forgive the lack of proper citing.<BR>
-<BR>
-my delayed response is due to the fact that the previously 3 days was a =
-holiday weekend.<BR>
-<BR>
------Original Message-----<BR>
-From: rlrevell@gmail.com on behalf of Lee Revell<BR>
-Sent: Fri 2/16/2007 6:01 PM<BR>
-To: John Utz<BR>
-Cc: alsa-devel@lists.sourceforge.net<BR>
-Subject: Re: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?<BR>
-<BR>
-On 2/16/07, John Utz &lt;John.Utz@dmxmusic.com&gt; wrote:<BR>
-&gt;&nbsp; i think the configure help should be changed; what would you =
-conclude from<BR>
-&gt; this list:<BR>
-&gt;<BR>
-&gt;&nbsp;&nbsp; --with-debug=3Dlevel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; give =
-the debug level (none,basic,full,detect)<BR>
-&gt;<BR>
-&gt;&nbsp; to me, this certainly implies =
-detect&gt;full&gt;basic&gt;none<BR>
-&gt;<BR>
-<BR>
-Agreed.<BR>
-<BR>
-Good, i am not crazy :-)<BR>
-<BR>
-Anyway, i went back and reconfigured/recompiled/reinstalled/remodprobed =
-as --with-debug=3Dfull<BR>
-<BR>
-Nothing changed, i can still write to many registers but not the 1 that =
-i am attempting to change: 60h UAJ Control; Does the '(Page ID =3D 00h)' =
-alter how i need to access the register?:<BR>
-<BR>
-Vendor Defined Register (Page ID =3D 00h)<BR>
-UAJ Control<BR>
-Index: =
-60h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Default =
-Value: 0038h<BR>
-&nbsp;&nbsp;&nbsp; Bit&nbsp;&nbsp;&nbsp;&nbsp; Attr. Description<BR>
-&nbsp;&nbsp; 15:6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RO&nbsp;&nbsp; =
-Reserved<BR>
-&nbsp;&nbsp;&nbsp; 5:4&nbsp;&nbsp;&nbsp;&nbsp; RW&nbsp;&nbsp;&nbsp; =
-UAJ_2 (pin 21/22) Control<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00: Reserved<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 01: Output from DAC_2 without analog =
-mixing<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10: Input as Line-In signal<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11: Input as MIC1 &amp; MIC2 signals =
-(default)<BR>
-&nbsp;&nbsp;&nbsp; 3:2&nbsp;&nbsp;&nbsp;&nbsp; RW&nbsp;&nbsp;&nbsp; =
-UAJ_1 (pin 23/24) Control<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00: Reserved<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 01: Output from DAC_1 without analog =
-mixing<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10: Input as Line-In signal (default)<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11: Input as MIC1 &amp; MIC2 signals<BR>
-&nbsp;&nbsp;&nbsp; 1:0&nbsp;&nbsp;&nbsp;&nbsp; RW&nbsp;&nbsp;&nbsp; =
-UAJ_0 (pin 35/36) Control<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00: Output from DAC_0 with analog mixing =
-(default)<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 01: Output from DAC_0 without analog =
-mixing<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10: Input as Line-In signal<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11: Input as MIC1 &amp; MIC2 signals<BR>
-<BR>
-<BR>
-&gt;&nbsp; there are two issues:<BR>
-&gt;<BR>
-&gt;&nbsp; 1. attempting to write to registers that are documented to be =
-read-write<BR>
-&gt; doesnt<BR>
-&gt;&nbsp;&nbsp;&nbsp;&nbsp; result in a change of value; how do i debug =
-this?<BR>
-&gt;<BR>
-<BR>
-The mode in /proc is misleading but the documentation in<BR>
-Documentation/ALSA-Configuration.txt is correct.<BR>
-<BR>
-What portion of that documentation are you refering to?<BR>
-<BR>
-Note that I can change lots of other registers to my heart's =
-content.<BR>
-<BR>
-<BR>
-&gt;&nbsp; 2. i have an msi motherboard with a via8237Rplus and a vt1618 =
-8ch codec. it<BR>
-&gt; has only<BR>
-&gt;&nbsp;&nbsp;&nbsp;&nbsp; three plugs on the back that default to a =
-stereo out, line in and mic<BR>
-&gt; in.<BR>
-&gt;<BR>
-&gt;&nbsp;&nbsp;&nbsp;&nbsp; they are supposed to be 'Universal Audio =
-Jacks' and thus reconfigurable<BR>
-&gt; in the manner<BR>
-&gt;&nbsp;&nbsp;&nbsp;&nbsp; mentioned in the documentation that i =
-listed previously - i wont really<BR>
-&gt; know if i have this<BR>
-&gt;&nbsp;&nbsp;&nbsp;&nbsp; write until i get the write to work<BR>
-&gt;<BR>
-<BR>
-How do you know that surround out from this device isn't already =
-supported?<BR>
-<BR>
-Does:<BR>
-<BR>
-speaker-test -c 6 -Dsurround51<BR>
-<BR>
-produce output on all speakers?<BR>
-<BR>
-That's a very reasonable question to ask;<BR>
-<BR>
-No, it does not, otherwise i wouldnt be attempting to manipulate =
-registers involved with causing the mic and line input plugs to be =
-repurposed as center/lfe and surround outputs.<BR>
-<BR>
-What is the output of &quot;amixer&quot;?<BR>
-<BR>
-<BR>
-Simple mixer control 'Master',0<BR>
-&nbsp; Capabilities: pvolume pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 25 [81%] [-9.00dB] [on]<BR>
-&nbsp; Front Right: Playback 25 [81%] [-9.00dB] [on]<BR>
-Simple mixer control 'PCM',0<BR>
-&nbsp; Capabilities: pvolume pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 25 [81%] [3.00dB] [on]<BR>
-&nbsp; Front Right: Playback 25 [81%] [3.00dB] [on]<BR>
-Simple mixer control 'Surround',0<BR>
-&nbsp; Capabilities: pvolume pswitch<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 25 [81%] [-9.00dB] [on]<BR>
-&nbsp; Front Right: Playback 25 [81%] [-9.00dB] [on]<BR>
-Simple mixer control 'Center',0<BR>
-&nbsp; Capabilities: pvolume pvolume-joined pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono: Playback 25 [81%] [-9.00dB] [off]<BR>
-Simple mixer control 'LFE',0<BR>
-&nbsp; Capabilities: pvolume pvolume-joined pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono: Playback 25 [81%] [-9.00dB] [on]<BR>
-Simple mixer control 'Line',0<BR>
-&nbsp; Capabilities: pvolume pswitch pswitch-joined cswitch =
-cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-&nbsp; Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-Simple mixer control 'CD',0<BR>
-&nbsp; Capabilities: pvolume pswitch pswitch-joined cswitch =
-cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-&nbsp; Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-Simple mixer control 'Mic',0<BR>
-&nbsp; Capabilities: pvolume pvolume-joined pswitch pswitch-joined =
-cswitch cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono: Playback 0 [0%] [-34.50dB] [off]<BR>
-&nbsp; Front Left: Capture [on]<BR>
-&nbsp; Front Right: Capture [on]<BR>
-Simple mixer control 'Mic Boost (+20dB)',0<BR>
-&nbsp; Capabilities: pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Mono: Playback [off]<BR>
-Simple mixer control 'Mic Select',0<BR>
-&nbsp; Capabilities: enum<BR>
-&nbsp; Items: 'Mic1' 'Mic2'<BR>
-&nbsp; Item0: 'Mic1'<BR>
-Simple mixer control 'Video',0<BR>
-&nbsp; Capabilities: cswitch cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Front Left: Capture [off]<BR>
-&nbsp; Front Right: Capture [off]<BR>
-Simple mixer control 'Phone',0<BR>
-&nbsp; Capabilities: pvolume pvolume-joined pswitch pswitch-joined =
-cswitch cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono: Playback 0 [0%] [-34.50dB] [off]<BR>
-&nbsp; Front Left: Capture [off]<BR>
-&nbsp; Front Right: Capture [off]<BR>
-Simple mixer control 'PC Speaker',0<BR>
-&nbsp; Capabilities: pvolume pvolume-joined pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Limits: Playback 0 - 15<BR>
-&nbsp; Mono: Playback 0 [0%] [-45.00dB] [off]<BR>
-Simple mixer control 'Aux',0<BR>
-&nbsp; Capabilities: pvolume pswitch pswitch-joined cswitch =
-cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Front Left: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-&nbsp; Front Right: Playback 0 [0%] [-34.50dB] [off] Capture [off]<BR>
-Simple mixer control 'Capture',0<BR>
-&nbsp; Capabilities: cvolume cswitch cswitch-joined<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Limits: Capture 0 - 15<BR>
-&nbsp; Front Left: Capture 0 [0%] [0.00dB] [on]<BR>
-&nbsp; Front Right: Capture 0 [0%] [0.00dB] [on]<BR>
-Simple mixer control 'Mix',0<BR>
-&nbsp; Capabilities: cswitch cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Front Left: Capture [off]<BR>
-&nbsp; Front Right: Capture [off]<BR>
-Simple mixer control 'Mix Mono',0<BR>
-&nbsp; Capabilities: cswitch cswitch-exclusive<BR>
-&nbsp; Capture exclusive group: 0<BR>
-&nbsp; Capture channels: Front Left - Front Right<BR>
-&nbsp; Front Left: Capture [off]<BR>
-&nbsp; Front Right: Capture [off]<BR>
-Simple mixer control 'External Amplifier',0<BR>
-&nbsp; Capabilities: pswitch pswitch-joined<BR>
-&nbsp; Playback channels: Mono<BR>
-&nbsp; Mono: Playback [on]<BR>
-Simple mixer control 'Input Source Select',0<BR>
-&nbsp; Capabilities: enum<BR>
-&nbsp; Items: 'Input1' 'Input2'<BR>
-&nbsp; Item0: 'Input1'<BR>
-Simple mixer control 'Input Source Select',1<BR>
-&nbsp; Capabilities: enum<BR>
-&nbsp; Items: 'Input1' 'Input2'<BR>
-&nbsp; Item0: 'Input1'<BR>
-Simple mixer control 'VIA DXS',0<BR>
-&nbsp; Capabilities: pvolume<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 31 [100%] [-48.00dB]<BR>
-&nbsp; Front Right: Playback 31 [100%] [-48.00dB]<BR>
-Simple mixer control 'VIA DXS',1<BR>
-&nbsp; Capabilities: pvolume<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 31 [100%] [-48.00dB]<BR>
-&nbsp; Front Right: Playback 31 [100%] [-48.00dB]<BR>
-Simple mixer control 'VIA DXS',2<BR>
-&nbsp; Capabilities: pvolume<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 31 [100%] [-48.00dB]<BR>
-&nbsp; Front Right: Playback 31 [100%] [-48.00dB]<BR>
-Simple mixer control 'VIA DXS',3<BR>
-&nbsp; Capabilities: pvolume<BR>
-&nbsp; Playback channels: Front Left - Front Right<BR>
-&nbsp; Limits: Playback 0 - 31<BR>
-&nbsp; Mono:<BR>
-&nbsp; Front Left: Playback 31 [100%] [-48.00dB]<BR>
-&nbsp; Front Right: Playback 31 [100%] [-48.00dB]<BR>
-<BR>
-<BR>
-Lee<BR>
-<BR>
-<BR>
-</FONT>
-</P>
+------=_NextPart_001_000D_01C75522.40AF5570--
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C75517.1ECF8DAC--
+------=_NextPart_000_000C_01C75522.40AF5570
+Content-Type: image/gif;
+	name="oajne.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000b01c75519$deed3760$014baa3c@wxmmqpkpqc>
+
+R0lGODlhAgLeAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
+/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
+AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
+MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
+ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
+mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
+zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
+/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
+AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
+M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
+ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
+mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
+zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAABAALAAAAAACAt4B
+AAj/AMWh0CSFhgspvuxQEmdHnC+E6MS5sKMJDiU4xMRJkSKOGzFcFMWBRCGFCR8UduCg4+ZLEyhK
+lHzxQQinJROEvnDBhGMHV0tQuGpqciGuJiUaUjQxwaJJnDiCvuDQqHnzJjcmuJ7yoWSn5UI7dly4
+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
+
+------=_NextPart_000_000C_01C75522.40AF5570--
 
 
 
---===============0482135723==
+--===============1716073061==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -639,7 +407,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0482135723==
+--===============1716073061==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -650,4 +418,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0482135723==--
+--===============1716073061==--
