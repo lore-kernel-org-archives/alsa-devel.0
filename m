@@ -1,11 +1,14 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HIQ4a-0006Jj-GO delayed 72 hours
-Date: Tue, 20 Feb 2007 12:10:39 -0800
-Message-ID: <E1HJbJv-0002Kv-TP@externalmx-1.sourceforge.net>
+From: Alton <ucdfivofterd@bobkiss.com>
+Subject: complete lack of documentation. In the early days it
+	was not unusual for a package to come with a handful of
+	READMEs and installation notes.
+Date: Tue, 20 Feb 2007 21:23:08 +0000 (UTC)
+Message-ID: <036345667.32238518831877@thebat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Tue, 20 Feb 2007 17:22:35 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,30 +21,22 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+videos, enrichmentjoy that is a cherished what children at the group's 
 
-The message identifier is:     1HIQ4a-0006Jj-GO
-The subject of the message is: the entering in the air.  As I baptized into
-The date of the message is:    Sat, 17 Feb 2007 08:57:45 -0500
+Nothing could be better than 
+ &#9679; CARBON RACE CORP (CBRJ.PK) &#9679; SHARE!!!
 
-The address to which the message has not yet been delivered is:
+New CBRJ.PK SHARE this is EXCELLENT POSSIBILITY to BECOME a rich man!!!
+Forecasts for YOU is only positive just buy this CBRJ.PK SHARE!!!
+Trust us cause we GUARANTEE  YOU the real profit!!!
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+CBRJ.PK based on advanced compound materials using patent "Carbon Fiber" technology
+For elaborate info about CBRJ.PK check brokers website!!!
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Hurry up YOU have to grab this CBRJ.PK STOCK on Tuesday: 02/20/07
+
+develop problem-solving things you can do weekly, plus T-ball activities can be 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
