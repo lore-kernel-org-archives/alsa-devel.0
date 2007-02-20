@@ -1,10 +1,23 @@
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Tue, 20 Feb 2007 03:10:43 +0100 (MET)
-Message-ID: <20070220021043.166DD32D@alsa.jcu.cz>
+From: Dr.Friedrick Conway <excel@gosrmarketing.com>
+Subject: Re: (no subject)
+Date: Mon, 19 Feb 2007 20:21:32 -0500
+Message-ID: <6867222541.20070219202132@gosrmarketing.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0425171931=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9ECA6253
+	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2007 04:28:00 +0100 (MET)
+Received: from 156151632 (p1228-ipbf1803marunouchi.tokyo.ocn.ne.jp
+	[122.16.116.228])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	CFB47993DC
+	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2007 04:27:58 +0100 (MET)
+Received: from gosrmarketing.com (154839544 [156187872])
+	by p1228-ipbf1803marunouchi.tokyo.ocn.ne.jp (Qmailv1) with ESMTP id
+	65AC194F21
+	for <alsa-devel@alsa-project.org>; Mon, 19 Feb 2007 20:21:32 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,141 +27,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
+Gexnexric Viagxrxa 10 pxills - $59.58
+Gexnxeric Viagrxxa 30 pills - $119.85
+Vxixagra Professional 10 pills - $69.87
+Vixxagra Professional 30 pills - $139.25
+Ciaxlxis 20 pilxls - $199.6
+Cxixalis 30 pills - $239.89
+Cxxialis 100 pills - $566.82
+Viagxrxa Sofxt Tabs 10 pills - $69.36
+Viaxgxra Soft Tabs 30 pills - $139.89
+Cxiaxlis + Vxixagra (10 pills + 10 pxills) - $129.21
+Cixaxlis + Vixagxra (20 pills + 20 pillxs) - $249.34
+Ciaxlxis + Viagxrxa (30 pills + 30 pills) - $319.23 
+Cxialxis Sxoft Txabs 10 pills - $89.77
+Cialxixs Soft Tabs 30 pills - $236.8
+Cxialxis Soft Tabs 60 pixlls - $377.53
+Amxxbien 30 pixlls - $124.59
+Ambiexxn 60 pills - $190.3
+Amxbixen 90 pills - $260
+Amoxicixlxlin 30 pills (500 mg) - $99.07
+Meridxixa 60 pills - $219.1
+Proxpecxia 180 pixlls - $186.6
+Soma 90 pills (350mg) - $124.5
+Vaxlxium 30 pills (10mg) - $124.98
+Vaxlxium 60 pixlls (10mg) - $190.1
+Vaxlixum 90 pills (10mg) - $260
 
---===============0425171931==
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="7D30932B.1171937443/alsa.jcu.cz"
+http:// mumrq.h k (remoxve thxe spaces fxrom txhe link)
 
-This is a MIME-encapsulated message.
-
---7D30932B.1171937443/alsa.jcu.cz
-Content-Description: Notification
-Content-Type: text/plain
-
-This is the ALSA's E-mail Delivery System program at host alsa.jcu.cz.
-
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
-
-For further assistance, please send mail to <postmaster>
-
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
-
-			The ALSA's E-mail Delivery System program
-
-<alsa-devel@lists.sourceforge.net> (expanded from
-    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550-SPAM: This message appears to be spam (8.1 points). 550-- 550-If
-    you believe this message was classified as spam in error, 550-please open a
-    Support Request at the URL below. 550-(Please include this message in any
-    Support Request). 550-- 550-- 550-Spam Filtering performed by
-    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
-    550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-4.5
-    DATE_IN_FUTURE_12_24   Date: is 12 to 24 hours after Received: date 550-0.5
-    INFO_TLD               URI: Contains an URL in the INFO top-level
-    550-domain 550-0.6 URIBL_SBL              Contains an URL listed in the SBL
-    blocklist 550-[URIs: alyxql.info] 550-0.5 URIBL_WS_SURBL         Contains
-    an URL listed in the WS SURBL 550-blocklist 550-[URIs: alyxql.info] 550-2.0
-    URIBL_OB_SURBL         Contains an URL listed in the OB SURBL 550-blocklist
-    550 [URIs: alyxql.info] (in reply to end of DATA command)
-
---7D30932B.1171937443/alsa.jcu.cz
-Content-Description: Delivery report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 7D30932B
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Tue, 20 Feb 2007 03:10:39 +0100 (MET)
-
-Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
-Original-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-	mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message
-	appears to
-	be spam (8.1 points). 550-- 550-If you believe this message was
-	classified
-	as spam in error, 550-please open a Support Request at the URL below.
-	550-(Please include this message in any Support Request). 550-- 550--
-	550-Spam Filtering performed by sourceforge.net. 550-See
-	http://spamassassin.org/tag/ for more details. 550-Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-4.5
-	DATE_IN_FUTURE_12_24 Date: is 12 to 24 hours after Received: date
-	550-0.5
-	INFO_TLD               URI: Contains an URL in the INFO top-level
-	550-domain 550-0.6 URIBL_SBL Contains an URL listed in the SBL
-	blocklist 550-[URIs: alyxql.info] 550-0.5 URIBL_WS_SURBL Contains
-	an URL listed in the WS SURBL 550-blocklist 550-[URIs: alyxql.info]
-	550-2.0
-	URIBL_OB_SURBL Contains an URL listed in the OB SURBL 550-blocklist
-	550 [URIs: alyxql.info] (in reply to end of DATA command)
-
---7D30932B.1171937443/alsa.jcu.cz
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-
-Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id 7D30932B; Tue, 20 Feb 2007 03:10:39 +0100 (MET)
-Delivered-To: alsa-devel@alsa-project.org
-Received: from bbcache-71.singnet.com.sg (bb219-74-27-77.singnet.com.sg
-	[219.74.27.77])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D8BD329
-	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2007 03:10:30 +0100 (MET)
-Received: from mail.e.ws
-	by bbcache-71.singnet.com.sg with smtp id NHq-5kvJGx5-UBB;
-	Tue, 20 Feb 2007 10:07:27 -0800
-Message-ID: <rtrcw7yrw.3@knaspquagmlmd>
-From: "Walter" <wxhilp@pcs.ws>
-Date: Tue, 20 Feb 2007 10:07:27 -0800
-To: alsa-devel@alsa-project.org
-Subject: Our service at your disposal.200W
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Divorce, not to the tramtrack, to Michael S.  Bloom.  Black
-
-VLA_AGRA  $1, 90
-CLA_ALIS  $2, 80
-ZOLO_LFT $1, 80
-
-http://wxhilp.alyxql.info/?c=wxhilp
---
-dusky battered silk hats I couldnt was the dead?
-
-
---7D30932B.1171937443/alsa.jcu.cz--
-
-
---===============0425171931==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0425171931==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0425171931==--
