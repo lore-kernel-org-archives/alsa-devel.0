@@ -1,23 +1,11 @@
-From: "Shearing J. Kalgoorlie" <samuraiangel@goodship.ca>
-Subject: Don't know where to buy pills?
-Date: Wed, 21 Feb 2007 19:44:21 -0500
-Message-ID: <9300040768.20070221194421@goodship.ca>
+From: Gerald Grabner <gerald.grabner@gmx.net>
+Subject: snd_seq: buffered vs. direct output of events
+Date: Wed, 21 Feb 2007 21:51:49 +0100
+Message-ID: <45DCB0E5.8090408@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B19514A
-	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 20:43:44 +0100 (MET)
-Received: from -1219218024 (136.193.66.218.broad.qz.fj.dynamic.163data.com.cn
-	[218.66.193.136])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	D493F99560
-	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 20:43:37 +0100 (MET)
-Received: from goodship.ca (-1210245216 [-1218405312])
-	by 136.193.66.218.broad.qz.fj.dynamic.163data.com.cn (Qmailv1) with
-	ESMTP id 276A99DCF2
-	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 19:44:21 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,14 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-All you can find at US Drug store. Lowest prices on the web, only licensed and quality pills. Must have products. Don't miss your chance to recover your health! 
-http://zujol.hk/
+Hi there,
 
-Get licensed mediations that you need! Secure and confidential purchase. We are verified by VISA! 
+I'm wondering what the pros and cons of buffered vs. direct output of
+sequencer events might be.
 
+As far as I have found out, snd_seq_event_output_direct has the
+advantage of not having to care about calling snd_seq_drain_output. On
+the other hand, snd_seq_event_output allows the removal of scheduled
+events via snd_seq_remove_events.
+
+But I am sure that there are a number of other arguments...
+
+Thx,
+Gerald
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
