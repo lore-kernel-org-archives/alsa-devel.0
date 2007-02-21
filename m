@@ -1,9 +1,9 @@
 From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
 Subject: Undelivered Mail Returned to Sender
 Date: Wed, 21 Feb 2007 12:31:39 +0100 (MET)
-Message-ID: <20070221113139.605EC32B@alsa.jcu.cz>
+Message-ID: <20070221113139.31E54339@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1921500888=="
+Content-Type: multipart/mixed; boundary="===============1946146846=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,13 +19,13 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a MIME-encapsulated message.
 
---===============1921500888==
+--===============1946146846==
 Content-Type: multipart/report; report-type=delivery-status;
-	boundary="5C4B232D.1172057499/alsa.jcu.cz"
+	boundary="2825C32C.1172057499/alsa.jcu.cz"
 
 This is a MIME-encapsulated message.
 
---5C4B232D.1172057499/alsa.jcu.cz
+--2825C32C.1172057499/alsa.jcu.cz
 Content-Description: Notification
 Content-Type: text/plain
 
@@ -60,14 +60,14 @@ delete your own text from the attached returned message.
     550 [Blocked - see <http://www.spamcop.net/bl.shtml?84.123.134.225>] (in
     reply to end of DATA command)
 
---5C4B232D.1172057499/alsa.jcu.cz
+--2825C32C.1172057499/alsa.jcu.cz
 Content-Description: Delivery report
 Content-Type: message/delivery-status
 
 Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 5C4B232D
+X-ALSA's-E-mail-Delivery-System-Queue-ID: 2825C32C
 X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Wed, 21 Feb 2007 12:31:34 +0100 (MET)
+Arrival-Date: Wed, 21 Feb 2007 12:31:32 +0100 (MET)
 
 Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
 Original-Recipient: rfc822; alsa-devel@alsa-project.org
@@ -94,17 +94,21 @@ Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
 	550 [Blocked - see <http://www.spamcop.net/bl.shtml?84.123.134.225>]
 	(in reply to end of DATA command)
 
---5C4B232D.1172057499/alsa.jcu.cz
+--2825C32C.1172057499/alsa.jcu.cz
 Content-Description: Undelivered Message
 Content-Type: message/rfc822
 
 Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id 5C4B232D; Wed, 21 Feb 2007 12:31:34 +0100 (MET)
+	id 2825C32C; Wed, 21 Feb 2007 12:31:32 +0100 (MET)
 Delivered-To: alsa-devel@alsa-project.org
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C21D932B
+	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 12:31:31 +0100 (MET)
 Received: from 84.123.134.225.dyn.user.ono.com
 	(84.123.134.225.dyn.user.ono.com [84.123.134.225])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79EAE32B
-	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 12:31:32 +0100 (MET)
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	D924E999BB
+	for <alsa-devel@alsa-project.org>; Wed, 21 Feb 2007 12:31:29 +0100 (MET)
 Received: from stollaudio.com (port=19027 helo=rngcvpttxnmc)
 	by 84.123.134.225.dyn.user.ono.com with smtp id 42L01-qeg0lYE6-ij
 	for alsa-devel@alsa-project.org; Wed, 21 Feb 2007 12:31:44 +0100
@@ -622,10 +626,10 @@ SCAJB0AYO3qIm62pgkJkqc0IiIwElPNoJ7a3U6LZZUxoTtHYkdFYHnGkTygQEAA7
 ------=_NextPart_000_000B_01C755B4.36950AC0--
 
 
---5C4B232D.1172057499/alsa.jcu.cz--
+--2825C32C.1172057499/alsa.jcu.cz--
 
 
---===============1921500888==
+--===============1946146846==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -636,7 +640,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1921500888==
+--===============1946146846==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -647,4 +651,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1921500888==--
+--===============1946146846==--
