@@ -1,10 +1,10 @@
-From: "scowl" <vuxc@brella.org>
-Subject: 2 updates: DrakFirsttime, Fetchmail, GConf, GConf2,
-	ORBit2, GDM, Gnome Applets, Gnome Pilot, Gnome PIM, Mailman.
-Date: Wed, 21 Feb 2007 23:35:18 +0000
-Message-ID: <001e01c75611$b0978020$809486bc@fke>
+From: "loath" <bqgiv@radarpages.co.uk>
+Subject: The video content has been encoded to accommodate
+	viewing with 56K modems or broadband Internet connections.
+Date: Wed, 21 Feb 2007 23:36:15 +0000
+Message-ID: <001e01c75611$fe4e5e10$7dc425ad@yta>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0245086246=="
+Content-Type: multipart/mixed; boundary="===============0909520312=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,55 +15,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0245086246==
+--===============0909520312==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001A_01C75611.B0822360"
+	boundary="----=_NextPart_000_001A_01C75611.FE418CD0"
 
-------=_NextPart_000_001A_01C75611.B0822360
+------=_NextPart_000_001A_01C75611.FE418CD0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001B_01C75611.B0877A90"
+	boundary="----=_NextPart_001_001B_01C75611.FE44C120"
 
-------=_NextPart_001_001B_01C75611.B0877A90
+------=_NextPart_001_001B_01C75611.FE44C120
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
+-
 
-1, GNOME 2, or KDE 3. HELP NEEDED INSTALLING SC.
-Jobs and Gates to appear . 17TBGord WattsGordon is a Vice-President of =
-GridIron Software, the company that makes an application plug-in called =
-XLR8.
-17TBGord WattsGordon is a Vice-President of GridIron Software, the =
-company that makes an application plug-in called XLR8.
-Through live screencasts, experts will show you how you can edit and =
-touch up your photos, design original art work, and create a variety of =
-effects using several popular graphics programs.
-IE7 hijackedCall of Duty Video card p.
-For offline listening, download to an MP3 player or iPod.
-TCC Recommendation TCAT Platform Item      The TCC recommendation should =
-find support at the Budget Committee. 1Category: Distros - 23621 =
-downloads - Rating: 2.
-This route is an integral part of the Don Valley Trail system, and =
-numerous cyclists use the route for commuting. The Task Force would be =
-willing to endorse the letter and get Parks to take action on your =
-behalf. He has also been a major contributor to the adoption of theebXML =
-initiative from OASIS and the United Nations.
-Then you may get very good prices because the raw materials and labor =
-cost are very low in China. With Windows Vista, Microsoft has included a =
-utility called the Snipping Tool to make capturing screen shots easier.
-Use the comments link below to let me know how you like them and what =
-you'd like to see more of.
-CD 5-8 are the sources.
-He also discussed the greatest misconception about ebXML. For =
-lowbandwidth devices such as mobile devices and modems, select modem =
-below.
-------=_NextPart_001_001B_01C75611.B0877A90
+
+It would be very inconvenient for riders to have to redirect their =
+commute to main roads, simply due to the path surface. A full transcript =
+is provided so you can follow the tutorials on your own.
+He alsopublishes the  Cafe con Leche and  Cafe au Lait web sites. In =
+addition to recently introduced technologies such as NTFS partition =
+resizing, ACPI power-management, "Zeroconf" network support and expanded =
+WiFi support, Mandrake 9.
+View interviews and programs recorded during the  SDSIC Web =
+ServicesConference.
+Please contact me if you can produce or sell the harness to us.
+Interviews and programsrecorded at EDF in Philadelphia.
+Juliet Lev who notified us of this issue and supplied much of the =
+information for this article has supplied a draft of the letter she sent =
+to Roger Macklin, the City Parks Manager.
+2 which provides a complete personal desktop operating system on a =
+bootable CD. Latest ThreadsUSB Device Not Recognized.
+ca Article Comments:Hello,I am a member of the Task Force to Bring Back =
+the Don and I am also a cyclist. Corsair DOMINATOR Twin2X2. For viewing =
+with Windows Media Player over a broadband connection, select 368K.
+You have to be careful of it, maybe it is true, but most of the times it =
+is because they had bought raw materials with higher price or their cost =
+for management is higher. However, the "temporary" path will be a dirt =
+path for the 9 to 12 months, and will only be paved at the project's =
+completion.
+Are you concerned about performance or are looking to optimize your new =
+platform?
+2 updates: DrakFirsttime, Fetchmail, GConf, GConf2, ORBit2, GDM, Gnome =
+Applets, Gnome Pilot, Gnome PIM, Mailman.
+EventRunning TimeProgramAudio, SlidesLow speedVideoMicrosoft =
+TechEd25:36Advanced Web Services and . The 96K MP4 video conforms to the =
+basic MP4 profile and will play with QuickTime Player 6.
+
+-
+------=_NextPart_001_001B_01C75611.FE44C120
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
+
+-
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
@@ -73,70 +82,77 @@ charset=3Dwindows-1252">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"aloft" hspace=3D0=20
-src=3D"cid:001901c75611$b07ccc30$809486bc@fke" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"extravagance" hspace=3D0=20
+src=3D"cid:001901c75611$fe3e5880$7dc425ad@yta" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>1, GNOME 2, or KDE 3. HELP NEEDED =
-INSTALLING=20
-SC.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Jobs and Gates to appear . 17TBGord =
-WattsGordon is=20
-a Vice-President of GridIron Software, the company that makes an =
-application plug-in=20
-called XLR8.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>17TBGord WattsGordon is a =
-Vice-President of=20
-GridIron Software, the company that makes an application plug-in =
-called=20
-XLR8.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Through live screencasts, experts will =
-show you how=20
-you can edit and touch up your photos, design original art work, and =
-create a=20
-variety of effects using several popular graphics programs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>IE7 hijackedCall of Duty Video card =
-p.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For offline listening, download to an =
-MP3 player or=20
-iPod.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>TCC Recommendation TCAT Platform Item   =
-   The TCC=20
-recommendation should find support at the Budget Committee. 1Category: =
-Distros -=20
-23621 downloads - Rating: 2.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This route is an integral part of the =
-Don Valley=20
-Trail system, and numerous cyclists use the route for commuting. The =
-Task Force=20
-would be willing to endorse the letter and get Parks to take action on =
-your behalf.=20
-He has also been a major contributor to the adoption of theebXML =
-initiative from=20
-OASIS and the United Nations.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Then you may get very good prices =
-because the raw=20
-materials and labor cost are very low in China. With Windows Vista, =
-Microsoft has=20
-included a utility called the Snipping Tool to make capturing screen =
-shots=20
-easier.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Use the comments link below to let me =
-know how you=20
-like them and what you'd like to see more of.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>CD 5-8 are the sources.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>He also discussed the greatest =
-misconception about=20
-ebXML. For lowbandwidth devices such as mobile devices and modems, =
-select modem=20
-below.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>It would be very inconvenient for =
+riders to have to=20
+redirect their commute to main roads, simply due to the path surface. A =
+full=20
+transcript is provided so you can follow the tutorials on your =
+own.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>He alsopublishes the  Cafe con Leche =
+and  Cafe au=20
+Lait web sites. In addition to recently introduced technologies such as =
+NTFS=20
+partition resizing, ACPI power-management, "Zeroconf" network support =
+and expanded=20
+WiFi support, Mandrake 9.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>View interviews and programs recorded =
+during the =20
+SDSIC Web ServicesConference.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please contact me if you can produce or =
+sell the=20
+harness to us.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Interviews and programsrecorded at EDF =
+in=20
+Philadelphia.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Juliet Lev who notified us of this =
+issue and=20
+supplied much of the information for this article has supplied a draft =
+of the letter=20
+she sent to Roger Macklin, the City Parks Manager.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>2 which provides a complete personal =
+desktop=20
+operating system on a bootable CD. Latest ThreadsUSB Device Not=20
+Recognized.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>ca Article Comments:Hello,I am a member =
+of the Task=20
+Force to Bring Back the Don and I am also a cyclist. Corsair DOMINATOR =
+Twin2X2. For=20
+viewing with Windows Media Player over a broadband connection, select=20
+368K.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You have to be careful of it, maybe it =
+is true, but=20
+most of the times it is because they had bought raw materials with =
+higher price or=20
+their cost for management is higher. However, the "temporary" path will =
+be a dirt=20
+path for the 9 to 12 months, and will only be paved at the project's=20
+completion.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Are you concerned about performance or =
+are looking=20
+to optimize your new platform?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>2 updates: DrakFirsttime, Fetchmail, =
+GConf, GConf2,=20
+ORBit2, GDM, Gnome Applets, Gnome Pilot, Gnome PIM, =
+Mailman.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>EventRunning TimeProgramAudio, =
+SlidesLow=20
+speedVideoMicrosoft TechEd25:36Advanced Web Services and . The 96K MP4 =
+video=20
+conforms to the basic MP4 profile and will play with QuickTime Player=20
+6.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001B_01C75611.B0877A90--
 
-------=_NextPart_000_001A_01C75611.B0822360
+-
+------=_NextPart_001_001B_01C75611.FE44C120--
+
+------=_NextPart_000_001A_01C75611.FE418CD0
 Content-Type: image/gif;
-	name="whirlpool.gif"
+	name="insured.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001901c75611$b07ccc30$809486bc@fke>
+Content-ID: <001901c75611$fe3e5880$7dc425ad@yta>
 
 R0lGODdhiAGBAfcAAHTb2HsvithRimL9iBWjuGZw10Xbc6EuDn/u0hkbtKaQkH8LvwrjEZRGDhxb
 sdTCIqwH/h+pLS0oG/9CN7Tpx0Ro0gNythUH/CMjWNX4GvikIvbDyyPx8z/wNnalHz7phxDt+sYC
@@ -388,11 +404,11 @@ ZRYE3tIBTqBWpZ70SZmi6R8HblrLMR4FdmDhzR+9xZoHXl/VlV1pjdaVzd7a4dYLWqAMul28zSDs
 iSDLUdtfjZfzldWcWd+0kVtXsR5PuaDPeULZ+vng6NUehm2g0UkWDjJXz42gDRoVnhWf4zmh+CVd
 ETLhwQFX/YUg5sFXFZYhBNre2D2hEc6TGZJgGH7c54lXQAAAOw==
 
-------=_NextPart_000_001A_01C75611.B0822360--
+------=_NextPart_000_001A_01C75611.FE418CD0--
 
 
 
---===============0245086246==
+--===============0909520312==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -403,7 +419,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0245086246==
+--===============0909520312==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -414,4 +430,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0245086246==--
+--===============0909520312==--
