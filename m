@@ -1,10 +1,21 @@
-From: "Bryce Christian" <qxadrafty@blaqsmithentertainment.com>
-Subject: was corrigible in result
-Date: Tue, 20 Feb 2007 20:56:03 -0800
-Message-ID: <001101c75531$dc6b3380$00798ce4@kate01>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: why would i *not* be able to update a register in
+ ac97#0-0+regs when it's read write?
+Date: Wed, 21 Feb 2007 08:29:05 +0100
+Message-ID: <1172042945.16851.1175709177@webmail.messagingengine.com>
+References: <F8FB97052F1BEF409F7842E960E49B5AAAF896@sea-exch-01.na.corp.dmxmusic.co
+	m> <75b66ecd0702161724ncd340a8o1feea138fa98963c@mail.gmail.com>
+	<F8FB97052F1BEF409F7842E960E49B5AAAF897@sea-exch-01.na.corp.dmxmusic.
+	com> <75b66ecd0702161801l3e1492c3j37e001bbf57eaac9@mail.gmail.com>
+	<F8FB97052F1BEF409F7842E960E49B5AAAF899@sea-exch-01.na.corp.dmxmusic.
+	com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0409783751=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <F8FB97052F1BEF409F7842E960E49B5AAAF899@sea-exch-01.na.corp.dmxmusic.co
+	m>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,86 +25,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: John Utz <John.Utz@dmxmusic.com>, Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0409783751==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000E_01C75531.DC6B3380"
+> Nothing changed, i can still write to many registers but not the 1 that i
+> am attempting to change: 60h UAJ Control; Does the '(Page ID = 00h)'
+> alter how i need to access the register?
 
-------=_NextPart_000_000E_01C75531.DC6B3380
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Yes, you have to set the correct page in the Audio Interrupt and Paging
+register (24h); see the AC97_PAGE_* defines in ac97_codec.h.
 
 
-
-
-
-THE BULL REPORT.
-
-
-Lookup: GDKICurrent: $0.14 5 Day Target price: $0.95Expected: Steadily =
-climb for the top!
-
-
-
-Short-term KST. Insider Buying Alert!
-
-The hottest news are released for GDKI, alsa-devel!!
-
-------=_NextPart_000_000E_01C75531.DC6B3380
-Content-Type: text/html;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-iso-8859-1">
-<META content=3D"MSHTML 6.00.2720.1409" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#CC3333 size=3D=
-3D4><FONT size=3D4><STRONG>THE BULL REPORT!</STRONG></FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#990033 size=3D=
-3>Lookup: <b>GDKI</b><br>Current: $0.14 <br>5 Day Target price: =
-$0.95<br>Expected: Steadily climb for the top!!!</FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#CC3333 size=3D=
-3>Short-term KST. Insider Buying Alert!!!</FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#000000 size=3D4>The =
-hottest news are released for GDKI, alsa-devel..</FONT></DIV>
-<BR><BR>
-</BODY></HTML>
-
-------=_NextPart_000_000E_01C75531.DC6B3380--
-
-
---===============0409783751==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0409783751==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0409783751==--
