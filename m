@@ -1,18 +1,14 @@
-From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: Re: why would i *not* be able to update a register in
- ac97#0-0+regs when it's read write?
-Date: Wed, 21 Feb 2007 09:44:22 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF89E@sea-exch-01.na.corp.dmxmusic.com>
-References: <F8FB97052F1BEF409F7842E960E49B5AAAF896@sea-exch-01.na.corp.dmxmusic.co
-	m> <75b66ecd0702161724ncd340a8o1feea138fa98963c@mail.gmail.com>
-	<F8FB97052F1BEF409F7842E960E49B5AAAF897@sea-exch-01.na.corp.dmxmusic.
-	com> <75b66ecd0702161801l3e1492c3j37e001bbf57eaac9@mail.gmail.com>
-	<F8FB97052F1BEF409F7842E960E49B5AAAF899@sea-exch-01.na.corp.dmxmusic.
-	com> <1172042945.16851.1175709177@webmail.messagingengine.com>
+From: "Silvia Simmons" <eftprevious@bestglobalvoip.com>
+Subject: Be is midwestern
+Date: Wed, 21 Feb 2007 18:59:14 +0100
+Message-ID: <001501c755ea$b8ac0d20$050294c4@berta>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0674989008=="
+Content-Type: multipart/mixed; boundary="===============1685011892=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bestglobalvoip.com (dyh38.neoplus.adsl.tpnet.pl [83.22.119.38])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8E493338
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Feb 2007 19:01:36 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,115 +18,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>, Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============0674989008==
-Content-class: urn:content-classes:message
+--===============1685011892==
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C755E0.3AB735D9"
+	boundary="----=_NextPart_000_0012_01C755EA.B8AC0D20"
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C755E0.3AB735D9
+------=_NextPart_000_0012_01C755EA.B8AC0D20
 Content-Type: text/plain;
- charset=iso-8859-1
+        charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
 
 
------Original Message-----
-From: Clemens Ladisch [mailto:cladisch@fastmail.net]
-Sent: Tue 2/20/2007 11:29 PM
-To: John Utz; Lee Revell
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?
-=20
-> Nothing changed, i can still write to many registers but not the 1 =
-that i
-> am attempting to change: 60h UAJ Control; Does the '(Page ID =3D 00h)'
-> alter how i need to access the register?
+Alert for you!
 
-Yes, you have to set the correct page in the Audio Interrupt and Paging
-register (24h); see the AC97_PAGE_* defines in ac97_codec.h.
-
-Thankyou Clemens, i thought there might be something to it, but i wasnt =
-sure what.
-
-This should be a big help
+Lookup: GDKICurrent: $0.14 5 Day Target price: $0.95Expected: Steadily =
+climb for the top.
 
 
-HTH
-Clemens
+Insider Buying Alert..
 
 
 
-------_=_NextPart_001_01C755E0.3AB735D9
+GDKI have released very hot news. Check this out, alsa-devel!
+
+------=_NextPart_000_0012_01C755EA.B8AC0D20
 Content-Type: text/html;
- charset=iso-8859-1
+        charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>RE: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?</TITLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+iso-8859-1">
+<META content=3D"MSHTML 6.00.2720.2869" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+<BODY bgColor=3D#ffffff>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#000066 size=3D3D4><FONT =
+size=3D3><STRONG>Alert for you..</STRONG></FONT></DIV>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#990000 size=3D4>Lookup: =
+<b>GDKI</b><br>Current: $0.14 <br>5 Day Target price: $0.95<br>Expected: =
+Steadily climb for the top.</FONT></DIV>
 <BR>
-<BR>
-<BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#FF3366 size=3D4>Insider =
+Buying Alert..</FONT></DIV>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#FF0033 size=3D3>GDKI =
+have released very hot news. Check this out, alsa-devel!</FONT></DIV>
+<BR><BR><BR>
+</BODY></HTML>
 
-<P><FONT SIZE=3D2>-----Original Message-----<BR>
-From: Clemens Ladisch [<A =
-HREF=3D"mailto:cladisch@fastmail.net">mailto:cladisch@fastmail.net</A>]<B=
-R>
-Sent: Tue 2/20/2007 11:29 PM<BR>
-To: John Utz; Lee Revell<BR>
-Cc: alsa-devel@lists.sourceforge.net<BR>
-Subject: Re: [Alsa-devel] why would i *not* be able to update a register =
-in ac97#0-0+regs when it's read write?<BR>
-<BR>
-&gt; Nothing changed, i can still write to many registers but not the 1 =
-that i<BR>
-&gt; am attempting to change: 60h UAJ Control; Does the '(Page ID =3D =
-00h)'<BR>
-&gt; alter how i need to access the register?<BR>
-<BR>
-Yes, you have to set the correct page in the Audio Interrupt and =
-Paging<BR>
-register (24h); see the AC97_PAGE_* defines in ac97_codec.h.<BR>
-<BR>
-Thankyou Clemens, i thought there might be something to it, but i wasnt =
-sure what.<BR>
-<BR>
-This should be a big help<BR>
-<BR>
-<BR>
-HTH<BR>
-Clemens<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C755E0.3AB735D9--
+------=_NextPart_000_0012_01C755EA.B8AC0D20--
 
 
-
---===============0674989008==
+--===============1685011892==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -141,7 +88,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0674989008==
+--===============1685011892==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -152,4 +99,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0674989008==--
+--===============1685011892==--
