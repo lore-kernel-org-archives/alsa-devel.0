@@ -1,12 +1,20 @@
-From: "=?ISO-8859-1?Q?HASAN_H=DCSEYIN_YILMAZ?=" <hasan.yilmaz@gmail.com>
-Subject: Re: Bt87x audio driver card ID
-Date: Thu, 22 Feb 2007 15:01:23 +0200
-Message-ID: <458f08c20702220501j2cbb75a0ped115865f02d21bf@mail.gmail.com>
-References: <200702190942.54242.alf@mypals.org> <s5hhcte74os.wl%tiwai@suse.de>
+From: "Mir M. Prelude" <danielle@gibsondoor.com>
+Subject: International Legal RX
+Date: Thu, 22 Feb 2007 08:33:13 -0500
+Message-ID: <9887197903.20070222083313@gibsondoor.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0479915273=="
+Content-Type: multipart/mixed; boundary="===============1804581912=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hhcte74os.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E741358
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 14:28:01 +0100 (MET)
+Received: from -1222383544 (unknown [218.52.102.98])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	AC84999AE9
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 14:27:57 +0100 (MET)
+Received: from gibsondoor.com (-1222350464 [-1219788280])
+	by grandsweeps-nowcenter.com (Qmailv1) with ESMTP id CB5325C120
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 08:33:13 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,100 +24,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sf.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0479915273==
+This is a multi-part message in MIME format.
+
+--===============1804581912==
 Content-Type: multipart/alternative;
-	boundary="----=_Part_18866_29814068.1172149283014"
+	boundary="----------68C89DD7404892B"
 
-------=_Part_18866_29814068.1172149283014
-Content-Type: text/plain; charset=ISO-8859-9; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+This is a multi-part message in MIME format.
 
-SGkgVGFrYXNoaQogICAgICAgSSBhbSB0cnlpbmcgdG8gd3JpdGUgYSBhbHNhIGRyaXZlciBmb3Ig
-IERBQyBkZXZpY2UgKCBwY20xNzQyIHRleGFzCmluc3RydW1lbnQgPGh0dHA6Ly9mb2N1cy50aS5j
-b20vbGl0L2RzL3N5bWxpbmsvcGNtMTc0Mi5wZGY+KS4gSSB3YXMKaW52ZXN0aWdhdGluZyB0aGUg
-Y29kZSB5b3UgaGF2ZSB3cml0dGVuIGZvciAgUGhpbGlwcyBVREExMzQxVFMuIEkgd291bGQgbGlr
-ZQp0byBnZXQgc29tZSBhZHZpY2UuIGRvIHlvdSB0aGluayAgaXQgaXMgIGdvb2QgaWRlYSB0byBn
-byBvdmVyIHlvdXIgY29kZS4Kc2hvdWxkIEkgc2VhcmNoIGZvciBzb21lIG90aGVyIGRldmljZS4g
-d2hlcmUgY2FuIEkgZ2V0IG11Y2ggYmV0dGVyCmluZm9ybWF0aW9uIG9uIHdyaXRpbmcgYW4gYWxz
-YSBkcml2ZXIuClRoYW5rcwpSZWdhcmRzLAotLS0tCkhhc2FuIEj8c2V5aW4gWf1sbWF6CgpPbiAy
-LzIyLzA3LCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+Cj4gQXQgTW9uLCAx
-OSBGZWIgMjAwNyAwOTo0Mjo1NCAtMDcwMCwKPiBBbGYgd3JvdGU6Cj4gPgo+ID4gVGhlIEFMU0Eg
-QnQ4N3ggYXVkaW8gZHJpdmVyIGRvZXMgbm90IGRldGVjdCB0aGUgSUQgb24gbXkgQVRJIFRWLVdv
-bmRlcgo+IGNhcmQuCj4gPiBCZWxvdyBpcyB0aGUgaW5mb3JtYXRpb24gb2J0YWluZWQgZnJvbSB0
-aGUga2VybmVsIGxvZyBhbmQgbHNwY2kuICBUaGUKPiBjYXJkCj4gPiBzZWVtcyB0byB3b3JrLCBh
-bHRob3VnaCB0aGVyZSB3YXMgbm8gY2FwdHVyZSB2b2x1bWUgY29udHJvbCBvbiB0aGUgbWl4ZXIK
-PiA+IChpdCB1c2VkIHRvIGJlIHRoZXJlIG9uIGtlcm5lbCA8Mi42Ljg7IGl0IGlzIGN1cnJlbnRs
-eSBub3Qgb24gbXkgMi42LjEwCj4gPiBrZXJuZWwsIGhvd2V2ZXIpLgo+ID4KPiA+IEkgaG9wZSB0
-aGlzIGluZm9ybWF0aW9uIGhlbHBzLgo+Cj4gT0ssIEkgYWRkZWQgdGhlIGVudHJ5IGZvciB5b3Vy
-IGRldmljZSBhbmQgY29tbWl0dGVkIHRvIEhHIHRyZWUgbm93Lgo+Cj4gSG93ZXZlciwgdGhlIGNh
-cHR1cmUgdm9sdW1lIHNob3VsZCBhcHBlYXIgcmVnYXJkbGVzcyBvZiB0aGUga2VybmVsCj4gdmVy
-c2lvbi4gIE1ha2Ugc3VyZSB0aGF0IHlvdSBzdGFydCB0aGUgbWl4ZXIgZm9yIHRoZSBzZWNvbmRh
-cnkKPiBkZXZpY2UuCj4KPgo+IFRha2FzaGkKPgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBUYWtlIFN1
-cnZleXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKPiBKb2luIFNvdXJj
-ZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBz
-aGFyZQo+IHlvdXIKPiBvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJy
-aWVmIHN1cnZleXMtYW5kIGVhcm4gY2FzaAo+IGh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVmYXVs
-dC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4gQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCj4K
-------=_Part_18866_29814068.1172149283014
-Content-Type: text/html; charset=ISO-8859-9
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+------------68C89DD7404892B
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-SGkgVGFrYXNoaSA8YnI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IEkgYW0g
-dHJ5aW5nIHRvIHdyaXRlIGEgYWxzYSBkcml2ZXIgZm9yJm5ic3A7IERBQyBkZXZpY2UgKCA8YSBo
-cmVmPSJodHRwOi8vZm9jdXMudGkuY29tL2xpdC9kcy9zeW1saW5rL3BjbTE3NDIucGRmIj5wY20x
-NzQyIHRleGFzIGluc3RydW1lbnQgPC9hPikuIEkgd2FzIGludmVzdGlnYXRpbmcgdGhlIGNvZGUg
-eW91IGhhdmUgd3JpdHRlbiBmb3ImbmJzcDsgUGhpbGlwcyBVREExMzQxVFMuIEkgd291bGQgbGlr
-ZSB0byBnZXQgc29tZSBhZHZpY2UuIGRvIHlvdSB0aGluayZuYnNwOyBpdCBpcyZuYnNwOyBnb29k
-IGlkZWEgdG8gZ28gb3ZlciB5b3VyIGNvZGUuIHNob3VsZCBJIHNlYXJjaCBmb3Igc29tZSBvdGhl
-ciBkZXZpY2UuIHdoZXJlIGNhbiBJIGdldCBtdWNoIGJldHRlciBpbmZvcm1hdGlvbiBvbiB3cml0
-aW5nIGFuIGFsc2EgZHJpdmVyLiAKPGJyPlRoYW5rcyA8YnI+UmVnYXJkcyw8YnI+LS0tLTxicj5I
-YXNhbiBI/HNleWluIFn9bG1hego8YnI+PGJyPjxkaXY+PHNwYW4gY2xhc3M9ImdtYWlsX3F1b3Rl
-Ij5PbiAyLzIyLzA3LCA8YiBjbGFzcz0iZ21haWxfc2VuZGVybmFtZSI+VGFrYXNoaSBJd2FpPC9i
-PiAmbHQ7PGEgaHJlZj0ibWFpbHRvOnRpd2FpQHN1c2UuZGUiPnRpd2FpQHN1c2UuZGU8L2E+Jmd0
-OyB3cm90ZTo8L3NwYW4+PGJsb2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0iYm9y
-ZGVyLWxlZnQ6IDFweCBzb2xpZCByZ2IoMjA0LCAyMDQsIDIwNCk7IG1hcmdpbjogMHB0IDBwdCAw
-cHQgMC44ZXg7IHBhZGRpbmctbGVmdDogMWV4OyI+CkF0IE1vbiwgMTkgRmViIDIwMDcgMDk6NDI6
-NTQgLTA3MDAsPGJyPkFsZiB3cm90ZTo8YnI+Jmd0Ozxicj4mZ3Q7IFRoZSBBTFNBIEJ0ODd4IGF1
-ZGlvIGRyaXZlciBkb2VzIG5vdCBkZXRlY3QgdGhlIElEIG9uIG15IEFUSSBUVi1Xb25kZXIgY2Fy
-ZC48YnI+Jmd0OyBCZWxvdyBpcyB0aGUgaW5mb3JtYXRpb24gb2J0YWluZWQgZnJvbSB0aGUga2Vy
-bmVsIGxvZyBhbmQgbHNwY2kuJm5ic3A7Jm5ic3A7VGhlIGNhcmQKPGJyPiZndDsgc2VlbXMgdG8g
-d29yaywgYWx0aG91Z2ggdGhlcmUgd2FzIG5vIGNhcHR1cmUgdm9sdW1lIGNvbnRyb2wgb24gdGhl
-IG1peGVyPGJyPiZndDsgKGl0IHVzZWQgdG8gYmUgdGhlcmUgb24ga2VybmVsICZsdDsyLjYuODsg
-aXQgaXMgY3VycmVudGx5IG5vdCBvbiBteSAyLjYuMTA8YnI+Jmd0OyBrZXJuZWwsIGhvd2V2ZXIp
-Ljxicj4mZ3Q7PGJyPiZndDsgSSBob3BlIHRoaXMgaW5mb3JtYXRpb24gaGVscHMuCjxicj48YnI+
-T0ssIEkgYWRkZWQgdGhlIGVudHJ5IGZvciB5b3VyIGRldmljZSBhbmQgY29tbWl0dGVkIHRvIEhH
-IHRyZWUgbm93Ljxicj48YnI+SG93ZXZlciwgdGhlIGNhcHR1cmUgdm9sdW1lIHNob3VsZCBhcHBl
-YXIgcmVnYXJkbGVzcyBvZiB0aGUga2VybmVsPGJyPnZlcnNpb24uJm5ic3A7Jm5ic3A7TWFrZSBz
-dXJlIHRoYXQgeW91IHN0YXJ0IHRoZSBtaXhlciBmb3IgdGhlIHNlY29uZGFyeTxicj5kZXZpY2Uu
-Cjxicj48YnI+PGJyPlRha2FzaGk8YnI+PGJyPi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+VGFrZSBTdXJ2
-ZXlzLiBFYXJuIENhc2guIEluZmx1ZW5jZSB0aGUgRnV0dXJlIG9mIElUPGJyPkpvaW4gU291cmNl
-Rm9yZ2UubmV0JiMzOTtzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSYjMzk7bGwgZ2V0IHRoZSBjaGFu
-Y2UgdG8gc2hhcmUgeW91cgo8YnI+b3BpbmlvbnMgb24gSVQgJmFtcDsgYnVzaW5lc3MgdG9waWNz
-IHRocm91Z2ggYnJpZWYgc3VydmV5cy1hbmQgZWFybiBjYXNoPGJyPjxhIGhyZWY9Imh0dHA6Ly93
-d3cudGVjaHNheS5jb20vZGVmYXVsdC5waHA/cGFnZT1qb2luLnBocCZhbXA7cD1zb3VyY2Vmb3Jn
-ZSZhbXA7Q0lEPURFVkRFViI+aHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdl
-PWpvaW4ucGhwJmFtcDtwPXNvdXJjZWZvcmdlJmFtcDtDSUQ9REVWREVWCjwvYT48YnI+X19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX188YnI+QWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3Q8YnI+PGEgaHJlZj0ibWFpbHRvOkFsc2EtZGV2ZWxAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Ij5BbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDwvYT48YnI+PGEgaHJlZj0i
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbCI+
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWw8
-L2E+PGJyPjwvYmxvY2txdW90ZT48L2Rpdj48YnI+Cg==
-------=_Part_18866_29814068.1172149283014--
+Welcome to International RX!
+- Best quality drugs 
+- Special Internet prices 
+- Fast and discreet worldwide shipping 
+- Friendly customer support 
+Men's Health 
+Anti-Depressants 
+Pain Relief 
+General health 
+Weight loss 
+Anti-biotics 
+Anti-herpes 
+Women's health 
+Anti-diabetic 
+Blood Pressure/Cholesterol 
+Anti-Allergic/Asthma 
+Anti-Acidity 
+
+View Full Products List
+http://
+
+------------68C89DD7404892B
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<font color="#333333"><strong>Welcome to International RX!</strong><br>
+- Best quality drugs <br>
+- Special Internet prices <br>
+- Fast and discreet worldwide shipping <br>
+- Friendly customer support
+<p>Men's Health <br>
+  Anti-Depressants <br>
+  Pain Relief <br>
+  General health <br>
+  Weight loss <br>
+  Anti-biotics <br>
+  Anti-herpes <br>
+  Women's health <br>
+  Anti-diabetic <br>
+  Blood Pressure/Cholesterol <br>
+  Anti-Allergic/Asthma <br>
+  Anti-Acidity </p>
+</font>
+<p><font color="#333333"><a href="http://zujol.hk/">View Full Products List</a></font></p>
+</body>
+</html>
+
+------------68C89DD7404892B--
 
 
---===============0479915273==
+
+
+--===============1804581912==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -120,7 +104,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0479915273==
+--===============1804581912==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -131,4 +115,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0479915273==--
+--===============1804581912==--
