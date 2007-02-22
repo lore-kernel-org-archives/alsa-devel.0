@@ -1,12 +1,13 @@
 From: "John Utz" <John.Utz@dmxmusic.com>
 Subject: Re: are the alsa wiki instructions for mercurial
  correct?
-Date: Thu, 22 Feb 2007 09:05:07 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8A4@sea-exch-01.na.corp.dmxmusic.com>
+Date: Thu, 22 Feb 2007 09:06:27 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8A5@sea-exch-01.na.corp.dmxmusic.com>
 References: <F8FB97052F1BEF409F7842E960E49B5AAAF8A2@sea-exch-01.na.corp.dmxmusic.com>
 	<1172110844.3728.1.camel@razman.gruemaster.com>
+	<45DD5E45.6090107@ingomueller.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2063273000=="
+Content-Type: multipart/mixed; boundary="===============0306543555=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +19,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============2063273000==
+--===============0306543555==
 Content-class: urn:content-classes:message
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C756A3.A70E32B2"
+	boundary="----_=_NextPart_001_01C756A3.E9DE3CC8"
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C756A3.A70E32B2
+------_=_NextPart_001_01C756A3.E9DE3CC8
 Content-Type: text/plain;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-fixed now eh!
+Ingo, i created a wiki account for myself and fixed it
 
-easily done!
 
 
 -----Original Message-----
-From: Tobin Davis [mailto:tdavis@dsl-only.net]
-Sent: Wed 2/21/2007 6:20 PM
-To: John Utz
-Cc: alsa-devel@lists.sourceforge.net
+From: alsa-devel-bounces@lists.sourceforge.net on behalf of Ingo =
+M=FCller
+Sent: Thu 2/22/2007 1:11 AM
+To: alsa-devel@lists.sourceforge.net
 Subject: Re: [Alsa-devel] are the alsa wiki instructions for mercurial =
 correct?
 =20
-use http://hg.alsa-project.org/alsa-driver and
-http://hg.alsa-project.org/alsa-kernel.
 
-The wiki is wrong (and hasn't been updated).
 
-Tobin
+Tobin Davis schrieb:
+> use http://hg.alsa-project.org/alsa-driver and
+> http://hg.alsa-project.org/alsa-kernel.
+>=20
+> The wiki is wrong (and hasn't been updated).
+>=20
+> Tobin
+>=20
 
-On Wed, 2007-02-21 at 17:13 -0800, John Utz wrote:
+It'd be GREAT if you could bring it up-to-date! I can't do it because I
+simply don't now how it works. Thanks in advance...
 
-> i executed the following steps from the wiki:
+Regards, Ingo
+
+
+> On Wed, 2007-02-21 at 17:13 -0800, John Utz wrote:
 >=20
-> # Get a copy of the repository
-> cd alsa-hg
->=20
-> hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
-> hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
->=20
-> # Get latest
->=20
-> cd alsa-driver
-> hg pull -u
->=20
-> cd alsa-kernel
-> hg pull -u
->=20
-> # Create a working copy
-> hg clone alsa-driver alsa-driver-fixbug1
-> cd alsa-driver-fixbug1
->=20
->=20
->=20
-> However, all that i seem to be pulling down is the stub file and not
-> the real iplementations
->=20
-> ie:
->=20
-> [jutz@localhost alsa-hg]$ find . -name ac97_patch.c -exec ls -l {} \;
-> -rw-r--r-- 1 jutz jutz 74 Feb 21
-> 17:07 ./alsa-driver/pci/ac97/ac97_patch.c
-> -rw-r--r-- 1 jutz jutz 74 Feb 21
-> 17:17 ./alsa-driver-2908/pci/ac97/ac97_patch.c
-> -rw-r--r-- 1 jutz jutz 74 Feb 21
-> 17:13 ./alsa-kernel-2908/pci/ac97/ac97_patch.c
-> -rw-r--r-- 1 jutz jutz 74 Feb 21
-> 17:07 ./alsa-kernel/pci/ac97/ac97_patch.c
->=20
->=20
-> these are just the files that include the 'real' implementations:
->=20
-> [jutz@localhost alsa-hg]$ more alsa-driver/pci/ac97/ac97_patch.c
-> #define __NO_VERSION__
-> #include "../../alsa-kernel/pci/ac97/ac97_patch.c"
->=20
->=20
-> am i doing something wrong or is mercurial missing some stuff?
->=20
->=20
-> =
+>> i executed the following steps from the wiki:
+>>
+>> # Get a copy of the repository
+>> cd alsa-hg
+>>
+>> hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
+>> hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
+>>
+>> # Get latest
+>>
+>> cd alsa-driver
+>> hg pull -u
+>>
+>> cd alsa-kernel
+>> hg pull -u
+>>
+>> # Create a working copy
+>> hg clone alsa-driver alsa-driver-fixbug1
+>> cd alsa-driver-fixbug1
+>>
+>>
+>>
+>> However, all that i seem to be pulling down is the stub file and not
+>> the real iplementations
+>>
+>> ie:
+>>
+>> [jutz@localhost alsa-hg]$ find . -name ac97_patch.c -exec ls -l {} \;
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21
+>> 17:07 ./alsa-driver/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21
+>> 17:17 ./alsa-driver-2908/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21
+>> 17:13 ./alsa-kernel-2908/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21
+>> 17:07 ./alsa-kernel/pci/ac97/ac97_patch.c
+>>
+>>
+>> these are just the files that include the 'real' implementations:
+>>
+>> [jutz@localhost alsa-hg]$ more alsa-driver/pci/ac97/ac97_patch.c
+>> #define __NO_VERSION__
+>> #include "../../alsa-kernel/pci/ac97/ac97_patch.c"
+>>
+>>
+>> am i doing something wrong or is mercurial missing some stuff?
+
+
 -------------------------------------------------------------------------=
 
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to =
-share your
-> opinions on IT & business topics through brief surveys-and earn cash
-> =
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share =
+your
+opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
 DEVDEV
-> _______________________________________________ Alsa-devel mailing =
-list Alsa-devel@lists.sourceforge.net =
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---=20
-Tobin Davis <tdavis@dsl-only.net>
 
 
-------_=_NextPart_001_01C756A3.A70E32B2
+------_=_NextPart_001_01C756A3.E9DE3CC8
 Content-Type: text/html;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -142,119 +148,130 @@ correct?</TITLE>
 <BODY>
 <!-- Converted from text/plain format -->
 
-<P><FONT SIZE=3D2>fixed now eh!<BR>
+<P><FONT SIZE=3D2>Ingo, i created a wiki account for myself and fixed =
+it<BR>
 <BR>
-easily done!<BR>
 <BR>
 <BR>
 -----Original Message-----<BR>
-From: Tobin Davis [<A =
-HREF=3D"mailto:tdavis@dsl-only.net">mailto:tdavis@dsl-only.net</A>]<BR>
-Sent: Wed 2/21/2007 6:20 PM<BR>
-To: John Utz<BR>
-Cc: alsa-devel@lists.sourceforge.net<BR>
+From: alsa-devel-bounces@lists.sourceforge.net on behalf of Ingo =
+M=FCller<BR>
+Sent: Thu 2/22/2007 1:11 AM<BR>
+To: alsa-devel@lists.sourceforge.net<BR>
 Subject: Re: [Alsa-devel] are the alsa wiki instructions for mercurial =
 correct?<BR>
 <BR>
-use <A =
+<BR>
+<BR>
+Tobin Davis schrieb:<BR>
+&gt; use <A =
 HREF=3D"http://hg.alsa-project.org/alsa-driver">http://hg.alsa-project.or=
 g/alsa-driver</A> and<BR>
-<A =
+&gt; <A =
 HREF=3D"http://hg.alsa-project.org/alsa-kernel">http://hg.alsa-project.or=
 g/alsa-kernel</A>.<BR>
-<BR>
-The wiki is wrong (and hasn't been updated).<BR>
-<BR>
-Tobin<BR>
-<BR>
-On Wed, 2007-02-21 at 17:13 -0800, John Utz wrote:<BR>
-<BR>
-&gt; i executed the following steps from the wiki:<BR>
 &gt;<BR>
-&gt; # Get a copy of the repository<BR>
-&gt; cd alsa-hg<BR>
+&gt; The wiki is wrong (and hasn't been updated).<BR>
 &gt;<BR>
-&gt; hg clone <A =
+&gt; Tobin<BR>
+&gt;<BR>
+<BR>
+It'd be GREAT if you could bring it up-to-date! I can't do it because =
+I<BR>
+simply don't now how it works. Thanks in advance...<BR>
+<BR>
+Regards, Ingo<BR>
+<BR>
+<BR>
+&gt; On Wed, 2007-02-21 at 17:13 -0800, John Utz wrote:<BR>
+&gt;<BR>
+&gt;&gt; i executed the following steps from the wiki:<BR>
+&gt;&gt;<BR>
+&gt;&gt; # Get a copy of the repository<BR>
+&gt;&gt; cd alsa-hg<BR>
+&gt;&gt;<BR>
+&gt;&gt; hg clone <A =
 HREF=3D"http://hg-mirror.alsa-project.org/alsa-driver">http://hg-mirror.a=
 lsa-project.org/alsa-driver</A> alsa-driver<BR>
-&gt; hg clone <A =
+&gt;&gt; hg clone <A =
 HREF=3D"http://hg-mirror.alsa-project.org/alsa-kernel">http://hg-mirror.a=
 lsa-project.org/alsa-kernel</A> alsa-kernel<BR>
-&gt;<BR>
-&gt; # Get latest<BR>
-&gt;<BR>
-&gt; cd alsa-driver<BR>
-&gt; hg pull -u<BR>
-&gt;<BR>
-&gt; cd alsa-kernel<BR>
-&gt; hg pull -u<BR>
-&gt;<BR>
-&gt; # Create a working copy<BR>
-&gt; hg clone alsa-driver alsa-driver-fixbug1<BR>
-&gt; cd alsa-driver-fixbug1<BR>
-&gt;<BR>
-&gt;<BR>
-&gt;<BR>
-&gt; However, all that i seem to be pulling down is the stub file and =
-not<BR>
-&gt; the real iplementations<BR>
-&gt;<BR>
-&gt; ie:<BR>
-&gt;<BR>
-&gt; [jutz@localhost alsa-hg]$ find . -name ac97_patch.c -exec ls -l {} =
-\;<BR>
-&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
-&gt; 17:07 ./alsa-driver/pci/ac97/ac97_patch.c<BR>
-&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
-&gt; 17:17 ./alsa-driver-2908/pci/ac97/ac97_patch.c<BR>
-&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
-&gt; 17:13 ./alsa-kernel-2908/pci/ac97/ac97_patch.c<BR>
-&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
-&gt; 17:07 ./alsa-kernel/pci/ac97/ac97_patch.c<BR>
-&gt;<BR>
-&gt;<BR>
-&gt; these are just the files that include the 'real' =
+&gt;&gt;<BR>
+&gt;&gt; # Get latest<BR>
+&gt;&gt;<BR>
+&gt;&gt; cd alsa-driver<BR>
+&gt;&gt; hg pull -u<BR>
+&gt;&gt;<BR>
+&gt;&gt; cd alsa-kernel<BR>
+&gt;&gt; hg pull -u<BR>
+&gt;&gt;<BR>
+&gt;&gt; # Create a working copy<BR>
+&gt;&gt; hg clone alsa-driver alsa-driver-fixbug1<BR>
+&gt;&gt; cd alsa-driver-fixbug1<BR>
+&gt;&gt;<BR>
+&gt;&gt;<BR>
+&gt;&gt;<BR>
+&gt;&gt; However, all that i seem to be pulling down is the stub file =
+and not<BR>
+&gt;&gt; the real iplementations<BR>
+&gt;&gt;<BR>
+&gt;&gt; ie:<BR>
+&gt;&gt;<BR>
+&gt;&gt; [jutz@localhost alsa-hg]$ find . -name ac97_patch.c -exec ls -l =
+{} \;<BR>
+&gt;&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
+&gt;&gt; 17:07 ./alsa-driver/pci/ac97/ac97_patch.c<BR>
+&gt;&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
+&gt;&gt; 17:17 ./alsa-driver-2908/pci/ac97/ac97_patch.c<BR>
+&gt;&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
+&gt;&gt; 17:13 ./alsa-kernel-2908/pci/ac97/ac97_patch.c<BR>
+&gt;&gt; -rw-r--r-- 1 jutz jutz 74 Feb 21<BR>
+&gt;&gt; 17:07 ./alsa-kernel/pci/ac97/ac97_patch.c<BR>
+&gt;&gt;<BR>
+&gt;&gt;<BR>
+&gt;&gt; these are just the files that include the 'real' =
 implementations:<BR>
-&gt;<BR>
-&gt; [jutz@localhost alsa-hg]$ more =
+&gt;&gt;<BR>
+&gt;&gt; [jutz@localhost alsa-hg]$ more =
 alsa-driver/pci/ac97/ac97_patch.c<BR>
-&gt; #define __NO_VERSION__<BR>
-&gt; #include &quot;../../alsa-kernel/pci/ac97/ac97_patch.c&quot;<BR>
-&gt;<BR>
-&gt;<BR>
-&gt; am i doing something wrong or is mercurial missing some stuff?<BR>
-&gt;<BR>
-&gt;<BR>
-&gt; =
+&gt;&gt; #define __NO_VERSION__<BR>
+&gt;&gt; #include =
+&quot;../../alsa-kernel/pci/ac97/ac97_patch.c&quot;<BR>
+&gt;&gt;<BR>
+&gt;&gt;<BR>
+&gt;&gt; am i doing something wrong or is mercurial missing some =
+stuff?<BR>
+<BR>
+<BR>
 -------------------------------------------------------------------------=
 <BR>
-&gt; Take Surveys. Earn Cash. Influence the Future of IT<BR>
-&gt; Join SourceForge.net's Techsay panel and you'll get the chance to =
-share your<BR>
-&gt; opinions on IT &amp; business topics through brief surveys-and earn =
+Take Surveys. Earn Cash. Influence the Future of IT<BR>
+Join SourceForge.net's Techsay panel and you'll get the chance to share =
+your<BR>
+opinions on IT &amp; business topics through brief surveys-and earn =
 cash<BR>
-&gt; <A =
+<A =
 HREF=3D"http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforg=
 e&CID=3DDEVDEV">http://www.techsay.com/default.php?page=3Djoin.php&p=3Dso=
 urceforge&CID=3DDEVDEV</A><BR>
-&gt; _______________________________________________ Alsa-devel mailing =
-list Alsa-devel@lists.sourceforge.net <A =
+_______________________________________________<BR>
+Alsa-devel mailing list<BR>
+Alsa-devel@lists.sourceforge.net<BR>
+<A =
 HREF=3D"https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://=
 lists.sourceforge.net/lists/listinfo/alsa-devel</A><BR>
 <BR>
---<BR>
-Tobin Davis &lt;tdavis@dsl-only.net&gt;<BR>
 <BR>
 </FONT>
 </P>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C756A3.A70E32B2--
+------_=_NextPart_001_01C756A3.E9DE3CC8--
 
 
 
---===============2063273000==
+--===============0306543555==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -265,7 +282,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2063273000==
+--===============0306543555==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -276,4 +293,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2063273000==--
+--===============0306543555==--
