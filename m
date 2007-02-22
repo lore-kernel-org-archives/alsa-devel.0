@@ -1,7 +1,7 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HJTA8-0005Dp-UV delayed 48 hours
-Date: Thu, 22 Feb 2007 08:41:42 -0800
-Message-ID: <E1HKH0o-0002SU-5s@externalmx-1.sourceforge.net>
+From: John Dey <jsdey@optonline.net>
+Subject: Running sound on the Cell Broadband Engine
+Date: Thu, 22 Feb 2007 11:42:03 -0500
+Message-ID: <5c229ded23bd290380160e9d7e0cd769@optonline.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,33 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+Hi List,
 
-The message identifier is:     1HJTA8-0005Dp-UV
-The subject of the message is: Must Have pharmacy at your maintenance: individual markdown.
-The date of the message is:    Tue, 20 Feb 2007 12:27:62 +0100
+I have taken the program midiFMsynth.c written by Dr. Nagorni and built
+it on two machines: a PS3/YDL and another AMD64 (processing speed 2ghz)
+host (2.6.18-1.2200.fc5).  I calculated the running time (in
+microseconds)  for the program that performs the pcm calculation and
+got some interesting (although discouraging) results.  I ran the
+program two ways: with and without the call to snd_pcm_writei.  The
+results were:
 
-The address to which the message has not yet been delivered is:
+PS3:  with sound 11501 us;  without sound 1200 us
+AMD64: with sound 379 us; without sound 280 us
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Is there anyone that can shed light on the differences.  I would have 
+expected similar results from both systems. Thanks.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+John Dey
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
