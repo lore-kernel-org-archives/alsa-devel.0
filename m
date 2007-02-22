@@ -1,10 +1,20 @@
-From: "Robert Patton" <kwestop@ms21.hinet.net>
-Subject: To in butane
-Date: Thu, 22 Feb 2007 19:14:49 +0100
-Message-ID: <001601c756b5$ef5123d0$00a8d0f4@klaus2ztwftf69>
+From: "=?UTF-8?Q?Rafael_Esp=C3=ADndola?=" <rafael.espindola@gmail.com>
+Subject: Re: Fwd: [PATCH] sound working on the macbook pro
+Date: Thu, 22 Feb 2007 20:01:06 +0000
+Message-ID: <564d96fb0702221201o54468523k20976544157c99c8@mail.gmail.com>
+References: <564d96fb0702180906u6dc0f0d9k2cd1d5e1409f1911@mail.gmail.com>
+	<564d96fb0702180924y32118e7esf81e5ec2514d3af9@mail.gmail.com>
+	<s5hps8674an.wl%tiwai@suse.de>
+	<564d96fb0702200140u7aee7dfbt271ed3818ed92366@mail.gmail.com>
+	<s5hhcthrq3c.wl%tiwai@suse.de>
+	<564d96fb0702201205i11beca64g11ca9602a53ad433@mail.gmail.com>
+	<s5hy7mq5h5n.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0713931289=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hy7mq5h5n.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,86 +24,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0713931289==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0013_01C756B5.EF5123D0"
+> Interesting.  So, the front (that is hooked to speaker-pin) has no
+> influence, too?  And did you get speaker working if you avoid moving
+> from speaker_pin to line_outs?
+No influence. For some reason the speaker doesn't work. It works when
+I remove the fix-up.
 
-------=_NextPart_000_0013_01C756B5.EF5123D0
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> But, its corresponding dac_nid is mapped, so basically 'Front' should
+> control the speaker output as it is now.
+I don't know why it doesn't. Do you have any suggestion on how to find why?
 
+>
+> Takashi
+>
 
-
-
-
-Alert for you!!!
-
-
-
-Campaign for: GDKIPrice: $0.14 5 Day Target price: $0.95Market: =
-hellish...
-
-
-SOMEBODY KNOWS SOMETHING!!
-
-See the hottest news of the GDKI, alsa-devel!!
-
-------=_NextPart_000_0013_01C756B5.EF5123D0
-Content-Type: text/html;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-iso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#990000 size=3D=
-3D4><FONT size=3D3><STRONG>Alert for you!</STRONG></FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#FF3300 size=3D=
-3>Campaign for: <b>GDKI</b><br>Price: $0.14 <br>5 Day Target price: =
-$0.95<br>Market: hellish!</FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#CC3300 size=3D=
-3>SOMEBODY KNOWS SOMETHING!!!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#003300 size=3D2>See =
-the hottest news of the GDKI, alsa-devel...</FONT></DIV>
-<BR>
-</BODY></HTML>
-
-------=_NextPart_000_0013_01C756B5.EF5123D0--
-
-
---===============0713931289==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Rafael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0713931289==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0713931289==--
