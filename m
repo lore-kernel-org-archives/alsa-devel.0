@@ -1,20 +1,21 @@
-From: "=?UTF-8?Q?Rafael_Esp=C3=ADndola?=" <rafael.espindola@gmail.com>
-Subject: Re: Fwd: [PATCH] sound working on the macbook pro
-Date: Thu, 22 Feb 2007 20:01:06 +0000
-Message-ID: <564d96fb0702221201o54468523k20976544157c99c8@mail.gmail.com>
-References: <564d96fb0702180906u6dc0f0d9k2cd1d5e1409f1911@mail.gmail.com>
-	<564d96fb0702180924y32118e7esf81e5ec2514d3af9@mail.gmail.com>
-	<s5hps8674an.wl%tiwai@suse.de>
-	<564d96fb0702200140u7aee7dfbt271ed3818ed92366@mail.gmail.com>
-	<s5hhcthrq3c.wl%tiwai@suse.de>
-	<564d96fb0702201205i11beca64g11ca9602a53ad433@mail.gmail.com>
-	<s5hy7mq5h5n.wl%tiwai@suse.de>
+From: "Chorussed Q. Fedora" <rollins@gild.org.au>
+Subject: Can you imagine?
+Date: Thu, 22 Feb 2007 12:18:14 -0500
+Message-ID: <7786034695.20070222121814@gild.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hy7mq5h5n.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37FF4253
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 21:10:09 +0100 (MET)
+Received: from 144616856 (unknown [201.37.244.249])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	65CC69948F
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 21:10:06 +0100 (MET)
+Received: from gild.org.au (143164152 [144528936])
+	by gmpnet.net (Qmailv1) with ESMTP id E40BCC67D5
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2007 12:18:14 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,25 +25,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Interesting.  So, the front (that is hooked to speaker-pin) has no
-> influence, too?  And did you get speaker working if you avoid moving
-> from speaker_pin to line_outs?
-No influence. For some reason the speaker doesn't work. It works when
-I remove the fix-up.
+Make your dreams come true with licensed medications from US Drug Store! Any pills at your choice. There is no need to visit your local drug store at all. 
+http://zujol.hk/
 
-> But, its corresponding dac_nid is mapped, so basically 'Front' should
-> control the speaker output as it is now.
-I don't know why it doesn't. Do you have any suggestion on how to find why?
+Licensed medications! Confidential and Secure purchase! Instant shipping! Lowest prices you can find anywhere! 
 
->
-> Takashi
->
-
-Rafael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
