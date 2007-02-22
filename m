@@ -1,16 +1,15 @@
-From: "Michael K. Edwards" <medwards.linux@gmail.com>
-Subject: Re: OSS emulation, period size,
-	and start/stop thresholds
-Date: Thu, 22 Feb 2007 13:32:58 -0800
-Message-ID: <f2b55d220702221332mf158422o3951f2b9d99a54da@mail.gmail.com>
-References: <f2b55d220702211533waea2118r42118d8374bb1c03@mail.gmail.com>
-	<s5hr6si5fbt.wl%tiwai@suse.de>
+From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
+Subject: Re: are the alsa wiki instructions for mercurial
+	correct?
+Date: Thu, 22 Feb 2007 22:37:28 +0100
+Message-ID: <45DE0D18.3080505@ingomueller.net>
+References: <F8FB97052F1BEF409F7842E960E49B5AAAF8A2@sea-exch-01.na.corp.dmxmusic.com>	<s5hvehu797j.wl%tiwai@suse.de>
+	<F8FB97052F1BEF409F7842E960E49B5AAAF8A6@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hr6si5fbt.wl%tiwai@suse.de>
-Content-Disposition: inline
+In-Reply-To: <F8FB97052F1BEF409F7842E960E49B5AAAF8A6@sea-exch-01.na.corp.dmxmusic.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,35 +19,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2/22/07, Takashi Iwai <tiwai@suse.de> wrote:
-> I think putting the usage and the information to stdout is normal.
+I just realized that we weren't talking about the same wiki :-D You sure
+now the unofficial wiki at http://alsa.opensrc.org/... Thanks a lot
+anyway! I'm currently working on the other wiki, so if the licences
+permit it, I'll copy your text to this one, too...
 
-Usage, maybe.  But nothing else -- not if you want piping stdout to
-stdin to work.  Which I do, because it's by far the sanest way to hook
-two processes together in Unix.
+Regards, Ingo
 
-> It should.  There are some mangles with buffer and period sizes
-> because of the limitation of OSS (sizes must be power-of-two), but the
-> lowlevel driver doesn't have to take care about it.
 
-Aha.  _That's_ the problem.  OK, I won't be able to use the OSS
-emulation, because I need to chunk in multiples of 5ms.  Thanks!
 
-> If you have problems actually, let us know :)
+John Utz schrieb:
+> 
+> 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thu 2/22/2007 2:55 AM
+> To: John Utz
+> Cc: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] are the alsa wiki instructions for mercurial correct?
+>  
+> At Wed, 21 Feb 2007 17:13:55 -0800,
+> John Utz wrote:
+>> However, all that i seem to be pulling down is the stub file and not the real
+>> iplementations
+>>
+>> ie:
+>>
+>> [jutz@localhost alsa-hg]$ find . -name ac97_patch.c -exec ls -l {} \;
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21 17:07 ./alsa-driver/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21 17:17 ./alsa-driver-2908/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21 17:13 ./alsa-kernel-2908/pci/ac97/ac97_patch.c
+>> -rw-r--r-- 1 jutz jutz 74 Feb 21 17:07 ./alsa-kernel/pci/ac97/ac97_patch.c
+>>
+>> these are just the files that include the 'real' implementations:
+>>
+>> [jutz@localhost alsa-hg]$ more alsa-driver/pci/ac97/ac97_patch.c
+>> #define __NO_VERSION__
+>> #include "../../alsa-kernel/pci/ac97/ac97_patch.c"
+>>
+>> am i doing something wrong or is mercurial missing some stuff?
+> 
+> The real codes are found in alsa-kernel tree.  These are synced with
+> the linux kernel tree.  When you run hgconfigure script, it makes
+> symlink from alsa-driver/alsa-kernel pointing that directory.
+> 
+> 
+> Takashi
+> 
+> 
+> 
+> 
+> Please look at the file info, the files in both the alsa-driver and alsa-kernel are identical, the ones in the alsa-kernel should be the full sized ones, not copies of the stub file
+> 
+> is there something that i am failing to understand?
+> 
+> tnx!
+> 
+> johnu
+> 
 
-Well, it took quite a while to figure out how the trigger() and
-pointer() hooks were supposed to work for a non-DMA device.  (DMA is
-of limited use on this device because it can only interact with
-on-chip SRAM.)  When I have my ducks in a row, I'll post this driver
-along with some theory of operation; it would probably be nice for the
-next poor sod if it made it into the documentation.
-
-Cheers,
-- Michael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
