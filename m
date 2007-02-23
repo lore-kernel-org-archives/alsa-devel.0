@@ -1,14 +1,10 @@
-From: "formidably" <qczmu@horse-racing-bookies.com>
-Subject: appendage welfare
-Date: Fri, 23 Feb 2007 19:28:23 +0200
-Message-ID: <001f01c75771$2359b0f0$c8211dc7@jfbhdj>
+From: "public transportation" <nfd@acecom.com>
+Subject: hexagonal waterfall
+Date: Fri, 23 Feb 2007 19:36:53 +0200
+Message-ID: <001f01c75771$b3e0e5d0$4c1d8eb1@xbv>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2073657799=="
+Content-Type: multipart/mixed; boundary="===============0228444695=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from athedsl-140363.otenet.gr (athedsl-140363.otenet.gr
-	[85.75.123.234])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D35482AA
-	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2007 18:36:37 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,68 +14,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2073657799==
+--===============0228444695==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001B_01C75781.E6CDC070"
+	boundary="----=_NextPart_000_001B_01C75782.77612A50"
 
-------=_NextPart_000_001B_01C75781.E6CDC070
+------=_NextPart_000_001B_01C75782.77612A50
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001C_01C75781.E6D2F090"
+	boundary="----=_NextPart_001_001C_01C75782.77634D30"
 
-------=_NextPart_001_001C_01C75781.E6D2F090
+------=_NextPart_001_001C_01C75782.77634D30
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-Summarize the imaging systems you have experience working with. Client =
-located Northeast outside the perimeter of Atlanta has an urgent need =
-for a Java Developer.
-This position requires all candidates applying to this position to have =
-a BSEE. Client prefers candidates with a B.
-Do you have experience with AutoCAD or other electrical engineering =
-modeling? Our client, a large utility in Oregon is actively seeking a =
-Lead- Senior Main Grid Planning Engineer for a permanent position to =
-plan and implement new transmission projects. Basic utilities experience =
-is preferred. What degrees and certifications do you have?
-Need ELECTRICAL PHYSICAL LAYOUT DESIGNERS with a highly respected firm =
-in NC. within 18 months of hire but prefer candidates with a Texas P. =
-Does you experience include 8- 15 years experience doing boiler and =
-combustion turbine emissions optimization-modifications in the heavy =
-industry-power generation industry?
-Any experience in the participation, scheduling, forecasting, progress =
-measurement, change management, cost reporting and controls is helpful. =
-Relo is available for the right candidate.
-Describe your proficiency with 2D, 3D modeling, static and dynamic FEA =
-for magnetic, electrical thermal and mechanical stress.
-PE license is required.
-These skills would be a definite plus, but are not specifically =
-required: Experience with packet-based voice communications, with =
-emphasis on Voice-Over-IP and Video-Over-IP technology. Basic project =
-management skills.
+RELOCATION ASSISTANCE AVAILABLE TO RIGHT CANDIDATE. Describe your =
+proficiency with 2D, 3D modeling, static and dynamic FEA for magnetic, =
+electrical thermal and mechanical stress.
+SITE ELECTRICAL ENGINEER needed immediately in Texas but able to travel =
+extensively for Site management. Please describe your experience with =
+the design and installationof RF, microwave, and or fiber optic systems.
+Documents processes, designs, and other work associated with development =
+and maintenance of all new and existing products. Experience with =
+AutoCAD or other electrical engineering modeling is necessary. Please =
+detail your overall managerial experience as it applies to this =
+position. Use of AutoCad, Microsoft Office and able to work =
+independently is a must.
+Experience and understanding of Meteorological Data and Land Topography =
+is required. The candidate should also posses strong oral and verbal =
+communication skills, as interaction with landowners and the =
+coordination with engineers and local officials will be necessary. =
+Applicant must be familiar with NEC and IEEE standards.
+Describe your emergency power system design and operation experience of =
+electrical system components. Major oil and gas services company an =
+Immediate Need for a Senior Electrical Engineer.
+Describe you experience with design and maintenance of facilities =
+electrical, alarm monitoring, emergency shutdown systems.
+You will blend the multiple skills required to offer total technical =
+support to their clients and to discover solutions to challenging new =
+imaging needs.
 Experience should include BGA, Micro-BGA, fine pitch, BGA rework, =
 thermal profiling, X ray, screen printing, pick and place programming =
-and reflow profiling. Please highlight your experience.
-Local candidates or those willing to relocate on their own.
-Teradyne Catalyst ATE?
-RELOCATION ASSISTANCE AVAILABLE TO RIGHT CANDIDATE. Cost Management: =
-gather cost expenditures, confirm validity of costs, prepare cost =
-reports and analysis. Please describe your experience with WECC, NERC, =
-NWPP or other regional planning forums. Position is Temp to Perm with =
-direct hire possible for the right candidate.
-The primary responsibility of the Product Definition Manager is to lead =
-a growing Technical department in Puerto Rico under the clients joint =
-venture. Completion of EIT exam is required. Major oil and gas services =
-company an Immediate Need for a Senior Electrical Engineer. Why do you =
-wish to relocate to Rhode Island?
-Do not say See Resume.
-The candidate will be responsible for coordinating the activities of =
-contractors during construction to insure schedules, while ensuring =
-quality and safety are maintained.
-------=_NextPart_001_001C_01C75781.E6D2F090
+and reflow profiling. Please list relevant computer software that you =
+are proficient in.
+The candidate will need to be knowledgeable of project development, =
+engineering and construction methods. Local candidates preferred.
+In what field is your degree?
+This position will be responsible for directing the activities of Union =
+hourly maintenance personnel.
+Successful candidate with be analytical, computer literate, self managed =
+and have strong interpersonal skills, both written and verbal. Do you =
+have any experience with S88? Please answer all pre-screening questions =
+when applying for this position. Please describe your educational =
+background including degrees earned, certificates, etc.
+An AA Degree or equivalent experience is required. Describe your =
+extensive experience with 32-bit microcontrollers, DSPs, FPGAs, and =
+multi-layer surface mount design. Regional travel will be involved. Are =
+you available and interested in the possibility of doing a Temp to Perm =
+assignment?
+The selected candidate will supervise the work of the Engineers and =
+Draftsmen and work with the Project Managers to develop design concepts =
+which are incorporated into the final concept.
+Describe your emergency power system design and operation experience of =
+electrical system components.
+------=_NextPart_001_001C_01C75782.77634D30
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -88,101 +89,109 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"perpendicular"=20
-hspace=3D0=20
-src=3D"cid:001a01c75771$233fc050$c8211dc7@jfbhdj" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"illegible" hspace=3D0=20
+src=3D"cid:001a01c75771$b3d63770$4c1d8eb1@xbv" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Summarize the imaging systems you have =
-experience=20
-working with. Client located Northeast outside the perimeter of Atlanta =
-has an=20
-urgent need for a Java Developer.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This position requires all candidates =
-applying to=20
-this position to have a BSEE. Client prefers candidates with a =
-B.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Do you have experience with AutoCAD or =
-other=20
-electrical engineering modeling? Our client, a large utility in Oregon =
-is actively=20
-seeking a Lead- Senior Main Grid Planning Engineer for a permanent =
-position to plan=20
-and implement new transmission projects. Basic utilities experience is =
-preferred.=20
-What degrees and certifications do you have?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Need ELECTRICAL PHYSICAL LAYOUT =
-DESIGNERS with a=20
-highly respected firm in NC. within 18 months of hire but prefer =
-candidates with a=20
-Texas P. Does you experience include 8- 15 years experience doing boiler =
-and=20
-combustion turbine emissions optimization-modifications in the heavy =
-industry-power=20
-generation industry?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Any experience in the participation, =
-scheduling,=20
-forecasting, progress measurement, change management, cost reporting and =
-controls is=20
-helpful. Relo is available for the right candidate.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Describe your proficiency with 2D, 3D =
-modeling,=20
-static and dynamic FEA for magnetic, electrical thermal and =
-mechanical=20
-stress.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>PE license is required.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>These skills would be a definite plus, =
-but are not=20
-specifically required: Experience with packet-based voice =
-communications, with=20
-emphasis on Voice-Over-IP and Video-Over-IP technology. Basic project =
-management=20
-skills.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>RELOCATION ASSISTANCE AVAILABLE TO =
+RIGHT CANDIDATE.=20
+Describe your proficiency with 2D, 3D modeling, static and dynamic FEA =
+for magnetic,=20
+electrical thermal and mechanical stress.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>SITE ELECTRICAL ENGINEER needed =
+immediately in=20
+Texas but able to travel extensively for Site management. Please =
+describe your=20
+experience with the design and installationof RF, microwave, and or =
+fiber optic=20
+systems.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Documents processes, designs, and other =
+work=20
+associated with development and maintenance of all new and existing =
+products.=20
+Experience with AutoCAD or other electrical engineering modeling is =
+necessary.=20
+Please detail your overall managerial experience as it applies to this =
+position. Use=20
+of AutoCad, Microsoft Office and able to work independently is a =
+must.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Experience and understanding of =
+Meteorological Data=20
+and Land Topography is required. The candidate should also posses strong =
+oral and=20
+verbal communication skills, as interaction with landowners and the =
+coordination=20
+with engineers and local officials will be necessary. Applicant must be =
+familiar=20
+with NEC and IEEE standards.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Describe your emergency power system =
+design and=20
+operation experience of electrical system components. Major oil and gas =
+services=20
+company an Immediate Need for a Senior Electrical Engineer.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Describe you experience with design and =
+maintenance=20
+of facilities electrical, alarm monitoring, emergency shutdown =
+systems.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You will blend the multiple skills =
+required to=20
+offer total technical support to their clients and to discover solutions =
+to=20
+challenging new imaging needs.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Experience should include BGA, =
 Micro-BGA, fine=20
 pitch, BGA rework, thermal profiling, X ray, screen printing, pick and =
 place=20
-programming and reflow profiling. Please highlight your =
-experience.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Local candidates or those willing to =
-relocate on=20
-their own.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Teradyne Catalyst ATE?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>RELOCATION ASSISTANCE AVAILABLE TO =
-RIGHT CANDIDATE.=20
-Cost Management: gather cost expenditures, confirm validity of costs, =
-prepare cost=20
-reports and analysis. Please describe your experience with WECC, NERC, =
-NWPP or other=20
-regional planning forums. Position is Temp to Perm with direct hire =
-possible for the=20
-right candidate.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The primary responsibility of the =
-Product=20
-Definition Manager is to lead a growing Technical department in Puerto =
-Rico under=20
-the clients joint venture. Completion of EIT exam is required. Major oil =
-and gas=20
-services company an Immediate Need for a Senior Electrical Engineer. Why =
-do you wish=20
-to relocate to Rhode Island?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Do not say See Resume.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The candidate will be responsible for =
-coordinating=20
-the activities of contractors during construction to insure schedules, =
-while=20
-ensuring quality and safety are maintained.</FONT></DIV></BODY></HTML>
+programming and reflow profiling. Please list relevant computer software =
+that you=20
+are proficient in.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The candidate will need to be =
+knowledgeable of=20
+project development, engineering and construction methods. Local =
+candidates=20
+preferred.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In what field is your =
+degree?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>This position will be responsible for =
+directing the=20
+activities of Union hourly maintenance personnel.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Successful candidate with be =
+analytical, computer=20
+literate, self managed and have strong interpersonal skills, both =
+written and=20
+verbal. Do you have any experience with S88? Please answer all =
+pre-screening=20
+questions when applying for this position. Please describe your =
+educational=20
+background including degrees earned, certificates, etc.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>An AA Degree or equivalent experience =
+is required.=20
+Describe your extensive experience with 32-bit microcontrollers, DSPs, =
+FPGAs, and=20
+multi-layer surface mount design. Regional travel will be involved. Are =
+you=20
+available and interested in the possibility of doing a Temp to Perm=20
+assignment?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The selected candidate will supervise =
+the work of=20
+the Engineers and Draftsmen and work with the Project Managers to =
+develop design=20
+concepts which are incorporated into the final concept.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Describe your emergency power system =
+design and=20
+operation experience of electrical system =
+components.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001C_01C75781.E6D2F090--
+------=_NextPart_001_001C_01C75782.77634D30--
 
-------=_NextPart_000_001B_01C75781.E6CDC070
+------=_NextPart_000_001B_01C75782.77612A50
 Content-Type: image/gif;
-	name="enthusiastic.gif"
+	name="public transportation.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001a01c75771$233fc050$c8211dc7@jfbhdj>
+Content-ID: <001a01c75771$b3d63770$4c1d8eb1@xbv>
 
 R0lGODdhQwEJAfUlANv56dXl/IGuGk0AUCuSa17BYUWyL29/WXyDuROasLLbi6+gXnZ2cpH2gkrt
 vIFWPo/IuM9uUVf9CQCVH3b6WRklkooIrM4ff+lhr9+i8APp/Q34eXOm+fV/CVAv11VYDL5gRgQi
@@ -385,11 +394,11 @@ oe271Yl+7ce9zv19opHY5bnoz+9e4P+er93H4BEdg2657q+e8FV90Sj86ywe67e+5HPYva28C9/e
 521cj6wb4EOas+1dZ0r73C8a8l+dtFP7pSMb6Cse8LW+6ul+6lV/9ZN+7hlfyzWZq6M68Q8/9gMl
 vAntGWb+fpwd7H0f9muf9mse1RE/+XefCYIAADs=
 
-------=_NextPart_000_001B_01C75781.E6CDC070--
+------=_NextPart_000_001B_01C75782.77612A50--
 
 
 
---===============2073657799==
+--===============0228444695==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -400,7 +409,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2073657799==
+--===============0228444695==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -411,4 +420,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2073657799==--
+--===============0228444695==--
