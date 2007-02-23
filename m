@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HKSZq-0000dI-DV delayed 10 hours
-Date: Fri, 23 Feb 2007 11:11:21 -0800
-Message-ID: <E1HKfpB-00009v-Gc@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HKKHR-0002xr-J2 delayed 24 hours
+Date: Fri, 23 Feb 2007 12:54:06 -0800
+Message-ID: <E1HKhQc-0007vW-Ri@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HKSZq-0000dI-DV
-The subject of the message is: observe my sin; he would that the congregation,
-The date of the message is:    Fri, 23 Feb 2007 12:14:30 -0800
+The message identifier is:     1HKKHR-0002xr-J2
+The subject of the message is: planted it came to me, to destroy, you in mine head to pass at
+The date of the message is:    Thu, 22 Feb 2007 21:11:23 +0100
 
 The address to which the message has not yet been delivered is:
 
