@@ -1,9 +1,9 @@
 From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
 Subject: Undelivered Mail Returned to Sender
-Date: Fri, 23 Feb 2007 22:13:00 +0100 (MET)
-Message-ID: <20070223211300.C08D7311@alsa.jcu.cz>
+Date: Fri, 23 Feb 2007 22:13:03 +0100 (MET)
+Message-ID: <20070223211303.70F9D309@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0157141529=="
+Content-Type: multipart/mixed; boundary="===============0595852422=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,13 +19,13 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a MIME-encapsulated message.
 
---===============0157141529==
+--===============0595852422==
 Content-Type: multipart/report; report-type=delivery-status;
-	boundary="C99A7309.1172265180/alsa.jcu.cz"
+	boundary="D41C1310.1172265183/alsa.jcu.cz"
 
 This is a MIME-encapsulated message.
 
---C99A7309.1172265180/alsa.jcu.cz
+--D41C1310.1172265183/alsa.jcu.cz
 Content-Description: Notification
 Content-Type: text/plain
 
@@ -59,14 +59,14 @@ delete your own text from the attached returned message.
     [Blocked - see <http://www.spamcop.net/bl.shtml?70.124.12.98>] (in reply to
     end of DATA command)
 
---C99A7309.1172265180/alsa.jcu.cz
+--D41C1310.1172265183/alsa.jcu.cz
 Content-Description: Delivery report
 Content-Type: message/delivery-status
 
 Reporting-MTA: dns; alsa.jcu.cz
-X-ALSA's-E-mail-Delivery-System-Queue-ID: C99A7309
+X-ALSA's-E-mail-Delivery-System-Queue-ID: D41C1310
 X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Fri, 23 Feb 2007 22:12:56 +0100 (MET)
+Arrival-Date: Fri, 23 Feb 2007 22:12:59 +0100 (MET)
 
 Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
 Original-Recipient: rfc822; alsa-devel@alsa-project.org
@@ -91,17 +91,21 @@ Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
 	[Blocked - see <http://www.spamcop.net/bl.shtml?70.124.12.98>] (in
 	reply to end of DATA command)
 
---C99A7309.1172265180/alsa.jcu.cz
+--D41C1310.1172265183/alsa.jcu.cz
 Content-Description: Undelivered Message
 Content-Type: message/rfc822
 
 Received: by alsa.jcu.cz (ALSA's E-mail Delivery System)
-	id C99A7309; Fri, 23 Feb 2007 22:12:56 +0100 (MET)
+	id D41C1310; Fri, 23 Feb 2007 22:12:59 +0100 (MET)
 Delivered-To: alsa-devel@alsa-project.org
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4A272F5
+	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2007 22:12:59 +0100 (MET)
 Received: from 98-12.124-70.tampabay.res.rr.com
 	(98-12.124-70.tampabay.res.rr.com [70.124.12.98])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B21622F5
-	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2007 22:12:55 +0100 (MET)
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	7235799B83
+	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2007 22:12:58 +0100 (MET)
 Received: from smtp.visualution.com (port=2904 helo=ryrqeagn)
 	by 98-12.124-70.tampabay.res.rr.com with smtp id tJ22-173B7480-rQ
 	for alsa-devel@alsa-project.org; Fri, 23 Feb 2007 13:12:60 -0800
@@ -523,10 +527,10 @@ lf9MyFoR0BXpFR0UJ+HyUm461NY04YS+p7zQAa3ekgWnRo9KxlDf8E8gDl5aY/+8ym+kICAAADs=
 ------=_NextPart_000_000B_01C7574C.574FFF60--
 
 
---C99A7309.1172265180/alsa.jcu.cz--
+--D41C1310.1172265183/alsa.jcu.cz--
 
 
---===============0157141529==
+--===============0595852422==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -537,7 +541,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0157141529==
+--===============0595852422==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -548,4 +552,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0157141529==--
+--===============0595852422==--
