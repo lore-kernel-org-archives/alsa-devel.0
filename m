@@ -1,10 +1,10 @@
 From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: i cant seem to make an alsa-kernel patch or bundle or
- whatever based on the alsawiki instructions.....
-Date: Thu, 22 Feb 2007 14:41:22 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8AB@sea-exch-01.na.corp.dmxmusic.com>
+Subject: doesn anybody actually ever assign to
+	snd_ac97.indep_surround?
+Date: Thu, 22 Feb 2007 16:12:50 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8AD@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2096944608=="
+Content-Type: multipart/mixed; boundary="===============1061397230=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,34 +21,59 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============2096944608==
+--===============1061397230==
 Content-class: urn:content-classes:message
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C756D2.93FE82C2"
+	boundary="----_=_NextPart_001_01C756DF.5AD31F5F"
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C756D2.93FE82C2
+------_=_NextPart_001_01C756DF.5AD31F5F
 Content-Type: text/plain;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-the instructions show a contributor manipulating their own =
-alsa-driver-foo tree to create patches or bundles.
+It seems to me that this is something that one might want to fill out on =
+a per card/motherboar basis, because it appears that there functions =
+that try to make decisions based on it's status:
 
-but my changes are to the 'real' alsa-kernel/pci/ac97/ac97_patch.c
+/* system has shared jacks with surround out enabled */
+static inline int is_shared_surrout(struct snd_ac97 *ac97)
+{
+	return !ac97->indep_surround && is_surround_on(ac97);
+}
+
+/* system has shared jacks with center/lfe out enabled */
+static inline int is_shared_clfeout(struct snd_ac97 *ac97)
+{
+	return !ac97->indep_surround && is_clfe_on(ac97);
+}
+
+/* system has shared jacks with line in enabled */
+static inline int is_shared_linein(struct snd_ac97 *ac97)
+{
+	return !ac97->indep_surround && !is_surround_on(ac97);
+}
+
+/* system has shared jacks with mic in enabled */
+static inline int is_shared_micin(struct snd_ac97 *ac97)
+{
+	return !ac97->indep_surround && !is_clfe_on(ac97);
+}
 
 
-how do i create submittable alsa-kernel changes instead of an =
-alsa-driver changes?
+so, where do i set this thing? how do i distinguish between a chip =
+installed on a board/card with 3 bidirection plugs vs a board with =
+several dedicated ins and outs?
+
+or, is this whole thing an idea that is in the code but not actively =
+utilized?
 
 tnx!
 
 johnu
 
-ps: Yes, i am trying to submit my VT1617a fix!
-
-------_=_NextPart_001_01C756D2.93FE82C2
+------_=_NextPart_001_01C756DF.5AD31F5F
 Content-Type: text/html;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -60,36 +85,65 @@ Content-Transfer-Encoding: quoted-printable
 charset=3Diso-8859-1">
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
 6.5.7638.1">
-<TITLE>i cant seem to make an alsa-kernel patch or bundle or whatever =
-based on the alsawiki instructions.....</TITLE>
+<TITLE>doesn anybody actually ever assign to =
+snd_ac97.indep_surround?</TITLE>
 </HEAD>
 <BODY>
 <!-- Converted from text/plain format -->
 
-<P><FONT SIZE=3D2>the instructions show a contributor manipulating their =
-own alsa-driver-foo tree to create patches or bundles.<BR>
+<P><FONT SIZE=3D2>It seems to me that this is something that one might =
+want to fill out on a per card/motherboar basis, because it appears that =
+there functions that try to make decisions based on it's status:<BR>
 <BR>
-but my changes are to the 'real' alsa-kernel/pci/ac97/ac97_patch.c<BR>
+/* system has shared jacks with surround out enabled */<BR>
+static inline int is_shared_surrout(struct snd_ac97 *ac97)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return =
+!ac97-&gt;indep_surround &amp;&amp; is_surround_on(ac97);<BR>
+}<BR>
+<BR>
+/* system has shared jacks with center/lfe out enabled */<BR>
+static inline int is_shared_clfeout(struct snd_ac97 *ac97)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return =
+!ac97-&gt;indep_surround &amp;&amp; is_clfe_on(ac97);<BR>
+}<BR>
+<BR>
+/* system has shared jacks with line in enabled */<BR>
+static inline int is_shared_linein(struct snd_ac97 *ac97)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return =
+!ac97-&gt;indep_surround &amp;&amp; !is_surround_on(ac97);<BR>
+}<BR>
+<BR>
+/* system has shared jacks with mic in enabled */<BR>
+static inline int is_shared_micin(struct snd_ac97 *ac97)<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return =
+!ac97-&gt;indep_surround &amp;&amp; !is_clfe_on(ac97);<BR>
+}<BR>
 <BR>
 <BR>
-how do i create submittable alsa-kernel changes instead of an =
-alsa-driver changes?<BR>
+so, where do i set this thing? how do i distinguish between a chip =
+installed on a board/card with 3 bidirection plugs vs a board with =
+several dedicated ins and outs?<BR>
+<BR>
+or, is this whole thing an idea that is in the code but not actively =
+utilized?<BR>
 <BR>
 tnx!<BR>
 <BR>
 johnu<BR>
-<BR>
-ps: Yes, i am trying to submit my VT1617a fix!<BR>
 </FONT>
 </P>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C756D2.93FE82C2--
+------_=_NextPart_001_01C756DF.5AD31F5F--
 
 
 
---===============2096944608==
+--===============1061397230==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -100,7 +154,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2096944608==
+--===============1061397230==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,4 +165,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2096944608==--
+--===============1061397230==--
