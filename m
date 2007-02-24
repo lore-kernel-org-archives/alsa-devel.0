@@ -1,21 +1,12 @@
-From: "Maroons V. Generality" <montgomery@giantgiant.com>
-Subject: U won't believe!
-Date: Sat, 24 Feb 2007 09:35:48 -0500
-Message-ID: <2155244901.20070224093548@giantgiant.com>
+From: "Eluned Wilderman" <severs@lastminuteclub.com>
+Subject: at normaliz
+Date: Sat, 24 Feb 2007 18:06:27 +0800
+Message-ID: <01c757fb$727e8310$e1ad88dc@ASAHOME>
+Reply-To: Eluned Wilderman <severs@lastminuteclub.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 258392FF
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 10:35:15 +0100 (MET)
-Received: from -1211874792 (dyn-88-123-166-74.ppp.tiscali.fr [88.123.166.74])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	2E261998EA
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 10:35:11 +0100 (MET)
-Received: from giantgiant.com (-1214460104 [-1220328416])
-	by dyn-88-123-166-74.ppp.tiscali.fr (Qmailv1) with ESMTP id C91B1CBF8C
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 09:35:48 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,13 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Ruggero Fahnestock <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-US Drug store presents lots of medications at cheapest prices. You won't find such prices in United States or even Canada. We sell legal and quality pills, our friendly support will help you anytime you need. 
-http://jujuk.hk/
+Hi,
 
-Absolutely legal, licensed and CHEAP pills at your choice. Confidential purchase. Instant shipping! 
+Via_aagra $3. 35
+Va_aalium $1. 25
+Cia_aalis $3. 75
+Xan_nnax
+Som_mma
+
+http://www. kedrx .com
+
+Remove spaces in the above link
+
+
+his legs didnt seem to want to move. As he stood there shaking and
+trying to master himself, the cold voice switched abruptly to English again.
+Nagini has interesting news, Wormtail,  it said.
 
 
 -------------------------------------------------------------------------
