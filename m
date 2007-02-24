@@ -1,21 +1,21 @@
-From: "Quandary U. Dracula" <joe@giselamockler.com>
-Subject: Penis launcher
-Date: Sat, 24 Feb 2007 06:38:20 -0500
-Message-ID: <1934286160.20070224063820@giselamockler.com>
+From: "Goon V. Leapfrogged" <cher@gimco.net>
+Subject: sexual drive
+Date: Sat, 24 Feb 2007 06:41:43 -0500
+Message-ID: <4775341808.20070224064143@gimco.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A55F2C4
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 12:33:01 +0100 (MET)
-Received: from -1222497856 (46-249.netrun.cytanet.com.cy [83.168.46.249])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC18B149
+	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 12:36:24 +0100 (MET)
+Received: from 144029944 (unknown [86.123.47.159])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	9A5B299B71
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 12:32:57 +0100 (MET)
-Received: from giselamockler.com (-1222445544 [-1217419104])
-	by 46-249.netrun.cytanet.com.cy (Qmailv1) with ESMTP id FDBA811F2D
-	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 06:38:20 -0500
+	856B598BE1
+	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 12:36:23 +0100 (MET)
+Received: from gimco.net (145989768 [140925576])
+	by 86-123-47-159.rdsnet.ro (Qmailv1) with ESMTP id D7220EB327
+	for <alsa-devel@alsa-project.org>; Sat, 24 Feb 2007 06:41:43 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -30,15 +30,15 @@ List-Id: alsa-devel@alsa-project.org
 
 The most powerful medicines for you!
 
-Valtrex - $4.95 - reduce the risk of spreading genital herpes 
+Ginseng - $35.99 - used to improve the body's resistance to stress and to increase vitality. 
 
-Amoxicillin - $1.43 - penicillin-like antibiotic used to treat certain infections caused by bacteria.
+Ginseng - $35.99 - used to improve the body's resistance to stress and to increase vitality. 
 
-Codeine - $3.6 - relieves pain. Acetaminophen is a less potent pain reliever that increases the effects of Codeine. 
+Testosterone - $7.5 - a steroid hormone from the androgen group. Testosterone is secreted in the testes of men and the ovaries of women. 
 
-Pure Natural Hoodia - $35.99 - Pure Natural Hoodia is a natural weght loss pill containing Hoodia Gordoni extract. 
+Human Growth Hormone - $43.37 - increases your metabolism helping to break down fat, build proteins, and create lean muscle. 
 
-Diflucan - $2.64 - a tablet taken orally to treat vaginal yeast infections caused by the yeast Candida. 
+Pheromone perfume for women - $35.99 - The human pheromones that attracts males has finally been recreated in the laboratory! Naturally found in minute amounts in the perspiration of women, these natural pheromones are an evolutionary remnant from a time when human males relied on scent to locate female mates.
 
 and more!
 
