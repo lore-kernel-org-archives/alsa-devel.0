@@ -1,10 +1,10 @@
 From: "John Utz" <John.Utz@dmxmusic.com>
-Subject: Patch: alsa-driver/hgcompile - check for a user set
- ALSAKERNELDIR first then set default
-Date: Fri, 23 Feb 2007 16:07:18 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8B3@sea-exch-01.na.corp.dmxmusic.com>
+Subject: patch: ac97_patch.c - enable 'Smart 5.1' on VIA
+ vt1617a ac97 codec
+Date: Fri, 23 Feb 2007 16:44:33 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8B4@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C757A7.F2AF0D22"
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C757AC.F3BA79F2"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,24 +21,42 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C757A7.F2AF0D22
+------_=_NextPart_001_01C757AC.F3BA79F2
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_002_01C757A7.F2AF0D22"
+	boundary="----_=_NextPart_002_01C757AC.F3BA79F2"
 Content-Transfer-Encoding: 7bit
 
 
-------_=_NextPart_002_01C757A7.F2AF0D22
+------_=_NextPart_002_01C757AC.F3BA79F2
 Content-Type: text/plain;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-This patch simplifies the alsa-kernel discovery logic and provides =
-better error reporting in the event of not finding $ALSAKERNELDIR/last.c
 
-Signed off by John L. Utz III john.utz@dmxmusic.com
-(tho why my uneducated opinion matters is beyond me)
+This patch allows via vt1617a end users to configure what via calls =
+Smart 5.1 - a mechanism for controlling the 3 bi-directional analog =
+connectors that some OEM's use instead of a larger collection of =
+dedicated analog input and output connectors.
 
-------_=_NextPart_002_01C757A7.F2AF0D22
+As outlined in previous discussion on this list, the outcome matrix for =
+togging these bits is somewhat arcane and seemingly lacking in cohesion, =
+but with only 3 bits, it's reasonable to expect that a motivated end =
+user will be able to eventually configure their own personal setup to =
+their needs.
+
+Note that in some instances (such as an epia C7) it is also required to =
+disable 'alternate surround out' to get surround to work properly.
+
+Note that this is my first ever alsa patch and after review by wiser =
+craniums it may need fixin'. ;-)
+
+plz dont hesitate to ask for such corrections!
+
+tnx!
+
+johnu
+
+------_=_NextPart_002_01C757AC.F3BA79F2
 Content-Type: text/html;
  charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -50,58 +68,77 @@ Content-Transfer-Encoding: quoted-printable
 charset=3Diso-8859-1">
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
 6.5.7638.1">
-<TITLE>Patch: alsa-driver/hgcompile - check for a user set ALSAKERNELDIR =
-first then set default</TITLE>
+<TITLE>patch: ac97_patch.c - enable 'Smart 5.1' on VIA vt1617a ac97 =
+codec</TITLE>
 </HEAD>
 <BODY>
 <!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>This patch simplifies the alsa-kernel discovery logic =
-and provides better error reporting in the event of not finding =
-$ALSAKERNELDIR/last.c<BR>
 <BR>
-Signed off by John L. Utz III john.utz@dmxmusic.com<BR>
-(tho why my uneducated opinion matters is beyond me)<BR>
+
+<P><FONT SIZE=3D2>This patch allows via vt1617a end users to configure =
+what via calls Smart 5.1 - a mechanism for controlling the 3 =
+bi-directional analog connectors that some OEM's use instead of a larger =
+collection of dedicated analog input and output connectors.<BR>
+<BR>
+As outlined in previous discussion on this list, the outcome matrix for =
+togging these bits is somewhat arcane and seemingly lacking in cohesion, =
+but with only 3 bits, it's reasonable to expect that a motivated end =
+user will be able to eventually configure their own personal setup to =
+their needs.<BR>
+<BR>
+Note that in some instances (such as an epia C7) it is also required to =
+disable 'alternate surround out' to get surround to work properly.<BR>
+<BR>
+Note that this is my first ever alsa patch and after review by wiser =
+craniums it may need fixin'. ;-)<BR>
+<BR>
+plz dont hesitate to ask for such corrections!<BR>
+<BR>
+tnx!<BR>
+<BR>
+johnu<BR>
 </FONT>
 </P>
 
 </BODY>
 </HTML>
-------_=_NextPart_002_01C757A7.F2AF0D22--
+------_=_NextPart_002_01C757AC.F3BA79F2--
 
-------_=_NextPart_001_01C757A7.F2AF0D22
+------_=_NextPart_001_01C757AC.F3BA79F2
 Content-Type: application/octet-stream;
- name=hgcompile-ALSAKERNELDIR.patch
+ name=ac97_patch_c-1617aSmart51.patch
 Content-Transfer-Encoding: base64
-Content-Description: hgcompile-ALSAKERNELDIR.patch
+Content-Description: ac97_patch_c-1617aSmart51.patch
 Content-Disposition: attachment;
- filename=hgcompile-ALSAKERNELDIR.patch
+ filename=ac97_patch_c-1617aSmart51.patch
 
-ZGlmZiAtciA2MmMwZTM5ODkyNDEgaGdjb21waWxlCi0tLSBhL2hnY29tcGlsZQlUaHUgRmViIDIy
-IDEzOjI0OjE4IDIwMDcgKzAxMDAKKysrIGIvaGdjb21waWxlCUZyaSBGZWIgMjMgMTU6NTQ6MjQg
-MjAwNyAtMDgwMApAQCAtMjcsMTcgKzI3LDI2IEBAIGZpCiAjICBjZCAuLgogI2ZpCiAKLSMgY2hl
-Y2sgZm9yIGFsc2Eta2VybmVsIGRpcmVjdG9yeQotaWYgWyAtZCBhbHNhLWtlcm5lbCAtYSAtZiBh
-bHNhLWtlcm5lbC9sYXN0LmMgXTsgdGhlbgotICBBTFNBS0VSTkVMRElSPSJhbHNhLWtlcm5lbCIK
-LWVsc2UKLSAgdGVzdCAteiAkQUxTQUtFUk5FTERJUiAmJiBBTFNBS0VSTkVMRElSPS4uL2Fsc2Et
-a2VybmVsCi0gIGlmIFsgISAtZCAkQUxTQUtFUk5FTERJUiAtbyAhIC1mICRBTFNBS0VSTkVMRElS
-L2xhc3QuYyBdOyB0aGVuCi0gICAgZWNobyAiTm8gYWxzYS1rZXJuZWwgaXMgZm91bmQuIgotICAg
-IGVjaG8gIlBsZWFzZSBzcGVjaWZ5IHRoZSBjb3JyZWN0IGxvY2F0aW9uIHZpYSBBTFNBS0VSTkVM
-RElSIGVudmlyb25tZW50IHZhcmlhYmxlLiIKKyMgY2hlY2sgZm9yIGNhbGxlciBzZXQgYWxzYS1r
-ZXJuZWwgZGlyZWN0b3J5LCBpZiBlbXB0eSBzZXQgdG8gZGVmYXVsdAorCitpZiBbIC16ICRBTFNB
-S0VSTkVMRElSIF07IHRoZW4KKyAgICBBTFNBS0VSTkVMRElSPS4uL2Fsc2Eta2VybmVsCitmaQor
-CitBTFNBQ0hLRklMRT0kQUxTQUtFUk5FTERJUi9sYXN0LmMKKworZWNobyAiQUxTQSBLZXJuZWwg
-RGlyZWN0b3J5IGlzOiAkQUxTQUtFUk5FTERJUiwgY2hlY2tpbmcgZm9yIGNoZWNrZmlsZTogJEFM
-U0FDSEtGSUxFIgorCitpZiBbICEgLWYgJEFMU0FLQ0hLRklMRSBdCit0aGVuCisgICAgZWNobwor
-ICAgIGVjaG8gIkVycm9yISBhbHNhLWtlcm5lbCBzb3VyY2UgZmlsZSAkQUxTQUNIS0ZJTEUgaXMg
-bm90IGZvdW5kLiBBbHNhIGNvbXBpbGF0aW9uIHdpbGwgYmUgaW1wb3NzaWJsZS4iCisgICAgZWNo
-bworICAgIGVjaG8gIlBsZWFzZSBtYWtlIHN1cmUgdGhhdCB5b3VyIGhhdmUgY29ycmVjdGx5IHBs
-YWNlZCB0aGUgLi4vYWxzYS1rZXJuZWwgZGlyZWN0b3J5IgorICAgIGVjaG8gIm9yIHNwZWNpZnkg
-dGhlIGNvcnJlY3QgbG9jYXRpb24gZm9yIHlvdXIgZGV2ZWxvcG1lbnQga2VybmVsIGRpcmVjdG9y
-eSB2aWEgQUxTQUtFUk5FTERJUiBlbnZpcm9ubWVudCB2YXJpYWJsZS4iCiAgICAgZXhpdCAxCi0g
-IGZpCiBmaQorCiBtYWtlIEFMU0FLRVJORUxESVI9IiRBTFNBS0VSTkVMRElSIiBhbGwtZGVwcwog
-YWNsb2NhbCAkQUNMT0NBTF9GTEFHUwogYXV0b2NvbmYK
+ZGlmZiAtciAyOWIwYjQyNDVkMDYgcGNpL2FjOTcvYWM5N19wYXRjaC5jCi0tLSBhL3BjaS9hYzk3
+L2FjOTdfcGF0Y2guYwlUaHUgRmViIDIyIDE2OjA3OjIxIDIwMDcgKzAxMDAKKysrIGIvcGNpL2Fj
+OTcvYWM5N19wYXRjaC5jCUZyaSBGZWIgMjMgMTY6MjM6MzYgMjAwNyAtMDgwMApAQCAtMzI3Myw4
+ICszMjczLDI4IEBAIHN0YXRpYyBpbnQgcGF0Y2hfdnQxNjE2KHN0cnVjdCBzbmRfYWM5NyAKIC8q
+CiAgKiBWVDE2MTdBIGNvZGVjCiAgKi8KKworc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRy
+b2xfbmV3IHNuZF9hYzk3X2NvbnRyb2xzX3Z0MTYxN2FbXSA9IHsKKyAgQUM5N19TSU5HTEUoIkNl
+bnRlci9MRkUgRXhjaGFuZ2UiLCAgIDB4NWEsICA4LCAxLCAwKSwKKyAgLyoKKyAgICogVGhlc2Ug
+YXJlIHVzZWQgdG8gZW5hYmxlL2Rpc2FibGUgc3Vycm91bmQgc291bmQgb24gbW90aGVyYm9hcmRz
+CisgICAqIHRoYXQgaGF2ZSAzIGJpZGlyZWN0aW9uYWwgYW5hbG9nIGphY2tzCisgICAqLworICBB
+Qzk3X1NJTkdMRSgiU21hcnQgNS4xIENvbnRyb2wgQSIsIDB4MjAsICA4LCAxLCAwKSwKKyAgQUM5
+N19TSU5HTEUoIlNtYXJ0IDUuMSBDb250cm9sIEIiLCAweDdhLCAxNSwgMSwgMCksCisgIEFDOTdf
+U0lOR0xFKCJTbWFydCA1LjEgQ29udHJvbCBDIiwgMHg3YSwgMTQsIDEsIDApCit9OworCiBzdGF0
+aWMgaW50IHBhdGNoX3Z0MTYxN2Eoc3RydWN0IHNuZF9hYzk3ICogYWM5NykKIHsKKyAgICAgICAg
+LyogaW5zdGFudGlhdGUgb3VyIHNwZWNpZmljIGNvbnRyb2xzLCB3ZSBjaG9vc2UgdG8gY29udGlu
+dWUgaW4gdGhlIGV2ZW50IG9mIGZhaWx1cmUKKwkgICBiZWNhdXNlIHdlIHdpc2ggdG8gYWxsb3cg
+dGhlIG90aGVyIGFjdGlvbnMgdG8gY29udGludWUgKi8KKworCWludCBlcnIgPSAwOworCisJZXJy
+ID0gcGF0Y2hfYnVpbGRfY29udHJvbHMoYWM5NywgJnNuZF9hYzk3X2NvbnRyb2xzX3Z0MTYxN2Fb
+MF0sCisJCQkJICAgQVJSQVlfU0laRShzbmRfYWM5N19jb250cm9sc192dDE2MTdhKSk7CisKIAkv
+KiBicmluZyBhbmFsb2cgcG93ZXIgY29uc3VtcHRpb24gdG8gbm9ybWFsLCBsaWtlIFdpblhQIGRy
+aXZlcgogCSAqIGZvciBFUElBIFNQCiAJICovCkBAIC0zMjgyLDcgKzMzMDIsNyBAQCBzdGF0aWMg
+aW50IHBhdGNoX3Z0MTYxN2Eoc3RydWN0IHNuZF9hYzk3CiAJYWM5Ny0+ZXh0X2lkIHw9IEFDOTdf
+RUlfU1BESUY7CS8qIGZvcmNlIHRoZSBkZXRlY3Rpb24gb2Ygc3BkaWYgKi8KIAlhYzk3LT5yYXRl
+c1tBQzk3X1JBVEVTX1NQRElGXSA9IFNORFJWX1BDTV9SQVRFXzQ0MTAwIHwgU05EUlZfUENNX1JB
+VEVfNDgwMDA7CiAJYWM5Ny0+YnVpbGRfb3BzID0gJnBhdGNoX3Z0MTYxNl9vcHM7Ci0JcmV0dXJu
+IDA7CisJcmV0dXJuIGVycjsKIH0KIAogLyoK
 
-------_=_NextPart_001_01C757A7.F2AF0D22
+------_=_NextPart_001_01C757AC.F3BA79F2
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,7 +149,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------_=_NextPart_001_01C757A7.F2AF0D22
+------_=_NextPart_001_01C757AC.F3BA79F2
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -123,4 +160,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------_=_NextPart_001_01C757A7.F2AF0D22--
+------_=_NextPart_001_01C757AC.F3BA79F2--
