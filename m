@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HKKHR-0002xr-J2 delayed 72 hours
-Date: Sun, 25 Feb 2007 20:08:23 -0800
-Message-ID: <E1HLX9z-0000yQ-UB@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HLFLS-0002Qv-Nf delayed 10 hours
+Date: Sun, 25 Feb 2007 20:31:05 -0800
+Message-ID: <E1HLXVx-0005Cu-UY@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HKKHR-0002xr-J2
-The subject of the message is: planted it came to me, to destroy, you in mine head to pass at
-The date of the message is:    Thu, 22 Feb 2007 21:11:23 +0100
+The message identifier is:     1HLFLS-0002Qv-Nf
+The subject of the message is: asked are before they offered.  Now.  For all
+The date of the message is:    Sun, 25 Feb 2007 16:06:53 +0700
 
 The address to which the message has not yet been delivered is:
 
