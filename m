@@ -1,7 +1,8 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HLFLS-0002Qv-Nf delayed 24 hours
-Date: Mon, 26 Feb 2007 01:09:40 -0800
-Message-ID: <E1HLbrY-0004G4-EW@externalmx-1.sourceforge.net>
+From: "Antonietta Gilsdorf" <chandaocatoe@call-of-hope.com>
+Subject: good handpicke
+Date: Mon, 26 Feb 2007 11:24:04 +0100
+Message-ID: <01c75990$3d59da90$91481058@oem72c151bda02>
+Reply-To: Antonietta Gilsdorf <chandaocatoe@call-of-hope.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -15,33 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Crescentius Sola <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+Hi,
 
-The message identifier is:     1HLFLS-0002Qv-Nf
-The subject of the message is: asked are before they offered.  Now.  For all
-The date of the message is:    Sun, 25 Feb 2007 16:06:53 +0700
+Chaepest CALIS and VAGRA online.
 
-The address to which the message has not yet been delivered is:
+http://parkerokay+now.com
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Remove "+" from the link.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+
+They hurried into three chairs right in front of the teachers desk,
+took out their copies of The Dark Forces: A Guide to Self-Protection,
+and waited, unusually quiet. Soon they heard Moodys distinctive
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
