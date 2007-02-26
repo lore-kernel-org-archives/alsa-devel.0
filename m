@@ -1,12 +1,11 @@
-From: Shingo HORISAWA <tora2329@yahoo.co.jp>
-Subject: Re: Problems with Realtek HD Audio
-Date: Mon, 26 Feb 2007 11:38:05 +0900 (JST)
-Message-ID: <20070226023805.50487.qmail@web3208.mail.kcd.yahoo.co.jp>
-References: <s5hslcy5fih.wl%tiwai@suse.de>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HKKHR-0002xr-J2 delayed 72 hours
+Date: Sun, 25 Feb 2007 20:08:23 -0800
+Message-ID: <E1HLX9z-0000yQ-UB@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-851041437-1172457485=:50407"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hslcy5fih.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,252 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-851041437-1172457485=:50407
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Id: 
-Content-Disposition: inline
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-Hi, Takashi.
+The message identifier is:     1HKKHR-0002xr-J2
+The subject of the message is: planted it came to me, to destroy, you in mine head to pass at
+The date of the message is:    Thu, 22 Feb 2007 21:11:23 +0100
 
-As you said, 
-I raised the value of "Capture Volume", 
-and chose 'Front Mic' as the capture source.
+The address to which the message has not yet been delivered is:
 
-But nothing changed.
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-I append /etc/asound.state file.
-(Of cource, I loaded this file by "alsactl restore".)
-
-My current driver is "alsa-driver-hg20070220".
-
-> > I think it doesn't have any problems.
-> > 	control.15 {
-> > 		comment.access 'read write'
-> > 		comment.type INTEGER
-> > 		comment.count 2
-> > 		comment.range '0 - 31'
-> > 		iface MIXER
-> > 		name 'Capture Volume'
-> > 		value.0 0
-> > 		value.1 0
-> > 	}
-> 
-> Raise this volume.
-> 
-> > 	control.16 {
-> > 		comment.access 'read write'
-> > 		comment.type BOOLEAN
-> > 		comment.count 2
-> > 		iface MIXER
-> > 		name 'Capture Switch'
-> > 		value.0 true
-> > 		value.1 true
-> > 	}
-> (snip)
-> > 	control.21 {
-> > 		comment.access 'read write'
-> > 		comment.type ENUMERATED
-> > 		comment.count 1
-> > 		comment.item.0 Mic
-> > 		comment.item.1 'Front Mic'
-> > 		comment.item.2 Line
-> > 		comment.item.3 CD
-> > 		iface MIXER
-> > 		name 'Input Source'
-> > 		value Mic
-> > 	}
-> 
-> And choose 'Front Mic' as the capture source.
-
-Reviewing this problem again:
-
-  - mic capture stops when other "new" application start
-  - this state continues till system or ALSA are restarted
-  - applications have started once are stored in page
-cash, so they don't give any influence to mic capture
-    (in fact, after page cache was cleared, they stop mic
-capture again.)
-
-
-Best regards.
-
-===
-Shingo
-
-
---------------------------------------
-Start Yahoo! Auction now! Check out the cool campaign
-http://pr.mail.yahoo.co.jp/auction/
-
---0-851041437-1172457485=:50407
-Content-Type: application/octet-stream; name="asound.state"
-Content-Transfer-Encoding: base64
-Content-Description: 2901823382-asound.state
-Content-Disposition: attachment; filename="asound.state"
-
-c3RhdGUuU0IgewoJY29udHJvbC4xIHsKCQljb21tZW50LmFjY2VzcyAncmVh
-ZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291
-bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJ
-CW5hbWUgJ0Zyb250IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDI0CgkJ
-dmFsdWUuMSAyNAoJfQoJY29udHJvbC4yIHsKCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWNvbW1lbnQu
-Y291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnRnJvbnQgUGxheWJhY2sg
-U3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29u
-dHJvbC4zIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21t
-ZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQu
-cmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0NEIFBsYXli
-YWNrIFZvbHVtZScKCQl2YWx1ZS4wIDI1CgkJdmFsdWUuMSAyNQoJfQoJY29u
-dHJvbC40IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21t
-ZW50LnR5cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1J
-WEVSCgkJbmFtZSAnQ0QgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1
-ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJvbC41IHsKCQljb21tZW50LmFj
-Y2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNv
-bW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFj
-ZSBNSVhFUgoJCW5hbWUgJ0xpbmUgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVl
-LjAgMjQKCQl2YWx1ZS4xIDI0Cgl9Cgljb250cm9sLjYgewoJCWNvbW1lbnQu
-YWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJ
-Y29tbWVudC5jb3VudCAyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdMaW5lIFBs
-YXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUK
-CX0KCWNvbnRyb2wuNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-CgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LmNvdW50IDIKCQlj
-b21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdN
-aWMgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgMjUKCQl2YWx1ZS4xIDI1
-Cgl9Cgljb250cm9sLjggewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRl
-JwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAyCgkJ
-aWZhY2UgTUlYRVIKCQluYW1lICdNaWMgUGxheWJhY2sgU3dpdGNoJwoJCXZh
-bHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJvbC45IHsKCQlj
-b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5U
-RUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAz
-JwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIEJvb3N0JwoJCXZhbHVlLjAg
-MQoJCXZhbHVlLjEgMQoJfQoJY29udHJvbC4xMCB7CgkJY29tbWVudC5hY2Nl
-c3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21t
-ZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2Ug
-TUlYRVIKCQluYW1lICdGcm9udCBNaWMgUGxheWJhY2sgVm9sdW1lJwoJCXZh
-bHVlLjAgMjUKCQl2YWx1ZS4xIDI1Cgl9Cgljb250cm9sLjExIHsKCQljb21t
-ZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVB
-TgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnRnJv
-bnQgTWljIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1
-ZS4xIHRydWUKCX0KCWNvbnRyb2wuMTIgewoJCWNvbW1lbnQuYWNjZXNzICdy
-ZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5j
-b3VudCAyCgkJY29tbWVudC5yYW5nZSAnMCAtIDMnCgkJaWZhY2UgTUlYRVIK
-CQluYW1lICdGcm9udCBNaWMgQm9vc3QnCgkJdmFsdWUuMCAyCgkJdmFsdWUu
-MSAyCgl9Cgljb250cm9sLjEzIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQg
-MgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJCW5h
-bWUgJ0hlYWRwaG9uZSBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyMgoJ
-CXZhbHVlLjEgMjIKCX0KCWNvbnRyb2wuMTQgewoJCWNvbW1lbnQuYWNjZXNz
-ICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVu
-dC5jb3VudCAyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdIZWFkcGhvbmUgUGxh
-eWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJ
-fQoJY29udHJvbC4xNSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-CgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LmNvdW50IDEKCQlj
-b21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdN
-b25vIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAwCgl9Cgljb250cm9sLjE2
-IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
-cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQgMQoJCWlmYWNlIE1JWEVSCgkJ
-bmFtZSAnTW9ubyBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgZmFsc2UKCX0K
-CWNvbnRyb2wuMTcgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJ
-CWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5jb3VudCAyCgkJY29t
-bWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2Fw
-dHVyZSBWb2x1bWUnCgkJdmFsdWUuMCAxMAoJCXZhbHVlLjEgMTAKCX0KCWNv
-bnRyb2wuMTggewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
-bW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAyCgkJaWZhY2Ug
-TUlYRVIKCQluYW1lICdDYXB0dXJlIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUK
-CQl2YWx1ZS4xIHRydWUKCX0KCWNvbnRyb2wuMTkgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29t
-bWVudC5jb3VudCAyCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNl
-IE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBWb2x1bWUnCgkJaW5kZXggMQoJCXZh
-bHVlLjAgMTAKCQl2YWx1ZS4xIDEwCgl9Cgljb250cm9sLjIwIHsKCQljb21t
-ZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVB
-TgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2Fw
-dHVyZSBTd2l0Y2gnCgkJaW5kZXggMQoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVl
-LjEgdHJ1ZQoJfQoJY29udHJvbC4yMSB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LmNv
-dW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIK
-CQluYW1lICdDYXB0dXJlIFZvbHVtZScKCQlpbmRleCAyCgkJdmFsdWUuMCAx
-MAoJCXZhbHVlLjEgMTAKCX0KCWNvbnRyb2wuMjIgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29t
-bWVudC5jb3VudCAyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFN3
-aXRjaCcKCQlpbmRleCAyCgkJdmFsdWUuMCB0cnVlCgkJdmFsdWUuMSB0cnVl
-Cgl9Cgljb250cm9sLjIzIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
-ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuY291bnQg
-MQoJCWNvbW1lbnQuaXRlbS4wIE1pYwoJCWNvbW1lbnQuaXRlbS4xICdGcm9u
-dCBNaWMnCgkJY29tbWVudC5pdGVtLjIgTGluZQoJCWNvbW1lbnQuaXRlbS4z
-IENECgkJaWZhY2UgTUlYRVIKCQluYW1lICdJbnB1dCBTb3VyY2UnCgkJdmFs
-dWUgJ0Zyb250IE1pYycKCX0KCWNvbnRyb2wuMjQgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVECgkJ
-Y29tbWVudC5jb3VudCAxCgkJY29tbWVudC5pdGVtLjAgTWljCgkJY29tbWVu
-dC5pdGVtLjEgJ0Zyb250IE1pYycKCQljb21tZW50Lml0ZW0uMiBMaW5lCgkJ
-Y29tbWVudC5pdGVtLjMgQ0QKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lucHV0
-IFNvdXJjZScKCQlpbmRleCAxCgkJdmFsdWUgJ0Zyb250IE1pYycKCX0KCWNv
-bnRyb2wuMjUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
-bW1lbnQudHlwZSBFTlVNRVJBVEVECgkJY29tbWVudC5jb3VudCAxCgkJY29t
-bWVudC5pdGVtLjAgTWljCgkJY29tbWVudC5pdGVtLjEgJ0Zyb250IE1pYycK
-CQljb21tZW50Lml0ZW0uMiBMaW5lCgkJY29tbWVudC5pdGVtLjMgQ0QKCQlp
-ZmFjZSBNSVhFUgoJCW5hbWUgJ0lucHV0IFNvdXJjZScKCQlpbmRleCAyCgkJ
-dmFsdWUgJ0Zyb250IE1pYycKCX0KCWNvbnRyb2wuMjYgewoJCWNvbW1lbnQu
-YWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5j
-b3VudCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sg
-Q29uIE1hc2snCgkJdmFsdWUgJzBmZmYwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAnCgl9Cgljb250cm9sLjI3IHsKCQljb21tZW50LmFjY2Vz
-cyByZWFkCgkJY29tbWVudC50eXBlIElFQzk1OAoJCWNvbW1lbnQuY291bnQg
-MQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIFBybyBN
-YXNrJwoJCXZhbHVlICcwZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwJwoJfQoJY29udHJvbC4yOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElFQzk1OAoJCWNvbW1lbnQuY291
-bnQgMQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERl
-ZmF1bHQnCgkJdmFsdWUgJzA0MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAnCgl9Cgljb250cm9sLjI5IHsKCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWNvbW1lbnQu
-Y291bnQgMQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNr
-IFN3aXRjaCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJvbC4zMCB7CgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicKCQljb21tZW50LnR5cGUg
-SU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAg
-LSAyNTUnCgkJY29tbWVudC50bHYgJzAwMDAwMDAxMDAwMDAwMDhmZmZmZWMx
-NDAwMDAwMDE0JwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnUENNIFBsYXliYWNr
-IFZvbHVtZScKCQl2YWx1ZS4wIDE3MAoJCXZhbHVlLjEgMTcwCgl9Cn0K
-
---0-851041437-1172457485=:50407
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---0-851041437-1172457485=:50407
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---0-851041437-1172457485=:50407--
