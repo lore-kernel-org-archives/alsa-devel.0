@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HLo1y-00056x-8P delayed 10 hours
-Date: Tue, 27 Feb 2007 00:45:16 -0800
-Message-ID: <E1HLxxU-0000sq-Ir@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HLFLS-0002Qv-Nf delayed 48 hours
+Date: Tue, 27 Feb 2007 01:59:37 -0800
+Message-ID: <E1HLz7R-0004kg-Aa@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HLo1y-00056x-8P
-The subject of the message is: [VAR115]
-The date of the message is:    Mon, 26 Feb 2007 23:09:29 +0100
+The message identifier is:     1HLFLS-0002Qv-Nf
+The subject of the message is: asked are before they offered.  Now.  For all
+The date of the message is:    Sun, 25 Feb 2007 16:06:53 +0700
 
 The address to which the message has not yet been delivered is:
 
