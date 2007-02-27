@@ -1,9 +1,9 @@
-From: "maelstrom" <jtqq@etgodthjem.dk>
-Subject: first name
-Date: Tue, 27 Feb 2007 08:24:29 -0800
-Message-ID: <001901c75a8c$19f1b260$7d45a5af@wgikwy>
+From: "desegregate" <ewu@centurionsafety.net>
+Subject: springtime
+Date: Tue, 27 Feb 2007 08:25:33 -0800
+Message-ID: <001901c75a8c$4d9dffb0$9ddef09d@tuvss>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0214311201=="
+Content-Type: multipart/mixed; boundary="===============1965178238=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,44 +14,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0214311201==
+--===============1965178238==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0015_01C75A49.0BBC22E0"
+	boundary="----=_NextPart_000_0015_01C75A49.3F69A8B0"
 
-------=_NextPart_000_0015_01C75A49.0BBC22E0
+------=_NextPart_000_0015_01C75A49.3F69A8B0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0016_01C75A49.0BC0B6C0"
+	boundary="----=_NextPart_001_0016_01C75A49.3F6DEE70"
 
-------=_NextPart_001_0016_01C75A49.0BC0B6C0
+------=_NextPart_001_0016_01C75A49.3F6DEE70
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Data fromNevyas simply cannot be trusted, and now Nevyas data has helped =
-Intacs get onthe market.
-Ron Link of SurgicalEyes. Seeexhibit 7, a copy of 21 CFR 812.
-Plaintiffs' claim for the tortof "abuse of process" is wholly =
-inadequate.
-"It was getting very time consuming and stressful getting ready =
-fortrial," Tepper said.
-Seeexhibit 7, a copy of 21 CFR 812.
-Defendant LCA Vision, Inc. A New York ophthalmologist was found not =
-liable for vision problems one ofhis patients complained of following =
-LASIK surgery. Robert MaloneyLASIK SOS - Dr.
-Associate Professor Donald Tan, Director, Singapore Eye Research =
-Institute,said many patients showed improvement after the treatment.
-Even after lasik eye surgery four years ago, his vison was far from =
-perfectso he turned to Neurovision at the National Eye Centre for help. =
-By JAMAL THALJI, Times Staff WriterDADE CITY - Every time Circuit Judge =
-Lynn Tepper gazes up at themoons, there's no escaping it. alleges he =
-went blind in one eye after undergoing LASIK.
-He had been hampered by glasses since he became long-sighted at the age =
-of 18. She has had to rely on friends for rides.
-------=_NextPart_001_0016_01C75A49.0BC0B6C0
+Further, Smethers had to carry multiple pairs of glasses and a =
+magnifying glassto allow him to see in different lighting.
+The trial court granted the motion in limine, and a jury found in favor =
+of thedefendants. She has had to rely on friends for rides.
+Additionally, Plaintiff has suffered a reduction in his earning capacity =
+and will suffer a loss of his work life expectancy.
+Anita Nevyas "respectable" surgeons?
+The nameand address of its registered agent is Tom V.
+At all timesmentioned in this petition, defendants Laser Vision Centers, =
+Inc. Herbert Nevyas Targeted by Patient Web SiteJo Wills published a =
+narrative of Keith Wills' problems with Dr. The above negligence =
+proximately caused Plaintiff, George Psoras, Jr.
+For the same reasonsinvolving other agencies, discussed above, the =
+privilege should attach tocommunications made to the Illinois Department =
+of Financial and ProfessionalRegulation.
+He notes that we physicians are well known late adopters. "NeuroVision =
+understands the intricacies of Lasik and isa complementary treatment to =
+the surgery. Nevyas laser IDE Protocol submitted to the FDA dated March =
+18, 1997.
+Nevyas bought a Sullivan laser and called it "custom designed,"by =
+claiming that it was designed just for him. Ceatus Marketing Inc.
+------=_NextPart_001_0016_01C75A49.3F6DEE70
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -60,59 +61,63 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1807" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"anticlimax" hspace=3D0=20
-src=3D"cid:001401c75a8c$19dacf00$7d45a5af@wgikwy" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"liver" hspace=3D0=20
+src=3D"cid:001401c75a8c$4d88a2f0$9ddef09d@tuvss" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Data fromNevyas simply cannot be =
-trusted, and now=20
-Nevyas data has helped Intacs get onthe market.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ron Link of SurgicalEyes. Seeexhibit 7, =
-a copy of=20
-21 CFR 812.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Plaintiffs' claim for the tortof "abuse =
-of process"=20
-is wholly inadequate.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"It was getting very time consuming and =
-stressful=20
-getting ready fortrial," Tepper said.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Seeexhibit 7, a copy of 21 CFR =
-812.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Defendant LCA Vision, Inc. A New =
-York=20
-ophthalmologist was found not liable for vision problems one ofhis =
-patients=20
-complained of following LASIK surgery. Robert MaloneyLASIK SOS - =
-Dr.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Associate Professor Donald Tan, =
-Director, Singapore=20
-Eye Research Institute,said many patients showed improvement after =
-the=20
-treatment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Even after lasik eye surgery four years =
-ago, his=20
-vison was far from perfectso he turned to Neurovision at the National =
-Eye Centre for=20
-help. By JAMAL THALJI, Times Staff WriterDADE CITY - Every time Circuit =
-Judge Lynn=20
-Tepper gazes up at themoons, there's no escaping it. alleges he went =
-blind in one=20
-eye after undergoing LASIK.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>He had been hampered by glasses since =
-he became=20
-long-sighted at the age of 18. She has had to rely on friends for=20
-rides.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Further, Smethers had to carry multiple =
+pairs of=20
+glasses and a magnifying glassto allow him to see in different=20
+lighting.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The trial court granted the motion in =
+limine, and a=20
+jury found in favor of thedefendants. She has had to rely on friends =
+for=20
+rides.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Additionally, Plaintiff has suffered a =
+reduction in=20
+his earning capacity and will suffer a loss of his work life=20
+expectancy.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Anita Nevyas "respectable" =
+surgeons?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The nameand address of its registered =
+agent is Tom=20
+V.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>At all timesmentioned in this petition, =
+defendants=20
+Laser Vision Centers, Inc. Herbert Nevyas Targeted by Patient Web SiteJo =
+Wills=20
+published a narrative of Keith Wills' problems with Dr. The above =
+negligence=20
+proximately caused Plaintiff, George Psoras, Jr.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>For the same reasonsinvolving other =
+agencies,=20
+discussed above, the privilege should attach tocommunications made to =
+the Illinois=20
+Department of Financial and ProfessionalRegulation.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>He notes that we physicians are well =
+known late=20
+adopters. "NeuroVision understands the intricacies of Lasik and isa =
+complementary=20
+treatment to the surgery. Nevyas laser IDE Protocol submitted to the FDA =
+dated March=20
+18, 1997.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Nevyas bought a Sullivan laser and =
+called it=20
+"custom designed,"by claiming that it was designed just for him. Ceatus =
+Marketing=20
+Inc.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0016_01C75A49.0BC0B6C0--
+------=_NextPart_001_0016_01C75A49.3F6DEE70--
 
-------=_NextPart_000_0015_01C75A49.0BBC22E0
+------=_NextPart_000_0015_01C75A49.3F69A8B0
 Content-Type: image/gif;
-	name="ampere.gif"
+	name="cross street.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001401c75a8c$19dacf00$7d45a5af@wgikwy>
+Content-ID: <001401c75a8c$4d88a2f0$9ddef09d@tuvss>
 
 R0lGODdhEAJSAfZFAOzh7Nz23e/k/t3YxVsrF0x/i5hsDCEmUSo8MZOIeKwGBWhxWhKhgXthpI45
 C0m5ZBLGYsEbKHKjqC9fUic8A3JdZ3mlcVlAkndkO08/PtDZPKSAxeWQzOeaOchF3lD5Y5yqiWPE
@@ -472,11 +477,11 @@ bYviKV12KiyYcstWJpg4kjP2L5BpebjocpeoGSpZeoVQj5bJKAunKMmklSRBgkcJlAhJYMhIm573
 lIknbsEZOBnWlXF5dsbJnA2hlHKIbo+pmtN5jvSVm7qphc25X7XGmweXafMmar85gVUXadR5lgQI
 eUBoa1ZYKulXmD/nlb7YndannfUphMdonngoflUzmR7GUDVpn1hznTl3gPIoGoEAADs=
 
-------=_NextPart_000_0015_01C75A49.0BBC22E0--
+------=_NextPart_000_0015_01C75A49.3F69A8B0--
 
 
 
---===============0214311201==
+--===============1965178238==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -487,7 +492,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0214311201==
+--===============1965178238==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -498,4 +503,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0214311201==--
+--===============1965178238==--
