@@ -1,14 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: USB Audio Device: Philips Audio Set
-Date: Tue, 27 Feb 2007 18:27:46 +0100
-Message-ID: <1172597266.6053.1176801163@webmail.messagingengine.com>
-References: <45E42E88.9080403@hubmer.at>
+From: "John Utz" <John.Utz@dmxmusic.com>
+Subject: does a 3 way 2 register equivalent of AC97_ENUM_DOUBLE
+ exist? (VT1617a stuff)
+Date: Tue, 27 Feb 2007 09:56:44 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8B8@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0886345393=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <45E42E88.9080403@hubmer.at>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,26 +16,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andreas Hubmer <andreas@hubmer.at>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Andreas Hubmer wrote:
-> I have a Philips mini hifi-system named "Philips FWM589" that can be
-> used as an usb sound card. It is recognized as USB Audio device but I'm
-> not able to get it to work.
-> The module snd-usb-audio is loaded and in gnome a message pops up that a
-> new audio device was found. In the gnome audio preferences a new device
-> "USB Audio" is shown but the test sound doesn't work.
+This is a multi-part message in MIME format.
 
-Many USB audio devices have strange or non-standard mixer controls.
-Please show the output of "amixer -c 1 contents".
+--===============0886345393==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C75A98.A48E7AFB"
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C75A98.A48E7AFB
+Content-Type: text/plain;
+ charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
 
-Regards,
-Clemens
+Hello;
+
+I submitted a patch last friday that manipulates 3 bits. Mr. Iwai =
+indicated that he would prefer to have this patch resubmitted as an 8 =
+way enum.
+
+However, the macro that i was planning on using for this =
+(AC97_ENUM_DOUBLE) appears to only work with 2 bits located on 1 =
+register, whereas my problem is 3 bits located on 2 registers.
+
+Can anybody point me to an example of using/creating a control that =
+works with this set of inputs?
+
+tnx!
+
+johnu=20
+
+------_=_NextPart_001_01C75A98.A48E7AFB
+Content-Type: text/html;
+ charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7651.59">
+<TITLE>does a 3 way 2 register equivalent of AC97_ENUM_DOUBLE exist? =
+(VT1617a stuff)</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+<BR>
+
+<P><FONT SIZE=3D2>Hello;<BR>
+<BR>
+I submitted a patch last friday that manipulates 3 bits. Mr. Iwai =
+indicated that he would prefer to have this patch resubmitted as an 8 =
+way enum.<BR>
+<BR>
+However, the macro that i was planning on using for this =
+(AC97_ENUM_DOUBLE) appears to only work with 2 bits located on 1 =
+register, whereas my problem is 3 bits located on 2 registers.<BR>
+<BR>
+Can anybody point me to an example of using/creating a control that =
+works with this set of inputs?<BR>
+<BR>
+tnx!<BR>
+<BR>
+johnu </FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C75A98.A48E7AFB--
+
+
+
+--===============0886345393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0886345393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0886345393==--
