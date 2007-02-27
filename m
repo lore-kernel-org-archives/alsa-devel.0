@@ -1,12 +1,18 @@
-From: "Christophe Osuna" <christophe.osuna@gmail.com>
-Subject: Unable to poll() or select() with PCM capture device
-Date: Tue, 27 Feb 2007 14:20:37 +0100
-Message-ID: <b6251a620702270520l63c5576sae91a31801e919e3@mail.gmail.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: [BUG] Linux 2.6.20.1 - unable to handle kernel
+	paging request - accessing freed memory?
+Date: Tue, 27 Feb 2007 13:25:26 +0000 (GMT)
+Message-ID: <797678.74613.qm__5272.92165575108$1172582934$gmane$org@web52901.mail.yahoo.com>
+References: <s5h7iu4heun.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from web52901.mail.yahoo.com (web52901.mail.yahoo.com
+	[206.190.49.11])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 970892EF
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 14:25:28 +0100 (MET)
+In-Reply-To: <s5h7iu4heun.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,103 +22,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <randy.dunlap@oracle.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--- Takashi Iwai <tiwai@suse.de> wrote: 
+> snd_timer_global_register() itself doesn't issue any tasklet, so it
+> shouldn't be needed.
 
-I am trying to use select() on ALSA devices but it does not work. I
-must be missing something. Does anyone have an idea of what is wrong
-with my code?
+Hmm, this bug looks interesting:
 
-The following function works (it prints '+' whenever a new frame is ready):
+http://www.ussg.iu.edu/hypermail/linux/kernel/0702.3/0514.html
 
-void capture (snd_pcm_t *capture_handle, short *buffer,
-			     int samples)
-{
-	while (1) {
-		snd_pcm_readi (capture_handle, buffer, samples);
-		printf ("+");
-		fflush (stdout);
-	}
-}
+Yes, my machine *is* a dual P4 with HT enabled...
+
+Cheers,
+Chris
 
 
-The following uses select(). I can't get any '+' to be printed. If I
-'ls -l' the file descriptor in /proc/<pid>/fd/ I can see that it is
-the file descriptor of the capture device (as expected). If I use a
-playback device (SND_PCM_STREAM_PLAYBACK) and the writefds of select
-() the program is not blocked in the select ().
 
-void capture_with_select (snd_pcm_t *capture_handle, short *buffer,
-			  int samples)
-{
-	struct pollfd ufds;
-	fd_set fds;
-
-	int count = snd_pcm_poll_descriptors_count (capture_handle);
-	
-	if (snd_pcm_poll_descriptors(capture_handle, &ufds, count) < 0) {
-		printf ("Can't get poll descriptor\n");
-		exit (EXIT_FAILURE);
-	}
-
-	printf ("File descriptor: %d\n", ufds.fd);
-
-	while (1) {
-		FD_ZERO (&fds);
-		FD_SET (ufds.fd, &fds);
-
-		select (ufds.fd + 1, &fds, NULL, NULL, NULL);
-
-		snd_pcm_readi (capture_handle, buffer, samples);
-		printf ("+");
-		fflush (stdout);
-	}
-}
-
-
-Using poll() gives the same results; the program is blocked in poll()
-when using a capture device.
-
-void capture_with_poll (snd_pcm_t *capture_handle, short *buffer,
-			int samples)
-{
-	struct pollfd ufds;
-	unsigned short revents;
-
-	int count = snd_pcm_poll_descriptors_count (capture_handle);
-	
-	if (snd_pcm_poll_descriptors(capture_handle, &ufds, count) < 0) {
-		printf ("Can't get poll descriptor\n");
-		exit (EXIT_FAILURE);
-	}
-
-	printf ("File descriptor: %d\n", ufds.fd);
-
-	while (1) {
-		poll (&ufds, count, -1);
-		snd_pcm_poll_descriptors_revents (capture_handle, &ufds, count,
-						  &revents);
-
-		if (revents & POLLIN) {
-			snd_pcm_readi (capture_handle, buffer, samples);
-			printf ("+");
-			fflush (stdout);
-		}
-		else {
-			printf ("?");
-			fflush (stdout);
-		}
-	}
-}
-
-Tested on:
-_ Mandriva 2006, ALSA 1.0.9, USB sound device
-_ SUSE 10.1, ALSA 1.0.11, USB sound device, SB Live! and ICH7 AC'97
-
-Any idea of what is wrong and why it works with playback device but
-not capture device?
+		
+___________________________________________________________ 
+What kind of emailer are you? Find out today - get a free analysis of your email personality. Take the quiz at the Yahoo! Mail Championship. 
+http://uk.rd.yahoo.com/evt=44106/*http://mail.yahoo.net/uk 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
