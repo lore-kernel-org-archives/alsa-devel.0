@@ -1,55 +1,57 @@
-From: Theodore Tso <tytso-3s7WtUTddSA@public.gmane.org>
-Subject: Re: [Alsa-devel] Adding a alsa mixer interface to
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [ibm-acpi-devel] Adding a alsa mixer interface to
 	ibm-acpi
-Date: Mon, 26 Feb 2007 20:50:24 -0500
-Message-ID: <20070227015024.GF8154@thunk.org>
+Date: Mon, 26 Feb 2007 23:14:02 -0300
+Message-ID: <20070227021402.GC6828@khazad-dum.debian.net>
 References: <20070225012017.GA19039@khazad-dum.debian.net>
 	<s5h649pue8z.wl%tiwai@suse.de>
 	<20070226162819.GE2909@khazad-dum.debian.net>
 	<s5hr6scswnp.wl%tiwai@suse.de>
 	<20070226174145.GF2909@khazad-dum.debian.net>
+	<20070227015024.GF8154@thunk.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20070226174145.GF2909-ZGHd14iZgfaRjzvQDGKj+xxZW9W5cXbT@public.gmane.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
-	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=ibm-acpi-devel>
-List-Post: <mailto:ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-List-Help: <mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
-	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
-Sender: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-Errors-To: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-To: Henrique de Moraes Holschuh <hmh-N3TV7GIv+o9fyO9Q7EP/yw@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+In-Reply-To: <20070227015024.GF8154@thunk.org>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: Theodore Tso <tytso@mit.edu>
+Cc: Takashi Iwai <tiwai@suse.de>, ibm-acpi-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 26, 2007 at 02:41:45PM -0300, Henrique de Moraes Holschuh wrote:
-> Well, adding a new card that only has a mixer and no PCM or other sound
-> properties seems to work just fine, and it is *much* simpler than piggying
-> back a new *system global* control on top of AC97, many HDA chips, etc.  It
-> is also that much easier to deal with.
-> 
-> Can I keep it as a separate card?
+On Mon, 26 Feb 2007, Theodore Tso wrote:
+> thinkpad's real sound card.  Otherwise sound applications will have no
+> idea that this separate mixer-only sound card has anything to do with
+> the main speaker output (as compared to the Skype headset I have
+> plugged into the USB port). 
 
-I guess I'm wondering what value is added by exporting it as a
-separate ALSA card.  Ideally it should be integrated into the
-thinkpad's real sound card.  Otherwise sound applications will have no
-idea that this separate mixer-only sound card has anything to do with
-the main speaker output (as compared to the Skype headset I have
-plugged into the USB port).  
+True.  That's the downside.   The upside is that we don't need to create a
+new API to allow the piggy-back.  After all, the real soundcard module could
+get loaded *after* ibm-acpi... or it could be removed before ibm-acpi.  The
+"piggy-back mixer control" would need an API with full hotplug semanthics.
 
-I suppose it does mean you can use alsamixer to manipulate the sound,
-but from the user's point of view, if it's not visible when they right
-clock on the mixer applet (because it's not associated with the
-laptop's primary sound card), is it really that useful?
+> I suppose it does mean you can use alsamixer to manipulate the sound,
+> but from the user's point of view, if it's not visible when they right
+> clock on the mixer applet (because it's not associated with the
+> laptop's primary sound card), is it really that useful?
 
-Regards,
+If they got a mixer applet worth something, it will list two cards, or allow
+them to have two instances, one for each card.
 
-					- Ted
+-- 
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
