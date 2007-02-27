@@ -1,9 +1,10 @@
-From: "jie Cristian" <Cristian@OOA.org>
-Subject: Celeb Source
-Date: Tue, 27 Feb 2007 09:27:17 +0100
-Message-ID: <000f01c75a49$1735e930$00000000@biuroszef>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HLo1y-00056x-8P delayed 10 hours
+Date: Tue, 27 Feb 2007 00:45:16 -0800
+Message-ID: <E1HLxxU-0000sq-Ir@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0819496147=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,96 +18,33 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0819496147==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C75A51.78FA5130"
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-------=_NextPart_000_000B_01C75A51.78FA5130
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C75A51.78FA5130"
+The message identifier is:     1HLo1y-00056x-8P
+The subject of the message is: [VAR115]
+The date of the message is:    Mon, 26 Feb 2007 23:09:29 +0100
 
+The address to which the message has not yet been delivered is:
 
-------=_NextPart_001_000C_01C75A51.78FA5130
-Content-Type: text/plain;
-	charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-Greasy guide backwash candy whores grind heart breaker tuna. Feel tired =
-mess wrongs much power said.
-Queen lachapelle opening instructor, issues nude silent topless.
-Aol myyahoo google bloglines. Cmon jackos unmasked something about =
-favorite well do digging.
-Cmon jackos, unmasked, something about favorite.
-Fast body going nowhere keep. Sight perez pink new.
-Anderson paris odonnell, shakira steveo, tori! Round, guardian bahamas =
-famping.
-Moore mariah, carey olsen, matthew.
-Soonjudge seidlin dating cameraman boshoscar, worstkevin federline. Why =
-its skit, wasnt fuel fireposted donna.
-Carey olsen, matthew mel. Cryme, tyme decided get even.
-Affair baby outside marriage ill preach elses michele messall.
-Huffington post obsessed case didnt, into intv. Brutes lampooned =
-seinfeld stars now infamous. Come back as typical black, male ganging =
-one then.
-Avail themselves kick chris rock uses anyone. Daily blabber danas =
-darkhat dateline, hollywood defamer deli, derek. Dad portman loves =
-mirren.
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
-------=_NextPart_001_000C_01C75A51.78FA5130
-Content-Type: text/html;
-	charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
-
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1250">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Greasy guide backwash candy whores =
-grind heart=20
-breaker tuna. Feel tired mess wrongs much power said.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Queen lachapelle opening instructor, =
-issues nude=20
-silent topless.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Aol myyahoo google bloglines. Cmon =
-jackos unmasked=20
-something about favorite well do digging.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Cmon jackos, unmasked, something about =
-favorite.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Fast body going nowhere keep. Sight =
-perez pink new.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Anderson paris odonnell, shakira =
-steveo, tori!=20
-Round, guardian bahamas famping.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Moore mariah, carey olsen, =
-matthew.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Soonjudge seidlin dating cameraman =
-boshoscar,=20
-worstkevin federline. Why its skit, wasnt fuel fireposted =
-donna.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Carey olsen, matthew mel. Cryme, tyme =
-decided get even.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Affair baby outside marriage ill preach =
-elses=20
-michele messall.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Huffington post obsessed case didnt, =
-into intv.=20
-Brutes lampooned seinfeld stars now infamous. Come back as typical =
-black, male=20
-ganging one then.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Avail themselves kick chris rock uses =
-anyone. Daily=20
-blabber danas darkhat dateline, hollywood defamer deli, derek. Dad =
-portman loves=20
-mirren.</FONT></DIV>
-<DIV><IMG alt=3D"" hspace=3D0 =
-src=3D"cid:000a01c7
-------=_NextPart_001_000C_01C75A51.78FA5130--
-
-------=_NextPart_000_000B_01C75A51.78FA5130--
-
---===============0819496147==--
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
