@@ -1,10 +1,10 @@
-From: "=?windows-1254?B?TUVITUVUIEhBS0FOIEFZVEHH?=" <interreklam@gmail.com>
-Subject: =?windows-1254?q?Say=FDn_=3A_Firma_Yetkilisi_!?=
-Date: Tue, 27 Feb 2007 13:05:02 +0100
-Message-ID: <fe2853179b45545767d85b2411fd881e@gmail.com>
+From: Andreas Hubmer <andreas@hubmer.at>
+Subject: USB Audio Device: Philips Audio Set
+Date: Tue, 27 Feb 2007 14:13:44 +0100
+Message-ID: <45E42E88.9080403@hubmer.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,44 +18,61 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Qml6aW0gc2l6ZSB1bGFzdGlnaW1peiBnaWJpIHNpemRlIG1pbHlvbmxhcmNhIHllcmxpIHZlIHlh
-YmFuY2kgSW50ZXJuZXQga3VsbGFuaWNpbmEgdmUgZmlybWF5YSB1bGFzYWJpbGlyOyAK3HL8biB2
-ZSBoaXptZXRsZXJpbml6aW4gVGFuaXRpbSAvIFJla2xhbSB2ZSBkdXl1cnUvaWxhbmxhcmluaSBz
-YWRlY2UgSW50ZXJuZXQgYmFnbGFudGkgbWFsaXlldGluZSB5YXBhYmlsZWNla3Npbml6LiAKTmFz
-aWwgbWk/CgpCdSBkYSBkYWhhIGZhemxhIHRhbmlubWFrIC0gYmlsaW5tZWssaGF0dGEgbWFya2Fs
-YXNtYWsgdmUgZGFoYSBmYXpsYSBt/HN0ZXJpIGRlbWVrLgpTdW5kdWd1bXV6IGhpem1ldGluIGF2
-YW50YWpsYXJpbmkg9npldGxleWVjZWsgb2x1cnNhazsKCjEtRW4gZmF6bGEgc2F5aWRhIGluc2Fu
-YSB1bGFzYWJpbG1lawoyLURpbGVkaWdpbml6IHphbWFuIGRpbGVkaWdpbml6IG1pa3RhcmRhIHJl
-a2xhbSB2ZSB0YW5pdGltIHlhcGFiaWxtZWsKMy1JbnRlcm5ldCBiYWdsYW50aSD8Y3JldGluZGVu
-IGJhc2thIGhp52JpciBlayBtYWxpeWV0ZSB5b2wgYedtYW1hc2kgZGl5ZSBzaXJhbGFtYWsgbfxt
-a/xuZPxyCgpWZSBZaW5lIEJ1IFn2bnRlbWxlCjEtRmlybWFuaXppIHZlIEZhYWxpeWV0IEFsYW5s
-YXJpbml6aQoyLdxy/G5sZXJpbml6aQozLUR1eXVydSB2ZSBLYW1wYW55YWxhcmluaXppCjQtS3Vy
-dW1zYWwgeeJkYSBLaXNpc2VsIFdlYiBTaXRlbml6aQo1LVJla2zibWxhcmluaXppCjYtWWlsYmFz
-aSB2ZSBCYXlyYW0gVGVicmlrbGVyaW5pemkgeeJkYSBiYXNrYWNhIPZ6ZWwgZ/xubGVyaW5pemkK
-x29rIEV0a2lsaSB2ZSBIaXpsaSBCaXIgU2VraWxkZSwgYvx052VuaXppIHNhcnNtYWRhbiwgaXN0
-ZXIgeXVydGnnaSBpc3RlcnNlbml6IHl1cnRkaXNpbmRhIG1pbHlvbmxhcmNhIGtpc2l5ZSB0YW5p
-dGFiaWxpciwgCmR1eXVyYWJpbGlyc2luaXouCgoKVW51dG1heWluLCB3ZWIgc2F5ZmFuaXogb2xh
-YmlsaXI7IEFuY2FrIGJ1IGNhZGRlIHZlIHNva2FrbGFyZGEgcmFzdGxhZGlnaW1peiByZWtsYW0g
-cGFub2xhcmluYSBiZW56ZXIuIApIYW5pIHRlc2Fk/GZlbiBiYWthbiBn9nL8ci4gCgpPeXNhIE1h
-aWxsaW5lIHn2bnRlbWkga2lzaW5pbiBlbGluZSB0dXR1c3R1cnVsYW4gYmlyIGJyb3P8ciwgYWQg
-dmUgYWRyZXNpbmUgZ/ZuZGVyaWxlbiBiaXIgbWVrdHVwIGlzbGV2aSBn9nL8ci4KCkJpciBk/HP8
-bvxuISBLYXJhciBzaXppbi4gQWxtYWsgWm9ydW5kYSBEZWdpbHNpbml6IEZpa2lyIFZlIET8c/xu
-Y2VsZXIgU2l6aW4KQmFzYXJpIHZlIEVzZW5saWtsZXIgRGlsZXJpei4KCgoKCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIFVsYXNpbSBCZWRlbGkgRGFoaWwgWWFubGl6Y2EgIDI5
-IFlUTCAgMyBDRAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTXNuIEFk
-cmVzIDogbXNuQHRvcGx1ZW1haWxhdC5jb20KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIDA1MzYgNTAxIDE3IDA0CiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAwMjE2IDMyOCA2MSAyMwogCiAgCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJTLkEuRi5BLksgQS5KLkEuTi5TLiIK
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGh0dHA6Ly93d3cudG9w
-bHVlbWFpbGF0LmNvbQoKCiAgICAgIExpc3RlZGVuIGNpa21hayBpY2luICByZW1vdmVAdG9wbHVl
-bWFpbGF0LmNvbSAgYWRyZXNpbmUgYm9zIGJpciBtYWlsIGF0aW5pegoKCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApK
-b2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNo
-YW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRocm91
-Z2ggYnJpZWYgc3VydmV5cy1hbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVm
-YXVsdC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hello,
+
+I have a Philips mini hifi-system named "Philips FWM589" that can be
+used as an usb sound card. It is recognized as USB Audio device but I'm
+not able to get it to work.
+The module snd-usb-audio is loaded and in gnome a message pops up that a
+new audio device was found. In the gnome audio preferences a new device
+"USB Audio" is shown but the test sound doesn't work.
+
+It seems that the "Philips Audio Set" is not standard-conform.
+Is there anyone who has experience with Philips USB sound cards or
+someone who can help me isolating the problem?
+Where should I start looking for possible problems?
+Is there a good way to debug the module snd-usb-audio? I found out that
+there exists the header file usbquirks.h. Can that be helpful to me?
+
+Vendor/Product ID of the USB Device: 0471:0111
+
+dmesg output after plugging in:
+[14603.564000] usb 1-2: new full speed USB device using uhci_hcd and
+address 7
+[14603.768000] usb 1-2: configuration #1 chosen from 1 choice
+[14603.776000] input: Philips Philips Audio Set as /class/input/input10
+[14603.776000] input: USB HID v1.00 Device [Philips Philips Audio Set]
+on usb-0000:00:1d.0-2
+[14604.176000] usbcore: registered new interface driver snd-usb-audio
+
+cat /proc/asound/cars shows my onboard sound card and the USB device:
+ 0 [ICH6           ]: ICH4 - Intel ICH6
+                      Intel ICH6 with AD1981B at 0xb0040800, irq 16
+ 1 [Set            ]: USB-Audio - Philips Audio Set
+                      Philips Philips Audio Set at usb-0000:00:1d.0-2,
+full speed
+
+To change the default alsa-device I also tried changing ~/.asoundrc and
+added the following lines:
+pcm.!default {
+        type hw
+        card Set
+}
+ctl.!default {
+        type hw
+        card Set
+}
+Afterwards I restarted alsa with "/etc/init.d/alsa-utils restart" but
+that didn't help. I couldn't hear anything.
+
+I'm using Ubuntu 6.10 and the new kernel 2.6.20.1
+
+Thanks for your help!
+
+Andreas Hubmer
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
