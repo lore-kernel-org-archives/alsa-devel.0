@@ -1,21 +1,22 @@
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
-Subject: Re: [BUG] Linux 2.6.20.1 - unable to handle kernel
-	paging request - accessing freed memory?
-Date: Tue, 27 Feb 2007 16:48:25 +0200
-Message-ID: <84144f020702270648o32fb15dfg4267f0cb5b50454a@mail.gmail.com>
-References: <s5h7iu4heun.wl%tiwai@suse.de>
-	<797678.74613.qm@web52901.mail.yahoo.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: RFC: Add support for monotonic clock for 2.6
+Date: Tue, 27 Feb 2007 15:52:41 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0702271533590.9439@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 367AC29D
-	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 15:48:37 +0100 (MET)
-Received: by nf-out-0910.google.com with SMTP id n29so190138nfc
-	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 06:48:36 -0800 (PST)
-In-Reply-To: <797678.74613.qm@web52901.mail.yahoo.com>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E3661A7
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 15:52:42 +0100 (MET)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+	82272999A8
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 15:52:42 +0100 (MET)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+	5E762E94BB
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 15:52:42 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,20 +26,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/27/07, Chris Rankin <rankincj@yahoo.com> wrote:
-> Hmm, this bug looks interesting:
->
-> http://www.ussg.iu.edu/hypermail/linux/kernel/0702.3/0514.html
->
-> Yes, my machine *is* a dual P4 with HT enabled...
+Hi,
 
-Yeah, but the oops looks more like a reference counting problem with
-sysfs dentries. No harm in trying out the patch or reproducing without
-CONFIG_SCHED_SMT though.
+	in 2.6 kernels, we can use ktime_get_ts() function to get 
+monotonic time which can be used for PCM timestamps. I would propose to 
+reuse the SNDRV_PCM_IOCTL_TSTAMP ioctl to enable using of monotonic clock.
+The "enable" (int) argument might mean:
+
+0: standard clock - getnstimeofday()
+1: standard clock - getnstimeofday() - for "compatibility"
+2: monotonic clock - ktime_get_ts()
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
