@@ -1,18 +1,13 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: [BUG] Linux 2.6.20.1 - unable to handle kernel
-	paging request - accessing freed memory?
-Date: Tue, 27 Feb 2007 13:25:26 +0000 (GMT)
-Message-ID: <797678.74613.qm__5272.92165575108$1172582934$gmane$org@web52901.mail.yahoo.com>
-References: <s5h7iu4heun.wl%tiwai@suse.de>
+From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
+Subject: Re: USB Audio Device: Philips Audio Set
+Date: Tue, 27 Feb 2007 15:06:55 +0100
+Message-ID: <45E43AFF.3080209@ingomueller.net>
+References: <45E42E88.9080403@hubmer.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from web52901.mail.yahoo.com (web52901.mail.yahoo.com
-	[206.190.49.11])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 970892EF
-	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 14:25:28 +0100 (MET)
-In-Reply-To: <s5h7iu4heun.wl%tiwai@suse.de>
+In-Reply-To: <45E42E88.9080403@hubmer.at>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,29 +17,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <randy.dunlap@oracle.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---- Takashi Iwai <tiwai@suse.de> wrote: 
-> snd_timer_global_register() itself doesn't issue any tasklet, so it
-> shouldn't be needed.
+Hi!
 
-Hmm, this bug looks interesting:
+I think that alsa-user would rather be the mailing list where this issue
+should be discussed... Anyway, did you try
 
-http://www.ussg.iu.edu/hypermail/linux/kernel/0702.3/0514.html
+speaker-test -c2 -Dplughw:1,0 -twav
 
-Yes, my machine *is* a dual P4 with HT enabled...
+If this command produces white noise on your usb sound card, your
+problem is only a matter of configuration.
 
-Cheers,
-Chris
-
+Regards, Ingo
 
 
-		
-___________________________________________________________ 
-What kind of emailer are you? Find out today - get a free analysis of your email personality. Take the quiz at the Yahoo! Mail Championship. 
-http://uk.rd.yahoo.com/evt=44106/*http://mail.yahoo.net/uk 
+
+Andreas Hubmer schrieb:
+> Hello,
+> 
+> I have a Philips mini hifi-system named "Philips FWM589" that can be
+> used as an usb sound card. It is recognized as USB Audio device but I'm
+> not able to get it to work.
+> The module snd-usb-audio is loaded and in gnome a message pops up that a
+> new audio device was found. In the gnome audio preferences a new device
+> "USB Audio" is shown but the test sound doesn't work.
+> 
+> It seems that the "Philips Audio Set" is not standard-conform.
+> Is there anyone who has experience with Philips USB sound cards or
+> someone who can help me isolating the problem?
+> Where should I start looking for possible problems?
+> Is there a good way to debug the module snd-usb-audio? I found out that
+> there exists the header file usbquirks.h. Can that be helpful to me?
+> 
+> Vendor/Product ID of the USB Device: 0471:0111
+> 
+> dmesg output after plugging in:
+> [14603.564000] usb 1-2: new full speed USB device using uhci_hcd and
+> address 7
+> [14603.768000] usb 1-2: configuration #1 chosen from 1 choice
+> [14603.776000] input: Philips Philips Audio Set as /class/input/input10
+> [14603.776000] input: USB HID v1.00 Device [Philips Philips Audio Set]
+> on usb-0000:00:1d.0-2
+> [14604.176000] usbcore: registered new interface driver snd-usb-audio
+> 
+> cat /proc/asound/cars shows my onboard sound card and the USB device:
+>  0 [ICH6           ]: ICH4 - Intel ICH6
+>                       Intel ICH6 with AD1981B at 0xb0040800, irq 16
+>  1 [Set            ]: USB-Audio - Philips Audio Set
+>                       Philips Philips Audio Set at usb-0000:00:1d.0-2,
+> full speed
+> 
+> To change the default alsa-device I also tried changing ~/.asoundrc and
+> added the following lines:
+> pcm.!default {
+>         type hw
+>         card Set
+> }
+> ctl.!default {
+>         type hw
+>         card Set
+> }
+> Afterwards I restarted alsa with "/etc/init.d/alsa-utils restart" but
+> that didn't help. I couldn't hear anything.
+> 
+> I'm using Ubuntu 6.10 and the new kernel 2.6.20.1
+> 
+> Thanks for your help!
+> 
+> Andreas Hubmer
+> 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
