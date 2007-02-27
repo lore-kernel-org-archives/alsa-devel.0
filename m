@@ -1,13 +1,16 @@
-From: Andreas Hubmer <andreas@hubmer.at>
-Subject: Re: USB Audio Device: Philips Audio Set
-Date: Tue, 27 Feb 2007 19:06:13 +0100
-Message-ID: <45E47315.1040602@hubmer.at>
-References: <45E42E88.9080403@hubmer.at>
-	<1172597266.6053.1176801163@webmail.messagingengine.com>
+From: "Jay Garland" <numerary@parasuram.com>
+Subject: MlCR0S0FT 0fflce 2OO7 79$ & M0RE 0n_saIe at
+	JeffreyS0ft Feb 27 21:10:00 MSK 2007
+Date: Tue, 27 Feb 2007 19:32:17 +0100
+Message-ID: <000001c75a9b$d860c600$0100007f@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0187412443=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1172597266.6053.1176801163@webmail.messagingengine.com>
+Received: from localhost (dslb-082-083-072-210.pools.arcor-ip.net
+	[82.83.72.210])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2BA2D398
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 19:21:41 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,155 +20,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---===============0187412443==
-Content-Type: multipart/alternative;
-	boundary="------------020102060802050901010302"
+OEM software - throw packing case, leave CD, use electronic manuals.
+Pay for software only and save 75-90%!
 
-This is a multi-part message in MIME format.
---------------020102060802050901010302
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Find incredible discounts! See our special offers!
+            TODAY TOP 1O ITEMS
 
-Clemens Ladisch schrieb am 2007-02-27 18:27:
-> Andreas Hubmer wrote:
->   
->> I have a Philips mini hifi-system named "Philips FWM589" that can be
->> used as an usb sound card. It is recognized as USB Audio device but I'm
->> not able to get it to work.
->> The module snd-usb-audio is loaded and in gnome a message pops up that a
->> new audio device was found. In the gnome audio preferences a new device
->> "USB Audio" is shown but the test sound doesn't work.
->>     
->
-> Many USB audio devices have strange or non-standard mixer controls.
-> Please show the output of "amixer -c 1 contents".
->   
-numid=3,iface=MIXER,name='Tone Control - Bass'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=48,step=0
-  : values=24
-numid=4,iface=MIXER,name='Tone Control - Treble'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=48,step=0
-  : values=24
-numid=1,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=2,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=656,step=0
-  : values=656,656
-numid=7,iface=MIXER,name='PCM Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=8,iface=MIXER,name='PCM Capture Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=12
-numid=5,iface=MIXER,name='Auto Gain Control'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=6,iface=MIXER,name='Bass Boost'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-
-> Regards,
-> Clemens
->   
-Regards,
-Andreas
-
---------------020102060802050901010302
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-</head>
-<body bgcolor="#ffffff" text="#000000">
-Clemens Ladisch schrieb am 2007-02-27 18:27:
-<blockquote
- cite="mid1172597266.6053.1176801163@webmail.messagingengine.com"
- type="cite">
-  <pre wrap="">Andreas Hubmer wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">I have a Philips mini hifi-system named "Philips FWM589" that can be
-used as an usb sound card. It is recognized as USB Audio device but I'm
-not able to get it to work.
-The module snd-usb-audio is loaded and in gnome a message pops up that a
-new audio device was found. In the gnome audio preferences a new device
-"USB Audio" is shown but the test sound doesn't work.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Many USB audio devices have strange or non-standard mixer controls.
-Please show the output of "amixer -c 1 contents".
-  </pre>
-</blockquote>
-numid=3,iface=MIXER,name='Tone Control - Bass'<br>
-&nbsp; ; type=INTEGER,access=rw---,values=1,min=0,max=48,step=0<br>
-&nbsp; : values=24<br>
-numid=4,iface=MIXER,name='Tone Control - Treble'<br>
-&nbsp; ; type=INTEGER,access=rw---,values=1,min=0,max=48,step=0<br>
-&nbsp; : values=24<br>
-numid=1,iface=MIXER,name='PCM Playback Switch'<br>
-&nbsp; ; type=BOOLEAN,access=rw---,values=1<br>
-&nbsp; : values=on<br>
-numid=2,iface=MIXER,name='PCM Playback Volume'<br>
-&nbsp; ; type=INTEGER,access=rw---,values=2,min=0,max=656,step=0<br>
-&nbsp; : values=656,656<br>
-numid=7,iface=MIXER,name='PCM Capture Switch'<br>
-&nbsp; ; type=BOOLEAN,access=rw---,values=1<br>
-&nbsp; : values=on<br>
-numid=8,iface=MIXER,name='PCM Capture Volume'<br>
-&nbsp; ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0<br>
-&nbsp; : values=12<br>
-numid=5,iface=MIXER,name='Auto Gain Control'<br>
-&nbsp; ; type=BOOLEAN,access=rw---,values=1<br>
-&nbsp; : values=off<br>
-numid=6,iface=MIXER,name='Bass Boost'<br>
-&nbsp; ; type=BOOLEAN,access=rw---,values=1<br>
-&nbsp; : values=off<br>
-<br>
-<blockquote
- cite="mid1172597266.6053.1176801163@webmail.messagingengine.com"
- type="cite">
-  <pre wrap="">Regards,
-Clemens
-  </pre>
-</blockquote>
-Regards,<br>
-Andreas<br>
-</body>
-</html>
-
---------------020102060802050901010302--
-
-
---===============0187412443==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ $49 Windows XP Pro w/SP2
+ $79 MS Office Enterprise 2007
+ $79 Adobe Acrobat 8 Pro
+ $79 Microsoft Windows Vista Business
+ $99 Macromedia Studio 8
+ $59 Adobe Premiere 2.0
+ $59 Corel Grafix Suite X3
+ $59 Adobe Illustrator CS2
+$129 Autodesk Autocad 2007
+$149 Adobe Creative Suite 2
+and 1000s more under $49.
+http://yg.febsmilead.eu/?16469pKINi74476EwuJn26289GVpqY70402HoiTT64229ssDOd
+----
+           Mac Specials:
+Adobe Acrobat PR0 7             $69
+Adobe After Effects             $49
+Adobe Creative Suite 2 Premium $149
+Ableton Live 5.0.1              $49
+Adobe Photoshop CS              $49
+http://yg.febsmilead.eu/?43009gCqKO15440rlZoj17982pBreT47194JgUIk34760kgACQ
+----
+See more by this manufacturers:
+Microsoft...Mac...Adobe...Borland...Macromedia
+http://yg.febsmilead.eu/?39149LEjmm38288MnClv42544ZCKst57565KHshY87326TZPSQ
+----
+Microsoft Windows Vista Ultimate
+Retail price:  $399.00
+Proposition:  $79.95
+Your benefit:  $319.05 (80%)
+Availability: Can be downloaded instantly.
+http://yg.febsmilead.eu/2480.php?55854edsxN47682fPVZB27716pUgau81527nmwQi41187gOLYF
+Best choice for home and professional. (43681 reviews)
+----
+Microsoft Office 2007 Enterprise Edition
+Regular price:  $899.00
+Our offer:  $79.95
+You save:  $819.95 (89%)
+Availability: Pay and download instantly.
+http://yg.febsmilead.eu/2442.php?23891NcjQE68216cMFhP75965KXTFN32052INubM43756ZOSSi
+Sales Rank: #1 (944819 reviews)
+----
+Adobe Acrobat 8.0 Professional
+Market price:  $449.00
+We propose:  $79.95
+Your profit:  $369.05 (80%)
+Availability: Available for instant download.
+http://yg.febsmilead.eu/2441.php?14669vZHMP64494DqBjJ20819pcBPU73495etArt44985ipmLY
+Top-ranked item. (22896 reviews)
+with lpr -h, then LPD will not generate a header page, and neither
+assembles the bits into complete bytes.
+	through this pseudo-device.  Mandatory.
+	by 8 columns.  This option works only with certain conversion
+o   Data Set Ready (DSR)
+that come back in response.  If the user sees junk, it is assumed that
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0187412443==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0187412443==--
