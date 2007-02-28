@@ -1,13 +1,20 @@
-From: Tommi Kyntola <tommi.kyntola@ray.fi>
-Subject: [RFC][PATCH] intel8x0: revert regression that broke
- sounds after S3 suspend
-Date: Wed, 28 Feb 2007 16:09:49 +0200
-Message-ID: <45E58D2D.6010308@ray.fi>
-Reply-To: tommi.kyntola@ray.fi
+From: "Mortimer F. Pinup" <issyanne@gordyo.com>
+Subject: International Legal RX
+Date: Wed, 28 Feb 2007 09:48:16 -0500
+Message-ID: <9733010089.20070228094816@gordyo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1304463174=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9E18325
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 15:42:42 +0100 (MET)
+Received: from -1211569840 (unknown [60.171.152.231])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	B18AA9932B
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 15:42:31 +0100 (MET)
+Received: from gordyo.com (-1211799144 [-1211564528])
+	by go-awol.com (Qmailv1) with ESMTP id 6AE57DC023
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 09:48:16 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,45 +24,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1304463174==
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-The regression in 2.6.19-rc3 (namely 30b35399ceb2398d05837863476dcb12f12f3a82,
-"[ALSA] Various fixes for suspend/resume of ALSA PCI drivers"),
-broke HP nw8000 speaker sounds after S3 suspend (headphones still worked).
-Removing this line makes the sounds work again...
+The most powerful medicines for you!
 
-Signed-off-by: Tommi Kyntola <tommi.kyntola@ray.fi>
----
-This is a FYI kinda message, which Rafael Wysocki asekd me to send,
-and something that is clearly not the correct way to go with this,
-but I was unable to locate the actual reason for the regression
-and this does fix it for me, so here it goes.
+100% Pure Okinawan Coral Calcium - $35.99 - the preferred source for readily absorbable and accessible calcium in the body. Superior 100% pure coral calcium is harvested from Okinawa, Japan – home to the longest-lived people on earth. 
 
-Wether other devices suffer from this or not, I don't know. I was only
-able test this on an HP nw8000, which has the said intel8x0.
+Clarinex - $2.72 - non-drowsy 24-hour relief from allergy symptoms caused by seasonal allergens such as ragweed, grass, tree pollen and year-round allergens such as dust mites, animal dander, and mould spores. 
 
-I'll gladly try out further patches or submit configs, or whatever
-more verbose information is asked for.
-         Kynde
+Prilosec - $1.33 - can be taken to decrease the amount of acid produced in the stomach. 
 
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index a289abf..f62a456 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -2470,7 +2470,6 @@ static int intel8x0_suspend(struct pci_dev *pci, pm_message_t state)
-         }
-         pci_disable_device(pci);
-         pci_save_state(pci);
--       pci_set_power_state(pci, pci_choose_state(pci, state));
-         return 0;
-  }
+and more!
+
+our site http://jasqr.hk
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
+
+--===============1304463174==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1304463174==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1304463174==--
