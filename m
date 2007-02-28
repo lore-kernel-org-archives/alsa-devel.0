@@ -1,11 +1,13 @@
-From: "Bob_Nicholson" <Bud.Holland@manchesterjazz.com>
-Subject: Workplace Issue
-Date: Tue, 27 Feb 2007 18:26:20 -0800
-Message-ID: <41AEB759.3368907@amosmistoamos.cl>
+From: "Rick.Glenn" <Alice.Mayberry@bcc.com>
+Subject: Work
+Date: Tue, 27 Feb 2007 19:05:56 -0800
+Message-ID: <2401274055.ZM374728@sgaxaf.harvard.edu>
+References: <Alice.Mayberry@bcc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: "Alice.Mayberry@bcc.com" <Alice.Mayberry@bcc.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,6 +19,7 @@ Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
 
 Hey, I hate to be the one but when people
 continueto talk about your weight issue, 
