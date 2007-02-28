@@ -1,14 +1,14 @@
 From: Caloga <caloga@in29.com>
 Subject: Gagnez la voiture de votre choix. Valeur : 15.000 euros
-Date: Wed, 28 Feb 2007 05:51:52 +0100
-Message-ID: <9e51adf8a32d528f42d7216b5377046f@localhost.localdomain>
+Date: Wed, 28 Feb 2007 04:40:38 +0100
+Message-ID: <c68e6c9f88e42d23ed4d4d6eb7aacc55@localhost.localdomain>
 Reply-To: Caloga <caloga@in29.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1342517144=="
+Content-Type: multipart/mixed; boundary="===============0159463306=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from lml-server.com (ns-246-34.lml-server.com [81.93.246.34])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 37E442DA
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 04:43:29 +0100 (MET)
+Received: from lml-server.com (ns-246-54.lml-server.com [81.93.246.54])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 80F8318B
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 04:40:47 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,35 +22,35 @@ To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1342517144==
+--===============0159463306==
 Content-Type: multipart/alternative;
-	boundary="b1_9e51adf8a32d528f42d7216b5377046f"
+	boundary="b1_c68e6c9f88e42d23ed4d4d6eb7aacc55"
 
 
---b1_9e51adf8a32d528f42d7216b5377046f
+--b1_c68e6c9f88e42d23ed4d4d6eb7aacc55
 Content-Type: text/plain; charset = "iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 Si vous d=E9sirez visualiser ce mail au format html, recopiez l'adresse s=
 uivante dans votre navigateur: http://www.eml01.net/view.html?id=3D3011&r=
-ef=3D112549
+ef=3D1508736
 
 
 
 Si vous d=E9sirez vous d=E9sinscrire, il suffit de cliquer sur le lien pr=
 =E9vu ou de recopier l'adresse suivante dans votre navigateur: http://www=
-.eml01.net/desabo.html?ope=3D3011&ref_email=3D112549&client=3D31
+.eml01.net/desabo.html?ope=3D3011&ref_email=3D1508736&client=3D31
 
 
---b1_9e51adf8a32d528f42d7216b5377046f
+--b1_c68e6c9f88e42d23ed4d4d6eb7aacc55
 Content-Type: text/html; charset = "iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 <html><body  ><table width=3D"100%" height=3D"1" border=3D"0" cellpadding=
 =3D"0" cellspacing=3D"0"><tr><td><img src=3D"http://www.eml01.net/trafic/=
-include/new-visitor.inc.php?operation=3D3011&ref=3D112549" width=3D"1" he=
-ight=3D"1"></td></tr></table><body bgcolor=3D"#222244" leftmargin=3D"0" t=
-opmargin=3D"0" marginwidth=3D"0" marginheight=3D"0">
+include/new-visitor.inc.php?operation=3D3011&ref=3D1508736" width=3D"1" h=
+eight=3D"1"></td></tr></table><body bgcolor=3D"#222244" leftmargin=3D"0" =
+topmargin=3D"0" marginwidth=3D"0" marginheight=3D"0">
 
 <TABLE border=3D'0' cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" bg=
 color=3D"#222244">
@@ -62,35 +62,35 @@ nter' width=3D'540'>
           <td colspan=3D2><img src=3D"http://caloga.fr/jeu/img/tr.gif?af=3D=
 14.17.27&h=3D%nom%" width=3D"1" height=3D"1" alt=3D"" border=3D"0"><br>
             <a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrack=3D=
-112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_01.gif" width=
-=3D540 height=3D63 border=3D0 alt=3D"Caloga.com, le portail High Tech. T=E9=
-l=E9chargement, guide d'achat, librairie"></a></td>
+1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_01.gif" widt=
+h=3D540 height=3D63 border=3D0 alt=3D"Caloga.com, le portail High Tech. T=
+=E9l=E9chargement, guide d'achat, librairie"></a></td>
         </tr>
         <tr>=20
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_02.jpg" w=
-idth=3D270 height=3D171 border=3D0 alt=3D"Gagnez la voiture de votre choi=
-x"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_02.jpg" =
+width=3D270 height=3D171 border=3D0 alt=3D"Gagnez la voiture de votre cho=
+ix"></a></td>
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_03.gif" w=
-idth=3D270 height=3D171 border=3D0 alt=3D"Gagnez la voiture de votre choi=
-x"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_03.gif" =
+width=3D270 height=3D171 border=3D0 alt=3D"Gagnez la voiture de votre cho=
+ix"></a></td>
         </tr>
         <tr>=20
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_04.jpg" w=
-idth=3D270 height=3D165 border=3D0 alt=3D"Valeur 15 000 euros"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_04.jpg" =
+width=3D270 height=3D165 border=3D0 alt=3D"Valeur 15 000 euros"></a></td>
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_05.gif" w=
-idth=3D270 height=3D165 border=3D0 alt=3D"Valeur 15 000 euros"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_05.gif" =
+width=3D270 height=3D165 border=3D0 alt=3D"Valeur 15 000 euros"></a></td>
         </tr>
         <tr>=20
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_06.jpg" w=
-idth=3D270 height=3D195 border=3D0 alt=3D"CLIQUEZ-ICI"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_06.jpg" =
+width=3D270 height=3D195 border=3D0 alt=3D"CLIQUEZ-ICI"></a></td>
           <td><a href=3D"http://www.eml01.net/go.php?lien=3D23615&editrac=
-k=3D112549"><img src=3D"http://www.ipn07.com/caloga/images/540c_07.gif" w=
-idth=3D270 height=3D195 border=3D0 alt=3D"CLIQUEZ-ICI"></a></td>
+k=3D1508736"><img src=3D"http://www.ipn07.com/caloga/images/540c_07.gif" =
+width=3D270 height=3D195 border=3D0 alt=3D"CLIQUEZ-ICI"></a></td>
         </tr>
         <tr>=20
           <td colspan=3D"2" align=3D"center"> </td>
@@ -106,7 +106,7 @@ es=20
         vous concernant. Si vous souhaitez modifier vos coordonn=E9es ou=20
         si vous ne d=E9sirez plus recevoir de messages =E9lectroniques=20
         de la part de cet annonceur, cliquez <a href=3D"http://www.eml01.=
-net/go.php?lien=3D23616&editrack=3D112549">ici</a>=20
+net/go.php?lien=3D23616&editrack=3D1508736">ici</a>=20
         </font></p>
     </td
   ></tr>
@@ -115,12 +115,12 @@ net/go.php?lien=3D23616&editrack=3D112549">ici</a>=20
 
 
 
---b1_9e51adf8a32d528f42d7216b5377046f--
+--b1_c68e6c9f88e42d23ed4d4d6eb7aacc55--
 
 
 
 
---===============1342517144==
+--===============0159463306==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -131,7 +131,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1342517144==
+--===============0159463306==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -142,4 +142,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1342517144==--
+--===============0159463306==--
