@@ -1,21 +1,21 @@
-From: "Decaf S. Pokier" <shields@greasemonkeyintl.com>
-Subject: Simple way to enhance your sexual life.
-Date: Tue, 27 Feb 2007 20:08:58 -0500
-Message-ID: <6297776194.20070227200858@greasemonkeyintl.com>
+From: "Implicated L. Diode" <istek@gm-electric.com>
+Subject: International Legal RX
+Date: Tue, 27 Feb 2007 23:46:57 -0500
+Message-ID: <8242662869.20070227234657@gm-electric.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DCC0367
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:00:32 +0100 (MET)
-Received: from 146167360 (220-129-143-224.dynamic.hinet.net [220.129.143.224])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 839B0365
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:41:42 +0100 (MET)
+Received: from -1221733528 (201-27-163-180.dsl.telesp.net.br [201.27.163.180])
 	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	A1A1E99AD9
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:00:28 +0100 (MET)
-Received: from greasemonkeyintl.com (146912800 [146340744])
-	by 220-129-143-224.dynamic.hinet.net (Qmailv1) with ESMTP id 45E8726F57
-	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 20:08:58 -0500
+	310FD99B29
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:41:04 +0100 (MET)
+Received: from gm-electric.com (-1221835632 [-1221694144])
+	by 201-27-163-180.dsl.telesp.net.br (Qmailv1) with ESMTP id 32CA14CF99
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 23:46:57 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -28,10 +28,19 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-That is true! U can buy any medications that you need at Canadian Pharmacy store. Lowest prices on the web! Become healthy without huge spendings now! 
-http://jasqr.hk
+The most powerful medicines for you!
 
-Make secure and confidential purchase. Nobody will know that you are using medications. Buying at our store - the right choice you can make! 
+Zovirax - $1.6 - the treatment of herpes simplex virus infections of the skin and mucous membranes including initial and recurrent genital herpes. 
+
+Pheromone cologne for men - $35.99 - The human pheromones that attracts females has finally been recreated in the laboratory! Naturally found in minute amounts in the perspiration of men, these natural pheromones are an evolutionary remnant from a time when human females relied on scent to locate male mates. 
+
+Soothenol - $1.08 - safe and soothing formula is intended to ease the symptoms of PMS. 
+
+and more!
+
+our site http://jasqr.hk
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
 
 -------------------------------------------------------------------------
