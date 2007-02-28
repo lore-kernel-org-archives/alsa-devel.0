@@ -1,14 +1,12 @@
-From: "Deena Alston" <cdevastate@ipowerhosts.com>
-Subject: For do experience
-Date: Wed, 28 Feb 2007 18:53:12 +0100
-Message-ID: <001501c75b69$e86d0120$00bed354@avelariflfclxi>
+From: "John Utz" <John.Utz@dmxmusic.com>
+Subject: what criteria should be used to choose between
+ snd_ac97_update_bits, snd_ac97_write, snd_ac97_write_cache ?
+Date: Wed, 28 Feb 2007 09:59:46 -0800
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8BB@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0473617401=="
+Content-Type: multipart/mixed; boundary="===============1060071687=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ipowerhosts.com (ip-26.net-80-236-71.issy.rev.numericable.fr
-	[80.236.71.26])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 81807398
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 18:54:42 +0100 (MET)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,66 +16,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0473617401==
+This is a multi-part message in MIME format.
+
+--===============1060071687==
+Content-class: urn:content-classes:message
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C75B69.E86D0120"
+	boundary="----_=_NextPart_001_01C75B62.3B39FAB5"
 
-------=_NextPart_000_0012_01C75B69.E86D0120
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C75B62.3B39FAB5
 Content-Type: text/plain;
-        charset="windows-1250"
+ charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
+Hello;
 
+are there reasons why one might prefer one of these or the other?
 
-Alert for you!
-
-S.umbol: GDKICurrent price: $0.125 5 Day Target price: =
-$0.95Recommendation: very aggresive buy!
-
-
-
-TRADE SMART AND WIN WITH US NOW...
-
-
-GDKI have released very hot news. Check this out, alsa-devel..
-
-
-------=_NextPart_000_0012_01C75B69.E86D0120
+------_=_NextPart_001_01C75B62.3B39FAB5
 Content-Type: text/html;
-        charset="windows-1250"
+ charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1250">
-<META content=3D"MSHTML 6.00.2900.1158" name=3DGENERATOR>
-<STYLE></STYLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7651.59">
+<TITLE>what criteria should be used to choose between =
+snd_ac97_update_bits, snd_ac97_write, snd_ac97_write_cache ?</TITLE>
 </HEAD>
-<BODY bgColor=3D#ffffff>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#0033FF size=3D=
-3D4><FONT size=3D4><STRONG>Alert for you...</STRONG></FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#6600FF size=3D=
-4>S.umbol: <b>GDKI</b><br>Current price: $0.125 <br>5 Day Target price: =
-$0.95<br>Recommendation: very aggresive buy.</FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#990033 size=3D2>TRADE =
-SMART AND WIN WITH US NOW!!!</FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DVerdana color=3D#FF3333 size=3D4>GDKI =
-have released very hot news. Check this out, alsa-devel!</FONT></DIV>
-<BR><BR>
-</BODY></HTML>
+<BODY>
+<!-- Converted from text/plain format -->
 
-------=_NextPart_000_0012_01C75B69.E86D0120--
+<P><FONT SIZE=3D2>Hello;<BR>
+<BR>
+are there reasons why one might prefer one of these or the other?<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C75B62.3B39FAB5--
 
 
---===============0473617401==
+
+--===============1060071687==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -88,7 +78,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0473617401==
+--===============1060071687==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,4 +89,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0473617401==--
+--===============1060071687==--
