@@ -1,20 +1,10 @@
-From: "Mortimer F. Pinup" <issyanne@gordyo.com>
-Subject: International Legal RX
-Date: Wed, 28 Feb 2007 09:48:16 -0500
-Message-ID: <9733010089.20070228094816@gordyo.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: 1.0.14rc3 tagged, no tarballs.
+Date: Wed, 28 Feb 2007 08:20:24 -0800
+Message-ID: <1172679624.4789.254.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1304463174=="
+Content-Type: multipart/mixed; boundary="===============0312115922=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9E18325
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 15:42:42 +0100 (MET)
-Received: from -1211569840 (unknown [60.171.152.231])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	B18AA9932B
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 15:42:31 +0100 (MET)
-Received: from gordyo.com (-1211799144 [-1211564528])
-	by go-awol.com (Qmailv1) with ESMTP id 6AE57DC023
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 09:48:16 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,30 +14,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---===============1304463174==
+
+--===============0312115922==
+Content-Type: multipart/alternative; boundary="=-r7/vAbQvVCWRD+NTt1iR"
+
+
+--=-r7/vAbQvVCWRD+NTt1iR
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-The most powerful medicines for you!
+The repositories were tagged for 1.0.14rc3 release two days ago, how
+soon can we point users to the server for tarballs?
 
-100% Pure Okinawan Coral Calcium - $35.99 - the preferred source for readily absorbable and accessible calcium in the body. Superior 100% pure coral calcium is harvested from Okinawa, Japan – home to the longest-lived people on earth. 
+Just curious, as I have several people lined up and ready to test it (at
+least the HDA modules).
 
-Clarinex - $2.72 - non-drowsy 24-hour relief from allergy symptoms caused by seasonal allergens such as ragweed, grass, tree pollen and year-round allergens such as dust mites, animal dander, and mould spores. 
+-- 
+Tobin Davis <tdavis@dsl-only.net>
 
-Prilosec - $1.33 - can be taken to decrease the amount of acid produced in the stomach. 
+--=-r7/vAbQvVCWRD+NTt1iR
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-and more!
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
+</HEAD>
+<BODY>
+The repositories were tagged for 1.0.14rc3 release two days ago, how soon can we point users to the server for tarballs?<BR>
+<BR>
+Just curious, as I have several people lined up and ready to test it (at least the HDA modules).<BR>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
 
-our site http://jasqr.hk
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+--=-r7/vAbQvVCWRD+NTt1iR--
 
 
 
---===============1304463174==
+--===============0312115922==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -58,7 +76,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1304463174==
+--===============0312115922==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -69,4 +87,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1304463174==--
+--===============0312115922==--
