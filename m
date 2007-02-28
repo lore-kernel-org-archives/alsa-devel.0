@@ -1,13 +1,21 @@
-From: "Rick.Glenn" <Alice.Mayberry@bcc.com>
-Subject: Work
-Date: Tue, 27 Feb 2007 19:05:56 -0800
-Message-ID: <2401274055.ZM374728@sgaxaf.harvard.edu>
-References: <Alice.Mayberry@bcc.com>
+From: "Decaf S. Pokier" <shields@greasemonkeyintl.com>
+Subject: Simple way to enhance your sexual life.
+Date: Tue, 27 Feb 2007 20:08:58 -0500
+Message-ID: <6297776194.20070227200858@greasemonkeyintl.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: "Alice.Mayberry@bcc.com" <Alice.Mayberry@bcc.com>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DCC0367
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:00:32 +0100 (MET)
+Received: from 146167360 (220-129-143-224.dynamic.hinet.net [220.129.143.224])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	A1A1E99AD9
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 05:00:28 +0100 (MET)
+Received: from greasemonkeyintl.com (146912800 [146340744])
+	by 220-129-143-224.dynamic.hinet.net (Qmailv1) with ESMTP id 45E8726F57
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2007 20:08:58 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,35 +25,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+That is true! U can buy any medications that you need at Canadian Pharmacy store. Lowest prices on the web! Become healthy without huge spendings now! 
+http://jasqr.hk
 
-Hey, I hate to be the one but when people
-continueto talk about your weight issue, 
-we'll it just disgustsme. Whether you know 
-it by now, people are always chattering 
-about one another at work but you come up 
-morethan enough. I wasn't the happiest or 
-best fit up until a year ago or so but that 
-changed. Thanks to my dam brother-in-law. 
-Anyhow, it was for the best. What I am 
-saying is you need to do something and I 
-was saved a year ago and maybe I can make 
-the same difference. Try this stuff out,
-I took it on the idea it's just more junk 
-but it worked great. I see more positive 
-reviews on it nowadays and makes me feel 
-even better. So, I am encouraging a change, 
-not only in the chatter around here but in 
-you personally.
+Make secure and confidential purchase. Nobody will know that you are using medications. Buying at our store - the right choice you can make! 
 
--Anonymous for now 
-(using an anonymous email website to send this btw)
-When it helps/works just send a memo with the name "Angel"
-in it. Then you can take me out to lunch to thank you.
-
-WebSite---ordrypeepz.com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
