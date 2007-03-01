@@ -1,11 +1,16 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HLo1y-00056x-8P delayed 72 hours
-Date: Thu, 01 Mar 2007 14:10:14 -0800
-Message-ID: <E1HMtTa-0005CD-Fq@externalmx-1.sourceforge.net>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: [Jackit-devel] alsaseq reorders my events
+Date: Thu, 1 Mar 2007 17:12:31 -0500
+Message-ID: <75b66ecd0703011412l513be986l5ea67d8c8e47e66b@mail.gmail.com>
+References: <70a871c80703010535p512ebabfke3c57d441a7fe2fb@mail.gmail.com>
+	<1172768362.11019.1177218661@webmail.messagingengine.com>
+	<70a871c80703010923l1cd70240n4a993ef4a2a60c3f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <70a871c80703010923l1cd70240n4a993ef4a2a60c3f@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +20,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Dmitry Baikov <dsbaikov@gmail.com>
+Cc: Jack Dev List <jackit-devel@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+On 3/1/07, Dmitry Baikov <dsbaikov@gmail.com> wrote:
+> And since I already rewritten this code with snd_seq_ev_set_direct() +
+> poll(), I have a question:
+> Does queue + snd_seq_ev_schedule_real() offer better real resolution
+> than poll (which gives 1 ms)?
 
-The message identifier is:     1HLo1y-00056x-8P
-The subject of the message is: [VAR115]
-The date of the message is:    Mon, 26 Feb 2007 23:09:29 +0100
+On older kernels it depends on whether ALSA sequencer is configured to
+use RTC or regular kernel timers.  And poll() resolution is 4ms by
+default (HZ=250) not 1ms.
 
-The address to which the message has not yet been delivered is:
+Anyway mainline Linux kernel has hrtimers now.  So shouldn't the
+resolution of all timeouts be much better than 1ms?
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
