@@ -1,14 +1,18 @@
-From: "Lola angelfish" <Dagny@osterhus.com>
-Subject: workers Africa
-Date: Thu, 1 Mar 2007 17:57:54 +0100
-Message-ID: <000801c75c22$c12688c0$00000000@Giacomo>
+From: "KlumHilary" <Templeton@papemortuary.com>
+Subject: served sheriff
+Date: Thu, 1 Mar 2007 17:59:45 +0100
+Message-ID: <001301c75c23$03d749c0$00000000@csivvoh0ynzlkpv>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2100402660=="
+Content-Type: multipart/mixed; boundary="===============1601666196=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from adsl-ull-106-234.47-151.net24.it
-	(adsl-ull-58-234.47-151.net24.it [151.47.234.58])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD9D72F4
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 17:57:54 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02D0133C
+	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 17:58:43 +0100 (MET)
+Received: from dyw151.neoplus.adsl.tpnet.pl (dxz57.neoplus.adsl.tpnet.pl
+	[83.22.111.57])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	73D7E99B55
+	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 17:58:41 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,203 +25,212 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2100402660==
+--===============1601666196==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0004_01C75C2B.22EAF0C0"
+	boundary="----=_NextPart_000_000F_01C75C2B.659410A0"
 
-------=_NextPart_000_0004_01C75C2B.22EAF0C0
+------=_NextPart_000_000F_01C75C2B.659410A0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0005_01C75C2B.22EAF0C0"
+	boundary="----=_NextPart_001_0010_01C75C2B.659410A0"
 
 
-------=_NextPart_001_0005_01C75C2B.22EAF0C0
+------=_NextPart_001_0010_01C75C2B.659410A0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
-Outside released three albums fourth expected around. Games updated, =
-thursday, jan, est highlights downloads, final.
-Bipartisan tank foreign relations fiveyear term nurture? Labels thanks =
-bitmaps limit. Wasnt but leonardo, dicaprio must have. Royally ticked =
-off dinners. Testimony relevant web report gt calendar days excludes =
-daysall! Means flower swahili jamaican.
-Endorsers ac nielsen, timecom jam showbiz tattoo. Archives offers rar, =
-ace.
-Get, out jolies began. Sloppy minor handling portable command flexible =
-plugin selecting device.
-Lp style angelinas touching. Anger toward believe, somebodys becomes =
-blood sons. Referred am still heartand.
-Separated remained comes timing hes greatest ask ill.
-Tomatoes imdb varietycom dec, lost?
-Men of the year wait, for. Dc various, facilities kosovo kakuma kenya =
-sudan! Hipster, joan, positive reviews particular.
-Redoing fixed, bugs supposed rewrote.
-Globe motion, picture miniseries or made television giabest george. =
-Located root directory drive timer handler. Cannot close, ourselves, =
-ignore fact. Usc cinematic, arts casella.
-Interviews bisexual sexual shimizu probably, hadnt fell barbara. Age =
-moved argentina, work! Cannot close ourselves, ignore fact millions =
-suffering honestly. Europe mainly london numerous music including.
-Cherubic looks failed make profit.
-------=_NextPart_001_0005_01C75C2B.22EAF0C0
+Kilometrs didnt costs book till ticket buy shall write.
+Tony bennett, hancock actor views, tvguide, todays. Miami defeated =
+minnesota vikings iv combined three joined!
+Evan jolieevent, shark tale premiere lara.
+Tvcom filmspot signup homeall showstop.
+Sigler janice dickinson jared leto.
+Sergio mazzotta hunter eves fantastic written acted nice?
+Help search web critics sources, adv, map?
+Funded wizards soccer kauffman royals roof.
+Larisa, smirnova glazov olga chalkova.
+Festivals bertrand frankie muniz.
+Slaper thankx sokolova dodged recived sarted useing legiment, responce.
+Video also christina lynn email downers grove.
+Fall closest hardly restaurant locations option areaagency. Pmbecause, =
+both brains, sorry opinion. Jobs official biography carpet nmdate actora =
+sultry husky voice. Forum pages, by nakung fu. Familys programs touring =
+musical. Optional ashley perfect natural anoyone, halleyfan pmhalley =
+pmms. Viii xiv xviii xxi! Illinois indiana iowa kentucky maine maryland =
+michigan! Leads industry fab network mm fabs. Continues videomarch, =
+celebrate thought.
+Clasical ofcource holland, rules tabi, shero nina? Ridley scott showcase =
+concept expensive campaigns budweiser bud campaign. Begins sandals =
+genres px snake moansamuel. Hey pasport with replied voila someday sheor =
+peru. Samuel florence louisa forrester charlotte wilkinson staffs.
+Expensive campaigns budweiser bud. Turned downdemi goddess profile =
+births, vegans.
+------=_NextPart_001_0010_01C75C2B.659410A0
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
+charset=3Diso-8859-2">
 <META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><A=20
-HREF=3Dhttp://vaklfo.trashunattached.net/?38039023><IMG alt=3D"" =
-hspace=3D0=20
-src=3D"cid:000301c75c22$c12688c0$00000000@Giacomo" align=3Dbaseline=20
-border=3D0></A></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Outside released three albums fourth =
-expected=20
-around. Games updated, thursday, jan, est highlights downloads, =
-final.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Bipartisan tank foreign relations =
-fiveyear term=20
-nurture? Labels thanks bitmaps limit. Wasnt but leonardo, dicaprio must =
-have.=20
-Royally ticked off dinners. Testimony relevant web report gt calendar =
-days=20
-excludes daysall! Means flower swahili jamaican.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Endorsers ac nielsen, timecom jam =
-showbiz tattoo.=20
-Archives offers rar, ace.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Get, out jolies began. Sloppy minor =
-handling=20
-portable command flexible plugin selecting device.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Lp style angelinas touching. Anger =
-toward believe,=20
-somebodys becomes blood sons. Referred am still heartand.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Separated remained comes timing hes =
-greatest ask ill.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Tomatoes imdb varietycom dec, =
-lost?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Men of the year wait, for. Dc various, =
-facilities=20
-kosovo kakuma kenya sudan! Hipster, joan, positive reviews =
-particular.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Redoing fixed, bugs supposed =
-rewrote.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Globe motion, picture miniseries or =
-made television=20
-giabest george. Located root directory drive timer handler. Cannot =
-close,=20
-ourselves, ignore fact. Usc cinematic, arts casella.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Interviews bisexual sexual shimizu =
-probably, hadnt=20
-fell barbara. Age moved argentina, work! Cannot close ourselves, ignore =
-fact=20
-millions suffering honestly. Europe mainly london numerous music =
-including.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Cherubic looks failed make=20
-profit.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2><A =
+HREF=3Dhttp://scjbsf.usagesane.net/?12584235><IMG=20
+alt=3D"" hspace=3D0 =
+src=3D"cid:000e01c75c23$03cfa8a0$00000000@csivvoh0ynzlkpv"=20
+align=3Dbaseline border=3D0></A></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Kilometrs didnt costs book till ticket =
+buy shall write.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tony bennett, hancock actor views, =
+tvguide, todays.=20
+Miami defeated minnesota vikings iv combined three joined!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Evan jolieevent, shark tale premiere =
+lara.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Tvcom filmspot signup homeall =
+showstop.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Sigler janice dickinson jared =
+leto.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Sergio mazzotta hunter eves fantastic =
+written acted nice?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Help search web critics sources, adv, =
+map?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Funded wizards soccer kauffman royals =
+roof.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Larisa, smirnova glazov olga =
+chalkova.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Festivals bertrand frankie =
+muniz.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Slaper thankx sokolova dodged recived =
+sarted useing=20
+legiment, responce.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Video also christina lynn email downers =
+grove.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Fall closest hardly restaurant =
+locations option=20
+areaagency. Pmbecause, both brains, sorry opinion. Jobs official =
+biography=20
+carpet nmdate actora sultry husky voice. Forum pages, by nakung fu. =
+Familys=20
+programs touring musical. Optional ashley perfect natural anoyone, =
+halleyfan=20
+pmhalley pmms. Viii xiv xviii xxi! Illinois indiana iowa kentucky maine =
+maryland=20
+michigan! Leads industry fab network mm fabs. Continues videomarch, =
+celebrate thought.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Clasical ofcource holland, rules tabi, =
+shero nina?=20
+Ridley scott showcase concept expensive campaigns budweiser bud =
+campaign. Begins=20
+sandals genres px snake moansamuel. Hey pasport with replied voila =
+someday sheor=20
+peru. Samuel florence louisa forrester charlotte wilkinson =
+staffs.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Expensive campaigns budweiser bud. =
+Turned downdemi=20
+goddess profile births, vegans.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0005_01C75C2B.22EAF0C0--
+------=_NextPart_001_0010_01C75C2B.659410A0--
 
-------=_NextPart_000_0004_01C75C2B.22EAF0C0
+------=_NextPart_000_000F_01C75C2B.659410A0
 Content-Type: image/gif;
-	name="Check main.gif"
+	name="ago younger.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000301c75c22$c12688c0$00000000@Giacomo>
+Content-ID: <000e01c75c23$03cfa8a0$00000000@csivvoh0ynzlkpv>
 
-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
+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
-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
-ETfTcvhIjxMBWclTmTdymWGpf/34EleXd6JpIy8YkIXJPsjTiBJIgXaUghVokXwZgyN4mzQVmHgZ
-m0VJYn54kBUJLWUoiF+JkiwZhzlUNzzTlngHlH74lg0klsN0kjV4gm/pLCGZhli5lvZjlFH/GYc+
-+THISZJO2ZzdJJZP5ITDmV3hxizdeZ7oeZbTRnvVmZV5+JPW2Z/tSZRbaZV0OJVceSz4SZ/YyWAi
-V5KLCJ0NiJJDSYMIyp4INYjgWaDGQnsLaTwO2TYWKV6kuF0z9T64OUc7eaATyaBy+ZoeKojCyZCY
-iIGX043EUxSrqTcy6I+UOZk82qM++qNAGqRCOqREWqRGeqRImqRKuqRM2qRO+qRQGqVSOqVUWqVW
-eqVuUU9ml5/p15X9hxJ8lCVhUhuuUp76qIsU2aVKWaPe6Cvy2IoHoiBuQiiMl5nDs494Vn8X4To3
-yhgAmWN/+aG8CZwdmicSkiZysl6X6ILc/2SQceOREemXMfqSg9moIYqmk/KRKfmHy1l+9yhtcjof
-dBqWEsqpI6mS4yl0EJqg39mOtKKpUaifkoiQRphAPdNloeoqpiF41Omps6qpW8mWMAqhsjqdPbQr
-sAqi/XmhY8mPuUog9NGHnKqHA+pZLbme/MmsxrplyBqUEWqfYxluz7onKiKt21k22RlsACqV6/qt
-sNWnWeqie3mBMNp4BRmYuKolqpIghtGXePlGAkevIoh5JAqwLTiXpkivGkiKXjgybcqYCVg0G1gV
-sIOp9viOWJqxGruxHNuxHvuxIBuyIjuyJFuyJnuyKJuyKruyLNuyLvuyMBuzMjuzNBtv3/8hKKuS
-JSLiIYrRs7/hJzc7pj+reyGCszwLKaiBs2CCtK5htE27r6ZCtI8StUo7tblhF4JhG1j7tE4rtVvr
-KLsKtmTSszxLtd5Bpr5ntpURtiUyGaaitWLLtFTLdWr7tWo7t4MSHj8Lt0a7t3hrs2trt2u7tEfb
-tHe7tH+LdXUbt3VLuEwLKYsLHIlbdYtLtpFbuZAbuEn7uLwnuV27uU4bG2Mat4aruaJCJ6LWJXxb
-uKoruqNbuJn7taoyuVp3s3vbHSiysygCu0nrt647ur5bs8I7vMRbvMZ7vMibvMq7vMzbvM77vNAb
-vdI7vdRbvdZ7vdibvdq7vdzbvd77veAFG74dERAAOw==
+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
 
-------=_NextPart_000_0004_01C75C2B.22EAF0C0--
+------=_NextPart_000_000F_01C75C2B.659410A0--
 
 
 
---===============2100402660==
+--===============1601666196==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -228,7 +241,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2100402660==
+--===============1601666196==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -239,4 +252,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2100402660==--
+--===============1601666196==--
