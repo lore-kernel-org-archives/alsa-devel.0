@@ -1,14 +1,15 @@
-From: "Christophe Osuna" <christophe.osuna@gmail.com>
-Subject: Re: Problem to compile : Undefined reference
-Date: Thu, 1 Mar 2007 08:58:02 +0100
-Message-ID: <b6251a620702282358o71d12d7cg282f4b7cb1a0a37@mail.gmail.com>
-References: <50fdad60702280603v63503c8o78dd71b5872fc0c0@mail.gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: what criteria should be used to choose between
+ snd_ac97_update_bits, snd_ac97_write, snd_ac97_write_cache ?
+Date: Thu, 01 Mar 2007 09:25:40 +0100
+Message-ID: <1172737540.9561.1177138781@webmail.messagingengine.com>
+References: <F8FB97052F1BEF409F7842E960E49B5AAAF8BB@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <50fdad60702280603v63503c8o78dd71b5872fc0c0@mail.gmail.com>
 Content-Disposition: inline
+In-Reply-To: <F8FB97052F1BEF409F7842E960E49B5AAAF8BB@sea-exch-01.na.corp.dmxmusic.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,28 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Nyx <keres.nyx@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: John Utz <John.Utz@dmxmusic.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-2007/2/28, Nyx <keres.nyx@gmail.com>:
-> I want to develop some applications (VUmeter and Peakmeter) with
-> ALSA-API. So, I tried to compile an example from
-> http://equalarea.com/paul/alsa-audio.html#playex but I have some
-> errors like : "
-> example.o(.text+0x30c): In function `main':
-> : undefined reference to `snd_strerror'
-> example.o(.text+0x340): In function `main':
-> : undefined reference to `snd_pcm_close'
-> [..]"
->
-> Do you have an idea where these errors come from ?
+John Utz wrote:
+> are there reasons why one might prefer one of these or the other?
 
-You have to link your program with the ALSA library. For instance:
+Because reading AC'97 registers is rather slow, there is a cache of
+register values.
 
-  gcc -lasound -Wall -o myprog myprog.c
+Use snd_ac97_write() for registers that should not be cached.
 
-Of course, ALSA development files must be installed.
+Use snd_ac97_write_cache() to write to a register that can be cached,
+i.e., later reads can take the value from the cache instead of reading
+from the codec.
+
+Use snd_ac97_update() to write to a register where writing the same
+value would not have any effect.
+
+Use snd_ac97_update_bits() in the same situation as snd_ac97_update(),
+but when you want to update only some bits.
+
+Use snd_ac97_read() for uncached reads; and snd_ac97_read_cache() for
+reads from the cache, if possible.
+
+
+HTH
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
