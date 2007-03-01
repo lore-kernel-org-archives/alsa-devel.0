@@ -1,11 +1,11 @@
-From: "INDASTL LLC UA" <kdxhxjdmcgtw@airtrafficsimulation.com>
-Subject: Brauchen Sie einen Nebenjob? INDASTL LLC
-Date: Thu, 1 Mar 2007 14:48:20 +0000 (UTC)
-Message-ID: <01c75c06$a95d4650$6c822ecf@kdxhxjdmcgtw>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Mail delivery failed: returning message to sender
+Date: Thu, 01 Mar 2007 06:27:15 -0800
+Message-ID: <E1HMmFX-0008T3-JI@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1663089393=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Date: Thu, 1 Mar 2007 13:36:48 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,229 +18,296 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This message was created automatically by mail delivery software.
 
---===============1663089393==
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
+
+  alsa-devel@lists.sourceforge.net
+    SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to : retry timeout exceeded
+
+------ This is a copy of the message, including all the headers. ------
+------ The body of the message is 24298 characters long; only the first
+------ 16384 or so are included here.
+
+Return-path: <alsa-devel@lists.sourceforge.net>
+Received: from [222.254.189.156] (helo=proxy03-hcm.vnn.vn)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1HLFLS-0002Qv-Nf
+	for alsa-devel@lists.sourceforge.net; Sun, 25 Feb 2007 01:07:04 -0800
+Received: from immobiliareavagnina.com (port=6244 helo=hofbjqvqlwu)
+	by proxy03-hcm.vnn.vn with smtp
+	id LS4-c40S7-d5p
+	for alsa-devel@lists.sourceforge.net; Sun, 25 Feb 2007 16:06:53 +0700
+Message-ID: <000901c758bc$46238f60$00b3aa3c@hofbjqvqlwu>
+From: "Eugene" <rbfnnwsadd@immobilien-hildesheim.com>
+To: alsa-devel@lists.sourceforge.net
+Subject: asked are before they offered.  Now.  For all
+Date: Sun, 25 Feb 2007 16:06:53 +0700
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000B_01C758F6.F23D4810"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.2869
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2962
+X-Spam-Score: 4.0 (++++)
+X-Spam-Report: Spam Filtering performed by sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	Report problems to https://sf.net/tracker/?func=add&group_id=1&atid=200001
+	0.2 EXTRA_MPART_TYPE       Header has extraneous Content-type:...type= entry
+	0.2 HTML_90_100            BODY: Message is 90% to 100% HTML
+	0.0 HTML_MESSAGE           BODY: HTML included in message
+	2.0 HTML_IMAGE_ONLY_08     BODY: HTML: images with 400-800 bytes of words
+	1.7 RCVD_IN_NJABL_DUL      RBL: NJABL: dialup sender did non-local SMTP
+	[222.254.189.156 listed in combined.njabl.org]
+
+------=_NextPart_000_000B_01C758F6.F23D4810
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0006_01C75C0F.0B21AE50"
+	boundary="----=_NextPart_001_000C_01C758F6.F23D4810"
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0006_01C75C0F.0B21AE50
+------=_NextPart_001_000C_01C758F6.F23D4810
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-
-  
-    
-      Sehr geehrte Damen und Herren, wir danken f&uuml;r die M&#246;glichkeit uns Ihnen kurz vorstellen zu k&#246;nnen
-      Unsere Gesellschaft ist seit mehreren Jahren auf dem Grossmarkt
-          bekannt. Der Kernpunkt unserer Interessen liegt im Metallmarkt,
-          wobei wir auch in vielen benachbarten Branchen t&#228;tig sind sowie
-          zum Beispiel Metall verarbeitung. Sei es B&#246;rse, weltbekannte Auktionen,
-          oder Forschung , ist es unser Ziel f&#252;r uns und unsere Kunden immer
-          die besten Ergebnisse zu erzielen. Im Moment ist die Entscheidung getroffen
-          worden
-          auf den
-          deutschen
-          Markt zu kommen, da dieser einen hohen Entwicklungspotenzial und h&#246;chstm&#246;glichen
-          Gewinnerziehlung erwarten l&#228;sst. Zur Zeit wird eine limitierte
-          Anzahl Angestellte unter Vertrag genommen, oder auch als freie Mitarbeiter
-          eingesetzt.
-      
-      Als Personalleiter unserer Gesellschaft bin ich seit Jahren f&#252;r Rekrutierung zust&#228;ndig und freue mich, Ihnen die vakante Position eines regionalen Managers f&#252;r Zahlungsbearbeitung anzubieten. Da wir weltweit vertreten sind, kommen die Kunden aus vielen unterschiedlichen L&#228;ndern. Verwaltung der Geldtransfers, die von unseren deutschen Kunden beauftragt wurden , ist einer der  Schwerpunkte, welche die zu jetzigen Zeitpunkt angebotene T&#228;tigket ausmachen.
-      
-      Zu den  Aufgaben w&#252;rden u.a  folgende T&#228;tigkeiten geh&#246;ren
-      
-         Verwaltung und Weiterleitung der Kundengelder
-         Hohe Erreichbarkeit und Verantwortungsbewusstsein
-        
-      
-      Ihre Vorteile:
-      
-        Sie werden zun&#228;chst unser Vertreter und Mittelsmann zwischen uns und unseren Kunden in Ihrem Land.
-        Sie zahlen keine Geb&#252;hren und m&#252;ssen nichts investieren (vergessen Sie betr&#252;gerische Stellenangebote, bei denen Sie erst zur Kasse gebeten werden).
-         Sie haben eine flexible , interessante Arbeit , mit unterschiedlichen T&#228;tigkeitsschwerpunkten und hohen Bef&#246;rderungsm&#246;glichkeiten
-         Sie verdienen zuerst zwischen 500 und 1000 Euro pro Woche
-         Sie k&#246;nnen selbst Ihren Verdienst bestimmen. - da Sie auf einen Prozentsatz arbeiten - h&#228;ngt Ihr Verdienst nur von Ihrer Arbeitsbereitschaft ab
-      
-      Sie k&#246;nnen Ihren Arbeitstag moglichst flexibel gestalten, um Ihrem Haupterwerb problemlos nachzugehen. Wichtig ist aber, da&#223; unsere Kommunikation funktioniert und Sie f&#252;r uns immer erreichbar sind. Es entstehen f&#252;r Sie keine Ausgaben, d.h. Sie brauchen kein Startkapital, Investitionen oder eigene Auslagen. 
-      
-      An die Bewerber werden folgende Anforderungen gestellt
-      
-         Internet, E-Mail, Grundkenntnisse der Hauptzahlungssysteme.
-         Es w&#228;re w&#252;nschenswert, wenn Sie ein eigenes Konto in einem deutschen Geldinstitut mit Online Banking h&#228;tten.
-         F&#252;r diese Besch&#228;ftigung brauchen Sie von 2 bis 8 Stunden freie Zeit in der Woche. 
-         Genauigkeit, P&#252;nktlichkeit, Zuverlassigkeit und naturlich eine gesunde Arbeitseinstellung
-      
-      Falls Sie f&#252;r unser Angebot Interesse haben und bereit sind, eine gut bezahlte, aber auch verantwortungsvolle Arbeit auszuf&#252;hren,
-        so schreiben Sie uns bitte an: llc_indastl@mail.ru
-        
-        Eine kurzgefasste Bewerbung mit Foto ist besonders willkommen.
-      Nach der Bearbeitung Ihrer Bewerbung, wird Ihnen im Falle einer Zusage Ihre T&#228;tigkeit genauestens erl&#228;utert, Sie werden mit unserer Gesellschaft bekannt gemacht und es folgt in k&#252;rze der Arbeitsvertrag
-      Wir hoffen auf eine gute und erfolgreiche Zusammenarbeit
-        Mit freundlichen Gr&#252;ssen 
-      Nikolskij Evgenij Urjevitch
-        INDASTL LLC
-        Offiziele Partner Programm Deutschland
-      
-      Ihre Email wurde uns von der  B&W Werbegesellschaft zu Verf&#252;gung gestellt. Falls es zu einer Fehlinformation kam und Sie kein Interesse an den aufgef&#252;hrten T&#228;tigkeiten haben, betrachten Sie folgende Email als Gegenstandslos.
-      Diese Email wurde von einem unserer Email Roboter erstellt. 
-      Antworten Sie bitte nicht an folgende Email mit der Option '' an Absender antworten''. , senden Sie keine Emails an die Absenderadresse, da Ihre Email automatisch gel&#246;scht wird.
-    
-  
-
-
-
-
-------=_NextPart_000_0006_01C75C0F.0B21AE50
-Content-Type: text/html;
-	charset="us-ascii"
+	charset="windows-1251"
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
-hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
+One cherub and an abomination of Kabzeel, and
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-</head>
-<body>
-<body>
-<div align=3D"center">
-  <table width=3D"90%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
-    <tr>
-      <td><p class=3D"Stil1">Sehr geehrte Damen und Herren, wir danken f&uu=
-ml;r die M&#246;glichkeit uns Ihnen kurz vorstellen zu k&#246;nnen</p>
-      <p><strong>Unsere Gesellschaft ist seit mehreren Jahren auf dem Gross=
-markt
-          bekannt. Der Kernpunkt unserer Interessen liegt im Metallmarkt</s=
-trong>,
-          wobei wir auch in vielen benachbarten Branchen t&#228;tig sind so=
-wie
-          zum Beispiel Metall verarbeitung. Sei es B&#246;rse, weltbekannte=
- Auktionen,
-          oder Forschung , ist es unser Ziel f&#252;r uns und unsere Kunden=
- immer
-          die besten Ergebnisse zu erzielen. Im Moment ist die Entscheidung=
- getroffen
-          worden
-          auf den
-          deutschen
-          Markt zu kommen, da dieser einen hohen Entwicklungspotenzial und =
-h&#246;chstm&#246;glichen
-          Gewinnerziehlung erwarten l&#228;sst. Zur Zeit wird eine limitier=
-te
-          Anzahl Angestellte unter Vertrag genommen, oder auch als freie Mi=
-tarbeiter
-          eingesetzt.</p>
-      <hr>
-      <p>Als Personalleiter unserer Gesellschaft bin ich seit Jahren f&#252=
-;r Rekrutierung zust&#228;ndig und freue mich, Ihnen die vakante Position e=
-ines regionalen Managers f&#252;r Zahlungsbearbeitung anzubieten. Da wir we=
-ltweit vertreten sind, kommen die Kunden aus vielen unterschiedlichen L&#22=
-8;ndern. Verwaltung der Geldtransfers, die von unseren deutschen Kunden bea=
-uftragt wurden , ist einer der  Schwerpunkte, welche die zu jetzigen Zeitpu=
-nkt angebotene T&#228;tigket ausmachen.<br />
-      </p>
-      <p><strong>Zu den  Aufgaben w&#252;rden u.a  folgende T&#228;tigkeite=
-n geh&#246;ren</strong></p>
-      <ul>
-        <li> Verwaltung und Weiterleitung der Kundengelder</li>
-        <li> Hohe Erreichbarkeit und Verantwortungsbewusstsein<br />
-        </li>
-      </ul>
-      <p><strong>Ihre Vorteile:</strong></p>
-      <ul>
-        <li>Sie werden zun&#228;chst unser Vertreter und Mittelsmann zwisch=
-en uns und unseren Kunden in Ihrem Land.</li>
-        <li>Sie zahlen keine Geb&#252;hren und m&#252;ssen nichts investier=
-en (vergessen Sie betr&#252;gerische Stellenangebote, bei denen Sie erst zu=
-r Kasse gebeten werden).</li>
-        <li> Sie haben eine flexible , interessante Arbeit , mit unterschie=
-dlichen T&#228;tigkeitsschwerpunkten und hohen Bef&#246;rderungsm&#246;glic=
-hkeiten</li>
-        <li> Sie verdienen zuerst zwischen 500 und 1000 Euro pro Woche</li>
-        <li> Sie k&#246;nnen selbst Ihren Verdienst bestimmen. - da Sie auf=
- einen Prozentsatz arbeiten - h&#228;ngt Ihr Verdienst nur von Ihrer Arbeit=
-sbereitschaft ab</li>
-      </ul>
-      <p>Sie k&#246;nnen Ihren Arbeitstag moglichst flexibel gestalten, um =
-Ihrem Haupterwerb problemlos nachzugehen. Wichtig ist aber, da&#223; unsere=
- Kommunikation funktioniert und Sie f&#252;r uns immer erreichbar sind. Es =
-entstehen f&#252;r Sie keine Ausgaben, d.h. Sie brauchen kein Startkapital,=
- Investitionen oder eigene Auslagen. <br />
-      </p>
-      <p><strong>An die Bewerber werden folgende Anforderungen gestellt</st=
-rong></p>
-      <ul>
-        <li> Internet, E-Mail, Grundkenntnisse der Hauptzahlungssysteme.</l=
-i>
-        <li> Es w&#228;re w&#252;nschenswert, wenn Sie ein eigenes Konto in=
- einem deutschen Geldinstitut mit Online Banking h&#228;tten.</li>
-        <li> F&#252;r diese Besch&#228;ftigung brauchen Sie von 2 bis 8 Stu=
-nden freie Zeit in der Woche. </li>
-        <li> Genauigkeit, P&#252;nktlichkeit, Zuverlassigkeit und naturlich=
- eine gesunde Arbeitseinstellung</li>
-      </ul>
-      <p>Falls Sie f&#252;r unser Angebot Interesse haben und bereit sind, =
-eine gut bezahlte, aber auch verantwortungsvolle Arbeit auszuf&#252;hren,
-        so schreiben Sie uns bitte an: <strong><font size=3D"+2">llc_indast=
-l@mail.ru</font></strong><br>
-        <br />
-        Eine kurzgefasste Bewerbung mit Foto ist besonders willkommen.</p>
-      <p>Nach der Bearbeitung Ihrer Bewerbung, wird Ihnen im Falle einer Zu=
-sage Ihre T&#228;tigkeit genauestens erl&#228;utert, Sie werden mit unserer=
- Gesellschaft bekannt gemacht und es folgt in k&#252;rze der Arbeitsvertrag=
-</p>
-      <p>Wir hoffen auf eine gute und erfolgreiche Zusammenarbeit<br />
-        Mit freundlichen Gr&#252;ssen </p>
-      <p><em>Nikolskij Evgenij Urjevitch</em><br>
-        INDASTL LLC<br>
-        Offiziele Partner Programm Deutschland</p>
-      <hr>
-      <p><em>Ihre Email wurde uns von der  B&W Werbegesellschaft zu Verf&#2=
-52;gung gestellt. Falls es zu einer Fehlinformation kam und Sie kein Intere=
-sse an den aufgef&#252;hrten T&#228;tigkeiten haben, betrachten Sie folgend=
-e Email als Gegenstandslos.</em></p>
-      <p><strong>Diese Email wurde von einem unserer Email Roboter erstellt=
- <br />
-      Antworten Sie bitte nicht an folgende Email mit der Option '' an Abse=
-nder antworten''. , senden Sie keine Emails an die Absenderadresse, da Ihre=
- Email automatisch gel&#246;scht wird.</strong></p></td>
-    </tr>
-  </table>
-</div>
+------=_NextPart_001_000C_01C758F6.F23D4810
+Content-Type: text/html;
+	charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-</body>
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1251">
+<META content=3D"MSHTML 6.00.2900.2963" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+One cherub and an abomination of Kabzeel, and
+<IMG alt=3D"" hspace=3D0=20 width=628 height=371 src=3D"cid:000a01c758bc$46238f60$00b3aa3c@hofbjqvqlwu" =
+align=3Dbaseline=20 border=3D0></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0006_01C75C0F.0B21AE50--
+------=_NextPart_001_000C_01C758F6.F23D4810--
 
+------=_NextPart_000_000B_01C758F6.F23D4810
+Content-Type: image/gif;
+	name="rxtbv.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000a01c758bc$46238f60$00b3aa3c@hofbjqvqlwu>
 
-
---===============1663089393==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+R0lGODlhdAJzAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
+/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
+AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
+MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
+ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
+mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
+zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
+/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
+AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
+M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
+ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
+mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
+zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///yH5BAEAABAALAAAAAB0AnMB
+AAj/AP8JHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuX
+MGPKnEmzps2bOHPq3Mmzp8+fQIMKHUq0qNGjSJMqXcq0qdOnUKNKnUq1qtWrWLNq3cq1q9evYMOK
+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
+8cYOkPztZzMHzUona2Y3
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1663089393==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1663089393==--
