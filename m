@@ -1,17 +1,11 @@
-From: Pekka J Enberg <penberg@cs.helsinki.fi>
-Subject: Re: [BUG] Linux 2.6.20.1 - unable to handle kernel
- paging request - accessing freed memory?
-Date: Thu, 1 Mar 2007 13:32:55 +0200 (EET)
-Message-ID: <Pine.LNX.4.64.0703011330330.29829__29022.4530421712$1172748814$gmane$org@sbz-30.cs.Helsinki.FI>
-References: <462787.14129.qm@web52911.mail.yahoo.com>
+From: Lintula <bugreports2005@cs.tut.fi>
+Subject: snd-hda-intel issues
+Date: Thu, 01 Mar 2007 14:17:30 +0200
+Message-ID: <45E6C45A.3090802@cs.tut.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.cs.helsinki.fi (courier.cs.helsinki.fi [128.214.9.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 029B73BB
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 12:32:56 +0100 (MET)
-In-Reply-To: <462787.14129.qm@web52911.mail.yahoo.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,24 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Chris,
+Hello,
 
-On Thu, 1 Mar 2007, Chris Rankin wrote:
-> Nope, no difference. Again, this happened while trying to start World of 
-> Warcraft. However, this time there is no snd-rtctimer module in the 
-> stack.
+Using ALSA modules shipped with Linux 2.6.20, I find that with a HP
+dc7600 workstation I need to load snd-hda-intel with model=basic or
+model=hp or there is no sound. Alsamixer indicates Chip: Realtek ALC260.
 
-Please apply this patch to your kernel and try to reproduce:
+00:1b.0 0403: 8086:27d8 (rev 01)
+        Subsystem: 103c:3010
+        Flags: bus master, fast devsel, latency 0, IRQ 18
+        Memory at e04c0000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
-http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.20/2.6.20-mm2/broken-out/gregkh-driver-sysfs-crash-debugging.patch
+Same with a Lenovo M55 8811, except I seem to need model=laptop.
+alsamixer indicates Chip: Analog Devices AD1986A.
 
-It should give us a better clue which sysfs file is causing the oops.
+00:1b.0 0403: 8086:284b (rev 02)
+        Subsystem: 17aa:1011
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at d0200000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
-			Pekka
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
