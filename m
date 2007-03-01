@@ -1,18 +1,11 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: [BUG] Linux 2.6.20.1 - unable to handle kernel
-	paging request - accessing freed memory?
-Date: Thu, 1 Mar 2007 13:22:46 +0000 (GMT)
-Message-ID: <5749.60103.qm__44923.8289533698$1172757843$gmane$org@web52905.mail.yahoo.com>
-References: <Pine.LNX.4.64.0703011330330.29829@sbz-30.cs.Helsinki.FI>
+From: "INDASTL LLC UA" <kdxhxjdmcgtw@airtrafficsimulation.com>
+Subject: Brauchen Sie einen Nebenjob? INDASTL LLC
+Date: Thu, 1 Mar 2007 14:48:20 +0000 (UTC)
+Message-ID: <01c75c06$a95d4650$6c822ecf@kdxhxjdmcgtw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1663089393=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from web52905.mail.yahoo.com (web52905.mail.yahoo.com
-	[206.190.49.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E38423AC
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 14:22:51 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.64.0703011330330.29829@sbz-30.cs.Helsinki.FI>
+Date: Thu, 1 Mar 2007 13:36:48 -0060
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,93 +15,232 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Pekka J Enberg <penberg@cs.helsinki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---- Pekka J Enberg <penberg@cs.helsinki.fi> wrote:
-> Please apply this patch to your kernel and try to reproduce:
+This is a multi-part message in MIME format.
 
-Ta-DA!!!!!!!!!!!!!!!!!!!!
+--===============1663089393==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0006_01C75C0F.0B21AE50"
 
-BUG: unable to handle kernel paging request at virtual address 6b6b6d6b
- printing eip:
-c0130113
-*pde = 00000000
-Oops: 0002 [#1]
-PREEMPT SMP
-last sysfs file: /class/net/eth2/statistics/collisions
-Modules linked in: snd_rtctimer radeon drm pwc eeprom cpufreq_ondemand p4_clockmod speedstep_lib
-nfsd exportfs ipv6 autofs4 nfs lockd sunrpc af_packet firmware_class binfmt_misc video thermal
-processor fan button video1394 raw1394 ac lp parport_pc parport nvram eth1394 compat_ioctl32
-videodev v4l2_common v4l1_compat snd_usb_audio snd_usb_lib sd_mod sg snd_emu10k1_synth
-snd_emux_synth snd_seq_virmidi snd_seq_midi_emul snd_emu10k1 snd_rawmidi snd_ac97_codec ohci1394
-ac97_bus snd_seq_dummy snd_seq_oss snd_seq_midi_event ieee1394 snd_seq snd_pcm_oss sata_sil
-ehci_hcd uhci_hcd snd_mixer_oss libata e7xxx_edac edac_mc snd_pcm e1000 i2c_i801 i2c_core ide_cd
-intel_agp agpgart serio_raw psmouse scsi_mod snd_seq_device snd_timer snd_page_alloc snd_util_mem
-snd_hwdep snd soundcore cdrom pcspkr usbcore ext3 jbd
-CPU:    1
-EIP:    0060:[<c0130113>]    Not tainted VLI
-EFLAGS: 00010202   (2.6.20.1 #3)
-EIP is at module_put+0x20/0x52
-eax: 6b6b6d6b   ebx: 6b6b6b6b   ecx: 00000001   edx: e0049000
-esi: f60f7b08   edi: 6b6b6b6b   ebp: ebc14e0c   esp: e0049f58
-ds: 007b   es: 007b   ss: 0068
-Process udevd (pid: 7608, ti=e0049000 task=f7e6b030 task.ti=e0049000)
-Stack: f7898edc c0183a5b 00000010 ed5bbb7c eccd0978 c0151253 00000000 00000000
-       f7ff2208 ed5bbb7c f75b5360 00000000 ed5bbb7c c014ed90 00000003 00000003
-       f75b5360 f75b53e0 c014fd89 00000003 00000007 00000003 e0049000 c0102bce
-Call Trace:
- [<c0183a5b>] sysfs_release+0x2d/0x4c
- [<c0151253>] __fput+0x96/0x13c
- [<c014ed90>] filp_close+0x51/0x58
- [<c014fd89>] sys_close+0x70/0xa7
- [<c0102bce>] sysenter_past_esp+0x5f/0x85
- [<c0270033>] __sched_text_start+0x6b3/0x965
- =======================
-Code: 00 89 f0 83 c4 0c 5b 5e 5f 5d c3 53 89 c3 85 c0 74 49 b8 01 00 00 00 e8 5f 49 fe ff e8 3b 5b
-07 00 c1 e0 07 8d 84 18 80 01 00 00 <ff> 08 83 3b 02 75 0b 8b 83 88 05 00 00 e8 a9 45 fe ff b8 01
-00
-EIP: [<c0130113>] module_put+0x20/0x52 SS:ESP 0068:e0049f58
- <6>note: udevd[7608] exited with preempt_count 1
-BUG: scheduling while atomic: udevd/0x10000001/7608
- [<c026f9d6>] __sched_text_start+0x56/0x965
- [<c011cc72>] irq_exit+0x37/0x42
- [<c010d1d7>] smp_apic_timer_interrupt+0x70/0x79
- [<c010369c>] apic_timer_interrupt+0x28/0x30
- [<c0114b01>] __cond_resched+0x12/0x2c
- [<c02708e9>] cond_resched+0x26/0x31
- [<c01404d2>] unmap_vmas+0x3d3/0x4df
- [<c0142cf5>] exit_mmap+0x7e/0x10a
- [<c0116bd7>] mmput+0x1d/0x78
- [<c011b322>] do_exit+0x1b2/0x6d8
- [<c011007b>] sys_vm86+0x99/0x21d
- [<c01040fc>] die+0x1f7/0x21c
- [<c011180e>] do_page_fault+0x442/0x510
- [<c01113cc>] do_page_fault+0x0/0x510
- [<c027230c>] error_code+0x7c/0x84
- [<c0130113>] module_put+0x20/0x52
- [<c0183a5b>] sysfs_release+0x2d/0x4c
- [<c0151253>] __fput+0x96/0x13c
- [<c014ed90>] filp_close+0x51/0x58
- [<c014fd89>] sys_close+0x70/0xa7
- [<c0102bce>] sysenter_past_esp+0x5f/0x85
- [<c0270033>] __sched_text_start+0x6b3/0x965
- =======================
+This is a multi-part message in MIME format.
 
-I would never have guessed THAT one :-) !!
+------=_NextPart_000_0006_01C75C0F.0B21AE50
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Cheers,
-Chris
+
+  
+    
+      Sehr geehrte Damen und Herren, wir danken f&uuml;r die M&#246;glichkeit uns Ihnen kurz vorstellen zu k&#246;nnen
+      Unsere Gesellschaft ist seit mehreren Jahren auf dem Grossmarkt
+          bekannt. Der Kernpunkt unserer Interessen liegt im Metallmarkt,
+          wobei wir auch in vielen benachbarten Branchen t&#228;tig sind sowie
+          zum Beispiel Metall verarbeitung. Sei es B&#246;rse, weltbekannte Auktionen,
+          oder Forschung , ist es unser Ziel f&#252;r uns und unsere Kunden immer
+          die besten Ergebnisse zu erzielen. Im Moment ist die Entscheidung getroffen
+          worden
+          auf den
+          deutschen
+          Markt zu kommen, da dieser einen hohen Entwicklungspotenzial und h&#246;chstm&#246;glichen
+          Gewinnerziehlung erwarten l&#228;sst. Zur Zeit wird eine limitierte
+          Anzahl Angestellte unter Vertrag genommen, oder auch als freie Mitarbeiter
+          eingesetzt.
+      
+      Als Personalleiter unserer Gesellschaft bin ich seit Jahren f&#252;r Rekrutierung zust&#228;ndig und freue mich, Ihnen die vakante Position eines regionalen Managers f&#252;r Zahlungsbearbeitung anzubieten. Da wir weltweit vertreten sind, kommen die Kunden aus vielen unterschiedlichen L&#228;ndern. Verwaltung der Geldtransfers, die von unseren deutschen Kunden beauftragt wurden , ist einer der  Schwerpunkte, welche die zu jetzigen Zeitpunkt angebotene T&#228;tigket ausmachen.
+      
+      Zu den  Aufgaben w&#252;rden u.a  folgende T&#228;tigkeiten geh&#246;ren
+      
+         Verwaltung und Weiterleitung der Kundengelder
+         Hohe Erreichbarkeit und Verantwortungsbewusstsein
+        
+      
+      Ihre Vorteile:
+      
+        Sie werden zun&#228;chst unser Vertreter und Mittelsmann zwischen uns und unseren Kunden in Ihrem Land.
+        Sie zahlen keine Geb&#252;hren und m&#252;ssen nichts investieren (vergessen Sie betr&#252;gerische Stellenangebote, bei denen Sie erst zur Kasse gebeten werden).
+         Sie haben eine flexible , interessante Arbeit , mit unterschiedlichen T&#228;tigkeitsschwerpunkten und hohen Bef&#246;rderungsm&#246;glichkeiten
+         Sie verdienen zuerst zwischen 500 und 1000 Euro pro Woche
+         Sie k&#246;nnen selbst Ihren Verdienst bestimmen. - da Sie auf einen Prozentsatz arbeiten - h&#228;ngt Ihr Verdienst nur von Ihrer Arbeitsbereitschaft ab
+      
+      Sie k&#246;nnen Ihren Arbeitstag moglichst flexibel gestalten, um Ihrem Haupterwerb problemlos nachzugehen. Wichtig ist aber, da&#223; unsere Kommunikation funktioniert und Sie f&#252;r uns immer erreichbar sind. Es entstehen f&#252;r Sie keine Ausgaben, d.h. Sie brauchen kein Startkapital, Investitionen oder eigene Auslagen. 
+      
+      An die Bewerber werden folgende Anforderungen gestellt
+      
+         Internet, E-Mail, Grundkenntnisse der Hauptzahlungssysteme.
+         Es w&#228;re w&#252;nschenswert, wenn Sie ein eigenes Konto in einem deutschen Geldinstitut mit Online Banking h&#228;tten.
+         F&#252;r diese Besch&#228;ftigung brauchen Sie von 2 bis 8 Stunden freie Zeit in der Woche. 
+         Genauigkeit, P&#252;nktlichkeit, Zuverlassigkeit und naturlich eine gesunde Arbeitseinstellung
+      
+      Falls Sie f&#252;r unser Angebot Interesse haben und bereit sind, eine gut bezahlte, aber auch verantwortungsvolle Arbeit auszuf&#252;hren,
+        so schreiben Sie uns bitte an: llc_indastl@mail.ru
+        
+        Eine kurzgefasste Bewerbung mit Foto ist besonders willkommen.
+      Nach der Bearbeitung Ihrer Bewerbung, wird Ihnen im Falle einer Zusage Ihre T&#228;tigkeit genauestens erl&#228;utert, Sie werden mit unserer Gesellschaft bekannt gemacht und es folgt in k&#252;rze der Arbeitsvertrag
+      Wir hoffen auf eine gute und erfolgreiche Zusammenarbeit
+        Mit freundlichen Gr&#252;ssen 
+      Nikolskij Evgenij Urjevitch
+        INDASTL LLC
+        Offiziele Partner Programm Deutschland
+      
+      Ihre Email wurde uns von der  B&W Werbegesellschaft zu Verf&#252;gung gestellt. Falls es zu einer Fehlinformation kam und Sie kein Interesse an den aufgef&#252;hrten T&#228;tigkeiten haben, betrachten Sie folgende Email als Gegenstandslos.
+      Diese Email wurde von einem unserer Email Roboter erstellt. 
+      Antworten Sie bitte nicht an folgende Email mit der Option '' an Absender antworten''. , senden Sie keine Emails an die Absenderadresse, da Ihre Email automatisch gel&#246;scht wird.
+    
+  
 
 
 
-		
-___________________________________________________________ 
-The all-new Yahoo! Mail goes wherever you go - free your email address from your Internet provider. http://uk.docs.yahoo.com/nowyoucan.html
+
+------=_NextPart_000_0006_01C75C0F.0B21AE50
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+</head>
+<body>
+<body>
+<div align=3D"center">
+  <table width=3D"90%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+    <tr>
+      <td><p class=3D"Stil1">Sehr geehrte Damen und Herren, wir danken f&uu=
+ml;r die M&#246;glichkeit uns Ihnen kurz vorstellen zu k&#246;nnen</p>
+      <p><strong>Unsere Gesellschaft ist seit mehreren Jahren auf dem Gross=
+markt
+          bekannt. Der Kernpunkt unserer Interessen liegt im Metallmarkt</s=
+trong>,
+          wobei wir auch in vielen benachbarten Branchen t&#228;tig sind so=
+wie
+          zum Beispiel Metall verarbeitung. Sei es B&#246;rse, weltbekannte=
+ Auktionen,
+          oder Forschung , ist es unser Ziel f&#252;r uns und unsere Kunden=
+ immer
+          die besten Ergebnisse zu erzielen. Im Moment ist die Entscheidung=
+ getroffen
+          worden
+          auf den
+          deutschen
+          Markt zu kommen, da dieser einen hohen Entwicklungspotenzial und =
+h&#246;chstm&#246;glichen
+          Gewinnerziehlung erwarten l&#228;sst. Zur Zeit wird eine limitier=
+te
+          Anzahl Angestellte unter Vertrag genommen, oder auch als freie Mi=
+tarbeiter
+          eingesetzt.</p>
+      <hr>
+      <p>Als Personalleiter unserer Gesellschaft bin ich seit Jahren f&#252=
+;r Rekrutierung zust&#228;ndig und freue mich, Ihnen die vakante Position e=
+ines regionalen Managers f&#252;r Zahlungsbearbeitung anzubieten. Da wir we=
+ltweit vertreten sind, kommen die Kunden aus vielen unterschiedlichen L&#22=
+8;ndern. Verwaltung der Geldtransfers, die von unseren deutschen Kunden bea=
+uftragt wurden , ist einer der  Schwerpunkte, welche die zu jetzigen Zeitpu=
+nkt angebotene T&#228;tigket ausmachen.<br />
+      </p>
+      <p><strong>Zu den  Aufgaben w&#252;rden u.a  folgende T&#228;tigkeite=
+n geh&#246;ren</strong></p>
+      <ul>
+        <li> Verwaltung und Weiterleitung der Kundengelder</li>
+        <li> Hohe Erreichbarkeit und Verantwortungsbewusstsein<br />
+        </li>
+      </ul>
+      <p><strong>Ihre Vorteile:</strong></p>
+      <ul>
+        <li>Sie werden zun&#228;chst unser Vertreter und Mittelsmann zwisch=
+en uns und unseren Kunden in Ihrem Land.</li>
+        <li>Sie zahlen keine Geb&#252;hren und m&#252;ssen nichts investier=
+en (vergessen Sie betr&#252;gerische Stellenangebote, bei denen Sie erst zu=
+r Kasse gebeten werden).</li>
+        <li> Sie haben eine flexible , interessante Arbeit , mit unterschie=
+dlichen T&#228;tigkeitsschwerpunkten und hohen Bef&#246;rderungsm&#246;glic=
+hkeiten</li>
+        <li> Sie verdienen zuerst zwischen 500 und 1000 Euro pro Woche</li>
+        <li> Sie k&#246;nnen selbst Ihren Verdienst bestimmen. - da Sie auf=
+ einen Prozentsatz arbeiten - h&#228;ngt Ihr Verdienst nur von Ihrer Arbeit=
+sbereitschaft ab</li>
+      </ul>
+      <p>Sie k&#246;nnen Ihren Arbeitstag moglichst flexibel gestalten, um =
+Ihrem Haupterwerb problemlos nachzugehen. Wichtig ist aber, da&#223; unsere=
+ Kommunikation funktioniert und Sie f&#252;r uns immer erreichbar sind. Es =
+entstehen f&#252;r Sie keine Ausgaben, d.h. Sie brauchen kein Startkapital,=
+ Investitionen oder eigene Auslagen. <br />
+      </p>
+      <p><strong>An die Bewerber werden folgende Anforderungen gestellt</st=
+rong></p>
+      <ul>
+        <li> Internet, E-Mail, Grundkenntnisse der Hauptzahlungssysteme.</l=
+i>
+        <li> Es w&#228;re w&#252;nschenswert, wenn Sie ein eigenes Konto in=
+ einem deutschen Geldinstitut mit Online Banking h&#228;tten.</li>
+        <li> F&#252;r diese Besch&#228;ftigung brauchen Sie von 2 bis 8 Stu=
+nden freie Zeit in der Woche. </li>
+        <li> Genauigkeit, P&#252;nktlichkeit, Zuverlassigkeit und naturlich=
+ eine gesunde Arbeitseinstellung</li>
+      </ul>
+      <p>Falls Sie f&#252;r unser Angebot Interesse haben und bereit sind, =
+eine gut bezahlte, aber auch verantwortungsvolle Arbeit auszuf&#252;hren,
+        so schreiben Sie uns bitte an: <strong><font size=3D"+2">llc_indast=
+l@mail.ru</font></strong><br>
+        <br />
+        Eine kurzgefasste Bewerbung mit Foto ist besonders willkommen.</p>
+      <p>Nach der Bearbeitung Ihrer Bewerbung, wird Ihnen im Falle einer Zu=
+sage Ihre T&#228;tigkeit genauestens erl&#228;utert, Sie werden mit unserer=
+ Gesellschaft bekannt gemacht und es folgt in k&#252;rze der Arbeitsvertrag=
+</p>
+      <p>Wir hoffen auf eine gute und erfolgreiche Zusammenarbeit<br />
+        Mit freundlichen Gr&#252;ssen </p>
+      <p><em>Nikolskij Evgenij Urjevitch</em><br>
+        INDASTL LLC<br>
+        Offiziele Partner Programm Deutschland</p>
+      <hr>
+      <p><em>Ihre Email wurde uns von der  B&W Werbegesellschaft zu Verf&#2=
+52;gung gestellt. Falls es zu einer Fehlinformation kam und Sie kein Intere=
+sse an den aufgef&#252;hrten T&#228;tigkeiten haben, betrachten Sie folgend=
+e Email als Gegenstandslos.</em></p>
+      <p><strong>Diese Email wurde von einem unserer Email Roboter erstellt=
+ <br />
+      Antworten Sie bitte nicht an folgende Email mit der Option '' an Abse=
+nder antworten''. , senden Sie keine Emails an die Absenderadresse, da Ihre=
+ Email automatisch gel&#246;scht wird.</strong></p></td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</body>
+</html>
+
+------=_NextPart_000_0006_01C75C0F.0B21AE50--
+
+
+
+--===============1663089393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1663089393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1663089393==--
