@@ -1,14 +1,10 @@
-From: "Mathilda F. Fritz" <eojixz@mixnuts.net>
-Subject: squawk
-Date: Thu, 1 Mar 2007 19:51:12 +0200
-Message-ID: <001001c75c2a$53867110$47d3a388@kgk>
+From: "Silas A. Richard" <oeml@fallsee.com>
+Subject: firearm
+Date: Thu, 1 Mar 2007 19:58:26 +0200
+Message-ID: <001001c75c2b$8ede9750$9cc58358@segj>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1734926343=="
+Content-Type: multipart/mixed; boundary="===============0844560312=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from IGLD-83-130-255-163.inter.net.il
-	(IGLD-83-130-255-163.inter.net.il [83.130.255.163])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 99F8A3B8
-	for <alsa-devel@alsa-project.org>; Thu,  1 Mar 2007 18:52:16 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,92 +14,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1734926343==
+--===============0844560312==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000C_01C75C3B.16FA8090"
+	boundary="----=_NextPart_000_000C_01C75C3C.5252A6D0"
 
-------=_NextPart_000_000C_01C75C3B.16FA8090
+------=_NextPart_000_000C_01C75C3C.5252A6D0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000D_01C75C3B.16FFB0B0"
+	boundary="----=_NextPart_001_000D_01C75C3C.5257D6F0"
 
-------=_NextPart_001_000D_01C75C3B.16FFB0B0
+------=_NextPart_001_000D_01C75C3C.5257D6F0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Please detail your previous accounting experience. Medical products =
-provider in Duluth, Georgia is seeking a lead Support Analyst for a =
-contract, possible direct hire position.
-Must possess good communication, interpersonal and organizational skills =
-to ensure effective teamwork and customer relations.
-exp with wireless LAN computing products is a plus. Will will assist in =
-the management of staff, scheduling of equipment needs, ensuring safety =
-and other duties as required. You should be able to read and understand =
-schematics, good troubleshooting skills are desirable.
-This position requires strong people management skills and industrial =
-construction supervision experience. Please detail your overall power =
-delivery substation design exp. The right candidate must have experience =
-with Pipeline, Drainage and Grading projects for major public works =
-projects.
-Please provide examples of electro-mechanical system projects and =
-capital equipment projects you have worked on.
-Administration of Network Manager and CDR catcher Unix servers that are =
-vital for updating databases on Voicecom's messaging systems. Helpful:  =
-Do you have a MBA?
-You will have responsibility for receiving and tracking inventory, =
-processing job orders and will generally assist the Production Manager =
-with various clerical functions. Do you have experience performing =
-hydraulic analysis or using hydraulic calculation programs such as Hass? =
-Good CSS coding skills and a basic understanding of Flash is a must.
-Requirements also include the candidate to be detail oriented, punctual, =
-reliable, able to manage confidential information and documents, and =
-able to work quickly and efficiently.
-Keywords: mechanical engineer, mechanical engineering, bsme, aerospace =
-engineer, bsae, b. If you have a masters in the same area then describe =
-your at least 1 year of related experience.
-Our client is ACTIVELY SEARCHING for a 6 monthTemp-to-Perm Quality =
-Technician at their NE Atlanta location.
+Explain your working knowledge of AutoCAD ? You should also have a 2 =
+year technical degree or equivalent applicable military training.
+Successful candidates MUST HAVE at least 2 years maintenance tech =
+experience with hydraulics and have demonstrated knowledge reading =
+electrical schematics.
+Must have project experience with commercial and institutional design =
+experience. Helpful:  Do you have a MBA? There is no relocation =
+assistance or per diem available for this position.
+Additional requirements include proficiency in Microsoft Excel, Word, =
+and PowerPoint software. Understanding and working knowledge of =
+streaming audio and video media is desired. There is no relocation =
+assistance or per diem available for this position.
+Berlinger said the decision would be made this week.
+Please answer all pre-screening questions when applying for this =
+position. Helpful:  Do you have a MBA?
+Why would you consider this location? Principal engineer position =
+opening for applied mechanics division of company. Wireless product =
+manufacturer is seeking a Product Support Services Manager for their =
+mobile computing products line.
+Prefer someone with SQUG experience.
+Please detail your overall exp as a planner scheduler. The candidate =
+will study the project and advise as needed and will supervise the =
+designing of project.
+Administration of corporate network backbone along with WAN networks =
+connecting our regional sites.
 What do you know about lightning protection, fault current studies, NEC =
 and NFPA codes used in the telecommunication industry?
-If it should be discovered before the election that Hastert was aware of =
-the meeting, the matter of his pending reelection becomes dicey.
-An Award-Winning professional engineering, environmental, architectural =
-and planning services firm is actively seeking a Civil Engineer with 8 =
-plus years of experience in Water Resources projects.
-Additional requirements include proficiency in Microsoft Excel, Word, =
-and PowerPoint software. Additional duties include preparing estimates, =
-assisting with shop drawings reviews and submittals, and reviewing =
-purchase orders and contracts. PLUSES are having a technical degree in a =
-related field and having an understanding of programming.
-Will also consider prior STA certification or broad nuclear power plant =
-engineering and high level management experience for Engineering Review =
-position.
-Working closely with Architects and Engineering personnel. Detail your =
-exp in interfacing with regulatory agencies in obtaining various siting =
-permits and right of ways. Reviews program implementation and ensures =
-contractual specs are met, including providing customer support for =
-internal audits and test witnessing. Applicant will support all =
-engineering requirements for existing product lines which includes =
-receptacles, switches and plugs for the residential, commercial, and =
-industrial environments. The main job is to lead the companys delivery =
-and installation projects.
-Working with international clients and company management.
-The candidate will need to have experience planning, organizing, =
-directing and controlling stormwater system maintenance and repair =
-program.
-Excellent Communication and Technique, Operation Research and PC Skills =
-are a MUST. Salary will be commensurate with experience.
-Explain your Military Quality Assurance background.
-What experience to you have in the construction industry over the past 7 =
-years? Mark Foley was turned away from the congressional page dorm on =
-Capitol Hill after arriving there intoxicated one night. Do you have =
-experience performing hydraulic analysis or using hydraulic calculation =
-programs such as Hass?
-------=_NextPart_001_000D_01C75C3B.16FFB0B0
+Most of your time will be spent working on the computer, so you MUST =
+HAVE excellent computer skills and good working knowledge of business =
+system software.
+Salary is Commensurate with experience and other Applicable benefits to =
+successful candidates, such as Mobilization, Demobilization, Medical, =
+Housing or Housing Allowance in lieu of.
+Provide second level support to desktop issues, Microsoft network and =
+systems such as file servers, DNS servers, email servers etc. What types =
+of equipment? This position requires that you have a minimum of 5 years =
+of experience.
+International industrial process equipment provider is seeking a =
+seasoned Primavera P3 Scheduler Planner for a direct hire position in NW =
+metro Atlanta, GA.
+Client offers excellent benefits, pay and opportunity. Local Candidates =
+preferred. 1, and NFPA codes and guidelines. Please describe background =
+in a consultant role you have held in the pulp industry? IMMEDIATE NEED =
+in north east Atlanta, GA for a Piping Engineer who holds a Bachelors =
+Degree and has a minimum of 3 years experience in the area of Piping =
+Design.
+Applicant will support all engineering requirements for existing product =
+lines which includes receptacles, switches and plugs for the =
+residential, commercial, and industrial environments.
+Our Atlanta area client has an IMMEDIATE NEED for a 3-6 =
+monthTemp-to-Perm Inventory Control Specialist.
+Must possess good communication, interpersonal and organizational skills =
+to ensure effective teamwork and customer relations. Candidates will =
+have living quarters furnished and expenses will be furnished.
+Wireless product manufacturer is seeking a Product Support Services =
+Manager for their mobile computing products line.
+, buyer, purchsing department, sourcing coordinator, supply chain, =
+procurement specialist Questions you will be asked - Please summarize =
+your experience in Inventory Control-Inventory Tracking. Please detail =
+your previous accounting experience. Detail your exp using AutoCAD in =
+power delivery projects .
+------=_NextPart_001_000D_01C75C3C.5257D6F0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -112,147 +101,129 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"merciful" hspace=3D0=20
-src=3D"cid:000b01c75c2a$536c8070$47d3a388@kgk" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"spare part" hspace=3D0=20
+src=3D"cid:000b01c75c2b$8ec4a6b0$9cc58358@segj" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please detail your previous accounting =
-experience.=20
-Medical products provider in Duluth, Georgia is seeking a lead Support =
-Analyst for a=20
-contract, possible direct hire position.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Must possess good communication, =
-interpersonal and=20
-organizational skills to ensure effective teamwork and customer=20
-relations.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>exp with wireless LAN computing =
-products is a plus.=20
-Will will assist in the management of staff, scheduling of equipment =
-needs, ensuring=20
-safety and other duties as required. You should be able to read and =
-understand=20
-schematics, good troubleshooting skills are desirable.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This position requires strong people =
-management=20
-skills and industrial construction supervision experience. Please detail =
-your=20
-overall power delivery substation design exp. The right candidate must =
-have=20
-experience with Pipeline, Drainage and Grading projects for major public =
-works=20
-projects.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please provide examples of =
-electro-mechanical=20
-system projects and capital equipment projects you have worked =
-on.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Administration of Network Manager and =
-CDR catcher=20
-Unix servers that are vital for updating databases on Voicecom's =
-messaging systems.=20
-Helpful:  Do you have a MBA?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You will have responsibility for =
-receiving and=20
-tracking inventory, processing job orders and will generally assist the =
-Production=20
-Manager with various clerical functions. Do you have experience =
-performing hydraulic=20
-analysis or using hydraulic calculation programs such as Hass? Good CSS =
-coding=20
-skills and a basic understanding of Flash is a must.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Requirements also include the candidate =
-to be=20
-detail oriented, punctual, reliable, able to manage confidential =
-information and=20
-documents, and able to work quickly and efficiently.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Keywords: mechanical engineer, =
-mechanical=20
-engineering, bsme, aerospace engineer, bsae, b. If you have a masters in =
-the same=20
-area then describe your at least 1 year of related =
+<DIV><FONT face=3DArial size=3D2>Explain your working knowledge of =
+AutoCAD ? You=20
+should also have a 2 year technical degree or equivalent applicable =
+military=20
+training.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Successful candidates MUST HAVE at =
+least 2 years=20
+maintenance tech experience with hydraulics and have demonstrated =
+knowledge reading=20
+electrical schematics.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Must have project experience with =
+commercial and=20
+institutional design experience. Helpful:  Do you have a MBA? There is =
+no relocation=20
+assistance or per diem available for this position.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Additional requirements include =
+proficiency in=20
+Microsoft Excel, Word, and PowerPoint software. Understanding and =
+working knowledge=20
+of streaming audio and video media is desired. There is no relocation =
+assistance or=20
+per diem available for this position.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Berlinger said the decision would be =
+made this=20
+week.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please answer all pre-screening =
+questions when=20
+applying for this position. Helpful:  Do you have a MBA?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Why would you consider this location? =
+Principal=20
+engineer position opening for applied mechanics division of company. =
+Wireless=20
+product manufacturer is seeking a Product Support Services Manager for =
+their mobile=20
+computing products line.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Prefer someone with SQUG =
 experience.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Our client is ACTIVELY SEARCHING for a =
-6=20
-monthTemp-to-Perm Quality Technician at their NE Atlanta =
-location.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please detail your overall exp as a =
+planner=20
+scheduler. The candidate will study the project and advise as needed and =
+will=20
+supervise the designing of project.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Administration of corporate network =
+backbone along=20
+with WAN networks connecting our regional sites.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>What do you know about lightning =
 protection, fault=20
 current studies, NEC and NFPA codes used in the telecommunication=20
 industry?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If it should be discovered before the =
-election that=20
-Hastert was aware of the meeting, the matter of his pending reelection =
-becomes=20
-dicey.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>An Award-Winning professional =
-engineering,=20
-environmental, architectural and planning services firm is actively =
-seeking a Civil=20
-Engineer with 8 plus years of experience in Water Resources =
-projects.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Additional requirements include =
-proficiency in=20
-Microsoft Excel, Word, and PowerPoint software. Additional duties =
-include preparing=20
-estimates, assisting with shop drawings reviews and submittals, and =
-reviewing=20
-purchase orders and contracts. PLUSES are having a technical degree in a =
-related=20
-field and having an understanding of programming.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Will also consider prior STA =
-certification or broad=20
-nuclear power plant engineering and high level management experience for =
-Engineering=20
-Review position.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Working closely with Architects and =
-Engineering=20
-personnel. Detail your exp in interfacing with regulatory agencies in =
-obtaining=20
-various siting permits and right of ways. Reviews program implementation =
-and ensures=20
-contractual specs are met, including providing customer support for =
-internal audits=20
-and test witnessing. Applicant will support all engineering requirements =
-for=20
-existing product lines which includes receptacles, switches and plugs =
-for the=20
-residential, commercial, and industrial environments. The main job is to =
-lead the=20
-companys delivery and installation projects.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Working with international clients and =
-company=20
-management.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The candidate will need to have =
-experience=20
-planning, organizing, directing and controlling stormwater system =
-maintenance and=20
-repair program.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Excellent Communication and Technique, =
-Operation=20
-Research and PC Skills are a MUST. Salary will be commensurate with=20
-experience.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Explain your Military Quality =
-Assurance=20
-background.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What experience to you have in the =
-construction=20
-industry over the past 7 years? Mark Foley was turned away from the =
-congressional=20
-page dorm on Capitol Hill after arriving there intoxicated one night. Do =
-you have=20
-experience performing hydraulic analysis or using hydraulic calculation =
-programs=20
-such as Hass?</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Most of your time will be spent working =
+on the=20
+computer, so you MUST HAVE excellent computer skills and good working =
+knowledge of=20
+business system software.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Salary is Commensurate with experience =
+and other=20
+Applicable benefits to successful candidates, such as Mobilization, =
+Demobilization,=20
+Medical, Housing or Housing Allowance in lieu of.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Provide second level support to desktop =
+issues,=20
+Microsoft network and systems such as file servers, DNS servers, email =
+servers etc.=20
+What types of equipment? This position requires that you have a minimum =
+of 5 years=20
+of experience.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>International industrial process =
+equipment provider=20
+is seeking a seasoned Primavera P3 Scheduler Planner for a direct hire =
+position in=20
+NW metro Atlanta, GA.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Client offers excellent benefits, pay =
+and=20
+opportunity. Local Candidates preferred. 1, and NFPA codes and =
+guidelines. Please=20
+describe background in a consultant role you have held in the pulp =
+industry?=20
+IMMEDIATE NEED in north east Atlanta, GA for a Piping Engineer who holds =
+a Bachelors=20
+Degree and has a minimum of 3 years experience in the area of Piping=20
+Design.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Applicant will support all engineering =
+requirements=20
+for existing product lines which includes receptacles, switches and =
+plugs for the=20
+residential, commercial, and industrial environments.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Our Atlanta area client has an =
+IMMEDIATE NEED for a=20
+3-6 monthTemp-to-Perm Inventory Control Specialist.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Must possess good communication, =
+interpersonal and=20
+organizational skills to ensure effective teamwork and customer =
+relations.=20
+Candidates will have living quarters furnished and expenses will be=20
+furnished.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Wireless product manufacturer is =
+seeking a Product=20
+Support Services Manager for their mobile computing products =
+line.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>, buyer, purchsing department, =
+sourcing=20
+coordinator, supply chain, procurement specialist Questions you will be =
+asked -=20
+Please summarize your experience in Inventory Control-Inventory =
+Tracking. Please=20
+detail your previous accounting experience. Detail your exp using =
+AutoCAD in power=20
+delivery projects .</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000D_01C75C3B.16FFB0B0--
+------=_NextPart_001_000D_01C75C3C.5257D6F0--
 
-------=_NextPart_000_000C_01C75C3B.16FA8090
+------=_NextPart_000_000C_01C75C3C.5252A6D0
 Content-Type: image/gif;
-	name="quarters.gif"
+	name="crossbow.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000b01c75c2a$536c8070$47d3a388@kgk>
+Content-ID: <000b01c75c2b$8ec4a6b0$9cc58358@segj>
 
 R0lGODdhSwJlAfYhAN/6793l24dlF4pKcB53qCW9UWBBoGWBSiN6RXKSJvCh3ELEWx4vuX9Nvf1y
 Vc5jI8l302PMk1OInqbCUiP+DsgRi/6/baidp4FwvFuA+XYxsMtbs0UKpGTLLGcgZ81yIwp6ZNFx
@@ -610,11 +581,11 @@ TNl9ZpePUMiRDYlth5STNymQNsmVMEaTX3mVIBlrAHl9eEeQO3l/mHiHmoeI1kiWT3iQY/iSRldv
 lEm2hA0nlGLJdx+pbEZolSE5l4MWjwdpjKUWkXJJl1j5hnwplX0HlHRJSJFWlXK1mN7obZjZhv9o
 luIoYnUJkwk0kmWYmA7IfU8JmqNpmmxZiaOHjL5YlVEIgGOplE1ZUqUpmO+WmW8Jl7dYY4EAADs=
 
-------=_NextPart_000_000C_01C75C3B.16FA8090--
+------=_NextPart_000_000C_01C75C3C.5252A6D0--
 
 
 
---===============1734926343==
+--===============0844560312==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -625,7 +596,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1734926343==
+--===============0844560312==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -636,4 +607,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1734926343==--
+--===============0844560312==--
