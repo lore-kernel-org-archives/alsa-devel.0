@@ -1,9 +1,9 @@
-From: "Petty Meg" <woh@gameren.info>
-Subject: common sense dexterity
-Date: Thu, 1 Mar 2007 09:25:30 +0530
-Message-ID: <000701c75bb5$c47af870$e89dd87f@lornh>
+From: "Seymour Sam" <iymj@marketic.com>
+Subject: heat wave inflatable
+Date: Thu, 1 Mar 2007 09:27:13 +0530
+Message-ID: <000701c75bb5$e0431790$19415edf@ojgpim>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0588444947=="
+Content-Type: multipart/mixed; boundary="===============1454803339=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,64 +14,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0588444947==
+--===============1454803339==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0003_01C75BE3.DE2C7DB0"
+	boundary="----=_NextPart_000_0003_01C75BE3.F9F49CD0"
 
-------=_NextPart_000_0003_01C75BE3.DE2C7DB0
+------=_NextPart_000_0003_01C75BE3.F9F49CD0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0004_01C75BE3.DE2E2B60"
+	boundary="----=_NextPart_001_0004_01C75BE3.F9F64A80"
 
-------=_NextPart_001_0004_01C75BE3.DE2E2B60
+------=_NextPart_001_0004_01C75BE3.F9F64A80
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 
-Must have the communication skills to effectively work with contractors, =
-clients, vendors, employees, managers and supervisors. Please list =
-relevant computer software that you are proficient in. Our client has an =
-IMMEDIATE NEED for a Senior Product Engineer at its RI facility.
-5; Ability to perform complex stack-up and tolerance studies; Experience =
-with turbo machinery highly desirable.
-Please summarize your overall electronics systems hardware experience as =
-it applies to this position.
-These skills would be a definite plus, but are not specifically =
-required: Experience with packet-based voice communications, with =
-emphasis on Voice-Over-IP and Video-Over-IP technology. Describe any PCB =
-production experience that you have and how many years experience do you =
-have. in Computer Science or Electrical Engineering?
-Regional travel will be involved. The ideal applicant needs to have a =
-well rounded knowledge of power distribution and ground design =
-experience. Project Engineering or Project Management experience is a =
-plus.
-Experience with several of the following test platforms is expected: =
-Rack and stack systems including VXI ,Roos ATE , Teradyne Catalyst ATE , =
-Fusion CX ATE, Trillium ATE. Experience and understanding of =
-Meteorological Data and Land Topography is required.
+RELOCATION ASSISTANCE AVAILABLE FOR RIGHT CANDIDATE . Proficiency with =
+2D, 3D modeling including static and dynamic FEA for magnetic, electric, =
+thermal and mechanical stress are essential. Basic project management =
+skills.
+Candidates local to the Houston area preferred.
 Excellent tax free salary and comprehensive benefit package available =
 for the right candidate.
-Applicant must be capable of locating equipment in a 3D environment as =
-well as design of raceways. Please highlight your experience.
-Have you work in an EPC environment?
-Excellent benefits: medical, dental, tuition reimbursement, relocation.
-Requires proficiency with MSOffice and Outlook.
-Do you have experience as a Project Engineer, Project Manager, or =
-related experience?
-, professional engineer, registered professional engineer, ncees, =
-national council of examiners, eit, e.
-Strong design and analysis skills.
-Applicant must be proactive with a desire to excel, as well as possess =
-excellent communication and people skills.
-Must possess good analytical, verbal and written communication skills =
-and be proficient on Microsoft Word, Excel and PowerPoint.
-A Company located in the Winston Salem, North Carolina area has an =
-immediate need for two Electrical Engineers to aid in design and support =
-of existing utility and construction equipment.
-------=_NextPart_001_0004_01C75BE3.DE2E2B60
+Position will be responsible for the coordination of detailed design for =
+a designated process unit or offsites area of the expansion project. Do =
+you have 5 years of experience in the TeleCom Field? A good candidate =
+will have knowledge of PLCs including programming and troubleshooting.
+IMMEDIATE NEED for a Senior Engineer to work for a Texas Utilities =
+company. AutoCad LT experience is highly desired. This position requires =
+a minimum of 15 years experience, B.
+Scope Management: Ensure detailed design is in accordance with =
+philosophies and deliverables developed during FEED. AutoCad LT =
+experience is highly desired.
+Windfarm OR Power, Utility, Energy background is preferred.
+Please highlight  your experience with construction administration, =
+contractors, and-or maintenance personnel Are you proficient with the =
+use of computers and software? Do you have experience in a project =
+management role?
+Basic project management skills.
+A Company specializing in renewable energy project development is =
+seeking a Wind Energy Developer with 5 years minimum experience.
+Requires a BS in Electrical or Controls Engineering and at least 8 years =
+of experience working with either electrical power or controls.
+Please list relevant computer software that you are proficient in.
+Generous package includes salary based on experience and benefits.
+Does you experience include 8- 15 years experience doing boiler and =
+combustion turbine emissions optimization-modifications in the heavy =
+industry-power generation industry?
+It is a PLUS for all candidates having experience with control systems =
+wiring and knowledge of NEC standards.
+A minimum of 2 years of product design related experience is preferred.
+Qualified candidates be prepared to start immediately.
+------=_NextPart_001_0004_01C75BE3.F9F64A80
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -80,97 +76,92 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"northwesterly"=20
-hspace=3D0=20
-src=3D"cid:000201c75bb5$c4729400$e89dd87f@lornh" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"papal" hspace=3D0=20
+src=3D"cid:000201c75bb5$e03ab320$19415edf@ojgpim" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Must have the communication skills to =
-effectively=20
-work with contractors, clients, vendors, employees, managers and =
-supervisors. Please=20
-list relevant computer software that you are proficient in. Our client =
-has an=20
-IMMEDIATE NEED for a Senior Product Engineer at its RI =
-facility.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>5; Ability to perform complex stack-up =
-and=20
-tolerance studies; Experience with turbo machinery highly =
-desirable.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Please summarize your overall =
-electronics systems=20
-hardware experience as it applies to this position.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>These skills would be a definite plus, =
-but are not=20
-specifically required: Experience with packet-based voice =
-communications, with=20
-emphasis on Voice-Over-IP and Video-Over-IP technology. Describe any PCB =
-production=20
-experience that you have and how many years experience do you have. in =
-Computer=20
-Science or Electrical Engineering?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Regional travel will be involved. The =
-ideal=20
-applicant needs to have a well rounded knowledge of power distribution =
-and ground=20
-design experience. Project Engineering or Project Management experience =
-is a=20
-plus.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Experience with several of the =
-following test=20
-platforms is expected: Rack and stack systems including VXI ,Roos ATE , =
-Teradyne=20
-Catalyst ATE , Fusion CX ATE, Trillium ATE. Experience and understanding =
-of=20
-Meteorological Data and Land Topography is required.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>RELOCATION ASSISTANCE AVAILABLE FOR =
+RIGHT CANDIDATE=20
+ Proficiency with 2D, 3D modeling including static and dynamic FEA for =
+magnetic,=20
+electric, thermal and mechanical stress are essential. Basic project =
+management=20
+skills.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Candidates local to the Houston area=20
+preferred.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Excellent tax free salary and =
 comprehensive benefit=20
 package available for the right candidate.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Applicant must be capable of locating =
-equipment in=20
-a 3D environment as well as design of raceways. Please highlight your=20
+<DIV><FONT face=3DArial size=3D2>Position will be responsible for the =
+coordination=20
+of detailed design for a designated process unit or offsites area of the =
+expansion=20
+project. Do you have 5 years of experience in the TeleCom Field? A good =
+candidate=20
+will have knowledge of PLCs including programming and =
+troubleshooting.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>IMMEDIATE NEED for a Senior Engineer to =
+work for a=20
+Texas Utilities company. AutoCad LT experience is highly desired. This =
+position=20
+requires a minimum of 15 years experience, B.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Scope Management: Ensure detailed =
+design is in=20
+accordance with philosophies and deliverables developed during FEED. =
+AutoCad LT=20
+experience is highly desired.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Windfarm OR Power, Utility, Energy =
+background is=20
+preferred.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please highlight  your experience with =
+construction=20
+administration, contractors, and-or maintenance personnel Are you =
+proficient with=20
+the use of computers and software? Do you have experience in a project =
+management=20
+role?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Basic project management =
+skills.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A Company specializing in renewable =
+energy project=20
+development is seeking a Wind Energy Developer with 5 years minimum=20
 experience.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Have you work in an EPC =
-environment?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Excellent benefits: medical, dental, =
-tuition=20
-reimbursement, relocation.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Requires proficiency with MSOffice =
-and=20
-Outlook.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Do you have experience as a Project =
-Engineer,=20
-Project Manager, or related experience?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>, professional engineer, registered =
-professional=20
-engineer, ncees, national council of examiners, eit, e.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Strong design and analysis =
-skills.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Applicant must be proactive with a =
-desire to excel,=20
-as well as possess excellent communication and people =
-skills.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Must possess good analytical, verbal =
-and written=20
-communication skills and be proficient on Microsoft Word, Excel and=20
-PowerPoint.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A Company located in the Winston Salem, =
-North=20
-Carolina area has an immediate need for two Electrical Engineers to aid =
-in design=20
-and support of existing utility and construction=20
-equipment.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Requires a BS in Electrical or Controls =
+Engineering=20
+and at least 8 years of experience working with either electrical power =
+or=20
+controls.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Please list relevant computer software =
+that you are=20
+proficient in.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Generous package includes salary based =
+on=20
+experience and benefits.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Does you experience include 8- 15 years =
+experience=20
+doing boiler and combustion turbine emissions optimization-modifications =
+in the=20
+heavy industry-power generation industry?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It is a PLUS for all candidates having =
+experience=20
+with control systems wiring and knowledge of NEC standards.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A minimum of 2 years of product design =
+related=20
+experience is preferred.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Qualified candidates be prepared to =
+start=20
+immediately.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0004_01C75BE3.DE2E2B60--
+------=_NextPart_001_0004_01C75BE3.F9F64A80--
 
-------=_NextPart_000_0003_01C75BE3.DE2C7DB0
+------=_NextPart_000_0003_01C75BE3.F9F49CD0
 Content-Type: image/gif;
-	name="sisters-in-law.gif"
+	name="intestinal.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000201c75bb5$c4729400$e89dd87f@lornh>
+Content-ID: <000201c75bb5$e03ab320$19415edf@ojgpim>
 
 R0lGODdhDQIPAfcAAFJr84d4Dv/dkiojfYOEmSnZ0mPmCK37ppZgsA8pQnB7rmMCJ3ICBAQsJ4Gw
 rBrahe09a/brZ5yCyE2R8Y8CbD5mb2XYcWndnpBeTzx5KcJmZy5dUpX51V1GZk7WabsVzyt6p5zk
@@ -355,11 +346,11 @@ W9gFjR72Xed9XVwdWwgO3N80YeltVDU9XmllWNTs2SVuGe71X8+sX8R9WnVNXjwV4m5M4V0dWi5u
 YtSFYl3qJbWRFV8EHt3dI1ZWHdwoBtuNjZtvRdelndLQLWIQvkL15E3LldEfXsfS5V+f5VyT5ExO
 DVUpteAaNt3xBeIddmSIHWNZ7VvnVd6aleM+HeDwhVFJptZYO+PdCAgAOw==
 
-------=_NextPart_000_0003_01C75BE3.DE2C7DB0--
+------=_NextPart_000_0003_01C75BE3.F9F49CD0--
 
 
 
---===============0588444947==
+--===============1454803339==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -370,7 +361,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0588444947==
+--===============1454803339==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -381,4 +372,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0588444947==--
+--===============1454803339==--
