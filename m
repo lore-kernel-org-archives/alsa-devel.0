@@ -1,10 +1,9 @@
-From: Lintula <bugreports2005@cs.tut.fi>
-Subject: snd-hda-intel issues
-Date: Thu, 01 Mar 2007 14:17:30 +0200
-Message-ID: <45E6C45A.3090802@cs.tut.fi>
+From: "info@nestrada.de" <info@nestrada.de>
+Subject: Windows Vista Upgrade Advisor
+Date: Thu, 1 Mar 2007 14:18:21 +0100
+Message-ID: <synserver.msgid.1541311727551068446@synserver.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1760550807=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,36 +17,76 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+This is a multi-part message in MIME format
 
-Using ALSA modules shipped with Linux 2.6.20, I find that with a HP
-dc7600 workstation I need to load snd-hda-intel with model=basic or
-model=hp or there is no sound. Alsamixer indicates Chip: Realtek ALC260.
+--===============1760550807==
+Content-Type: multipart/alternative;
+	boundary="CDfNV=_MUSPKMZ7nmPaAAVOUunwLqusFog0"
 
-00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 103c:3010
-        Flags: bus master, fast devsel, latency 0, IRQ 18
-        Memory at e04c0000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
+This is a multi-part message in MIME format
 
-Same with a Lenovo M55 8811, except I seem to need model=laptop.
-alsamixer indicates Chip: Analog Devices AD1986A.
+--CDfNV=_MUSPKMZ7nmPaAAVOUunwLqusFog0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-00:1b.0 0403: 8086:284b (rev 02)
-        Subsystem: 17aa:1011
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at d0200000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
+ - Dies ist eine HTML-Nachricht. Nicht alle Elemente k=F6nnen im Nur-T=
+ext Modus angezeigt werden. -
 
+Windows Vista Upgrade Advisor
+=DCberpr=FCfen Sie, ob die gew=FCnschte Windows Vista-Edition auf Ihre=
+m Computer ausgef=FChrt werden kann.
+Weiter...
+
+--CDfNV=_MUSPKMZ7nmPaAAVOUunwLqusFog0
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<HTML><HEAD></HEAD>
+<BODY>
+<P><FONT face=3D"@Arial Unicode MS">
+<TABLE width=3D"100%" border=3D0>
+<TBODY>
+<TR>
+<TD height=3D57><B><FONT face=3D"Arial Unicode MS" size=3D2>
+<P><U><B><FONT face=3D"Arial Unicode MS" color=3D#0000ff size=3D2>Wind=
+ows Vista Upgrade Advisor</FONT></B></U>=20
+<P><FONT face=3D"Arial Unicode MS" size=3D2>=DCberpr=FCfen Sie, ob die=
+ gew=FCnschte Windows Vista-Edition auf Ihrem Computer ausgef=FChrt we=
+rden kann. <A href=3D"http://www.wintuning.eu">Weiter...</A></FONT></P=
+></FONT></B></TD></TR>
+<TR>
+<TD height=3D57>
+<DIV class=3Dfull_content>
+<TABLE cellSpacing=3D0 cellPadding=3D0 width=3D"100%" border=3D0>
+<TBODY>
+<TR>
+<TD vAlign=3Dtop></TD></TR></TBODY></TABLE></DIV></TD></TR></TBODY></T=
+ABLE></FONT></P></BODY></HTML>
+
+--CDfNV=_MUSPKMZ7nmPaAAVOUunwLqusFog0--
+
+
+
+--===============1760550807==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1760550807==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1760550807==--
