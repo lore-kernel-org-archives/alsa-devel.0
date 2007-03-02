@@ -1,7 +1,7 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
+From: "Michael K. Edwards" <medwards.linux@gmail.com>
 Subject: Re: Bridging captured stream to playback stream
-Date: Fri, 2 Mar 2007 16:24:19 -0500
-Message-ID: <75b66ecd0703021324q39c4d765ge487293ec39fa90e@mail.gmail.com>
+Date: Fri, 2 Mar 2007 13:28:20 -0800
+Message-ID: <f2b55d220703021328t69ef6fb1s7db2d44bb8f3b02f@mail.gmail.com>
 References: <9c1cad6e0703020822g88eae6bq4a2943db42101b2@mail.gmail.com>
 	<75b66ecd0703020844v1bba0dbax4dbf6a4273e792aa@mail.gmail.com>
 	<f2b55d220703021259h2b96dc2em822047902e836cd@mail.gmail.com>
@@ -22,20 +22,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Maen Suleiman <maen.suleiman@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 3/2/07, Maen Suleiman <maen.suleiman@gmail.com> wrote:
-> Where can I get this patch please , and talking realtime priorities ,
-> is there another recommonded realtime patches for ALSA .
->
+Posted to alsa-devel under the subject "OSS emulation, period size,
+and start/stop thresholds", followed shortly thereafter by an actual
+low-latency ALSA driver.  Audio-in to audio-out loopback delay
+somewhere in the 18 ms range with no underrun/overrun.  The actual
+application is retrofitted to the OSS emulation device for hysterical
+reasons, but that is also working smoothly now.  Don't try the OSS
+emulation approach on a non-NPTL platform, though; you pretty much
+have to open /dev/dsp read-write, ioctl it into shape, and service RX
+and TX from different threads.
 
-nice -n -20 arecord | nice -n -20 aplay should work also...
-
-Of course you have to pass additional arguments to aplay and arecord
-to set the format (-f cd or -f dat) as they default to 8Khz mono.
-
-Lee
+Cheers,
+- Michael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
