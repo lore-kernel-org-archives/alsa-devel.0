@@ -1,13 +1,11 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Please help!
-Date: Fri, 2 Mar 2007 11:09:05 -0500
-Message-ID: <75b66ecd0703020809j4447723cy3c8d6abaa190cd38@mail.gmail.com>
-References: <45E7D855.6040908@zrz.TU-Berlin.DE>
+From: "Maen Suleiman" <maen.suleiman@gmail.com>
+Subject: status change notification on capture
+Date: Fri, 2 Mar 2007 18:13:35 +0200
+Message-ID: <9c1cad6e0703020813k3b7aa04bi4a6ebb102ebd5ed1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45E7D855.6040908@zrz.TU-Berlin.DE>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,26 +16,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Gerd Schering <Schering@zrz.tu-berlin.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 3/2/07, Gerd Schering <Schering@zrz.tu-berlin.de> wrote:
-> Hi,
->
-> I know, this is not the correct list, but I need help with the users list
->
-> I subscribed to the alsa-users list some weeks ago.
-> I received a confimation and welcome email,  but I am not able to post.
-> I always receive an email: "your mail needs moderator approval".
-> But nothing ever happens: neither the message gets posted, nor do I
-> receive a notification, that it had sbeen rejected.
-> I dont know whre to adress to solve this problem.
->
+Hi ,
 
-Are you posting in HTML format or something?
+  I am wondering how can I notify the stack on status change of
+captured stream ( e.g. channel status on iec958)  , is there other way
+than notifying through the control device ( apparently initiated by
+mixer change by the user ) ?
 
-Lee
+
+Thanks in advance
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
