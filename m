@@ -1,7 +1,7 @@
 From: "Maen Suleiman" <maen.suleiman@gmail.com>
-Subject: status change notification on capture
-Date: Fri, 2 Mar 2007 18:13:35 +0200
-Message-ID: <9c1cad6e0703020813k3b7aa04bi4a6ebb102ebd5ed1@mail.gmail.com>
+Subject: Bridging captured stream to playback stream
+Date: Fri, 2 Mar 2007 18:22:13 +0200
+Message-ID: <9c1cad6e0703020822g88eae6bq4a2943db42101b2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,13 +19,11 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi ,
+Hi,
 
-  I am wondering how can I notify the stack on status change of
-captured stream ( e.g. channel status on iec958)  , is there other way
-than notifying through the control device ( apparently initiated by
-mixer change by the user ) ?
-
+  Is there a native way in ALSA that can provide a native bridging of
+a capture stream to a playback stream ? , If yes , can it be done in
+the driver level or through plugins ?
 
 Thanks in advance
 
