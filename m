@@ -1,7 +1,7 @@
 From: "Maen Suleiman" <maen.suleiman@gmail.com>
-Subject: User data in ie958 frames
-Date: Sun, 4 Mar 2007 01:30:13 +0200
-Message-ID: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
+Subject: 20bit PCM in 32 bit container
+Date: Sun, 4 Mar 2007 01:35:28 +0200
+Message-ID: <9c1cad6e0703031535m18d7a93fp6d1c0925893ba7d6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,12 +19,20 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi ,
 
- How can I update iec958 user data in ALSA driver ? I found drivers
-that updates channel status but didn't find any driver that change
-user data , also I didn't find the such a field in 'struct
-sndrv_aes_iec958' .
+ My hardware uses a 20bit PCM format packed in 32bit, ,  I am using a
+2.6.12 kernel and such a format doesn't exist, is the following enough
+for defining this format:
+
+ 1) defning a new value in 'enum sndrv_pcm_format'
+ 2) adding new entry to pcm_formats[SNDRV_PCM_FORMAT_LAST+1] array
+that describes the new format .
+
+	[SNDRV_PCM_FORMAT_S20_NEW_LE] = {
+		.width = 20, .phys = 32, .le = 1, .signd = 1,
+		.silence = {},
+	},
 
 
 Thanks in advance
