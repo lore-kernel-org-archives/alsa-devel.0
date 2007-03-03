@@ -1,14 +1,17 @@
-From: Daniel Cardenas <Daniel.Car@cox.net>
-Subject: Re: Looking for help with dmix plug-in on ARM
-Date: Fri, 02 Mar 2007 20:54:36 -0700
-Message-ID: <45E8F17C.9070405@cox.net>
-References: <15711510.1170960250793.JavaMail.root@fed1wml07.mgt.cox.net>	<s5hps8jo7qo.wl%tiwai@suse.de>
-	<45E2EAF8.9050303@cox.net> <45E4A1B2.2070207@cox.net>
+From: "Edith Anderson" <qspout@kelownachrysler.com>
+Subject: Are an venturesome
+Date: Sat, 3 Mar 2007 14:32:02 +0900
+Message-ID: <001601c75da0$fa7412d0$012478cc@gmru2jqrlqbc6g1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1945949719=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45E4A1B2.2070207@cox.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53892365
+	for <alsa-devel@alsa-project.org>; Sat,  3 Mar 2007 06:33:47 +0100 (MET)
+Received: from kelownachrysler.com (unknown [210.111.180.221])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	7224A997CD
+	for <alsa-devel@alsa-project.org>; Sat,  3 Mar 2007 06:33:43 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,70 +21,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Problem resolved.  In the poll buffer thread which emulates the hardware interrupt it was tracking the application 
-pointer (appl_ptr).  When I switched to looking at the hw_ptr things worked with dmix.
+--===============1945949719==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0013_01C75DA0.FA7412D0"
 
-Daniel
+------=_NextPart_000_0013_01C75DA0.FA7412D0
+Content-Type: text/plain;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-Daniel Cardenas wrote:
-> Results of my latest debug: dmix is reporting an error in routine 
-> snd_pcm_dmix_sync_ptr() complaining that the pipe is
-> in the running state.  Here is a snippet of code:
-> 
-> Daniel Cardenas wrote:
->> Takashi Iwai wrote:
->>> At Thu, 8 Feb 2007 10:44:10 -0800,
->>> <daniel.car@cox.net> wrote:
->>>> Hi,
->>>>
->>>> I'm working on an unannounced SOC audio driver on an ARM system.
->>>> I have a problem were audio works fine with out dmix, but when I try 
->>>> to use dmix, no audio data gets to the driver.
->>>> The dmix plug-in does work when attaching external usb audio 
->>>> device.  Trying to use dmix so that more then one application can 
->>>> generate audio simultaneously.
->>>>
->>>> If I try with version 1.0.11 of ALSA the audio driver doesn't 
->>>> receive any data after the snd_pcm_period_elapsed() function call.
->>
->> Actually it is before or after.
->>
->>>
->>> So, actually it's a problem of driver / alsa-lib hw layer rather than
->>> dmix?  You can get more verbose messages by setting LIBASOUND_DEBUG
->>> variable.  See alsa-lib/NOTES for details.
->>
->> I set the environment variable and I did not see additional output.  
->> For version
->>
->>
->>>
->>>> Here is how the driver is set up:
->>>> static snd_pcm_hardware_t snd_oloriver_playback_hw = {
->>>>  .info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
->>>>        SNDRV_PCM_INFO_MMAP_VALID),
->>>>  .formats         = SNDRV_PCM_FMTBIT_S16_LE,
->>>>   .rates         = SNDRV_PCM_RATE_48000,
->>>>   .rate_min        = 48000,   .rate_max        = 48000,
->>>>   .channels_min     = 2,
->>>>   .channels_max     = 2,
->>>>   .buffer_bytes_max = 65536,
->>>>   .period_bytes_min = 32768,
->>>>   .period_bytes_max = 32768,
->>>>   .periods_min         = 2,
->>>>   .periods_max         = 2,
->>>
->>> My rough guess is that the buffer and period size constraints are too
->>> restrictive.  You can try to pass the exact period/buffer sizes to
->>> aplay via --period-size=8192 --buffer-size=16384 options.
->>>
->>> Takashi
+
+
+BULL MARKET REPORT!
+
+Search for: ARSSCurrent price: $0.15 5 Day Target price: $0.75Market: =
+bullish...
+
+
+TRADE SMART AND WIN WITH US NOW.
+
+
+See the hottest news of the ARSS, alsa-devel.
+
+
+
+------=_NextPart_000_0013_01C75DA0.FA7412D0
+Content-Type: text/html;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1251">
+<META content=3D"MSHTML 6.00.2600.0000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#CC3333 size=3D=
+3D4><FONT size=3D2><STRONG>BULL MARKET REPORT!!!</STRONG></FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#003399 size=3D4>Search =
+for: <b>ARSS</b><br>Current price: $0.15 <br>5 Day Target price: =
+$0.75<br>Market: bullish...</FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#990033 size=3D2>TRADE =
+SMART AND WIN WITH US NOW!</FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#000033 size=3D4>See =
+the hottest news of the ARSS, alsa-devel...</FONT></DIV>
+<BR><BR>
+</BODY></HTML>
+
+------=_NextPart_000_0013_01C75DA0.FA7412D0--
+
+
+--===============1945949719==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1945949719==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1945949719==--
