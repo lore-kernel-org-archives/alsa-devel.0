@@ -1,19 +1,11 @@
-From: =?iso-2022-jp?B?GyRCJV4lQCVgGyhCIBskQiUzJWwlLyU3JWclcxsoQg==?= <madamu_collection.info@love999-mail000.com>
-Subject: =?iso-2022-jp?b?GyRCIVg6I0xrISIlXiVAJWAkLEcoJGwbKEI=?=
-	=?iso-2022-jp?b?GyRCJF4kOSFZIihMNU5BIigbKEI=?=
-Date: Sun, 04 Mar 2007 02:52:46 +0900
-Message-ID: <20070304025246.1797338554@localhost>
+From: Ben Dooks <ben-alsa@fluff.org>
+Subject: [PATCH] intel8x0: add NVidia MPC55 support
+Date: Sat, 3 Mar 2007 19:09:01 +0000
+Message-ID: <20070303190901.GA22328@trinity.fluff.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6C9E314
-	for <alsa-devel@alsa-project.org>; Sat,  3 Mar 2007 18:53:36 +0100 (MET)
-Received: from localhost (unknown [218.25.20.202])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	A7D8999C7F
-	for <alsa-devel@alsa-project.org>; Sat,  3 Mar 2007 18:53:34 +0100 (MET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,47 +15,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-★*★*★*★*★*★*★*★*★*★
-  〜マダム コレクション〜
-http://ttu.staticcling.org/madam_collection/index.html
-★*★*★*★*★*★*★*★*★*★
 
-しなやかで艶っぽい極上マダム・・・
-そんな彼女も、本当は純真無垢な１人の女性なのです。
-時には大人っぽくリード、時には甘える子供っぽい笑顔・・・
-マダムとの素敵なお時間は、いかがですか？
-↓↓↓
-http://ttu.staticcling.org/madam_collection/index.html
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-★*★*★*★*★*★*★*★*★*★*★
-  〜本日のマダムコレクション〜
-http://ttu.staticcling.org/madam_collection/index.html
-★*★*★*★*★*★*★*★*★*★*★
+Add the PCI-ID for the NVidia MPC55 HDA audio controller
+to the intel8x0 driver.
 
-名　前：玲子さん(32歳)
-職　業：主婦・ピアノの先生(週２回)
-趣　味：ピアノ・ガーデニング・お酒
+Tested with 2 channel audio only.
 
-■マダムからのコメント■
-誰にも内緒で利用してます♪写真出しちゃってますが、
-意外にバレないものですね＾＾；
-結婚はしていますが、夫は仕事で家を空け気味なので時間はあるんです。
-(以下省略…)
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-マダムのお写真や、その他多数の体験談はコチラ！
-↓↓↓
-http://ttu.staticcling.org/madam_collection/index.html
+diff -urNp -X linux-2.6.20/Documentation/dontdiff linux-2.6.20/sound/pci/intel8x0.c linux-2.6.20-bjd1/sound/pci/intel8x0.c
+--- linux-2.6.20/sound/pci/intel8x0.c	2007-02-04 18:44:54.000000000 +0000
++++ linux-2.6.20-bjd1/sound/pci/intel8x0.c	2007-03-03 18:55:22.000000000 +0000
+@@ -434,6 +434,7 @@ static struct pci_device_id snd_intel8x0
+ 	{ 0x10de, 0x00da, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* NFORCE3 */
+ 	{ 0x10de, 0x00ea, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* CK8S */
+ 	{ 0x10de, 0x026b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* MCP51 */
++	{ 0x10de, 0x0371, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* MCP55 */
+ 	{ 0x1022, 0x746d, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_INTEL },	/* AMD8111 */
+ 	{ 0x1022, 0x7445, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_INTEL },	/* AMD768 */
+ 	{ 0x10b9, 0x5455, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_ALI },   /* Ali5455 */
 
-無料登録フォームは、コチラです！！※全て無料※
-http://ttu.staticcling.org/madam_collection/index.html
 
-(C)2007 Copyright. ALL RIGHTS RESERVED.
+
+
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="2620-alsa-intel8x0-mpc55.patch"
+
+diff -urNp -X linux-2.6.20/Documentation/dontdiff linux-2.6.20/sound/pci/intel8x0.c linux-2.6.20-bjd1/sound/pci/intel8x0.c
+--- linux-2.6.20/sound/pci/intel8x0.c	2007-02-04 18:44:54.000000000 +0000
++++ linux-2.6.20-bjd1/sound/pci/intel8x0.c	2007-03-03 18:55:22.000000000 +0000
+@@ -434,6 +434,7 @@ static struct pci_device_id snd_intel8x0
+ 	{ 0x10de, 0x00da, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* NFORCE3 */
+ 	{ 0x10de, 0x00ea, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* CK8S */
+ 	{ 0x10de, 0x026b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* MCP51 */
++	{ 0x10de, 0x0371, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },	/* MCP55 */
+ 	{ 0x1022, 0x746d, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_INTEL },	/* AMD8111 */
+ 	{ 0x1022, 0x7445, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_INTEL },	/* AMD768 */
+ 	{ 0x10b9, 0x5455, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_ALI },   /* Ali5455 */
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--LQksG6bCIzRHxTLp--
