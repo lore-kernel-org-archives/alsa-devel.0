@@ -1,11 +1,15 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HNXOC-0003Df-NK delayed 10 hours
-Date: Sat, 03 Mar 2007 22:01:09 -0800
-Message-ID: <E1HNjmP-0001lX-HM@externalmx-1.sourceforge.net>
+From: "Maen Suleiman" <maen.suleiman@gmail.com>
+Subject: Re: User data in ie958 frames
+Date: Sun, 4 Mar 2007 08:53:12 +0200
+Message-ID: <9c1cad6e0703032253v571a94d5q83ba82ceb76f2eed@mail.gmail.com>
+References: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
+	<75b66ecd0703031647t2c17a5a1w45760180ee40e0ef@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <75b66ecd0703031647t2c17a5a1w45760180ee40e0ef@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+But as I saw, channel status is changed by drivers, in the controller
+interface, why not the user data as well.
 
-The message identifier is:     1HNXOC-0003Df-NK
-The subject of the message is: and Pharaoh, saying, God; layeth his hand the gift, or a parable,
-The date of the message is:    Sat, 03 Mar 2007 18:47:05 +0200
+Thanks in advance
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+On 3/4/07, Lee Revell <rlrevell@joe-job.com> wrote:
+> On 3/3/07, Maen Suleiman <maen.suleiman@gmail.com> wrote:
+> > Hi,
+> >
+> >  How can I update iec958 user data in ALSA driver ? I found drivers
+> > that updates channel status but didn't find any driver that change
+> > user data , also I didn't find the such a field in 'struct
+> > sndrv_aes_iec958' .
+>
+> Why do you want to do this in the driver?  The ALSA way is for the
+> driver to expose the actual HW functionality and for everything else
+> (format conversion, mixing, resampling, etc) to be done in userspace,
+> either by the application or by alsa-lib.
+>
+> Lee
+>
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
