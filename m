@@ -1,11 +1,13 @@
-From: "Maen Suleiman" <maen.suleiman@gmail.com>
-Subject: 20bit PCM in 32 bit container
-Date: Sun, 4 Mar 2007 01:35:28 +0200
-Message-ID: <9c1cad6e0703031535m18d7a93fp6d1c0925893ba7d6@mail.gmail.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: User data in ie958 frames
+Date: Sat, 3 Mar 2007 19:47:16 -0500
+Message-ID: <75b66ecd0703031647t2c17a5a1w45760180ee40e0ef@mail.gmail.com>
+References: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,26 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Maen Suleiman <maen.suleiman@gmail.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi ,
+On 3/3/07, Maen Suleiman <maen.suleiman@gmail.com> wrote:
+> Hi,
+>
+>  How can I update iec958 user data in ALSA driver ? I found drivers
+> that updates channel status but didn't find any driver that change
+> user data , also I didn't find the such a field in 'struct
+> sndrv_aes_iec958' .
 
- My hardware uses a 20bit PCM format packed in 32bit, ,  I am using a
-2.6.12 kernel and such a format doesn't exist, is the following enough
-for defining this format:
+Why do you want to do this in the driver?  The ALSA way is for the
+driver to expose the actual HW functionality and for everything else
+(format conversion, mixing, resampling, etc) to be done in userspace,
+either by the application or by alsa-lib.
 
- 1) defning a new value in 'enum sndrv_pcm_format'
- 2) adding new entry to pcm_formats[SNDRV_PCM_FORMAT_LAST+1] array
-that describes the new format .
-
-	[SNDRV_PCM_FORMAT_S20_NEW_LE] = {
-		.width = 20, .phys = 32, .le = 1, .signd = 1,
-		.silence = {},
-	},
-
-
-Thanks in advance
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
