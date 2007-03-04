@@ -1,13 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: 20bit PCM in 32 bit container
-Date: Sun, 4 Mar 2007 16:39:53 +0100
-Message-ID: <20070304163953.044b8a29.pochini@shiny.it>
-References: <9c1cad6e0703031535m18d7a93fp6d1c0925893ba7d6@mail.gmail.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HNXOC-0003Df-NK delayed 24 hours
+Date: Sun, 04 Mar 2007 09:40:41 -0800
+Message-ID: <E1HNuhN-0003Oe-Dq@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <9c1cad6e0703031535m18d7a93fp6d1c0925893ba7d6@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,38 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Maen Suleiman <maen.suleiman@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 4 Mar 2007 01:35:28 +0200
-"Maen Suleiman" <maen.suleiman@gmail.com> wrote:
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-> Hi ,
-> 
->  My hardware uses a 20bit PCM format packed in 32bit, ,  I am using a
-> 2.6.12 kernel and such a format doesn't exist, is the following enough
-> for defining this format:
-> 
->  1) defning a new value in 'enum sndrv_pcm_format'
->  2) adding new entry to pcm_formats[SNDRV_PCM_FORMAT_LAST+1] array
-> that describes the new format .
-> 
-> 	[SNDRV_PCM_FORMAT_S20_NEW_LE] = {
-> 		.width = 20, .phys = 32, .le = 1, .signd = 1,
-> 		.silence = {},
-> 	},
+The message identifier is:     1HNXOC-0003Df-NK
+The subject of the message is: and Pharaoh, saying, God; layeth his hand the gift, or a parable,
+The date of the message is:    Sat, 03 Mar 2007 18:47:05 +0200
 
-I suggest SND_PCM_FORMAT_S20_LE (ie. 20 bits signed data right-aligned in 32
-bits frame). I never had a serious look at that code, but you at least also
-have to add a lot of conversion functions to/from S20_LE in
-alsa-lib/src/pcm/plugin_ops.h (look for #ifdef CONV_LABELS) which are used
-by alsa-lib/src/pcm/pcm_linear.c:snd_pcm_linear_convert() and by many other
-plugins.
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
---
-Giuliano.
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
