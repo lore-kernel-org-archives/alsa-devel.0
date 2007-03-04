@@ -1,14 +1,10 @@
-From: "Ned Christensen" <jcj@byhanna.com>
-Subject: mangrove leggings
-Date: Sun, 4 Mar 2007 20:29:05 +0200
-Message-ID: <000d01c75e8c$1dbd0df0$3855478a@znwe>
+From: "Agnes Bradley" <ifkbqt@hotelcentralpau.com>
+Subject: vigilance disenfranchise
+Date: Sun, 4 Mar 2007 20:33:11 +0200
+Message-ID: <000d01c75e8c$cc59fb70$4d9fe33c@zmqs>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0257697586=="
+Content-Type: multipart/mixed; boundary="===============1729653679=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from digsys75-219.pip.digsys.bg (digsys75-219.pip.digsys.bg
-	[193.68.219.75])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CDE712C5
-	for <alsa-devel@alsa-project.org>; Sun,  4 Mar 2007 19:37:03 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,83 +14,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0257697586==
+--===============1729653679==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0009_01C75E9C.E131B9B0"
+	boundary="----=_NextPart_000_0009_01C75E9D.8FCEA730"
 
-------=_NextPart_000_0009_01C75E9C.E131B9B0
+------=_NextPart_000_0009_01C75E9D.8FCEA730
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000A_01C75E9C.E136C2C0"
+	boundary="----=_NextPart_001_000A_01C75E9D.8FD3B040"
 
-------=_NextPart_001_000A_01C75E9C.E136C2C0
+------=_NextPart_001_000A_01C75E9D.8FD3B040
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-For many years, the successful combination of these three entities has =
-beenthe key to corporate profitability. Applicationsdevelopment =
-experience in the financial industry and workingknowledge of financial =
-markets is highly desirable. Significant experiencedeveloping GUI's with =
-Swing. An understanding of software designprinciples and tradeoffs. The =
-candidate will have responsibilityfor the evaluation of the batch =
-configuration; perform hands onresearch and development activities to =
-evaluate alternatives tobatch performance enhancements.
-Any experience in investment management orbankingis a plus. Experience =
-in MQ Series or equivalent messaginginfrastructure. This position is =
-ideally suited for a hands-oncandidate who values making an individual =
-contribution butwillhelp develop overall web site strategy.
+The ability to workwithin a team with minimum supervision. The ability =
+to buildandmanage relationships with business management and =
+keystakeholders. Wall Street firms, technological advancements, and =
+technology professionals. Experience working for a global =
+softwarecompany providing the architecture, design, development =
+andtesting. Applicationsdevelopment experience in the financial industry =
+and workingknowledge of financial markets is highly desirable.
+Knowledge of enterprise RDBMS systems, web application =
+servertechnologies, n-tier architectures, distributed =
+transactionsystems, object-oriented design and development =
+methodologies. Excellent communication skills and a high degree =
+ofcredibility. The applicationarchitecture function in IT FC has overall =
+responsibility andaccountability for all applications owned by IT FC.
+Financial services experience including a working knowledge ofFixed =
+Income instruments and a familiarity with Loan and Mortgagefinance =
+businesses.
 Significant hands on experience of the design and implementationof =
 strategic applications within a business critical environment,with a =
-proven track record of successful systems development.
-Strong technical background with experience supporting systemsand users =
-in a fast paced global environment. In this role you will beresponsible =
-for infrastructure performance monitoring andanalysis; application =
-performance monitoring and analysis; andsystem capacity analysis. =
+proven track record of successful systems development. The ability to =
+quickly learn and apply newtechnologies. In this role you will =
+beresponsible for infrastructure performance monitoring andanalysis; =
+application performance monitoring and analysis; andsystem capacity =
+analysis.
+Wall Street is looking for candidates who can solve realbusiness =
+problems using financial technology.
 Workingknowledge of Fixed Income instruments with a familiarity withLoan =
-and Mortgage finance business.
-The ability to structure thinking into a concisefunctional and technical =
-architecture clearly digestible by othermembers of the team.
-Equities trading system experience. Excellent verbal andwritten =
-communication skills. Thecandidate will also be responsible for the =
-inventory of hardwareand software licensing. Experience with IDEs. Due =
-to lack of space, this person will not be working on thetrading desk, =
-but will be directly linked to the businesstherefore communication =
-skills are very important. Applicationsdevelopment experience in the =
-financial industry and workingknowledge of financial markets is highly =
-desirable.
-In this role you will beresponsible for infrastructure performance =
-monitoring andanalysis; application performance monitoring and analysis; =
-andsystem capacity analysis.
-This candidate will work on tradingand risk management applications =
-primarily supporting theconvertible trading desk. Whether it be =
-Equitiesor Fixed Income, Foreign Exchange or Commodities, to be an elite =
-performer, you must combine a gift for software engineering, with a =
-strong financial services acumen. Experience with , Apacheweb server, =
-Oracle, Sybase, SQL Server, Eclipse and the . Proven ability to work in =
-a team environment withgeographically distributed team members. =
-Candidate will also contribute todeliverables and project planning for =
-internal initiatives; andassist in the development of the follow-the-sun =
-support forapplications. A flexible andadaptive attitude with the =
-ability to organize, coordinate, andexecute on details. Successful =
-record of managinglarge-scale technology projects within cost and =
-timeestimates.
-If that describes you, we'dlike to hear from you.
-Microsoft SQL Server. Successful record of managinglarge-scale =
-technology projects within cost and timeestimates.
-Experience in MQ Series or equivalent messaginginfrastructure. =
-Thecandidate will manage the work executed by this team, =
-forecastexpenditure, and monitor vendor invoicing.
-A Bachelor degree or international equivalent.
-The ability to plan andgive time estimates on projects.
-Working knowledge of UMLand ER modeling tools.
-Without it, it is difficult to perform with the Bulls.
-Excellent problemsolving skills and the ability to look at problems and =
-issuesfrom outside the box.
-------=_NextPart_001_000A_01C75E9C.E136C2C0
+and Mortgage finance business. Any experience in investment management =
+orbankingis a plus. Wall Street is looking for candidates who can solve =
+realbusiness problems using financial technology. Working knowledge of =
+UMLand ER modeling tools. Experience working for a global =
+softwarecompany providing the architecture, design, development =
+andtesting. Knowledge of Mainframe technologies including Cobol, DB2, =
+JCL,VSAM, IMS, CICS, SQL, MQ Series, and WebSphere.
+Strong communication skills, andknowledge of latest software development =
+methodologies, andsystem troubleshooting skills is also required.
+Fixed Income knowledge is aplus. Candidate will also contribute =
+todeliverables and project planning for internal initiatives; andassist =
+in the development of the follow-the-sun support forapplications. =
+Thecandidate will also be responsible for the inventory of hardwareand =
+software licensing. The ability to structure thinking into a =
+concisefunctional and technical architecture clearly digestible by =
+othermembers of the team. The ability to structure ambiguous business =
+problems andrecommend concrete technology solutions. Knowledge of Linux, =
+Windows,SQL, Sybase and Oracle. For many years, the successful =
+combination of these three entities has beenthe key to corporate =
+profitability.
+>From a technical perspective the EMS will complement existingOMS's by =
+buffering them from high trading volumes.
+Financial services experience including a working knowledge ofFixed =
+Income instruments and a familiarity with Loan and Mortgagefinance =
+businesses. Experience with Microsoft PowerPoint toan advanced level is =
+essential and prior experience deliveringhigh quality documents to =
+executive management.
+Knowledge of enterprise RDBMS systems, web application =
+servertechnologies, n-tier architectures, distributed =
+transactionsystems, object-oriented design and development =
+methodologies. Detailed knowledge of WebLogic application server,portal =
+server and integration server.
+Experiencesupporting technical and business users.
+Intelligence, common sense and anability for self-study and learning is =
+also required.
+In this role you will work on implementing and extending anExecution =
+Management System for the buy-side Equities Tradingdesk.
+The applicationarchitecture function in IT FC has overall responsibility =
+andaccountability for all applications owned by IT FC.
+Supported by Pencom Systems IncorporatedWall Street Technology JobsA =
+Pencom Systems Incorporated ServiceA.
+------=_NextPart_001_000A_01C75E9D.8FD3B040
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -103,131 +107,139 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"foolish" hspace=3D0=20
-src=3D"cid:000801c75e8c$1da3e0a0$3855478a@znwe" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"coercion" hspace=3D0=20
+src=3D"cid:000801c75e8c$cc40ce20$4d9fe33c@zmqs" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>For many years, the successful =
-combination of these=20
-three entities has beenthe key to corporate profitability. =
-Applicationsdevelopment=20
-experience in the financial industry and workingknowledge of financial =
-markets is=20
-highly desirable. Significant experiencedeveloping GUI's with Swing. =
-An=20
-understanding of software designprinciples and tradeoffs. The candidate =
-will have=20
-responsibilityfor the evaluation of the batch configuration; perform =
-hands=20
-onresearch and development activities to evaluate alternatives tobatch =
-performance=20
-enhancements.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Any experience in investment management =
-orbankingis=20
-a plus. Experience in MQ Series or equivalent messaginginfrastructure. =
-This position=20
-is ideally suited for a hands-oncandidate who values making an =
-individual=20
-contribution butwillhelp develop overall web site strategy.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The ability to workwithin a team with =
+minimum=20
+supervision. The ability to buildandmanage relationships with business =
+management=20
+and keystakeholders. Wall Street firms, technological advancements, and =
+technology=20
+professionals. Experience working for a global softwarecompany providing =
+the=20
+architecture, design, development andtesting. Applicationsdevelopment =
+experience in=20
+the financial industry and workingknowledge of financial markets is =
+highly=20
+desirable.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Knowledge of enterprise RDBMS systems, =
+web=20
+application servertechnologies, n-tier architectures, distributed=20
+transactionsystems, object-oriented design and development =
+methodologies. Excellent=20
+communication skills and a high degree ofcredibility. The =
+applicationarchitecture=20
+function in IT FC has overall responsibility andaccountability for all =
+applications=20
+owned by IT FC.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Financial services experience including =
+a working=20
+knowledge ofFixed Income instruments and a familiarity with Loan and =
+Mortgagefinance=20
+businesses.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Significant hands on experience of the =
 design and=20
 implementationof strategic applications within a business critical =
 environment,with=20
-a proven track record of successful systems development.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Strong technical background with =
-experience=20
-supporting systemsand users in a fast paced global environment. In this =
-role you=20
-will beresponsible for infrastructure performance monitoring =
-andanalysis;=20
-application performance monitoring and analysis; andsystem capacity =
-analysis.=20
-Workingknowledge of Fixed Income instruments with a familiarity withLoan =
-and=20
-Mortgage finance business.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The ability to structure thinking into =
-a=20
-concisefunctional and technical architecture clearly digestible by =
-othermembers of=20
-the team.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Equities trading system experience. =
-Excellent=20
-verbal andwritten communication skills. Thecandidate will also be =
-responsible for=20
-the inventory of hardwareand software licensing. Experience with IDEs. =
-Due to lack=20
-of space, this person will not be working on thetrading desk, but will =
-be directly=20
-linked to the businesstherefore communication skills are very =
-important.=20
-Applicationsdevelopment experience in the financial industry and =
-workingknowledge of=20
-financial markets is highly desirable.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In this role you will beresponsible =
+a proven track record of successful systems development. The ability to =
+quickly=20
+learn and apply newtechnologies. In this role you will beresponsible =
 for=20
 infrastructure performance monitoring andanalysis; application =
 performance=20
 monitoring and analysis; andsystem capacity analysis.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This candidate will work on tradingand =
-risk=20
-management applications primarily supporting theconvertible trading =
-desk. Whether it=20
-be Equitiesor Fixed Income, Foreign Exchange or Commodities, to be an =
-elite=20
-performer, you must combine a gift for software engineering, with a =
-strong financial=20
-services acumen. Experience with , Apacheweb server, Oracle, Sybase, SQL =
-Server,=20
-Eclipse and the . Proven ability to work in a team environment =
-withgeographically=20
-distributed team members. Candidate will also contribute todeliverables =
-and project=20
-planning for internal initiatives; andassist in the development of =
-the=20
-follow-the-sun support forapplications. A flexible andadaptive attitude =
-with the=20
-ability to organize, coordinate, andexecute on details. Successful =
-record of=20
-managinglarge-scale technology projects within cost and =
-timeestimates.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If that describes you, we'dlike to hear =
-from=20
-you.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Microsoft SQL Server. Successful record =
-of=20
-managinglarge-scale technology projects within cost and =
-timeestimates.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Experience in MQ Series or =
-equivalent=20
-messaginginfrastructure. Thecandidate will manage the work executed by =
-this team,=20
-forecastexpenditure, and monitor vendor invoicing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A Bachelor degree or international=20
-equivalent.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The ability to plan andgive time =
-estimates on=20
-projects.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Working knowledge of UMLand ER =
-modeling=20
-tools.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Without it, it is difficult to perform =
-with the=20
-Bulls.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Excellent problemsolving skills and the =
-ability to=20
-look at problems and issuesfrom outside the =
-box.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Wall Street is looking for candidates =
+who can solve=20
+realbusiness problems using financial technology.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Workingknowledge of Fixed Income =
+instruments with a=20
+familiarity withLoan and Mortgage finance business. Any experience in =
+investment=20
+management orbankingis a plus. Wall Street is looking for candidates who =
+can solve=20
+realbusiness problems using financial technology. Working knowledge of =
+UMLand ER=20
+modeling tools. Experience working for a global softwarecompany =
+providing the=20
+architecture, design, development andtesting. Knowledge of Mainframe =
+technologies=20
+including Cobol, DB2, JCL,VSAM, IMS, CICS, SQL, MQ Series, and=20
+WebSphere.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Strong communication skills, =
+andknowledge of latest=20
+software development methodologies, andsystem troubleshooting skills is =
+also=20
+required.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Fixed Income knowledge is aplus. =
+Candidate will=20
+also contribute todeliverables and project planning for internal =
+initiatives;=20
+andassist in the development of the follow-the-sun support =
+forapplications.=20
+Thecandidate will also be responsible for the inventory of hardwareand =
+software=20
+licensing. The ability to structure thinking into a concisefunctional =
+and technical=20
+architecture clearly digestible by othermembers of the team. The ability =
+to=20
+structure ambiguous business problems andrecommend concrete technology =
+solutions.=20
+Knowledge of Linux, Windows,SQL, Sybase and Oracle. For many years, the =
+successful=20
+combination of these three entities has beenthe key to corporate=20
+profitability.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>From a technical perspective the EMS =
+will=20
+complement existingOMS's by buffering them from high trading =
+volumes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Financial services experience including =
+a working=20
+knowledge ofFixed Income instruments and a familiarity with Loan and =
+Mortgagefinance=20
+businesses. Experience with Microsoft PowerPoint toan advanced level is =
+essential=20
+and prior experience deliveringhigh quality documents to executive=20
+management.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Knowledge of enterprise RDBMS systems, =
+web=20
+application servertechnologies, n-tier architectures, distributed=20
+transactionsystems, object-oriented design and development =
+methodologies. Detailed=20
+knowledge of WebLogic application server,portal server and =
+integration=20
+server.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Experiencesupporting technical and =
+business=20
+users.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Intelligence, common sense and =
+anability for=20
+self-study and learning is also required.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In this role you will work on =
+implementing and=20
+extending anExecution Management System for the buy-side Equities=20
+Tradingdesk.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The applicationarchitecture function in =
+IT FC has=20
+overall responsibility andaccountability for all applications owned by =
+IT=20
+FC.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Supported by Pencom Systems =
+IncorporatedWall Street=20
+Technology JobsA Pencom Systems Incorporated =
+ServiceA.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000A_01C75E9C.E136C2C0--
+------=_NextPart_001_000A_01C75E9D.8FD3B040--
 
-------=_NextPart_000_0009_01C75E9C.E131B9B0
+------=_NextPart_000_0009_01C75E9D.8FCEA730
 Content-Type: image/gif;
-	name="hind.gif"
+	name="vocalist.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000801c75e8c$1da3e0a0$3855478a@znwe>
+Content-ID: <000801c75e8c$cc40ce20$4d9fe33c@zmqs>
 
 R0lGODdh8gG8APMHAPbp8Njo3Oz51kx+bH+uOXsFUiVI9Lg96gYIANSCkD7/AYX9Xw3mjuK4KvoL
 Zkvx/CwAAAAA8QG8AAAE/xDISau9OOvNu/9gKI5kaZ5oqq5s675wLM90bd+ooO987//AoHBILBqP
@@ -365,11 +377,11 @@ ioCFt31VsRq6a2NrsthQZucKjhBkXloAjBokg1joyCof/aKCun0taZAlbWlNe1rUfie1q2Vta10L
 WMADJnCBDXxgBCc4wOxlcIMd/GAIR1jCBMlvTBR8YQxn+L8VPh9/J/xhEIdYxA/J54hNfOJwcFjF
 K2Zxi138YhjHWMby1XCNbXxjHOdYx7eccY99/ONlRgAAOw==
 
-------=_NextPart_000_0009_01C75E9C.E131B9B0--
+------=_NextPart_000_0009_01C75E9D.8FCEA730--
 
 
 
---===============0257697586==
+--===============1729653679==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -380,7 +392,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0257697586==
+--===============1729653679==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -391,4 +403,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0257697586==--
+--===============1729653679==--
