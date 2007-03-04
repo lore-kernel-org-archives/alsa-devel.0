@@ -1,13 +1,11 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: User data in ie958 frames
-Date: Sat, 3 Mar 2007 19:47:16 -0500
-Message-ID: <75b66ecd0703031647t2c17a5a1w45760180ee40e0ef@mail.gmail.com>
-References: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
+From: "John Pierce" <john.j35@gmail.com>
+Subject: Willing to help!
+Date: Sat, 3 Mar 2007 19:09:32 -0600
+Message-ID: <aa73b9a0703031709p6cebaf84nc27c34a645548e9d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <9c1cad6e0703031530n7436376bpcd062eba08eafa07@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,24 +16,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Maen Suleiman <maen.suleiman@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 3/3/07, Maen Suleiman <maen.suleiman@gmail.com> wrote:
-> Hi,
->
->  How can I update iec958 user data in ALSA driver ? I found drivers
-> that updates channel status but didn't find any driver that change
-> user data , also I didn't find the such a field in 'struct
-> sndrv_aes_iec958' .
+Hello list, I am not sure where to post this so here goes.
 
-Why do you want to do this in the driver?  The ALSA way is for the
-driver to expose the actual HW functionality and for everything else
-(format conversion, mixing, resampling, etc) to be done in userspace,
-either by the application or by alsa-lib.
+I just purchased an HP DV9208NR laptop, I installed opensuse 10.2 and
+all worked well except the headphones.  All of the buttons on the
+machine worked, including the mute button.   However, when I plugged
+in my headphones the speakers would not mute and no sound came from
+the headphones.
 
-Lee
+In an attempt to fix this, I searched the lists and found another
+users experiences and noticed the following snippet.
+
+Also some know issues : When headphones are plugged , laptop speakers dont mute.
+============New Patch Released 01/30/2007 T.Davis Alsa-Users List ==========
+!!Backup your current drivers with following command !!
+tar -zcvf original-drivers.tgz /lib/modules/`uname -r`/kernel/sound
+
+Now, get the latest release, apply the patch, and build.
+
+wget ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.14rc2.tar.bz2
+tar -jxf alsa-driver-1.0.14rc2.tar.bz2
+cd alsa-driver-1.0.14rc2/alsa-kernel
+patch -p1
+cd ..
+./configure --with-debug=detect --with-cards=hda-intel
+make ; make install
+
+I downloaded the current 1.0.14rc2 and went through the motions of
+configuring, making and make installing.  I removed the modules from
+my original install and then modprobed the snd_hda_intel and now when
+I plug in the headphones they work correctly, that is the speakers
+stop and the headphones start.
+
+Now the problem, the mute button above the keyboard that used to stay
+blue, and would mute the sound to the speakers, now has changed to
+orange and will not mute any sound.
+
+I am willing to help the developers debug this if any wish to contact
+me and tell me what they need me to do.
+
+It wouldn't be the first time I trashed a system and then put it back together.
+
+Thanks for all of your work.
+
+
+
+-- 
+John
+Registered Linux User 263680, get counted at
+http://counter.li.org
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
