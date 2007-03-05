@@ -1,10 +1,13 @@
-From: "Harriot Z. Villa" <gvqu@bviports.org>
-Subject: downtrodden patron saint
-Date: Mon, 5 Mar 2007 14:22:40 +0100
-Message-ID: <001901c75f29$81caadf0$8a4230dc@suazaa>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: [PATCH] Improve parameter constraints in alsa-pulse
+Date: Mon, 05 Mar 2007 14:33:18 +0100
+Message-ID: <45EC1C1E.101@cendio.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1662105184=="
+Content-Type: multipart/mixed; boundary="===============1420127700=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 126E1296
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2007 14:33:27 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,329 +17,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
---===============1662105184==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0015_01C75F31.E387C2F0"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============1420127700==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig3B243D0BF8CFF24BD6AF3440"
 
-------=_NextPart_000_0015_01C75F31.E387C2F0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0016_01C75F31.E38997B0"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig3B243D0BF8CFF24BD6AF3440
+Content-Type: multipart/mixed; boundary="------------060508050206070003080302"
 
-------=_NextPart_001_0016_01C75F31.E38997B0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+This is a multi-part message in MIME format.
+--------------060508050206070003080302
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
+Remove parameter constraints where we actually have none. Also, restrict
+total buffer size to 4 MB as current versions of the PulseAudio server
+will refuse streams larger than that.
 
-BE SURE TO WEAR MORE THAN ONE LAYER OF CLOTHING.
-A WIND ADVISORY REMAINS IN EFFECT UNTIL 3 AM AST MONDAY.
-WIND CHILL ADVISORY REMAINS IN EFFECT UNTIL UNTIL 6 PM ASTMONDAY FOR THE =
-KLONDIKE HIGHWAY. SNOW WILL CONTINUE MOST OF TONIGHT AND MIX WITH OR =
-CHANGE TO RAIN LATETONIGHT. WIND GUSTS WILL AVERAGE 35 TO 45 FROM AROUND =
-NOON ON MONDAY INTOTUESDAY MORNING. HIGH WIND WARNING IN EFFECT FROM 5 =
-AM TO 9 PM AST MONDAY. WHICH IS IN EFFECT UNTIL NOON MST TODAY. PORTIONS =
-OFSOUTHWEST GEORGIA AND ALL OF THE EASTERN FLORIDA PANHANDLE ANDFLORIDA =
-BIG BEND AWAY FROM THE COAST FOR EARLY MONDAY MORNING. WIND CHILL =
-ADVISORY IN EFFECT FROM 9 PM THIS EVENING TO 12 PMAST MONDAY MAINLY OVER =
-ELLIOTT HIGHWAY SUMMITS.
-ADDITIONAL SNOW ACCUMULATION OF 1 TO 2 INCHES.
-FREEZING RAIN MAY BRINGAROUND ONE QUARTER OF AN INCH OF ICE =
-ACCUMULATION. SEEK MEDICAL HELPIMMEDIATELY OR CALL 911.
-A WARNING MEANS THAT A WINTER STORM IS ALREADY OCCURRING ORIMMINENT.
-WIND CHILL ADVISORY IN EFFECT FROM 9 PM THIS EVENING TO 12 PMAST MONDAY =
-OVER STEESE HIGHWAY SUMMITS. SOUTH WIND AROUND 15 MPH.
-AFTER BRIEF BREAK FROM THE CURRENT WINTER STORM IMPACTINGSOUTHEAST =
-ALASKA.
-WIND CHILL ADVISORY EXTENDED UNTIL 6 PM AST MONDAY FOR THEKLONDIKE =
-HIGHWAY.
-This same information is available in other file formats including the =
-XML based RSS and CAP formats.
-BE SURE TO WEAR MORE THAN ONE LAYER OF CLOTHING. NORTH WIND 25 TO 35 MPH =
-WITH GUSTS AROUND 45 MPH. A WARNING MEANS THAT A WINTER STORM IS ALREADY =
-OCCURRING ORIMMINENT.
-------=_NextPart_001_0016_01C75F31.E38997B0
-Content-Type: text/html;
-	charset="iso-8859-1"
+Signed-off-by: Pierre Ossman <ossman@cendio.se>
+
+
+--------------060508050206070003080302
+Content-Type: text/x-patch;
+ name="params.patch"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline;
+ filename="params.patch"
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"splitting" hspace=3D0=20
-src=3D"cid:001401c75f29$81c18630$8a4230dc@suazaa" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>BE SURE TO WEAR MORE THAN ONE LAYER =
-OF=20
-CLOTHING.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A WIND ADVISORY REMAINS IN EFFECT UNTIL =
-3 AM AST=20
-MONDAY.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>WIND CHILL ADVISORY REMAINS IN EFFECT =
-UNTIL UNTIL 6=20
-PM ASTMONDAY FOR THE KLONDIKE HIGHWAY. SNOW WILL CONTINUE MOST OF =
-TONIGHT AND MIX=20
-WITH OR CHANGE TO RAIN LATETONIGHT. WIND GUSTS WILL AVERAGE 35 TO 45 =
-FROM AROUND=20
-NOON ON MONDAY INTOTUESDAY MORNING. HIGH WIND WARNING IN EFFECT FROM 5 =
-AM TO 9 PM=20
-AST MONDAY. WHICH IS IN EFFECT UNTIL NOON MST TODAY. PORTIONS =
-OFSOUTHWEST GEORGIA=20
-AND ALL OF THE EASTERN FLORIDA PANHANDLE ANDFLORIDA BIG BEND AWAY FROM =
-THE COAST FOR=20
-EARLY MONDAY MORNING. WIND CHILL ADVISORY IN EFFECT FROM 9 PM THIS =
-EVENING TO 12=20
-PMAST MONDAY MAINLY OVER ELLIOTT HIGHWAY SUMMITS.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>ADDITIONAL SNOW ACCUMULATION OF 1 TO =
-2=20
-INCHES.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>FREEZING RAIN MAY BRINGAROUND ONE =
-QUARTER OF AN=20
-INCH OF ICE ACCUMULATION. SEEK MEDICAL HELPIMMEDIATELY OR CALL =
-911.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>A WARNING MEANS THAT A WINTER STORM IS =
-ALREADY=20
-OCCURRING ORIMMINENT.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>WIND CHILL ADVISORY IN EFFECT FROM 9 PM =
-THIS=20
-EVENING TO 12 PMAST MONDAY OVER STEESE HIGHWAY SUMMITS. SOUTH WIND =
-AROUND 15=20
-MPH.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>AFTER BRIEF BREAK FROM THE CURRENT =
-WINTER STORM=20
-IMPACTINGSOUTHEAST ALASKA.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>WIND CHILL ADVISORY EXTENDED UNTIL 6 PM =
-AST MONDAY=20
-FOR THEKLONDIKE HIGHWAY.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This same information is available in =
-other file=20
-formats including the XML based RSS and CAP formats.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>BE SURE TO WEAR MORE THAN ONE LAYER OF =
-CLOTHING.=20
-NORTH WIND 25 TO 35 MPH WITH GUSTS AROUND 45 MPH. A WARNING MEANS THAT A =
-WINTER=20
-STORM IS ALREADY OCCURRING ORIMMINENT.</FONT></DIV></BODY></HTML>
+diff -r ea810fbf4cd0 pulse/pcm_pulse.c
+--- a/pulse/pcm_pulse.c	Mon Feb 26 10:21:21 2007 +0100
++++ b/pulse/pcm_pulse.c	Fri Mar 02 16:41:07 2007 +0100
+@@ -643,23 +643,8 @@ static int pulse_hw_constraint(snd_pcm_p
+     if (err < 0)
+         return err;
+=20
+-    err =3D snd_pcm_ioplug_set_param_minmax(io, SND_PCM_IOPLUG_HW_RATE,
+-        8000, 48000);
+-    if (err < 0)
+-        return err;
+-
+-    err =3D snd_pcm_ioplug_set_param_minmax(io, SND_PCM_IOPLUG_HW_PERIOD=
+_BYTES,
+-        1, 4294967295U);
+-    if (err < 0)
+-        return err;
+-
+-    err =3D snd_pcm_ioplug_set_param_minmax(io, SND_PCM_IOPLUG_HW_PERIOD=
+S,
+-        2, 4294967295U);
+-    if (err < 0)
+-        return err;
+-
+     err =3D snd_pcm_ioplug_set_param_minmax(io, SND_PCM_IOPLUG_HW_BUFFER=
+_BYTES,
+-        1, 4294967295U);
++        1, 4 * 1024 * 1024);
+     if (err < 0)
+         return err;
+=20
 
-------=_NextPart_001_0016_01C75F31.E38997B0--
+--------------060508050206070003080302--
 
-------=_NextPart_000_0015_01C75F31.E387C2F0
-Content-Type: image/gif;
-	name="prevent.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001401c75f29$81c18630$8a4230dc@suazaa>
+--------------enig3B243D0BF8CFF24BD6AF3440
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-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
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
 
-------=_NextPart_000_0015_01C75F31.E387C2F0--
+iD8DBQFF7Bwh7b8eESbyJLgRAtdHAJ9IFCmL0xd5K+8DC7R184d54l81OwCeMf2Z
+XRDT3wxPsX9NR8w6MfIux9M=
+=HTQe
+-----END PGP SIGNATURE-----
+
+--------------enig3B243D0BF8CFF24BD6AF3440--
 
 
-
---===============1662105184==
+--===============1420127700==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -347,7 +111,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1662105184==
+--===============1420127700==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -358,4 +122,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1662105184==--
+--===============1420127700==--
