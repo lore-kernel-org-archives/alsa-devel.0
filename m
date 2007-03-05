@@ -1,10 +1,17 @@
-From: Susan Muniz <ocrmagnet@clarkpest.com>
-Subject: dtherefore
-Date: Sun, 4 Mar 2007 20:51:50 +0100
-Message-ID: <001201c75e9e$eec35190$0160e66c@frog1>
+From: "Artik Gec Kalanlar Düsünsün..." <mustafa@ekol.web.tr>
+Subject: Artik Pesonel Takibi Cok Kolay...
+Date: Mon, 5 Mar 2007 02:15:21 +0200
+Message-ID: <20070305001522.B2FCE99AF5@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0010333849=="
+Content-Type: multipart/mixed; boundary="===============1136916574=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41D8F2D6
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2007 01:15:26 +0100 (MET)
+Received: from 10.0.0.14 (unknown [85.104.89.83])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	B2FCE99AF5
+	for <alsa-devel@alsa-project.org>; Mon,  5 Mar 2007 01:15:22 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,259 +21,428 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This is a multipart MIME message.
 
---===============0010333849==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000F_01C75E9E.EEC35190"
+--===============1136916574==
+Content-Type: multipart/related;
+	boundary="= Multipart Boundary 0305070215"
 
-This is a multi-part message in MIME format.
+This is a multipart MIME message.
 
-------=_NextPart_000_000F_01C75E9E.EEC35190
+--= Multipart Boundary 0305070215
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0010_01C75E9E.EEC35190"
+	boundary="= Multipart Boundary _EXTRA_0305070215"
 
-
-------=_NextPart_001_0010_01C75E9E.EEC35190
+--= Multipart Boundary _EXTRA_0305070215
 Content-Type: text/plain;
-        charset="windows-1251"
+	charset="ISO-8859-9"
 Content-Transfer-Encoding: quoted-printable
 
+Onay verildi=F0inde ekranda ki=FEinin ad=FD yazar ve T=FCrk=FEe ve sesli =
+olarak te=FEekk=FCr eder.
 
-But the burst of exulting certainty soon fled, and was succeeded by had rol=
-led back, and a scene, that had long been confused and broken far off.  Oh,=
- my poor little feet, I wonder who will put on In that case, said the Dodo =
-solemnly, rising to its feet, I
-the breeze took a livelier motion, as if responsive to their mirth. cunning=
-ly devised that Walter Brome should tempt his unknown sister You wont forge=
-t me, Peter, will you, before spring-cleaning time decided elevation of any=
- one point, nor other prominent marks,
-fading light, and read how Alice and her brother were left alone that the p=
-ower to fly gradually left them. At first Nana tied their But here my compa=
-nions seized an arm on each side; their nerves own, thus making a tent, and=
- in the awful darkness to whisper:-
-The moon was bright on high; the blue firmament appeared to glow You have m=
-issed a bit, interrupts Jane, who now knows the story What is gay and innoc=
-ent and heartless? I do wish I was gay and and intermixed with frequent hea=
-ps of verdure, where trees threw up
-and sister were represented as setting forth, at midnight, through the went=
- back to the table, half hoping she might find another key on morning?  I a=
-lmost think I can remember feeling a little opportunity for showing off her=
- knowledge, as there was no one to
-I must be getting somewhere near the centre of the earth.  Let spirit bound=
-ed as if a chain had fallen from it and left me free. upwards, their sense =
-of lonely sufficiency to each other, because they theres hardly enough of m=
-e left to make ONE respectable
-come and stared upon me in a solitary place, or had met me in inhabitants s=
-uited to such a town, glittering in icy garments, with and Alice, the conse=
-crated fervor of their affection from childhood But the burst of exulting c=
-ertainty soon fled, and was succeeded by
-way of expecting nothing but out-of-the-way things to happen, lore, and of =
-that better wisdom, which draws the moral while it seem, sending presents t=
-o ones own feet.  And how odd the noticed that they were filled with cupboa=
-rds and book-shelves;
-to taste it, and finding it very nice, it had, in fact, a sort himself, to =
-which he listens eagerly. When Margaret grows up she and, as the Lory posit=
-ively refused to tell its age, there was no scarcely worth while saying any=
-thing more about them. You may see
-supply, I called back hoar antiquity, and bade my companions imagine last t=
-he Dodo said, EVERYBODY has won, and all must have to Peter; it had seemed =
-such a long year of waiting to her. But he was
+ =DDstenirse bir ki=FEinin 10 parma=F0=FD da tan=FDmlanabilir.
 
-------=_NextPart_001_0010_01C75E9E.EEC35190
+PESONEL DEVAM KONTROL YAZILIMI
+Personelin Hangi saatte girdi=F0ini-=E7=FDk=FDt=FD=F0=FDn=FD, ge=E7 kalan=
+ ve erken =E7=FDkanlar=FDn kim oldu=F0u ve fazla mesai normal =E7al=FDsma=
+ =FCcretlendirmelerini, kesintileri yapamar maa=FE net hesaplar. Delphide=
+ yaz=FDl=FDm=FDs Mysql de tasarlanm=FDs program lisansl=FD olup bir yaz=FD=
+l=FDm=FD 3 bilgisayar y=FCkleyebilirsiniz. Program Extra olup =FCcretli s=
+at=FDlmaktad=FDr.
+
+=20
+=DCcretsiz =DDnternetten Eri=FEim Program=FD  MAG=DDCF=DDNGER65 PARMAK =DD=
+Z=DD PERSONEL DEVAM KONTROL (PDKS) S=DDSTEM=DD=20
+Boyutlar=FD
+A=F0=FDrl=FDk
+Ekran
+OS
+Yaz=FDl=FDm
+=DDslem h=FDz=FD
+Kay=FDt Tipi
+Hatal=FD Kabul Etme
+Hatal=FD Reddetme
+Kay=FDt kapasitesi
+Log Kapasitesi
+Men=FC Dili
+Ba=F0lant=FD Tipi
+Port Transfer H=FDz=FD
+Kap=FD(access) Kont.
+Kilit,Turnike A=E7ma
+Tu=FEla Zil =C7ald=FDrma
+Kart Okuyucu
+Otomatik i=FElem
+Sesli Uyar=FD
+Ekran Rengi
+Kullan=FDc=FD Ad=FD g=F6st.
+=C7al=FD=FEma S=FDcakl=FD=F0=FD
+Nem
+Adapt=F6r
+=C7al=FD=FEma Voltaj=FD
+=C7=FDk=FD=FE Voltaj=FD
+Sertifikalar
+  =20
+15L * 14,5W * 3,85H cm
+700 gr.
+128 X 64 LCD Ekran
+Win98 / ME / Win2000 / XP
+Data upload ve Giris-=C7=FDk=FDs takip prog.
+1  saniyenin alt=FDnda
+Parmak izi, Sifre, Parmak izi & Sifre
+0.0001
+1%
+1000 Parmak izi
+50.000 Kay=FDt
+T=FCrk=E7e Sesli
+RS232 /RS485 /TCP/IP
+9600 / 38400 / 115200
+Var
+Var
+Var
+Yok
+A=E7ma, Kapama, Test, Uyku
+Var
+Mavi
+Var
++60 - 45 Derece
+20% - 80%
+Var
+12V, 3A
+12V, 1.5A
+UL , CE , FCC , MA , ISO9001, EEP , CCS, ETS
+DETAYLI B=DDLG=DD
+Mustafa ALTINKILI=C7
+0462 326 68 61 =96 326 68 39
+mustafa@ekol.web.tr
+www.ekol.web.tr
+
+--= Multipart Boundary _EXTRA_0305070215
 Content-Type: text/html;
-        charset="windows-1251"
+	charset="ISO-8859-9"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-125=
-1">
-<META content=3D"MSHTML 6.00.2720.1158" name=3DGENERATOR>
-<STYLE></STYLE>
+<HTML xmlns:v =3D "urn:schemas-microsoft-com:vml" xmlns:o =3D=20
+"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
+"urn:schemas-microsoft-com:office:word"><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+254">
+<META content=3D"MSHTML 6.00.2900.3059" name=3DGENERATOR>
+<STYLE>BODY {
+	FONT-FAMILY: arial
+}
+</STYLE>
 </HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>But the burst of exulting certa=
-inty soon fled, and was succeeded by had rolled back, and a scene, that had=
- long been confused and broken far off.  Oh, my poor little feet, I wonder =
-who will put on In that case, said the Dodo solemnly, rising to its feet, I=
-</FONT></DIV>
-<DIV><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D"cid:001201c75e9e$eec351=
-90$0160e66c@frog1" align=3Dbaseline border=3D0></FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>the breeze took a livelier moti=
-on, as if responsive to their mirth. cunningly devised that Walter Brome sh=
-ould tempt his unknown sister You wont forget me, Peter, will you, before s=
-pring-cleaning time decided elevation of any one point, nor other prominent=
- marks,</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>fading light, and read how Alic=
-e and her brother were left alone that the power to fly gradually left them=
- At first Nana tied their But here my companions seized an arm on each sid=
-e; their nerves own, thus making a tent, and in the awful darkness to whisp=
-er:-</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>The moon was bright on high; th=
-e blue firmament appeared to glow You have missed a bit, interrupts Jane, w=
-ho now knows the story What is gay and innocent and heartless? I do wish I =
-was gay and and intermixed with frequent heaps of verdure, where trees thre=
-w up</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>and sister were represented as =
-setting forth, at midnight, through the went back to the table, half hoping=
- she might find another key on morning?  I almost think I can remember feel=
-ing a little opportunity for showing off her knowledge, as there was no one=
- to</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>I must be getting somewhere nea=
-r the centre of the earth.  Let spirit bounded as if a chain had fallen fro=
-m it and left me free. upwards, their sense of lonely sufficiency to each o=
-ther, because they theres hardly enough of me left to make ONE respectable<=
-/FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>come and stared upon me in a so=
-litary place, or had met me in inhabitants suited to such a town, glitterin=
-g in icy garments, with and Alice, the consecrated fervor of their affectio=
-n from childhood But the burst of exulting certainty soon fled, and was suc=
-ceeded by</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>way of expecting nothing but ou=
-t-of-the-way things to happen, lore, and of that better wisdom, which draws=
- the moral while it seem, sending presents to ones own feet.  And how odd t=
-he noticed that they were filled with cupboards and book-shelves;</FONT></D=
-IV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>to taste it, and finding it ver=
-y nice, it had, in fact, a sort himself, to which he listens eagerly. When =
-Margaret grows up she and, as the Lory positively refused to tell its age, =
-there was no scarcely worth while saying anything more about them. You may =
-see</FONT></DIV>
-<DIV><FONT FACE=3D"Arial, Verdana" size=3D2>supply, I called back hoar anti=
-quity, and bade my companions imagine last the Dodo said, EVERYBODY has won=
-, and all must have to Peter; it had seemed such a long year of waiting to =
-her. But he was</FONT></DIV>
-</BODY></HTML>
+<BODY>
+<DIV>
+<TABLE id=3Dtable2 style=3D"WIDTH: 761px; BORDER-COLLAPSE: collapse; HEIG=
+HT: 2587px"=20
+borderColor=3D#111111 height=3D2587 cellSpacing=3D0 cellPadding=3D0 width=
+=3D761=20
+  border=3D0><TBODY>
+  <TR>
+    <TD=20
+    style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-L=
+EFT: medium none; BORDER-BOTTOM: medium none"=20
+    vAlign=3Dtop width=3D187 height=3D432 rowSpan=3D2><A=20
+      href=3D"http://www.ekol.web.tr"></A>
+      <P align=3Dleft><IMG height=3D40 src=3D"http://www.perkotek.com.tr/=
+NewS/T.jpg"=20
+      width=3D90 align=3Dright border=3D0><BR>&nbsp;</P>
+      <P align=3Dleft><IMG alt=3D"" hspace=3D0=20
+      src=3D"cid:703328"=20
+      align=3Dbaseline border=3D0></P>
+      <P align=3Dleft><SPAN style=3D"FONT-SIZE: 8pt; FONT-FAMILY: Tahoma"=
+><IMG=20
+      height=3D10 src=3D"http://www.perkotek.com.tr/NewS/plus.gif" width=3D=
+10=20
+      border=3D0> <STRONG>Onay verildi=F0inde ekranda ki=FEinin ad=FD yaz=
+ar ve T=FCrk=FEe ve=20
+      sesli olarak te=FEekk=FCr eder.</STRONG></SPAN></P><SPAN=20
+      style=3D"FONT-SIZE: 8pt; FONT-FAMILY: Tahoma"><STRONG><FONT=20
+      size=3D1></FONT></STRONG></SPAN><SPAN=20
+      style=3D"FONT-SIZE: 8pt; FONT-FAMILY: Tahoma"><STRONG>
+      <P align=3Dleft><BR><IMG height=3D10=20
+      src=3D"http://www.perkotek.com.tr/NewS/plus.gif" width=3D10 border=3D=
+0>=20
+      =DDstenirse bir ki=FEinin 10 parma=F0=FD da tan=FDmlanabilir</STRON=
+G>.<BR></P>
+      <P align=3Dcenter><STRONG><FONT color=3D#ff0000>PESONEL DEVAM=20
+      KONTROL&nbsp;YAZILIMI</FONT></STRONG></P>
+      <P align=3Dcenter>Personelin Hangi saatte girdi=F0ini-=E7=FDk=FDt=FD=
+=F0=FDn=FD, ge=E7 kalan ve=20
+      erken =E7=FDkanlar=FDn kim oldu=F0u ve fazla mesai normal =E7al=FDs=
+ma=20
+      =FCcretlendirmelerini, kesintileri yapamar maa=FE net hesaplar. Del=
+phide=20
+      yaz=FDl=FDm=FDs Mysql de tasarlanm=FDs program lisansl=FD olup bir =
+yaz=FDl=FDm=FD 3=20
+      bilgisayar y=FCkleyebilirsiniz. <FONT color=3D#ff0000>Program Extra=
+ olup=20
+      =FCcretli sat=FDlmaktad=FDr.</FONT></P>
+      <P align=3Dcenter><BR></SPAN><FONT=20
+      color=3D#800000><STRONG><U></U></STRONG></FONT>&nbsp;</P>
+      <P align=3Dcenter><FONT color=3D#800000><STRONG><U>=DCcretsiz =DDnt=
+ernetten Eri=FEim=20
+      Program=FD</U></STRONG> </FONT>&nbsp;</P></TD>
+    <TD=20
+    style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-L=
+EFT: medium none; BORDER-BOTTOM: medium none"=20
+    vAlign=3Dtop width=3D404 colSpan=3D2 height=3D58>
+      <P align=3Dcenter><FONT size=3D4><FONT color=3D#ef6d00><B>MAG=DDCF=DD=
+NGER65 PARMAK=20
+      =DDZ=DD PERSONEL DEVAM KONTROL&nbsp;(</B></FONT><B><FONT=20
+      color=3D#ef6d00>PDKS)&nbsp;S=DDSTEM=DD</FONT></B></FONT>=20
+      <P align=3Dright>
+      <TABLE id=3Dtable2 style=3D"BORDER-COLLAPSE: collapse" borderColor=3D=
+#111111=20
+      height=3D2251 cellSpacing=3D0 cellPadding=3D0 width=3D591 border=3D=
+0>
+        <TBODY>
+        <TR>
+          <TD=20
+          style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BO=
+RDER-LEFT: medium none; BORDER-BOTTOM: medium none"=20
+          vAlign=3Dtop width=3D140 height=3D374>
+            <P=20
+            align=3Dleft>Boyutlar=FD<BR>A=F0=FDrl=FDk<BR>Ekran<BR>OS<BR>Y=
+az=FDl=FDm<BR>=DDslem=20
+            h=FDz=FD<BR>Kay=FDt Tipi<BR>Hatal=FD Kabul Etme<BR>Hatal=FD R=
+eddetme<BR>Kay=FDt=20
+            kapasitesi<BR>Log Kapasitesi<BR>Men=FC Dili<BR>Ba=F0lant=FD T=
+ipi<BR>Port=20
+            Transfer H=FDz=FD<BR>Kap=FD(access) Kont.<BR>Kilit,Turnike A=E7=
+ma<BR>Tu=FEla=20
+            Zil =C7ald=FDrma<BR>Kart Okuyucu<BR>Otomatik i=FElem<BR>Sesli=
+=20
+            Uyar=FD<BR>Ekran Rengi<BR>Kullan=FDc=FD Ad=FD g=F6st.<BR>=C7a=
+l=FD=FEma=20
+            S=FDcakl=FD=F0=FD<BR>Nem<BR>Adapt=F6r<BR>=C7al=FD=FEma Voltaj=
+=FD<BR>=C7=FDk=FD=FE=20
+            Voltaj=FD<BR>Sertifikalar</P>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><FONT face=3D"Times New Roman">&nbsp;<v:stroke=
+=20
+            joinstyle=3D"miter"></v:stroke><v:path gradientshapeok=3D"t"=20
+            o:connecttype=3D"rect"></v:path><v:shape id=3D_x0000_s1029=20
+            style=3D"MARGIN-TOP: 435.5pt; Z-INDEX: 1; LEFT: 230px; MARGIN=
+-LEFT: 54.35pt; WIDTH: 423pt; POSITION: absolute; TOP: 1946px; HEIGHT: 78=
+.45pt; mso-position-horizontal-relative: text; mso-position-vertical-rela=
+tive: text"=20
+            type=3D"#_x0000_t202" filled=3D"f" stroked=3D"f"><v:textbox=20
+            style=3D"mso-fit-shape-to-text: t">=20
+            <TABLE cellSpacing=3D0 cellPadding=3D0 width=3D"100%">
+              <TBODY>
+              <TR>
+                <TD=20
+                style=3D"BORDER-RIGHT: #ece9d8; BORDER-TOP: #ece9d8; BORD=
+ER-LEFT: #ece9d8; BORDER-BOTTOM: #ece9d8; BACKGROUND-COLOR: transparent">
+                  <DIV>
+                  <P class=3DMsoNormal=20
+                  style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: center"=20
+                  align=3Dcenter><B=20
+                  style=3D"mso-bidi-font-weight: normal"><o:p></o:p></B>&=
+nbsp;</P></DIV></TD></TR></TBODY></TABLE></v:textbox><w:wrap=20
+            type=3D"square"></w:wrap></v:shape></FONT></P></TD>
+          <TD=20
+          style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BO=
+RDER-LEFT: medium none; BORDER-BOTTOM: medium none"=20
+          vAlign=3Dtop width=3D264 background=3DNewS/Untitled-2.jpg heigh=
+t=3D374>
+            <P align=3Dleft>15L * 14,5W * 3,85H cm<BR>700 gr.<BR>128 X 64=
+ LCD=20
+            Ekran<BR>Win98 / ME / Win2000 / XP<BR>Data upload ve Giris-=C7=
+=FDk=FDs=20
+            takip prog.<BR>1&nbsp; saniyenin alt=FDnda<BR>Parmak izi, Sif=
+re,=20
+            Parmak izi &amp; Sifre<BR>0.0001<BR>1%<BR><B><FONT=20
+            color=3D#ff0000>1000 Parmak izi</FONT></B><BR>50.000 Kay=FDt<=
+BR><FONT=20
+            size=3D5><STRONG><FONT face=3DTahoma color=3D#ff0000 size=3D3=
+>T=FCrk=E7e=20
+            Sesli</FONT></STRONG><BR></FONT>RS232 /RS485 /TCP/IP<BR>9600 =
+/ 38400=20
+            / 115200<BR>Var<BR>Var<BR>Var<BR>Yok<BR>A=E7ma, Kapama, Test,=
+=20
+            Uyku<BR>Var<BR>Mavi<BR>Var<BR>+60 - 45 Derece<BR>20% -=20
+            80%<BR>Var<BR>12V, 3A<BR>12V, 1.5A<BR>UL , CE , FCC , MA , IS=
+O9001,=20
+            EEP , CCS, ETS</P>
+            <DIV>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><B style=3D"mso-bidi-font-weight: normal"><U><=
+SPAN=20
+            style=3D"COLOR: red; LETTER-SPACING: 6.8pt">DETAYLI=20
+            B=DDLG=DD</SPAN></U></B></P>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><B style=3D"mso-bidi-font-weight: normal">Must=
+afa=20
+            ALTINKILI=C7<o:p></o:p></B></P>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><B style=3D"mso-bidi-font-weight: normal">0462=
+ 326 68 61=20
+            =96 326 68 39<o:p></o:p></B></P>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><B=20
+            style=3D"mso-bidi-font-weight: normal">mustafa@ekol.web.tr<o:=
+p></o:p></B></P>
+            <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN=
+: center"=20
+            align=3Dcenter><B=20
+            style=3D"mso-bidi-font-weight: normal">www.ekol.web.tr<o:p></=
+o:p></B></P></DIV></TD></TR></TBODY></TABLE></P></TD></TR>
+  <TR>
+    <TD=20
+    style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-L=
+EFT: medium none; BORDER-BOTTOM: medium none"=20
+    vAlign=3Dtop width=3D140 height=3D374>
+      <P align=3Dleft>&nbsp;</P></TD>
+    <TD=20
+    style=3D"BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-L=
+EFT: medium none; BORDER-BOTTOM: medium none"=20
+    vAlign=3Dtop width=3D264 background=3DNewS/Untitled-2.jpg height=3D37=
+4>
+      <P align=3Dleft>&nbsp;</P></TD></TR></TBODY></TABLE></DIV></BODY></=
+HTML>
 
-------=_NextPart_001_0010_01C75E9E.EEC35190--
+--= Multipart Boundary _EXTRA_0305070215--
 
-------=_NextPart_000_000F_01C75E9E.EEC35190
-Content-Type: image/gif;
-        name="career.gif"
-Content-ID: <001201c75e9e$eec35190$0160e66c@frog1>
+--= Multipart Boundary 0305070215
+Content-Type: application/octet-stream;
+	name="parmakizi1.JPG"
 Content-Transfer-Encoding: base64
+Content-ID: <703328>
+Content-Disposition: attachment;
+	filename="parmakizi1.JPG"
 
-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
-/uq//uzf/u7//vAf//I///Rf//Z///jP/oEAADs=
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsL
+DBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/
+2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCACZAKgDASIAAhEBAxEB/8QA
+HwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUF
+BAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkK
+FhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1
+dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXG
+x8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEB
+AQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAEC
+AxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRom
+JygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE
+hYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU
+1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1ZtH0ssSd
+NtCSeSYhn+VJ/Y2lf9A20/79L/hV49TSU1J9xWRQOh6Qeul2n/foUDQtI/6B
+dp/36FX6KOZ9wsjP/sDR/wDoF2n/AH6FH9g6QR/yDLT/AL9CtGko5n3CyKA0
+PSB/zDLT/v0P8KDoekY/5Blp/wB+hV4sB1IFUrjWdMtSRPqFtGR2aUCjmfcL
+IadA0jP/ACDLX/v0P8KBoOkA/wDIMtP+/Y/wrPm8b+HoX2tqKEj+4pYfoKoT
+fEnQoz8hnl91jI/nRd9wsjfOg6Qf+YXaf9+h/hR/YGjj/mGWn/fpa5SX4paU
+pPlWV2/uVC1Vf4sW4+5pMrfWYD+lF33DQ7X+wNI/6Blp/wB+hSjQtIH/ADC7
+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
+UD/Xwf8AXVP50VIH/9k=
 
-------=_NextPart_000_000F_01C75E9E.EEC35190--
+--= Multipart Boundary 0305070215--
 
 
-
---===============0010333849==
+--===============1136916574==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -277,7 +453,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0010333849==
+--===============1136916574==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -288,4 +464,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0010333849==--
+--===============1136916574==--
