@@ -1,22 +1,15 @@
-From: "Penney H. Hued" <igor@goggleeyes.com>
-Subject: Need to buy medications but don't know where?
-Date: Mon, 05 Mar 2007 21:48:58 -0500
-Message-ID: <4196572593.20070305214858@goggleeyes.com>
+From: "Brenton Manleyik" <rameyfae@semos-sadiola.com>
+Subject: transmitting video
+Date: Tue, 06 Mar 2007 13:44:52 +0800
+Message-ID: <02ff01c75f61$3dfe34a0$7815d4c0@edakotao>
+Reply-To: Brenton Manleyik <rameyfae@semos-sadiola.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0655783415=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C78CC2F0
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 06:40:09 +0100 (MET)
-Received: from 147278296 (unknown [122.5.220.196])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	430DA99C87
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 06:40:04 +0100 (MET)
-Received: from goggleeyes.com (150237696 [147112928])
-	by 196.220.5.122.broad.hz.sd.dynamic.163data.com.cn (Qmailv1) with
-	ESMTP id 6E6CD8DFDA
-	for <alsa-devel@alsa-project.org>; Mon, 05 Mar 2007 21:48:58 -0500
+Received: from semos-sadiola.com (220-130-130-191.HINET-IP.hinet.net
+	[220.130.130.191])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id ADBCE2F0
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 06:42:53 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,17 +19,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-US Drug store presents lots of medications at cheapest prices. You won't find such prices in United States or even Canada. We sell legal and quality pills, our friendly support will help you anytime you need. 
-http://kikaq.hk
+--===============0655783415==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0002_03F5C81F.F92A0EB0"
 
-verified by VISA and certified by CIPA. 
+------=_NextPart_000_0002_03F5C81F.F92A0EB0
+Content-Type: multipart/alternative;
+	boundary="----=_1OEBOUND;"
 
+
+------=_1OEBOUND;
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+ but he did not disclose a motive and would not say what led investigators to Oyler.
+
+NUTRIONE CORPORATION 
+SymBOL : NNCP
+Current P : $ 0.02
+5 day Exp : $ 0.50
+
+NutriOne Successfully Launches Canadian Operation and Sells Over 600,000 Units 
+Market Wire (Mon, Feb 26)  
+ NutriOne Announces It Has Concluded Its Agreement With Research in Nutrition and Nutraceuticals (RINN) 
+Market Wire (Fri, Feb 23)  
+
+REAL COMPANY, REAL PRODUCTS
+
+Get IN Before the rush Monday
+
+ polls show that a clear majority of Americans see the war as a mistake and far fewer 
+
+------=_1OEBOUND;
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2600.2963" name=GENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=#ffffff>
+<DIV><FONT face="Arial Black" size=2>
+ but he did not disclose a motive and would not say what led investigators to Oyler.
+</FONT></DIV>
+<DIV><FONT face="Arial Black" size=2 color=#ff0000>
+NUTRIONE CORPORATION
+</FONT></DIV>
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>
+SymBOL : NNCP
+</FONT></DIV>
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>
+Current P : $ 0.02
+</FONT></DIV>
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>
+5 day Exp : $ 0.50
+</FONT></DIV>
+<DIV><FONT face="Arial Black" size=2>
+NutriOne Successfully Launches Canadian Operation 
+and Sells Over 600,000 Units <BR>Market Wire 
+(Mon, Feb 26)&nbsp; <BR>
+ NutriOne Announces It Has Concluded Its Agreement 
+With Research in Nutrition and Nutraceuticals (RINN) 
+<BR>Market Wire (Fri, Feb 23)&nbsp; <BR></FONT></DIV>
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>
+REAL COMPANY, REAL PRODUCTS
+</FONT></DIV>
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>
+Get IN Before the rush Monday</FONT></DIV>
+<DIV><FONT face="Arial Black" size=2>
+ polls show that a clear majority of Americans see the war as a mistake and far fewer 
+</FONT></DIV></BODY></HTML>
+------=_1OEBOUND;--
+
+
+------=_NextPart_000_0002_03F5C81F.F92A0EB0--
+
+--===============0655783415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0655783415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0655783415==--
