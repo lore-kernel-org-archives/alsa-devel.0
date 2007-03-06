@@ -1,22 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: ALSA 1.0.14rc3 release
-Date: Tue, 6 Mar 2007 14:09:23 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0703061405470.8516@tm8103.perex-int.cz>
+From: Anatoly Kanashin <kanashin@int.spb.ru>
+Subject: about mixer callbacks
+Date: Tue, 6 Mar 2007 13:01:20 +0300
+Message-ID: <200703061301.20623.kanashin@int.spb.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344E1164
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 14:09:24 +0100 (MET)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	1B0DE99B1C
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 14:09:24 +0100 (MET)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
-	EFFC7E94C2
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 14:09:23 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,25 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-	ALSA 1.0.14rc3 packages are available for download. Full 
-changelog can be obtained here:
-
-http://www.alsa-project.org/changes/v1-0-14rc2--v1-0-14rc3.txt
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+SGkhCgpJIGhhdmUgdHJvdWJsZSB3aXRoIG1peGVyX2VsZW0gY2FsbGJhY2tzLgpXaGF0IEkgZG86
+IAoxKSBvcGVuIG1peGVyIGFuZCBtaXhlciBlbGVtZW50OwoyKSBzbmRfbWl4ZXJfZWxlbV9zZXRf
+Y2FsbGJhY2soLi4uKTsKMykgc25kX21peGVyX2VsZW1fc2V0X2NhbGxiYWNrX3ByaXZhdGUoLi4u
+KTsKCmFmdGVyIHRoaXMgSSBoYXZlJ250IHJlY2VpdmVkIGFueSBjYWxsYmFja3MuIE9ubHkgd2hl
+biBJIGNsb3NlZCBtaXhlciA6KQoKV2hlbiBJIHBlcmlvZGljYWxseSBjYWxsIHNuZF9taXhlcl9o
+YW5kbGVfZXZlbnRzKC4uLikgSSBmb3VuZCB0aGF0IG15IGNhbGxiYWNrIAppcyBjYWxsZWQuIApX
+aGF0IEkgZG9pbmcgd3JvbmdseT8KCkl0J3MgZmlyc3QgcXVlc3Rpb24uIApBbmQgaXQgaXMgc2Vj
+b25kOiBpbiBjYWxsYmFjayBJIGRvbid0IGZvdW5kIG1hc2sgZm9yIE1VVEUgZmxhZy4gSSB0cnkg
+dG8gTVVURSAKb24vb2ZmIGFueSBjaGFubmVscyB3aXRoIGFsc2FtaXhlciwgYnV0IEkgaGF2ZSBy
+ZWNlaXZlZCBvbmx5IG1hc2sgClNORF9DVExfRVZFTlRfTUFTS19WT0xVTUUuIFRoZW4gaSBjb3Vs
+ZCB2ZXJpZnkgc3dpdGNoIHN0YXRlIG9mIG15IG93biBtaXhlciAKZWxlbWVudCBldmVyeSB0aW1l
+IGNhbGxiYWNrIGlzIGNhbGxlZD8KClBTLiBJIGRvbid0IHN1YnNjcmliZWQgdG8gdGhpcyBtYWls
+aW5nLWxpc3QgKGJlY2F1c2Ugb2YgdHJvdWJsZXMgaW4gCnN1YnNjcmliaW5nIHByb2NlZHVyZSBp
+biBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQpLiBQbGVhc2UsIGFuc3dlciB0byBteSBlLW1haWwgCmFk
+ZHJlc3MuCi0tIArzINXXwdbFzsnFzSwK68HOwdvJziDhLvcuCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRh
+a2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApKb2luIFNv
+dXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0
+byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJp
+ZWYgc3VydmV5cy1hbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVmYXVsdC5w
+aHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
