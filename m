@@ -1,15 +1,11 @@
-From: "Sibaen Emilyn" <Herrmann@nic.fuzz.fi>
-Subject: The Mighty Iranian Military
-Date: Tue, 06 Mar 2007 19:07:19 +0000
-Message-ID: <5c6101c76022$25e8c898$57052f54@adsl-d87.84-47-5.t-com.sk>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HNXOC-0003Df-NK delayed 72 hours
+Date: Tue, 06 Mar 2007 11:30:39 -0800
+Message-ID: <E1HOfMt-0006ZM-Br@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from adsl-d87.84-47-5.t-com.sk (adsl-d87.84-47-5.t-com.sk
-	[84.47.5.87])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CDDCC2E0
-	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 20:08:28 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,19 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Pyankov Andrey <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-#1 Penis Enlargement Solution in the World
+The message identifier is:     1HNXOC-0003Df-NK
+The subject of the message is: and Pharaoh, saying, God; layeth his hand the gift, or a parable,
+The date of the message is:    Sat, 03 Mar 2007 18:47:05 +0200
 
-You can order it here: http://www.asiandayli.info
+The address to which the message has not yet been delivered is:
 
-100% Guaranteed risk free results or your Money Back!
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
--- 
-hpmrmhlrjgfrjljlkhjfjplmjojkkojpfgkskrjfkpkjkgjmgpkpjjkf
-
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
